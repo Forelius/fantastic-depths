@@ -1,72 +1,109 @@
 {
   "Actor": {
-    "types": ["character", "npc"],
+    "types": [ "character", "monster", "npc" ],
     "templates": {
       "base": {
-        "health": {
-          "value": 10,
-          "min": 0,
-          "max": 10
+        "retainer": {
+          "enabled": false,
+          "loyalty": 0,
+          "wage": ""
         },
-        "power": {
-          "value": 5,
-          "min": 0,
-          "max": 5
+        "hp": {
+          "hd": "1d8",
+          "value": 20,
+          "max": 20
         },
-        "biography": ""
-      }
-    },
-    "character": {
-      "templates": ["base"],
-      "attributes": {
-        "level": {
-          "value": 1
+        "ac": {
+          "value": 0,
+          "mod": 0
+        },
+        "thac0": {
+          "value": 19,
+          "mod": {
+            "missile": 0,
+            "melee": 0
+          }
+        },
+        "saves": {
+          "death": {
+            "value": 0
+          },
+          "wand": {
+            "value": 0
+          },
+          "paralysis": {
+            "value": 0
+          },
+          "breath": {
+            "value": 0
+          },
+          "spell": {
+            "value": 0
+          }
+        },
+        "movement": {
+          "base": 120
+        },
+        "initiative": {
+          "value": 0,
+          "mod": 0
         }
       },
-      "abilities": {
-        "str": {
-          "value": 10
+      "character": {
+        "templates": [ "base" ],
+        "attributes": {
+          "level": {
+            "value": 1
+          }
         },
-        "dex": {
-          "value": 10
-        },
-        "con": {
-          "value": 10
-        },
-        "int": {
-          "value": 10
-        },
-        "wis": {
-          "value": 10
-        },
-        "cha": {
-          "value": 10
+        "abilities": {
+          "str": {
+            "value": 10
+          },
+          "dex": {
+            "value": 10
+          },
+          "con": {
+            "value": 10
+          },
+          "int": {
+            "value": 10
+          },
+          "wis": {
+            "value": 10
+          },
+          "cha": {
+            "value": 10
+          }
         }
+      },
+      "monster": {
+        "templates": [ "base" ]
+      },
+      "npc": {
+        "templates": [ "base" ],
+        "cr": 0
       }
-    },
-    "npc": {
-      "templates": ["base"],
-      "cr": 0
     }
   },
   "Item": {
-    "types": ["item", "feature", "spell"],
+    "types": [ "item", "feature", "spell" ],
     "templates": {
       "base": {
         "description": ""
       }
     },
     "item": {
-      "templates": ["base"],
+      "templates": [ "base" ],
       "quantity": 1,
       "weight": 0,
       "formula": "d20 + @str.mod + ceil(@lvl / 2)"
     },
     "feature": {
-      "templates": ["base"]
+      "templates": [ "base" ]
     },
     "spell": {
-      "templates": ["base"],
+      "templates": [ "base" ],
       "spellLevel": 1
     }
   }

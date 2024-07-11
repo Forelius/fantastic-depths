@@ -1,48 +1,50 @@
 {
-    "id": "fantastic-depths",
-    "title": "Fantastic Depths",
-    "description": "The Fantastic Depths system for FoundryVTT!",
-    "authors": [
-        {
-            "name": "Forelius",
-            "discord": "forelius"
-        }
-    ],
-    "url": "https://github.com/Forelius/fantastic-depths",
-    "license": "LICENSE.txt",
-    "readme": "README.md",
-    "bugs": "https://github.com/Forelius/fantastic-depths/issues",
-    "changelog": "CHANGELOG.md",
-    "media": [
-        {
-            "type": "setup",
-            "url": "systems/fantastic-depths/assets/anvil-impact.png",
-            "thumbnail": "systems/fantastic-depths/assets/anvil-impact.png"
-        }
-    ],
-    "version": "0.1.0",
-    "compatibility": {
-        "minimum": 11,
-        "verified": "11.315",
-        "maximum": "12"
-    },
-    "esmodules": [ "module/fantastic-depths.mjs" ],
-    "styles": [ "css/fantastic-depths.css" ],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json"
-        }
-    ],
-    "packs": [],
-    "packFolders": [],
-    "socket": false,
-    "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
-    "download": "This must link to a .zip file of the current version",
-    "background": "systems/fantastic-depths/assets/anvil-impact.png",
-    "gridDistance": 5,
-    "gridUnits": "ft",
-    "primaryTokenAttribute": "health",
-    "secondaryTokenAttribute": "power"
+  "id": "fantastic-depths",
+  "title": "Fantastic Depths",
+  "description": "The Fantastic Depths system for FoundryVTT!",
+  "authors": [
+    {
+      "name": "Forelius",
+      "discord": "forelius"
+    }
+  ],
+  "url": "https://github.com/Forelius/fantastic-depths",
+  "license": "LICENSE.txt",
+  "readme": "README.md",
+  "bugs": "https://github.com/Forelius/fantastic-depths/issues",
+  "changelog": "CHANGELOG.md",
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/fantastic-depths/assets/anvil-impact.png",
+      "thumbnail": "systems/fantastic-depths/assets/anvil-impact.png"
+    }
+  ],
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": 11,
+    "verified": 12,
+    "maximum": 12
+  },
+  "esmodules": [ "module/fantastic-depths.mjs" ],
+  "styles": [ "css/fantastic-depths.css" ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "packs": [],
+  "packFolders": [],
+  "socket": false,
+  "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
+  "download": "This must link to a .zip file of the current version",
+  "background": "systems/fantastic-depths/assets/anvil-impact.png",
+  "grid": {
+    "distance": 5,
+    "units": "ft"
+  },
+  "primaryTokenAttribute": "hp",
+  "secondaryTokenAttribute": "ac"
 }

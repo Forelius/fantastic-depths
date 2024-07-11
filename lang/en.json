@@ -1,16 +1,39 @@
 {
   "FADE": {
     "Ability": {
-      "Str": { "long": "Strength", "abbr": "str" },
-      "Con": { "long": "Constitution", "abbr": "con" },
-      "Dex": { "long": "Dexterity", "abbr": "dex" },
-      "Int": { "long": "Intelligence", "abbr": "int" },
-      "Wis": { "long": "Wisdom", "abbr": "wis" },
-      "Cha": { "long": "Charisma", "abbr": "cha" }
+      "Str": {
+        "long": "Strength",
+        "abbr": "str"
+      },
+      "Con": {
+        "long": "Constitution",
+        "abbr": "con"
+      },
+      "Dex": {
+        "long": "Dexterity",
+        "abbr": "dex"
+      },
+      "Int": {
+        "long": "Intelligence",
+        "abbr": "int"
+      },
+      "Wis": {
+        "long": "Wisdom",
+        "abbr": "wis"
+      },
+      "Cha": {
+        "long": "Charisma",
+        "abbr": "cha"
+      }
     },
+    "Health": "Hit Points",
+    "HealthMax": "Maximum Hit Points",
+    "HealthShort": "HP",
+    "HitDice": "Hit Dice",
+    "HitDiceShort": "HD",
     "SheetLabels": {
-      "Actor": "fade Actor Sheet",
-      "Item": "fade Item Sheet"
+      "Actor": "FaDe Actor Sheet",
+      "Item": "FaDe Item Sheet"
     },
     "Item": {
       "Spell": {
@@ -30,6 +53,7 @@
   "TYPES": {
     "Actor": {
       "character": "Character",
+      "monster": "Monster",
       "npc": "NPC"
     },
     "Item": {

@@ -55,6 +55,10 @@ export class fadeActorSheet extends ActorSheet {
       this._prepareCharacterData(context);
     }
 
+    // Prepare character data and items.
+    if (actorData.type == 'monster') {
+    }
+
     // Prepare NPC data and items.
     if (actorData.type == 'npc') {
       this._prepareItems(context);

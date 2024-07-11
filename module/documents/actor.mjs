@@ -1,8 +1,36 @@
-/**
+/** 
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
  */
 export class fadeActor extends Actor {
+  /** @override */
+  async _preCreate(data, options, userId) {
+    const allowed = await super._preCreate(data, options, userId);
+
+    const changeData = {};
+
+    switch (this.type) {
+      case "character":
+        Object.assign(changeData, {
+          "prototypeToken.sight": {
+            "enabled": true,
+            "visonMode": "basic",
+          },
+          "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+          "prototypeToken.actorLink": true,
+        });
+        break;
+      case "monster":
+        break;
+      case "npc":
+        break;
+    }
+
+    await this.updateSource(changeData);
+
+    return allowed;
+  }
+
   /** @override */
   prepareData() {
     // Prepare data for the actor. Calling the super version of this executes
@@ -22,18 +50,16 @@ export class fadeActor extends Actor {
    * @override
    * Augment the actor source data with additional dynamic data. Typically,
    * you'll want to handle most of your calculated/derived data in this step.
-   * Data calculated in this step should generally not exist in template.json
-   * (such as ability modifiers rather than ability scores) and should be
-   * available both inside and outside of character sheets (such as if an actor
-   * is queried and has a roll executed directly from it).
+   * Data calculated in this step should generally not exist in templates.
    */
   prepareDerivedData() {
     const actorData = this;
-    const systemData = actorData.system;
-    const flags = actorData.flags.fantasticdepths || {};
+    const data = actorData.system;
 
-    // Make separate methods for each Actor type (character, npc, etc.) to keep
-    // things organized.
+    // Initialize attributes if missing
+    data.attributes = data.attributes || {};
+
+    // Prepare each Actor type (character, npc, etc.) to keep things organized.
     this._prepareCharacterData(actorData);
     this._prepareNpcData(actorData);
   }
@@ -46,6 +72,15 @@ export class fadeActor extends Actor {
 
     // Make modifications to data here. For example:
     const systemData = actorData.system;
+
+    // Initialize abilities if missing
+    systemData.abilities = systemData.abilities || {};
+
+    // Ensure all abilities have default values if missing
+    const abilities = ["str", "dex", "con", "int", "wis", "cha"];
+    abilities.forEach(ability => {
+      systemData.abilities[ability] = systemData.abilities[ability] || { value: 10 };
+    });
 
     // Loop through ability scores, and add their modifiers to our sheet output.
     for (let [key, ability] of Object.entries(systemData.abilities)) {
@@ -72,6 +107,9 @@ export class fadeActor extends Actor {
     // Starts off by populating the roll data with a shallow copy of `this.system`
     const data = { ...this.system };
 
+    // Ensure attributes are initialized
+    data.attributes = data.attributes || {};
+
     // Prepare character roll data.
     this._getCharacterRollData(data);
     this._getNpcRollData(data);
@@ -94,9 +132,7 @@ export class fadeActor extends Actor {
     }
 
     // Add level for easier access, or fall back to 0.
-    if (data.attributes.level) {
-      data.lvl = data.attributes.level.value ?? 0;
-    }
+    data.lvl = data.attributes.level?.value || 0;
   }
 
   /**

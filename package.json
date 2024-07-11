@@ -9,7 +9,7 @@
   "browserslist": [
     "last 3 versions"
   ],
-  "author": "Asacolips",
+  "author": "forelius",
   "license": "MIT",
   "private": true,
   "devDependencies": {
