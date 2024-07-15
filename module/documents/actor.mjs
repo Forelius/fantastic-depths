@@ -18,6 +18,7 @@ export class fadeActor extends Actor {
           },
           "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
           "prototypeToken.actorLink": true,
+          "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.HOVER
         });
         break;
       case "monster":
@@ -82,10 +83,19 @@ export class fadeActor extends Actor {
       systemData.abilities[ability] = systemData.abilities[ability] || { value: 10 };
     });
 
+    // Access CONFIG for your system
+    const adjustments = CONFIG.FADE.AdjustmentTable;
+    //console.log('_prepareCharacterData', abilityMods);
     // Loop through ability scores, and add their modifiers to our sheet output.
     for (let [key, ability] of Object.entries(systemData.abilities)) {
-      // Calculate the modifier using d20 rules.
-      ability.mod = Math.floor((ability.value - 10) / 2);
+      let mod = adjustments[0].value;
+      adjustments.forEach(function (item) {
+        if (item.max <= ability.value) {
+          mod = item.value;
+        }
+      });
+      //  // Calculate the modifier using d20 rules.
+      ability.mod = mod;
     }
   }
 

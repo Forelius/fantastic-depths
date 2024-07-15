@@ -51,9 +51,11 @@
       },
       "character": {
         "templates": [ "base" ],
-        "attributes": {
-          "level": {
-            "value": 1
+        "details": {
+          "level": 0,
+          "xp": {
+            "value": 0,
+            "bonus": 0
           }
         },
         "abilities": {

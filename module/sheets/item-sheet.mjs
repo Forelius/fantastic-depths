@@ -32,7 +32,7 @@ export class fadeItemSheet extends ItemSheet {
 
     // Alternatively, you could use the following return statement to do a
     // unique item sheet by type, like `weapon-sheet.hbs`.
-    return `${path}/item-${this.item.type}-sheet.hbs`;
+    return `${path}/${this.item.type}-sheet.hbs`;
   }
 
   /* -------------------------------------------- */

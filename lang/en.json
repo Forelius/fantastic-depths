@@ -1,36 +1,49 @@
 {
   "FADE": {
+    "Actor": {
+      "Health": "Hit Points",
+      "HealthMax": "Maximum Hit Points",
+      "HealthShort": "HP",
+      "HitDice": "Hit Dice",
+      "HitDiceShort": "HD",
+      "Title": "Title",
+      "Alignment": "Alignment",
+      "Class": "Class",
+      "Level": "Level",
+      "Experience": "Experience"
+    },
     "Ability": {
       "Str": {
         "long": "Strength",
-        "abbr": "str"
-      },
-      "Con": {
-        "long": "Constitution",
-        "abbr": "con"
-      },
-      "Dex": {
-        "long": "Dexterity",
-        "abbr": "dex"
+        "abbr": "STR",
+        "mod": "To-Hit, Damage, Open Doors"
       },
       "Int": {
         "long": "Intelligence",
-        "abbr": "int"
+        "abbr": "INT",
+        "mod": "Language(s)"
       },
       "Wis": {
         "long": "Wisdom",
-        "abbr": "wis"
+        "abbr": "WIS",
+        "mod": "Saving Throws vs Spells"
+      },
+      "Dex": {
+        "long": "Dexterity",
+        "abbr": "DEX",
+        "mod": "Missile To-Hit, AC"
+      },
+      "Con": {
+        "long": "Constitution",
+        "abbr": "CON",
+        "mod": "Hit Points/Level"
       },
       "Cha": {
         "long": "Charisma",
-        "abbr": "cha"
+        "abbr": "CHA",
+        "mod": "Reactions"
       }
     },
-    "Health": "Hit Points",
-    "HealthMax": "Maximum Hit Points",
-    "HealthShort": "HP",
-    "HitDice": "Hit Dice",
-    "HitDiceShort": "HD",
     "SheetLabels": {
       "Actor": "FaDe Actor Sheet",
       "Item": "FaDe Item Sheet"
