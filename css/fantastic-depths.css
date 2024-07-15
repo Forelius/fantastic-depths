@@ -264,7 +264,8 @@
 }
 .fantastic-depths .sheet-header .profile-img {
   flex: 0 0 10px;
-  height: 100px;
+  height: 130px;
+  width: 130px;
   margin-right: 10px;
 }
 .fantastic-depths .sheet-header .header-fields {
@@ -409,4 +410,9 @@
 }
 .fantastic-depths .effects .item .effect-controls {
   border: none;
+}
+
+.app.window-app.fantastic-depths.sheet.actor {
+  min-width: 500px !important;
+  min-height: 600px !important;
 }

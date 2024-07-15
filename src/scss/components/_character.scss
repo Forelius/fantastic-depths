@@ -1,17 +1,20 @@
 .character {
   .ability {
     min-height: 36px;
+
     label {
       min-width: 35px;
       max-width: 35px;
     }
+
     input {
       font-size: 18px;
       min-height: 34px;
       max-width: 36px;
       border-radius: 0;
     }
-    .ability-mod{
+
+    .ability-mod {
       max-width: 36px;
     }
   }

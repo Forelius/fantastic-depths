@@ -20,3 +20,8 @@
   @import 'components/items';
   @import 'components/effects';
 }
+
+.app.window-app.fantastic-depths.sheet.actor {
+  min-width: 500px !important;
+  min-height: 600px !important;
+}
