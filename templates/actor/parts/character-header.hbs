@@ -21,7 +21,7 @@
     </li>
   </ul>
   <ul class="summary flexrow">
-    <li class="flex3">
+    <li class="flex2">
       <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" />
       <label>{{localize 'FADE.Actor.Class'}}</label>
     </li>
@@ -32,9 +32,10 @@
     <li class="flex2">
       <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
       <label>{{localize 'FADE.Actor.Experience'}}</label>
-      {{#if system.details.xp.bonus}}
-      <span class="xp-bonus">+{{system.details.xp.bonus}}%</span>
-      {{/if}}
+    </li>
+    <li class="flex1">
+      <input type="text" name="system.details.xp.bonus" id="experience" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
+      <label>{{localize "FADE.Actor.XPBonus"}}</label>
     </li>
   </ul>  
 </div>

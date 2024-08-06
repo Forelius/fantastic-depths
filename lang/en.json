@@ -1,17 +1,22 @@
 {
   "FADE": {
-    "Actor": {
+   "Actor": {
       "Health": "Hit Points",
-      "HealthMax": "Maximum Hit Points",
+      "HealthMax": "Max HP",
+      "Max": "Max",
       "HealthShort": "HP",
       "HitDice": "Hit Dice",
       "HitDiceShort": "HD",
+      "ArmorClass": "Armor Class",
+      "ArmorClassShort": "AC",
+      "ArmorClassNaked": "AC Naked",
       "Title": "Title",
       "Alignment": "Alignment",
       "Class": "Class",
       "Level": "Level",
-      "Experience": "Experience"
-    },
+      "Experience": "Experience",
+      "XPBonus": "Bonus %"
+   },
     "Ability": {
       "Str": {
         "long": "Strength",
@@ -48,11 +53,12 @@
       "Actor": "FaDe Actor Sheet",
       "Item": "FaDe Item Sheet"
     },
-    "Item": {
+    "Items": {
       "Spell": {
         "SpellLVL": "Level {level} Spells",
         "AddLVL": "Add LVL {level}"
-      }
+      },
+      "HasShield":  "Has Shield"
     },
     "Effect": {
       "Source": "Source",

@@ -1,56 +1,69 @@
 .character {
-  .ability {
-    min-height: 36px;
-
-    label {
-      min-width: 35px;
-      max-width: 35px;
-    }
-
-    input {
-      font-size: 18px;
-      min-height: 34px;
-      max-width: 36px;
-      border-radius: 0;
-    }
-
-    .ability-mod {
-      max-width: 36px;
-    }
-  }
-
-  .summary {
-    flex: 0 0 100%;
-    height: $detailsHeight;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border-top: none;
-
-    li {
-      height: calc(100% - 6px);
-      float: left;
-      margin: 2px 0;
-      padding: 0;
-      line-height: 30px;
-      color: $colorOlive;
-      position: relative;
+   .ability {
+      min-height: 36px;
 
       label {
-        line-height: 10px;
-        position: absolute;
-        font-size: 10px;
-        color: $colorOlive;
-        bottom: 0;
-        left: 12px;
+         min-width: 35px;
+         max-width: 35px;
       }
 
-      &.notify {
-        input {
-          font-weight: bold;
-          animation: 0.8s ease-in 1s infinite alternate notify;
-        }
+      input {
+         font-size: 18px;
+         min-height: 34px;
+         max-width: 36px;
+         border-radius: 0;
       }
-    }
-  }
+
+      .ability-mod {
+         max-width: 36px;
+      }
+   }
+
+   .health {
+      input, label {
+         max-width: 38px;
+         min-width: 38px;
+         display: inline-block;
+      }
+
+      .hitdie {
+         max-width: 60px;
+         min-width: 60px;
+      }
+   }
+
+   .summary {
+      flex: 0 0 100%;
+      height: $detailsHeight;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: none;
+
+      li {
+         height: calc(100% - 6px);
+         float: left;
+         margin: 2px 0;
+         padding: 0;
+         line-height: 30px;
+         color: $colorOlive;
+         position: relative;
+
+         label {
+            line-height: 10px;
+            position: absolute;
+            font-size: 10px;
+            color: $colorOlive;
+            bottom: 0;
+            left: 12px;
+         }
+
+         &.notify {
+            input {
+               font-weight: bold;
+               animation: 0.8s ease-in 1s infinite alternate notify;
+            }
+         }
+      }
+   }
 }

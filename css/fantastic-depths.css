@@ -220,6 +220,15 @@
 .fantastic-depths .character .ability .ability-mod {
   max-width: 36px;
 }
+.fantastic-depths .character .health input, .fantastic-depths .character .health label {
+  max-width: 38px;
+  min-width: 38px;
+  display: inline-block;
+}
+.fantastic-depths .character .health .hitdie {
+  max-width: 60px;
+  min-width: 60px;
+}
 .fantastic-depths .character .summary {
   flex: 0 0 100%;
   height: 44px;
