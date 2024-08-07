@@ -52,16 +52,6 @@ $default-max-column-width: 200px;
    grid-template-columns: repeat(10, minmax(0, var(--max-column-width, #{$default-max-column-width})));
 }
 
-.grid-11col {
-   grid-column: span 11 / span 11;
-   grid-template-columns: repeat(11, minmax(0, var(--max-column-width, #{$default-max-column-width})));
-}
-
-.grid-12col {
-   grid-column: span 12 / span 12;
-   grid-template-columns: repeat(12, minmax(0, var(--max-column-width, #{$default-max-column-width})));
-}
-
 // Grid offset.
 .grid-start-2 {
    grid-column-start: 2
@@ -99,14 +89,6 @@ $default-max-column-width: 200px;
    grid-column-start: 10
 }
 
-.grid-start-11 {
-   grid-column-start: 11
-}
-
-.grid-start-12 {
-   grid-column-start: 12
-}
-
 .grid-span-2 {
    grid-column-end: span 2
 }
@@ -141,16 +123,4 @@ $default-max-column-width: 200px;
 
 .grid-span-10 {
    grid-column-end: span 10
-}
-
-.grid-span-11 {
-   grid-column-end: span 11
-}
-
-.grid-span-12 {
-   grid-column-end: span 12
-}
-
-.max-width-160px {
-   --max-column-width: 160px;
 }

@@ -12,8 +12,8 @@
 
       input {
          font-size: 18px;
-         min-height: 30px;
-         max-width: 34px;
+         min-height: 28px;
+         max-width: 36px;
       }
 
       .ability-mod {
@@ -23,6 +23,8 @@
    }
 
    .xsmall-col {
+      min-height: 32px;
+
       input, label {
          max-width: 38px;
          min-width: 38px;

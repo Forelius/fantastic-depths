@@ -78,6 +78,12 @@
                "cha": {
                   "value": 10
                }
+            },
+            "exploration": {
+               "openDoor": 2,
+               "secretDoor": 1,
+               "listenDoor": 2,
+               "findTrap": 1
             }
          },
          "monster": {

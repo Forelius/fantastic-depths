@@ -17,6 +17,18 @@
   padding: 6px;
 }
 
+.text-center {
+  text-align: center;
+}
+
+.float-left {
+  float: left;
+}
+
+.clear-fix {
+  clear: both;
+}
+
 .grid,
 .grid-2col {
   display: grid;
@@ -67,16 +79,6 @@
   grid-template-columns: repeat(10, minmax(0, var(--max-column-width, 200px)));
 }
 
-.grid-11col {
-  grid-column: span 11/span 11;
-  grid-template-columns: repeat(11, minmax(0, var(--max-column-width, 200px)));
-}
-
-.grid-12col {
-  grid-column: span 12/span 12;
-  grid-template-columns: repeat(12, minmax(0, var(--max-column-width, 200px)));
-}
-
 .grid-start-2 {
   grid-column-start: 2;
 }
@@ -113,14 +115,6 @@
   grid-column-start: 10;
 }
 
-.grid-start-11 {
-  grid-column-start: 11;
-}
-
-.grid-start-12 {
-  grid-column-start: 12;
-}
-
 .grid-span-2 {
   grid-column-end: span 2;
 }
@@ -155,18 +149,6 @@
 
 .grid-span-10 {
   grid-column-end: span 10;
-}
-
-.grid-span-11 {
-  grid-column-end: span 11;
-}
-
-.grid-span-12 {
-  grid-column-end: span 12;
-}
-
-.max-width-160px {
-  --max-column-width: 160px;
 }
 
 .flex-group-center,
@@ -227,12 +209,15 @@
 }
 .fantastic-depths .character .ability input {
   font-size: 18px;
-  min-height: 30px;
-  max-width: 34px;
+  min-height: 28px;
+  max-width: 36px;
 }
 .fantastic-depths .character .ability .ability-mod {
   max-width: 36px;
   font-size: 14px;
+}
+.fantastic-depths .character .xsmall-col {
+  min-height: 32px;
 }
 .fantastic-depths .character .xsmall-col input, .fantastic-depths .character .xsmall-col label {
   max-width: 38px;

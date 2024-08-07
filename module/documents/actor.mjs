@@ -105,6 +105,11 @@ export class fadeActor extends Actor {
       savingThrows.forEach(savingThrow => {
          systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
       });
+
+      // Initialize exploration tests if missing
+      systemData.exploration = systemData.exploration || {
+         "openDoor": 5, "secretDoor": 1, "listenDoor": 2, "findTrap": 1
+      };
    }
 
    /**

@@ -19,7 +19,7 @@ FADE.abilities = {
   wis: 'FADE.Ability.Wis.long',
   cha: 'FADE.Ability.Cha.long',
 };
-FADE.abilityAbbreviations = {
+FADE.abilitiesAbbrev = {
   str: 'FADE.Ability.Str.abbr',
   dex: 'FADE.Ability.Dex.abbr',
   con: 'FADE.Ability.Con.abbr',
@@ -28,6 +28,13 @@ FADE.abilityAbbreviations = {
   cha: 'FADE.Ability.Cha.abbr',
 };
 FADE.savingThrows = {
+   death: 'FADE.SavingThrow.Death.long',
+   wand: 'FADE.SavingThrow.Wand.long',
+   paralysis: 'FADE.SavingThrow.Paralysis.long',
+   breath: 'FADE.SavingThrow.Breath.long',
+   spell: 'FADE.SavingThrow.Spell.long',
+};
+FADE.savingThrowsAbbr = {
    death: 'FADE.SavingThrow.Death.abbr',
    wand: 'FADE.SavingThrow.Wand.abbr',
    paralysis: 'FADE.SavingThrow.Paralysis.abbr',
