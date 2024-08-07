@@ -97,6 +97,14 @@ export class fadeActor extends Actor {
          }
          ability.mod = mod;
       }
+
+      // Initialize saving throws if missing
+      systemData.savingThrows = systemData.savingThrows || {};
+
+      const savingThrows = ["death", "wand", "paralysis", "breath", "spell"];
+      savingThrows.forEach(savingThrow => {
+         systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
+      });
    }
 
    /**

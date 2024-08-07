@@ -1,17 +1,18 @@
 <section class="grid grid-3col">
-   <aside>
+   <aside class="bordered">
       <div class="abilities">
          {{#each system.abilities as |ability key|}}
          <div class="ability flexrow flex-group-center">
-            <label for="system.abilities.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (lookup @root.config.abilities key)}}">{{localize (lookup @root.config.abilityAbbreviations key)}}</label>
             <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+            <label for="system.abilities.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (lookup @root.config.abilities key)}}">{{localize (lookup @root.config.abilities key)}}</label>
             <span class="ability-mod" title="{{localize (lookup @root.config.adjustmentDesc key)}}" data-label="{{localize (lookup @root.config.abilities key)}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
          </div>
          {{/each}}
       </div>
    </aside>
-   <section>
-      <div class="health">
+   <section class="bordered">
+      <!-- Hit Points -->
+      <div class="health xsmall-col">
          <label>{{localize 'FADE.Actor.HealthShort'}}</label> / <label>{{localize 'FADE.Actor.Max'}}</label>
          <label class="hitdie">{{localize 'FADE.Actor.HitDiceShort'}}</label>
          <br />
@@ -20,12 +21,24 @@
          <input name="system.hp.max" type="text" value="{{system.hp.max}}" data-dtype="Number" placeholder="0" title="{{localize 'FADE.Actor.HealthMax'}}" />
          <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDiceShort'}}" />
       </div>
-      <div class="health armor-class">
-         <div class="health-value health-top" title="{{localize 'FADE.Actor.ArmorClassShort'}}">{{system.ac.value}}</div>
-         <div class="health-value health-bottom" title="{{localize 'FADE.Actor.ArmorClassNaked'}}">{{system.ac.naked}}</div>
-         {{#if system.ac.shield}}
-         <div class="shield" title="{{localize 'FADE.Items.HasShield'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
-         {{/if}}
+      <!-- Armor Class -->
+      <div class="armor-class xsmall-col">
+         <label>{{localize 'FADE.Actor.ArmorClassShort'}}</label>
+         <br />
+         <input name="system.ac.value" type="text" value="{{system.ac.value}}" data-dtype="Number" placeholder="9" title="{{localize 'FADE.Actor.ArmorClass'}}" />
+         <input name="system.ac.noshield" type="text" value="{{system.ac.noshield}}" data-dtype="Number" placeholder="9" title="{{localize 'FADE.Actor.WithoutShield'}}" />
+      </div>
+   </section>
+   <section class="bordered">
+      <!-- Saving Throws -->
+      <div class="saving-throws">
+         <label>Saving Throws</label>
+         {{#each system.savingThrows as |savingThrow key|}}
+         <div class="ability flexrow flex-group-center">
+            <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
+            <label for="system.savingThrows.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (lookup @root.config.savingThrows key)}}">{{localize (lookup @root.config.savingThrows key)}}</label>
+         </div>
+         {{/each}}
       </div>
    </section>
 </section>

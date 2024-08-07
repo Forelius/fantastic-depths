@@ -27,6 +27,13 @@ FADE.abilityAbbreviations = {
   wis: 'FADE.Ability.Wis.abbr',
   cha: 'FADE.Ability.Cha.abbr',
 };
+FADE.savingThrows = {
+   death: 'FADE.SavingThrow.Death.abbr',
+   wand: 'FADE.SavingThrow.Wand.abbr',
+   paralysis: 'FADE.SavingThrow.Paralysis.abbr',
+   breath: 'FADE.SavingThrow.Breath.abbr',
+   spell: 'FADE.SavingThrow.Spell.abbr',
+};
 FADE.AdjustmentTable = [
    { max: 1, value: -4 },
    { max: 3, value: -3 },

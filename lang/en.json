@@ -9,6 +9,7 @@
       "HitDiceShort": "HD",
       "ArmorClass": "Armor Class",
       "ArmorClassShort": "AC",
+      "WithoutShield": "Without shield",
       "ArmorClassNaked": "AC Naked",
       "Title": "Title",
       "Alignment": "Alignment",
@@ -16,6 +17,28 @@
       "Level": "Level",
       "Experience": "Experience",
       "XPBonus": "Bonus %"
+   },
+   "SavingThrow": {
+      "Death": {
+         "long": "Death Ray or Poison",
+         "abbr": "Death"
+      },
+      "Wand": {
+         "long": "Magic Wand",
+         "abbr": "Wand"
+      },
+      "Paralysis": {
+         "long": "Turn to Stone or Paralysis",
+         "abbr": "Stone"
+      },
+      "Breath": {
+         "long": "Dragon Breath",
+         "abbr": "Breath"
+      },
+      "Spell": {
+         "long": "Spell or Magic Staff",
+         "abbr": "Spell"
+      }
    },
     "Ability": {
       "Str": {

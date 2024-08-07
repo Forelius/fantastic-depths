@@ -10,11 +10,18 @@
   cursor: pointer;
 }
 
+.bordered {
+  margin-top: -6px;
+  border: 2px solid #babaa0;
+  border-radius: 4px;
+  padding: 6px;
+}
+
 .grid,
 .grid-2col {
   display: grid;
   grid-column: span 2/span 2;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, var(--max-column-width, 200px)));
   gap: 10px;
   margin: 10px 0;
   padding: 0;
@@ -22,52 +29,52 @@
 
 .grid-3col {
   grid-column: span 3/span 3;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-4col {
   grid-column: span 4/span 4;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-5col {
   grid-column: span 5/span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-6col {
   grid-column: span 6/span 6;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-7col {
   grid-column: span 7/span 7;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-8col {
   grid-column: span 8/span 8;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-9col {
   grid-column: span 9/span 9;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-columns: repeat(9, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-10col {
   grid-column: span 10/span 10;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+  grid-template-columns: repeat(10, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-11col {
   grid-column: span 11/span 11;
-  grid-template-columns: repeat(11, minmax(0, 1fr));
+  grid-template-columns: repeat(11, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-12col {
   grid-column: span 12/span 12;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, var(--max-column-width, 200px)));
 }
 
 .grid-start-2 {
@@ -158,6 +165,10 @@
   grid-column-end: span 12;
 }
 
+.max-width-160px {
+  --max-column-width: 160px;
+}
+
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {
@@ -208,24 +219,31 @@
   min-height: 36px;
 }
 .fantastic-depths .character .ability label {
+  font-size: 13px;
   min-width: 35px;
-  max-width: 35px;
+  max-width: 80px;
+  margin: 0 4px;
+  text-align: center;
 }
 .fantastic-depths .character .ability input {
   font-size: 18px;
-  min-height: 34px;
-  max-width: 36px;
-  border-radius: 0;
+  min-height: 30px;
+  max-width: 34px;
 }
 .fantastic-depths .character .ability .ability-mod {
   max-width: 36px;
+  font-size: 14px;
 }
-.fantastic-depths .character .health input, .fantastic-depths .character .health label {
+.fantastic-depths .character .xsmall-col input, .fantastic-depths .character .xsmall-col label {
   max-width: 38px;
   min-width: 38px;
   display: inline-block;
+  text-align: center;
 }
-.fantastic-depths .character .health .hitdie {
+.fantastic-depths .character .armor-class {
+  margin-top: 5px;
+}
+.fantastic-depths .character .hitdie {
   max-width: 60px;
   min-width: 60px;
 }
