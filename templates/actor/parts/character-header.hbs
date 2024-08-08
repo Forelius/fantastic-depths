@@ -4,21 +4,25 @@
   <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
 
   <ul class="summary flexrow">
-    {{#if system.retainer.enabled}}
-    <li>
-      <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
-      <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
-    </li>
-    {{else}}
-    <li>
-      <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
-      <label>{{localize 'FADE.Actor.Title'}}</label>
-    </li>
-    {{/if}}
-    <li>
-      <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
-      <label>{{localize 'FADE.Actor.Alignment'}}</label>
-    </li>
+     {{#if system.retainer.enabled}}
+     <li>
+        <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
+        <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
+     </li>
+     {{else}}
+     <li>
+        <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
+        <label>{{localize 'FADE.Actor.Title'}}</label>
+     </li>
+     {{/if}}
+     <li>
+        <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
+        <label>{{localize 'FADE.Actor.Alignment'}}</label>
+     </li>
+     <li>
+        <input type="text" name="system.details.race" value="{{system.details.race}}" data-dtype="String" />
+        <label>{{localize 'FADE.Actor.Race'}}</label>
+     </li>
   </ul>
   <ul class="summary flexrow">
     <li class="flex2">

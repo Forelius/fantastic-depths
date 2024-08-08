@@ -1,129 +1,145 @@
 {
-  "FADE": {
-   "Actor": {
-      "Health": "Hit Points",
-      "HealthMax": "Max HP",
-      "Max": "Max",
-      "HealthShort": "HP",
-      "HitDice": "Hit Dice",
-      "HitDiceShort": "HD",
-      "ArmorClass": "Armor Class",
-      "ArmorClassShort": "AC",
-      "WithoutShield": "Without shield",
-      "ArmorClassNaked": "AC Naked",
-      "Title": "Title",
-      "Alignment": "Alignment",
-      "Class": "Class",
-      "Level": "Level",
-      "Experience": "Experience",
-      "XPBonus": "Bonus %"
-   },
-   "Exploration": {
-      "OpenDoor": {
-         "long": "Force open door or lift heavy object. Roll greater than or equal to.",
-         "value": "Open Door",
-         "abbr": "OD"
+   "FADE": {
+      "Actor": {
+         "Health": "Hit Points",
+         "HealthMax": "Max HP",
+         "Max": "Max",
+         "HealthShort": "HP",
+         "HitDice": "Hit Dice",
+         "HitDiceShort": "HD",
+         "ArmorClass": "Armor Class",
+         "ArmorClassShort": "AC",
+         "WithoutShield": "Without shield",
+         "ArmorClassNaked": "AC Naked",
+         "Title": "Title",
+         "Alignment": "Alignment",
+         "Class": "Class",
+         "Race": "Race",
+         "Level": "Level",
+         "Experience": "Experience",
+         "XPBonus": "Bonus %",
+         "Exploration": "Exploration",
+         "SavingThrows": "Saving Throws",
+         "Tabs": {
+            "Abilities": "Abilities",
+            "Items": "Inventory",
+            "Spells": "Spells",
+            "Skills": "Skills",
+            "Effects": "Effects",
+            "Description": "Description"
+         }
       },
-      "SecretDoor": {
-         "long": "Detect a hidden door or compartment. Roll less than or equal to.",
-         "value": "Secret Door",
-         "abbr": "SD"
+      "Exploration": {
+         "OpenDoor": {
+            "long": "Force open door or lift heavy object. Roll greater than or equal to.",
+            "value": "Open Door",
+            "abbr": "OD"
+         },
+         "SecretDoor": {
+            "long": "Detect a hidden door or compartment. Roll less than or equal to.",
+            "value": "Secret Door",
+            "abbr": "SD"
+         },
+         "ListenDoor": {
+            "long": "Hear a sound on the other side of a door or in the distance. Roll less than or equal to.",
+            "value": "Listen Door",
+            "abbr": "LD"
+         },
+         "FindTrap": {
+            "long": "Find a concealed medium to large trap or hazard. Roll less than or equal to.",
+            "value": "Find Trap",
+            "abbr": "FT"
+         }
       },
-      "ListenDoor": {
-         "long": "Hear a sound on the other side of a door or in the distance. Roll less than or equal to.",
-         "value": "Listen Door",
-         "abbr": "LD"
+      "SavingThrow": {
+         "Death": {
+            "long": "Death Ray or Poison",
+            "abbr": "Death"
+         },
+         "Wand": {
+            "long": "Magic Wand",
+            "abbr": "Wand"
+         },
+         "Paralysis": {
+            "long": "Turn to Stone or Paralysis",
+            "abbr": "Stone"
+         },
+         "Breath": {
+            "long": "Dragon Breath",
+            "abbr": "Breath"
+         },
+         "Spell": {
+            "long": "Spell or Magic Staff",
+            "abbr": "Spell"
+         }
       },
-      "FindTrap": {
-         "long": "Find a concealed medium to large trap or hazard. Roll less than or equal to.",
-         "value": "Find Trap",
-         "abbr": "FT"
-      }
-   },
-   "SavingThrow": {
-      "Death": {
-         "long": "Death Ray or Poison",
-         "abbr": "Death"
+      "Ability": {
+         "Str": {
+            "long": "Strength",
+            "abbr": "STR",
+            "mod": "To-Hit, Damage, Open Doors"
+         },
+         "Int": {
+            "long": "Intelligence",
+            "abbr": "INT",
+            "mod": "Language(s)"
+         },
+         "Wis": {
+            "long": "Wisdom",
+            "abbr": "WIS",
+            "mod": "Saving Throws vs Spells"
+         },
+         "Dex": {
+            "long": "Dexterity",
+            "abbr": "DEX",
+            "mod": "Missile To-Hit, AC"
+         },
+         "Con": {
+            "long": "Constitution",
+            "abbr": "CON",
+            "mod": "Hit Points/Level"
+         },
+         "Cha": {
+            "long": "Charisma",
+            "abbr": "CHA",
+            "mod": "Reactions"
+         }
       },
-      "Wand": {
-         "long": "Magic Wand",
-         "abbr": "Wand"
-      },
-      "Paralysis": {
-         "long": "Turn to Stone or Paralysis",
-         "abbr": "Stone"
-      },
-      "Breath": {
-         "long": "Dragon Breath",
-         "abbr": "Breath"
+      "SheetLabel": {
+         "Actor": "FaDe Actor Sheet",
+         "Item": "FaDe Item Sheet"
       },
       "Spell": {
-         "long": "Spell or Magic Staff",
-         "abbr": "Spell"
+         "SpellLVL": "Level {level} Spells",
+         "AddLVL": "Add LVL {level}"
+      },
+      "Item": {
+      },
+      "Skill": {
+      },
+      "Mastery": {
+      },
+      "Effect": {
+         "Source": "Source",
+         "Toggle": "Toggle Effect",
+         "Temporary": "Temporary Effects",
+         "Passive": "Passive Effects",
+         "Inactive": "Inactive Effects"
       }
    },
-    "Ability": {
-      "Str": {
-        "long": "Strength",
-        "abbr": "STR",
-        "mod": "To-Hit, Damage, Open Doors"
-      },
-      "Int": {
-        "long": "Intelligence",
-        "abbr": "INT",
-        "mod": "Language(s)"
-      },
-      "Wis": {
-        "long": "Wisdom",
-        "abbr": "WIS",
-        "mod": "Saving Throws vs Spells"
-      },
-      "Dex": {
-        "long": "Dexterity",
-        "abbr": "DEX",
-        "mod": "Missile To-Hit, AC"
-      },
-      "Con": {
-        "long": "Constitution",
-        "abbr": "CON",
-        "mod": "Hit Points/Level"
-      },
-      "Cha": {
-        "long": "Charisma",
-        "abbr": "CHA",
-        "mod": "Reactions"
-      }
-    },
-    "SheetLabels": {
-      "Actor": "FaDe Actor Sheet",
-      "Item": "FaDe Item Sheet"
-    },
-    "Items": {
-      "Spell": {
-        "SpellLVL": "Level {level} Spells",
-        "AddLVL": "Add LVL {level}"
-      },
-      "HasShield":  "Has Shield"
-    },
-    "Effect": {
-      "Source": "Source",
-      "Toggle": "Toggle Effect",
-      "Temporary": "Temporary Effects",
-      "Passive": "Passive Effects",
-      "Inactive": "Inactive Effects"
-    }
-  },
 
-  "TYPES": {
-    "Actor": {
-      "character": "Character",
-      "monster": "Monster",
-      "npc": "NPC"
-    },
-    "Item": {
-      "item": "Item",
-      "feature": "Feature",
-      "spell": "Spell"
-    }
-  }
+   "TYPES": {
+      "Actor": {
+         "character": "Character",
+         "monster": "Monster",
+         "npc": "NPC"
+      },
+      "Item": {
+         "item": "Item",
+         "feature": "Feature",
+         "spell": "Spell",
+         "skill": "Skill",
+         "mastery": "Weapon Mastery"
+      }
+   }
 }

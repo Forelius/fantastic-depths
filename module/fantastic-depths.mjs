@@ -45,12 +45,12 @@ Hooks.once('init', function () {
   Actors.unregisterSheet('core', ActorSheet);
   Actors.registerSheet('fantastic-depths', fadeActorSheet, {
     makeDefault: true,
-    label: 'FADE.SheetLabels.Actor',
+    label: 'FADE.SheetLabel.Actor',
   });
   Items.unregisterSheet('core', ItemSheet);
   Items.registerSheet('fantastic-depths', fadeItemSheet, {
     makeDefault: true,
-    label: 'FADE.SheetLabels.Item',
+    label: 'FADE.SheetLabel.Item',
   });
 
   // Preload Handlebars templates.

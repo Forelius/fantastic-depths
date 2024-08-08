@@ -5,43 +5,49 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary">
-    {{!-- Default tab is specified in actor-sheet.mjs --}}
-    <a class="item" data-tab="abilities">Abilities</a>
-    <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="items">Items</a>
-    <a class="item" data-tab="spells">Spells</a>
-    <a class="item" data-tab="effects">Effects</a>
-  </nav>
+<nav class="sheet-tabs tabs" data-group="primary">
+   {{!-- Default tab is specified in actor-sheet.mjs --}}
+   <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
+   <a class="item" data-tab="items">{{localize 'FADE.Actor.Tabs.Items'}}</a>
+   <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
+   <a class="item" data-tab="skills">{{localize 'FADE.Actor.Tabs.Skills'}}</a>
+   <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
+   <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
+</nav>
 
   {{!-- Sheet Body --}}
-  <section class="sheet-body">
+<section class="sheet-body">
 
-    {{!-- Abilities Tab --}}
-    <div class="tab abilities" data-group="primary" data-tab="abilities">
+   {{!-- Abilities Tab --}}
+   <div class="tab abilities" data-group="primary" data-tab="abilities">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-abilities.hbs"}}
-    </div>
+   </div>
 
-    {{!-- Biography Tab --}}
-    <div class="tab biography" data-group="primary" data-tab="description">
+   {{!-- Biography Tab --}}
+   <div class="tab biography" data-group="primary" data-tab="description">
       {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
       {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
-    </div>
+   </div>
 
-    {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
+   {{!-- Owned Items Tab --}}
+   <div class="tab items" data-group="primary" data-tab="items">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
-    </div>
+   </div>
 
-    {{!-- Owned Spells Tab --}}
-    <div class="tab spells" data-group="primary" data-tab="spells">
+   {{!-- Owned Spells Tab --}}
+   <div class="tab spells" data-group="primary" data-tab="spells">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
-    </div>
+   </div>
 
-    {{!-- Active Effects Tab --}}
-    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+   {{!-- Owned Skills Tab --}}
+   <div class="tab skills" data-group="primary" data-tab="skills">
+      {{> "systems/fantastic-depths/templates/actor/parts/actor-skills.hbs"}}
+   </div>
+
+   {{!-- Active Effects Tab --}}
+   <div class="tab effects flexcol" data-group="primary" data-tab="effects">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
-    </div>
+   </div>
 
-  </section>
+</section>
 </form>

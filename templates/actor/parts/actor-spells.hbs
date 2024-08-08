@@ -2,7 +2,7 @@
   {{#each spells as |spells spellLevel|}}
     <li class='item flexrow items-header'>
       <div class='item-name'>
-        {{localize 'FADE.Item.Spell.SpellLVL' level=spellLevel}}
+        {{localize 'FADE.Spell.SpellLVL' level=spellLevel}}
       </div>
       <div class='item-controls'>
         <a
@@ -12,7 +12,7 @@
           data-spell-level='{{spellLevel}}'
         >
           <i class='fas fa-plus'></i>
-          {{localize 'FADE.Item.Spell.AddLVL' level=spellLevel}}
+          {{localize 'FADE.Spell.AddLVL' level=spellLevel}}
         </a>
       </div>
     </li>

@@ -31,7 +31,7 @@
          </div>
       </div>
       <div class="bordered text-center">
-         <label>Exploration</label>
+         <label>{{localize 'FADE.Actor.Exploration'}}</label>
          <div class="flexrow flex-group-center">
             <span class="xsmall-col">
                <label class="rollable" for="OpenDoor" data-roll="d6" data-label="{{localize 'FADE.Exploration.OpenDoor.value'}}" title="{{localize 'FADE.Exploration.OpenDoor.long'}}">{{localize 'FADE.Exploration.OpenDoor.abbr'}}</label>
@@ -63,7 +63,7 @@
    <section class="bordered text-center">
       <!-- Saving Throws -->
       <div class="saving-throws">
-         <label>Saving Throws</label>
+         <label>{{localize 'FADE.Actor.SavingThrows'}}</label>
          {{#each system.savingThrows as |savingThrow key|}}
          <div class="flexrow flex-group-center ability">
             <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />

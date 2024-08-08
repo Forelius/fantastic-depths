@@ -57,7 +57,9 @@
                "xp": {
                   "value": 0,
                   "bonus": 0
-               }
+               },
+               "class": "Fighter",
+               "race": "Human"
             },
             "abilities": {
                "str": {
@@ -96,7 +98,7 @@
       }
    },
    "Item": {
-      "types": [ "item", "feature", "spell" ],
+      "types": [ "item", "feature", "spell", "skill", "mastery" ],
       "templates": {
          "base": {
             "description": ""
@@ -114,6 +116,14 @@
       "spell": {
          "templates": [ "base" ],
          "spellLevel": 1
+      },
+      "skill": {
+         "templates": [ "base" ],
+         "level": 1
+      },
+      "mastery": {
+         "templates": [ "base" ],
+         "level": 1
       }
    }
 }
