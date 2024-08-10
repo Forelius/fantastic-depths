@@ -29,11 +29,24 @@
   clear: both;
 }
 
+:root {
+  --max-column-width: 200px;
+}
+
 .grid,
 .grid-2col {
   display: grid;
   grid-column: span 2/span 2;
-  grid-template-columns: repeat(2, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(2, minmax(0, var(--max-column-width)));
+  gap: 10px;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.grid-2colfr {
+  display: grid;
+  grid-column: span 2/span 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin: 10px 0;
   padding: 0;
@@ -41,42 +54,42 @@
 
 .grid-3col {
   grid-column: span 3/span 3;
-  grid-template-columns: repeat(3, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(3, minmax(0, var(--max-column-width)));
 }
 
 .grid-4col {
   grid-column: span 4/span 4;
-  grid-template-columns: repeat(4, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(4, minmax(0, var(--max-column-width)));
 }
 
 .grid-5col {
   grid-column: span 5/span 5;
-  grid-template-columns: repeat(5, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(5, minmax(0, var(--max-column-width)));
 }
 
 .grid-6col {
   grid-column: span 6/span 6;
-  grid-template-columns: repeat(6, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(6, minmax(0, var(--max-column-width)));
 }
 
 .grid-7col {
   grid-column: span 7/span 7;
-  grid-template-columns: repeat(7, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(7, minmax(0, var(--max-column-width)));
 }
 
 .grid-8col {
   grid-column: span 8/span 8;
-  grid-template-columns: repeat(8, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(8, minmax(0, var(--max-column-width)));
 }
 
 .grid-9col {
   grid-column: span 9/span 9;
-  grid-template-columns: repeat(9, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(9, minmax(0, var(--max-column-width)));
 }
 
 .grid-10col {
   grid-column: span 10/span 10;
-  grid-template-columns: repeat(10, minmax(0, var(--max-column-width, 200px)));
+  grid-template-columns: repeat(10, minmax(0, var(--max-column-width)));
 }
 
 .grid-start-2 {
@@ -149,6 +162,10 @@
 
 .grid-span-10 {
   grid-column-end: span 10;
+}
+
+.max-width-300px {
+  --max-column-width: 300px;
 }
 
 .flex-group-center,
@@ -307,6 +324,20 @@
 }
 .fantastic-depths .tox .tox-edit-area {
   padding: 0 8px;
+}
+.fantastic-depths .label-12px label {
+  font-size: 12px;
+}
+.fantastic-depths .collapsible-content {
+  overflow: hidden;
+  height: auto;
+  transition: height 0.5s ease-in;
+}
+.fantastic-depths .collapsible-content.collapsed {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: height 0.5s ease-in, padding 0.5s ease-in;
 }
 .fantastic-depths .resource-label {
   font-weight: bold;

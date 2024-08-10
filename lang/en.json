@@ -20,15 +20,23 @@
          "XPBonus": "Bonus %",
          "Exploration": "Exploration",
          "SavingThrows": "Saving Throws",
-         "Tabs": {
-            "Abilities": "Abilities",
-            "Items": "Inventory",
-            "Spells": "Spells",
-            "Skills": "Skills",
-            "Effects": "Effects",
-            "Description": "Description"
-         }
-      },
+         "Movement": {
+            "abbr": "MV",
+            "long": "Movement",
+            "turn": "Base",
+            "round": "Encounter",
+            "day": "Overland",
+            "run":  "Run"
+         },
+            "Tabs": {
+               "Abilities": "Abilities",
+               "Items": "Equipment",
+               "Spells": "Spells",
+               "Skills": "Skills",
+               "Effects": "Effects",
+               "Description": "Description"
+            }
+         },
       "Exploration": {
          "OpenDoor": {
             "long": "Force open door or lift heavy object. Roll greater than or equal to.",
@@ -114,10 +122,19 @@
          "AddLVL": "Add LVL {level}"
       },
       "Item": {
+         "plural": "Gear"
+      },
+      "Weapon": {
+         "plural": "Weapons"
+      },
+      "Armor": {
+         "plural": "Armor"
       },
       "Skill": {
+         "plural": "Skills"
       },
       "Mastery": {
+         "plural": "Masteries"
       },
       "Effect": {
          "Source": "Source",
@@ -136,10 +153,12 @@
       },
       "Item": {
          "item": "Item",
-         "feature": "Feature",
+         "weapon": "Weapon",
+         "armor": "Armor",
          "spell": "Spell",
          "skill": "Skill",
-         "mastery": "Weapon Mastery"
+         "mastery": "Weapon Mastery",
+         "feature": "Feature"
       }
    }
 }

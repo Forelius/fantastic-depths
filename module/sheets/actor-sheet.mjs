@@ -12,8 +12,8 @@ export class fadeActorSheet extends ActorSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'actor'],
-         width: 520,
-         height: 600,
+         width: 530,
+         height: 580,
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -108,9 +108,12 @@ export class fadeActorSheet extends ActorSheet {
    _prepareItems(context) {
       // Initialize containers.
       const gear = [];
+      const weapons = [];
+      const armor = [];
+      const skills = [];
+      const masteries = [];
       const features = [];
       const spells = {
-         0: [],
          1: [],
          2: [],
          3: [],
@@ -139,15 +142,58 @@ export class fadeActorSheet extends ActorSheet {
                spells[i.system.spellLevel].push(i);
             }
          }
+         // Append to weapons.
+         else if (i.type === 'weapon') {
+            weapons.push(i);
+         }
+         // Append to armor.
+         else if (i.type === 'armor') {
+            armor.push(i);
+         }
+         // Append to skills.
+         else if (i.type === 'skill') {
+            skills.push(i);
+         }
+         // Append to masteries.
+         else if (i.type === 'mastery') {
+            masteries.push(i);
+         }
       }
 
       // Assign and return
       context.gear = gear;
+      context.weapons = weapons;
+      context.armor = armor;
+      context.skills = skills;
+      context.masteries = masteries;
       context.features = features;
       context.spells = spells;
    }
 
    /* -------------------------------------------- */
+
+   _toggleCollapsibleContent(event) {
+      const header = event.currentTarget; // Get the clicked element
+      $(header).siblings('.collapsible-content').each(function () {
+         const $content = $(this);
+         if ($content.hasClass('collapsed')) {
+            // Expanding
+            $content.removeClass('collapsed');
+            $content.css('height', $content.prop('scrollHeight') + 'px');
+            setTimeout(function () {
+               $content.css('height', '');
+            }, 500); // Match this duration to your CSS transition duration
+         } else {
+            // Collapsing
+            $content.css('height', $content.height() + 'px');
+            $content.addClass('collapsed');
+            setTimeout(function () {
+               $content.css('height', '0');
+            }, 0);
+         }
+      });
+   }
+
 
    /** @override */
    activateListeners(html) {
@@ -197,6 +243,11 @@ export class fadeActorSheet extends ActorSheet {
             li.addEventListener('dragstart', handler, false);
          });
       }
+
+      // Bind the collapsible functionality to the header click event
+      html.find('.collapsible-header').on('click', (event) => {
+         this._toggleCollapsibleContent(event);
+      });
    }
 
    /**
@@ -210,7 +261,7 @@ export class fadeActorSheet extends ActorSheet {
       // Get the type of item to create.
       const type = header.dataset.type;
       // Grab any data associated with this control.
-      const data = duplicate(header.dataset);
+      const data = foundry.utils.duplicate(header.dataset);
       // Initialize a default name.
       const name = `New ${type.capitalize()}`;
       // Prepare the item object.

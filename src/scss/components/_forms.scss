@@ -56,3 +56,20 @@
     padding: 0 8px;
   }
 }
+
+.label-12px label {
+   font-size: 12px;
+}
+
+.collapsible-content {
+   overflow: hidden;
+   height: auto;
+   transition: height 0.4s ease-in;
+}
+
+.collapsible-content.collapsed {
+   height: 0;
+   padding-top: 0;
+   padding-bottom: 0;
+   transition: height 0.4s ease-in, padding 0.4s ease-in;
+}

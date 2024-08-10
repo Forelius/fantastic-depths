@@ -55,10 +55,25 @@ export class fadeActor extends Actor {
     */
    prepareDerivedData() {
       const actorData = this;
-      const data = actorData.system;
+      const systemData = actorData.system;
 
       // Initialize attributes if missing
-      data.attributes = data.attributes || {};
+      systemData.attributes = systemData.attributes || {};
+
+      // Initialize movement
+      let movement = systemData.movement || { };
+      movement.turn = movement.turn || 120;
+      movement.round = Math.floor(movement.turn / 3);
+      movement.day = Math.floor(movement.turn / 5);
+      movement.run = movement.turn;
+      systemData.movement = movement;
+
+      // Initialize saving throws if missing
+      systemData.savingThrows = systemData.savingThrows || {};
+      const savingThrows = ["death", "wand", "paralysis", "breath", "spell"];
+      savingThrows.forEach(savingThrow => {
+         systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
+      });
 
       // Prepare each Actor type (character, npc, etc.) to keep things organized.
       this._prepareCharacterData(actorData);
@@ -85,7 +100,6 @@ export class fadeActor extends Actor {
 
       // Access CONFIG for your system
       const adjustments = CONFIG.FADE.AdjustmentTable;
-
       // Loop through ability scores, and add their modifiers to our sheet output.
       for (let [key, ability] of Object.entries(systemData.abilities)) {
          let mod = adjustments[0].value;
@@ -98,18 +112,13 @@ export class fadeActor extends Actor {
          ability.mod = mod;
       }
 
-      // Initialize saving throws if missing
-      systemData.savingThrows = systemData.savingThrows || {};
-
-      const savingThrows = ["death", "wand", "paralysis", "breath", "spell"];
-      savingThrows.forEach(savingThrow => {
-         systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
-      });
-
       // Initialize exploration tests if missing
-      systemData.exploration = systemData.exploration || {
-         "openDoor": 5, "secretDoor": 1, "listenDoor": 2, "findTrap": 1
-      };
+      let explore = systemData.exploration || { };
+      explore.openDoor = explore.openDoor || Math.min(5 - systemData.abilities.str.mod, 6);
+      explore.secretDoor = explore.secretDoor || 1;
+      explore.listenDoor = explore.listenDoor || 2;
+      explore.findTrap = explore.findTrap || 1;
+      systemData.exploration = explore;
    }
 
    /**

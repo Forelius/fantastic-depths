@@ -14,5 +14,8 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/actor/parts/character-header.hbs',
       // Item partials
       'systems/fantastic-depths/templates/item/parts/item-effects.hbs',
+      'systems/fantastic-depths/templates/item/parts/item-weapons.hbs',
+      'systems/fantastic-depths/templates/item/parts/item-armor.hbs',
+      'systems/fantastic-depths/templates/item/parts/item-gear.hbs',
    ]);
 };

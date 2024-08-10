@@ -43,7 +43,10 @@
                }
             },
             "movement": {
-               "base": 120
+               "turn": 120,
+               "round": 40,
+               "day": 24,
+               "run": 120
             },
             "initiative": {
                "value": 0,
@@ -98,20 +101,29 @@
       }
    },
    "Item": {
-      "types": [ "item", "feature", "spell", "skill", "mastery" ],
+      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "feature" ],
       "templates": {
          "base": {
             "description": ""
+         },
+         "gearbase": {
+            "description": "",
+            "quantity": 1,
+            "weight": 0
          }
       },
       "item": {
-         "templates": [ "base" ],
-         "quantity": 1,
-         "weight": 0,
-         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
+         "templates": [ "gearbase" ]
       },
-      "feature": {
-         "templates": [ "base" ]
+      "weapon": {
+         "templates": [ "gearbase" ],
+         "equipped": false,
+         "damageRoll": "1d6"
+      },
+      "armor": {
+         "templates": [ "gearbase" ],
+         "equipped": false,
+         "ac": 9
       },
       "spell": {
          "templates": [ "base" ],
@@ -119,11 +131,16 @@
       },
       "skill": {
          "templates": [ "base" ],
-         "level": 1
+         "level": 1,
+         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
       },
       "mastery": {
          "templates": [ "base" ],
-         "level": 1
+         "level": 1,
+         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
+      },
+      "feature": {
+         "templates": [ "base" ]
       }
    }
 }
