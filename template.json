@@ -101,7 +101,7 @@
       }
    },
    "Item": {
-      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "feature" ],
+      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "feature", "specialAbility" ],
       "templates": {
          "base": {
             "description": ""
@@ -137,6 +137,10 @@
       "mastery": {
          "templates": [ "base" ],
          "level": 1,
+         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
+      },
+      "specialAbility": {
+         "templates": [ "base" ],
          "formula": "d20 + @str.mod + ceil(@lvl / 2)"
       },
       "feature": {

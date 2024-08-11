@@ -26,17 +26,17 @@
             "turn": "Base",
             "round": "Encounter",
             "day": "Overland",
-            "run":  "Run"
+            "run": "Run"
          },
-            "Tabs": {
-               "Abilities": "Abilities",
-               "Items": "Equipment",
-               "Spells": "Spells",
-               "Skills": "Skills",
-               "Effects": "Effects",
-               "Description": "Description"
-            }
-         },
+         "Tabs": {
+            "Abilities": "Abilities",
+            "Items": "Equipment",
+            "Spells": "Spells",
+            "Skills": "Skills",
+            "Effects": "Effects",
+            "Description": "Description"
+         }
+      },
       "Exploration": {
          "OpenDoor": {
             "long": "Force open door or lift heavy object. Roll greater than or equal to.",
@@ -131,10 +131,16 @@
          "plural": "Armor"
       },
       "Skill": {
-         "plural": "Skills"
+         "plural": "General Skills",
+         "short": "Skill"
       },
       "Mastery": {
-         "plural": "Masteries"
+         "plural": "Weapon Masteries",
+         "short": "Mastery"
+      },
+      "SpecialAbility": {
+         "plural": "Special Abilities",
+         "short": "Ability"
       },
       "Effect": {
          "Source": "Source",
@@ -156,8 +162,9 @@
          "weapon": "Weapon",
          "armor": "Armor",
          "spell": "Spell",
-         "skill": "Skill",
+         "skill": "General Skill",
          "mastery": "Weapon Mastery",
+         "specialAbility": "Special Ability",
          "feature": "Feature"
       }
    }

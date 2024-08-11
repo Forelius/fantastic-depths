@@ -331,13 +331,13 @@
 .fantastic-depths .collapsible-content {
   overflow: hidden;
   height: auto;
-  transition: height 0.5s ease-in;
+  transition: height 0.3s ease-in;
 }
 .fantastic-depths .collapsible-content.collapsed {
   height: 0;
   padding-top: 0;
   padding-bottom: 0;
-  transition: height 0.5s ease-in, padding 0.5s ease-in;
+  transition: height 0.3s ease-in, padding 0.3s ease-in;
 }
 .fantastic-depths .resource-label {
   font-weight: bold;

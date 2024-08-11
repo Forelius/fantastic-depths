@@ -124,6 +124,7 @@ export class fadeActorSheet extends ActorSheet {
          8: [],
          9: [],
       };
+      const specialAbilities = [];
 
       // Iterate through items, allocating to containers
       for (let i of context.items) {
@@ -157,6 +158,9 @@ export class fadeActorSheet extends ActorSheet {
          // Append to masteries.
          else if (i.type === 'mastery') {
             masteries.push(i);
+         }// Append to specialAbility.
+         else if (i.type === 'specialAbility') {
+            specialAbilities.push(i);
          }
       }
 
@@ -168,6 +172,7 @@ export class fadeActorSheet extends ActorSheet {
       context.masteries = masteries;
       context.features = features;
       context.spells = spells;
+      context.specialAbilities = specialAbilities;
    }
 
    /* -------------------------------------------- */
@@ -262,8 +267,13 @@ export class fadeActorSheet extends ActorSheet {
       const type = header.dataset.type;
       // Grab any data associated with this control.
       const data = foundry.utils.duplicate(header.dataset);
-      // Initialize a default name.
-      const name = `New ${type.capitalize()}`;
+
+      // Localize the type
+      const localizedType = game.i18n.localize(`TYPES.Item.${type}`);
+
+      // Initialize a default name with the localized type, and lowercase it
+      const name = `New ${localizedType.toLowerCase()}`;
+
       // Prepare the item object.
       const itemData = {
          name: name,
