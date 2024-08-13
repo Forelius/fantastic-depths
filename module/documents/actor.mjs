@@ -61,7 +61,7 @@ export class fadeActor extends Actor {
       systemData.attributes = systemData.attributes || {};
 
       // Initialize movement
-      let movement = systemData.movement || { };
+      let movement = systemData.movement || {};
       movement.turn = movement.turn || 120;
       movement.round = Math.floor(movement.turn / 3);
       movement.day = Math.floor(movement.turn / 5);
@@ -80,12 +80,7 @@ export class fadeActor extends Actor {
       this._prepareNpcData(actorData);
    }
 
-   /**
-    * Prepare Character type specific data
-    */
-   _prepareCharacterData(actorData) {
-      if (actorData.type !== 'character') return;
-
+   _prepareAbilities(actorData) {
       // Make modifications to data here. For example:
       const systemData = actorData.system;
 
@@ -97,7 +92,7 @@ export class fadeActor extends Actor {
       abilities.forEach(ability => {
          systemData.abilities[ability] = systemData.abilities[ability] || { value: 10 };
       });
-
+      
       // Access CONFIG for your system
       const adjustments = CONFIG.FADE.AdjustmentTable;
       // Loop through ability scores, and add their modifiers to our sheet output.
@@ -111,14 +106,63 @@ export class fadeActor extends Actor {
          }
          ability.mod = mod;
       }
+   }
+
+   _prepareArmorClass(actorData) {
+      const systemData = actorData.system;
+
+      // Base AC when no armor is equipped
+      let baseAC = 9;
+      systemData.ac.naked = baseAC;
+
+      // Get all items and filter for equipped armor that is not a shield
+      const equippedArmor = actorData.items.filter(item =>
+         item.type === 'armor' && item.system.equipped && !item.system.isShield
+      );
+
+      // Find the best (lowest) armor AC from the equipped armor
+      let armorAC = equippedArmor.reduce((currentBestAC, armor) => {
+         const armorValue = armor.system.ac || currentBestAC;
+         return Math.min(currentBestAC, armorValue);
+      }, baseAC);
+
+      // Get all equipped shields
+      const equippedShields = actorData.items.filter(item =>
+         item.type === 'armor' && item.system.equipped && item.system.isShield
+      );
+
+      // Calculate total shield AC by summing the AC values of all equipped shields
+      let shieldAC = equippedShields.reduce((totalShieldAC, shield) => {
+         return totalShieldAC + (shield.system.ac || 0);
+      }, 0);
+
+      // Final AC is the best armor AC minus the dex modifier minus the total shield AC
+      systemData.ac.value = armorAC - systemData.abilities.dex.mod - shieldAC;
+   }
+
+
+   /**
+    * Prepare Character type specific data
+    */
+   _prepareCharacterData(actorData) {
+      if (actorData.type !== 'character') return;
+
+      // Make modifications to data here. For example:
+      const systemData = actorData.system;
+
+      this._prepareAbilities(actorData);
+      this._prepareArmorClass(actorData);
 
       // Initialize exploration tests if missing
-      let explore = systemData.exploration || { };
+      let explore = systemData.exploration || {};
       explore.openDoor = explore.openDoor || Math.min(5 - systemData.abilities.str.mod, 6);
       explore.secretDoor = explore.secretDoor || 1;
       explore.listenDoor = explore.listenDoor || 2;
       explore.findTrap = explore.findTrap || 1;
       systemData.exploration = explore;
+
+      // Wrestling skill
+      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.abilities.str.mod + systemData.abilities.dex.mod;
    }
 
    /**

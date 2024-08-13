@@ -1,30 +1,29 @@
 <form class='{{cssClass}}' autocomplete='off'>
   <header class='sheet-header'>
-    <img
-      class='profile-img'
-      src='{{item.img}}'
-      data-edit='img'
-      title='{{item.name}}'
-    />
+    <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
     <div class='header-fields'>
-      <h1 class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name'/></h1>
-      <div class='grid grid-2col'>
-        <div class='resource'>
-          <label class='resource-label'>Quantity</label>
-          <input type='text' name='system.quantity' value='{{system.quantity}}' data-dtype='Number'/>
-        </div>
-        <div class='resource'>
-          <label class='resource-label'>Weight</label>
-          <input type='text' name='system.weight' value='{{system.weight}}' data-dtype='Number'/>
-        </div>
-      </div>
+       <h1 class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></h1>
+       <ul class="summary flexrow">
+          <li class="flex1">
+             <input type='text' name='system.ac' value='{{system.ac}}' data-dtype='Number' />
+             <label for="system.ac">{{localize 'FADE.Armor.long'}}</label>
+          </li>
+          <li class="flex1">
+             <input type="checkbox" name="system.isShield" data-dtype="Boolean" {{#if system.isShield}} checked{{/if}} />
+             <label for="system.isShield">{{localize "FADE.Armor.shield.short"}}</label>
+          </li>
+          <li class="flex1">
+             <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' />
+             <label for="system.weight" class='resource-label'>Weight (CN)</label>
+          </li>
+       </ul>     
     </div>
   </header>
 
   {{! Sheet Tab Navigation }}
   <nav class='sheet-tabs tabs' data-group='primary'>
     <a class='item' data-tab='description'>Description</a>
-    <a class='item' data-tab='attributes'>Attributes</a>
+    <!--<a class='item' data-tab='attributes'>Attributes</a>-->
   </nav>
 
   {{! Sheet Body }}
@@ -33,20 +32,14 @@
     {{! Description Tab }}
     <div class='tab' data-group='primary' data-tab='description'>
       {{! Editors must receive enriched text data from getData to properly handle rolls }}
-      {{editor
-        enrichedDescription
-        target='system.description'
-        engine='prosemirror'
-        button=true
-        editable=editable
-      }}
+      {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
     </div>
 
-    {{! Attributes Tab }}
+    <!--{{! Attributes Tab }}
     <div class='tab attributes' data-group='primary' data-tab='attributes'>
       {{! As you add new fields, add them in here! }}
       <div class='resource'>
       </div>
-    </div>
+    </div>-->
   </section>
 </form>

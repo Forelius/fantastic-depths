@@ -229,10 +229,7 @@ export class fadeActorSheet extends ActorSheet {
       // Active Effect management
       html.on('click', '.effect-control', (ev) => {
          const row = ev.currentTarget.closest('li');
-         const document =
-            row.dataset.parentId === this.actor.id
-               ? this.actor
-               : this.actor.items.get(row.dataset.parentId);
+         const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
          onManageActiveEffect(ev, document);
       });
 
@@ -253,11 +250,20 @@ export class fadeActorSheet extends ActorSheet {
       html.find('.collapsible-header').on('click', (event) => {
          this._toggleCollapsibleContent(event);
       });
+
+      // Toggle Equipment
+      html.find(".item-toggle").click(async (ev) => {
+         const li = $(ev.currentTarget).closest(".item"); // Using closest instead of parents for accuracy
+         const item = this.actor.items.get(li.data("itemId"));
+         // Toggle the equipped state and store the new state in isEquipped
+         const isEquipped = !item.system.equipped;
+         await item.update({ "system.equipped": isEquipped });
+      });
    }
 
    /**
     * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-    * @param {Event} event   The originating click event
+    * @param {Event} event The originating click event
     * @private
     */
    async _onItemCreate(event) {

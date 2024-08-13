@@ -15,8 +15,7 @@
             },
             "ac": {
                "naked": 9,
-               "value": 9,
-               "noshield": 9
+               "value": 9
             },
             "thac0": {
                "value": 19,
@@ -122,8 +121,9 @@
       },
       "armor": {
          "templates": [ "gearbase" ],
-         "equipped": false,
-         "ac": 9
+         "equipped": true,
+         "ac": 9,
+         "isShield": false
       },
       "spell": {
          "templates": [ "base" ],

@@ -1,45 +1,45 @@
 {{!-- Sheet Header --}}
 <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
 <div class="header-fields">
-  <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
+   <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
 
-  <ul class="summary flexrow">
-     {{#if system.retainer.enabled}}
-     <li>
-        <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
-        <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
-     </li>
-     {{else}}
-     <li>
-        <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
-        <label>{{localize 'FADE.Actor.Title'}}</label>
-     </li>
-     {{/if}}
-     <li>
-        <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
-        <label>{{localize 'FADE.Actor.Alignment'}}</label>
-     </li>
-     <li>
-        <input type="text" name="system.details.race" value="{{system.details.race}}" data-dtype="String" />
-        <label>{{localize 'FADE.Actor.Race'}}</label>
-     </li>
-  </ul>
-  <ul class="summary flexrow">
-    <li class="flex2">
-      <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" />
-      <label>{{localize 'FADE.Actor.Class'}}</label>
-    </li>
-    <li class="{{#if (gte system.details.xp.value system.details.xp.next)}}notify{{/if}}">
-      <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="Number" />
-      <label>{{localize 'FADE.Actor.Level'}}</label>
-    </li>
-    <li class="flex2">
-      <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
-      <label>{{localize 'FADE.Actor.Experience'}}</label>
-    </li>
-    <li class="flex1">
-      <input type="text" name="system.details.xp.bonus" id="experience" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
-      <label>{{localize "FADE.Actor.XPBonus"}}</label>
-    </li>
-  </ul>  
+   <ul class="summary flexrow">
+      {{#if system.retainer.enabled}}
+      <li>
+         <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
+         <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
+      </li>
+      {{else}}
+      <li>
+         <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
+         <label>{{localize 'FADE.Actor.Title'}}</label>
+      </li>
+      {{/if}}
+      <li>
+         <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
+         <label>{{localize 'FADE.Actor.Alignment'}}</label>
+      </li>
+      <li>
+         <input type="text" name="system.details.race" value="{{system.details.race}}" data-dtype="String" />
+         <label>{{localize 'FADE.Actor.Race'}}</label>
+      </li>
+   </ul>
+   <ul class="summary flexrow">
+      <li class="flex2">
+         <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" />
+         <label>{{localize 'FADE.Actor.Class'}}</label>
+      </li>
+      <li class="{{#if (gte system.details.xp.value system.details.xp.next)}}notify{{/if}}">
+         <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="Number" />
+         <label>{{localize 'FADE.Actor.Level'}}</label>
+      </li>
+      <li class="flex2">
+         <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
+         <label>{{localize 'FADE.Actor.Experience'}}</label>
+      </li>
+      <li class="flex1">
+         <input type="text" name="system.details.xp.bonus" id="experience" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
+         <label>{{localize "FADE.Actor.XPBonus"}}</label>
+      </li>
+   </ul>
 </div>

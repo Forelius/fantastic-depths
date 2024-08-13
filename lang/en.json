@@ -7,10 +7,6 @@
          "HealthShort": "HP",
          "HitDice": "Hit Dice",
          "HitDiceShort": "HD",
-         "ArmorClass": "Armor Class",
-         "ArmorClassShort": "AC",
-         "WithoutShield": "Without shield",
-         "ArmorClassNaked": "AC Naked",
          "Title": "Title",
          "Alignment": "Alignment",
          "Class": "Class",
@@ -18,8 +14,11 @@
          "Level": "Level",
          "Experience": "Experience",
          "XPBonus": "Bonus %",
-         "Exploration": "Exploration",
-         "SavingThrows": "Saving Throws",
+         "Wrestling": {
+            "long": "Wrestling Rating",
+            "short": "Wrestling",
+            "abbr": "WR"
+         },
          "Movement": {
             "abbr": "MV",
             "long": "Movement",
@@ -35,84 +34,86 @@
             "Skills": "Skills",
             "Effects": "Effects",
             "Description": "Description"
+         },
+         "Ex": {
+            "long": "Exploration",
+            "OpenDoor": {
+               "long": "Force open door or lift heavy object. Roll greater than or equal to.",
+               "value": "Open Door",
+               "abbr": "OD"
+            },
+            "SecretDoor": {
+               "long": "Detect a hidden door or compartment. Roll less than or equal to.",
+               "value": "Secret Door",
+               "abbr": "SD"
+            },
+            "ListenDoor": {
+               "long": "Hear a sound on the other side of a door or in the distance. Roll less than or equal to.",
+               "value": "Listen Door",
+               "abbr": "LD"
+            },
+            "FindTrap": {
+               "long": "Find a concealed medium to large trap or hazard. Roll less than or equal to.",
+               "value": "Find Trap",
+               "abbr": "FT"
+            }
+         },
+         "Saves": {
+            "long": "Saving Throws",
+            "death": {
+               "long": "Death Ray or Poison",
+               "abbr": "Death"
+            },
+            "wand": {
+               "long": "Magic Wand",
+               "abbr": "Wand"
+            },
+            "paralysis": {
+               "long": "Turn to Stone or Paralysis",
+               "abbr": "Stone"
+            },
+            "breath": {
+               "long": "Dragon Breath",
+               "abbr": "Breath"
+            },
+            "spell": {
+               "long": "Spell or Magic Staff",
+               "abbr": "Spell"
+            }
+         },
+         "Abilities": {
+            "str": {
+               "long": "Strength",
+               "abbr": "STR",
+               "mod": "To-Hit, Damage, Open Doors"
+            },
+            "int": {
+               "long": "Intelligence",
+               "abbr": "INT",
+               "mod": "Language(s)"
+            },
+            "wis": {
+               "long": "Wisdom",
+               "abbr": "WIS",
+               "mod": "Saving Throws vs Spells"
+            },
+            "dex": {
+               "long": "Dexterity",
+               "abbr": "DEX",
+               "mod": "Missile To-Hit, AC"
+            },
+            "con": {
+               "long": "Constitution",
+               "abbr": "CON",
+               "mod": "Hit Points/Level"
+            },
+            "cha": {
+               "long": "Charisma",
+               "abbr": "CHA",
+               "mod": "Reactions"
+            }
          }
-      },
-      "Exploration": {
-         "OpenDoor": {
-            "long": "Force open door or lift heavy object. Roll greater than or equal to.",
-            "value": "Open Door",
-            "abbr": "OD"
-         },
-         "SecretDoor": {
-            "long": "Detect a hidden door or compartment. Roll less than or equal to.",
-            "value": "Secret Door",
-            "abbr": "SD"
-         },
-         "ListenDoor": {
-            "long": "Hear a sound on the other side of a door or in the distance. Roll less than or equal to.",
-            "value": "Listen Door",
-            "abbr": "LD"
-         },
-         "FindTrap": {
-            "long": "Find a concealed medium to large trap or hazard. Roll less than or equal to.",
-            "value": "Find Trap",
-            "abbr": "FT"
-         }
-      },
-      "SavingThrow": {
-         "Death": {
-            "long": "Death Ray or Poison",
-            "abbr": "Death"
-         },
-         "Wand": {
-            "long": "Magic Wand",
-            "abbr": "Wand"
-         },
-         "Paralysis": {
-            "long": "Turn to Stone or Paralysis",
-            "abbr": "Stone"
-         },
-         "Breath": {
-            "long": "Dragon Breath",
-            "abbr": "Breath"
-         },
-         "Spell": {
-            "long": "Spell or Magic Staff",
-            "abbr": "Spell"
-         }
-      },
-      "Ability": {
-         "Str": {
-            "long": "Strength",
-            "abbr": "STR",
-            "mod": "To-Hit, Damage, Open Doors"
-         },
-         "Int": {
-            "long": "Intelligence",
-            "abbr": "INT",
-            "mod": "Language(s)"
-         },
-         "Wis": {
-            "long": "Wisdom",
-            "abbr": "WIS",
-            "mod": "Saving Throws vs Spells"
-         },
-         "Dex": {
-            "long": "Dexterity",
-            "abbr": "DEX",
-            "mod": "Missile To-Hit, AC"
-         },
-         "Con": {
-            "long": "Constitution",
-            "abbr": "CON",
-            "mod": "Hit Points/Level"
-         },
-         "Cha": {
-            "long": "Charisma",
-            "abbr": "CHA",
-            "mod": "Reactions"
-         }
-      },
+      }, 
       "SheetLabel": {
          "Actor": "FaDe Actor Sheet",
          "Item": "FaDe Item Sheet"
@@ -122,13 +123,20 @@
          "AddLVL": "Add LVL {level}"
       },
       "Item": {
-         "plural": "Gear"
+         "plural": "Gear",
+         "equip": "Equip",
+         "unequip": "Unequip"
       },
       "Weapon": {
          "plural": "Weapons"
       },
       "Armor": {
-         "plural": "Armor"
+         "plural": "Armor",
+         "long": "Armor Class",
+         "abbr": "AC",
+         "shield": {
+            "short": "Shield"
+         }
       },
       "Skill": {
          "plural": "General Skills",

@@ -62,10 +62,12 @@ Hooks.once('init', function () {
 /* -------------------------------------------- */
 
 // If you need to add Handlebars helpers, here is a useful example:
+Handlebars.registerHelper('uppercase', function (str) {
+   return str.toUpperCase();
+});
 Handlebars.registerHelper('lowercase', function (str) {
   return str.toLowerCase();
 });
-
 Handlebars.registerHelper("counter", function (status, value, max) {
   return status ? (Math.clamp(100 * value) / max, 0, 100) : Math.clamp(100 - (100 * value) / max, 0, 100);
 });

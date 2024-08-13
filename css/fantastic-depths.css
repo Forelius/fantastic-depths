@@ -1,4 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+h1, h2, h3, h4 {
+  font-weight: bold;
+}
+
+h4 {
+  padding: 0;
+  margin: 0;
+}
+
 /* Global styles */
 .window-app {
   font-family: "Roboto", sans-serif;
@@ -242,41 +251,15 @@
   display: inline-block;
   text-align: center;
 }
+.fantastic-depths .character .xsmall-col label {
+  font-size: 13px;
+}
 .fantastic-depths .character .armor-class {
   margin-top: 5px;
 }
 .fantastic-depths .character .hitdie {
   max-width: 60px;
   min-width: 60px;
-}
-.fantastic-depths .character .summary {
-  flex: 0 0 100%;
-  height: 44px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: none;
-}
-.fantastic-depths .character .summary li {
-  height: calc(100% - 6px);
-  float: left;
-  margin: 2px 0;
-  padding: 0;
-  line-height: 30px;
-  color: #4b4a44;
-  position: relative;
-}
-.fantastic-depths .character .summary li label {
-  line-height: 10px;
-  position: absolute;
-  font-size: 10px;
-  color: #4b4a44;
-  bottom: 0;
-  left: 12px;
-}
-.fantastic-depths .character .summary li.notify input {
-  font-weight: bold;
-  animation: 0.8s ease-in 1s infinite alternate notify;
 }
 .fantastic-depths .item-form {
   font-family: "Roboto", sans-serif;
@@ -295,6 +278,12 @@
   flex: 0 0 10px;
   height: 130px;
   width: 130px;
+  margin-right: 10px;
+}
+.fantastic-depths .sheet-header .profile-img-sm {
+  flex: 0 0 10px;
+  height: 100px;
+  width: 100px;
   margin-right: 10px;
 }
 .fantastic-depths .sheet-header .header-fields {
@@ -339,27 +328,37 @@
   padding-bottom: 0;
   transition: height 0.3s ease-in, padding 0.3s ease-in;
 }
-.fantastic-depths .resource-label {
-  font-weight: bold;
+.fantastic-depths .summary {
+  flex: 0 0 100%;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: none;
 }
-.fantastic-depths .items-header {
-  height: 28px;
+.fantastic-depths .summary li {
+  height: calc(100% - 6px);
+  float: left;
   margin: 2px 0;
   padding: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove #eeede0;
-  font-weight: bold;
+  line-height: 30px;
+  color: #4b4a44;
+  position: relative;
 }
-.fantastic-depths .items-header > * {
-  font-size: 14px;
-  text-align: center;
+.fantastic-depths .summary li label {
+  line-height: 6px;
+  position: absolute;
+  font-size: 10px;
+  color: #4b4a44;
+  bottom: 0;
+  left: 4px;
 }
-.fantastic-depths .items-header .item-name {
+.fantastic-depths .summary li.notify input {
   font-weight: bold;
-  padding-left: 5px;
-  text-align: left;
-  display: flex;
+  animation: 0.8s ease-in 1s infinite alternate notify;
+}
+.fantastic-depths .resource-label {
+  font-weight: bold;
 }
 .fantastic-depths .items-list {
   list-style: none;
@@ -378,7 +377,7 @@
   flex: 2;
   margin: 0;
   overflow: hidden;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   align-items: center;
   display: flex;
@@ -398,6 +397,9 @@
   text-align: center;
   margin: 0 6px;
 }
+.fantastic-depths .items-list .item-controls .item-unequipped {
+  color: rgba(0, 0, 0, 0.2);
+}
 .fantastic-depths .items-list .item {
   align-items: center;
   padding: 0 2px;
@@ -414,7 +416,7 @@
   height: 30px;
   background-size: 30px;
   border: none;
-  margin-right: 5px;
+  margin-right: 4px;
 }
 .fantastic-depths .items-list .item-prop {
   text-align: center;
@@ -435,8 +437,11 @@
   font-size: 12px;
   text-align: center;
 }
+.fantastic-depths .items-list .items-header .align-left {
+  text-align: left;
+}
 .fantastic-depths .items-list .items-header .item-name {
-  padding-left: 5px;
+  padding-left: 3px;
   text-align: left;
 }
 .fantastic-depths .item-formula {

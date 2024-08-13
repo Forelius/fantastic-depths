@@ -3,44 +3,6 @@ export const FADE = {};
  * The set of Ability Scores used within the system.
  * @type {Object}
  */
-FADE.adjustmentDesc = {
-  str: 'FADE.Ability.Str.mod',
-  dex: 'FADE.Ability.Dex.mod',
-  con: 'FADE.Ability.Con.mod',
-  int: 'FADE.Ability.Int.mod',
-  wis: 'FADE.Ability.Wis.mod',
-  cha: 'FADE.Ability.Cha.mod',
-};
-FADE.abilities = {
-  str: 'FADE.Ability.Str.long',
-  dex: 'FADE.Ability.Dex.long',
-  con: 'FADE.Ability.Con.long',
-  int: 'FADE.Ability.Int.long',
-  wis: 'FADE.Ability.Wis.long',
-  cha: 'FADE.Ability.Cha.long',
-};
-FADE.abilitiesAbbrev = {
-  str: 'FADE.Ability.Str.abbr',
-  dex: 'FADE.Ability.Dex.abbr',
-  con: 'FADE.Ability.Con.abbr',
-  int: 'FADE.Ability.Int.abbr',
-  wis: 'FADE.Ability.Wis.abbr',
-  cha: 'FADE.Ability.Cha.abbr',
-};
-FADE.savingThrows = {
-   death: 'FADE.SavingThrow.Death.long',
-   wand: 'FADE.SavingThrow.Wand.long',
-   paralysis: 'FADE.SavingThrow.Paralysis.long',
-   breath: 'FADE.SavingThrow.Breath.long',
-   spell: 'FADE.SavingThrow.Spell.long',
-};
-FADE.savingThrowsAbbr = {
-   death: 'FADE.SavingThrow.Death.abbr',
-   wand: 'FADE.SavingThrow.Wand.abbr',
-   paralysis: 'FADE.SavingThrow.Paralysis.abbr',
-   breath: 'FADE.SavingThrow.Breath.abbr',
-   spell: 'FADE.SavingThrow.Spell.abbr',
-};
 FADE.AdjustmentTable = [
    { max: 1, value: -4 },
    { max: 3, value: -3 },

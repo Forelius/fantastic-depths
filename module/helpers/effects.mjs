@@ -7,9 +7,7 @@ export function onManageActiveEffect(event, owner) {
   event.preventDefault();
   const a = event.currentTarget;
   const li = a.closest('li');
-  const effect = li.dataset.effectId
-    ? owner.effects.get(li.dataset.effectId)
-    : null;
+  const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;
   switch (a.dataset.action) {
     case 'create':
       return owner.createEmbeddedDocuments('ActiveEffect', [
@@ -19,8 +17,7 @@ export function onManageActiveEffect(event, owner) {
           }),
           img: 'icons/svg/aura.svg',
           origin: owner.uuid,
-          'duration.rounds':
-            li.dataset.effectType === 'temporary' ? 1 : undefined,
+          'duration.rounds': li.dataset.effectType === 'temporary' ? 1 : undefined,
           disabled: li.dataset.effectType === 'inactive',
         },
       ]);

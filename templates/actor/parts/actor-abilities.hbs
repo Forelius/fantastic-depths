@@ -4,8 +4,8 @@
          {{#each system.abilities as |ability key|}}
          <div class="ability flexrow flex-group-center">
             <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-            <label for="system.abilities.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (lookup @root.config.abilities key)}}">{{localize (lookup @root.config.abilities key)}}</label>
-            <span class="ability-mod" title="{{localize (lookup @root.config.adjustmentDesc key)}}" data-label="{{localize (lookup @root.config.abilities key)}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+            <label for="system.abilities.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}">{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}</label>
+            <span class="ability-mod" title="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
          </div>
          {{/each}}
       </div>
@@ -24,37 +24,36 @@
          </div>
          <!-- Armor Class -->
          <div class="armor-class xsmall-col">
-            <label>{{localize 'FADE.Actor.ArmorClassShort'}}</label>
+            <label for="system.ac.value" title="{{localize 'FADE.Armor.long'}}">{{localize 'FADE.Armor.abbr'}}</label>
             <br />
-            <input name="system.ac.value" type="text" value="{{system.ac.value}}" data-dtype="Number" title="{{localize 'FADE.Actor.ArmorClass'}}" />
-            <input name="system.ac.noshield" type="text" value="{{system.ac.noshield}}" data-dtype="Number" title="{{localize 'FADE.Actor.WithoutShield'}}" />
+            <input name="system.ac.value" type="text" value="{{system.ac.value}}" data-dtype="Number" title="{{localize 'FADE.Armor.long'}}" />
          </div>
       </div>
       <div class="bordered text-center">
-         <label>{{localize 'FADE.Actor.Exploration'}}</label>
+         <h4>{{localize 'FADE.Actor.Ex.long'}}</h4>
          <div class="flexrow flex-group-center">
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.openDoor" data-roll="d6" data-label="{{localize 'FADE.Exploration.OpenDoor.value'}}" title="{{localize 'FADE.Exploration.OpenDoor.long'}}">{{localize 'FADE.Exploration.OpenDoor.abbr'}}</label>
+               <label class="rollable" for="system.exploration.openDoor" data-roll="d6" data-label="{{localize 'FADE.Actor.Ex.OpenDoor.value'}}" title="{{localize 'FADE.Actor.Ex.OpenDoor.long'}}">{{localize 'FADE.Actor.Ex.OpenDoor.abbr'}}</label>
                <br />
-               <input name="system.exploration.openDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Exploration.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" />
+               <input name="system.exploration.openDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" />
             </span>
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.secretDoor" data-roll="d6" data-label="{{localize 'FADE.Exploration.SecretDoor.value'}}" title="{{localize 'FADE.Exploration.SecretDoor.long'}}">{{localize 'FADE.Exploration.SecretDoor.abbr'}}</label>
+               <label class="rollable" for="system.exploration.secretDoor" data-roll="d6" data-label="{{localize 'FADE.Actor.Ex.SecretDoor.value'}}" title="{{localize 'FADE.Actor.Ex.SecretDoor.long'}}">{{localize 'FADE.Actor.Ex.SecretDoor.abbr'}}</label>
                <br />
-               <input name="system.exploration.secretDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Exploration.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" />
+               <input name="system.exploration.secretDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" />
             </span>
          </div>
          <div class="clear-fix"></div>
          <div class="flexrow flex-group-center">
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.listenDoor" data-roll="d6" data-label="{{localize 'FADE.Exploration.ListenDoor.value'}}" title="{{localize 'FADE.Exploration.ListenDoor.long'}}">{{localize 'FADE.Exploration.ListenDoor.abbr'}}</label>
+               <label class="rollable" for="system.exploration.listenDoor" data-roll="d6" data-label="{{localize 'FADE.Actor.Ex.ListenDoor.value'}}" title="{{localize 'FADE.Actor.Ex.ListenDoor.long'}}">{{localize 'FADE.Actor.Ex.ListenDoor.abbr'}}</label>
                <br />
-               <input name="system.exploration.listenDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Exploration.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" />
+               <input name="system.exploration.listenDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" />
             </span>
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.findTrap" data-roll="d6" data-label="{{localize 'FADE.Exploration.FindTrap.value'}}" title="{{localize 'FADE.Exploration.FindTrap.long'}}">{{localize 'FADE.Exploration.FindTrap.abbr'}}</label>
+               <label class="rollable" for="system.exploration.findTrap" data-roll="d6" data-label="{{localize 'FADE.Actor.Ex.FindTrap.value'}}" title="{{localize 'FADE.Actor.Ex.FindTrap.long'}}">{{localize 'FADE.Actor.Ex.FindTrap.abbr'}}</label>
                <br />
-               <input name="system.exploration.findTrap" type="text" data-dtype="Number" title="{{localize 'FADE.Exploration.FindTrap.long'}}" value="{{system.exploration.findTrap}}" />
+               <input name="system.exploration.findTrap" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.FindTrap.long'}}" value="{{system.exploration.findTrap}}" />
             </span>
          </div>
          <div class="clear-fix"></div>
@@ -63,11 +62,13 @@
    <section class="bordered text-center">
       <!-- Saving Throws -->
       <div class="saving-throws">
-         <label>{{localize 'FADE.Actor.SavingThrows'}}</label>
+         <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
          {{#each system.savingThrows as |savingThrow key|}}
          <div class="flexrow flex-group-center ability">
             <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-            <label for="system.savingThrows.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (lookup @root.config.savingThrows key)}}">{{localize (lookup @root.config.savingThrows key)}}</label>
+            <label for="system.savingThrows.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
+               {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
+            </label>
          </div>
          {{/each}}
       </div>
@@ -99,6 +100,18 @@
    <section class="bordered text-center">
       <div>
          <h4>Other</h4>
+         <div class="grid grid-4col label-12px">
+            <div>
+               <label for="system.wrestling"  title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+               <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
+            </div>
+            <div>
+               TBD
+            </div>
+            <div>
+               TBD
+            </div>
+         </div>
       </div>
    </section>
 </section>
