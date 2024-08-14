@@ -3,6 +3,20 @@ export const FADE = {};
  * The set of Ability Scores used within the system.
  * @type {Object}
  */
+FADE.Armor = {
+   acNaked:  9
+}
+FADE.Encumbrance = {
+   max: 2400,
+   table: [
+      { max: 400, mv: 120, label: "Unencumbered", desc: "Free to move without any hindrance."},
+      { max: 800, mv: 90, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
+      { max: 1200, mv: 60, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted." },
+      { max: 1600, mv: 30, label: "Encumbered", desc: "Significantly burdened, movement is sluggish." },
+      { max: 2400, mv: 15, label: "Heavily Encumbered", desc: "Struggling under weight, movement is laborious." },
+      { max: 9999999, mv: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
+   ]
+};
 FADE.AdjustmentTable = [
    { max: 1, value: -4 },
    { max: 3, value: -3 },

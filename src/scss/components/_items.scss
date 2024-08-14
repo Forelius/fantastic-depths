@@ -39,8 +39,9 @@
       a {
          font-size: 12px;
          text-align: center;
-         margin: 0 6px;
+         margin: 0 5px;
       }
+
       .item-unequipped {
          color: rgba(0, 0, 0, 0.2);
       }
@@ -66,6 +67,11 @@
             margin-right: 4px;
          }
       }
+   }
+
+   .item-60px {
+      width: 60px;
+      max-width: 60px;
    }
 
    .item-prop {

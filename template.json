@@ -63,6 +63,10 @@
                "class": "Fighter",
                "race": "Human"
             },
+            "encumbrance": {
+               "value": 0,
+               "max": 2400
+            },
             "abilities": {
                "str": {
                   "value": 10
@@ -108,7 +112,8 @@
          "gearbase": {
             "description": "",
             "quantity": 1,
-            "weight": 0
+            "weight": 0,
+            "cost": 0
          }
       },
       "item": {
@@ -117,7 +122,16 @@
       "weapon": {
          "templates": [ "gearbase" ],
          "equipped": false,
-         "damageRoll": "1d6"
+         "damageRoll": "1d6",
+         "tohit": 0,
+         "ammo": 0,
+         "canMelee": true,
+         "canRanged": false,
+         "range": {
+            "short": null,
+            "medium": null,
+            "long":  null
+         }
       },
       "armor": {
          "templates": [ "gearbase" ],

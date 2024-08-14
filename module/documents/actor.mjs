@@ -112,7 +112,7 @@ export class fadeActor extends Actor {
       const systemData = actorData.system;
 
       // Base AC when no armor is equipped
-      let baseAC = 9;
+      let baseAC = CONFIG.FADE.Armor.acNaked;
       systemData.ac.naked = baseAC;
 
       // Get all items and filter for equipped armor that is not a shield
@@ -140,18 +140,39 @@ export class fadeActor extends Actor {
       systemData.ac.value = armorAC - systemData.abilities.dex.mod - shieldAC;
    }
 
+   _prepareEncumbrance(actorData) {
+      const systemData = actorData.system;
+      systemData.encumbrance = systemData.encumbrance || {};
+      let enc = 0;
+      let max = CONFIG.FADE.Encumbrance.max;
+      // Sum the weights of all items
+      enc = actorData.items.reduce((sum, item) => {
+         const itemWeight = item.system.weight || 0; // Default to 0 if weight is not defined
+         const itemQuantity = item.system.quantity || 1; // Default to 1 if quantity is not defined
+         return sum + (itemWeight * itemQuantity);
+      }, 0);
+      systemData.encumbrance.value = enc;
+      systemData.encumbrance.max = max;
+
+      const encTier = CONFIG.FADE.Encumbrance.table.find(tier => enc <= tier.max)
+         || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
+      // Set the label and movement for the current encumbrance tier
+      systemData.encumbrance.label = encTier.label;
+      systemData.encumbrance.mv = encTier.mv;
+   }
 
    /**
     * Prepare Character type specific data
     */
    _prepareCharacterData(actorData) {
       if (actorData.type !== 'character') return;
-
+      console.log("_prepareCharacterData");
       // Make modifications to data here. For example:
       const systemData = actorData.system;
 
       this._prepareAbilities(actorData);
       this._prepareArmorClass(actorData);
+      this._prepareEncumbrance(actorData);
 
       // Initialize exploration tests if missing
       let explore = systemData.exploration || {};

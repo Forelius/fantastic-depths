@@ -125,7 +125,18 @@
       "Item": {
          "plural": "Gear",
          "equip": "Equip",
-         "unequip": "Unequip"
+         "unequip": "Unequip",
+         "weight": {
+            "short": "Enc (cn)",
+            "long": "Encumbrance (cn)",
+            "long2": "Encumbrance",
+            "abbr": "cn",
+            "desc": "Encumbrance is the weight of an object measured in coin-weight."
+         },
+         "cost": {
+            "abbr": "gp",
+            "long":  "Cost (gp)"
+         }
       },
       "Weapon": {
          "plural": "Weapons"

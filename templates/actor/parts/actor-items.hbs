@@ -1,6 +1,11 @@
 {{> "systems/fantastic-depths/templates/item/parts/item-weapons.hbs"}}
 {{> "systems/fantastic-depths/templates/item/parts/item-armor.hbs"}}
 {{> "systems/fantastic-depths/templates/item/parts/item-gear.hbs"}}
-<div>
-   Encumbrance
+<div class="flexrow flex-group-center" style="margin-top:10px;">
+   <span>
+      Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) {{system.encumbrance.label}}
+   </span>
+   <span>
+      Calculated base movement: {{system.encumbrance.mv}}
+   </span>
 </div>
