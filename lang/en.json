@@ -113,7 +113,7 @@
                "mod": "Reactions"
             }
          }
-      }, 
+      },
       "SheetLabel": {
          "Actor": "FaDe Actor Sheet",
          "Item": "FaDe Item Sheet"
@@ -135,11 +135,16 @@
          },
          "cost": {
             "abbr": "gp",
-            "long":  "Cost (gp)"
+            "long": "Cost (gp)"
          }
       },
       "Weapon": {
-         "plural": "Weapons"
+         "plural": "Weapons",
+         "damage": {
+            "abbr": "Dmg",
+            "short": "Damage",
+            "long": "Damage Roll"
+         }
       },
       "Armor": {
          "plural": "Armor",
