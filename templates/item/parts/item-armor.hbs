@@ -4,9 +4,9 @@
       <div class="item-60px">{{localize 'FADE.Armor.abbr'}}</div>
       <div class="item-60px">{{localize 'FADE.Item.weight.short'}}</div>
       <div class='item-controls'>
-         <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type='Armor'}}' data-type='armor'>
+         <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.armor")}}' data-type='armor'>
             <i class='fas fa-plus'></i>
-            {{localize 'DOCUMENT.New' type='armor'}}
+            {{localize 'TYPES.Item.armor'}}
          </a>
       </div>
    </li>
@@ -18,7 +18,7 @@
             <img src='{{armor.img}}' title='{{armor.name}}' width='24' height='24' />
          </a>
       </div>
-      <label>{{armor.name}}</label>
+      <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Armor'}}'>{{armor.name}}</a>
    </div>
    <div class="item-60px item-prop"><label>{{armor.system.ac}}</label></div>
    <div class="item-60px item-prop"><label>{{armor.system.weight}}</label></div>
@@ -26,9 +26,6 @@
       <a class="item-control item-toggle {{#unless armor.system.equipped}}item-unequipped{{/unless}}"
          title="{{#if armor.system.equipped}}{{localize 'FADE.Item.Unequip'}}{{else}}{{localize 'FADE.Item.Equip'}}{{/if}}">
          <i class="fas fa-tshirt"></i>
-      </a>
-      <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Armor'}}'>
-         <i class='fas fa-edit'></i>
       </a>
       <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Armor'}}'>
          <i class='fas fa-trash'></i>

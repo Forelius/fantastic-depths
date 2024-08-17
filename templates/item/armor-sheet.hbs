@@ -9,6 +9,10 @@
                <label for="system.ac">{{localize 'FADE.Armor.long'}}</label>
             </li>
             <li class="flex1">
+               <input type='text' name='system.mod.ac' value='{{system.mod.ac}}' data-dtype='Number' />
+               <label for="system..modac">{{localize 'FADE.Armor.mod'}}</label>
+            </li>
+            <li class="flex1">
                <input type="checkbox" name="system.isShield" data-dtype="Boolean" {{#if system.isShield}} checked{{/if}} />
                <label for="system.isShield">{{localize "FADE.Armor.shield.short"}}</label>
             </li>

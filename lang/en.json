@@ -120,12 +120,17 @@
       },
       "Spell": {
          "SpellLVL": "Level {level} Spells",
-         "AddLVL": "Add LVL {level}"
+         "AddLVL": "LVL {level}"
       },
       "Item": {
          "plural": "Gear",
          "equip": "Equip",
          "unequip": "Unequip",
+         "quantity": {
+            "long": "Quantity",
+            "abbr": "qty",
+            "abbr2": "#"
+         },
          "weight": {
             "short": "Enc (cn)",
             "long": "Encumbrance (cn)",
@@ -140,6 +145,24 @@
       },
       "Weapon": {
          "plural": "Weapons",
+         "mod": {
+            "dmg": {
+               "long": "Damage Modifier",
+               "short": "Dmg+"
+            },
+            "dmgRanged": {
+               "long": "Ranged Damage Modifier",
+               "short": "Rng. Dmg+"
+            },
+            "toHit": {
+               "long": "To-Hit Modifier",
+               "short": "Hit+"
+            },
+            "toHitRanged": {
+               "long": "Ranged To-Hit Modifier",
+               "short": "Rng. Hit+"
+            }
+         },
          "damage": {
             "abbr": "Dmg",
             "short": "Damage",
@@ -152,11 +175,13 @@
          "abbr": "AC",
          "shield": {
             "short": "Shield"
-         }
+         },
+         "mod": "AC Mod"
       },
       "Skill": {
          "plural": "General Skills",
-         "short": "Skill"
+         "short": "Skill",
+         "long": "General Skill"
       },
       "Mastery": {
          "plural": "Weapon Masteries",
@@ -164,9 +189,11 @@
       },
       "SpecialAbility": {
          "plural": "Special Abilities",
-         "short": "Ability"
+         "short": "Ability",
+         "long": "Special Ability"
       },
       "Effect": {
+         "short": "Effect",
          "Source": "Source",
          "Toggle": "Toggle Effect",
          "Temporary": "Temporary Effects",
@@ -190,6 +217,19 @@
          "mastery": "Weapon Mastery",
          "specialAbility": "Special Ability",
          "feature": "Feature"
+      }
+   },
+
+   "SETTINGS": {
+      "Encumbrance": {
+         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much.",
+         "Name": "Encumbrance Tracking",
+         "None": "None",
+         "Normal": "Normal"
+      },
+      "EncMax": {
+         "Hint": "The maximum amount a character may carry, in coins, and still be able to move.",
+         "Name": "Encumbrance Max"
       }
    }
 }

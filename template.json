@@ -15,7 +15,8 @@
             },
             "ac": {
                "naked": 9,
-               "value": 9
+               "value": 9,
+               "shield": 0
             },
             "thac0": {
                "value": 19,
@@ -123,7 +124,12 @@
          "templates": [ "gearbase" ],
          "equipped": false,
          "damageRoll": "1d6",
-         "tohit": 0,
+         "mod": {
+            "toHit": 0,
+            "toHitRanged": 0,
+            "dmg": 0,
+            "dmgRanged":  0
+         },
          "ammo": 0,
          "canMelee": true,
          "canRanged": false,
@@ -137,7 +143,10 @@
          "templates": [ "gearbase" ],
          "equipped": true,
          "ac": 9,
-         "isShield": false
+         "isShield": false,
+         "mod": {
+            "ac":  0
+         }
       },
       "spell": {
          "templates": [ "base" ],
