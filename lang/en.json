@@ -1,6 +1,7 @@
 {
    "FADE": {
       "Actor": {
+         "Name": "Name",
          "Health": "Hit Points",
          "HealthMax": "Max HP",
          "Max": "Max",
@@ -171,9 +172,11 @@
       },
       "Armor": {
          "plural": "Armor",
+         "naked": "Without Armor",
          "long": "Armor Class",
          "abbr": "AC",
          "shield": {
+            "long": "Shield Equipped",
             "short": "Shield"
          },
          "mod": "AC Mod"

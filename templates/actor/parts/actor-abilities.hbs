@@ -1,35 +1,36 @@
-<section class="grid grid-3col">
-   <aside class="bordered">
-      <div class="abilities">
-         {{#each system.abilities as |ability key|}}
-         <div class="ability flexrow flex-group-center">
-            <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-            <label for="system.abilities.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}">{{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}</label>
-            <span class="ability-mod" title="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
-         </div>
-         {{/each}}
+<section class="flexrow">
+   <section class="bordered ability-scores">
+      {{#each system.abilities as |ability key|}}
+      <div class="ability flexrow flex-group-left">
+         <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+         <label for="system.abilities.{{key}}.value" class="rollable flex0" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}">{{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}</label>
+         <span class="ability-mod flex0" title="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
       </div>
-   </aside>
+      {{/each}}
+   </section>
    <section>
-      <div class="bordered">
-         <!-- Hit Points -->
-         <div class="health xsmall-col">
-            <label>{{localize 'FADE.Actor.HealthShort'}}</label> / <label>{{localize 'FADE.Actor.Max'}}</label>
-            <label class="hitdie">{{localize 'FADE.Actor.HitDiceShort'}}</label>
-            <br />
-            <input name="system.hp.value" type="text" value="{{system.hp.value}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthShort'}}" />
-            /
-            <input name="system.hp.max" type="text" value="{{system.hp.max}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthMax'}}" />
-            <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDiceShort'}}" />
-         </div>
-         <!-- Armor Class -->
-         <div class="armor-class xsmall-col">
-            <label for="system.ac.value" title="{{localize 'FADE.Armor.long'}}">{{localize 'FADE.Armor.abbr'}}</label>
-            <br />
-            <input name="system.ac.value" type="text" value="{{system.ac.value}}" data-dtype="Number" title="{{localize 'FADE.Armor.long'}}" />
+      <div class="bordered resources">
+         <div class="flexrow">
+            <!-- Hit Points -->
+            <div class="hitpoints">
+               <input name="system.hp.value" class="hp-value hp-top" type="text" value="{{system.hp.value}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthShort'}}" />
+               <input name="system.hp.max" class="hp-value hp-bottom" type="text" value="{{system.hp.max}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthMax'}}" />
+               <!--<label>{{localize 'FADE.Actor.HealthShort'}}</label>-->
+               <div class="hp-empty" style="height:{{counter false system.hp.value system.hp.max}}%"></div>
+               <div class="hp-full" style="height:{{counter true system.hp.value system.hp.max}}%"></div>
+            </div>
+            <!-- Armor Class -->            
+            <div class="hitpoints armor-class">
+               <label class="hp-value hp-top" title="{{localize 'FADE.Armor.long'}}">{{system.ac.value}}</label>
+               <div class="hp-value hp-bottom" title="{{localize 'FADE.Armor.naked'}}">{{system.ac.naked}}</div>
+               {{#if system.ac.shield}}
+               <div class="shield" title="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
+               {{/if}}
+            </div>
          </div>
       </div>
-      <div class="bordered text-center">
+      <div class="bordered text-center" style="margin-top:4px;">
+         <!-- Exploration -->
          <h4>{{localize 'FADE.Actor.Ex.long'}}</h4>
          <div class="flexrow flex-group-center">
             <span class="xsmall-col">
@@ -59,14 +60,14 @@
          <div class="clear-fix"></div>
       </div>
    </section>
-   <section class="bordered text-center">
+   <section class="bordered">
       <!-- Saving Throws -->
       <div class="saving-throws">
          <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
          {{#each system.savingThrows as |savingThrow key|}}
-         <div class="flexrow flex-group-center ability">
+         <div class="flexrow flex-group-center">
             <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-            <label for="system.savingThrows.{{key}}.value" class="rollable align-left" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
+            <label for="system.savingThrows.{{key}}.value" class="rollable" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
                {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
             </label>
          </div>
@@ -75,7 +76,7 @@
    </section>
 </section>
 <section class="grid max-width-300px grid-2col">
-   <section class="bordered text-center">
+   <section class="bordered text-center" style="margin-top:-10px;">
       <!-- Movement -->
       <h4>{{localize 'FADE.Actor.Movement.long'}}</h4>
       <div class="grid grid-4col label-12px">
@@ -97,12 +98,12 @@
          </div>
       </div>
    </section>
-   <section class="bordered text-center">
+   <section class="bordered text-center" style="margin-top:-10px;">
       <div>
          <h4>Other</h4>
          <div class="grid grid-4col label-12px">
             <div>
-               <label for="system.wrestling"  title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+               <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
                <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
             </div>
             <div>

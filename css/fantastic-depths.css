@@ -3,11 +3,6 @@ h1, h2, h3, h4 {
   font-weight: bold;
 }
 
-h4 {
-  padding: 0;
-  margin: 0;
-}
-
 /* Global styles */
 .window-app {
   font-family: "Roboto", sans-serif;
@@ -20,7 +15,7 @@ h4 {
 }
 
 .bordered {
-  margin-top: -6px;
+  margin: -2px 2px 2px 2px;
   border: 2px solid #babaa0;
   border-radius: 4px;
   padding: 6px;
@@ -64,6 +59,15 @@ h4 {
 .grid-3col {
   grid-column: span 3/span 3;
   grid-template-columns: repeat(3, minmax(0, var(--max-column-width)));
+}
+
+.grid-3colfr {
+  display: grid;
+  grid-column: span 3/span 3;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 10px 0;
+  padding: 0;
 }
 
 .grid-4col {
@@ -173,6 +177,10 @@ h4 {
   grid-column-end: span 10;
 }
 
+.max-width-140px {
+  --max-column-width: 140px;
+}
+
 .max-width-300px {
   --max-column-width: 300px;
 }
@@ -223,24 +231,36 @@ h4 {
 }
 
 /* Styles limited to fantastic-depths sheets */
-.fantastic-depths .character .ability {
-  min-height: 36px;
+.fantastic-depths .character .ability-scores {
+  max-width: 140px;
 }
-.fantastic-depths .character .ability label {
-  font-size: 13px;
-  min-width: 35px;
-  /*max-width: 80px;*/
+.fantastic-depths .character .ability-scores .ability {
+  min-height: 34px;
+  border-bottom: 1px solid #c5bfbf;
+}
+.fantastic-depths .character .ability-scores .ability label {
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 44px;
+  max-width: 44px;
   margin: 0 4px;
+  text-align: left;
+}
+.fantastic-depths .character .ability-scores .ability input {
+  font-size: 18px;
+  min-height: 30px;
+  max-width: 36px;
+  border-radius: 20px;
+  margin-right: 6px;
   text-align: center;
 }
-.fantastic-depths .character .ability input {
-  font-size: 18px;
-  min-height: 28px;
-  max-width: 36px;
-}
-.fantastic-depths .character .ability .ability-mod {
+.fantastic-depths .character .ability-scores .ability .ability-mod {
   max-width: 36px;
   font-size: 14px;
+  margin-left: 6px;
+}
+.fantastic-depths .character .ability-scores .ability:last-child {
+  border-bottom: none;
 }
 .fantastic-depths .character .xsmall-col {
   min-height: 32px;
@@ -254,12 +274,78 @@ h4 {
 .fantastic-depths .character .xsmall-col label {
   font-size: 13px;
 }
-.fantastic-depths .character .armor-class {
-  margin-top: 5px;
+.fantastic-depths .character .saving-throws .flexrow {
+  min-height: 36px;
 }
-.fantastic-depths .character .hitdie {
-  max-width: 60px;
-  min-width: 60px;
+.fantastic-depths .character .saving-throws input {
+  align-content: center;
+  margin-right: 6px;
+  max-width: 34px;
+  min-width: 34px;
+  font-size: 16px;
+}
+.fantastic-depths .character .saving-throws label {
+  align-content: center;
+  text-align: left;
+  font-size: 12px;
+}
+.fantastic-depths .character .hitpoints {
+  height: 74px;
+  position: relative;
+}
+.fantastic-depths .character .hitpoints.armor-class {
+  background: url("../assets/img/shield.png") no-repeat center;
+  background-size: 70px;
+}
+.fantastic-depths .character .hitpoints.armor-class .shield {
+  text-align: right;
+  margin-right: -2px;
+  font-size: 18px;
+}
+.fantastic-depths .character .hitpoints.armor-class .hp-top {
+  top: 11px;
+  left: calc(50% - 30px);
+}
+.fantastic-depths .character .hitpoints.armor-class .hp-bottom {
+  bottom: 12px;
+  right: calc(50% - 30px);
+}
+.fantastic-depths .character .hitpoints .hp-value {
+  background: none;
+  border: 0 none;
+  text-align: center;
+  font-weight: bolder;
+  text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
+}
+.fantastic-depths .character .hitpoints .hp-top {
+  position: absolute;
+  font-size: 26px;
+  top: 15px;
+  width: 60px;
+  left: calc(50% - 29px);
+}
+.fantastic-depths .character .hitpoints .hp-bottom {
+  position: absolute;
+  font-size: 12px;
+  bottom: 8px;
+  width: 60px;
+  right: calc(50% - 30px);
+}
+.fantastic-depths .character .hitpoints .hp-empty {
+  background: url("../assets/img/heart_empty.png") no-repeat center;
+  background-size: 74px;
+  background-position: top;
+  background-clip: content-box;
+}
+.fantastic-depths .character .hitpoints .hp-full {
+  background: url("../assets/img/heart_full.png") no-repeat center;
+  background-size: 74px;
+  background-position: bottom;
+  background-clip: content-box;
+}
+.fantastic-depths .charname {
+  font-size: 18px;
+  margin-top: 2px;
 }
 .fantastic-depths .item-form {
   font-family: "Roboto", sans-serif;

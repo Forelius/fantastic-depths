@@ -25,6 +25,14 @@
    grid-column: span 3 / span 3;
    grid-template-columns: repeat(3, minmax(0, var(--max-column-width)));
 }
+.grid-3colfr {
+   display: grid;
+   grid-column: span 3 / span 3;
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+   gap: 10px;
+   margin: 10px 0;
+   padding: 0;
+}
 
 .grid-4col {
    grid-column: span 4 / span 4;
@@ -133,7 +141,9 @@
 .grid-span-10 {
    grid-column-end: span 10
 }
-
+.max-width-140px {
+   --max-column-width: 140px;
+}
 .max-width-300px {
    --max-column-width: 300px;
 }

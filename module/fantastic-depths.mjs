@@ -77,9 +77,11 @@ Handlebars.registerHelper('uppercase', function (str) {
 Handlebars.registerHelper('lowercase', function (str) {
    return str.toLowerCase();
 });
-Handlebars.registerHelper("counter", function (status, value, max) {
-   return status ? (Math.clamp(100 * value) / max, 0, 100) : Math.clamp(100 - (100 * value) / max, 0, 100);
-});
+Handlebars.registerHelper("counter", (status, value, max) =>
+   status
+      ? Math.clamp((100 * value) / max, 0, 100)
+      : Math.clamp(100 - (100 * value) / max, 0, 100)
+);
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

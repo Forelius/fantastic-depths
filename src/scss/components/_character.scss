@@ -1,24 +1,38 @@
 .character {
-   .ability {
-      min-height: 36px;
+   .ability-scores {
+      max-width: 140px;
 
-      label {
-         font-size: 13px;
-         min-width: 35px;
-         /*max-width: 80px;*/
-         margin: 0 4px;
-         text-align: center;
+      .ability {
+         min-height: 34px;
+         border-bottom: 1px solid #c5bfbf;
+
+         label {
+            font-size: 16px;
+            font-weight: 500;
+            min-width: 44px;
+            max-width: 44px;
+            margin: 0 4px;
+            text-align: left;
+         }
+
+         input {
+            font-size: 18px;
+            min-height: 30px;
+            max-width: 36px;
+            border-radius: 20px;
+            margin-right: 6px;
+            text-align: center;
+         }
+
+         .ability-mod {
+            max-width: 36px;
+            font-size: 14px;
+            margin-left: 6px;
+         }
       }
 
-      input {
-         font-size: 18px;
-         min-height: 28px;
-         max-width: 36px;
-      }
-
-      .ability-mod {
-         max-width: 36px;
-         font-size: 14px;
+      .ability:last-child {
+         border-bottom: none;
       }
    }
 
@@ -31,17 +45,97 @@
          display: inline-block;
          text-align: center;
       }
-      label{
-         font-size:13px;
+
+      label {
+         font-size: 13px;
       }
    }
 
-   .armor-class {
-      margin-top: 5px;
+   .saving-throws {
+      .flexrow {
+         min-height: 36px;
+      }
+
+      input {
+         align-content: center;
+         margin-right: 6px;
+         max-width: 34px;
+         min-width: 34px;
+         font-size: 16px;
+      }
+
+      label {
+         align-content: center;
+         text-align: left;
+         font-size: 12px;
+      }
    }
 
-   .hitdie {
-      max-width: 60px;
-      min-width: 60px;
-   }   
+   .hitpoints {
+      &.armor-class {
+         background: url("../assets/img/shield.png") no-repeat center;
+         background-size: 70px;
+
+         .shield {
+            text-align: right;
+            margin-right: -2px;
+            font-size: 18px;
+         }
+
+         .hp-top {
+            top: 11px;
+            left: calc(50% - 30px);
+         }
+
+         .hp-bottom {
+            bottom: 12px;
+            right: calc(50% + -30px);
+         }
+      }
+
+      height: 74px;
+      position: relative;
+
+      .hp-value {
+         background: none;
+         border: 0 none;
+         text-align: center;
+         font-weight: bolder;
+         text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
+      }
+
+      .hp-top {
+         position: absolute;
+         font-size: 26px;
+         top: 15px;
+         width: 60px;
+         left: calc(50% - 29px);
+      }
+
+      .hp-bottom {
+         position: absolute;
+         font-size: 12px;
+         bottom: 8px;
+         width: 60px;
+         right: calc(50% + -30px);
+      }
+
+      .hp-empty {
+         background: url("../assets/img/heart_empty.png") no-repeat center;
+         background-size: 74px;
+         background-position: top;
+         background-clip: content-box;
+      }
+
+      .hp-full {
+         background: url("../assets/img/heart_full.png") no-repeat center;
+         background-size: 74px;
+         background-position: bottom;
+         background-clip: content-box;
+      }
+   }
 }
+.charname {
+   font-size: 18px;
+   margin-top: 2px;
+} 

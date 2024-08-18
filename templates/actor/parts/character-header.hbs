@@ -1,9 +1,11 @@
 {{!-- Sheet Header --}}
 <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
 <div class="header-fields">
-   <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
-
    <ul class="summary flexrow">
+      <li class="flex2">
+         <input name="name" class="charname" type="text" value="{{actor.name}}" placeholder="Name" />
+         <label>{{localize 'FADE.Actor.Name'}}</label>
+      </li>
       {{#if system.retainer.enabled}}
       <li>
          <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
@@ -15,13 +17,20 @@
          <label>{{localize 'FADE.Actor.Title'}}</label>
       </li>
       {{/if}}
-      <li>
+   </ul>
+
+   <ul class="summary flexrow">
+      <li class="flex2">
          <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
          <label>{{localize 'FADE.Actor.Alignment'}}</label>
       </li>
-      <li>
+      <li class="flex2">
          <input type="text" name="system.details.race" value="{{system.details.race}}" data-dtype="String" />
          <label>{{localize 'FADE.Actor.Race'}}</label>
+      </li>
+      <li>
+         <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDiceShort'}}" />
+         <label class="hitdie">{{localize 'FADE.Actor.HitDiceShort'}}</label>
       </li>
    </ul>
    <ul class="summary flexrow">

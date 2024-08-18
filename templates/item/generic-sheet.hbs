@@ -2,19 +2,9 @@
 {{! Generally, you'll want to make more specific templates when possible. }}
 <form class='{{cssClass}}' autocomplete='off'>
   <header class='sheet-header'>
-    <img
-      class='profile-img'
-      src='{{item.img}}'
-      data-edit='img'
-      title='{{item.name}}'
-    />
+    <img class='profile-img' src='{{item.img}}' data-edit='img' title='{{item.name}}'/>
     <div class='header-fields'>
-      <h1 class='charname'><input
-          name='name'
-          type='text'
-          value='{{item.name}}'
-          placeholder='Name'
-        /></h1>
+      <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name'/></div>
     </div>
   </header>
 
@@ -30,13 +20,7 @@
     {{! Description Tab }}
     <div class='tab' data-group='primary' data-tab='description'>
       {{! Editors must receive enriched text data from getData to properly handle rolls }}
-      {{editor
-        enrichedDescription
-        target='system.description'
-        engine='prosemirror'
-        button=true
-        editable=editable
-      }}
+      {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
     </div>
 
     {{! Attributes Tab }}

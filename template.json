@@ -16,7 +16,9 @@
             "ac": {
                "naked": 9,
                "value": 9,
-               "shield": 0
+               "total": 9,
+               "shield": 0,
+               "bonus": 0
             },
             "thac0": {
                "value": 19,
