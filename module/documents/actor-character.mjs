@@ -4,7 +4,7 @@ import { fadeActor } from './actor.mjs';
 export class characterActor extends fadeActor {
 
    constructor(data, context) {
-     /** Default behavior, just call super() and do all the default Item inits */
+      /** Default behavior, just call super() and do all the default Item inits */
       super(data, context)
    }
 
@@ -15,10 +15,9 @@ export class characterActor extends fadeActor {
 
    /** @override */
    prepareBaseData() {
-      if (this.type === "character") {
-         console.log("characterActor.prepareBaseData called");
-      }
       super.prepareBaseData();
+      const systemData = this.system;
+      systemData.details = systemData.details || {};
       this._prepareAbilities();
       this._prepareExploration();
    }
@@ -80,25 +79,30 @@ export class characterActor extends fadeActor {
 
       let baseAC = CONFIG.FADE.Armor.acNaked;
       systemData.ac.naked = baseAC;
+      systemData.ac.value = baseAC;
+      systemData.ac.total = baseAC;
+      systemData.ac.mod = 0;
+      systemData.ac.shield = 0;
 
-      const equippedArmor = this.items.filter(item =>
+      const equippedArmor = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && !item.system.isShield
       );
-
-      let armorAC = equippedArmor.reduce((currentBestAC, armor) => {
-         const armorValue = armor.system.ac || currentBestAC;
-         return Math.min(currentBestAC, armorValue);
-      }, baseAC);
-
-      const equippedShields = this.items.filter(item =>
+            
+      const equippedShield = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && item.system.isShield
       );
 
-      systemData.ac.shield = equippedShields.reduce((totalShieldAC, shield) => {
-         return totalShieldAC + (shield.system.ac || 0);
-      }, 0);
-
-      systemData.ac.value = armorAC - systemData.abilities.dex.mod - systemData.ac.shield;
+      // If an equipped armor is found
+      if (equippedArmor) {
+         systemData.ac.value = equippedArmor.system.ac;
+         systemData.ac.mod = equippedArmor.system.mod ?? 0;
+         systemData.ac.total = equippedArmor.system.ac - equippedArmor.system.mod - systemData.abilities.dex.mod;
+         if (equippedShield) {
+            systemData.ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
+            systemData.ac.total -= systemData.ac.shield;
+         }         
+      }
+      console.log("_prepareArmorClass() ac:", systemData.ac, "equippedArmor:", equippedArmor?.system, "equippedShield:", equippedShield?.system)
    }
 
    _prepareEncumbrance() {

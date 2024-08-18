@@ -53,8 +53,15 @@ export class fadeActor extends Actor {
    /** @override */
    prepareBaseData() {
       this._prepareMovement();
-
+      console.log("actor.prepareBaseData()");
       const systemData = this.system;
+      systemData.ac = systemData.ac || {};
+
+      systemData.hp = systemData.hp || {};
+      systemData.hp.value = systemData.hp.value || 5;
+      systemData.hp.max = systemData.hp.max || 5;
+      systemData.hp.hd = systemData.hp.hd || "1d8";
+
       systemData.savingThrows = systemData.savingThrows || {};
       const savingThrows = ["death", "wand", "paralysis", "breath", "spell"];
       savingThrows.forEach(savingThrow => {

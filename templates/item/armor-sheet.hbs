@@ -14,10 +14,6 @@
                <label for="system.ac">{{localize 'FADE.Armor.long'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name='system.mod.ac' value='{{system.mod.ac}}' data-dtype='Number' />
-               <label for="system..modac">{{localize 'FADE.Armor.mod'}}</label>
-            </li>
-            <li class="flex1">
                <input type="checkbox" name="system.isShield" data-dtype="Boolean" {{#if system.isShield}} checked{{/if}} />
                <label for="system.isShield">{{localize "FADE.Armor.shield.short"}}</label>
             </li>
@@ -47,11 +43,9 @@
          {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
       </div>
 
-    {{! Effects Tab }}
-    <div class='tab effects' data-group='primary' data-tab='effects'>
-      {{! As you add new fields, add them in here! }}
-      <div class='resource'>
+      {{! Effects Tab }}
+      <div class="tab effects" data-group="primary" data-tab="effects">
+         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
       </div>
-    </div>
    </section>
 </form>

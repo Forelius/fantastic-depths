@@ -3,6 +3,7 @@ import { registerSystemSettings } from "./settings.mjs";
 import { fadeActor } from './documents/actor.mjs';
 import { characterActor } from './documents/actor-character.mjs';
 import { fadeItem } from './documents/item.mjs';
+import { armorItem } from './documents/item-armor.mjs';
 // Import sheet classes.
 import { fadeActorSheet } from './sheets/actor-sheet.mjs';
 import { fadeItemSheet } from './sheets/item-sheet.mjs';
@@ -20,6 +21,7 @@ Hooks.once('init', function () {
       fadeActor,
       characterActor,
       fadeItem,
+      armorItem,
       rollItemMacro,
    };
 
@@ -44,7 +46,9 @@ Hooks.once('init', function () {
       character: characterActor
    }
    CONFIG.Item.documentClass = fadeItem;
-
+   CONFIG.Item.documentClasses = {
+      armor: armorItem
+   }
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item
    // if the transfer property on the Active Effect is true.

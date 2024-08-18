@@ -3,6 +3,23 @@
  * @extends {Item}
  */
 export class fadeItem extends Item {
+   constructor(data, context) {
+      /** @see CONFIG.Item.documentClasses in module/scripts/configure-documents */
+      if (data.type in CONFIG.Item.documentClasses && !context?.extended) {
+         /**
+          * When the constructor for the new class will call it's super(),
+          * the extended flag will be true, thus bypassing this whole process
+          * and resume default behavior
+          */
+         return new CONFIG.Item.documentClasses[data.type](data, {
+            ...{ extended: true },
+            ...context
+         })
+      }
+      /** Default behavior, just call super() and do all the default Item inits */
+      super(data, context)
+   }
+
    /**
     * Augment the basic Item data model with additional dynamic data.
     */
@@ -15,7 +32,6 @@ export class fadeItem extends Item {
 
    /** @override */
    prepareDerivedData() {
-      console.log("fadeItem.prepareDerivedData", this.type);
       if (this.type === "item") {
          this.system.totalWeight = this.system.weight * this.system.quantity;
       }

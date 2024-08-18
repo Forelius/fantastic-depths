@@ -173,7 +173,7 @@
       "Armor": {
          "plural": "Armor",
          "naked": "Without Armor",
-         "long": "Armor Class",
+         "long": "Base AC",
          "abbr": "AC",
          "shield": {
             "long": "Shield Equipped",

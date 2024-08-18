@@ -322,7 +322,7 @@ h1, h2, h3, h4 {
   font-size: 26px;
   top: 15px;
   width: 60px;
-  left: calc(50% - 29px);
+  left: calc(50% - 30px);
 }
 .fantastic-depths .character .hitpoints .hp-bottom {
   position: absolute;

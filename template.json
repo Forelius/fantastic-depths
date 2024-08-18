@@ -18,7 +18,7 @@
                "value": 9,
                "total": 9,
                "shield": 0,
-               "bonus": 0
+               "mod": 0
             },
             "thac0": {
                "value": 19,
@@ -146,9 +146,8 @@
          "equipped": true,
          "ac": 9,
          "isShield": false,
-         "mod": {
-            "ac":  0
-         }
+         "mod": 0,
+         "totalAc":  9
       },
       "spell": {
          "templates": [ "base" ],
