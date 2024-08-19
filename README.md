@@ -7,6 +7,7 @@ This Foundry VTT system is inspired by Dark Dungeons, an OGL retro-clone of the 
 
 ## Character Sheet
 ![abilities](./assets/img/charsheet1.jpg)
+### Character Inventory
 ![inventory](./assets/img/charsheet2.jpg)
 
 ## Item Sheet
