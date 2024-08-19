@@ -30,7 +30,7 @@ export class characterActor extends fadeActor {
 
       // Wrestling skill
       const systemData = this.system;
-      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.abilities.str.mod + systemData.abilities.dex.mod;
+      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.abilities.str.mod + systemData.abilities.dex.mod + systemData.ac.value;
    }
 
    /** @override */

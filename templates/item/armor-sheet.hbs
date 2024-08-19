@@ -3,25 +3,29 @@
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
       <div class='header-fields'>
          <ul class="summary flexrow">
-            <li>
+            <li class="">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
                <label>{{localize 'FADE.Actor.Name'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li class="flex1">
+            <li class="flex2">
                <input type='text' name='system.ac' value='{{system.ac}}' data-dtype='Number' />
                <label for="system.ac">{{localize 'FADE.Armor.long'}}</label>
+            </li>
+            <li class="flex1">
+               <div class="item-info">{{system.mod}}</div>
+               <label>{{localize 'FADE.Armor.mod'}}</label>
             </li>
             <li class="flex1">
                <input type="checkbox" name="system.isShield" data-dtype="Boolean" {{#if system.isShield}} checked{{/if}} />
                <label for="system.isShield">{{localize "FADE.Armor.shield.short"}}</label>
             </li>
-            <li class="flex1">
+            <li class="flex2">
                <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' />
                <label for="system.weight" class='resource-label'>{{localize 'FADE.Item.weight.short'}}</label>
             </li>
-            <li class="flex1">
+            <li class="flex2">
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' />
                <label for="system.cost" class='resource-label'>{{localize 'FADE.Item.cost.long'}}</label>
             </li>

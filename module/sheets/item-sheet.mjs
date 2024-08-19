@@ -13,7 +13,7 @@ export class fadeItemSheet extends ItemSheet {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'item'],
          width: 520,
-         height: 480,
+         height: 450,
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -22,6 +22,21 @@ export class fadeItemSheet extends ItemSheet {
             },
          ],
       });
+   }
+
+   /** @override */
+   render(force, options = {}) {
+      // Adjust options before rendering based on item type
+      if (this.item.type === 'armor') {
+         options.width = 460;
+         options.height = 360;
+      } else {
+         options.width = 520;
+         options.height = 450;
+      }
+
+      // Call the original render method with modified options
+      return super.render(force, options);
    }
 
    /** @override */

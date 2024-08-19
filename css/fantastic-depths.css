@@ -538,6 +538,9 @@ h1, h2, h3, h4 {
   flex: 0 0 200px;
   padding: 0 8px;
 }
+.fantastic-depths .item-info {
+  text-align: center;
+}
 .fantastic-depths .effects .item .effect-source,
 .fantastic-depths .effects .item .effect-duration,
 .fantastic-depths .effects .item .effect-controls {
