@@ -3,8 +3,10 @@
 <div class="header-fields">
    <ul class="summary flexrow">
       <li class="flex2">
-         <input name="name" class="charname" type="text" value="{{actor.name}}" placeholder="Name" />
-         <label>{{localize 'FADE.Actor.Name'}}</label>
+         <div class="charname">
+            <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+            <label>{{localize 'FADE.Actor.Name'}}</label>
+         </div>
       </li>
       {{#if system.retainer.enabled}}
       <li>

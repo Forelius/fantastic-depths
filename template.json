@@ -64,7 +64,8 @@
                   "bonus": 0
                },
                "class": "Fighter",
-               "race": "Human"
+               "race": "Human",
+               "alignment": "Neutral"
             },
             "encumbrance": {
                "value": 0,
@@ -98,7 +99,21 @@
             }
          },
          "monster": {
-            "templates": [ "base" ]
+            "templates": [ "base" ],
+            "details": {
+               "xpAward": 5,
+               "alignment": "Chaotic",
+               "morale": 9,
+               "abilityCount": 0
+            },
+            "na": {
+               "wandering": "1d6",
+               "lair": ""
+            },
+            "treasure": {
+               "wandering": "",
+               "lair": ""
+            }
          },
          "npc": {
             "templates": [ "base" ],
@@ -130,7 +145,7 @@
             "toHit": 0,
             "toHitRanged": 0,
             "dmg": 0,
-            "dmgRanged":  0
+            "dmgRanged": 0
          },
          "ammo": 0,
          "canMelee": true,
@@ -138,7 +153,7 @@
          "range": {
             "short": null,
             "medium": null,
-            "long":  null
+            "long": null
          }
       },
       "armor": {
@@ -147,7 +162,7 @@
          "ac": 9,
          "isShield": false,
          "mod": 0,
-         "totalAc":  9
+         "totalAc": 9
       },
       "spell": {
          "templates": [ "base" ],

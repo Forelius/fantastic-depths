@@ -1,5 +1,5 @@
 .item-form {
-  font-family: $font-primary;
+   font-family: $font-primary;
 }
 
 .sheet-header {
@@ -9,8 +9,13 @@
    flex-direction: row;
    flex-wrap: wrap;
    justify-content: flex-start;
-   margin-bottom: 10px;
    align-items: normal !important;
+   margin-bottom: 5px;
+
+   input {
+      border: 0;
+      padding: 2px 8px;
+   }
 
    .profile-img {
       flex: 0 0 10px;
@@ -30,38 +35,36 @@
       flex: 1;
    }
 
-   h1.charname {
-      height: 40px;
-      padding: 0px;
-      margin: 5px 0;
-      border-bottom: 0;
+   .charname {
+      height: 34px;
 
       input {
-         width: 100%;
-         height: 100%;
-         margin: 0;
+         font-size: 22px;
+         font-weight: 500;
+         height: 30px;
+         padding-top: -1px;
       }
    }
 }
 
 .sheet-tabs {
-  flex: 0;
+   flex: 0;
 }
 
 .sheet-body,
 .sheet-body .tab,
 .sheet-body .tab .editor {
-  height: 100%;
+   height: 100%;
 }
 
 .tox {
-  .tox-editor-container {
-    background: $c-white;
-  }
+   .tox-editor-container {
+      background: $c-white;
+   }
 
-  .tox-edit-area {
-    padding: 0 8px;
-  }
+   .tox-edit-area {
+      padding: 0 8px;
+   }
 }
 
 .label-12px label {
@@ -92,7 +95,7 @@
    li {
       height: calc(100% - 6px);
       float: left;
-      margin: 2px 0;
+      margin: 2px 2px;
       padding: 0;
       line-height: 30px;
       color: $colorOlive;
@@ -103,7 +106,7 @@
          position: absolute;
          font-size: 10px;
          color: $colorOlive;
-         bottom: 0;         
+         bottom: 0;
          left: 4px;
       }
 

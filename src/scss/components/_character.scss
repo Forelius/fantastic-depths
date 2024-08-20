@@ -72,27 +72,6 @@
    }
 
    .hitpoints {
-      &.armor-class {
-         background: url("../assets/img/shield.png") no-repeat center;
-         background-size: 70px;
-
-         .shield {
-            text-align: right;
-            margin-right: -2px;
-            font-size: 18px;
-         }
-
-         .hp-top {
-            top: 11px;
-            left: calc(50% - 30px);
-         }
-
-         .hp-bottom {
-            bottom: 12px;
-            right: calc(50% + -30px);
-         }
-      }
-
       height: 74px;
       position: relative;
 
@@ -134,8 +113,25 @@
          background-clip: content-box;
       }
    }
+
+   .armor-class {
+      background: url("../assets/img/shield.png") no-repeat center;
+      background-size: 70px;
+
+      .shield {
+         text-align: right;
+         margin-right: -2px;
+         font-size: 18px;
+      }
+
+      .hp-top {
+         top: 11px;
+         left: calc(50% - 30px);
+      }
+
+      .hp-bottom {
+         bottom: 12px;
+         right: calc(50% + -30px);
+      }
+   }
 }
-.charname {
-   font-size: 18px;
-   margin-top: 2px;
-} 

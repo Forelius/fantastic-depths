@@ -1,16 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+/*@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+*/
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 h1, h2, h3, h4 {
   font-weight: bold;
 }
 
+:root {
+  --color-shadow-primary: #ae7615;
+}
+
 /* Global styles */
 .window-app {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
 }
 
 .rollable:hover, .rollable:focus {
   color: #000;
-  text-shadow: 0 0 10px red;
+  text-shadow: 0 0 10px #ae7615;
   cursor: pointer;
 }
 
@@ -293,23 +300,6 @@ h1, h2, h3, h4 {
   height: 74px;
   position: relative;
 }
-.fantastic-depths .character .hitpoints.armor-class {
-  background: url("../assets/img/shield.png") no-repeat center;
-  background-size: 70px;
-}
-.fantastic-depths .character .hitpoints.armor-class .shield {
-  text-align: right;
-  margin-right: -2px;
-  font-size: 18px;
-}
-.fantastic-depths .character .hitpoints.armor-class .hp-top {
-  top: 11px;
-  left: calc(50% - 30px);
-}
-.fantastic-depths .character .hitpoints.armor-class .hp-bottom {
-  bottom: 12px;
-  right: calc(50% - 30px);
-}
 .fantastic-depths .character .hitpoints .hp-value {
   background: none;
   border: 0 none;
@@ -343,12 +333,25 @@ h1, h2, h3, h4 {
   background-position: bottom;
   background-clip: content-box;
 }
-.fantastic-depths .charname {
+.fantastic-depths .character .armor-class {
+  background: url("../assets/img/shield.png") no-repeat center;
+  background-size: 70px;
+}
+.fantastic-depths .character .armor-class .shield {
+  text-align: right;
+  margin-right: -2px;
   font-size: 18px;
-  margin-top: 2px;
+}
+.fantastic-depths .character .armor-class .hp-top {
+  top: 11px;
+  left: calc(50% - 30px);
+}
+.fantastic-depths .character .armor-class .hp-bottom {
+  bottom: 12px;
+  right: calc(50% - 30px);
 }
 .fantastic-depths .item-form {
-  font-family: "Roboto", sans-serif;
+  font-family: "Barlow", sans-serif;
 }
 .fantastic-depths .sheet-header {
   flex: 0 auto;
@@ -357,8 +360,12 @@ h1, h2, h3, h4 {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-bottom: 10px;
   align-items: normal !important;
+  margin-bottom: 5px;
+}
+.fantastic-depths .sheet-header input {
+  border: 0;
+  padding: 2px 8px;
 }
 .fantastic-depths .sheet-header .profile-img {
   flex: 0 0 10px;
@@ -375,16 +382,14 @@ h1, h2, h3, h4 {
 .fantastic-depths .sheet-header .header-fields {
   flex: 1;
 }
-.fantastic-depths .sheet-header h1.charname {
-  height: 40px;
-  padding: 0px;
-  margin: 5px 0;
-  border-bottom: 0;
+.fantastic-depths .sheet-header .charname {
+  height: 34px;
 }
-.fantastic-depths .sheet-header h1.charname input {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+.fantastic-depths .sheet-header .charname input {
+  font-size: 22px;
+  font-weight: 500;
+  height: 30px;
+  padding-top: -1px;
 }
 .fantastic-depths .sheet-tabs {
   flex: 0;
@@ -425,7 +430,7 @@ h1, h2, h3, h4 {
 .fantastic-depths .summary li {
   height: calc(100% - 6px);
   float: left;
-  margin: 2px 0;
+  margin: 2px 2px;
   padding: 0;
   line-height: 30px;
   color: #4b4a44;

@@ -2,6 +2,7 @@ import { registerSystemSettings } from "./settings.mjs";
 // Import document classes.
 import { fadeActor } from './documents/actor.mjs';
 import { characterActor } from './documents/actor-character.mjs';
+import { monsterActor } from './documents/actor-monster.mjs';
 import { fadeItem } from './documents/item.mjs';
 import { armorItem } from './documents/item-armor.mjs';
 // Import sheet classes.
@@ -20,6 +21,7 @@ Hooks.once('init', function () {
    game.fantasticdepths = {
       fadeActor,
       characterActor,
+      monsterActor,
       fadeItem,
       armorItem,
       rollItemMacro,
@@ -43,7 +45,8 @@ Hooks.once('init', function () {
    // Define custom Document classes
    CONFIG.Actor.documentClass = fadeActor;
    CONFIG.Actor.documentClasses = {
-      character: characterActor
+      character: characterActor,
+      monster: monsterActor
    }
    CONFIG.Item.documentClass = fadeItem;
    CONFIG.Item.documentClasses = {

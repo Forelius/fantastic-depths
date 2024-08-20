@@ -113,6 +113,19 @@
                "abbr": "CHA",
                "mod": "Reactions"
             }
+         },
+         "NumberAppearing": {
+            "abbr": "NA",
+            "long": "Number Appearing",
+            "abbrLair": "NA lair",
+            "longLair": "Number Appearing in Lair"
+         },
+         "Morale": "Morale",
+         "XPAward": "XP Award",
+         "AbilityCount": "Special Abilities",
+         "Treasure": {
+            "wandering": "Treasure",
+            "lair": "Treasure Lair"
          }
       },
       "SheetLabel": {
