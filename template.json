@@ -140,14 +140,7 @@
       "weapon": {
          "templates": [ "gearbase" ],
          "equipped": false,
-         "damageRoll": "1d6",
-         "mod": {
-            "toHit": 0,
-            "toHitRanged": 0,
-            "dmg": 0,
-            "dmgRanged": 0
-         },
-         "ammo": 0,
+         "damageRoll": "1d6",         
          "canMelee": true,
          "canRanged": false,
          "range": {

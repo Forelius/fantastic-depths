@@ -9,14 +9,6 @@
                <label for="system.damageRoll" class='resource-label'>{{localize 'FADE.Weapon.damage.long'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.mod.dmg" value='{{system.mod.dmg}}' data-dtype='Number' />
-               <label for="system.mod.dmg" class='resource-label'>{{localize 'FADE.Weapon.mod.dmg.short'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.mod.toHit" value='{{system.mod.toHit}}' data-dtype='Number' />
-               <label for="system.mod.toHit" class='resource-label'>{{localize 'FADE.Weapon.mod.toHit.short'}}</label>
-            </li>
-            <li class="flex1">
                <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' />
                <label for="system.weight" class='resource-label'>{{localize 'FADE.Item.weight.short'}}</label>
             </li>
@@ -33,14 +25,6 @@
             <li class="flex1">
                <input type="checkbox" name="system.canRanged" data-dtype="Boolean" {{#if system.canRanged}} checked{{/if}} />
                <label for="system.canRanged" class='resource-label'>Ranged</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.mod.dmgRanged" value='{{system.mod.dmgRanged}}' data-dtype='Number' />
-               <label for="system.mod.dmgRanged" class='resource-label'>{{localize 'FADE.Weapon.mod.dmgRanged.short'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.mod.toHitRanged" value='{{system.mod.toHitRanged}}' data-dtype='Number' />
-               <label for="system.mod.toHitRanged" class='resource-label'>{{localize 'FADE.Weapon.mod.toHitRanged.short'}}</label>
             </li>
             <li class="flex1" style="margin-left:3px;">
                <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />

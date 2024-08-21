@@ -5,6 +5,7 @@ import { CharacterActor } from './documents/CharacterActor.mjs';
 import { MonsterActor } from './documents/MonsterActor.mjs';
 import { fadeItem } from './documents/item.mjs';
 import { ArmorItem } from './documents/ArmorItem.mjs';
+import { WeaponItem } from './documents/WeaponItem.mjs';
 import { ItemFactory } from './helpers/ItemFactory.mjs';
 import { ActorFactory } from './helpers/ActorFactory.mjs';
 // Import sheet classes.
@@ -26,6 +27,7 @@ Hooks.once('init', function () {
       MonsterActor,
       fadeItem,
       ArmorItem,
+      WeaponItem,
       rollItemMacro,
    };
 
@@ -63,7 +65,8 @@ Hooks.once('init', function () {
       }
    };
    CONFIG.Item.documentClasses = {
-      armor: ArmorItem
+      armor: ArmorItem,
+      weapon: WeaponItem
    }
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item
