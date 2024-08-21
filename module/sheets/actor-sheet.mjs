@@ -3,8 +3,6 @@ import {
    prepareActiveEffectCategories,
 } from '../helpers/effects.mjs';
 
-import { ItemFactory } from '../helpers/ItemFactory.mjs';
-
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}

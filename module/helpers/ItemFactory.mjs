@@ -1,8 +1,15 @@
-export class ItemFactory {
-   static createItem(data, context) {
-      // Determine the appropriate item class based on the item type
-      const ItemClass = CONFIG.Item.documentClasses[data.type] || fadeItem;
-      // Return a new instance of the appropriate item class
-      return new ItemClass(data, context);
-   }
-}
+import { fadeItem } from '../documents/item.mjs';
+import { ArmorItem } from '../documents/ArmorItem.mjs';
+import { WeaponItem } from '../documents/WeaponItem.mjs';
+
+const handler = {
+   construct(_item, args) {
+      if (args[0]?.type === 'armor') return new ArmorItem(...args);
+      if (args[0]?.type === 'item') return new fadeItem(...args);
+      if (args[0]?.type === 'weapon') return new WeaponItem(...args);
+      throw new Error(SYSTEM_ID, { type: args[0]?.type });
+   },
+
+};
+
+export const ItemFactory = new Proxy(fadeItem, handler);

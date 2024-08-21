@@ -5,7 +5,7 @@
 export class fadeItem extends Item {
    constructor(data, context) {
       super(data, context);
-      //console.log(`Item constructor: type=${data.type}`, this.name, context, this?.actor);
+      console.log(`Item constructor: type=${data.type}`, this.name, context, this?.actor);
    }
 
    /** @override */

@@ -47,27 +47,9 @@ Hooks.once('init', function () {
    };
 
    // Define custom Document classes
-   //CONFIG.Actor.documentClass = fadeActor;
-   CONFIG.Actor.documentClass = class extends Actor {
-      constructor(data, context) {
-         // Use the ActorFactory to create the actor
-         return ActorFactory.createActor(data, context);
-      }
-   };
-   CONFIG.Actor.documentClasses = {
-      character: CharacterActor,
-      monster: MonsterActor
-   }
-   //CONFIG.Item.documentClass = fadeItem;
-   CONFIG.Item.documentClass = class extends Item {
-      constructor(data, context) {
-         return ItemFactory.createItem(data, context);
-      }
-   };
-   CONFIG.Item.documentClasses = {
-      armor: ArmorItem,
-      weapon: WeaponItem
-   }
+   CONFIG.Actor.documentClass = ActorFactory;
+   CONFIG.Item.documentClass = ItemFactory;
+
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item
    // if the transfer property on the Active Effect is true.
@@ -84,6 +66,44 @@ Hooks.once('init', function () {
       makeDefault: true,
       label: 'FADE.SheetLabel.Item',
    });
+
+   //const originalItemCreate = Item.create;
+   //Item.create = async function (data, options) {
+   //   try {
+   //      const item = ItemFactory.createItem(data, options);
+   //      console.log("Created item:", item);
+
+   //      if (!(item instanceof Item)) {
+   //         console.error("Item is not an instance of Item:", item);
+   //         throw new Error("Item.create: ItemFactory did not return an instance of Item.");
+   //      }
+
+   //      // Convert the item to an object and log its structure
+   //      const itemData = item.toObject();
+   //      console.log("Item.toObject() result:", itemData);
+
+   //      // Manually inspect and validate the item data before passing it to Foundry
+   //      if (!itemData._id || !itemData.name || !itemData.type || !itemData.system) {
+   //         throw new Error("Item.create: Missing required fields in item data.");
+   //      }
+
+   //      let created = await originalItemCreate.call(this, data, options);
+   //      console.log("Item.create result:", created);
+   //      return created;
+   //   } catch (error) {
+   //      console.error("Error during item creation:", error);
+   //      throw error;
+   //   }
+   //};
+
+
+   //const originalActorCreate = Actor.create;
+   //Actor.create = async function (data, options) {
+   //   const actor = ActorFactory.createActor(data, options);
+   //   if (!(actor instanceof Actor)) throw new Error("Actor.create: ActorFactory did not return an instance of Actor.");
+   //   console.log("Actor.create", actor.toObject());
+   //   return originalActorCreate.call(this, actor.toObject(), options);
+   //};
 
    // Preload Handlebars templates.
    return preloadHandlebarsTemplates();
