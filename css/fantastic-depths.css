@@ -238,6 +238,10 @@ h1, h2, h3, h4 {
 }
 
 /* Styles limited to fantastic-depths sheets */
+.fantastic-depths .character input {
+  border: 0;
+  padding: 2px 5px;
+}
 .fantastic-depths .character .ability-scores {
   max-width: 140px;
 }

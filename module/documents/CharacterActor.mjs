@@ -1,7 +1,7 @@
 // actor-character.mjs
 import { fadeActor } from './actor.mjs';
 
-export class characterActor extends fadeActor {
+export class CharacterActor extends fadeActor {
 
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
@@ -31,6 +31,17 @@ export class characterActor extends fadeActor {
       // Wrestling skill
       const systemData = this.system;
       systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.abilities.str.mod + systemData.abilities.dex.mod + systemData.ac.value;
+   }
+
+   /**
+ * @override
+ * Prepare all embedded Document instances which exist within this primary Document.
+ * @memberof ClientDocumentMixin#
+ * active effects are applied
+ */
+   prepareEmbeddedDocuments() {
+      super.prepareEmbeddedDocuments();
+      //console.log("CharacterActor.prepareEmbeddedDocuments", this);
    }
 
    /** @override */
@@ -96,13 +107,13 @@ export class characterActor extends fadeActor {
       if (equippedArmor) {
          systemData.ac.value = equippedArmor.system.ac;
          systemData.ac.mod = equippedArmor.system.mod ?? 0;
-         systemData.ac.total = equippedArmor.system.ac - equippedArmor.system.mod - systemData.abilities.dex.mod;
+         systemData.ac.total = equippedArmor.system.totalAc - systemData.abilities.dex.mod;
          if (equippedShield) {
             systemData.ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
             systemData.ac.total -= systemData.ac.shield;
          }         
       }
-      console.log("_prepareArmorClass() ac:", systemData.ac, "equippedArmor:", equippedArmor?.system, "equippedShield:", equippedShield?.system)
+      //console.log("_prepareArmorClass() ac:", systemData.ac, "equippedArmor:", equippedArmor?.system, "equippedShield:", equippedShield?.system);
    }
 
    _prepareEncumbrance() {

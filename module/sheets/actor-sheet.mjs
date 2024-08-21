@@ -3,6 +3,8 @@ import {
    prepareActiveEffectCategories,
 } from '../helpers/effects.mjs';
 
+import { ItemFactory } from '../helpers/ItemFactory.mjs';
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -125,7 +127,7 @@ export class fadeActorSheet extends ActorSheet {
          9: [],
       };
       const specialAbilities = [];
-
+      
       // Iterate through items, allocating to containers
       for (let i of context.items) {
          i.img = i.img || Item.DEFAULT_ICON;

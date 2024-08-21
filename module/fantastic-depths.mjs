@@ -1,10 +1,12 @@
 import { registerSystemSettings } from "./settings.mjs";
 // Import document classes.
 import { fadeActor } from './documents/actor.mjs';
-import { characterActor } from './documents/actor-character.mjs';
-import { monsterActor } from './documents/actor-monster.mjs';
+import { CharacterActor } from './documents/CharacterActor.mjs';
+import { MonsterActor } from './documents/MonsterActor.mjs';
 import { fadeItem } from './documents/item.mjs';
-import { armorItem } from './documents/item-armor.mjs';
+import { ArmorItem } from './documents/ArmorItem.mjs';
+import { ItemFactory } from './helpers/ItemFactory.mjs';
+import { ActorFactory } from './helpers/ActorFactory.mjs';
 // Import sheet classes.
 import { fadeActorSheet } from './sheets/actor-sheet.mjs';
 import { fadeItemSheet } from './sheets/item-sheet.mjs';
@@ -20,10 +22,10 @@ Hooks.once('init', function () {
    // accessible in global contexts.
    game.fantasticdepths = {
       fadeActor,
-      characterActor,
-      monsterActor,
+      CharacterActor,
+      MonsterActor,
       fadeItem,
-      armorItem,
+      ArmorItem,
       rollItemMacro,
    };
 
@@ -43,14 +45,25 @@ Hooks.once('init', function () {
    };
 
    // Define custom Document classes
-   CONFIG.Actor.documentClass = fadeActor;
+   //CONFIG.Actor.documentClass = fadeActor;
+   CONFIG.Actor.documentClass = class extends Actor {
+      constructor(data, context) {
+         // Use the ActorFactory to create the actor
+         return ActorFactory.createActor(data, context);
+      }
+   };
    CONFIG.Actor.documentClasses = {
-      character: characterActor,
-      monster: monsterActor
+      character: CharacterActor,
+      monster: MonsterActor
    }
-   CONFIG.Item.documentClass = fadeItem;
+   //CONFIG.Item.documentClass = fadeItem;
+   CONFIG.Item.documentClass = class extends Item {
+      constructor(data, context) {
+         return ItemFactory.createItem(data, context);
+      }
+   };
    CONFIG.Item.documentClasses = {
-      armor: armorItem
+      armor: ArmorItem
    }
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item

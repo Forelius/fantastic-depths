@@ -160,9 +160,7 @@
          "templates": [ "gearbase" ],
          "equipped": true,
          "ac": 9,
-         "isShield": false,
-         "mod": 0,
-         "totalAc": 9
+         "isShield": false
       },
       "spell": {
          "templates": [ "base" ],

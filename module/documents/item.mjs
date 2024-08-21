@@ -4,38 +4,29 @@
  */
 export class fadeItem extends Item {
    constructor(data, context) {
-      /** @see CONFIG.Item.documentClasses in module/scripts/configure-documents */
-      if (data.type in CONFIG.Item.documentClasses && !context?.extended) {
-         /**
-          * When the constructor for the new class will call it's super(),
-          * the extended flag will be true, thus bypassing this whole process
-          * and resume default behavior
-          */
-         return new CONFIG.Item.documentClasses[data.type](data, {
-            ...{ extended: true },
-            ...context
-         })
+      super(data, context);
+      //console.log(`Item constructor: type=${data.type}`, this.name, context, this?.actor);
+   }
+
+   /** @override */
+   prepareDerivedData() {      
+      super.prepareDerivedData();
+      if (this.type === "item") {
+         this.system.totalWeight = this.system.weight * this.system.quantity;
       }
-      /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context)
    }
 
    /**
-    * Augment the basic Item data model with additional dynamic data.
-    */
+ * Augment the basic Item data model with additional dynamic data.
+ */
    /** @override */
    prepareData() {
       // As with the actor class, items are documents that can have their data
       // preparation methods overridden (such as prepareBaseData()).
       super.prepareData();
+      //console.log("Item prepareData:", this.name, this?.parent, this?.actor);
    }
 
-   /** @override */
-   prepareDerivedData() {
-      if (this.type === "item") {
-         this.system.totalWeight = this.system.weight * this.system.quantity;
-      }
-   }
    /**
     * Prepare a data object which defines the data schema used by dice roll commands against this Item
     * @override

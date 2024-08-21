@@ -1,7 +1,7 @@
 // actor-character.mjs
 import { fadeActor } from './actor.mjs';
 
-export class monsterActor extends fadeActor {
+export class MonsterActor extends fadeActor {
 
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */

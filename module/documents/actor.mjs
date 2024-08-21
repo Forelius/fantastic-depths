@@ -1,17 +1,5 @@
 export class fadeActor extends Actor {
    constructor(data, context) {
-      /** @see CONFIG.Actor.documentClasses in module/scripts/configure-documents */
-      if (data.type in CONFIG.Actor.documentClasses && !context?.extended) {
-         /**
-          * When the constructor for the new class will call it's super(),
-          * the extended flag will be true, thus bypassing this whole process
-          * and resume default behavior
-          */
-         return new CONFIG.Actor.documentClasses[data.type](data, {
-            ...{ extended: true },
-            ...context
-         })
-      }
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context)
    }
@@ -75,6 +63,16 @@ export class fadeActor extends Actor {
       if (actorData.type === 'npc') {
          this._prepDerivedDataNpc();
       }
+   }
+
+   /**
+ * @override
+ * Prepare all embedded Document instances which exist within this primary Document.
+ * @memberof ClientDocumentMixin#
+ * active effects are applied
+ */
+   prepareEmbeddedDocuments() {
+      super.prepareEmbeddedDocuments();
    }
 
    getRollData() {

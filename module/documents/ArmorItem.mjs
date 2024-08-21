@@ -1,15 +1,11 @@
 // actor-character.mjs
 import { fadeItem } from './item.mjs';
 
-export class armorItem extends fadeItem {
+export class ArmorItem extends fadeItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context)
-   }
-
-   /** @override */
-   prepareData() {
-      super.prepareData();
+      super(data, context);
+      console.log(`ArmorItem constructor: type=${data.type}`, this.name, context, this?.actor);
    }
 
    /** @override */
@@ -20,7 +16,7 @@ export class armorItem extends fadeItem {
       systemData.mod = systemData.mod || 0;
       systemData.isShield = systemData.isShield || false;
       systemData.equipped = systemData.equipped || false;
-      //console.log("armorItem.prepareBaseData", systemData);
+      //console.log("ArmorItem.prepareBaseData", systemData);
    }
 
    /** @override */
@@ -39,6 +35,13 @@ export class armorItem extends fadeItem {
          });
       });
       systemData.totalAc = systemData.ac - systemData.mod;
+      //console.log("ArmorItem.prepareDerivedData:", systemData);
+   }
+
+   /** @override */
+   prepareData() {
+      super.prepareData();
+      //console.log("ArmorItem.prepareData:", this.name, this?.parent, this?.actor);
    }
 
    /** @override */

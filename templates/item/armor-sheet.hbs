@@ -1,7 +1,7 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
-      <div class='header-fields'>
+      <label class='header-fields'>
          <ul class="summary flexrow">
             <li class="">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
@@ -30,8 +30,14 @@
                <label for="system.cost" class='resource-label'>{{localize 'FADE.Item.cost.long'}}</label>
             </li>
          </ul>
-      </div>
-   </header>
+         <ul class="summary flexrow">
+            <li>
+               <div>{{system.totalAc}}</div>
+               <label>Total AC</label>
+            </li>
+         </ul>
+         </div>
+</header>
 
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
