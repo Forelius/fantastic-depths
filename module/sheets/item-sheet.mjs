@@ -18,7 +18,7 @@ export class fadeItemSheet extends ItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'description',
+               initial: 'attributes',
             },
          ],
       });
@@ -104,5 +104,16 @@ export class fadeItemSheet extends ItemSheet {
       html.on('click', '.effect-control', (ev) =>
          onManageActiveEffect(ev, this.item)
       );
+
+      html.find('input[data-action="add-tag"]').keypress((ev) => {
+         if (ev.which === 13) {
+            const value = $(ev.currentTarget).val();
+            this.object.pushTag(value);
+         }
+      });
+      html.find(".tag-delete").click((ev) => {
+         const value = ev.currentTarget.parentElement.dataset.tag;
+         this.object.popTag(value);
+      });
    }
 }

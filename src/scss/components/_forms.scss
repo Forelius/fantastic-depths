@@ -46,11 +46,34 @@
       }
    }
 }
+.tag-list {
+   margin: 0;
+   height: 25px;
+   overflow: auto;
+   list-style: none;
+   padding: 1px;
+   display: flex;
+   flex-wrap: wrap;
 
+   .tag {
+      background: $colorOlive;
+      border-radius: 5px;
+      color: whitesmoke;
+      padding: 1px 5px;
+      height: 18px;
+      box-shadow: 0 0 3px $colorFaint;
+      margin: 0 2px;
+
+      i {
+         font-size: 9px;
+         vertical-align: middle;
+         color: $colorFaint;
+      }
+   }
+}
 .sheet-tabs {
    flex: 0;
 }
-
 .sheet-body,
 .sheet-body .tab,
 .sheet-body .tab .editor {
@@ -93,7 +116,7 @@
    border-top: none;
 
    li {
-      height: calc(100% - 6px);
+      height: calc(100% - 5px);
       float: left;
       margin: 2px 2px;
       padding: 0;
@@ -106,7 +129,7 @@
          position: absolute;
          font-size: 10px;
          color: $colorOlive;
-         bottom: 0;
+         bottom: 2px;
          left: 4px;
       }
 

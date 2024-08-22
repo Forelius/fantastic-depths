@@ -1,11 +1,15 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
-      <label class='header-fields'>
+      <div class='header-fields'>
          <ul class="summary flexrow">
-            <li class="">
+            <li class="flex3">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
                <label>{{localize 'FADE.Actor.Name'}}</label>
+            </li>
+            <li class="flex0" style="min-width:40px;">
+               <div class="text-center">{{system.totalAc}}</div>
+               <label>Total AC</label>
             </li>
          </ul>
          <ul class="summary flexrow">
@@ -23,21 +27,15 @@
             </li>
             <li class="flex2">
                <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' />
-               <label for="system.weight" class='resource-label'>{{localize 'FADE.Item.weight.short'}}</label>
+               <label for="system.weight">{{localize 'FADE.Item.weight.short'}}</label>
             </li>
             <li class="flex2">
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' />
-               <label for="system.cost" class='resource-label'>{{localize 'FADE.Item.cost.long'}}</label>
+               <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li>
-               <div>{{system.totalAc}}</div>
-               <label>Total AC</label>
-            </li>
-         </ul>
-         </div>
-</header>
+         </ul>         
+      </div>
+   </header>
 
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>

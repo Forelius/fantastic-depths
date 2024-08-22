@@ -395,6 +395,29 @@ h1, h2, h3, h4 {
   height: 30px;
   padding-top: -1px;
 }
+.fantastic-depths .tag-list {
+  margin: 0;
+  height: 25px;
+  overflow: auto;
+  list-style: none;
+  padding: 1px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.fantastic-depths .tag-list .tag {
+  background: #4b4a44;
+  border-radius: 5px;
+  color: whitesmoke;
+  padding: 1px 5px;
+  height: 18px;
+  box-shadow: 0 0 3px #d8d6c9;
+  margin: 0 2px;
+}
+.fantastic-depths .tag-list .tag i {
+  font-size: 9px;
+  vertical-align: middle;
+  color: #d8d6c9;
+}
 .fantastic-depths .sheet-tabs {
   flex: 0;
 }
@@ -432,7 +455,7 @@ h1, h2, h3, h4 {
   border-top: none;
 }
 .fantastic-depths .summary li {
-  height: calc(100% - 6px);
+  height: calc(100% - 5px);
   float: left;
   margin: 2px 2px;
   padding: 0;
@@ -445,7 +468,7 @@ h1, h2, h3, h4 {
   position: absolute;
   font-size: 10px;
   color: #4b4a44;
-  bottom: 0;
+  bottom: 2px;
   left: 4px;
 }
 .fantastic-depths .summary li.notify input {

@@ -83,4 +83,32 @@ export class fadeItem extends Item {
          return roll;
       }
    }
+
+   pushTag(value) {
+      // Ensure the system data exists and initialize tags array if it doesn't exist
+      const systemData = this.system;
+      systemData.tags = systemData.tags || [];
+
+      // Clean up the value and log the operation
+      const trimmedValue = value;
+
+      // Add the trimmed value to the tags array
+      systemData.tags.push(trimmedValue);
+
+      // Persist the updated data to Foundry's database
+      return this.update({ "system.tags": systemData.tags });
+   }
+
+   popTag(value) {
+      const systemData = this.system;
+
+      // Ensure tags exist and are an array
+      if (!systemData.tags || !Array.isArray(systemData.tags)) return;
+
+      // Filter out the tag that matches the value (case-sensitive)
+      const updatedTags = systemData.tags.filter(tag => tag !== value.trim());
+
+      // Update the item's tags and persist the change
+      return this.update({ "system.tags": updatedTags });
+   }
 }

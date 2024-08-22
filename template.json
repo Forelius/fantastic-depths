@@ -125,22 +125,32 @@
       "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "feature", "specialAbility" ],
       "templates": {
          "base": {
+            "tags": [],
             "description": ""
          },
-         "gearbase": {
-            "description": "",
+         "physical": {
             "quantity": 1,
+            "quantityMax": 0,
             "weight": 0,
-            "cost": 0
+            "cost": 0,
+            "containerId": ""
+         },
+         "equippable": {
+            "equipped": false
          }
       },
       "item": {
-         "templates": [ "gearbase" ]
+         "templates": [ "base", "physical" ],
+         "treasure": false,
+         "isContainer": false
+      },
+      "container": {
+         "templates": [ "common", "physical" ],
+         "itemIds": []
       },
       "weapon": {
-         "templates": [ "gearbase" ],
-         "equipped": false,
-         "damageRoll": "1d6",         
+         "templates": [ "base", "physical", "equippable" ],
+         "damageRoll": "1d6",
          "canMelee": true,
          "canRanged": false,
          "range": {
@@ -150,8 +160,7 @@
          }
       },
       "armor": {
-         "templates": [ "gearbase" ],
-         "equipped": true,
+         "templates": [ "base", "physical", "equippable" ],
          "ac": 9,
          "isShield": false
       },

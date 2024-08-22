@@ -58,8 +58,5 @@ export class WeaponItem extends fadeItem {
             }
          });
       });
-
-      console.log("Updated systemData.mod:", systemData.mod);
    }
-
 }
