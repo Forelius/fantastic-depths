@@ -19,8 +19,8 @@ export class MonsterActor extends fadeActor {
       const systemData = this.system;
 
       systemData.details = systemData.details || {};
-      systemData.details.xpAward = systemData.details.xpAward || 5;
-      systemData.details.abilityCount = systemData.details.abilityCount || 0;
+      systemData.details.xpAward = !isNaN(systemData.details.xpAward) ? systemData.details.xpAward : 5;
+      systemData.details.abilityCount = !isNaN(systemData.details.abilityCount) ? systemData.details.abilityCount : 0;
 
       systemData.na = systemData.na || {};
       systemData.na.wandering = systemData.na.wandering || "1d4";

@@ -113,7 +113,6 @@ export class CharacterActor extends fadeActor {
             systemData.ac.total -= systemData.ac.shield;
          }         
       }
-      //console.log("_prepareArmorClass() ac:", systemData.ac, "equippedArmor:", equippedArmor?.system, "equippedShield:", equippedShield?.system);
    }
 
    _prepareEncumbrance() {

@@ -11,16 +11,33 @@ export class ArmorItem extends fadeItem {
    prepareBaseData() {     
       super.prepareBaseData();
       const systemData = this.system;
-      systemData.ac = systemData.ac || 9;
-      systemData.mod = systemData.mod || 0;
+      systemData.ac = systemData.ac !== undefined ? systemData.ac : 9;
+      systemData.mod = systemData.mod !== undefined ? systemData.mod : 0;
       systemData.isShield = systemData.isShield || false;
       systemData.equipped = systemData.equipped || false;
-      //console.log("ArmorItem.prepareBaseData", systemData);
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      const systemData = this.system;
+      this._prepareEffects();
+      console.log("ArmorItem.prepareDerivedData:", systemData);
+      systemData.totalAc = systemData.ac - systemData.mod;
+   }
+
+   /** @override */
+   prepareData() {
+      super.prepareData();
+   }
+
+   /** @override */
+   getRollData() {
+      const data = super.getRollData();
+      return data;
+   }
+
+   _prepareEffects() {
       const systemData = this.system;
       systemData.mod = 0;
       // Apply any effects that modify system.mod
@@ -33,19 +50,5 @@ export class ArmorItem extends fadeItem {
             }
          });
       });
-      systemData.totalAc = systemData.ac - systemData.mod;
-      //console.log("ArmorItem.prepareDerivedData:", systemData);
-   }
-
-   /** @override */
-   prepareData() {
-      super.prepareData();
-      //console.log("ArmorItem.prepareData:", this.name, this?.parent, this?.actor);
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
    }
 }
