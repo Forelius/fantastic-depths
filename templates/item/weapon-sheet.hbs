@@ -45,7 +45,7 @@
          </ul>
       </div>
    </header>
-
+   {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='attributes'>Attributes</a>
@@ -57,36 +57,7 @@
    <section class='sheet-body'>
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='attributes'>
-         <div class="flexrow">
-            <ol class="tag-list">
-               {{#each system.tags as |tag|}}
-               <li class="tag" data-tag="{{tag}}">
-                  <span>{{tag}}</span>
-                  <a class="tag-delete"><i class="fas fa-times"></i></a>
-               </li>
-               {{/each}}
-            </ol>
-         </div>
-         <ul class="summary flexrow">
-            <li>
-               <input type="text" data-action="add-tag" style="max-width:100px;"/>
-               <label>Add Tag</label>
-            </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex1" style="margin-left:3px;">
-               <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
-               <label for="system.range.short">Short</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
-               <label for="system.range.medium">Medium</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
-               <label for="system.range.long">Long</label>
-            </li>
-         </ul>
+         {{> "systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs"}}
       </div>
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>

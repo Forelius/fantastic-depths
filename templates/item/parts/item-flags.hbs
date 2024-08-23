@@ -1,0 +1,17 @@
+<section class="flexrow bordered tag-section">
+   <div class="flex0 add-tag">
+      <input type="text" data-action="add-tag" placeholder="Add tags" />
+   </div>
+   <div class="flex3">
+      <div class="flexrow">
+         <ol class="tag-list">
+            {{#each system.tags as |tag|}}
+            <li class="tag" data-tag="{{tag}}">
+               <span>{{tag}}</span>
+               <a class="tag-delete"><i class="fas fa-times"></i></a>
+            </li>
+            {{/each}}
+         </ol>
+      </div>
+   </div>
+</section>

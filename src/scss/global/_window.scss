@@ -12,7 +12,7 @@
 }
 
 .bordered {
-   margin: -2px 2px 2px 2px;
+   margin: -2px 2px 4px 2px;
    border: 2px solid #babaa0;
    border-radius: 4px;
    padding: 6px;
@@ -28,4 +28,18 @@
 
 .clear-fix {
    clear: both;
+}
+.sheet nav.sheet-tabs > [data-tab] {
+   padding: 4px 8px;
+   font-weight: 600;
+}
+
+.window-app.fantastic-depths.sheet.actor {
+   min-width: 500px !important;
+   min-height: 540px !important;
+}
+
+.window-app.fantastic-depths.sheet.item {
+   min-width: 460px !important;
+   min-height: 340px !important;
 }

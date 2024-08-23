@@ -2,6 +2,10 @@
    font-family: $font-primary;
 }
 
+h4 {
+   margin: 2px;
+}
+
 .sheet-header {
    flex: 0 auto;
    overflow: hidden;
@@ -46,34 +50,50 @@
       }
    }
 }
-.tag-list {
-   margin: 0;
-   height: 25px;
-   overflow: auto;
-   list-style: none;
-   padding: 1px;
-   display: flex;
-   flex-wrap: wrap;
 
-   .tag {
-      background: $colorOlive;
-      border-radius: 5px;
-      color: whitesmoke;
-      padding: 1px 5px;
-      height: 18px;
-      box-shadow: 0 0 3px $colorFaint;
-      margin: 0 2px;
+.tag-section {
+   padding:2px;
 
-      i {
-         font-size: 9px;
-         vertical-align: middle;
-         color: $colorFaint;
+   .tag-list {
+      margin: 0;
+      height: 25px;
+      overflow: auto;
+      list-style: none;
+      padding: 1px;
+      display: flex;
+      flex-wrap: wrap;
+
+      .tag {
+         background: $colorOlive;
+         border-radius: 5px;
+         color: whitesmoke;
+         padding: 0 5px;
+         height: 18px;
+         box-shadow: 0 0 3px $colorFaint;
+         margin: 0 2px;
+
+         i {
+            font-size: 9px;
+            vertical-align: middle;
+            color: $colorFaint;
+         }
+      }
+   }
+
+   .add-tag {
+      max-height: 28px;
+
+      input {
+         max-height: 20px;
+         min-width: 70px;
       }
    }
 }
+
 .sheet-tabs {
    flex: 0;
 }
+
 .sheet-body,
 .sheet-body .tab,
 .sheet-body .tab .editor {

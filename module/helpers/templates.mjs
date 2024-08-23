@@ -20,5 +20,7 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/item/parts/item-skills.hbs',
       'systems/fantastic-depths/templates/item/parts/item-masteries.hbs',
       'systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs',
+      'systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs',
+      'systems/fantastic-depths/templates/item/parts/item-flags.hbs',
    ]);
 };

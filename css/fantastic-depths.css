@@ -22,7 +22,7 @@ h1, h2, h3, h4 {
 }
 
 .bordered {
-  margin: -2px 2px 2px 2px;
+  margin: -2px 2px 4px 2px;
   border: 2px solid #babaa0;
   border-radius: 4px;
   padding: 6px;
@@ -38,6 +38,21 @@ h1, h2, h3, h4 {
 
 .clear-fix {
   clear: both;
+}
+
+.sheet nav.sheet-tabs > [data-tab] {
+  padding: 4px 8px;
+  font-weight: 600;
+}
+
+.window-app.fantastic-depths.sheet.actor {
+  min-width: 500px !important;
+  min-height: 540px !important;
+}
+
+.window-app.fantastic-depths.sheet.item {
+  min-width: 460px !important;
+  min-height: 340px !important;
 }
 
 :root {
@@ -357,6 +372,9 @@ h1, h2, h3, h4 {
 .fantastic-depths .item-form {
   font-family: "Barlow", sans-serif;
 }
+.fantastic-depths h4 {
+  margin: 2px;
+}
 .fantastic-depths .sheet-header {
   flex: 0 auto;
   overflow: hidden;
@@ -395,7 +413,10 @@ h1, h2, h3, h4 {
   height: 30px;
   padding-top: -1px;
 }
-.fantastic-depths .tag-list {
+.fantastic-depths .tag-section {
+  padding: 2px;
+}
+.fantastic-depths .tag-section .tag-list {
   margin: 0;
   height: 25px;
   overflow: auto;
@@ -404,19 +425,26 @@ h1, h2, h3, h4 {
   display: flex;
   flex-wrap: wrap;
 }
-.fantastic-depths .tag-list .tag {
+.fantastic-depths .tag-section .tag-list .tag {
   background: #4b4a44;
   border-radius: 5px;
   color: whitesmoke;
-  padding: 1px 5px;
+  padding: 0 5px;
   height: 18px;
   box-shadow: 0 0 3px #d8d6c9;
   margin: 0 2px;
 }
-.fantastic-depths .tag-list .tag i {
+.fantastic-depths .tag-section .tag-list .tag i {
   font-size: 9px;
   vertical-align: middle;
   color: #d8d6c9;
+}
+.fantastic-depths .tag-section .add-tag {
+  max-height: 28px;
+}
+.fantastic-depths .tag-section .add-tag input {
+  max-height: 20px;
+  min-width: 70px;
 }
 .fantastic-depths .sheet-tabs {
   flex: 0;
@@ -583,9 +611,4 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .effects .item .effect-controls {
   border: none;
-}
-
-.app.window-app.fantastic-depths.sheet.actor {
-  min-width: 500px !important;
-  min-height: 540px !important;
 }

@@ -177,10 +177,22 @@
                "short": "Rng. Hit+"
             }
          },
+         "range": {
+            "section": "Ranges",
+            "long": "Long",
+            "medium": "Medium",
+            "short": "Short"
+         },
          "damage": {
             "abbr": "Dmg",
             "short": "Damage",
             "long": "Damage Roll"
+         },
+         "ammo": {
+            "long": "Ammunition",
+            "type": "Type",
+            "load": "Load",
+            "maxLoad": "Max Load"
          }
       },
       "Armor": {
@@ -215,7 +227,8 @@
          "Temporary": "Temporary Effects",
          "Passive": "Passive Effects",
          "Inactive": "Inactive Effects"
-      }
+      },
+      "Tags": "Tags"
    },
 
    "TYPES": {

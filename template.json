@@ -153,10 +153,16 @@
          "damageRoll": "1d6",
          "canMelee": true,
          "canRanged": false,
+         "isSlow":  false,
          "range": {
             "short": null,
             "medium": null,
             "long": null
+         },
+         "ammo": {
+            "type": "none",
+            "load": 0,
+            "maxLoad": 0
          }
       },
       "armor": {
