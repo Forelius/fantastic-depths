@@ -42,6 +42,9 @@
                },
                "spell": {
                   "value": 0
+               },
+               "gm": {
+                  "notes": ""
                }
             },
             "movement": {
@@ -126,7 +129,10 @@
       "templates": {
          "base": {
             "tags": [],
-            "description": ""
+            "description": "",
+            "gm": {
+               "notes": ""
+            }
          },
          "physical": {
             "quantity": 1,

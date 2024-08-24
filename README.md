@@ -15,6 +15,10 @@ Monsters and retainers are also supported.
 
 ## Item Sheet
 There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
-Many of the item types support temporary, passive and inactive effects that can apply to the owned character, and in some cases the item itself.
 
-![effects](./assets/img/itemeffects1.jpg)
+![weapon](./assets/img/weaponsheet.jpg)
+
+### Effects
+Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
+
+![armor](./assets/img/itemeffects1.jpg)

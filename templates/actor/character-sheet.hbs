@@ -13,41 +13,46 @@
    <a class="item" data-tab="skills">{{localize 'FADE.Actor.Tabs.Skills'}}</a>
    <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
    <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
+   {{#if isGM}}
+   <a class='item' data-tab='gm-only'>GM Only</a>
+   {{/if}}
 </nav>
 
   {{!-- Sheet Body --}}
 <section class="sheet-body">
-
    {{!-- Abilities Tab --}}
    <div class="tab abilities" data-group="primary" data-tab="abilities">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-abilities.hbs"}}
    </div>
-
    {{!-- Biography Tab --}}
    <div class="tab biography" data-group="primary" data-tab="description">
       {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
       {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
    </div>
-
    {{!-- Owned Items Tab --}}
    <div class="tab items" data-group="primary" data-tab="items">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
    </div>
-
    {{!-- Owned Spells Tab --}}
    <div class="tab spells" data-group="primary" data-tab="spells">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
    </div>
-
    {{!-- Owned Skills Tab --}}
    <div class="tab skills" data-group="primary" data-tab="skills">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-skills.hbs"}}
    </div>
-
    {{!-- Active Effects Tab --}}
    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
       {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
    </div>
-
+   {{! GM-Only Tab }}
+   {{#if isGM}}
+   <div class='tab' data-group='primary' data-tab='gm-only'>
+      <!-- Content that only the GM should see goes here -->
+      <label for="gm-notes">GM Notes:</label>
+      <textarea id="gm-notes" name="system.gm.notes" rows="18">{{system.gm.notes}}</textarea>
+      <!-- You can add more GM-specific content here -->
+   </div>
+   {{/if}}
 </section>
 </form>

@@ -33,7 +33,7 @@
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' />
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
-         </ul>         
+         </ul>
       </div>
    </header>
 
@@ -41,6 +41,9 @@
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='description'>Description</a>
       <a class='item' data-tab='effects'>Effects</a>
+      {{#if isGM}}
+      <a class='item' data-tab='gm-only'>GM Only</a>
+      {{/if}}
    </nav>
 
    {{! Sheet Body }}
@@ -50,10 +53,18 @@
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
          {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
       </div>
-
       {{! Effects Tab }}
       <div class="tab effects" data-group="primary" data-tab="effects">
          {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
       </div>
+      {{! GM-Only Tab }}
+      {{#if isGM}}
+      <div class='tab' data-group='primary' data-tab='gm-only'>
+         <!-- Content that only the GM should see goes here -->
+         <label for="gm-notes">GM Notes:</label>
+         <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
+         <!-- You can add more GM-specific content here -->
+      </div>
+      {{/if}}
    </section>
 </form>

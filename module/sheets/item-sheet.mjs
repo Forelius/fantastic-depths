@@ -89,6 +89,8 @@ export class fadeItemSheet extends ItemSheet {
       // Prepare active effects for easier access
       context.effects = prepareActiveEffectCategories(this.item.effects);
 
+      context.isGM = game.user.isGM;
+
       return context;
    }
 

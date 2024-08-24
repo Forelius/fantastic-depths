@@ -87,6 +87,8 @@ export class fadeActorSheet extends ActorSheet {
          this.actor.allApplicableEffects()
       );
 
+      context.isGM = game.user.isGM;
+
       return context;
    }
 
