@@ -3,7 +3,13 @@
       {{#each system.abilities as |ability key|}}
       <div class="ability flexrow flex-group-left">
          <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-         <label for="system.abilities.{{key}}.value" class="rollable flex0" data-roll="d20" data-label="{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}">{{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}</label>
+         <label for="system.abilities.{{key}}.value" class="rollable flex0"
+                data-roll="1d20"
+                data-ability="{{key}}"
+                data-test="ability"
+                data-pass="lte">
+            {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
+         </label>
          <span class="ability-mod flex0" title="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
       </div>
       {{/each}}

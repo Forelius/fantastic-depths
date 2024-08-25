@@ -1,6 +1,6 @@
-import { fadeActor } from '../documents/actor.mjs';
-import { CharacterActor } from '../documents/CharacterActor.mjs';
-import { MonsterActor } from '../documents/MonsterActor.mjs';
+import { fadeActor } from '../actor/actor.mjs';
+import { CharacterActor } from '../actor/CharacterActor.mjs';
+import { MonsterActor } from '../actor/MonsterActor.mjs';
 
 const handler = {
    construct(_actor, args) {

@@ -83,6 +83,9 @@
             }
          },
          "Abilities": {
+            "score": "Score",
+            "long": "Ability",
+            "plural": "Abilities",
             "str": {
                "long": "Strength",
                "abbr": "STR",
@@ -228,7 +231,11 @@
          "Passive": "Passive Effects",
          "Inactive": "Inactive Effects"
       },
-      "Tags": "Tags"
+      "Tags": "Tags",
+      "Chat": {
+         "pass": "Success!",
+         "fail": "Failed"
+      }
    },
 
    "TYPES": {

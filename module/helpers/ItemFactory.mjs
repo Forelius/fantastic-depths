@@ -1,6 +1,6 @@
-import { fadeItem } from '../documents/item.mjs';
-import { ArmorItem } from '../documents/ArmorItem.mjs';
-import { WeaponItem } from '../documents/WeaponItem.mjs';
+import { fadeItem } from '../item/item.mjs';
+import { ArmorItem } from '../item/ArmorItem.mjs';
+import { WeaponItem } from '../item/WeaponItem.mjs';
 
 const handler = {
    construct(_item, args) {

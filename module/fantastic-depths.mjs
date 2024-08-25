@@ -1,11 +1,11 @@
 import { registerSystemSettings } from "./settings.mjs";
 // Import document classes.
-import { fadeActor } from './documents/actor.mjs';
-import { CharacterActor } from './documents/CharacterActor.mjs';
-import { MonsterActor } from './documents/MonsterActor.mjs';
-import { fadeItem } from './documents/item.mjs';
-import { ArmorItem } from './documents/ArmorItem.mjs';
-import { WeaponItem } from './documents/WeaponItem.mjs';
+import { fadeActor } from './actor/actor.mjs';
+import { CharacterActor } from './actor/CharacterActor.mjs';
+import { MonsterActor } from './actor/MonsterActor.mjs';
+import { fadeItem } from './item/item.mjs';
+import { ArmorItem } from './item/ArmorItem.mjs';
+import { WeaponItem } from './item/WeaponItem.mjs';
 import { ItemFactory } from './helpers/ItemFactory.mjs';
 import { ActorFactory } from './helpers/ActorFactory.mjs';
 // Import sheet classes.
