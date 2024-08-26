@@ -11,33 +11,10 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       const rollContent = await roll.render({ flavor: rollFlavor });
       mdata.score = context.system.abilities[mdata.ability].value;
 
-      let testResult = false;
       const dieSum = ChatBuilder.getDiceSum(roll);
 
-      let targetNumber = Number(mdata.target); // Ensure the target number is a number
-
-      // Determine if the roll is successful based on the roll type and target number
-      let success = false;
-      switch (mdata.pass) {
-         case 'lt':
-            success = dieSum < mdata.score;
-            break;
-         case 'lte':
-            success = dieSum <= mdata.score;
-            break;
-         case 'gt':
-            success = dieSum > mdata.score;
-            break;
-         case 'gte':
-            success = dieSum >= mdata.score;
-            break;
-         default:
-            success = false; // If no valid roll type is provided, default to failure
-            break;
-      }
-
-      testResult = success ? this.RESULT_TYPE.PASSED : this.RESULT_TYPE.FAILED;
-
+      // Determine if the roll is successful based on the roll type and target number      
+      let testResult = this.getRollResultType(dieSum, mdata.score, mdata.pass);
       const resultString = ChatBuilder.getResult(testResult);
 
       // Get the actor and user names

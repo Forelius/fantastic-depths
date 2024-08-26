@@ -313,6 +313,11 @@ export class fadeActorSheet extends ActorSheet {
          cardType = CHAT_TYPE.ABILITY_CHECK;
          dialogResp = await DialogFactory(dataset, this.actor);
          formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
+      } else if (dataset.test === "generic") {
+         dataset.dialog = dataset.test;
+         cardType = CHAT_TYPE.GENERIC_ROLL;
+         dialogResp = await DialogFactory(dataset, this.actor);
+         formula = dialogResp.resp.mod != 0 ? `${formula} @op @mod` : formula;
       } else {
          // Basic roll with roll formula and label
          cardType = CHAT_TYPE.GENERIC_ROLL;

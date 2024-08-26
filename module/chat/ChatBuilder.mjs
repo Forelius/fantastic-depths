@@ -166,4 +166,28 @@ export class ChatBuilder {
 		this.#resultCache ||= this.#initializeResultCache();
 		return this.#resultCache[rv] || `Unknown result type: <b>${rv}</b>`;
 	}
+
+	getRollResultType(rollTotal, target, operator) {
+		let success = false;
+
+		switch (operator) {
+			case 'lt':
+				success = rollTotal < target;
+				break;
+			case 'lte':
+				success = rollTotal <= target;
+				break;
+			case 'gt':
+				success = rollTotal > target;
+				break;
+			case 'gte':
+				success = rollTotal >= target;
+				break;
+			default:
+				success = false; // If no valid roll type is provided, default to failure
+				break;
+		}
+
+		return success ? this.RESULT_TYPE.PASSED : this.RESULT_TYPE.FAILED;
+	}
 }
