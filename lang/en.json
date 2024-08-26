@@ -235,6 +235,11 @@
       "Chat": {
          "pass": "Success!",
          "fail": "Failed"
+      },
+      "roll": "Roll",
+      "modifier": "Modifier",
+      "dialog": {
+         "abilityCheck": "AbilityCheck"
       }
    },
 

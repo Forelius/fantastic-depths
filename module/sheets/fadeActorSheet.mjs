@@ -1,3 +1,4 @@
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { onManageActiveEffect, prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 /**
@@ -292,53 +293,6 @@ export class fadeActorSheet extends ActorSheet {
       return await Item.create(itemData, { parent: this.actor });
    }
 
-   async _rollWithFormula(dataset) {
-      let label = dataset.label ? `${dataset.label}` : '';
-      let type = dataset.type;
-      let targetNumber = Number(dataset.target); // Ensure the target number is a number
-      let roll = new Roll(dataset.roll, this.actor.getRollData());
-
-      // Evaluate the roll
-      await roll.evaluate();
-      // Get the total result of the roll
-      let rollResult = roll.total;
-
-      // Determine if the roll is successful based on the roll type and target number
-      let success;
-      switch (type) {
-         case 'lt':
-            success = rollResult < targetNumber;
-            break;
-         case 'gt':
-            success = rollResult > targetNumber;
-            break;
-         case 'lte':
-            success = rollResult <= targetNumber;
-            break;
-         case 'gte':
-            success = rollResult >= targetNumber;
-            break;
-         default:
-            success = false; // If no valid roll type is provided, default to failure
-            break;
-      }
-
-      // Create the success or failure message
-      let resultMessage = `<div style="font-size: 1.5em; color: ${success ? 'green' : 'red'};">${success ? 'Success' : 'Failure'}</div>`;
-
-      // Display the result in the chat with the correct layout
-      roll.toMessage({
-         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-         flavor: `<b>${label} Test</b>`,  // This will appear at the top of the chat message
-         content: resultMessage,  // This will appear below the roll display
-         rollMode: game.settings.get('core', 'rollMode'),
-         roll: roll // This ensures that the roll details are displayed
-      });
-
-      return roll;
-   }
-
-
    /**
     * Handle clickable rolls.
     * @param {Event} event   The originating click event
@@ -347,38 +301,37 @@ export class fadeActorSheet extends ActorSheet {
    async _onRoll(event) {
       event.preventDefault();
       event.stopPropagation();
-      const element = event.currentTarget;
-      const dataset = element.dataset;
 
+      const elem = event.currentTarget;
+      const dataset = elem.dataset;
+      let formula = dataset.formula;
       let cardType = null;
+      let dialogResp;
 
-      if (dataset.test === 'ability') cardType = CHAT_TYPE.ABILITY_CHECK;
+      if (dataset.test === 'ability') {
+         dataset.dialog = dataset.test;
+         cardType = CHAT_TYPE.ABILITY_CHECK;
+         dialogResp = await DialogFactory(dataset, this.actor);
+         formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
+      } else {
+         // Basic roll with roll formula and label
+         cardType = CHAT_TYPE.GENERIC_ROLL;
+      }
 
       if (cardType !== null) {
-         let roll = await new Roll(dataset.roll, this.actor.getRollData()).evaluate();
+         const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
+         let rolled = await new Roll(formula, rollContext).evaluate();
          const chatData = {
+            dialogResp: dialogResp,
             caller: this,
             context: this.actor,
             mdata: dataset,
-            roll: roll,
+            roll: rolled,
          };
          const builder = new ChatFactory(cardType, chatData);
          return builder.createChatMessage();
       }
 
       return false;
-
-      // Handle item rolls.
-      //if (dataset.rollType) {
-      //   if (dataset.rollType == 'item') {
-      //      const itemId = element.closest('.item').dataset.itemId;
-      //      const item = this.actor.items.get(itemId);
-      //      if (item) return item.roll();
-      //   }
-      //}
-      //// Handle rolls that supply the formula directly.
-      //else if (dataset.roll) {
-      //   return this._rollWithFormula(dataset);
-      //}
    }
 }

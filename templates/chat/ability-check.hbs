@@ -1,8 +1,5 @@
-{{localize 'FADE.Actor.Abilities.long'}}:
-<b>{{localize (concat 'FADE.Actor.Abilities.' mdata.ability '.long')}}</b>
-<br>
-{{localize 'FADE.Actor.Abilities.score'}}:
-<b>{{mdata.score}}</b>
+<div>Ability check for {{actorName}}</div>
+<b>{{localize (concat 'FADE.Actor.Abilities.' mdata.ability '.long')}}</b> ({{mdata.score}})
 <br>
 <hr>
 {{#if resultString}}{{{resultString}}}{{/if}}

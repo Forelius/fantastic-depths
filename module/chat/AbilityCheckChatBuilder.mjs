@@ -11,7 +11,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       const rollContent = await roll.render({ flavor: rollFlavor });
       mdata.score = context.system.abilities[mdata.ability].value;
 
-      let rv = false;
+      let testResult = false;
       const dieSum = ChatBuilder.getDiceSum(roll);
 
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
@@ -36,13 +36,20 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
             break;
       }
 
-      console.log("createChatMessage", roll);
+      testResult = success ? this.RESULT_TYPE.PASSED : this.RESULT_TYPE.FAILED;
 
-      rv = success ? this.RESULT_TYPE.PASSED : this.RESULT_TYPE.FAILED;
+      const resultString = ChatBuilder.getResult(testResult);
 
-      const resultString = ChatBuilder.getResult(rv);
-
-      const chatData = { rollContent, mdata, resultString };
+      // Get the actor and user names
+      const actorName = context.name; // Actor name (e.g., character name)
+      const userName = game.users.current.name; // User name (e.g., player name)
+      const chatData = {
+         rollContent,
+         mdata,
+         resultString,
+         actorName,
+         userName,
+      };
       const content = await renderTemplate(this.template, chatData);
 
       const chatMessageData = this.getChatMessageData({ content, rolls });

@@ -9,8 +9,8 @@ import { WeaponItem } from './item/WeaponItem.mjs';
 import { ItemFactory } from './helpers/ItemFactory.mjs';
 import { ActorFactory } from './helpers/ActorFactory.mjs';
 // Import sheet classes.
-import { fadeActorSheet } from './sheets/actor-sheet.mjs';
-import { fadeItemSheet } from './sheets/item-sheet.mjs';
+import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
+import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { FADE } from './helpers/config.mjs';
