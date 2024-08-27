@@ -39,12 +39,12 @@
          <h4>{{localize 'FADE.Actor.Ex.long'}}</h4>
          <div class="flexrow flex-group-center">
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.openDoor" data-formula="d6" data-pass="gte" data-target="{{system.exploration.openDoor}}" data-label="{{localize 'FADE.Actor.Ex.OpenDoor.value'}}" title="{{localize 'FADE.Actor.Ex.OpenDoor.long'}}">{{localize 'FADE.Actor.Ex.OpenDoor.abbr'}}</label>
+               <label class="rollable" for="system.exploration.openDoor" data-test="generic" data-formula="d6" data-pass="gte" data-target="{{system.exploration.openDoor}}" data-label="{{localize 'FADE.Actor.Ex.OpenDoor.value'}}" title="{{localize 'FADE.Actor.Ex.OpenDoor.long'}}">{{localize 'FADE.Actor.Ex.OpenDoor.abbr'}}</label>
                <br />
                <input name="system.exploration.openDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" />
             </span>
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.secretDoor" data-formula="d6" data-pass="lte" data-target="{{system.exploration.secretDoor}}" data-label="{{localize 'FADE.Actor.Ex.SecretDoor.value'}}" title="{{localize 'FADE.Actor.Ex.SecretDoor.long'}}">{{localize 'FADE.Actor.Ex.SecretDoor.abbr'}}</label>
+               <label class="rollable" for="system.exploration.secretDoor" data-test="generic" data-formula="d6" data-pass="lte" data-target="{{system.exploration.secretDoor}}" data-label="{{localize 'FADE.Actor.Ex.SecretDoor.value'}}" title="{{localize 'FADE.Actor.Ex.SecretDoor.long'}}">{{localize 'FADE.Actor.Ex.SecretDoor.abbr'}}</label>
                <br />
                <input name="system.exploration.secretDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" />
             </span>
@@ -52,12 +52,12 @@
          <div class="clear-fix"></div>
          <div class="flexrow flex-group-center">
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.listenDoor" data-formula="d6" data-pass="lte" data-target="{{system.exploration.listenDoor}}" data-label="{{localize 'FADE.Actor.Ex.ListenDoor.value'}}" title="{{localize 'FADE.Actor.Ex.ListenDoor.long'}}">{{localize 'FADE.Actor.Ex.ListenDoor.abbr'}}</label>
+               <label class="rollable" for="system.exploration.listenDoor" data-test="generic" data-formula="d6" data-pass="lte" data-target="{{system.exploration.listenDoor}}" data-label="{{localize 'FADE.Actor.Ex.ListenDoor.value'}}" title="{{localize 'FADE.Actor.Ex.ListenDoor.long'}}">{{localize 'FADE.Actor.Ex.ListenDoor.abbr'}}</label>
                <br />
                <input name="system.exploration.listenDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" />
             </span>
             <span class="xsmall-col">
-               <label class="rollable" for="system.exploration.findTrap" data-formula="d6" data-pass="lte" data-target="{{system.exploration.findTrap}}" data-label="{{localize 'FADE.Actor.Ex.FindTrap.value'}}" title="{{localize 'FADE.Actor.Ex.FindTrap.long'}}">{{localize 'FADE.Actor.Ex.FindTrap.abbr'}}</label>
+               <label class="rollable" for="system.exploration.findTrap" data-test="generic" data-formula="d6" data-pass="lte" data-target="{{system.exploration.findTrap}}" data-label="{{localize 'FADE.Actor.Ex.FindTrap.value'}}" title="{{localize 'FADE.Actor.Ex.FindTrap.long'}}">{{localize 'FADE.Actor.Ex.FindTrap.abbr'}}</label>
                <br />
                <input name="system.exploration.findTrap" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.Ex.FindTrap.long'}}" value="{{system.exploration.findTrap}}" />
             </span>
@@ -72,7 +72,7 @@
          {{#each system.savingThrows as |savingThrow key|}}
          <div class="flexrow flex-group-center">
             <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-            <label for="system.savingThrows.{{key}}.value" class="rollable" data-formula="d20" data-pass="gte" data-target="{{savingThrow.value}}" data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
+            <label for="system.savingThrows.{{key}}.value" class="rollable" data-test="generic" data-formula="d20" data-pass="gte" data-target="{{savingThrow.value}}" data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
                {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
             </label>
          </div>

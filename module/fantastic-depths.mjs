@@ -3,7 +3,7 @@ import { registerSystemSettings } from "./settings.mjs";
 import { fadeActor } from './actor/actor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
-import { fadeItem } from './item/item.mjs';
+import { fadeItem } from './item/fadeItem.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { ItemFactory } from './helpers/ItemFactory.mjs';

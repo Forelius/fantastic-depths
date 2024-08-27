@@ -563,6 +563,8 @@ h1, h2, h3, h4 {
   background-size: 30px;
   border: none;
   margin-right: 4px;
+  position: relative;
+  top: 2px;
 }
 .fantastic-depths .items-list .item-60px {
   width: 60px;

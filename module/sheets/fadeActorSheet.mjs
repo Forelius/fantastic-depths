@@ -308,7 +308,14 @@ export class fadeActorSheet extends ActorSheet {
       let cardType = null;
       let dialogResp;
 
-      if (dataset.test === 'ability') {
+      console.log("fadeActor._onRoll", dataset);
+
+      if (dataset.rollType === 'item') {
+         const li = $(event.currentTarget).parents('.item');
+         const item = this.actor.items.get(li.data('itemId'));
+         if (item) item.roll();
+      }
+      else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          cardType = CHAT_TYPE.ABILITY_CHECK;
          dialogResp = await DialogFactory(dataset, this.actor);
@@ -317,7 +324,9 @@ export class fadeActorSheet extends ActorSheet {
          dataset.dialog = dataset.test;
          cardType = CHAT_TYPE.GENERIC_ROLL;
          dialogResp = await DialogFactory(dataset, this.actor);
-         formula = dialogResp.resp.mod != 0 ? `${formula} @op @mod` : formula;
+         formula = dialogResp.resp.mod != 0 ?
+            (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`)
+            : formula;
       } else {
          // Basic roll with roll formula and label
          cardType = CHAT_TYPE.GENERIC_ROLL;

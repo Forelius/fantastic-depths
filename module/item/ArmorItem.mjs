@@ -1,4 +1,4 @@
-import { fadeItem } from './item.mjs';
+import { fadeItem } from './fadeItem.mjs';
 
 export class ArmorItem extends fadeItem {
    constructor(data, context) {

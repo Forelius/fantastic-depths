@@ -10,7 +10,7 @@ function focusById(id) {
 }
 
 export class fadeDialog {
-   static async getGenericRollDialog(dataset, caller) {
+   static async getGenericDialog(dataset, caller) {
       const dialogData = {};
       const dialogResp = { caller };
 
