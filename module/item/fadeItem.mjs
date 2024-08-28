@@ -57,7 +57,7 @@ export class fadeItem extends Item {
       const rollMode = game.settings.get('core', 'rollMode');
       const label = `[${item.type}] ${item.name}`;
 
-      console.log("fadeItem.roll", item);
+      console.log("fadeItem.roll", label, item);
 
       // If there's no roll data, send a chat message.
       if (!this.system.formula) {

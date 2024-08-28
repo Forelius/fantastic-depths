@@ -76,17 +76,20 @@ Hooks.once('init', function () {
 /* -------------------------------------------- */
 
 // If you need to add Handlebars helpers, here is a useful example:
-Handlebars.registerHelper('uppercase', function (str) {
-   return str.toUpperCase();
-});
-Handlebars.registerHelper('lowercase', function (str) {
-   return str.toLowerCase();
-});
+Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
+Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
 Handlebars.registerHelper("counter", (status, value, max) =>
    status
       ? Math.clamp((100 * value) / max, 0, 100)
       : Math.clamp(100 - (100 * value) / max, 0, 100)
 );
+Handlebars.registerHelper("times", (n, block) => {
+   let accum = "";
+   // eslint-disable-next-line no-plusplus
+   for (let i = 0; i < n; ++i) accum += block.fn(i);
+   return accum;
+});
+Handlebars.registerHelper("subtract",(lh, rh) => parseInt(lh, 10) - parseInt(rh, 10));
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

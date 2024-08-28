@@ -176,6 +176,10 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /* -------------------------------------------- */
+   _getItemFromActor(event) {
+      const li = $(event.currentTarget).parents('.item');
+      return this.actor.items.get(li.data('itemId'));
+   }
 
    _toggleCollapsibleContent(event) {
       const header = event.currentTarget; // Get the clicked element
@@ -199,15 +203,23 @@ export class fadeActorSheet extends ActorSheet {
       });
    }
 
+   /**
+  * @param event
+  * @param {bool} decrement
+  */
+   _useConsumable(event, decrement) {
+      const item = this._getItemFromActor(event);
+      let quantity = item.system.quantity;
+      item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+   }
 
    /** @override */
    activateListeners(html) {
       super.activateListeners(html);
 
       // Render the item sheet for viewing/editing prior to the editable check.
-      html.on('click', '.item-edit', (ev) => {
-         const li = $(ev.currentTarget).parents('.item');
-         const item = this.actor.items.get(li.data('itemId'));
+      html.on('click', '.item-edit', (event) => {         
+         const item = this._getItemFromActor(event);
          item.sheet.render(true);
       });
 
@@ -219,18 +231,18 @@ export class fadeActorSheet extends ActorSheet {
       html.on('click', '.item-create', this._onItemCreate.bind(this));
 
       // Delete Inventory Item
-      html.on('click', '.item-delete', (ev) => {
-         const li = $(ev.currentTarget).parents('.item');
-         const item = this.actor.items.get(li.data('itemId'));
+      html.on('click', '.item-delete', (event) => {
+         const item = this._getItemFromActor(event);
+         const li = $(event.currentTarget).parents('.item');
          item.delete();
          li.slideUp(200, () => this.render(false));
       });
 
       // Active Effect management
-      html.on('click', '.effect-control', (ev) => {
-         const row = ev.currentTarget.closest('li');
+      html.on('click', '.effect-control', (event) => {
+         const row = event.currentTarget.closest('li');
          const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
-         onManageActiveEffect(ev, document);
+         onManageActiveEffect(event, document);
       });
 
       // Rollable abilities.
@@ -238,7 +250,7 @@ export class fadeActorSheet extends ActorSheet {
 
       // Drag events for macros.
       if (this.actor.isOwner) {
-         let handler = (ev) => this._onDragStart(ev);
+         let handler = (event) => this._onDragStart(event);
          html.find('li.item').each((i, li) => {
             if (li.classList.contains('inventory-header')) return;
             li.setAttribute('draggable', true);
@@ -252,12 +264,19 @@ export class fadeActorSheet extends ActorSheet {
       });
 
       // Toggle Equipment
-      html.find(".item-toggle").click(async (ev) => {
-         const li = $(ev.currentTarget).closest(".item"); // Using closest instead of parents for accuracy
-         const item = this.actor.items.get(li.data("itemId"));
+      html.find(".item-toggle").click(async (event) => {
+         const item = this._getItemFromActor(event);
          // Toggle the equipped state and store the new state in isEquipped
          const isEquipped = !item.system.equipped;
          await item.update({ "system.equipped": isEquipped });
+      });
+
+      // Consumables
+      html.find(".consumable-counter .full-mark").click((event) => {
+         this._useConsumable(event, true);
+      });
+      html.find(".consumable-counter .empty-mark").click((event) => {
+         this._useConsumable(event, false);
       });
    }
 

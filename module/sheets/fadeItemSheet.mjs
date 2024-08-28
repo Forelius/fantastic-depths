@@ -45,16 +45,10 @@ export class fadeItemSheet extends ItemSheet {
    /** @override */
    get template() {
       const path = 'systems/fantastic-depths/templates/item';
-      // Return a single sheet for all item types.
-      // return `${path}/item-sheet.hbs`;
-
-      // Alternatively, you could use the following return statement to do a
-      // unique item sheet by type, like `weapon-sheet.hbs`.
       return `${path}/${this.item.type}-sheet.hbs`;
    }
 
    /* -------------------------------------------- */
-
    /** @override */
    async getData() {
       // Retrieve base data structure.
@@ -89,6 +83,7 @@ export class fadeItemSheet extends ItemSheet {
       // Prepare active effects for easier access
       context.effects = prepareActiveEffectCategories(this.item.effects);
 
+      // Is this user the game master?
       context.isGM = game.user.isGM;
 
       return context;

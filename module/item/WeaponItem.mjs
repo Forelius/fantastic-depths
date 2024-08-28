@@ -17,6 +17,7 @@ export class WeaponItem extends fadeItem {
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareEffects();
+      this._prepareModText();
    }
 
    /** @override */
@@ -28,6 +29,26 @@ export class WeaponItem extends fadeItem {
    getRollData() {
       const data = super.getRollData();
       return data;
+   }
+
+   _prepareModText() {
+      const systemData = this.system;
+      let toHitText = "";
+      let dmgText = "";
+      if (systemData.canMelee) {
+         toHitText += systemData.mod.toHit ?? "0";
+         dmgText += systemData.mod.dmg ?? "0";
+      }
+      if (systemData.canMelee === true && systemData.canRanged === true) {
+         toHitText += "/";
+         dmgText += "/";
+      }
+      if (systemData.canRanged) {
+         toHitText += systemData.mod.toHitRanged ?? "0";
+         dmgText += systemData.mod.dmgRanged ?? "0";
+      }
+      systemData.mod.toHitText = toHitText;
+      systemData.mod.dmgText = dmgText;
    }
 
    _prepareEffects() {

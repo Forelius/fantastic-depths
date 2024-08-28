@@ -141,15 +141,19 @@
       },
       "Item": {
          "plural": "Gear",
+         "uses": "Uses",
          "equip": "Equip",
          "unequip": "Unequip",
          "quantity": {
             "long": "Quantity",
+            "maxLong": "Max. Quantity",
             "abbr": "qty",
+            "maxAbbr": "max qty",
             "abbr2": "#"
          },
          "weight": {
             "short": "Enc (cn)",
+            "short2": "Enc",
             "long": "Encumbrance (cn)",
             "long2": "Encumbrance",
             "abbr": "cn",
@@ -192,6 +196,7 @@
             "long": "Damage Roll"
          },
          "ammo": {
+            "short": "Ammo",
             "long": "Ammunition",
             "type": "Type",
             "load": "Load",
