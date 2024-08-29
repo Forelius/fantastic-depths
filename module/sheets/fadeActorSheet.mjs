@@ -209,8 +209,13 @@ export class fadeActorSheet extends ActorSheet {
   */
    _useConsumable(event, decrement) {
       const item = this._getItemFromActor(event);
-      let quantity = item.system.quantity;
-      item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+      if (item.type === "weapon") {
+         let quantity = item.system.ammo.load;
+         item.update({ "system.ammo.load": decrement ? --quantity : ++quantity, });
+      } else {
+         let quantity = item.system.quantity;
+         item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+      }
    }
 
    /** @override */
