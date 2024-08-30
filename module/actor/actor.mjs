@@ -12,6 +12,7 @@ export class fadeActor extends Actor {
 
       switch (this.type) {
          case "character":
+         case "npc":
             Object.assign(changeData, {
                "prototypeToken.sight": {
                   "enabled": true,
@@ -23,9 +24,7 @@ export class fadeActor extends Actor {
             });
             break;
          case "monster":
-            break;
-         case "npc":
-            break;
+            break;         
       }
 
       await this.updateSource(changeData);
@@ -41,7 +40,6 @@ export class fadeActor extends Actor {
    /** @override */
    prepareBaseData() {
       this._prepareMovement();
-      console.log("actor.prepareBaseData()");
       const systemData = this.system;
       systemData.ac = systemData.ac || {};
 
@@ -57,14 +55,6 @@ export class fadeActor extends Actor {
          systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
       });
    }
-   /** @override */
-   prepareDerivedData() {
-      const actorData = this;
-
-      if (actorData.type === 'npc') {
-         this._prepDerivedDataNpc();
-      }
-   }
 
    /**
  * @override
@@ -78,11 +68,6 @@ export class fadeActor extends Actor {
 
    getRollData() {
       const data = { ...this.system };
-
-      if (this.type === 'npc') {
-         this._getNpcRollData(data);
-      }
-
       return data;
    }
 
@@ -93,15 +78,5 @@ export class fadeActor extends Actor {
       systemData.movement.round = Math.floor(systemData.movement.turn / 3);
       systemData.movement.day = Math.floor(systemData.movement.turn / 5);
       systemData.movement.run = systemData.movement.turn;
-   }
-
-   _prepDerivedDataNpc() {
-      const systemData = this.system;
-      systemData.xp = systemData.cr * systemData.cr * 100;
-   }
-
-   _getNpcRollData(data) {
-      if (this.type !== 'npc') return;
-      // Process additional NPC data here.
    }
 }

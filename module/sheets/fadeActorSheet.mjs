@@ -48,18 +48,13 @@ export class fadeActorSheet extends ActorSheet {
       context.config = CONFIG.FADE;
 
       // Prepare character data and items.
-      if (actorData.type == 'character') {
+      if (actorData.type == 'character' || actorData.type == 'npc') {
          this._prepareItems(context);
          this._prepareCharacterData(context);
       }
 
       // Prepare character data and items.
       if (actorData.type == 'monster') {
-      }
-
-      // Prepare NPC data and items.
-      if (actorData.type == 'npc') {
-         this._prepareItems(context);
       }
 
       // Enrich biography info for display

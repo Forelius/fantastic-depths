@@ -74,7 +74,7 @@ export class CharacterActor extends fadeActor {
 
    _updateClassInfo() {
       const systemData = this.system;
-      const classNameInput = systemData.details.class.toLowerCase();
+      const classNameInput = systemData.details.class?.toLowerCase();
       const classes = CONFIG.FADE.Classes;
       let result = null;
 
