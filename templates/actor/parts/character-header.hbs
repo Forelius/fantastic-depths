@@ -23,6 +23,11 @@
 
    <ul class="summary flexrow">
       <li class="flex2">
+         <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" />
+         <label>{{localize 'FADE.Actor.Class'}}</label>
+      </li>
+
+      <li class="flex2">
          <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
          <label>{{localize 'FADE.Actor.Alignment'}}</label>
       </li>
@@ -36,10 +41,6 @@
       </li>
    </ul>
    <ul class="summary flexrow">
-      <li class="flex2">
-         <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" />
-         <label>{{localize 'FADE.Actor.Class'}}</label>
-      </li>
       <li class="{{#if (gte system.details.xp.value system.details.xp.next)}}notify{{/if}}">
          <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="Number" />
          <label>{{localize 'FADE.Actor.Level'}}</label>
@@ -48,9 +49,17 @@
          <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
          <label>{{localize 'FADE.Actor.Experience'}}</label>
       </li>
+      <li class="flex2">
+         <input type="text" name="system.details.xp.next" value="{{system.details.xp.next}}" data-dtype="Number" />
+         <label>{{localize 'FADE.Actor.NextLevel'}}</label>
+      </li>
       <li class="flex1">
-         <input type="text" name="system.details.xp.bonus" id="experience" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
+         <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
          <label>{{localize "FADE.Actor.XPBonus"}}</label>
       </li>
+      <li class="flex1">
+         <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+         <label>{{localize "FADE.Actor.THAC0"}}</label>
+      </li>      
    </ul>
 </div>

@@ -5,7 +5,6 @@
 export class fadeItem extends Item {
    constructor(data, context) {
       super(data, context);
-      //console.log(`Item constructor: type=${data.type}`, this.name, context, this?.actor);
    }
 
    /** @override */
@@ -17,12 +16,11 @@ export class fadeItem extends Item {
    }
 
    /**
- * Augment the basic Item data model with additional dynamic data.
- */
-   /** @override */
+    * Augment the basic Item data model with additional dynamic data.
+    * @override */
    prepareData() {
       // As with the actor class, items are documents that can have their data
-      // preparation methods overridden (such as prepareBaseData()).
+      // preparation methods overridden(such as prepareBaseData()).
       super.prepareData();
       //console.log("Item prepareData:", this.name, this?.parent, this?.actor);
    }
@@ -46,7 +44,7 @@ export class fadeItem extends Item {
 
    /**
     * Handle clickable rolls.
-    * @param {Event} event   The originating click event
+    * @param {Event} event The originating click event
     * @private
     */
    async roll() {

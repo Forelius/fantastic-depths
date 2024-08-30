@@ -64,7 +64,8 @@
                "level": 0,
                "xp": {
                   "value": 0,
-                  "bonus": 0
+                  "bonus": 0,
+                  "next": 0
                },
                "class": "Fighter",
                "race": "Human",
@@ -166,9 +167,9 @@
             "long": null
          },
          "ammo": {
-            "type": "none",
-            "load": 0,
-            "maxLoad": 0
+            "type": null,
+            "load": null,
+            "maxLoad": null
          }
       },
       "armor": {

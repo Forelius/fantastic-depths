@@ -25,6 +25,7 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      this._updateClassInfo(); 
       this._prepareArmorClass();
       this._prepareEncumbrance();
 
@@ -59,6 +60,56 @@ export class CharacterActor extends fadeActor {
       data.lvl = data.attributes?.level?.value || 0;
 
       return data;
+   }
+
+   /** @override */
+   async _onUpdate(changed, options, userId) {
+      super._onUpdate(changed, options, userId);
+
+      // Check if the class property has changed
+      if (changed.system && changed.system.details && changed.system.details.class) {
+         this._updateClassInfo(); 
+      }
+   }
+
+   _updateClassInfo() {
+      const systemData = this.system;
+      const classNameInput = systemData.details.class.toLowerCase();
+      const classes = CONFIG.FADE.Classes;
+      let result = null;
+
+      // Find a match in the FADE.Classes data
+      for (const [key, classData] of Object.entries(classes)) {
+         if (classData.name.toLowerCase() === classNameInput) {
+            // Class match found
+            result = classData; // Return the matched class data
+            break;
+         }
+      }
+
+      if (result !== null) {
+         const currentLevel = systemData.details.level;
+         const levelData = result.levels.find(level => level.level === currentLevel);
+         const nextLevelData = result.levels.find(level => level.level === currentLevel + 1);
+         const savesData = result.saves.find(save => currentLevel <= save.level);
+
+         if (levelData) {
+            systemData.hp.hd = levelData.hd;
+            systemData.thac0.value = levelData.thac0;
+         }
+         if (nextLevelData) {
+            systemData.details.xp.next = nextLevelData.xp;
+         }
+         if (savesData) {
+            for (let saveType in systemData.savingThrows) {
+               if (savesData.hasOwnProperty(saveType)) {
+                  systemData.savingThrows[saveType].value = savesData[saveType];
+               }
+            }
+         }
+      }
+            
+      return result; // Return null if no match found
    }
 
    _prepareAbilities() {

@@ -13,8 +13,10 @@
          "Class": "Class",
          "Race": "Race",
          "Level": "Level",
+         "NextLevel": "Next Level",
          "Experience": "Experience",
          "XPBonus": "Bonus %",
+         "THAC0": "THAC0",
          "Wrestling": {
             "long": "Wrestling Rating",
             "short": "Wrestling",
