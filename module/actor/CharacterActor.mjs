@@ -1,5 +1,6 @@
 // actor-character.mjs
 import { fadeActor } from './actor.mjs';
+import Formatter from '../utils/Formatter.mjs';
 
 export class CharacterActor extends fadeActor {
 
@@ -25,7 +26,7 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._updateClassInfo(); 
+      this._updateClassInfo();
       this._prepareArmorClass();
       this._prepareEncumbrance();
 
@@ -68,48 +69,8 @@ export class CharacterActor extends fadeActor {
 
       // Check if the class property has changed
       if (changed.system && changed.system.details && changed.system.details.class) {
-         this._updateClassInfo(); 
+         this._updateClassInfo();
       }
-   }
-
-   _updateClassInfo() {
-      const systemData = this.system;
-      const classNameInput = systemData.details.class?.toLowerCase();
-      const classes = CONFIG.FADE.Classes;
-      let result = null;
-
-      // Find a match in the FADE.Classes data
-      for (const [key, classData] of Object.entries(classes)) {
-         if (classData.name.toLowerCase() === classNameInput) {
-            // Class match found
-            result = classData; // Return the matched class data
-            break;
-         }
-      }
-
-      if (result !== null) {
-         const currentLevel = systemData.details.level;
-         const levelData = result.levels.find(level => level.level === currentLevel);
-         const nextLevelData = result.levels.find(level => level.level === currentLevel + 1);
-         const savesData = result.saves.find(save => currentLevel <= save.level);
-
-         if (levelData) {
-            systemData.hp.hd = levelData.hd;
-            systemData.thac0.value = levelData.thac0;
-         }
-         if (nextLevelData) {
-            systemData.details.xp.next = nextLevelData.xp;
-         }
-         if (savesData) {
-            for (let saveType in systemData.savingThrows) {
-               if (savesData.hasOwnProperty(saveType)) {
-                  systemData.savingThrows[saveType].value = savesData[saveType];
-               }
-            }
-         }
-      }
-            
-      return result; // Return null if no match found
    }
 
    _prepareAbilities() {
@@ -125,15 +86,14 @@ export class CharacterActor extends fadeActor {
 
       const adjustments = CONFIG.FADE.AdjustmentTable;
       for (let [key, ability] of Object.entries(systemData.abilities)) {
-         let mod = adjustments[0].value;
-         for (let item of adjustments) {
-            if (ability.value <= item.max) {
-               mod = item.value;
-               break;
-            }
-         }
-         ability.mod = mod;
+         let adjustment = adjustments.find(item => ability.value <= item.max);
+         ability.mod = adjustment ? adjustment.value : adjustments[0].value;
       }
+
+      // Retainer
+      systemData.retainer = systemData.retainer || {};
+      systemData.retainer.max = 4 + systemData.abilities.cha.mod;
+      systemData.retainer.morale = 5 + systemData.abilities.cha.mod;
    }
 
    _prepareArmorClass() {
@@ -149,7 +109,7 @@ export class CharacterActor extends fadeActor {
       const equippedArmor = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && !item.system.isShield
       );
-            
+
       const equippedShield = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && item.system.isShield
       );
@@ -162,7 +122,7 @@ export class CharacterActor extends fadeActor {
          if (equippedShield) {
             systemData.ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
             systemData.ac.total -= systemData.ac.shield;
-         }         
+         }
       }
    }
 
@@ -195,5 +155,61 @@ export class CharacterActor extends fadeActor {
       explore.listenDoor = explore.listenDoor || 2;
       explore.findTrap = explore.findTrap || 1;
       systemData.exploration = explore;
+   }
+
+   _updateClassInfo() {
+      const systemData = this.system;
+      // Replace hyphen with underscore for "Magic-User"
+      const classNameInput = systemData.details.class?.toLowerCase();
+      const classes = CONFIG.FADE.Classes;
+      let classData = null;
+
+      // Find a match in the FADE.Classes data
+      for (const [key, cdata] of Object.entries(classes)) {
+         if (cdata.name.toLowerCase() === classNameInput) {
+            // Class match found
+            classData = cdata; // Return the matched class data
+            break;
+         }
+      }
+
+      if (classData !== null) {
+         const currentLevel = systemData.details.level;
+         const levelData = classData.levels.find(level => level.level === currentLevel);
+         const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
+         const nameLevel = classData.levels.find(level => level.level === 9);
+         const savesData = classData.saves.find(save => currentLevel <= save.level);
+
+         // Level Bonus
+         const { pr5Count, pr10Count } = classData.primeReqs.reduce((counts, primeReq) => {
+            const value = systemData.abilities[primeReq.ability].value;
+            if (value >= primeReq.xpBonus5) counts.pr5Count++;
+            if (value >= primeReq.xpBonus10) counts.pr10Count++;
+            return counts;
+         }, { pr5Count: 0, pr10Count: 0 });
+         systemData.details.xp.bonus = pr10Count === classData.primeReqs.length ? 10 : pr5Count === classData.primeReqs.length ? 5 : 0;
+
+         if (levelData) {
+            systemData.hp.hd = levelData.hd;
+            systemData.thac0.value = levelData.thac0;
+            if (systemData.details.title == "" || systemData.details.title == null) {
+               let ordinalized = Formatter.formatOrdinal(currentLevel);
+               systemData.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
+            }
+         }
+         if (nextLevelData) {
+            systemData.details.xp.next = nextLevelData.xp;
+         }
+         // Saving throws
+         if (savesData) {
+            for (let saveType in systemData.savingThrows) {
+               if (savesData.hasOwnProperty(saveType)) {
+                  systemData.savingThrows[saveType].value = savesData[saveType];
+               }
+            }
+         }
+      }
+
+      return classData; // Return null if no match found
    }
 }

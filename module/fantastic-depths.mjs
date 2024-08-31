@@ -74,7 +74,6 @@ Hooks.once('init', function () {
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
-
 // If you need to add Handlebars helpers, here is a useful example:
 Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
 Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
@@ -94,7 +93,6 @@ Handlebars.registerHelper("subtract",(lh, rh) => parseInt(lh, 10) - parseInt(rh,
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
-
 Hooks.once('ready', function () {
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => createItemMacro(data, slot));
@@ -103,7 +101,6 @@ Hooks.once('ready', function () {
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
 /* -------------------------------------------- */
-
 /**
  * Create a Macro from an Item drop.
  * Get an existing item macro if one exists, otherwise create a new one.

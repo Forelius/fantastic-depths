@@ -116,7 +116,9 @@
             "cha": {
                "long": "Charisma",
                "abbr": "CHA",
-               "mod": "Reactions"
+               "mod": "Reactions",
+               "retainer": "Retainers",
+               "morale": "Morale"
             }
          },
          "NumberAppearing": {

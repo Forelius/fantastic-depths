@@ -10,7 +10,7 @@
    grid-column: span 2 / span 2;
    grid-template-columns: repeat(2, minmax(0, var(--max-column-width)));
    gap: 10px;
-   margin: 10px 0;
+   margin: 0 0;
    padding: 0;
 }
 .grid-2colfr {

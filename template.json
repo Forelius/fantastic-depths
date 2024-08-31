@@ -69,7 +69,8 @@
                },
                "class": "Fighter",
                "race": "Human",
-               "alignment": "Neutral"
+               "alignment": "Neutral",
+               "title": ""
             },
             "encumbrance": {
                "value": 0,
