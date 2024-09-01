@@ -56,7 +56,8 @@
             "initiative": {
                "value": 0,
                "mod": 0
-            }
+            },
+            "languages": ""
          },
          "character": {
             "templates": [ "base" ],
@@ -68,9 +69,15 @@
                   "next": 0
                },
                "class": "Fighter",
-               "race": "Human",
+               "species": "Human",
                "alignment": "Neutral",
-               "title": ""
+               "title": "",
+               "age": 18,
+               "sex": "Male",
+               "height": "5'10\"",
+               "weight": "165 lbs.",
+               "eyes": "Blue",
+               "hair": "brown"
             },
             "encumbrance": {
                "value": 0,
@@ -127,7 +134,7 @@
       }
    },
    "Item": {
-      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "feature", "specialAbility" ],
+      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility" ],
       "templates": {
          "base": {
             "tags": [],

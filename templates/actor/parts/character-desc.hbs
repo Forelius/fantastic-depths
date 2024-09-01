@@ -1,0 +1,29 @@
+<section class="bordered">
+   <ul class="summary flexrow">
+      <li class="flex1">
+         <input type='text' name="system.details.sex" value='{{system.details.sex}}' data-dtype='String' />
+         <label for="system.details.sex">{{localize 'FADE.Actor.Sex'}}</label>
+      </li>
+      <li class="flex1">
+         <input type='text' name="system.details.age" value='{{system.details.age}}' data-dtype='Number' />
+         <label for="system.details.age">{{localize 'FADE.Actor.Age'}}</label>
+      </li>
+      <li class="flex1">
+         <input type='text' name="system.details.height" value='{{system.details.height}}' data-dtype='String' />
+         <label for="system.details.height">{{localize 'FADE.Actor.Height'}}</label>
+      </li>
+      <li class="flex1">
+         <input type='text' name="system.details.weight" value='{{system.details.weight}}' data-dtype='String' />
+         <label for="system.details.weight">{{localize 'FADE.Actor.Weight'}}</label>
+      </li>
+   </ul>
+   <ul class="summary flexrow">
+      <li>
+         <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
+         <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
+      </li>
+   </ul>
+</section>
+
+{{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
+{{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}

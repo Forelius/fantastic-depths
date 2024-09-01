@@ -25,9 +25,9 @@
                <div class="hp-full" style="height:{{counter true system.hp.value system.hp.max}}%"></div>
             </div>
             <!-- Armor Class -->
-            <div class="hitpoints armor-class">
-               <label class="hp-value hp-top" title="{{localize 'FADE.Armor.long'}}">{{system.ac.total}}</label>
-               <div class="hp-value hp-bottom" title="{{localize 'FADE.Armor.naked'}}">{{system.ac.naked}}</div>
+            <div class="armor-class">
+               <label class="ac-value ac-top" title="{{localize 'FADE.Armor.long'}}">{{system.ac.total}}</label>
+               <div class="ac-value ac-bottom" title="{{localize 'FADE.Armor.naked'}}">{{system.ac.naked}}</div>
                {{#if system.ac.shield}}
                <div class="shield" title="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
                {{/if}}

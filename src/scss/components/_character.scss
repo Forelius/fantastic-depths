@@ -92,16 +92,16 @@
          position: absolute;
          font-size: 26px;
          top: 15px;
-         width: 60px;
-         left: calc(50% - 30px);
+         width: 50px;
+         left: calc(50% - 25px);
       }
 
       .hp-bottom {
          position: absolute;
          font-size: 12px;
          bottom: 8px;
-         width: 60px;
-         right: calc(50% + -30px);
+         width: 40px;
+         right: calc(50% + -20px);
       }
 
       .hp-empty {
@@ -120,23 +120,39 @@
    }
 
    .armor-class {
+      height: 74px;
+      position: relative;
       background: url("../assets/img/shield.png") no-repeat center;
       background-size: 70px;
+
+      .ac-value {
+         background: none;
+         border: 0 none;
+         text-align: center;
+         font-weight: bolder;
+         text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
+      }
+
+      .ac-top {
+         position: absolute;
+         font-size: 26px;
+         top: 11px;
+         width: 50px;
+         left: calc(50% - 25px);
+      }
+
+      .ac-bottom {
+         position: absolute;
+         font-size: 12px;
+         bottom: 12px;
+         width: 50px;
+         right: calc(50% + -25px);
+      }
 
       .shield {
          text-align: right;
          margin-right: -2px;
          font-size: 18px;
-      }
-
-      .hp-top {
-         top: 11px;
-         left: calc(50% - 30px);
-      }
-
-      .hp-bottom {
-         bottom: 12px;
-         right: calc(50% + -30px);
       }
    }
 }

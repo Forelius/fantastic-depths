@@ -4,12 +4,17 @@ import { WeaponItem } from '../item/WeaponItem.mjs';
 
 const handler = {
    construct(_item, args) {
-      if (args[0]?.type === 'armor') return new ArmorItem(...args);
-      if (args[0]?.type === 'item') return new fadeItem(...args);
-      if (args[0]?.type === 'weapon') return new WeaponItem(...args);
-      throw new Error(SYSTEM_ID, { type: args[0]?.type });
-   },
-
+      let result = null;
+      if (args[0]?.type === 'armor') result = new ArmorItem(...args);
+      else if (args[0]?.type === 'weapon') result = new WeaponItem(...args);
+      else if (args[0]?.type === 'item') result = new fadeItem(...args);
+      else if (args[0]?.type === 'specialAbility') result = new fadeItem(...args);
+      else if (args[0]?.type === 'mastery') result = new fadeItem(...args);
+      else if (args[0]?.type === 'skill') result = new fadeItem(...args);
+      else if (args[0]?.type === 'spell') result = new fadeItem(...args);
+      else throw new Error(SYSTEM_ID, { type: args[0]?.type });
+      return result;
+   }
 };
 
 export const ItemFactory = new Proxy(fadeItem, handler);

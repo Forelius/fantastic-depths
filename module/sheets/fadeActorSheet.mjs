@@ -10,7 +10,7 @@ export class fadeActorSheet extends ActorSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'actor'],
-         width: 530,
+         width: 570,
          height: 540,
          tabs: [
             {
