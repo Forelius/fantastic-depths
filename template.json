@@ -191,8 +191,9 @@
       },
       "skill": {
          "templates": [ "base" ],
+         "ability": "str",
          "level": 1,
-         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
+         "rollMode": ""
       },
       "mastery": {
          "templates": [ "base" ],
@@ -201,7 +202,7 @@
       },
       "specialAbility": {
          "templates": [ "base" ],
-         "abilityName": "str"
+         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
       },
       "feature": {
          "templates": [ "base" ]

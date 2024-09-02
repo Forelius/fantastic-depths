@@ -31,8 +31,8 @@ export class fadeItemSheet extends ItemSheet {
          options.width = 460;
          options.height = 340;
       } else {
-         options.width = 460;
-         options.height = 400;
+         options.width =460;
+         options.height = 340;
       }
 
       // Call the original render method with modified options
@@ -80,6 +80,13 @@ export class fadeItemSheet extends ItemSheet {
       if (this.item.type === 'weapon' || this.item.type === 'armor' || this.item.type === 'item') {
          // Prepare active effects for easier access
          context.effects = prepareActiveEffectCategories(this.item.effects);
+      }
+      if (this.item.type === 'skill') {
+         // Prepare roll modes select options
+         context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
+            acc[key] = game.i18n.localize(value);
+            return acc;
+         }, {});
       }
 
       // Is this user the game master?

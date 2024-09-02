@@ -67,6 +67,8 @@ Hooks.once('init', function () {
       label: 'FADE.SheetLabel.Item',
    });
 
+   //console.log("Roll Modes:", Object.entries(CONFIG.Dice.rollModes).map(([key, value]) => { return { key: key, label: game.i18n.localize(value) }; }));
+
    // Preload Handlebars templates.
    return preloadHandlebarsTemplates();
 });
@@ -89,6 +91,7 @@ Handlebars.registerHelper("times", (n, block) => {
    return accum;
 });
 Handlebars.registerHelper("subtract",(lh, rh) => parseInt(lh, 10) - parseInt(rh, 10));
+// Register a helper to get roll modes
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

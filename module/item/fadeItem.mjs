@@ -7,6 +7,28 @@ export class fadeItem extends Item {
       super(data, context);
    }
 
+   // Define default icons for various item types using core data paths
+   static get defaultIcons() {
+      const fdPath = `systems/fantastic-depths/assets/img/item`;
+      return {
+         spell: `${fdPath}/spell.png`,
+         specialAbility: `${fdPath}/specialAbility.png`,
+         skill: `${fdPath}/skill.png`,
+         armor: `${fdPath}/armor.png`,
+         weapon: "icons/svg/sword.svg",
+         item: "icons/svg/bag.svg",
+         container: "icons/svg/chest.svg",
+      };
+   }
+
+   // Override the create method to assign default icons if not provided
+   static async create(data, context = {}) {
+      if (data.img === undefined) {
+         data.img = this.defaultIcons[data.type] || "icons/svg/item-bag.svg"; // Fallback icon
+      }
+      return super.create(data, context);
+   }
+
    /** @override */
    prepareDerivedData() {      
       super.prepareDerivedData();
