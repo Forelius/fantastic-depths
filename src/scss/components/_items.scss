@@ -81,6 +81,11 @@
       max-width: 60px;
    }
 
+   .item-80px {
+      width: 80px;
+      max-width: 80px;
+   }
+
    .item-prop {
       text-align: center;
       border-left: 1px solid #c9c7b8;
@@ -116,7 +121,7 @@
       height: 14px;
       display: flex;
       flex-wrap: wrap;
-      line-height: 14px;   
+      line-height: 14px;
 
       label {
          flex: 0 30px;

@@ -1,5 +1,5 @@
 // actor-character.mjs
-import { fadeActor } from './actor.mjs';
+import { fadeActor } from './fadeActor.mjs';
 import Formatter from '../utils/Formatter.mjs';
 
 export class CharacterActor extends fadeActor {

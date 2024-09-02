@@ -19,7 +19,7 @@ export class fadeDialog {
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
       dialogResp.resp = await Dialog.wait({
-         title,
+         title: title,
          content: await renderTemplate(template, dialogData),
          render: () => focusById('mod'),
          buttons: {
@@ -30,7 +30,7 @@ export class fadeDialog {
                }),
             },
          },
-         default: 'check',
+         default: 'check'
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -41,24 +41,27 @@ export class fadeDialog {
       const dialogResp = { caller };
 
       dialogData.ability = dataset.ability;
-      const title = `${caller.name}: ${dialogData.ability} ${game.i18n.localize('FADE.roll')}`;
+      const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
+      const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/ability-roll.hbs';
 
       dialogResp.resp = await Dialog.wait({
-         title,
+         title: title,
+         rejectClose: true,
          content: await renderTemplate(template, dialogData),
          render: () => focusById('mod'),
          buttons: {            
             check: {
                label: game.i18n.localize('FADE.dialog.abilityCheck'),
                callback: () => ({
+                  rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
                }),
             },
          },
-         default: 'check',
+         default: 'check'
       });
-
+      console.log("TEST");
       dialogResp.context = caller;
       return dialogResp;
    }

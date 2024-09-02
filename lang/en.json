@@ -258,7 +258,8 @@
       "roll": "Roll",
       "modifier": "Modifier",
       "dialog": {
-         "abilityCheck": "AbilityCheck"
+         "abilityCheck": "Ability Check",
+         "skillCheck": "Skill Check"
       }
    },
 

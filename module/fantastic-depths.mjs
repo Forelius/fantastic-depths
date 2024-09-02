@@ -1,6 +1,6 @@
 import { registerSystemSettings } from "./settings.mjs";
 // Import document classes.
-import { fadeActor } from './actor/actor.mjs';
+import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeItem } from './item/fadeItem.mjs';

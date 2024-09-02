@@ -589,6 +589,10 @@ h1, h2, h3, h4 {
   width: 60px;
   max-width: 60px;
 }
+.fantastic-depths .items-list .item-80px {
+  width: 80px;
+  max-width: 80px;
+}
 .fantastic-depths .items-list .item-prop {
   text-align: center;
   border-left: 1px solid #c9c7b8;

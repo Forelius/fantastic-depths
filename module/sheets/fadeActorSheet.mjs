@@ -218,7 +218,7 @@ export class fadeActorSheet extends ActorSheet {
       super.activateListeners(html);
 
       // Render the item sheet for viewing/editing prior to the editable check.
-      html.on('click', '.item-edit', (event) => {         
+      html.on('click', '.item-edit', (event) => {
          const item = this._getItemFromActor(event);
          item.sheet.render(true);
       });
@@ -327,25 +327,31 @@ export class fadeActorSheet extends ActorSheet {
       let cardType = null;
       let dialogResp;
 
-      console.log("fadeActor._onRoll", dataset);
-
       if (dataset.rollType === 'item') {
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
-         if (item) item.roll();
+         if (item) item.roll(dataset);
       }
       else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          cardType = CHAT_TYPE.ABILITY_CHECK;
-         dialogResp = await DialogFactory(dataset, this.actor);
-         formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
+         try {
+            dialogResp = await DialogFactory(dataset, this.actor);
+            formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
+         }
+         catch (error) {
+            cardType = null;
+         }
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
          cardType = CHAT_TYPE.GENERIC_ROLL;
-         dialogResp = await DialogFactory(dataset, this.actor);
-         formula = dialogResp.resp.mod != 0 ?
-            (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`)
-            : formula;
+         try {
+            dialogResp = await DialogFactory(dataset, this.actor);
+            formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`) : formula;
+         }
+         catch (error) {
+            cardType = null;
+         }
       } else {
          // Basic roll with roll formula and label
          cardType = CHAT_TYPE.GENERIC_ROLL;
