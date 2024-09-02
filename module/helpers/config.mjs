@@ -3,6 +3,14 @@ export const FADE = {};
  * The set of Ability Scores used within the system.
  * @type {Object}
  */
+FADE.Abilities = {
+   str: "Strength",
+   dex: "Dexterity",
+   con: "Constitution",
+   int: "Intelligence",
+   wis: "Wisdom",
+   cha: "Charisma"
+};
 FADE.Armor = {
    acNaked: 9
 }

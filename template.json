@@ -201,7 +201,7 @@
       },
       "specialAbility": {
          "templates": [ "base" ],
-         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
+         "abilityName": "str"
       },
       "feature": {
          "templates": [ "base" ]

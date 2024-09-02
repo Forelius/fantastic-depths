@@ -1,7 +1,4 @@
-import {
-   onManageActiveEffect,
-   prepareActiveEffectCategories,
-} from '../helpers/effects.mjs';
+import { onManageActiveEffect, prepareActiveEffectCategories } from '../helpers/effects.mjs';
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -80,8 +77,10 @@ export class fadeItemSheet extends ItemSheet {
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
 
-      // Prepare active effects for easier access
-      context.effects = prepareActiveEffectCategories(this.item.effects);
+      if (this.item.type === 'weapon' || this.item.type === 'armor' || this.item.type === 'item') {
+         // Prepare active effects for easier access
+         context.effects = prepareActiveEffectCategories(this.item.effects);
+      }
 
       // Is this user the game master?
       context.isGM = game.user.isGM;
