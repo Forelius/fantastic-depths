@@ -7,7 +7,6 @@
    padding: 0;
    overflow-y: auto;
    scrollbar-width: thin;
-   color: $c-tan;
    // Child lists
    .item-list {
       list-style: none;
@@ -41,10 +40,6 @@
          text-align: center;
          margin: 0 5px;
       }
-
-      .item-unequipped {
-         color: rgba(0, 0, 0, 0.2);
-      }
    }
    // Individual Item
    .item {
@@ -57,16 +52,24 @@
       }
 
       .item-name {
-         color: $c-dark;
-
          .item-image {
             flex: 0 0 30px;
             height: 30px;
-            background-size: 30px;
+            background-size: contain; /* Ensures the d20 icon is properly sized */
+            background-repeat: no-repeat;
+            background-position: center;
             border: none;
             margin-right: 4px;
             position: relative;
             top: 2px;
+         }
+
+         .rollable:hover img {
+            opacity: 0; /* Or use display: none; */
+         }
+
+         .rollable:hover {
+            background-image: url('/icons/svg/d20-highlight.svg');
          }
       }
    }
@@ -98,8 +101,6 @@
       margin: 2px 0;
       padding: 0;
       align-items: center;
-      background: rgba(0, 0, 0, 0.05);
-      border: $border-groove;
       font-weight: bold;
 
       > * {
@@ -126,7 +127,6 @@
       label {
          flex: 0 30px;
          font-size: 11px;
-         color: $colorDark;
          text-indent: 3px;
       }
 

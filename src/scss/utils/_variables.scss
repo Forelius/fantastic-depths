@@ -2,8 +2,9 @@ $padding-sm: 5px;
 $padding-md: 10px;
 $padding-lg: 20px;
 
-$border-groove: 2px groove #eeede0;
 $detailsHeight: 44px;
 $borderGroove: 2px groove #eeede0;
+$borderGrooveDk: 2px groove #4e4d40;
 $sheetBackground: whitesmoke;
 $inputBackground: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
+$glowForDarkMode: 0 0 10px $shadowColorDk, 0 0 18px $shadowColorDk, 0 0 26px $shadowColorDk, 0 0 34px $shadowColorDk;

@@ -1,6 +1,6 @@
 .character {
    input {
-      border: 0;
+      border: 0 none;
       padding: 2px 5px;
    }
 
@@ -9,7 +9,8 @@
 
       .ability {
          min-height: 34px;
-         border-bottom: 1px solid #c5bfbf;
+         border-bottom-style:solid;
+         border-bottom-width: 1px;
 
          label {
             font-size: 16px;
@@ -76,7 +77,7 @@
       }
    }
 
-   .hitpoints {
+   .hit-points {
       height: 74px;
       position: relative;
 
@@ -85,7 +86,6 @@
          border: 0 none;
          text-align: center;
          font-weight: bolder;
-         text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
       }
 
       .hp-top {
@@ -105,14 +105,12 @@
       }
 
       .hp-empty {
-         background: url("../assets/img/heart_empty.png") no-repeat center;
          background-size: 74px;
          background-position: top;
          background-clip: content-box;
       }
 
       .hp-full {
-         background: url("../assets/img/heart_full.png") no-repeat center;
          background-size: 74px;
          background-position: bottom;
          background-clip: content-box;
@@ -122,15 +120,14 @@
    .armor-class {
       height: 74px;
       position: relative;
-      background: url("../assets/img/shield.png") no-repeat center;
       background-size: 70px;
+      background-position: center;
 
       .ac-value {
          background: none;
          border: 0 none;
          text-align: center;
          font-weight: bolder;
-         text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
       }
 
       .ac-top {
@@ -150,7 +147,9 @@
       }
 
       .shield {
-         text-align: right;
+         position: relative;
+         left: 68px;
+         top:4px;
          margin-right: -2px;
          font-size: 18px;
       }

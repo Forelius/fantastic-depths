@@ -11,22 +11,20 @@
       </div>
    </li>
    {{#each skills as |skill id|}}
-<li class='item flexrow collapsible-content' data-item-id='{{skill._id}}'>
-   <div class='item-name'>
-      <div class='item-image'>
-         <div class="rollable" data-roll-type='item' data-label="{{skill.name}} {{localize 'FADE.Skill.short'}}" data-test="skill">
+   <li class='item flexrow collapsible-content' data-item-id='{{skill._id}}'>
+      <div class='item-name'>
+         <div class="item-image rollable" data-roll-type='item' data-label="{{skill.name}} {{localize 'FADE.Skill.short'}}" data-test="skill">
             <img src='{{skill.img}}' title='{{skill.name}}' width='24' height='24' />
          </div>
+         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='skill'}}'>{{skill.name}}</a>
       </div>
-      <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='skill'}}'>{{skill.name}}</a>
-   </div>
-   <div class="item-80px item-prop"><label>{{localize (concat 'FADE.Actor.Abilities.' skill.system.ability '.long')}}</label></div>
-   <div class="item-40px item-prop"><label>{{skill.system.level}}</label></div>
-   <div class='item-controls'>
-      <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Skill.long")}}'>
-         <i class='fas fa-trash'></i>
-      </a>
-   </div>
-</li>
+      <div class="item-80px item-prop"><label>{{localize (concat 'FADE.Actor.Abilities.' skill.system.ability '.long')}}</label></div>
+      <div class="item-40px item-prop"><label>{{skill.system.level}}</label></div>
+      <div class='item-controls'>
+         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Skill.long")}}'>
+            <i class='fas fa-trash'></i>
+         </a>
+      </div>
+   </li>
    {{/each}}
 </ol>

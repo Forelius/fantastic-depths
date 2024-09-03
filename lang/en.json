@@ -291,6 +291,12 @@
       "EncMax": {
          "Hint": "The maximum amount a character may carry, in coins, and still be able to move.",
          "Name": "Encumbrance Max"
+      },
+      "Theme": {
+         "Hint": "Dark mode features a dark backround with light text and light mode features a light background with dark text.",
+         "Name": "Theme",
+         "Dark": "Dark Mode",
+         "Light":  "Light Mode"
       }
    }
 }

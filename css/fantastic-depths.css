@@ -1,5 +1,3 @@
-/*@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-*/
 @import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 h1, h2, h3, h4 {
@@ -16,14 +14,13 @@ h1, h2, h3, h4 {
 }
 
 .rollable:hover, .rollable:focus {
-  color: #000;
-  text-shadow: 0 0 10px #ae7615;
   cursor: pointer;
 }
 
 .bordered {
   margin: 2px 2px 4px 2px;
-  border: 2px solid #babaa0;
+  border-width: 2px;
+  border-style: solid;
   border-radius: 4px;
   padding: 6px;
 }
@@ -252,9 +249,125 @@ h1, h2, h3, h4 {
   text-align: center;
 }
 
+/* Dark mode styles */
+.dark-mode .fantastic-depths .window-content {
+  background: url("../assets/img/grunge2.jpg");
+  color: #ebeae4;
+}
+.dark-mode .fantastic-depths .window-content a:hover {
+  text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
+}
+.dark-mode .fantastic-depths .window-content input[type=text], .dark-mode .fantastic-depths .window-content input[type=number], .dark-mode .fantastic-depths .window-content input[type=password], .dark-mode .fantastic-depths .window-content input[type=date], .dark-mode .fantastic-depths .window-content input[type=time], .dark-mode .fantastic-depths .window-content input[type=search] {
+  background: rgba(210, 200, 180, 0.1);
+  color: #ebeae4;
+  /*border: 1px solid var(--color-border-light-tertiary);*/
+}
+.dark-mode .fantastic-depths .window-content .bordered {
+  border-color: #4b4a44;
+}
+.dark-mode .fantastic-depths .window-content nav.sheet-tabs {
+  margin: 4px 0;
+  border-top: 1px solid #4b4a44;
+  border-bottom: 1px solid #4b4a44;
+}
+.dark-mode .fantastic-depths .window-content .items-list {
+  color: #bbbab4;
+}
+.dark-mode .fantastic-depths .window-content .items-list .item-controls .item-unequipped {
+  color: rgba(220, 220, 220, 0.1);
+}
+.dark-mode .fantastic-depths .window-content .items-list .items-header {
+  background: rgba(200, 200, 200, 0.1);
+  border: 2px groove #4e4d40;
+}
+.dark-mode .fantastic-depths .window-content .items-list .item .item-name {
+  color: #ebeae4;
+}
+.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus {
+  color: #ebeae4;
+  text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
+}
+.dark-mode .fantastic-depths .summary li {
+  color: #bbbab4;
+}
+.dark-mode .fantastic-depths .summary li label {
+  color: #bbbab4;
+}
+.dark-mode .fantastic-depths .character .ability-scores .ability {
+  border-color: #4b4a44;
+}
+.dark-mode .fantastic-depths .character .hit-points .hp-value {
+  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
+  background: none;
+}
+.dark-mode .fantastic-depths .character .hit-points .hp-empty {
+  background-image: url("../assets/img/heart_empty2.png");
+  background-repeat: no-repeat;
+}
+.dark-mode .fantastic-depths .character .hit-points .hp-full {
+  background-image: url("../assets/img/heart_full2.png");
+  background-repeat: no-repeat;
+}
+.dark-mode .fantastic-depths .character .armor-class {
+  background-image: url("../assets/img/shield2.png");
+  background-repeat: no-repeat;
+}
+.dark-mode .fantastic-depths .character .armor-class .ac-value {
+  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
+}
+
+/* Light mode styles */
+.light-mode .fantastic-depths .window-content .bordered {
+  border-color: #bbbab4;
+}
+.light-mode .fantastic-depths .window-content .items-list {
+  color: #4b4a44;
+}
+.light-mode .fantastic-depths .window-content .items-list .item-controls .item-unequipped {
+  color: rgba(0, 0, 0, 0.2);
+}
+.light-mode .fantastic-depths .window-content .items-list .items-header {
+  background: rgba(200, 200, 200, 0.1);
+  border: 2px groove #eeede0;
+}
+.light-mode .fantastic-depths .window-content .items-list .item .item-name {
+  color: #2b2a24;
+}
+.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus {
+  color: #2b2a24;
+  text-shadow: 0 0 10px #ae7615;
+}
+.light-mode .fantastic-depths .summary li {
+  color: #4b4a44;
+}
+.light-mode .fantastic-depths .summary li label {
+  color: #4b4a44;
+}
+.light-mode .fantastic-depths .character .ability-scores .ability {
+  border-color: #bbbab4;
+}
+.light-mode .fantastic-depths .character .hit-points .hp-value {
+  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
+}
+.light-mode .fantastic-depths .character .hit-points .hp-empty {
+  background-image: url("../assets/img/heart_empty.png");
+  background-repeat: no-repeat;
+}
+.light-mode .fantastic-depths .character .hit-points .hp-full {
+  background-image: url("../assets/img/heart_full.png");
+  background-repeat: no-repeat;
+}
+.light-mode .fantastic-depths .character .armor-class {
+  background-image: url("../assets/img/shield.png");
+  background-repeat: no-repeat;
+}
+.light-mode .fantastic-depths .character .armor-class .ac-value {
+  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
+}
+
 /* Styles limited to fantastic-depths sheets */
 .fantastic-depths .character input {
-  border: 0;
+  border: 0 none;
   padding: 2px 5px;
 }
 .fantastic-depths .character .ability-scores {
@@ -262,7 +375,8 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .character .ability-scores .ability {
   min-height: 34px;
-  border-bottom: 1px solid #c5bfbf;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 .fantastic-depths .character .ability-scores .ability label {
   font-size: 16px;
@@ -315,39 +429,36 @@ h1, h2, h3, h4 {
   text-align: left;
   font-size: 12px;
 }
-.fantastic-depths .character .hitpoints {
+.fantastic-depths .character .hit-points {
   height: 74px;
   position: relative;
 }
-.fantastic-depths .character .hitpoints .hp-value {
+.fantastic-depths .character .hit-points .hp-value {
   background: none;
   border: 0 none;
   text-align: center;
   font-weight: bolder;
-  text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
 }
-.fantastic-depths .character .hitpoints .hp-top {
+.fantastic-depths .character .hit-points .hp-top {
   position: absolute;
   font-size: 26px;
   top: 15px;
   width: 50px;
   left: calc(50% - 25px);
 }
-.fantastic-depths .character .hitpoints .hp-bottom {
+.fantastic-depths .character .hit-points .hp-bottom {
   position: absolute;
   font-size: 12px;
   bottom: 8px;
   width: 40px;
   right: calc(50% - 20px);
 }
-.fantastic-depths .character .hitpoints .hp-empty {
-  background: url("../assets/img/heart_empty.png") no-repeat center;
+.fantastic-depths .character .hit-points .hp-empty {
   background-size: 74px;
   background-position: top;
   background-clip: content-box;
 }
-.fantastic-depths .character .hitpoints .hp-full {
-  background: url("../assets/img/heart_full.png") no-repeat center;
+.fantastic-depths .character .hit-points .hp-full {
   background-size: 74px;
   background-position: bottom;
   background-clip: content-box;
@@ -355,15 +466,14 @@ h1, h2, h3, h4 {
 .fantastic-depths .character .armor-class {
   height: 74px;
   position: relative;
-  background: url("../assets/img/shield.png") no-repeat center;
   background-size: 70px;
+  background-position: center;
 }
 .fantastic-depths .character .armor-class .ac-value {
   background: none;
   border: 0 none;
   text-align: center;
   font-weight: bolder;
-  text-shadow: 0 0 2px white, 0 1px 2px white, 1px 0 2px white, 1px 1px 2px white;
 }
 .fantastic-depths .character .armor-class .ac-top {
   position: absolute;
@@ -380,7 +490,9 @@ h1, h2, h3, h4 {
   right: calc(50% - 25px);
 }
 .fantastic-depths .character .armor-class .shield {
-  text-align: right;
+  position: relative;
+  left: 68px;
+  top: 4px;
   margin-right: -2px;
   font-size: 18px;
 }
@@ -426,7 +538,6 @@ h1, h2, h3, h4 {
   font-size: 22px;
   font-weight: 500;
   height: 30px;
-  padding-top: -1px;
 }
 .fantastic-depths .tag-section {
   padding: 2px;
@@ -503,14 +614,12 @@ h1, h2, h3, h4 {
   margin: 2px 2px;
   padding: 0;
   line-height: 30px;
-  color: #4b4a44;
   position: relative;
 }
 .fantastic-depths .summary li label {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
-  color: #4b4a44;
   bottom: 2px;
   left: 4px;
 }
@@ -527,7 +636,6 @@ h1, h2, h3, h4 {
   padding: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  color: #444;
 }
 .fantastic-depths .items-list .item-list {
   list-style: none;
@@ -558,9 +666,6 @@ h1, h2, h3, h4 {
   text-align: center;
   margin: 0 5px;
 }
-.fantastic-depths .items-list .item-controls .item-unequipped {
-  color: rgba(0, 0, 0, 0.2);
-}
 .fantastic-depths .items-list .item {
   align-items: center;
   padding: 0 2px;
@@ -569,17 +674,22 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .item:last-child {
   border-bottom: none;
 }
-.fantastic-depths .items-list .item .item-name {
-  color: #191813;
-}
 .fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;
   height: 30px;
-  background-size: 30px;
+  background-size: contain; /* Ensures the d20 icon is properly sized */
+  background-repeat: no-repeat;
+  background-position: center;
   border: none;
   margin-right: 4px;
   position: relative;
   top: 2px;
+}
+.fantastic-depths .items-list .item .item-name .rollable:hover img {
+  opacity: 0; /* Or use display: none; */
+}
+.fantastic-depths .items-list .item .item-name .rollable:hover {
+  background-image: url("/icons/svg/d20-highlight.svg");
 }
 .fantastic-depths .items-list .item-40px {
   width: 40px;
@@ -604,8 +714,6 @@ h1, h2, h3, h4 {
   margin: 2px 0;
   padding: 0;
   align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove #eeede0;
   font-weight: bold;
 }
 .fantastic-depths .items-list .items-header > * {
@@ -628,7 +736,6 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .consumable-counter label {
   flex: 0 30px;
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.9);
   text-indent: 3px;
 }
 .fantastic-depths .items-list .consumable-counter .full-mark,

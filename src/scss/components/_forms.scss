@@ -45,8 +45,7 @@ h4 {
       input {
          font-size: 22px;
          font-weight: 500;
-         height: 30px;
-         padding-top: -1px;
+         height: 30px;         
       }
    }
 }
@@ -141,14 +140,12 @@ h4 {
       margin: 2px 2px;
       padding: 0;
       line-height: 30px;
-      color: $colorOlive;
       position: relative;
 
       label {
          line-height: 6px;
          position: absolute;
          font-size: 10px;
-         color: $colorOlive;
          bottom: 2px;
          left: 4px;
       }

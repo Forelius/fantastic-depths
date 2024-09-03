@@ -339,6 +339,7 @@ export class fadeActorSheet extends ActorSheet {
             dialogResp = await DialogFactory(dataset, this.actor);
             formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
          }
+         // If close button is pressed
          catch (error) {
             cardType = null;
          }
@@ -349,6 +350,7 @@ export class fadeActorSheet extends ActorSheet {
             dialogResp = await DialogFactory(dataset, this.actor);
             formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`) : formula;
          }
+         // If close button is pressed
          catch (error) {
             cardType = null;
          }

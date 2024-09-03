@@ -5,15 +5,14 @@
 .rollable {
    &:hover,
    &:focus {
-      color: #000;
-      text-shadow: 0 0 10px $shadowColor;
       cursor: pointer;
    }
 }
 
 .bordered {
    margin: 2px 2px 4px 2px;
-   border: 2px solid #babaa0;
+   border-width:2px;
+   border-style:solid;
    border-radius: 4px;
    padding: 6px;
 }
