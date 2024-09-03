@@ -5,20 +5,21 @@
 ![image info](./assets/cover.webp)
 This Foundry VTT system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
 
-## Character Sheet
-Taking a minimalist approach, the character sheet can handle any class and level. 
-Monsters and retainers are also supported.
+The system comes with two themes, which are a light mode and a dark mode.
 
-![abilities](./assets/img/charsheet1.jpg)
+## Character Sheet
+The character sheet can handle any of the core classes and levels up to 24. Monsters and retainers are also supported. Core classes are recognized when entered into the class field, and this will result in the auto-population of various class-related inputs. All auto-populated class-related values can be overwritten if desired.
+
+![abilities](./assets/img/docs/charsheet1.jpg)
 ### Character Inventory
-![inventory](./assets/img/charsheet2.jpg)
+![inventory](./assets/img/docs/charsheet2.jpg)
 
 ## Item Sheet
 There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
 
-![weapon](./assets/img/weaponsheet.jpg)
+![weapon](./assets/img/docs/weaponsheet.jpg)
 
 ### Effects
 Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
 
-![armor](./assets/img/itemeffects1.jpg)
+![armor](./assets/img/docs/itemeffects1.jpg)
