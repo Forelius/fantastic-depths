@@ -65,7 +65,7 @@
          }
       }
 
-      .character {
+      .character, .monster {
          .ability-scores {
             .ability {
                border-color: $darkColor;
@@ -148,7 +148,7 @@
          }
       }
 
-      .character {
+      .character, .monster {
          .ability-scores {
             .ability {
                border-color: $lightColor;

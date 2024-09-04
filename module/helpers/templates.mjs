@@ -6,11 +6,12 @@
 export const preloadHandlebarsTemplates = async function () {
    return loadTemplates([
       // Actor partials.
-      'systems/fantastic-depths/templates/actor/parts/actor-abilities.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-items.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-spells.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-skills.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-effects.hbs',
+      'systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs',
+      'systems/fantastic-depths/templates/actor/parts/character-abilities.hbs',
       'systems/fantastic-depths/templates/actor/parts/character-desc.hbs',
       'systems/fantastic-depths/templates/actor/parts/character-header.hbs',
       // Item partials
