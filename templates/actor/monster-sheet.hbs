@@ -55,7 +55,6 @@
    <nav class="sheet-tabs tabs" data-group="primary">
       {{!-- Default tab is specified in fadeActorSheet.mjs --}}
       <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
-      <a class="item" data-tab="items">{{localize 'FADE.Actor.Tabs.Items'}}</a>
       <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
       <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
       <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
@@ -67,10 +66,6 @@
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
          {{> "systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs"}}
-      </div>
-      {{!-- Owned Items Tab --}}
-      <div class="tab items" data-group="primary" data-tab="items">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
       </div>
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
