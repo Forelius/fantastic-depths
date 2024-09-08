@@ -10,9 +10,13 @@ The system comes with two themes, which are a light mode and a dark mode.
 ## Character Sheet
 The character sheet can handle any of the core classes and levels up to 24. Monsters and retainers are also supported. Core classes are recognized when entered into the class field, and this will result in the auto-population of various class-related inputs. All auto-populated class-related values can be overwritten if desired.
 
-![abilities](./assets/img/docs/charsheet1.jpg)
+![character](./assets/img/docs/charsheet1.jpg)
 ### Character Inventory
 ![inventory](./assets/img/docs/charsheet2.jpg)
+
+## Monster Sheet
+The monster sheet allows for custom equippment, spells and possession and use of magic items.
+![monster](./assets/img/docs/monstersheet1.jpg)
 
 ## Item Sheet
 There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
