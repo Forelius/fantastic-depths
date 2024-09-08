@@ -61,7 +61,6 @@ export class fadeDialog {
          },
          default: 'check'
       });
-      console.log("TEST");
       dialogResp.context = caller;
       return dialogResp;
    }
