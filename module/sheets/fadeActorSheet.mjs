@@ -47,15 +47,8 @@ export class fadeActorSheet extends ActorSheet {
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
 
-      // Prepare character data and items.
-      if (actorData.type == 'character' || actorData.type == 'npc') {
-         this._prepareItems(context);
-         this._prepareCharacterData(context);
-      }
-
-      // Prepare character data and items.
-      if (actorData.type == 'monster') {
-      }
+      // Prepare shared actor data and items.
+      this._prepareItems(context);
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -86,16 +79,6 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
-    * Character-specific context modifications
-    *
-    * @param {object} context The context object to mutate
-    */
-   _prepareCharacterData(context) {
-      // This is where you can enrich character-specific editor fields
-      // or setup anything else that's specific to this type
-   }
-
-   /**
     * Organize and classify Items for Actor sheets.
     *
     * @param {object} context The context object to mutate
@@ -107,7 +90,6 @@ export class fadeActorSheet extends ActorSheet {
       const armor = [];
       const skills = [];
       const masteries = [];
-      const features = [];
       const spells = {
          1: [],
          2: [],
@@ -127,10 +109,6 @@ export class fadeActorSheet extends ActorSheet {
          // Append to gear.
          if (i.type === 'item') {
             gear.push(i);
-         }
-         // Append to features.
-         else if (i.type === 'feature') {
-            features.push(i);
          }
          // Append to spells.
          else if (i.type === 'spell') {
@@ -165,7 +143,6 @@ export class fadeActorSheet extends ActorSheet {
       context.armor = armor;
       context.skills = skills;
       context.masteries = masteries;
-      context.features = features;
       context.spells = spells;
       context.specialAbilities = specialAbilities;
    }

@@ -116,16 +116,17 @@
                "xpAward": 5,
                "alignment": "Chaotic",
                "morale": 9,
-               "abilityCount": 0
+               "abilityCount": 0,
+               "attacks": 1,
+               "size": "M",
+               "intelligence": 7,
+               "monsterType": "Monster (Common)"
             },
             "na": {
                "wandering": "1d6",
                "lair": ""
             },
-            "treasure": {
-               "wandering": "",
-               "lair": ""
-            }
+            "treasure": ""
          },
          "npc": {
             "templates": [ "base" ],

@@ -5,47 +5,71 @@
       <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
       <div class="header-fields">
          <ul class="summary flexrow">
-            <li>
+            <li class="flex3">
                <div class="charname">
                   <input name="name" class="charname" type="text" value="{{actor.name}}" placeholder="Name" />
                   <label>{{localize 'FADE.Actor.Name'}}</label>
                </div>
             </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex3">
+            <li class="flex2" style="max-width:100px;">
                <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
                <label>{{localize 'FADE.Actor.Alignment'}}</label>
             </li>
-            <li class="flex1">
-               <input type="text" name="system.na.wandering" value="{{system.na.wandering}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.NumberAppearing.abbr'}}</label>
-            </li>
-            <li class="flex1">
-               <input type="text" name="system.na.lair" value="{{system.na.lair}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
-            </li>
-            <li class="flex1">
-               <input type="text" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.Morale'}}</label>
+            <li class="flex1" style="max-width:40px;">
+               <input type="text" name="system.details.size" value="{{system.details.size}}" data-dtype="String" />
+               <label>{{localize 'FADE.Size'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li>
+            <li class="flex1">
+               <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDice'}}" />
+               <label class="hitdie rollable" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
+            </li>
+            <li class="flex2" style="max-width:90px">
+               <input type="text" name="system.na.wandering" value="{{system.na.wandering}}" data-dtype="String" title="{{localize 'FADE.Actor.NumberAppearing.long'}}" />
+               <label title="{{localize 'FADE.Actor.NumberAppearing.long'}}">{{localize 'FADE.Actor.NumberAppearing.short'}}</label>
+            </li>
+            <li class="flex2" style="max-width:90px">
+               <input type="text" name="system.na.lair" value="{{system.na.lair}}" data-dtype="String" title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" />
+               <label title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}">{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
+            </li>
+            <li class="flex1">
+               <input type="number" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.Morale'}}</label>
+            </li>
+            <li class="flex1">
+               <input type="text" name="system.treasure" value="{{system.treasure}}" data-dtype="String" title="{{localize 'FADE.Actor.Treasure.long'}}" />
+               <label title="{{localize 'FADE.Actor.Treasure.long'}}">{{localize 'FADE.Actor.Treasure.short'}}</label>
+            </li>
+            <li class="flex1">
                <input type="text" name="system.details.xpAward" value="{{system.details.xpAward}}" data-dtype="String" />
                <label>{{localize 'FADE.Actor.XPAward'}}</label>
             </li>
-            <li>
-               <input type="text" name="system.details.abilityCount" value="{{system.details.abilityCount}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.AbilityCount'}}</label>
+         </ul>
+         <ul class="summary flexrow">
+            <li class="flex1" style="max-width:40px">
+               <input type="text" name="system.details.attacks" value="{{system.details.attacks}}" data-dtype="String" title="{{localize 'FADE.Actor.Attacks.long'}}" />
+               <label title="{{localize 'FADE.Actor.Attacks.long'}}">{{localize 'FADE.Actor.Attacks.abbr'}}</label>
             </li>
-            <li>
-               <input type="text" name="system.treasure.wandering" value="{{system.treasure.wandering}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.Treasure.wandering'}}</label>
+            <li class="flex1" style="max-width:40px">
+               <input type="text" name="system.details.abilityCount" value="{{system.details.abilityCount}}" data-dtype="String" title="{{localize 'FADE.Actor.AbilityCount.long'}}" />
+               <label title="{{localize 'FADE.Actor.AbilityCount.long'}}">{{localize 'FADE.Actor.AbilityCount.abbr'}}</label>
             </li>
-            <li>
-               <input type="text" name="system.treasure.lair" value="{{system.treasure.lair}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.Treasure.lair'}}</label>
+            <li class="flex1" style="max-width:35px">
+               <label>{{localize "FADE.Actor.THAC0"}}</label>
+               <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+            </li>
+            <li class="flex1" style="max-width:48px">
+               <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+               <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
+            </li>
+            <li class="flex1" style="max-width:40px">
+               <input type="text" name="system.details.intelligence" value="{{system.details.intelligence}}" data-dtype="String" title="{{localize 'FADE.Actor.Abilities.int.long'}}"/>
+               <label title="{{localize 'FADE.Actor.Abilities.int.long'}}">Int.</label>
+            </li>
+            <li class="flex2">
+               <input type="text" name="system.details.monsterType" value="{{system.details.monsterType}}" data-dtype="String" />
+               <label>{{localize 'FADE.Type'}}</label>
             </li>
          </ul>
       </div>

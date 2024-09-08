@@ -131,18 +131,28 @@
                "morale": "Morale"
             }
          },
+         "Attacks": {
+            "abbr": "AT#",
+            "short": "# Attacks",
+            "long": "Number of Attacks"
+         },
          "NumberAppearing": {
             "abbr": "NA",
+            "short": "# Appearing",
             "long": "Number Appearing",
             "abbrLair": "NA lair",
             "longLair": "Number Appearing in Lair"
          },
          "Morale": "Morale",
          "XPAward": "XP Award",
-         "AbilityCount": "Special Abilities",
+         "AbilityCount": {
+            "abbr": "SA#",
+            "short": "# Specials",
+            "long": "Special Abilities"
+         },
          "Treasure": {
-            "wandering": "Treasure",
-            "lair": "Treasure Lair"
+            "short": "Treasure",
+            "long": "Treasure Type"
          }
       },
       "SheetLabel": {
@@ -251,6 +261,8 @@
          "Inactive": "Inactive Effects"
       },
       "Tags": "Tags",
+      "Size": "Size",
+      "Type": "Type",
       "Chat": {
          "pass": "Success!",
          "fail": "Failed"
@@ -296,7 +308,7 @@
          "Hint": "Dark mode features a dark backround with light text and light mode features a light background with dark text.",
          "Name": "Theme",
          "Dark": "Dark Mode",
-         "Light":  "Light Mode"
+         "Light": "Light Mode"
       }
    }
 }

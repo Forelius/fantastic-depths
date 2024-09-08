@@ -222,16 +222,8 @@ h1, h2, h3, h4 {
   text-align: right;
 }
 
-.flexshrink {
-  flex: 0;
-}
-
 .flex-between {
   justify-content: space-between;
-}
-
-.flexlarge {
-  flex: 2;
 }
 
 .align-left {
@@ -621,7 +613,7 @@ h1, h2, h3, h4 {
   position: absolute;
   font-size: 10px;
   bottom: 2px;
-  left: 4px;
+  left: 2px;
 }
 .fantastic-depths .summary li.notify input {
   font-weight: bold;

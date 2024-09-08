@@ -17,8 +17,6 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      const systemData = this.system;
-      systemData.details = systemData.details || {};
       this._prepareAbilities();
       this._prepareExploration();
    }
@@ -27,12 +25,11 @@ export class CharacterActor extends fadeActor {
    prepareDerivedData() {
       super.prepareDerivedData();
       this._updateClassInfo();
-      this._prepareArmorClass();
       this._prepareEncumbrance();
-
       // Wrestling skill
       const systemData = this.system;
-      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.abilities.str.mod + systemData.abilities.dex.mod + systemData.ac.value;
+      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
+      systemData.wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
    }
 
    /**
@@ -94,36 +91,6 @@ export class CharacterActor extends fadeActor {
       systemData.retainer = systemData.retainer || {};
       systemData.retainer.max = 4 + systemData.abilities.cha.mod;
       systemData.retainer.morale = 5 + systemData.abilities.cha.mod;
-   }
-
-   _prepareArmorClass() {
-      const systemData = this.system;
-
-      let baseAC = CONFIG.FADE.Armor.acNaked;
-      systemData.ac.naked = baseAC;
-      systemData.ac.value = baseAC;
-      systemData.ac.total = baseAC;
-      systemData.ac.mod = 0;
-      systemData.ac.shield = 0;
-
-      const equippedArmor = this.items.find(item =>
-         item.type === 'armor' && item.system.equipped && !item.system.isShield
-      );
-
-      const equippedShield = this.items.find(item =>
-         item.type === 'armor' && item.system.equipped && item.system.isShield
-      );
-
-      // If an equipped armor is found
-      if (equippedArmor) {
-         systemData.ac.value = equippedArmor.system.ac;
-         systemData.ac.mod = equippedArmor.system.mod ?? 0;
-         systemData.ac.total = equippedArmor.system.totalAc - systemData.abilities.dex.mod;
-         if (equippedShield) {
-            systemData.ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
-            systemData.ac.total -= systemData.ac.shield;
-         }
-      }
    }
 
    _prepareEncumbrance() {
