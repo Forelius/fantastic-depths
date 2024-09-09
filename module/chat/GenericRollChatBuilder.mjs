@@ -1,7 +1,7 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 
 export class GenericRollChatBuilder extends ChatBuilder {
-   static template = 'systems/fantastic-depths/templates/chat/generic-check.hbs';
+   static template = 'systems/fantastic-depths/templates/chat/generic-roll.hbs';
 
    async createChatMessage() {
       const { context, mdata, resp, roll } = this.data;
@@ -17,8 +17,8 @@ export class GenericRollChatBuilder extends ChatBuilder {
       let resultString = null;
       if (mdata.pass !== undefined && mdata.pass !== null) {
          // Determine if the roll is successful based on the roll type and target number      
-         let testResult = this.getRollResultType(dieSum, targetNumber, mdata.pass);
-         resultString = ChatBuilder.getResult(testResult);
+         let testResult = this.getBoolRollResultType(dieSum, targetNumber, mdata.pass);
+         resultString = this.getBoolResult(testResult);
       }
 
       // Get the actor and user names

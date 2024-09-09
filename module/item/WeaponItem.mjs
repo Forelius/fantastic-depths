@@ -1,4 +1,6 @@
 import { fadeItem } from './fadeItem.mjs';
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 export class WeaponItem extends fadeItem {
    constructor(data, context) {
@@ -8,7 +10,7 @@ export class WeaponItem extends fadeItem {
    }
 
    /** @override */
-   prepareBaseData() {     
+   prepareBaseData() {
       super.prepareBaseData();
       const systemData = this.system;
    }
@@ -16,6 +18,7 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      console.log("WeaponItem.prepareDerivedData()", this);
       this._prepareEffects();
       this._prepareModText();
    }
@@ -29,6 +32,47 @@ export class WeaponItem extends fadeItem {
    getRollData() {
       const data = super.getRollData();
       return data;
+   }
+
+   /**
+ * Handle clickable rolls.
+ * @param {Event} event The originating click event
+ */
+   async roll(dataset) {
+      const item = this;
+
+      // Initialize chat data.
+      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      const rollMode = game.settings.get('core', 'rollMode');
+      const label = `[${item.type}] ${item.name}`;
+      const rollData = this.getRollData();
+      let dialogResp;
+      //console.log("fadeItem.roll", label, item, dataset);
+            
+      dataset.dialog = "attack";
+      try {
+         dialogResp = await DialogFactory(dataset, this.actor);
+         rollData.formula = dialogResp.resp.mod != 0 ? '1d20+@mod' : '1d20';
+      }
+      // If close button is pressed
+      catch (error) {
+         // Shhhh
+      }
+
+      let result = null;
+      if (dialogResp !== null) {
+         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const chatData = {
+            dialogResp: dialogResp,
+            caller: item,
+            context: this.actor,
+            mdata: dataset,
+            roll: rolled,
+         };
+         const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
+         return builder.createChatMessage();
+      }
    }
 
    _prepareModText() {

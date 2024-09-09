@@ -8,7 +8,7 @@ export const DialogFactory = (dataset, caller = null, opt = {}) => {
    } else if (dialog === 'generic') {
       result = fadeDialog.getGenericDialog(dataset, caller);
    } else if (dialog === 'attack') {
-      result = fadeDialog.getGenericDialog(dataset, caller);
+      result = fadeDialog.getAttackDialog(dataset, caller);
    }
    return result;
 };

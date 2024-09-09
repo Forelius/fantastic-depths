@@ -42,6 +42,17 @@ export class MonsterActor extends fadeActor {
       //}
    }
 
+   /**
+    * @override
+    * Prepare all embedded Document instances which exist within this primary Document.
+    * @memberof ClientDocumentMixin#
+    * active effects are applied
+    */
+   prepareEmbeddedDocuments() {
+      super.prepareEmbeddedDocuments();
+      //console.log("CharacterActor.prepareEmbeddedDocuments", this);
+   }
+
    /** @override */
    getRollData() {
       const data = super.getRollData();

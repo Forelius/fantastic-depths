@@ -47,6 +47,8 @@ export class fadeActorSheet extends ActorSheet {
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
 
+      //console.log("fadeActorSheet.getData()", context);
+
       // Prepare shared actor data and items.
       this._prepareItems(context);
 

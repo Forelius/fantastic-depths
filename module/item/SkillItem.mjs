@@ -34,7 +34,7 @@ export class SkillItem extends fadeItem {
       return data;
    }
 
-   /**
+ /**
  * Handle clickable rolls.
  * @param {Event} event The originating click event
  * @private
@@ -59,7 +59,7 @@ export class SkillItem extends fadeItem {
          dialogResp = await DialogFactory(dataset, this.actor);
          let levelMod = systemData.level > 1 ? `-${systemData.level}` : '';
          rollData.formula = dialogResp.resp.mod != 0 ? `1d20${levelMod}-@mod` : `1d20${levelMod}`;
-         console.log("roll", rollData);
+         //console.log("roll", rollData);
       }
       // If close button is pressed
       catch (error) {

@@ -8,8 +8,8 @@ export class ChatBuilderSchema extends foundry.abstract.DataModel {
       };
 
       /**
-       * @param {fadeActor} caller - The actor the chat pertains to.
-       * @param {fadeItem} context - The item the chat pertains to.
+       * @param {fadeActor} caller - The item or actor the chat pertains to.
+       * @param {fadeItem} context - The actor the chat pertains to.
        * @param {Roll} roll - A dice roll the chat pertains to.
        * @param {Object} resp - Data polled from the user from an Application.
        * @param {Object} mdata - Details for chat card enrichment.

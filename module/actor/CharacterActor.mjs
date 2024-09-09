@@ -32,7 +32,7 @@ export class CharacterActor extends fadeActor {
       systemData.wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
    }
 
-   /**
+ /**
  * @override
  * Prepare all embedded Document instances which exist within this primary Document.
  * @memberof ClientDocumentMixin#

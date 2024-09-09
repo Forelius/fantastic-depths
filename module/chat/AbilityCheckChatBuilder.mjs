@@ -14,8 +14,8 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       const dieSum = ChatBuilder.getDiceSum(roll);
 
       // Determine if the roll is successful based on the roll type and target number      
-      let testResult = this.getRollResultType(dieSum, mdata.score, mdata.pass);
-      const resultString = ChatBuilder.getResult(testResult);
+      let testResult = this.getBoolRollResultType(dieSum, mdata.score, mdata.pass);
+      const resultString = this.getBoolResult(testResult);
 
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)

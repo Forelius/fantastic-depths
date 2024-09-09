@@ -1,6 +1,7 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { AbilityCheckChatBuilder } from './AbilityCheckChatBuilder.mjs';
 import { GenericRollChatBuilder } from './GenericRollChatBuilder.mjs';
+import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 /**
  * Enumeration for chat factory types.
  * @enum {Symbol}
@@ -8,6 +9,7 @@ import { GenericRollChatBuilder } from './GenericRollChatBuilder.mjs';
 export const CHAT_TYPE = Object.freeze({
    GENERIC_ROLL: Symbol('cftype_generic'),
    ABILITY_CHECK: Symbol('cftype_abil_check'),
+   ATTACK_ROLL: Symbol('cftype_attack'),
 });
 
 /**
@@ -25,6 +27,8 @@ const handler = {
          result = new AbilityCheckChatBuilder(...bArgs);
       } else if (type === CHAT_TYPE.GENERIC_ROLL) {
          result = new GenericRollChatBuilder(...bArgs);
+      } else if (type === CHAT_TYPE.ATTACK_ROLL) {
+         result = new AttackRollChatBuilder(...bArgs);
       } else {
          throw new Error(`Unknown type: ${type}.`);
       }

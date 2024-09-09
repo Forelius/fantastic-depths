@@ -59,17 +59,17 @@ export class fadeItem extends Item {
       const rollData = { ...this.system };
 
       // Quit early if there's no parent actor
-      if (!this.actor) return rollData;
-
-      // If present, add the actor's roll data
-      rollData.actor = this.actor.getRollData();
+      if (this.actor !== null) {
+         // If present, add the actor's roll data
+         rollData.actor = this.actor.getRollData();
+      }
 
       return rollData;
    }
 
    /**
     * Handle clickable rolls.
-    * @param {Event} event The originating click event
+    * @param {dataset} event The data- tag values from the clicked element
     * @private
     */
    async roll(dataset) {
@@ -93,27 +93,13 @@ export class fadeItem extends Item {
             content: item.system.description ?? '',
          });
       }
-      // Otherwise, create a roll and send a chat message from it.
-      else if (dataset.test === 'attack') {
-         formula = "1d20";
-         dataset.dialog = dataset.test;
-         cardType = CHAT_TYPE.GENERIC_ROLL;
-         try {
-            dialogResp = await DialogFactory(dataset, this.actor);
-            formula = dialogResp.resp.mod != 0 ? `${formula}+@mod` : formula;
-         }
-         // If close button is pressed
-         catch (error) {
-            cardType = null;
-         }
-      }
 
       if (cardType !== null) {
          const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
          let rolled = await new Roll(formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
-            caller: this,
+            caller: item,
             context: this.actor,
             mdata: dataset,
             roll: rolled,
