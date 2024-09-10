@@ -1,0 +1,16 @@
+.chat-message {
+   .message-content {
+      .attack-fail {
+         font-size: 20px;
+         color: darkred;
+      }
+      .attack-success {
+         font-size: 24px;
+         color: darkgreen;
+      }
+      .attack-info {
+         font-size: 20px;
+         color: darkblue;
+      }
+   }
+}

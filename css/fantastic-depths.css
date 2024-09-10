@@ -357,6 +357,19 @@ h1, h2, h3, h4 {
   text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
 }
 
+.chat-message .message-content .attack-fail {
+  font-size: 20px;
+  color: darkred;
+}
+.chat-message .message-content .attack-success {
+  font-size: 24px;
+  color: darkgreen;
+}
+.chat-message .message-content .attack-info {
+  font-size: 20px;
+  color: darkblue;
+}
+
 /* Styles limited to fantastic-depths sheets */
 .fantastic-depths .character input, .fantastic-depths .monster input {
   border: 0 none;

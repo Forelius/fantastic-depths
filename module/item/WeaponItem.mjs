@@ -18,7 +18,7 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      console.log("WeaponItem.prepareDerivedData()", this);
+      //console.log("WeaponItem.prepareDerivedData()", this);
       this._prepareEffects();
       this._prepareModText();
    }
@@ -52,6 +52,14 @@ export class WeaponItem extends fadeItem {
       dataset.dialog = "attack";
       try {
          dialogResp = await DialogFactory(dataset, this.actor);
+         console.log("roll dialog", dialogResp);
+         if (dialogResp.resp.attackType === "melee") {
+
+         } else if (dialogResp.resp.attackType == "throw") {
+
+         } else {
+            // missile
+         }
          rollData.formula = dialogResp.resp.mod != 0 ? '1d20+@mod' : '1d20';
       }
       // If close button is pressed

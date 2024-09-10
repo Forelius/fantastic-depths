@@ -14,8 +14,6 @@ export class fadeDialog {
       const dialogData = {};
       const dialogResp = { caller };
 
-      console.log("fadeDialog.getAttackDialog()", dataset, caller);
-
       dialogData.label = dataset.label;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
@@ -29,6 +27,7 @@ export class fadeDialog {
                label: game.i18n.localize('FADE.roll'),
                callback: () => ({
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
+                  attackType: document.getElementById('attackType').value
                }),
             },
          },

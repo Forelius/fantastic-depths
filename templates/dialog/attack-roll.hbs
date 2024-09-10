@@ -1,4 +1,15 @@
 <form>
+   <!-- Dropdown for selecting 'melee', 'throw', or 'missile' -->
+   <div class="form-group">
+      <label for="attackType">Select Attack Type</label>
+      <select id="attackType" class="form-control">
+         <option value="melee">Melee</option>
+         <option value="throw">Throw</option>
+         <option value="missile">Missile</option>
+      </select>
+   </div>
+
+   <!-- Modifier Input Field -->
    <div class="form-group">
       <label>{{localize "FADE.modifier"}}</label>
       <input id="mod" placeholder=0 type="number" />
