@@ -39,28 +39,26 @@ export class WeaponItem extends fadeItem {
  * @param {Event} event The originating click event
  */
    async roll(dataset) {
-      const item = this;
+      const systemData = this.system;
 
       // Initialize chat data.
       const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = game.settings.get('core', 'rollMode');
-      const label = `[${item.type}] ${item.name}`;
+      const label = `[${this.type}] ${this.name}`;
       const rollData = this.getRollData();
       let dialogResp;
-      //console.log("fadeItem.roll", label, item, dataset);
-            
+
       dataset.dialog = "attack";
       try {
-         dialogResp = await DialogFactory(dataset, this.actor);
-         console.log("roll dialog", dialogResp);
+         dialogResp = await DialogFactory(dataset, this.actor, { weapon: this });
+         rollData.formula = dialogResp.resp.mod != 0 ? '1d20+@mod' : '1d20';
+         //console.log("roll dialog", dialogResp);
          if (dialogResp.resp.attackType === "melee") {
-
-         } else if (dialogResp.resp.attackType == "throw") {
-
+            rollData.formula = systemData.mod.toHit ? `${rollData.formula}+${systemData.mod.toHit}` : rollData.formula;
          } else {
             // missile
+            rollData.formula = systemData.mod.toHit ? `${rollData.formula}+${systemData.mod.toHitRanged}` : rollData.formula;
          }
-         rollData.formula = dialogResp.resp.mod != 0 ? '1d20+@mod' : '1d20';
       }
       // If close button is pressed
       catch (error) {
@@ -69,13 +67,12 @@ export class WeaponItem extends fadeItem {
 
       let result = null;
       if (dialogResp !== null) {
-         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+         const rollContext = { ...rollData, ...dialogResp.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
-            dialogResp: dialogResp,
-            caller: item,
+            resp: dialogResp.resp,
+            caller: this,
             context: this.actor,
-            mdata: dataset,
             roll: rolled,
          };
          const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);

@@ -10,11 +10,12 @@ function focusById(id) {
 }
 
 export class fadeDialog {
-   static async getAttackDialog(dataset, caller) {
-      const dialogData = {};
-      const dialogResp = { caller };
+   static async getAttackDialog(dataset, caller, weapon) {
+      const dialogData = { caller };
+      const dialogResp = {};
 
-      dialogData.label = dataset.label;
+      dialogData.weapon = weapon.system;
+      dialogData.label = weapon.name;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 

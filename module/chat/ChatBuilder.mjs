@@ -54,28 +54,28 @@ export class ChatBuilder {
       foundry.utils.mergeObject(this.data[key], value);
    }
 
-   /**
-    * Mapping of result types to their corresponding HTML representations.
-    * @type {Object.<Symbol, string|undefined>}
-    * @private
-    */
-   static #resultCache;
+	/**
+	 * Mapping of result types to their corresponding HTML representations.
+	 * @type {Object.<Symbol, string|undefined>}
+	 * @private
+	 */
+	static resultCache;
 
-   /**
-    * Initializes #resultCache with the mapping of result types to their corresponding HTML.
-    * Called only once when the cache isn't created yet.
-    * @return {Object.<Symbol, string|undefined} - The initialized result mapping object.
-    * @private
-    * @static
-    */
-   #initBoolResultCache() {
-      this.#resultCache = {
-         [RESULT_TYPE.NONE]: undefined,
-         [RESULT_TYPE.FAILED]: `<b>${game.i18n.localize('FADE.Chat.fail')}</b>`,
-         [RESULT_TYPE.PASSED]: `<b>${game.i18n.localize('FADE.Chat.pass')}</b>`,
-      };
-      return this.#resultCache;
-   }
+	/**
+	 * Initializes resultCache with the mapping of result types to their corresponding HTML.
+	 * Called only once when the cache isn't created yet.
+	 * @return {Object.<Symbol, string|undefined} - The initialized result mapping object.
+	 * @private
+	 * @static
+	 */
+	static initializeResultCache() {
+		this.resultCache = {
+			[RESULT_TYPE.NONE]: undefined,
+			[RESULT_TYPE.FAILED]: `<b>${game.i18n.localize('FADE.Chat.fail')}</b>`,
+			[RESULT_TYPE.PASSED]: `<b>${game.i18n.localize('FADE.Chat.pass')}</b>`,
+		};
+		return this.resultCache;
+	}
 
    /**
     * Returns HTML for a given RESULT_TYPE.
@@ -84,8 +84,8 @@ export class ChatBuilder {
     */
    getBoolResult(rv) {
       //if (!rv || rv === RESULT_TYPE.NONE) return false;
-      this.#resultCache ||= this.#initBoolResultCache();
-      return this.#resultCache[rv] || `Unknown result type: <b>${rv}</b>`;
+      ChatBuilder.resultCache ||= ChatBuilder.initializeResultCache();
+      return ChatBuilder.resultCache[rv] || `Unknown result type: <b>${rv}</b>`;
    }
 
    /**

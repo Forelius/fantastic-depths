@@ -1,11 +1,15 @@
 <form>
-   <!-- Dropdown for selecting 'melee', 'throw', or 'missile' -->
+   <!-- Dropdown for selecting 'melee' or 'missile' -->
    <div class="form-group">
-      <label for="attackType">Select Attack Type</label>
+      <label for="attackType">Attack Type</label>
       <select id="attackType" class="form-control">
+         {{#if weapon.canMelee}}
          <option value="melee">Melee</option>
-         <option value="throw">Throw</option>
+         {{/if}}
+         {{#if weapon.canRanged}}
+         <!--<option value="throw">Throw</option>-->
          <option value="missile">Missile</option>
+         {{/if}}
       </select>
    </div>
 

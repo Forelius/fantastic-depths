@@ -265,7 +265,13 @@
       "Type": "Type",
       "Chat": {
          "pass": "Success!",
-         "fail": "Failed"
+         "fail": "Failed",
+         "attackFlavor1": "{attacker} {attackType} attacks {target} with {weapon}",
+         "attackFlavor2": "{attacker} {attackType} attacks with {weapon}",
+         "attackAC": "You hit <strong>AC {hitAC}</strong>.",
+         "attackSuccess": "You hit!",
+         "attackFail": "You missed!",
+         "attackRoll": "Attacks"
       },
       "roll": "Roll",
       "modifier": "Modifier",

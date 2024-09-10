@@ -363,11 +363,11 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .attack-success {
   font-size: 24px;
-  color: darkgreen;
+  color: #106020;
 }
 .chat-message .message-content .attack-info {
   font-size: 20px;
-  color: darkblue;
+  color: #2a3560;
 }
 
 /* Styles limited to fantastic-depths sheets */

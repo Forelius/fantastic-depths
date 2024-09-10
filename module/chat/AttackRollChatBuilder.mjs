@@ -14,9 +14,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    /**
     * Get the lowest AC that can be hit by the specified roll and THAC0
-    * @param {any} rollTotal
-    * @param {any} thac0
-    * @returns
+    * @param {any} rollTotal The attack roll total
+    * @param {any} thac0 The attacker's effective THAC0
+    * @returns The lowest AC that this roll can hit.
     */
    #getLowestACHitProcedurally(rollTotal, thac0) {
       let result = null;
@@ -82,43 +82,44 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const thac0 = context.system.thac0.value;
       const ac = this.#selectedActor?.system.ac?.total;
       const hitAC = this.#getLowestACHitProcedurally(dieSum, thac0);
-      let result = "<div class='attack-fail'>You missed!</div>";
+      let result = `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`;
 
-      console.log("getToHitResult:", ac, hitAC);
+      //console.log("getToHitResult:", ac, hitAC);
 
       if (hitAC !== null) {
          if (ac !== null && ac !== undefined) {
             if (ac >= hitAC) {
-               result = `<div class='attack-success'>You hit!</div>`;
-            } 
+               result = `<div class='attack-success'>${game.i18n.localize('FADE.Chat.attackSuccess')}</div>`;
+            }
          } else {
-            result = `<div class='attack-info'>You hit <strong>AC ${hitAC}</strong> and above.</div>`
+            result = `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>`
          }
-      } 
+      }
 
       return result;
    }
 
    async createChatMessage() {
-      const { caller, context, mdata, resp, roll } = this.data;
+      const { caller, context, resp, roll } = this.data;
+
+      console.log("createChatMessage:", this.data);
 
       const rolls = [roll];
-      const rollFlavor = mdata.label;
-      const rollContent = await roll.render({ flavor: rollFlavor });
-
+      const actorName = context.name;
+      const targetName = this.#selectedActor?.name;
+      const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', { attacker: actorName, attackType: resp.attackType, target: targetName, weapon: caller.name })
+         : game.i18n.format('FADE.Chat.attackFlavor2', { attacker: actorName, attackType: resp.attackType, weapon: caller.name });
+      const rollContent = await roll.render();
       let resultString = this.#getToHitResult();
 
       // Get the actor and user names
-      const actorName = context.name;
       const userName = game.users.current.name; // User name (e.g., player name)
       const chatData = {
          rollContent,
-         mdata,
+         description,
          resultString,
-         actorName,
-         userName,
       };
-      //console.log("createChatMessage:", this.data);
+      
       const content = await renderTemplate(this.template, chatData);
       const chatMessageData = this.getChatMessageData({ content, rolls });
       await ChatMessage.create(chatMessageData);
