@@ -24,7 +24,7 @@ export class fadeActor extends Actor {
             });
             break;
          case "monster":
-            break;         
+            break;
       }
 
       await this.updateSource(changeData);
@@ -63,6 +63,7 @@ export class fadeActor extends Actor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      this._prepareMods();
       this._prepareArmorClass();
    }
 
@@ -79,6 +80,16 @@ export class fadeActor extends Actor {
    getRollData() {
       const data = { ...this.system };
       return data;
+   }
+
+   _prepareMods() {
+      const systemData = this.system;
+      systemData.mod = systemData.mod ?? { };
+      systemData.mod.ac = systemData.mod.ac ?? null;
+      systemData.mod.toHit = null;
+      systemData.mod.toHitRanged = null;
+      systemData.mod.dmg = null;
+      systemData.mod.dmgRanged = null;
    }
 
    _prepareMovement() {
@@ -112,11 +123,15 @@ export class fadeActor extends Actor {
       if (equippedArmor) {
          systemData.ac.value = equippedArmor.system.ac;
          systemData.ac.mod = equippedArmor.system.mod ?? 0;
-         systemData.ac.total = equippedArmor.system.totalAc - (systemData.abilities?.dex.mod ?? 0);
+         systemData.ac.total = equippedArmor.system.totalAc ;
       }
+
       if (equippedShield) {
          systemData.ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
          systemData.ac.total -= systemData.ac.shield;
       }
+
+      // Now dex modifier and other mods.
+      systemData.ac.total = systemData.ac.total - (systemData.mod.ac ?? 0) - (systemData.abilities?.dex.mod ?? 0);
    }
 }
