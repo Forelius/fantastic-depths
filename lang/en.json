@@ -72,6 +72,10 @@
             }
          },
          "Saves": {
+            "saveAs": {
+               "long": "Save As",
+               "abbr": "SA"
+            },
             "long": "Saving Throws",
             "death": {
                "long": "Death Ray or Poison",
@@ -146,7 +150,7 @@
          "Morale": "Morale",
          "XPAward": "XP Award",
          "AbilityCount": {
-            "abbr": "SA#",
+            "abbr": "SP#",
             "short": "# Specials",
             "long": "Special Abilities"
          },

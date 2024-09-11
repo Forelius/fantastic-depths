@@ -3,6 +3,7 @@
       "types": [ "character", "monster", "npc" ],
       "templates": {
          "base": {
+            "description": "",
             "retainer": {
                "enabled": false,
                "loyalty": 0,
@@ -120,7 +121,8 @@
                "attacks": 1,
                "size": "M",
                "intelligence": 7,
-               "monsterType": "Monster (Common)"
+               "monsterType": "Monster (Common)",
+               "saveAs":  "F1"
             },
             "na": {
                "wandering": "1d6",

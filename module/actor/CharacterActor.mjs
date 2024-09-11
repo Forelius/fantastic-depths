@@ -24,12 +24,9 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._updateClassInfo();
+      this._prepareClassInfo();
       this._prepareEncumbrance();
-      // Wrestling skill
-      const systemData = this.system;
-      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
-      systemData.wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
+      this._prepareWrestling();
    }
 
  /**
@@ -40,7 +37,6 @@ export class CharacterActor extends fadeActor {
  */
    prepareEmbeddedDocuments() {
       super.prepareEmbeddedDocuments();
-      //console.log("CharacterActor.prepareEmbeddedDocuments", this);
    }
 
    /** @override */
@@ -66,7 +62,7 @@ export class CharacterActor extends fadeActor {
 
       // Check if the class property has changed
       if (changed.system && changed.system.details && changed.system.details.class) {
-         this._updateClassInfo();
+         this._prepareClassInfo();
       }
    }
 
@@ -124,10 +120,11 @@ export class CharacterActor extends fadeActor {
       systemData.exploration = explore;
    }
 
-   _updateClassInfo() {
+   _prepareClassInfo() {
       const systemData = this.system;
       // Replace hyphen with underscore for "Magic-User"
       const classNameInput = systemData.details.class?.toLowerCase();
+      const classLevel = systemData.details.level;
       const classes = CONFIG.FADE.Classes;
       let classData = null;
 
@@ -141,11 +138,10 @@ export class CharacterActor extends fadeActor {
       }
 
       if (classData !== null) {
-         const currentLevel = systemData.details.level;
+         const currentLevel = classLevel;
          const levelData = classData.levels.find(level => level.level === currentLevel);
          const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
          const nameLevel = classData.levels.find(level => level.level === 9);
-         const savesData = classData.saves.find(save => currentLevel <= save.level);
 
          // Level Bonus
          const { pr5Count, pr10Count } = classData.primeReqs.reduce((counts, primeReq) => {
@@ -168,15 +164,16 @@ export class CharacterActor extends fadeActor {
             systemData.details.xp.next = nextLevelData.xp;
          }
          // Saving throws
-         if (savesData) {
-            for (let saveType in systemData.savingThrows) {
-               if (savesData.hasOwnProperty(saveType)) {
-                  systemData.savingThrows[saveType].value = savesData[saveType];
-               }
-            }
-         }
+         super.prepareSavingThrows(classNameInput, currentLevel);         
       }
 
       return classData; // Return null if no match found
+   }
+
+   _prepareWrestling() {
+      // Wrestling skill
+      const systemData = this.system;
+      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
+      systemData.wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
    }
 }

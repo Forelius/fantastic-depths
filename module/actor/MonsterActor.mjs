@@ -34,12 +34,8 @@ export class MonsterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      // Wrestling skill
-      const systemData = this.system;
-      //systemData.wrestling = Math.ceil(systemData.hp.hd * 2) + systemData.ac.value;
-      //if (systemData.abilities) {
-      //   systemData.wrestling = systemData.wrestling + systemData.abilities.str.mod + systemData.abilities.dex.mod;
-      //}
+      this._prepareWrestling();
+      this._prepareSavingThrows();
    }
 
    /**
@@ -50,12 +46,45 @@ export class MonsterActor extends fadeActor {
     */
    prepareEmbeddedDocuments() {
       super.prepareEmbeddedDocuments();
-      //console.log("CharacterActor.prepareEmbeddedDocuments", this);
    }
 
    /** @override */
    getRollData() {
       const data = super.getRollData();
       return data;
+   }
+
+   /** @override */
+   async _onUpdate(changed, options, userId) {
+      super._onUpdate(changed, options, userId);
+
+      // Check if the class property has changed
+      if (changed.system && changed.system.details && changed.system.details.class) {
+         // Update info
+      }
+   }
+
+   _prepareWrestling() {
+      // Wrestling skill
+      const systemData = this.system;
+      const hitDice = systemData.hp.hd?.match(/^\d+/)[0];
+      systemData.wrestling = Math.ceil(hitDice * 2) + systemData.ac.value;
+   }
+
+   _prepareSavingThrows() {
+      const systemData = this.system;
+      const saveAs = systemData.details.saveAs ?? null;
+      if (saveAs) {
+         // Extract class identifier and level from the input
+         const classId = saveAs[0].toLowerCase(); // First character as class identifier
+         const level = parseInt(saveAs.slice(1)); // Remaining part as level
+
+         // Find the class whose key starts with the classId
+         const classKey = Object.keys(CONFIG.FADE.Classes).find(key => key[0].toLowerCase() === classId);
+
+         if (classKey !== undefined && isNaN(level) == false) {
+            super.prepareSavingThrows(classKey, level);
+         }
+      }
    }
 }

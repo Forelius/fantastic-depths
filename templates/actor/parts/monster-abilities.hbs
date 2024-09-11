@@ -37,11 +37,6 @@
       </section>
    </section>
    <section class="flex2">
-      <section class="bordered">
-         {{> "systems/fantastic-depths/templates/item/parts/item-weapons.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/item-armor.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/item-gear.hbs"}}
-      </section>
       <div class="flexrow">
          <section class="bordered text-center flex2">
             <!-- Movement -->
@@ -65,6 +60,24 @@
                </div>
             </div>
          </section>
+         <section class="bordered text-center flex1">
+            <h4>Other</h4>
+            <div class="grid grid-2col label-12px">
+               <div>
+                  <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+                  <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
+               </div>
+               <div>
+                  <label for="system.details.saveAs" title="{{localize 'FADE.Actor.Saves.saveAs.long'}}">{{localize 'FADE.Actor.Saves.saveAs.abbr'}}</label>
+                  <input name="system.details.saveAs" type="text" data-dtype="String" value="{{system.details.saveAs}}" />
+               </div>
+            </div>
+         </section>
       </div>
+      <section class="bordered">
+         {{> "systems/fantastic-depths/templates/item/parts/item-weapons.hbs"}}
+         {{> "systems/fantastic-depths/templates/item/parts/item-armor.hbs"}}
+         {{> "systems/fantastic-depths/templates/item/parts/item-gear.hbs"}}
+      </section>
    </section>
 </section>

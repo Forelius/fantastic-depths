@@ -58,13 +58,9 @@
             <li class="flex1" style="max-width:35px">
                <label>{{localize "FADE.Actor.THAC0"}}</label>
                <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
-            </li>
-            <li class="flex1" style="max-width:48px">
-               <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
-               <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
-            </li>
+            </li>            
             <li class="flex1" style="max-width:40px">
-               <input type="text" name="system.details.intelligence" value="{{system.details.intelligence}}" data-dtype="String" title="{{localize 'FADE.Actor.Abilities.int.long'}}"/>
+               <input type="text" name="system.details.intelligence" value="{{system.details.intelligence}}" data-dtype="String" title="{{localize 'FADE.Actor.Abilities.int.long'}}" />
                <label title="{{localize 'FADE.Actor.Abilities.int.long'}}">Int.</label>
             </li>
             <li class="flex2">
@@ -96,9 +92,10 @@
          {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
       </div>
       {{!-- Description Tab --}}
-      <div class="tab biography" data-group="primary" data-tab="description">
-         {{> "systems/fantastic-depths/templates/actor/parts/character-desc.hbs"}}
-      </div>
+   <div class="tab biography" data-group="primary" data-tab="description">
+      {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
+      {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+   </div>
       {{! GM-Only Tab }}
       {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='gm-only'>

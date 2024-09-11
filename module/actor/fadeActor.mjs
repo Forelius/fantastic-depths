@@ -41,6 +41,7 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       this._prepareMovement();
       const systemData = this.system;
+
       systemData.details = systemData.details || {};
       systemData.ac = systemData.ac || {};
       systemData.hp = systemData.hp || {};
@@ -82,9 +83,27 @@ export class fadeActor extends Actor {
       return data;
    }
 
+   prepareSavingThrows(className, classLevel) {
+      const systemData = this.system;
+      // Replace hyphen with underscore for "Magic-User"
+      const classNameInput = className.toLowerCase();
+      const classes = CONFIG.FADE.Classes;
+      // Find a match in the FADE.Classes data
+      const classData = Object.values(classes).find(cdata => cdata.name.toLowerCase() === classNameInput);
+
+      if (classData !== undefined) {
+         const savesData = classData.saves.find(save => classLevel <= save.level);
+         for (let saveType in savesData) {
+            if (systemData.savingThrows.hasOwnProperty(saveType)) {
+               systemData.savingThrows[saveType].value = savesData[saveType];
+            }
+         }
+      }
+   }
+
    _prepareMods() {
       const systemData = this.system;
-      systemData.mod = systemData.mod ?? { };
+      systemData.mod = systemData.mod ?? {};
       systemData.mod.ac = systemData.mod.ac ?? null;
       systemData.mod.toHit = null;
       systemData.mod.toHitRanged = null;
@@ -123,7 +142,7 @@ export class fadeActor extends Actor {
       if (equippedArmor) {
          systemData.ac.value = equippedArmor.system.ac;
          systemData.ac.mod = equippedArmor.system.mod ?? 0;
-         systemData.ac.total = equippedArmor.system.totalAc ;
+         systemData.ac.total = equippedArmor.system.totalAc;
       }
 
       if (equippedShield) {

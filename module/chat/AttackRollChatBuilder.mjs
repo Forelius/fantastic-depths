@@ -84,8 +84,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const hitAC = this.#getLowestACHitProcedurally(dieSum, thac0);
       let result = `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`;
 
-      //console.log("getToHitResult:", ac, hitAC);
-
       if (hitAC !== null) {
          if (ac !== null && ac !== undefined) {
             if (ac >= hitAC) {
