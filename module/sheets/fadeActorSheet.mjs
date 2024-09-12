@@ -333,6 +333,9 @@ export class fadeActorSheet extends ActorSheet {
          catch (error) {
             cardType = null;
          }
+      } else if (dataset.rollType === 'damage') {
+         cardType = CHAT_TYPE.GENERIC_ROLL;
+         console.log("Damage Roll", dataset);
       } else {
          // Basic roll with roll formula and label
          cardType = CHAT_TYPE.GENERIC_ROLL;

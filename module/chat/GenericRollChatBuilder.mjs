@@ -13,6 +13,8 @@ export class GenericRollChatBuilder extends ChatBuilder {
          // Determine if the roll is successful based on the roll type and target number      
          let testResult = this.getBoolRollResultType(roll.total, targetNumber, mdata.pass);
          resultString = this.getBoolResult(testResult);
+      } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {
+         resultString = mdata.resultstring;
       }
 
       // Get the actor and user names

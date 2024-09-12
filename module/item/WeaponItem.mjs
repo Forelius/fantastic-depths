@@ -39,20 +39,23 @@ export class WeaponItem extends fadeItem {
       const systemData = this.system;
       const attackerData = attacker.system;
       let result = systemData.damageRoll;
+
       if (attackType == 'melee') {
          if (systemData.mod.dmg != null && systemData.mod.dmg != 0) {
             result = `${result}+${systemData.mod.dmg}`;
          }
-         if (attackerData.abilities.str.mod != 0) {
+         // If the attacker has ability scores...
+         if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
             result = `${result}+${attackerData.abilities.str.mod}`;
          }
       } else {
          if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
             result = `${result}+${systemData.mod.dmgRanged}`;
          }
-         if (systemData.tags.includes("thrown") && attackerData.abilities.str.mod != 0) {
+         // If the attacker has ability scores...
+         if (attackerData.abilities && attackerData.abilities.str.mod != 0 && systemData.tags.includes("thrown")) {
             result = `${result}+${attackerData.abilities.str.mod}`;
-         } else if (attackerData.abilities.dex.mod) {
+         } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
             result = `${result}+${attackerData.abilities.dex.mod}`;
          }
       }
@@ -68,17 +71,19 @@ export class WeaponItem extends fadeItem {
          if (systemData.mod.toHit !== 0) {
             result = `${result}+${systemData.mod.toHit}`;
          }
-         if (attackerData.abilities.str.mod !== 0) {
+         // If the attacker has ability scores...
+         if (attackerData.abilities && attackerData.abilities.str.mod !== 0) {
             result = `${result}+${attackerData.abilities.str.mod}`;
          }
       } else {
-         // missile
+         // Missile attack
          if (systemData.mod.toHitRanged !== 0) {
             result = `${result}+${systemData.mod.toHitRanged}`;
          }
-         if (systemData.tags.includes("thrown") && attackerData.abilities.str.mod != 0) {
+         // If the attacker has ability scores...
+         if (attackerData.abilities && systemData.tags.includes("thrown") && attackerData.abilities.str.mod != 0) {
             result = `${result}+${attackerData.abilities.str.mod}`;
-         } else if (attackerData.abilities.dex.mod) {
+         } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
             result = `${result}+${attackerData.abilities.dex.mod}`;
          }
       }
@@ -113,9 +118,9 @@ export class WeaponItem extends fadeItem {
          const rollContext = { ...rollData, ...dialogResp.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
-            resp: dialogResp.resp,
-            caller: this,
-            context: this.actor,
+            resp: dialogResp.resp, // the dialog response
+            caller: this, // the weapon
+            context: this.actor, // the weapon owner
             roll: rolled,
          };
          const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);

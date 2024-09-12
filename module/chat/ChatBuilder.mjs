@@ -128,7 +128,7 @@ export class ChatBuilder {
    getChatMessageData(obj) {
       const chatMessageData = {
          ...obj,
-         auther: game.user.id,
+         author: game.user.id,
          type: obj.type ?? CONST.CHAT_MESSAGE_STYLES.OTHER,
       };
 

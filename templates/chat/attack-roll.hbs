@@ -1,6 +1,18 @@
 <div>{{description}}</div>
 {{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
 {{{rollContent}}}
+
 {{#if toHitResult.success}}
-<p>Roll damage: <a class="rollable inline-roll" data-formula="{{damageRoll}}" data-label="Damage">{{damageRoll}}</a></p>
+<p>
+   <button class="damage-roll"
+           data-formula="{{damageRoll}}"
+           data-label="Damage"
+           data-type="damage"
+           data-attackerid="{{descData.attackerid}}"
+           data-attacker="{{descData.attacker}}"
+           data-target="{{descData.target?}}"
+           data-weapon="{{descData.weapon}}">
+      {{localize 'FADE.Chat.damageRoll'}} {{damageRoll}}
+   </button>
+</p>
 {{/if}}

@@ -72,7 +72,6 @@ export class SkillItem extends fadeItem {
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
-            caller: this,
             context: this.actor,
             mdata: dataset,
             roll: rolled,

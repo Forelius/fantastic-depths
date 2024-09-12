@@ -275,7 +275,10 @@
          "attackAC": "Attack hits <strong>AC {hitAC}</strong>.",
          "attackSuccess": "Attack hit!",
          "attackFail": "Attack missed!",
-         "attackRoll": "Attacks"
+         "attackRoll": "Attacks",
+         "damageFlavor1": "{attacker} hits {target} with {weapon} for {damage} points of damage.",
+         "damageFlavor2": "{attacker} hits with {weapon} for {damage} points of damage.",
+         "damageRoll": "Damage Roll"
       },
       "roll": "Roll",
       "modifier": "Modifier",

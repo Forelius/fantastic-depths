@@ -108,14 +108,18 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return { message, success };
    }
 
+   /**
+    * Called by the various Actor and Item derived classes to create a chat message.
+    */
    async createChatMessage() {
       const { caller, context, resp, roll } = this.data;
 
       const rolls = [roll];
       const actorName = context.name;
-      const targetName = this.#selectedActor?.name;
-      const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', { attacker: actorName, attackType: resp.attackType, target: targetName, weapon: caller.name })
-         : game.i18n.format('FADE.Chat.attackFlavor2', { attacker: actorName, attackType: resp.attackType, weapon: caller.name });
+      const target = this.#selectedActor?.name;
+      let descData = target ? { attackerid: context.id, attacker: actorName, attackType: resp.attackType, target: target, weapon: caller.name }
+         : { attackerid: context.id, attacker: actorName, attackType: resp.attackType, weapon: caller.name };
+      const description = target ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
       const rollContent = await roll.render();
       const toHitResult = this.#getToHitResult();
       let damageRoll = caller.getDamageRoll(resp.attackType, context);
@@ -126,6 +130,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          damageRoll,
          rollContent,
          description,
+         descData,
          toHitResult,
       };
 
