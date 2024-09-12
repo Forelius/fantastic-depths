@@ -5,19 +5,13 @@ export class GenericRollChatBuilder extends ChatBuilder {
 
    async createChatMessage() {
       const { context, mdata, resp, roll } = this.data;
-
       const rolls = [roll];
-      const rollFlavor = mdata.label;
-      const rollContent = await roll.render({ flavor: rollFlavor });
-
-      const dieSum = ChatBuilder.getDiceSum(roll);
-
+      const rollContent = await roll.render();
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
-
       let resultString = null;
       if (mdata.pass !== undefined && mdata.pass !== null) {
          // Determine if the roll is successful based on the roll type and target number      
-         let testResult = this.getBoolRollResultType(dieSum, targetNumber, mdata.pass);
+         let testResult = this.getBoolRollResultType(roll.total, targetNumber, mdata.pass);
          resultString = this.getBoolResult(testResult);
       }
 
@@ -32,7 +26,6 @@ export class GenericRollChatBuilder extends ChatBuilder {
          userName,
       };
       const content = await renderTemplate(this.template, chatData);
-
       const chatMessageData = this.getChatMessageData({ content, rolls });
       await ChatMessage.create(chatMessageData);
    }

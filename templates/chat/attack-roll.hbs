@@ -1,3 +1,6 @@
 <div>{{description}}</div>
-{{#if resultString}}{{{resultString}}}{{/if}}
+{{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
 {{{rollContent}}}
+{{#if toHitResult.success}}
+<p>Roll damage: <a class="rollable inline-roll" data-formula="{{damageRoll}}" data-label="Damage">{{damageRoll}}</a></p>
+{{/if}}

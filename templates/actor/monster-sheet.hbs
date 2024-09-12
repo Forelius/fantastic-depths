@@ -23,15 +23,15 @@
          <ul class="summary flexrow">
             <li class="flex1">
                <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDice'}}" />
-               <label class="hitdie rollable" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
+               <label class="hitdie rollable" data-formula="{{formatHitDice system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
             </li>
             <li class="flex2" style="max-width:90px">
                <input type="text" name="system.na.wandering" value="{{system.na.wandering}}" data-dtype="String" title="{{localize 'FADE.Actor.NumberAppearing.long'}}" />
-               <label title="{{localize 'FADE.Actor.NumberAppearing.long'}}">{{localize 'FADE.Actor.NumberAppearing.short'}}</label>
+               <label class="rollable" data-formula="{{system.na.wandering}}" data-label="{{localize 'FADE.Actor.NumberAppearing.long'}}" title="{{localize 'FADE.Actor.NumberAppearing.long'}}">{{localize 'FADE.Actor.NumberAppearing.short'}}</label>
             </li>
             <li class="flex2" style="max-width:90px">
                <input type="text" name="system.na.lair" value="{{system.na.lair}}" data-dtype="String" title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" />
-               <label title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}">{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
+               <label class="rollable" data-formula="{{system.na.lair}}" data-label="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}">{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
             </li>
             <li class="flex1">
                <input type="number" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
@@ -58,7 +58,7 @@
             <li class="flex1" style="max-width:35px">
                <label>{{localize "FADE.Actor.THAC0"}}</label>
                <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
-            </li>            
+            </li>
             <li class="flex1" style="max-width:40px">
                <input type="text" name="system.details.intelligence" value="{{system.details.intelligence}}" data-dtype="String" title="{{localize 'FADE.Actor.Abilities.int.long'}}" />
                <label title="{{localize 'FADE.Actor.Abilities.int.long'}}">Int.</label>
@@ -75,8 +75,8 @@
    <nav class="sheet-tabs tabs" data-group="primary">
       {{!-- Default tab is specified in fadeActorSheet.mjs --}}
       <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
-      <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
       <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
+      <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
       <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
       {{#if isGM}}<a class='item' data-tab='gm-only'>GM Only</a>{{/if}}
    </nav>
@@ -92,10 +92,10 @@
          {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
       </div>
       {{!-- Description Tab --}}
-   <div class="tab biography" data-group="primary" data-tab="description">
-      {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
-      {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
-   </div>
+      <div class="tab biography" data-group="primary" data-tab="description">
+         {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
+         {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+      </div>
       {{! GM-Only Tab }}
       {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='gm-only'>

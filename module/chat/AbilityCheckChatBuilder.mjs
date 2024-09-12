@@ -10,11 +10,9 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       const rollFlavor = 'Ability Check';
       const rollContent = await roll.render({ flavor: rollFlavor });
       mdata.score = context.system.abilities[mdata.ability].value;
-
-      const dieSum = ChatBuilder.getDiceSum(roll);
-
+            
       // Determine if the roll is successful based on the roll type and target number      
-      let testResult = this.getBoolRollResultType(dieSum, mdata.score, mdata.pass);
+      let testResult = this.getBoolRollResultType(roll.total, mdata.score, mdata.pass);
       const resultString = this.getBoolResult(testResult);
 
       // Get the actor and user names

@@ -1,14 +1,16 @@
 .chat-message {
    .message-content {
-      .attack-fail {
+      .attack-fail, .roll-fail {
          font-size: 20px;
          color: darkred;
       }
-      .attack-success {
-         font-size: 24px;
+
+      .attack-success, .roll-success {
+         font-size: 22px;
          color: #106020;
       }
-      .attack-info {
+
+      .attack-info, .roll-info {
          font-size: 20px;
          color: #2a3560;
       }

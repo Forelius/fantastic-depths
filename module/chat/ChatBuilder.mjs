@@ -71,8 +71,8 @@ export class ChatBuilder {
 	static initializeResultCache() {
 		this.resultCache = {
 			[RESULT_TYPE.NONE]: undefined,
-			[RESULT_TYPE.FAILED]: `<b>${game.i18n.localize('FADE.Chat.fail')}</b>`,
-			[RESULT_TYPE.PASSED]: `<b>${game.i18n.localize('FADE.Chat.pass')}</b>`,
+         [RESULT_TYPE.FAILED]: `<div class='roll-fail'>${game.i18n.localize('FADE.Chat.fail')}</div>`,
+         [RESULT_TYPE.PASSED]: `<div class='roll-success'>${game.i18n.localize('FADE.Chat.pass')}</div>`,
 		};
 		return this.resultCache;
 	}
@@ -128,7 +128,7 @@ export class ChatBuilder {
    getChatMessageData(obj) {
       const chatMessageData = {
          ...obj,
-         user: game.user.id,
+         auther: game.user.id,
          type: obj.type ?? CONST.CHAT_MESSAGE_STYLES.OTHER,
       };
 

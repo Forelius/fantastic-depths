@@ -91,7 +91,25 @@ Handlebars.registerHelper("times", (n, block) => {
    return accum;
 });
 Handlebars.registerHelper("subtract",(lh, rh) => parseInt(lh, 10) - parseInt(rh, 10));
-// Register a helper to get roll modes
+Handlebars.registerHelper('formatHitDice', function (hitDice) {
+   // Regular expression to check for a dice specifier like d<number>
+   const diceRegex = /\d*d\d+/;
+   // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
+   const modifierRegex = /([+\-*/]\d+)$/;
+
+   // Check if the input contains a dice specifier
+   if (diceRegex.test(hitDice)) {
+      // If a dice specifier is found, return the original hitDice
+      return hitDice;
+   } else {
+      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
+      const base = hitDice.replace(modifierRegex, ''); // Extract base number
+      const modifier = hitDice.match(modifierRegex)?.[0] || ''; // Extract modifier (if any)
+
+      // Append 'd8' to the base number, followed by the modifier
+      return base + 'd8' + modifier;
+   }
+});
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

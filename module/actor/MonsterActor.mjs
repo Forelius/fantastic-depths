@@ -68,7 +68,9 @@ export class MonsterActor extends fadeActor {
       // Wrestling skill
       const systemData = this.system;
       const hitDice = systemData.hp.hd?.match(/^\d+/)[0];
-      systemData.wrestling = Math.ceil(hitDice * 2) + systemData.ac.value;
+      if (hitDice) {
+         systemData.wrestling = Math.ceil(hitDice * 2) + systemData.ac.value;
+      }
    }
 
    _prepareSavingThrows() {

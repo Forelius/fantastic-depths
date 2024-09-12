@@ -31,7 +31,58 @@ export class WeaponItem extends fadeItem {
    /** @override */
    getRollData() {
       const data = super.getRollData();
+
       return data;
+   }
+
+   getDamageRoll(attackType, attacker) {
+      const systemData = this.system;
+      const attackerData = attacker.system;
+      let result = systemData.damageRoll;
+      if (attackType == 'melee') {
+         if (systemData.mod.dmg != null && systemData.mod.dmg != 0) {
+            result = `${result}+${systemData.mod.dmg}`;
+         }
+         if (attackerData.abilities.str.mod != 0) {
+            result = `${result}+${attackerData.abilities.str.mod}`;
+         }
+      } else {
+         if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
+            result = `${result}+${systemData.mod.dmgRanged}`;
+         }
+         if (systemData.tags.includes("thrown") && attackerData.abilities.str.mod != 0) {
+            result = `${result}+${attackerData.abilities.str.mod}`;
+         } else if (attackerData.abilities.dex.mod) {
+            result = `${result}+${attackerData.abilities.dex.mod}`;
+         }
+      }
+
+      return result;
+   }
+
+   getToHitRoll(attackType, mod, attacker) {
+      const systemData = this.system;
+      const attackerData = attacker.system;
+      let result = mod != 0 ? '1d20+@mod' : '1d20';
+      if (attackType === "melee") {
+         if (systemData.mod.toHit !== 0) {
+            result = `${result}+${systemData.mod.toHit}`;
+         }
+         if (attackerData.abilities.str.mod !== 0) {
+            result = `${result}+${attackerData.abilities.str.mod}`;
+         }
+      } else {
+         // missile
+         if (systemData.mod.toHitRanged !== 0) {
+            result = `${result}+${systemData.mod.toHitRanged}`;
+         }
+         if (systemData.tags.includes("thrown") && attackerData.abilities.str.mod != 0) {
+            result = `${result}+${attackerData.abilities.str.mod}`;
+         } else if (attackerData.abilities.dex.mod) {
+            result = `${result}+${attackerData.abilities.dex.mod}`;
+         }
+      }
+      return result;
    }
 
    /**
@@ -51,20 +102,12 @@ export class WeaponItem extends fadeItem {
       dataset.dialog = "attack";
       try {
          dialogResp = await DialogFactory(dataset, this.actor, { weapon: this });
-         rollData.formula = dialogResp.resp.mod != 0 ? '1d20+@mod' : '1d20';
-         //console.log("roll dialog", dialogResp);
-         if (dialogResp.resp.attackType === "melee") {
-            rollData.formula = systemData.mod.toHit ? `${rollData.formula}+${systemData.mod.toHit}` : rollData.formula;
-         } else {
-            // missile
-            rollData.formula = systemData.mod.toHit ? `${rollData.formula}+${systemData.mod.toHitRanged}` : rollData.formula;
-         }
+         rollData.formula = this.getToHitRoll(dialogResp.resp.attackType, dialogResp.resp.mod, this.actor);
       }
       // If close button is pressed
       catch (error) {
          // Shhhh
       }
-
       let result = null;
       if (dialogResp !== null) {
          const rollContext = { ...rollData, ...dialogResp.resp || {} };

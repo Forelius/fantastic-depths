@@ -18,15 +18,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * @param {any} thac0 The attacker's effective THAC0
     * @returns The lowest AC that this roll can hit.
     */
-   #getLowestACHitProcedurally(rollTotal, thac0) {
+   #getLowestACHitProcedurally(roll, rollTotal, thac0) {
       let result = null;
       let toHitTable = [];
 
       // Check for automatic hit or miss
-      if (rollTotal === 1) {
+      if (roll === 1) {
          result = null;  // Natural 1 always misses
-      } else if (rollTotal === 20) {
-         result = -50;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
+      } else if (roll === 20) {
+         result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
       } else {
          // Loop through AC values from 19 down to -20
          let repeater = 0;
@@ -69,8 +69,12 @@ export class AttackRollChatBuilder extends ChatBuilder {
             }
          }
 
-         // Get lowest AC that can be hit
-         result = (toHitTable.find(entry => rollTotal >= entry.toHit) || {}).ac;
+         // Filter all entries that the rollTotal can hit
+         const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
+         // Find the lowest AC from valid entries
+         result = validEntries.reduce((minEntry, currentEntry) => {
+            return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
+         }, { ac: Infinity }).ac;
       }
 
       return result;
@@ -78,29 +82,34 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    #getToHitResult() {
       const { caller, context, resp } = this.data;
-      const dieSum = ChatBuilder.getDiceSum(this.data.roll);
       const thac0 = context.system.thac0.value;
-      const ac = this.#selectedActor?.system.ac?.total;
-      const hitAC = this.#getLowestACHitProcedurally(dieSum, thac0);
-      let result = `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`;
+      let ac = this.#selectedActor?.system.ac?.total;
+      const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
+      let message = `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`;
+      let success = false;
 
+      // If a natural 20...
+      if (hitAC === -100) {
+         // Setup to show success message.
+         ac = 100;
+      }
       if (hitAC !== null) {
          if (ac !== null && ac !== undefined) {
             if (ac >= hitAC) {
-               result = `<div class='attack-success'>${game.i18n.localize('FADE.Chat.attackSuccess')}</div>`;
+               message = `<div class='attack-success'>${game.i18n.localize('FADE.Chat.attackSuccess')}</div>`;
+               success = true;
             }
          } else {
-            result = `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>`
+            message = `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>`;
+            success = true;
          }
       }
 
-      return result;
+      return { message, success };
    }
 
    async createChatMessage() {
       const { caller, context, resp, roll } = this.data;
-
-      console.log("createChatMessage:", this.data);
 
       const rolls = [roll];
       const actorName = context.name;
@@ -108,16 +117,18 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', { attacker: actorName, attackType: resp.attackType, target: targetName, weapon: caller.name })
          : game.i18n.format('FADE.Chat.attackFlavor2', { attacker: actorName, attackType: resp.attackType, weapon: caller.name });
       const rollContent = await roll.render();
-      let resultString = this.#getToHitResult();
+      const toHitResult = this.#getToHitResult();
+      let damageRoll = caller.getDamageRoll(resp.attackType, context);
 
       // Get the actor and user names
       const userName = game.users.current.name; // User name (e.g., player name)
       const chatData = {
+         damageRoll,
          rollContent,
          description,
-         resultString,
+         toHitResult,
       };
-      
+
       const content = await renderTemplate(this.template, chatData);
       const chatMessageData = this.getChatMessageData({ content, rolls });
       await ChatMessage.create(chatMessageData);
