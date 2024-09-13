@@ -10,7 +10,7 @@ function focusById(id) {
 }
 
 export class fadeDialog {
-   static async getAttackDialog(dataset, caller, weapon) {
+   static async getAttackDialog(caller, weapon) {
       const dialogData = { caller };
       const dialogResp = {};
 

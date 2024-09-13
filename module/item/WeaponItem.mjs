@@ -6,7 +6,6 @@ export class WeaponItem extends fadeItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
-      //console.log("WeaponItem constructor");
    }
 
    /** @override */
@@ -94,7 +93,7 @@ export class WeaponItem extends fadeItem {
  * Handle clickable rolls.
  * @param {Event} event The originating click event
  */
-   async roll(dataset) {
+   async roll() {
       const systemData = this.system;
 
       // Initialize chat data.
@@ -104,9 +103,8 @@ export class WeaponItem extends fadeItem {
       const rollData = this.getRollData();
       let dialogResp;
 
-      dataset.dialog = "attack";
       try {
-         dialogResp = await DialogFactory(dataset, this.actor, { weapon: this });
+         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
          rollData.formula = this.getToHitRoll(dialogResp.resp.attackType, dialogResp.resp.mod, this.actor);
       }
       // If close button is pressed

@@ -7,14 +7,14 @@ import { fadeDialog } from './Dialog.mjs';
  * @param {any} opt
  * @returns
  */
-export const DialogFactory = (dataset, caller = null, opt = {}) => {
+export const DialogFactory = (dataset=null, caller = null, opt = {}) => {
    let result;
    if (dataset.dialog === 'ability') {
       result = fadeDialog.getAbilityDialog(dataset, caller);
    } else if (dataset.dialog === 'generic') {
       result = fadeDialog.getGenericDialog(dataset, caller);
    } else if (dataset.dialog === 'attack') {
-      result = fadeDialog.getAttackDialog(dataset, caller, opt.weapon);
+      result = fadeDialog.getAttackDialog(caller, opt.weapon);
    }
    return result;
 };

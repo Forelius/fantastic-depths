@@ -117,42 +117,46 @@ Handlebars.registerHelper('formatHitDice', function (hitDice) {
 /* -------------------------------------------- */
 Hooks.once('ready', function () {
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-   Hooks.on('hotbarDrop', (bar, data, slot) => createItemMacro(data, slot));
+   Hooks.on('hotbarDrop', (bar, data, slot) => {
+      createItemMacro(data, slot);
+      return false;
+   });   
 
    // inline-roll handler
-   $(document).on('click', '.damage-roll', async function (ev) {
-      const element = ev.currentTarget;
-      const dataset = element.dataset;
-
-      // Custom behavior for damage rolls
-      if (dataset.type === "damage") {
-         ev.preventDefault(); // Prevent the default behavior
-         ev.stopPropagation(); // Stop other handlers from triggering the event
-         const { attackerid, attacker, target, weapon } = dataset;
-
-         // Roll the damage and wait for the result
-         const roll = new Roll(dataset.formula);
-         await roll.evaluate(); // Wait for the roll result
-         const damage = roll.total;
-         let descData = target ? { attacker, target, weapon, damage } : { attacker, weapon, damage };
-         dataset.resultstring = target ? game.i18n.format('FADE.Chat.damageFlavor1', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
-
-         // Use the total damage amount in the flavor text
-         //roll.toMessage({
-         //   author: game.user.id,
-         //   flavor: description,
-         //});
-
-         const chatData = {
-            context: game.actors.get(attackerid),
-            mdata: dataset,
-            roll: roll,
-         };
-         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
-         builder.createChatMessage();
-      }
-   });
+   $(document).on('click', '.damage-roll', (ev) => clickDamageRoll(ev));
 });
+
+/**
+ * Handle user clicking on element with .damage-roll css class.
+ * @param {any} ev
+ */
+async function clickDamageRoll(ev) {
+   const element = ev.currentTarget;
+   const dataset = element.dataset;
+
+   // Custom behavior for damage rolls
+   if (dataset.type === "damage") {
+      ev.preventDefault(); // Prevent the default behavior
+      ev.stopPropagation(); // Stop other handlers from triggering the event
+      const { attackerid, attacker, target, weapon } = dataset;
+
+      // Roll the damage and wait for the result
+      const roll = new Roll(dataset.formula);
+      await roll.evaluate(); // Wait for the roll result
+      const damage = roll.total;
+      let descData = target ? { attacker, target, weapon, damage } : { attacker, weapon, damage };
+      dataset.resultstring = target ? game.i18n.format('FADE.Chat.damageFlavor1', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
+
+      const chatData = {
+         context: game.actors.get(attackerid),
+         mdata: dataset,
+         roll: roll,
+      };
+      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+      builder.createChatMessage();
+   }
+}
+
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
@@ -165,21 +169,28 @@ Hooks.once('ready', function () {
  * @returns {Promise}
  */
 async function createItemMacro(data, slot) {
-   // First, determine if this is a valid owned item.
+   if (data.type === "Macro") {
+      return game.user.assignHotbarMacro(await fromUuid(data.uuid), slot);
+   }
+
+   // Prevent Foundry's default behavior from creating an additional macro
    if (data.type !== 'Item') return;
    if (!data.uuid.includes('Actor.') && !data.uuid.includes('Token.')) {
       return ui.notifications.warn(
          'You can only create macro buttons for owned Items'
       );
    }
-   // If it is, retrieve it based on the uuid.
+
+   // Stop the default Foundry behavior
    const item = await Item.fromDropData(data);
 
-   // Create the macro command using the uuid.
+   console.log("createItemMacro", data, item);
+
+   // Create the macro command using the item's UUID.
    const command = `game.fantasticdepths.rollItemMacro("${data.uuid}");`;
-   let macro = game.macros.find(
-      (m) => m.name === item.name && m.command === command
-   );
+
+   // Check if a macro with the same name and command already exists
+   let macro = game.macros.find((m) => m.name === item.name && m.command === command);
    if (!macro) {
       macro = await Macro.create({
          name: item.name,
@@ -189,13 +200,15 @@ async function createItemMacro(data, slot) {
          flags: { 'fantastic-depths.itemMacro': true },
       });
    }
-   game.user.assignHotbarMacro(macro, slot);
-   return false;
+
+   // Assign the created macro to the hotbar slot
+   await game.user.assignHotbarMacro(macro, slot);
+
+   return false;  // Prevent further handling of the drop event
 }
 
 /**
- * Create a Macro from an Item drop.
- * Get an existing item macro if one exists, otherwise create a new one.
+ * Roll the Item macro.
  * @param {string} itemUuid
  */
 function rollItemMacro(itemUuid) {
@@ -204,6 +217,7 @@ function rollItemMacro(itemUuid) {
       type: 'Item',
       uuid: itemUuid,
    };
+
    // Load the item from the uuid.
    Item.fromDropData(dropData).then((item) => {
       // Determine if the item loaded and if it's an owned item.
