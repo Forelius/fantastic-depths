@@ -1,13 +1,13 @@
 import { registerSystemSettings } from "./settings.mjs";
 // Import document classes.
+import { ActorFactory } from './actor/ActorFactory.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeItem } from './item/fadeItem.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
-import { ItemFactory } from './helpers/ItemFactory.mjs';
-import { ActorFactory } from './helpers/ActorFactory.mjs';
+import { ItemFactory } from './item/ItemFactory.mjs';
 // Import sheet classes.
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
@@ -15,6 +15,7 @@ import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { FADE } from './helpers/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
+import { fadeCombat } from './fadeCombat.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -38,14 +39,8 @@ Hooks.once('init', function () {
    // Register System Settings
    registerSystemSettings();
 
-   /**
-    * Set an initiative formula for the system
-    * @type {String}
-    */
-   CONFIG.Combat.initiative = {
-      formula: '1d6 + @abilities.dex.mod',
-      decimals: 2,
-   };
+   // Replace the default Combat class with the custom fadeCombat class
+   CONFIG.Combat.documentClass = fadeCombat;
 
    // Define custom Document classes
    CONFIG.Actor.documentClass = ActorFactory;
@@ -120,10 +115,10 @@ Hooks.once('ready', function () {
    Hooks.on('hotbarDrop', (bar, data, slot) => {
       createItemMacro(data, slot);
       return false;
-   });   
+   });
 
    // inline-roll handler
-   $(document).on('click', '.damage-roll', (ev) => clickDamageRoll(ev));
+   $(document).on('click', '.damage-roll', clickDamageRoll);
 });
 
 /**
@@ -146,7 +141,7 @@ async function clickDamageRoll(ev) {
       const damage = roll.total;
       let descData = target ? { attacker, target, weapon, damage } : { attacker, weapon, damage };
       dataset.resultstring = target ? game.i18n.format('FADE.Chat.damageFlavor1', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
-
+      dataset.resultstring = `<div class='roll-info'>${dataset.resultstring}</div>`
       const chatData = {
          context: game.actors.get(attackerid),
          mdata: dataset,

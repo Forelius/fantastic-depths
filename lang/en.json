@@ -107,6 +107,11 @@
                "abbr": "STR",
                "mod": "To-Hit, Damage, Open Doors"
             },
+            "dex": {
+               "long": "Dexterity",
+               "abbr": "DEX",
+               "mod": "Missile To-Hit, AC, Initiative"
+            },
             "int": {
                "long": "Intelligence",
                "abbr": "INT",
@@ -116,11 +121,6 @@
                "long": "Wisdom",
                "abbr": "WIS",
                "mod": "Saving Throws vs Spells"
-            },
-            "dex": {
-               "long": "Dexterity",
-               "abbr": "DEX",
-               "mod": "Missile To-Hit, AC"
             },
             "con": {
                "long": "Constitution",
@@ -322,6 +322,29 @@
          "Name": "Theme",
          "Dark": "Dark Mode",
          "Light": "Light Mode"
+      },
+      "initiative": {
+         "formula": {
+            "name": "Initiative Formula",
+            "hint": "Define the formula used to calculate initiative."
+         },
+         "mode": {
+            "name": "Initiative Mode",
+            "hint": "Choose between group-based or individual-based initiative.",
+            "choices": {
+               "individual": "Individual Initiative",
+               "group": "Group Initiative"
+            }
+         },
+         "modifier": {
+            "name": "Group Initiative Modifier",
+            "hint": "Choose how to calculate the group initiative modifier.",
+            "choices": {
+               "none": "No Modifier",
+               "average": "Average Dexterity",
+               "highest": "Highest Dexterity"
+            }
+         }
       }
    }
 }

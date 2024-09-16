@@ -42,17 +42,6 @@ export class CharacterActor extends fadeActor {
    /** @override */
    getRollData() {
       const data = super.getRollData();
-
-      // Copy the ability scores to the top level for character rolls
-      if (data.abilities) {
-         for (let [k, v] of Object.entries(data.abilities)) {
-            data[k] = foundry.utils.deepClone(v);
-         }
-      }
-
-      // Add level for easier access
-      data.lvl = data.attributes?.level?.value || 0;
-
       return data;
    }
 
