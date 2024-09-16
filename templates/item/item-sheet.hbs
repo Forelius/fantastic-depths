@@ -29,6 +29,9 @@
       <a class='item' data-tab='description'>Description</a>
       <a class='item' data-tab='effects'>Effects</a>
       {{#if isGM}}
+      {{#if (includes system.tags 'light')}}
+      <a class='item' data-tab='attributes'>Attributes</a>
+      {{/if}}
       <a class='item' data-tab='gm-only'>GM Only</a>
       {{/if}}
    </nav>
@@ -46,6 +49,10 @@
       </div>
       {{! GM-Only Tab }}
       {{#if isGM}}
+      {{! Attributes Tab }}
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         <label>A bunch of stuff goes here.</label>
+      </div>
       <div class='tab' data-group='primary' data-tab='gm-only'>
          <!-- Content that only the GM should see goes here -->
          <label for="gm-notes">GM Notes:</label>

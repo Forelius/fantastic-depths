@@ -107,6 +107,11 @@ Handlebars.registerHelper('formatHitDice', function (hitDice) {
    }
 });
 
+// Register a Handlebars helper to check if an array includes a value
+Handlebars.registerHelper('includes', function (array, value) {
+   return array && array.includes(value);
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

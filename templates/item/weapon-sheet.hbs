@@ -48,7 +48,9 @@
    {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
+      {{#if system.canRanged}}
       <a class='item' data-tab='attributes'>Attributes</a>
+      {{/if}}
       <a class='item' data-tab='description'>Description</a>
       <a class='item' data-tab='effects'>Effects</a>
       {{#if isGM}}
