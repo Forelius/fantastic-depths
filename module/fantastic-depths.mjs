@@ -16,6 +16,8 @@ import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { FADE } from './helpers/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './fadeCombat.mjs'
+// Import TurnTrackerForm class
+import { toggleTurnTracker } from './apps/TurnTrackerForm.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -62,9 +64,7 @@ Hooks.once('init', function () {
       makeDefault: true,
       label: 'FADE.SheetLabel.Item',
    });
-
-   //console.log("Roll Modes:", Object.entries(CONFIG.Dice.rollModes).map(([key, value]) => { return { key: key, label: game.i18n.localize(value) }; }));
-
+      
    // Preload Handlebars templates.
    return preloadHandlebarsTemplates();
 });
@@ -157,6 +157,17 @@ async function clickDamageRoll(ev) {
    }
 }
 
+/* -------------------------------------------- */
+/*  Render Sidebar Hook                         */
+/* -------------------------------------------- */
+// Hook to add the "Turn Tracker" button in the sidebar for the GM
+Hooks.on('renderSidebarTab', (app, html) => {
+   if (game.user.isGM) {
+      const button = $(`<button class="turn-tracker-toggle">Turn Tracker</button>`);
+      button.click(toggleTurnTracker);
+      html.find(".directory-footer").append(button);
+   }
+});
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */

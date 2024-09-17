@@ -143,4 +143,20 @@ export function registerSystemSettings() {
          "highest": "SETTINGS.initiative.modifier.choices.highest"
       }
    });
+
+   game.settings.register(game.system.id, 'turnData', {
+      name: 'Turn Data',  // Name shown in the settings menu
+      hint: 'Tracks the turns information.',
+      scope: 'world',      // 'world' means it's shared across all users
+      config: false,       // Don't show it in the settings menu
+      type: Object,        // Data type
+      default: {
+         dungeon: {
+            rest: 0,
+            restWarnCount: 0,
+            session: 0,
+            total: 0
+         }
+      }
+   });
 }
