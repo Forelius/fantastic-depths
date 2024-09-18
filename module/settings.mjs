@@ -24,7 +24,7 @@ function toggleGroupModifier(value) {
    // Set default value to 'none' when disabled
    if (value === "group") {
       groupModifierSetting.disabled = false;  // Enable the setting if group mode is selected
-      
+
    } else {
       groupModifierSetting.disabled = true;   // Disable the setting if individual mode is selected      
       groupModifierSetting.value = "none";

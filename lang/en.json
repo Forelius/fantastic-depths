@@ -285,6 +285,18 @@
       "dialog": {
          "abilityCheck": "Ability Check",
          "skillCheck": "Skill Check"
+      },
+      "time": {
+         "sessionCount": "Session Count",
+         "totalCount": "Total Count",
+         "sinceRest": "Since Rest",
+         "rest":  "Rest",
+         "next": "Next",
+         "nextDesc": "Advance Turn",
+         "prev": "Previous",
+         "prevDesc": "Revert Turn",
+         "resetSession": "Reset Session",
+         "resetTotal": "Reset Total"
       }
    },
 

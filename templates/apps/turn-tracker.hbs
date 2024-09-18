@@ -1,11 +1,25 @@
-<div class="standard-form">
-   <div class="form-group">
-      <label>Session Count: </label>
-      <span>{{turnData.dungeon.session}}</span>
-   </div>
-   <div class="form-group">
-      <label>Total Count: </label>
-      <span>{{turnData.dungeon.total}}</span>
-   </div>
-   <button id="advance-turn" type="button">Advance Turn (10 minutes)</button>
+<div>
+   <section class="flexrow bordered" style="margin-top: 10px;">
+      <div class="form-group">
+         <label>{{localize 'FADE.time.sessionCount'}}: </label>
+         <span>{{turnData.dungeon.session}}</span>
+      </div>
+      <div class="form-group">
+         <label>{{localize 'FADE.time.totalCount'}}: </label>
+         <span>{{turnData.dungeon.total}}</span>
+      </div>
+      <div class="form-group">
+         <label>{{localize 'FADE.time.sinceRest'}}: </label>
+         <span>{{turnData.dungeon.rest}}</span>
+      </div>
+   </section>
+   <section class="flexrow" style="margin-top: 10px;">
+      <button id="revert-turn" type="button" title="{{localize 'FADE.time.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.time.prev'}}</button>
+      <button id="advance-turn" type="button" title="{{localize 'FADE.time.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.time.next'}}</button>
+      <button id="rest" type="button" title="{{localize 'FADE.time.rest'}}"><i class="fa-solid fa-campground"></i> {{localize 'FADE.time.rest'}}</button>      
+   </section>
+   <section class="flexrow" style="margin-top: 2px;">
+      <button id="reset-session" type="button" title="{{localize 'FADE.time.resetSession'}}"><i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.time.resetSession'}}</button>
+      <button id="reset-total" type="button" title="{{localize 'FADE.time.resetTotal'}}"><i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.time.resetTotal'}}</button>
+   </section>
 </div>

@@ -18,10 +18,17 @@ export function toggleTurnTracker() {
 }
 
 export class TurnTrackerForm extends FormApplication {
+   static timeSteps = {
+      round: 10,
+      turn: 600,
+      hour: 3600,
+      day: 86400
+   };
+
    constructor() {
       super();
       this.isGM = game.user.isGM;
-      this.settingsChanged = false;    
+      this.settingsChanged = false;
    }
     
    static get defaultOptions() {
@@ -29,7 +36,7 @@ export class TurnTrackerForm extends FormApplication {
       options.id = "turn-tracker-form";
       options.template = `systems/${game.system.id}/templates/apps/turn-tracker.hbs`;  // Dynamic path
       options.width = 400;
-      options.height = 200;
+      options.height = 170;
       options.title = "Turn Tracker";
       return options;
    }
@@ -47,11 +54,14 @@ export class TurnTrackerForm extends FormApplication {
    /** 
     * Increment the turn count, advance the in-game time, and re-render the form 
     */
-   async advanceTurn() {
-      //let turnCount = game.settings.get(game.system.id, "turnCount") || 0;
-      this.turnData.dungeon.session += 1;
-      this.turnData.dungeon.total += 1;
-      game.time.advance(600);  // Advance 10 minutes
+   async advanceTime(seconds) {      
+      if (Math.abs(seconds) >= TurnTrackerForm.timeSteps.turn) {
+         let turns = seconds / Math.floor(TurnTrackerForm.timeSteps.turn);
+         this.turnData.dungeon.session += turns;
+         this.turnData.dungeon.total += turns;
+         this.turnData.dungeon.rest += turns;
+      }
+      game.time.advance(seconds);
       await game.settings.set(game.system.id, 'turnData', this.turnData);
       this.render(true);  // Re-render the form to update the UI
    }
@@ -64,7 +74,31 @@ export class TurnTrackerForm extends FormApplication {
 
       html.find("#advance-turn")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.advanceTurn();
+         await this.advanceTime(TurnTrackerForm.timeSteps.turn);
+      });
+      html.find("#revert-turn")[0].addEventListener('click', async (e) => {
+         e.preventDefault();
+         await this.advanceTime(-TurnTrackerForm.timeSteps.turn);
+      });
+      html.find("#reset-session")[0].addEventListener('click', async (e) => {
+         e.preventDefault();
+         this.turnData.dungeon.session = 0;
+         await game.settings.set(game.system.id, 'turnData', this.turnData);
+         this.render(true);  // Re-render the form to update the UI
+      });
+      html.find("#reset-total")[0].addEventListener('click', async (e) => {
+         e.preventDefault();
+         this.turnData.dungeon.session = 0;
+         this.turnData.dungeon.total = 0;
+         this.turnData.dungeon.rest = 0;
+         await game.settings.set(game.system.id, 'turnData', this.turnData);
+         this.render(true);  // Re-render the form to update the UI
+      });
+      html.find("#rest")[0].addEventListener('click', async (e) => {
+         e.preventDefault();
+         this.turnData.dungeon.rest = 0;
+         await game.settings.set(game.system.id, 'turnData', this.turnData);
+         this.render(true);  // Re-render the form to update the UI
       });
    }
 }
