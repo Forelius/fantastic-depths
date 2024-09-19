@@ -51,7 +51,28 @@
       {{#if isGM}}
       {{! Attributes Tab }}
       <div class='tab' data-group='primary' data-tab='attributes'>
-         <label>A bunch of stuff goes here.</label>
+         {{#if (includes system.tags 'light')}}
+         <section class="bordered">
+            <div class="flexrow">
+               <div class="flex1">
+                  <label for="system.light.duration">Duration</label>
+                  <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" />
+               </div>
+               <div class="flex1">
+                  <label for="system.light.radius">Radius</label>
+                  <input name="system.light.radius" type="text" data-dtype="Number" value="{{system.light.radius}}" />
+               </div>
+               <div class="flex2">
+                  <label for="system.light.type">Light Type</label>
+                  <input name="system.light.type" type="text" data-dtype="String" value="{{system.light.type}}" />
+               </div>
+               <div class="flex2">
+                  <label for="system.light.fuel">Fuel Type</label>
+                  <input name="system.light.fuel" type="text" data-dtype="String" value="{{system.light.fuel}}" />
+               </div>
+            </div>
+         </section>
+         {{/if}}
       </div>
       <div class='tab' data-group='primary' data-tab='gm-only'>
          <!-- Content that only the GM should see goes here -->

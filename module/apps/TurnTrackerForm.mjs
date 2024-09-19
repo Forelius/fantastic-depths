@@ -46,7 +46,19 @@ export class TurnTrackerForm extends FormApplication {
     */
    async getData() {
       const context = super.getData();
+      // Deep clone to avoid direct mutation
       this.turnData = foundry.utils.deepClone(await game.settings.get(game.system.id, 'turnData'));
+
+      // Only keep necessary properties
+      this.turnData = {
+         dungeon: {
+            session: this.turnData?.dungeon?.session || 0,
+            total: this.turnData?.dungeon?.total || 0,
+            rest: this.turnData?.dungeon?.rest || 0,
+            prevTurn: this.turnData?.dungeon?.prevTurn || 0
+         }
+      };
+
       context.turnData = this.turnData;
       return context;
    }
@@ -55,6 +67,8 @@ export class TurnTrackerForm extends FormApplication {
     * Increment the turn count, advance the in-game time, and re-render the form 
     */
    async advanceTime(seconds) {      
+      this.turnData.dungeon.prevTurn = this.turnData.dungeon.total;
+
       if (Math.abs(seconds) >= TurnTrackerForm.timeSteps.turn) {
          let turns = seconds / Math.floor(TurnTrackerForm.timeSteps.turn);
          this.turnData.dungeon.session += turns;
@@ -62,7 +76,12 @@ export class TurnTrackerForm extends FormApplication {
          this.turnData.dungeon.rest += turns;
       }
       game.time.advance(seconds);
+
       await game.settings.set(game.system.id, 'turnData', this.turnData);
+
+      // Emit custom event
+      Hooks.call('turnTrackerUpdate', this.turnData);
+
       this.render(true);  // Re-render the form to update the UI
    }
 

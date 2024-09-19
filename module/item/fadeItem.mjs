@@ -19,7 +19,7 @@ export class fadeItem extends Item {
          skill: `${fdPath}/skill.png`,
          armor: `${fdPath}/armor.png`,
          weapon: "icons/svg/sword.svg",
-         item: "icons/svg/bag.svg",
+         item: "icons/svg/item-bag.svg",
          container: "icons/svg/chest.svg",
       };
    }
@@ -110,30 +110,45 @@ export class fadeItem extends Item {
    }
 
    pushTag(value) {
-      // Ensure the system data exists and initialize tags array if it doesn't exist
       const systemData = this.system;
       systemData.tags = systemData.tags || [];
 
-      // Clean up the value and log the operation
-      const trimmedValue = value;
+      const trimmedValue = value.trim();
+      if (!systemData.tags.includes(trimmedValue)) {
+         systemData.tags.push(trimmedValue);
+      }
 
-      // Add the trimmed value to the tags array
-      systemData.tags.push(trimmedValue);
+      // Check if "light" tag is being added and initialize the system.light property
+      if (trimmedValue === "light" && !systemData.light) {
+         systemData.light = {};
+         systemData.light.duration = 6;
+         systemData.light.radius = 30;
+         systemData.light.fuel = "none";
+         systemData.light.type = "torch";
+         this.update({ "system.light": systemData.light }); // Update light separately
+      }
 
-      // Persist the updated data to Foundry's database
+      // Update the tags separately
       return this.update({ "system.tags": systemData.tags });
    }
 
    popTag(value) {
       const systemData = this.system;
+      systemData.tags = systemData.tags || [];
 
-      // Ensure tags exist and are an array
-      if (!systemData.tags || !Array.isArray(systemData.tags)) return;
+      const index = systemData.tags.indexOf(value);
+      if (index > -1) {
+         systemData.tags.splice(index, 1);
+      }
 
-      // Filter out the tag that matches the value (case-sensitive)
-      const updatedTags = systemData.tags.filter(tag => tag !== value.trim());
+      // Check if "light" tag is being removed and clear the system.light property
+      if (value === "light") {
+         systemData.light = null; // Or {}, depending on your needs
+         this.update({ "system.light": systemData.light }); // Update light separately
+      }
 
-      // Update the item's tags and persist the change
-      return this.update({ "system.tags": updatedTags });
+      // Update the tags separately
+      return this.update({ "system.tags": systemData.tags });
    }
+
 }

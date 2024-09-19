@@ -17,12 +17,21 @@ import { FADE } from './helpers/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './fadeCombat.mjs'
 // Import TurnTrackerForm class
-import { toggleTurnTracker } from './apps/TurnTrackerForm.mjs';
+import { toggleTurnTracker, TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
+import { MacroManager } from './helpers/MacroManager.mjs';
+import { LightManager } from './helpers/LightManager.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 Hooks.once('init', function () {
+   //--------------------------------------------
+   // Global Handles
+   //--------------------------------------------
+   let fade = window.fade = window.fade || {};
+   fade.TurnTrackerForm = TurnTrackerForm;
+   fade.LightManager = LightManager;
+
    // Add utility classes to the global game object so that they're more easily
    // accessible in global contexts.
    game.fantasticdepths = {
@@ -64,7 +73,7 @@ Hooks.once('init', function () {
       makeDefault: true,
       label: 'FADE.SheetLabel.Item',
    });
-      
+
    // Preload Handlebars templates.
    return preloadHandlebarsTemplates();
 });
@@ -115,12 +124,18 @@ Handlebars.registerHelper('includes', function (array, value) {
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
-Hooks.once('ready', function () {
+Hooks.once('ready', async function () {
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => {
       createItemMacro(data, slot);
       return false;
    });
+
+   if (game.user.isGM) {
+      await MacroManager.createAllMacros();
+   }
+
+   LightManager.initialize();
 
    // inline-roll handler
    $(document).on('click', '.damage-roll', clickDamageRoll);
@@ -163,9 +178,6 @@ async function clickDamageRoll(ev) {
 // Hook to add the "Turn Tracker" button in the sidebar for the GM
 Hooks.on('renderSidebarTab', (app, html) => {
    if (game.user.isGM) {
-      const button = $(`<button class="turn-tracker-toggle">Turn Tracker</button>`);
-      button.click(toggleTurnTracker);
-      html.find(".directory-footer").append(button);
    }
 });
 
