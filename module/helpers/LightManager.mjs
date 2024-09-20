@@ -53,27 +53,36 @@ export class LightManager {
 
             if (type !== "none") {
                lightSource = LightManager.getLightSource(token.actor, type);
-               if (lightSource) {
-                  if (lightSource.system.quantity <= 0) {
-                     ui.notifications.error(`${token.name} has no more ${type} to light.`);
+               if (!lightSource) {
+                  ui.notifications.warn(`The character ${token.name} does not have a ${type}.`);
+                  canUpdate = false;
+               } else if (lightSource.system.quantity <= 0) {
+                  ui.notifications.error(`${token.name} has no more ${type} to light.`);
+                  canUpdate = false;
+               } else {
+                  // Check for fuel source if applicable
+                  const fuel = lightSource.system.light.fuel;
+                  const fuelSource = (!fuel || fuel === "" || fuel === "none")
+                     ? lightSource
+                     : LightManager.getFuelItem(token.actor, lightSource);
+
+                  if (fuelSource == null || fuelSource.system.quantity <= 0) {
+                     ui.notifications.error(`${token.name} has no fuel for the ${type}.`);
                      canUpdate = false;
                   } else {
                      LightManager.initializeLightUsage(lightSource);
                   }
-               } else {
-                  ui.notifications.warn(`The character ${token.name} does not have a ${type}.`);
-                  canUpdate = false;
                }
             }
 
-            let lightSettings = LightManager.getLightSettings(type);
-            canUpdate = canUpdate && lightSettings !== null;
-
             if (canUpdate) {
-               token.document.update({ light: lightSettings });
-               token.document.setFlag('world', 'lightActive', type !== "none");
-               token.document.setFlag('world', 'lightType', type);
-               ui.notifications.info(`${token.name} has ${type === "none" ? 'extinguished the light' : `lit a ${type}`}.`);
+               const lightSettings = LightManager.getLightSettings(type);
+               if (lightSettings) {
+                  token.document.update({ light: lightSettings });
+                  token.document.setFlag('world', 'lightActive', type !== "none");
+                  token.document.setFlag('world', 'lightType', type);
+                  ui.notifications.info(`${token.name} has ${type === "none" ? 'extinguished the light' : `lit a ${type}`}.`);
+               }
             }
          });
       }
@@ -102,12 +111,16 @@ export class LightManager {
 
 
    static getLightSource(actor, type) {
-      return actor.items.find(item => item.system.tags?.includes("light") && item.system.light?.type === type);
+      return actor.items.find(item =>
+         item.system.tags?.includes("light") &&
+         item.system.light?.type === type &&
+         item.system.quantity > 0
+      );
    }
 
    static initializeLightUsage(item) {
       const lightData = item.system.light;
-      lightData.usage = lightData.usage || { turnsActive: 0, duration: lightData.duration || 10 };
+      lightData.usage = lightData.usage || { turnsActive: 0 };
       item.update({ "system.light.usage": lightData.usage });
    }
 
@@ -118,17 +131,18 @@ export class LightManager {
          const lightActive = token.document.getFlag('world', 'lightActive');
          const type = token.document.getFlag('world', 'lightType');
          const lightSource = LightManager.getLightSource(token.actor, type);
-
+         console.log("updateLightUsage", lightSource);
          if (!(lightActive && lightSource && !isNaN(turnDelta))) {
             console.warn(`Skipping update for ${token.name}. Conditions not met.`);
          } else {
-            let { turnsActive, duration, fuel } = lightSource.system.light.usage;
+            let { turnsActive } = lightSource.system.light.usage;
+            let duration = lightSource.system.light.duration;
+            let fuel = lightSource.system.light.fuel;
+
             turnsActive = Math.max(0, turnsActive + turnDelta);
 
             // Determine the fuel source
-            const fuelSource = (!fuel || fuel === "" || fuel === "none")
-               ? lightSource
-               : LightManager.getFuelItem(token.actor, fuel);
+            const fuelSource = LightManager.getFuelItem(token.actor, lightSource);
 
             if (fuelSource == null) {
                console.warn(`Fuel source not found for ${token.name}.`);
@@ -161,11 +175,26 @@ export class LightManager {
       });
    }
 
-   static getFuelItem(actor, fuelTag) {
-      return actor.items.find(item => item.system.tags?.includes(fuelTag) && item.system.quantity > 0);
+   static getFuelItem(actor, lightSource) {
+      let fuelItem = null;
+
+      // Extract the fuel tag from the lightSource
+      const fuelTag = lightSource.system.light.fuel;
+
+      // If there's no external fuel source needed, use the lightSource itself
+      if (!fuelTag || fuelTag === "" || fuelTag === "none") {
+         fuelItem = lightSource;
+      } else {
+         // Find an item in the actor's inventory that matches the fuelTag and has a quantity > 0
+         fuelItem = actor.items.find(item => item.system.tags?.includes(fuelTag) && item.system.quantity > 0);
+      }
+
+      return fuelItem;
    }
 
    static consumeItem(item, token = null) {
+      console.log("consumeItem:", item);
+
       let newQuantity = item.system.quantity - 1;
       item.update({ "system.quantity": newQuantity });
 
