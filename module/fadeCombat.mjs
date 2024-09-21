@@ -3,93 +3,104 @@
 // Import any required modules (if necessary)
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 
-Hooks.on('renderCombatTracker', renderCombatTracker);
-
-// Hook to reset initiative on new round
-Hooks.on('updateCombat', updateCombat);
-
-Hooks.on('createCombat', (combat) => {
-   const user = game.users.get(game.userId);  // Get the user who initiated the roll
-   const speaker = { alias: user.name };  // Use the player's name as the speaker
-
-   // Send a chat message when combat begins
-   ChatMessage.create({
-      speaker: speaker,
-      content: `Combat encounter created.`,
-   });
-});
-
-Hooks.on('deleteCombat', (combat) => {
-   const user = game.users.get(game.userId);  // Get the user who initiated the roll
-   const speaker = { alias: user.name };  // Use the player's name as the speaker
-
-   // Send a chat message when combat ends
-   ChatMessage.create({
-      speaker: speaker,
-      content: `Combat encounter has ended.`,
-   });
-});
-
-async function updateCombat(combat, updateData, options, userId) {
-   // Check if the round has changed
-   if (updateData.round) {
-      const user = game.users.get(game.userId);  // Get the user who initiated the roll
-      const speaker = { alias: user.name };  // Use the player's name as the speaker
-
-      // Check if the combat has just started (round goes from null/undefined to 1)
-      if (updateData.round === 1 && (combat.round === null || combat.round === undefined)) {
-         // Send a chat message when combat officially begins (round 1)
-         ChatMessage.create({
-            speaker: speaker,
-            content: `Combat has begun!`,
-         });
-      }
-
-      // Reset initiative for all combatants
-      for (let combatant of combat.combatants) {
-         await combatant.update({ initiative: null });  // Reset initiative to null
-      }
-
-      // Optionally send a chat message to notify players
-      ChatMessage.create({
-         speaker: speaker,
-         content: `Round ${combat.round} started. Initiative rolls reset.`,
-      });
-   }
-}
-
-async function renderCombatTracker(app, html, data) {
-   if (data?.combat?.combatants) {
-      // Iterate over each combatant and apply a CSS class based on disposition
-      data.combat.combatants.forEach(combatant => {
-         const disposition = combatant.token.disposition;
-         const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
-
-         if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-            combatantElement.addClass('disposition-friendly');
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-            combatantElement.addClass('disposition-neutral');
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-            combatantElement.addClass('disposition-hostile');
-         }
-      });
-   }
-}
-
 // Custom Combat class
 export class fadeCombat extends Combat {
+
+   sortCombatants(a, b) {
+      let result = 0;
+      let aActor = a.actor;
+      let bActor = b.actor;
+
+      let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+      let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+      let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
+      let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
+      // Compare slowEquipped, true comes before false
+      if (aSlowEquipped !== bSlowEquipped) {
+         result = aSlowEquipped ? 1 : -1;
+      }
+
+      // Compare initiative, descending order
+      if (result === 0 && a.initiative !== b.initiative) {
+         result = b.initiative - a.initiative;
+      }
+
+      // Compare dexterity, descending order; treat null/undefined as last
+      let aDex = aActor.system.abilities?.dex.val;
+      let bDex = bActor.system.abilities?.dex.val;
+      if (result === 0) {
+         if (!aDex) {
+            if (bDex) {
+               result = 1;
+            }
+         } else if (!bDex) {
+            result = -1;
+         } else if (aDex !== bDex) {
+            result = bDex - aDex;
+         }
+      }
+
+      return result;
+   }
+
+   sortCombatantsGroup(a, b) {
+      let result = 0;
+      const aActor = a.actor;
+      const bActor = b.actor;
+      const aGroup = a.token.disposition;
+      const bGroup = b.token.disposition;
+
+      // Compare slowEquipped, true comes before false
+      const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+      const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+      const aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
+      const bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
+      if (aGroup === bGroup && aSlowEquipped !== bSlowEquipped) {
+         result = aSlowEquipped ? 1 : -1;
+      }
+
+      // Compare initiative, descending order
+      if (result === 0 && a.initiative !== b.initiative) {
+         result = b.initiative - a.initiative;
+      }
+
+      // Compare dexterity, descending order; treat null/undefined as last
+      const aDex = aActor.system.abilities?.dex.value ?? 0;
+      const bDex = bActor.system.abilities?.dex.value ?? 0;
+      if (result === 0) {
+         result = bDex - aDex;
+      }
+
+
+      return result;
+   }
+
+   /**
+    * override
+    * @returns Combatant[]
+    */
+   setupTurns() {
+      let combatants = super.setupTurns();
+      const initiativeMode = game.settings.get(game.system.id, "initiativeMode");
+      if (initiativeMode === "group") {
+         combatants.sort(this.sortCombatantsGroup);
+      } else {
+         combatants.sort(this.sortCombatants);
+      }
+      return combatants;
+   }
+
    /**
     * override
     * @param {any} ids
     * @param {any} param1
     */
    async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
-      await this.doInitiativeRoll();  // Use the custom initiative function
+      await this.#doInitiativeRoll();  // Use the custom initiative function
    }
 
-
    // Function to handle group-based initiative
-   async rollForGroup(group, groupName) {
+   async #rollForGroup(group, groupName) {
       const groupModifier = game.settings.get(game.system.id, "groupInitiativeModifier");
       const initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
       let rollData = {};
@@ -102,12 +113,12 @@ export class fadeCombat extends Combat {
          usedMod = 0;
       } else if (groupModifier === "average") {
          // Average Dexterity modifier
-         const averageMod = group.reduce((sum, c) => sum + this.getInitiativeMod(c.actor), 0) / group.length;
+         const averageMod = group.reduce((sum, c) => sum + this.#getInitiativeMod(c.actor), 0) / group.length;
          usedMod = Math.floor(averageMod);
          rollData = { mod: usedMod };
       } else if (groupModifier === "highest") {
          // Highest Dexterity modifier
-         usedMod = Math.max(...group.map(c => this.getInitiativeMod(c.actor)));
+         usedMod = Math.max(...group.map(c => this.#getInitiativeMod(c.actor)));
          rollData = { mod: usedMod };
       }
 
@@ -129,7 +140,7 @@ export class fadeCombat extends Combat {
       return result;
    }
 
-   getInitiativeMod(actor) {
+   #getInitiativeMod(actor) {
       let result = 0;
 
       if (actor.type === 'monster') {
@@ -145,14 +156,14 @@ export class fadeCombat extends Combat {
  * The custom rollInitiative function
  * @param {any} combat
  */
-   async doInitiativeRoll() {
+   async #doInitiativeRoll() {
       // Fetch the initiative formula and mode from settings
       const initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
       const initiativeMode = game.settings.get(game.system.id, "initiativeMode");
 
       // Get all combatants and group them by disposition
       const combatants = this.combatants;
-      const groups = this.groupCombatantsByDisposition(combatants);
+      this.groups = this.#groupCombatantsByDisposition(combatants);
 
       // Array to accumulate roll results for the digest message
       let rollResults = [];
@@ -160,27 +171,27 @@ export class fadeCombat extends Combat {
       // Handle group-based initiative by disposition
       if (initiativeMode === "group") {
          // Friendly group (uses modifiers)
-         if (groups.friendly.length > 0) {
-            let rollResult = await this.rollForGroup(groups.friendly, "Friendlies");
+         if (this.groups.friendly.length > 0) {
+            let rollResult = await this.#rollForGroup(this.groups.friendly, "Friendlies");
             if (rollResult) rollResults.push(rollResult);
          }
 
          // Neutral group (uses modifiers)
-         if (groups.neutral.length > 0) {
-            let rollResult = await this.rollForGroup(groups.neutral, "Neutrals");
+         if (this.groups.neutral.length > 0) {
+            let rollResult = await this.#rollForGroup(this.groups.neutral, "Neutrals");
             if (rollResult) rollResults.push(rollResult);
          }
 
          // Hostile group (monsters may not use modifiers)
-         if (groups.hostile.length > 0) {
-            let rollResult = await this.rollForGroup(groups.hostile, "Hostiles");
+         if (this.groups.hostile.length > 0) {
+            let rollResult = await this.#rollForGroup(this.groups.hostile, "Hostiles");
             if (rollResult) rollResults.push(rollResult);
          }
       } else {
          // Individual-based initiative
          for (let combatant of combatants) {
             const rollData = combatant.actor.getRollData();
-            const mod = this.getInitiativeMod(combatant.actor); // Get the initiative modifier
+            const mod = this.#getInitiativeMod(combatant.actor); // Get the initiative modifier
             rollData.mod = mod;
 
             // Perform the roll using the initiative formula
@@ -211,14 +222,12 @@ export class fadeCombat extends Combat {
       }
    }
 
-
-
    /**
     * Creates groups based on token disposition.
     * @param {any} combatants
     * @returns
     */
-   groupCombatantsByDisposition(combatants) {
+   #groupCombatantsByDisposition(combatants) {
       const groups = {
          friendly: [],
          neutral: [],
@@ -240,4 +249,79 @@ export class fadeCombat extends Combat {
 
       return groups;
    }
+
+   static async renderCombatTracker(app, html, data) {
+      if (data?.combat?.combatants) {
+         // Iterate over each combatant and apply a CSS class based on disposition
+         data.combat.combatants.forEach(combatant => {
+            const disposition = combatant.token.disposition;
+            const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
+            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+               combatantElement.addClass('disposition-friendly');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+               combatantElement.addClass('disposition-neutral');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+               combatantElement.addClass('disposition-hostile');
+            }
+         });
+      }
+   }
+
+   static async updateCombat(combat, updateData, options, userId) {
+      // Check if the round has changed
+      if (updateData.round) {
+         const user = game.users.get(game.userId);  // Get the user who initiated the roll
+         const speaker = { alias: user.name };  // Use the player's name as the speaker
+
+         // Check if the combat has just started (round goes from null/undefined to 1)
+         if (updateData.round === 1 && (combat.round === null || combat.round === undefined)) {
+            // Send a chat message when combat officially begins (round 1)
+            ChatMessage.create({
+               speaker: speaker,
+               content: `Combat has begun!`,
+            });
+         }
+
+         // Reset initiative for all combatants
+         for (let combatant of combat.combatants) {
+            await combatant.update({ initiative: null });  // Reset initiative to null
+         }
+
+         // Optionally send a chat message to notify players
+         ChatMessage.create({
+            speaker: speaker,
+            content: `Round ${combat.round} started. Initiative rolls reset.`,
+         });
+      }
+   }
 }
+
+/** ------------------------------- */
+/** Register combat-related hooks   */
+/** ------------------------------- */
+Hooks.on('renderCombatTracker', fadeCombat.renderCombatTracker);
+
+// Hook to reset initiative on new round
+Hooks.on('updateCombat', fadeCombat.updateCombat);
+
+Hooks.on('createCombat', (combat) => {
+   const user = game.users.get(game.userId);  // Get the user who initiated the roll
+   const speaker = { alias: user.name };  // Use the player's name as the speaker
+
+   // Send a chat message when combat begins
+   ChatMessage.create({
+      speaker: speaker,
+      content: `Combat encounter created.`,
+   });
+});
+
+Hooks.on('deleteCombat', (combat) => {
+   const user = game.users.get(game.userId);  // Get the user who initiated the roll
+   const speaker = { alias: user.name };  // Use the player's name as the speaker
+
+   // Send a chat message when combat ends
+   ChatMessage.create({
+      speaker: speaker,
+      content: `Combat encounter has ended.`,
+   });
+});

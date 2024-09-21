@@ -1,3 +1,5 @@
-2024/09/20-09:50:55.909 52b0 Recovering log #119
-2024/09/20-09:50:55.913 52b0 Delete type=0 #119
-2024/09/20-09:50:55.913 52b0 Delete type=3 #118
+2024/09/21-05:34:07.979 3cec Recovering log #121
+2024/09/21-05:34:07.979 3cec Level-0 table #123: started
+2024/09/21-05:34:07.979 3cec Level-0 table #123: 2499 bytes OK
+2024/09/21-05:34:07.984 3cec Delete type=0 #121
+2024/09/21-05:34:07.984 3cec Delete type=3 #120

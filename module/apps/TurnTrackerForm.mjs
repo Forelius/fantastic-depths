@@ -1,22 +1,3 @@
-// Function to toggle the Turn Tracker form for the GM
-export function toggleTurnTracker() {
-   if (!game.user.isGM) {
-      ui.notifications.warn("Only the GM can open the Turn Tracker.");
-      return;
-   }
-
-   // Create or close the Turn Tracker form
-   if (!window.turnTracker) {
-      window.turnTracker = new TurnTrackerForm();
-   }
-
-   if (window.turnTracker.rendered) {
-      window.turnTracker.close();
-   } else {
-      window.turnTracker.render(true);
-   }
-}
-
 export class TurnTrackerForm extends FormApplication {
    static timeSteps = {
       round: 10,
@@ -30,7 +11,7 @@ export class TurnTrackerForm extends FormApplication {
       this.isGM = game.user.isGM;
       this.settingsChanged = false;
    }
-    
+
    static get defaultOptions() {
       const options = super.defaultOptions;
       options.id = "turn-tracker-form";
@@ -60,13 +41,15 @@ export class TurnTrackerForm extends FormApplication {
       };
 
       context.turnData = this.turnData;
+      context.restFrequency = game.settings.get(game.system.id, "restFrequency");
       return context;
    }
+
 
    /** 
     * Increment the turn count, advance the in-game time, and re-render the form 
     */
-   async advanceTime(seconds) {      
+   async advanceTime(seconds) {
       this.turnData.dungeon.prevTurn = this.turnData.dungeon.total;
 
       if (Math.abs(seconds) >= TurnTrackerForm.timeSteps.turn) {
@@ -74,13 +57,28 @@ export class TurnTrackerForm extends FormApplication {
          this.turnData.dungeon.session += turns;
          this.turnData.dungeon.total += turns;
          this.turnData.dungeon.rest += turns;
+
+         await game.settings.set(game.system.id, 'turnData', this.turnData);
+
+         const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
+         let chatContent = turns > 0 ? `<div>Time advances ${turns} turn.</div>` : `<div>Time reverses ${turns} turn.</div>`;
+
+
+         // Rest message
+         const restFrequency = game.settings.get(game.system.id, "restFrequency");
+         if (restFrequency > 0 && this.turnData.dungeon.rest > restFrequency - 1) {
+            chatContent += "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>";
+         }
+
+         ChatMessage.create({
+            speaker: speaker,
+            content: chatContent
+         });
+
+         // Emit custom event
+         Hooks.call('turnTrackerUpdate', this.turnData);
       }
       game.time.advance(seconds);
-
-      await game.settings.set(game.system.id, 'turnData', this.turnData);
-
-      // Emit custom event
-      Hooks.call('turnTrackerUpdate', this.turnData);
 
       this.render(true);  // Re-render the form to update the UI
    }
@@ -104,6 +102,11 @@ export class TurnTrackerForm extends FormApplication {
          this.turnData.dungeon.session = 0;
          await game.settings.set(game.system.id, 'turnData', this.turnData);
          this.render(true);  // Re-render the form to update the UI
+         const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker         
+         ChatMessage.create({
+            speaker: speaker,
+            content: "Resetting session turn count to zero."
+         });
       });
       html.find("#reset-total")[0].addEventListener('click', async (e) => {
          e.preventDefault();
@@ -111,13 +114,26 @@ export class TurnTrackerForm extends FormApplication {
          this.turnData.dungeon.total = 0;
          this.turnData.dungeon.rest = 0;
          await game.settings.set(game.system.id, 'turnData', this.turnData);
+         const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker         
+         ChatMessage.create({
+            speaker: speaker,
+            content: "Resetting global turn count to zero."
+         });
          this.render(true);  // Re-render the form to update the UI
       });
-      html.find("#rest")[0].addEventListener('click', async (e) => {
-         e.preventDefault();
-         this.turnData.dungeon.rest = 0;
-         await game.settings.set(game.system.id, 'turnData', this.turnData);
-         this.render(true);  // Re-render the form to update the UI
-      });
+      const restElem = html.find("#rest");
+      if (restElem?.length > 0) {
+         restElem[0].addEventListener('click', async (e) => {
+            e.preventDefault();
+            this.turnData.dungeon.rest = 0;
+            await game.settings.set(game.system.id, 'turnData', this.turnData);
+            const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker         
+            ChatMessage.create({
+               speaker: speaker,
+               content: "The party rests."
+            });
+            this.render(true);  // Re-render the form to update the UI
+         });
+      }
    }
 }

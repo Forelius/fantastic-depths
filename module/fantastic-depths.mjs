@@ -1,4 +1,4 @@
-import { registerSystemSettings } from "./settings.mjs";
+import { fadeSettings } from "./fadeSettings.mjs";
 // Import document classes.
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
@@ -17,38 +17,37 @@ import { FADE } from './helpers/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './fadeCombat.mjs'
 // Import TurnTrackerForm class
-import { toggleTurnTracker, TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
+import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { MacroManager } from './helpers/MacroManager.mjs';
 import { LightManager } from './helpers/LightManager.mjs';
+import { fadeHandlebars } from './fadeHandlebars.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 Hooks.once('init', function () {
-   //--------------------------------------------
-   // Global Handles
-   //--------------------------------------------
-   let fade = window.fade = window.fade || {};
-   fade.TurnTrackerForm = TurnTrackerForm;
-   fade.LightManager = LightManager;
-
    // Add utility classes to the global game object so that they're more easily
    // accessible in global contexts.
-   game.fantasticdepths = {
+   game.fade = {
       fadeActor,
       CharacterActor,
       MonsterActor,
       fadeItem,
       ArmorItem,
       WeaponItem,
-      rollItemMacro,
+      MacroManager,
+      LightManager,
+      TurnTrackerForm
    };
 
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
 
    // Register System Settings
-   registerSystemSettings();
+   let settings = new fadeSettings();
+   settings.registerSystemSettings();
+   // Hook into the rendering of the settings form
+   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
 
    // Replace the default Combat class with the custom fadeCombat class
    CONFIG.Combat.documentClass = fadeCombat;
@@ -79,55 +78,12 @@ Hooks.once('init', function () {
 });
 
 /* -------------------------------------------- */
-/*  Handlebars Helpers                          */
-/* -------------------------------------------- */
-// If you need to add Handlebars helpers, here is a useful example:
-Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
-Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
-Handlebars.registerHelper("counter", (status, value, max) =>
-   status
-      ? Math.clamp((100 * value) / max, 0, 100)
-      : Math.clamp(100 - (100 * value) / max, 0, 100)
-);
-Handlebars.registerHelper("times", (n, block) => {
-   let accum = "";
-   // eslint-disable-next-line no-plusplus
-   for (let i = 0; i < n; ++i) accum += block.fn(i);
-   return accum;
-});
-Handlebars.registerHelper("subtract", (lh, rh) => parseInt(lh, 10) - parseInt(rh, 10));
-Handlebars.registerHelper('formatHitDice', function (hitDice) {
-   // Regular expression to check for a dice specifier like d<number>
-   const diceRegex = /\d*d\d+/;
-   // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
-   const modifierRegex = /([+\-*/]\d+)$/;
-
-   // Check if the input contains a dice specifier
-   if (diceRegex.test(hitDice)) {
-      // If a dice specifier is found, return the original hitDice
-      return hitDice;
-   } else {
-      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      const base = hitDice.replace(modifierRegex, ''); // Extract base number
-      const modifier = hitDice.match(modifierRegex)?.[0] || ''; // Extract modifier (if any)
-
-      // Append 'd8' to the base number, followed by the modifier
-      return base + 'd8' + modifier;
-   }
-});
-
-// Register a Handlebars helper to check if an array includes a value
-Handlebars.registerHelper('includes', function (array, value) {
-   return array && array.includes(value);
-});
-
-/* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 Hooks.once('ready', async function () {
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => {
-      createItemMacro(data, slot);
+      MacroManager.createItemMacro(data, slot);
       return false;
    });
 
@@ -172,6 +128,8 @@ async function clickDamageRoll(ev) {
    }
 }
 
+fadeHandlebars.registerHelpers();
+
 /* -------------------------------------------- */
 /*  Render Sidebar Hook                         */
 /* -------------------------------------------- */
@@ -180,78 +138,3 @@ Hooks.on('renderSidebarTab', (app, html) => {
    if (game.user.isGM) {
    }
 });
-
-/* -------------------------------------------- */
-/*  Hotbar Macros                               */
-/* -------------------------------------------- */
-/**
- * Create a Macro from an Item drop.
- * Get an existing item macro if one exists, otherwise create a new one.
- * @param {Object} data     The dropped data
- * @param {number} slot     The hotbar slot to use
- * @returns {Promise}
- */
-async function createItemMacro(data, slot) {
-   if (data.type === "Macro") {
-      return game.user.assignHotbarMacro(await fromUuid(data.uuid), slot);
-   }
-
-   // Prevent Foundry's default behavior from creating an additional macro
-   if (data.type !== 'Item') return;
-   if (!data.uuid.includes('Actor.') && !data.uuid.includes('Token.')) {
-      return ui.notifications.warn(
-         'You can only create macro buttons for owned Items'
-      );
-   }
-
-   // Stop the default Foundry behavior
-   const item = await Item.fromDropData(data);
-
-   console.log("createItemMacro", data, item);
-
-   // Create the macro command using the item's UUID.
-   const command = `game.fantasticdepths.rollItemMacro("${data.uuid}");`;
-
-   // Check if a macro with the same name and command already exists
-   let macro = game.macros.find((m) => m.name === item.name && m.command === command);
-   if (!macro) {
-      macro = await Macro.create({
-         name: item.name,
-         type: 'script',
-         img: item.img,
-         command: command,
-         flags: { 'fantastic-depths.itemMacro': true },
-      });
-   }
-
-   // Assign the created macro to the hotbar slot
-   await game.user.assignHotbarMacro(macro, slot);
-
-   return false;  // Prevent further handling of the drop event
-}
-
-/**
- * Roll the Item macro.
- * @param {string} itemUuid
- */
-function rollItemMacro(itemUuid) {
-   // Reconstruct the drop data so that we can load the item.
-   const dropData = {
-      type: 'Item',
-      uuid: itemUuid,
-   };
-
-   // Load the item from the uuid.
-   Item.fromDropData(dropData).then((item) => {
-      // Determine if the item loaded and if it's an owned item.
-      if (!item || !item.parent) {
-         const itemName = item?.name ?? itemUuid;
-         return ui.notifications.warn(
-            `Could not find item ${itemName}. You may need to delete and recreate this macro.`
-         );
-      }
-
-      // Trigger the item roll
-      item.roll();
-   });
-}

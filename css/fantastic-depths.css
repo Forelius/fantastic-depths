@@ -369,6 +369,10 @@ h1, h2, h3, h4 {
   font-size: 16px;
   color: #2a3550;
 }
+.chat-message .message-content .warning {
+  font-size: 16px;
+  color: #702010;
+}
 
 .combatant.disposition-friendly::before {
   font-family: "Font Awesome 5 Free";

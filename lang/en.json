@@ -335,6 +335,10 @@
          "Dark": "Dark Mode",
          "Light": "Light Mode"
       },
+      "rest": {
+         "name": "Rest Turns",
+         "hint": "Configure how often a party must rest while exploring. A value of 6 would mean the party must rest once every six turns. Set to 0 for no resting required."
+      },
       "initiative": {
          "formula": {
             "name": "Initiative Formula",
