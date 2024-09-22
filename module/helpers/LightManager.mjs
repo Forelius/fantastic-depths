@@ -49,10 +49,9 @@ export class LightManager {
       } else {
          canvas.tokens.controlled.forEach(token => {
             let canUpdate = true;
-            let lightSource = null;
+            let lightSource = LightManager.getLightSource(token.actor, type);
 
             if (type !== "none") {
-               lightSource = LightManager.getLightSource(token.actor, type);
                if (!lightSource) {
                   ui.notifications.warn(`The character ${token.name} does not have a ${type}.`);
                   canUpdate = false;
@@ -76,7 +75,7 @@ export class LightManager {
             }
 
             if (canUpdate) {
-               const lightSettings = LightManager.getLightSettings(type);
+               const lightSettings = LightManager.getLightSettings(lightSource.system.light);
                if (lightSettings) {
                   token.document.update({ light: lightSettings });
                   token.document.setFlag('world', 'lightActive', type !== "none");
@@ -88,15 +87,37 @@ export class LightManager {
       }
    }
 
-   static getLightSettings(type) {
+   static getLightSettings(lightData) {
       let lightSettings = {};
 
-      switch (type) {
+      switch (lightData.type) {
          case "torch":
-            lightSettings = { dim: 20, bright: 10, color: "#FFA500", animation: { type: "torch", speed: 2, intensity: 5 } };
+            lightSettings = {
+               dim: lightData.radius,
+               bright: 6,
+               color: "#d0A530",
+               attenuation: 0.8,
+               luminosity: 0.5,
+               animation: {
+                  type: "flame",
+                  speed: 4,
+                  intensity: 2
+               }
+            };
             break;
          case "lantern":
-            lightSettings = { dim: 30, bright: 15, color: "#FFD700", animation: { type: "torch", speed: 3, intensity: 4 } };
+            lightSettings = {
+               dim: lightData.radius,
+               bright: 6,
+               color: "#d0D730",
+               attenuation: 0.7,
+               luminosity: 0.5,
+               animation: {
+                  type: "torch",
+                  speed: 2,
+                  intensity: 1
+               }
+            };
             break;
          case "none":
             lightSettings = { dim: 0, bright: 0 }; // Turn off light
