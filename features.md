@@ -15,7 +15,7 @@
 	- General skills
 	- Weapon masteries [TODO]
 	- Spells
-	- Treasure [TODO]
+	- Treasure
 	- Containers [TODO]
 	
 ## Encounter tracker
