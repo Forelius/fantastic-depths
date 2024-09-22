@@ -272,6 +272,10 @@ h1, h2, h3, h4 {
   background: rgba(200, 200, 200, 0.1);
   border: 2px groove #4e4d40;
 }
+.dark-mode .fantastic-depths .window-content .items-list .items-footer {
+  background: rgba(20, 20, 20, 0.7);
+  border: 2px groove #4e4d40;
+}
 .dark-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #ebeae4;
 }
@@ -320,6 +324,10 @@ h1, h2, h3, h4 {
 }
 .light-mode .fantastic-depths .window-content .items-list .items-header {
   background: rgba(200, 200, 200, 0.1);
+  border: 2px groove #eeede0;
+}
+.light-mode .fantastic-depths .window-content .items-list .items-footer {
+  background: rgba(180, 180, 180, 0.1);
   border: 2px groove #eeede0;
 }
 .light-mode .fantastic-depths .window-content .items-list .item .item-name {
@@ -757,6 +765,24 @@ h1, h2, h3, h4 {
   text-align: left;
 }
 .fantastic-depths .items-list .items-header .item-name {
+  padding-left: 3px;
+  text-align: left;
+}
+.fantastic-depths .items-list .items-footer {
+  height: 26px;
+  margin: 2px 0;
+  padding: 0;
+  align-items: center;
+  font-weight: bold;
+}
+.fantastic-depths .items-list .items-footer > * {
+  font-size: 12px;
+  text-align: center;
+}
+.fantastic-depths .items-list .items-footer .align-left {
+  text-align: left;
+}
+.fantastic-depths .items-list .items-footer .item-name {
   padding-left: 3px;
   text-align: left;
 }

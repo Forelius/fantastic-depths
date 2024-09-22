@@ -1,6 +1,8 @@
 <section class="flexrow bordered tag-section">
    <div class="flex0 add-tag">
+      {{#if isGM}}
       <input type="text" data-action="add-tag" placeholder="Add tags" />
+      {{/if}}
    </div>
    <div class="flex3">
       <div class="flexrow">
@@ -8,7 +10,9 @@
             {{#each system.tags as |tag|}}
             <li class="tag" data-tag="{{tag}}">
                <span>{{tag}}</span>
+               {{#if isGM}}
                <a class="tag-delete"><i class="fas fa-times"></i></a>
+               {{/if}}
             </li>
             {{/each}}
          </ol>

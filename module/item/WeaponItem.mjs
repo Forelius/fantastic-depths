@@ -11,7 +11,6 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      const systemData = this.system;
    }
 
    /** @override */
@@ -30,7 +29,6 @@ export class WeaponItem extends fadeItem {
    /** @override */
    getRollData() {
       const data = super.getRollData();
-
       return data;
    }
 

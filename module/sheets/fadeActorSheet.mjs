@@ -103,14 +103,20 @@ export class fadeActorSheet extends ActorSheet {
          8: [],
          9: [],
       };
+      const treasure = [];
       const specialAbilities = [];
 
       // Iterate through items, allocating to containers
       for (let i of context.items) {
          i.img = i.img || Item.DEFAULT_ICON;
-         // Append to gear.
+         // Append to gear or treasure.
          if (i.type === 'item') {
-            gear.push(i);
+            // If treasure...
+            if (i.system.tags.includes("treasure")) {
+               treasure.push(i);
+            } else {
+               gear.push(i);
+            }
          }
          // Append to spells.
          else if (i.type === 'spell') {
@@ -147,6 +153,16 @@ export class fadeActorSheet extends ActorSheet {
       context.masteries = masteries;
       context.spells = spells;
       context.specialAbilities = specialAbilities;
+      context.treasure = treasure;
+      context.treasureValue = this.getTreasureValue(context);
+   }
+
+   getTreasureValue(context) {
+      const total = context.treasure.reduce(
+         (acc, current) => acc + current.system.totalCost,
+         0
+      );
+      return Math.round(total * 100) / 100;
    }
 
    /* -------------------------------------------- */
@@ -272,6 +288,11 @@ export class fadeActorSheet extends ActorSheet {
       // Grab any data associated with this control.
       const data = foundry.utils.duplicate(header.dataset);
 
+      // If tags are specified
+      if (header.dataset.tags?.length > 0) {
+         data.tags = header.dataset.tags.split(',');
+      }
+
       // Localize the type
       const localizedType = game.i18n.localize(`TYPES.Item.${type}`);
 
@@ -284,6 +305,7 @@ export class fadeActorSheet extends ActorSheet {
          type: type,
          system: data,
       };
+
       // Remove the type from the dataset since it's in the itemData.type prop.
       delete itemData.system['type'];
 

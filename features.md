@@ -13,7 +13,7 @@
 	- Weapons
 	- Armor
 	- General skills
-	- Weapon masteries [PARTIAL]
+	- Weapon masteries [TODO]
 	- Spells
 	- Treasure [TODO]
 	- Containers [TODO]

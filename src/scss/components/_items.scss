@@ -118,6 +118,28 @@
       }
    }
 
+   .items-footer {
+      height: 26px;
+      margin: 2px 0;
+      padding: 0;
+      align-items: center;
+      font-weight: bold;
+
+      > * {
+         font-size: 12px;
+         text-align: center;
+      }
+
+      .align-left {
+         text-align: left;
+      }
+
+      .item-name {
+         padding-left: 3px;
+         text-align: left;
+      }
+   }
+
    .consumable-counter {
       height: 14px;
       display: flex;

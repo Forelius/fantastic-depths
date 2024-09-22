@@ -314,7 +314,8 @@
          "skill": "General Skill",
          "mastery": "Weapon Mastery",
          "specialAbility": "Special Ability",
-         "feature": "Feature"
+         "feature": "Feature",
+         "treasure": "Treasure"
       }
    },
 

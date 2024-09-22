@@ -31,7 +31,7 @@ export class fadeItemSheet extends ItemSheet {
          options.width = 470;
          options.height = 340;
       } else {
-         options.width =470;
+         options.width = 470;
          options.height = 400;
       }
 
