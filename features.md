@@ -7,21 +7,21 @@
 - Actor sheets
 	- Player characters 
 	- Monsters
-	- NPCS/Retainers
+	- NPCS/Retainers [PARTIAL]
 - Item sheets
 	- Generic items
 	- Weapons
 	- Armor
 	- General skills
-	- Weapon masteries
+	- Weapon masteries [PARTIAL]
 	- Spells
-	- Treasure
-	- Containers
+	- Treasure [TODO]
+	- Containers [TODO]
 	
 ## Encounter tracker
 - (optional) Individual initiative 
 - Roll type, roll formula to use 
-- slow tag makes character go last for party or last for initiative 
+- 'slow' tag makes character go last for party or last for initiative 
 
 ## Turn tracker 
 - Session count, reset session count
