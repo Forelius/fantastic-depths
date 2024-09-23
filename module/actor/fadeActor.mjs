@@ -7,26 +7,46 @@ export class fadeActor extends Actor {
    /** @override */
    async _preCreate(data, options, userId) {
       const allowed = await super._preCreate(data, options, userId);
-
+      const fdPath = `systems/fantastic-depths/assets/img/actor`;
       const changeData = {};
 
       switch (this.type) {
          case "character":
+            Object.assign(changeData, {
+               "prototypeToken.sight": {
+                  "enabled": true,
+                  "visionMode": "basic",
+               },
+               "img": `${fdPath}/fighter1.webp`, // Set the actor image
+               "prototypeToken.texture.src": `${fdPath}/fighter1a.webp`, // Set the token image
+               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+               "prototypeToken.actorLink": true,
+               "prototypeToken.scale": 0.9,
+               "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.HOVER
+            });
+            break;
          case "npc":
             Object.assign(changeData, {
                "prototypeToken.sight": {
                   "enabled": true,
                   "visionMode": "basic",
                },
-               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+               "img": `${fdPath}/hero1.webp`, // Set the actor image
+               "prototypeToken.texture.src": `${fdPath}/hero1a.webp`, // Set the token image
+               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
                "prototypeToken.actorLink": true,
+               "prototypeToken.scale": 0.9,
                "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.HOVER
             });
             break;
          case "monster":
             Object.assign(changeData, {
-               "img": "icons/creatures/magical/humanoid-horned-rider.webp", // Set the actor image
-               "prototypeToken.texture.src": "icons/creatures/magical/humanoid-horned-rider.webp" // Set the token image
+               "img": `${fdPath}/monster1.webp`, // Set the actor image
+               "prototypeToken.texture.src": `${fdPath}/monster1a.webp`, // Set the token image
+               "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
+               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.HOSTILE,
+               "prototypeToken.actorLink": false,
+               "prototypeToken.scale": 0.9
             });
             break;
       }

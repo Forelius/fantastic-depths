@@ -36,6 +36,9 @@
 - Fuel source requires' lantern-fuel' tag
 - Integration with turn tracker
 	
+## Scene
+- (optional) Auto-number unlinked actors when adding to scene.
+
 ## Compendiums
 - Items
 	- Adventuring gear [TODO]

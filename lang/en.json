@@ -362,6 +362,10 @@
                "highest": "Highest Dexterity"
             }
          }
+      },
+      "autoNumber": {
+         "name": "Auto-Number Unlinked Actors",
+         "hint": "Enables automatic numbering of unlinked actors when they are dragged onto a scene."
       }
    }
 }

@@ -6,7 +6,7 @@ export class CharacterActor extends fadeActor {
 
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context)
+      super(data, context);
    }
 
    /** @override */

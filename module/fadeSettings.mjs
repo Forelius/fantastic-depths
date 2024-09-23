@@ -98,6 +98,16 @@ export class fadeSettings {
             }
          }
       });
+
+      // Register party rest frequency
+      game.settings.register(game.system.id, "autoNumber", {
+         name: "SETTINGS.autoNumber.name",
+         hint: "SETTINGS.autoNumber.hint",
+         scope: "world",
+         config: true,
+         default: false,  // Default is 0, no rest
+         type: Boolean
+      });
    }
 
    // This function applies the selected theme by adding/removing relevant classes
