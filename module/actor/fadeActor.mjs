@@ -24,6 +24,10 @@ export class fadeActor extends Actor {
             });
             break;
          case "monster":
+            Object.assign(changeData, {
+               "img": "icons/creatures/magical/humanoid-horned-rider.webp", // Set the actor image
+               "prototypeToken.texture.src": "icons/creatures/magical/humanoid-horned-rider.webp" // Set the token image
+            });
             break;
       }
 

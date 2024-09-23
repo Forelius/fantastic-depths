@@ -72,16 +72,16 @@
    </header>
 
    {{!-- Sheet Tab Navigation --}}
-   <nav class="sheet-tabs tabs" data-group="primary">
-      {{!-- Default tab is specified in fadeActorSheet.mjs --}}
-      <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
-      <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
-      <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
-      {{#if isGM}}
-      <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
-      <a class='item' data-tab='gm-only'>GM Only</a>
-      {{/if}}
-   </nav>
+<nav class="sheet-tabs tabs" data-group="primary">
+   {{!-- Default tab is specified in fadeActorSheet.mjs --}}
+   <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
+   <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
+   <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
+   {{#if isGM}}
+   <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
+   <a class='item' data-tab='gm-only'>GM Only</a>
+   {{/if}}
+</nav>
 
    {{!-- Sheet Body --}}
    <section class="sheet-body">
