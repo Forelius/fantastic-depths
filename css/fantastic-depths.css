@@ -254,6 +254,13 @@ h1, h2, h3, h4 {
   color: #ebeae4;
   /*border: 1px solid var(--color-border-light-tertiary);*/
 }
+.dark-mode .fantastic-depths .window-content select {
+  color: #ebeae4;
+}
+.dark-mode .fantastic-depths .window-content select option {
+  background: #4b4a44;
+  color: #ebeae4;
+}
 .dark-mode .fantastic-depths .window-content .bordered {
   border-color: #4b4a44;
 }
@@ -282,6 +289,9 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus {
   color: #ebeae4;
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
+}
+.dark-mode .fantastic-depths .window-content .inline-roll {
+  color: #4b4a44;
 }
 .dark-mode .fantastic-depths .summary li {
   color: #bbbab4;

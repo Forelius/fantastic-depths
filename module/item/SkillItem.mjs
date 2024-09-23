@@ -47,8 +47,6 @@ export class SkillItem extends fadeItem {
       const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const label = `[${item.type}] ${item.name}`;
 
-      console.log("SkillItem.roll", label, item, dataset);
-
       // If there's no roll data, send a chat message.
       // Retrieve roll data.
       const rollData = this.getRollData();

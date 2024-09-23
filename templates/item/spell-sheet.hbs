@@ -2,32 +2,46 @@
   <header class='sheet-header'>
     <img class='profile-img' src='{{item.img}}' data-edit='img' title='{{item.name}}'/>
     <div class='header-fields'>
-      <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name'/></div>
+       <ul class="summary flexrow">
+          <li class="flex3">
+             <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='{{localize 'FADE.Actor.Name'}}' /></div>
+             <label>{{localize 'FADE.Actor.Name'}}</label>
+          </li>
+          <li class="flex0" style="min-width:40px;">
+             <input type='text' name='system.spellLevel' value='{{system.spellLevel}}' data-dtype='Number' />
+             <label for="system.spellLevel">{{localize 'FADE.Spell.level'}}</label>
+          </li>
+       </ul>
+       <ul class="summary flexrow">
+          <li class="flex2">
+             <input type='text' name='system.range' value='{{system.range}}' data-dtype='String' />
+             <label for="system.range">{{localize 'FADE.Spell.range'}}</label>
+          </li>
+          <li class="flex3">
+             <input type='text' name='system.duration' value='{{system.duration}}' data-dtype='String' />
+             <label>{{localize 'FADE.Spell.duration'}}</label>
+          </li>
+       </ul>
+       <ul class="summary flexrow">
+          <li>
+             <input type='text' name='system.effect' value='{{system.effect}}' data-dtype='String' />
+             <label for="system.effect">{{localize 'FADE.Spell.effect'}}</label>
+          </li>
+       </ul>
     </div>
   </header>
 
   {{! Sheet Tab Navigation }}
   <nav class='sheet-tabs tabs' data-group='primary'>
     <a class='item' data-tab='description'>Description</a>
-    <a class='item' data-tab='attributes'>Attributes</a>
   </nav>
 
   {{! Sheet Body }}
   <section class='sheet-body'>
-
     {{! Description Tab }}
     <div class='tab' data-group='primary' data-tab='description'>
       {{! Editors must receive enriched text data from getData to properly handle rolls }}
       {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
-    </div>
-
-    {{! Attributes Tab }}
-    <div class='tab attributes' data-group='primary' data-tab='attributes'>
-      {{! As you add new fields, add them in here! }}
-      <div class='resource'>
-        <label class='resource-label'>Spell Level</label>
-        <input type='text' name='system.spellLevel' value='{{system.spellLevel}}' data-dtype='Number'/>
-      </div>
     </div>
   </section>
 </form>

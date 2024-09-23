@@ -15,6 +15,15 @@
             /*border: 1px solid var(--color-border-light-tertiary);*/
          }
 
+         select {
+            color: $lighterColor;
+
+            option {
+               background: $darkColor;
+               color: $lighterColor;
+            }
+         }
+
          .bordered {
             border-color: $darkColor;
          }
@@ -57,6 +66,10 @@
                color: $lighterColor;
                text-shadow: $glowForDarkMode;
             }
+         }
+
+         .inline-roll {
+            color: $darkColor;
          }
       }
 

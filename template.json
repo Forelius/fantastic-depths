@@ -190,7 +190,10 @@
       },
       "spell": {
          "templates": [ "base" ],
-         "spellLevel": 1
+         "spellLevel": 1,
+         "range": "",
+         "duration": "Instant",
+         "effect": ""
       },
       "skill": {
          "templates": [ "base" ],

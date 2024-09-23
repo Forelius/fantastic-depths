@@ -152,6 +152,8 @@ export class CharacterActor extends fadeActor {
          if (nextLevelData) {
             systemData.details.xp.next = nextLevelData.xp;
          }
+         systemData.details.species = classData.species;
+
          // Saving throws
          super.prepareSavingThrows(classNameInput, currentLevel);         
       }

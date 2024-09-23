@@ -14,7 +14,7 @@
 	- Armor
 	- General skills
 	- Weapon masteries [TODO]
-	- Spells
+	- Spells [TODO]
 	- Treasure
 	- Containers [TODO]
 	
