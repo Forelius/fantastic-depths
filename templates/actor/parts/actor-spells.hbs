@@ -13,16 +13,13 @@
     </li>
     {{#each spells as |item id|}}
       <li class='item flexrow' data-item-id='{{item._id}}'>
-        <div class='item-name flexrow'>
-          <div class='item-image'>
-            <a class='rollable' data-roll-type='item'><img src='{{item.img}}' title='{{item.name}}' width='24' height='24'/></a>
-          </div>
-          <label>{{item.name}}</label>
-        </div>
+         <div class='item-name flexrow'>
+            <div class='item-image'>
+               <a class='rollable' data-roll-type='item'><img src='{{item.img}}' title='{{item.name}}' width='24' height='24' /></a>
+            </div>
+            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type='Spell'}}'>{{item.name}}</a>
+         </div>
         <div class='item-controls'>
-          <a class='item-control item-edit' title='{{localize "DOCUMENT.Edit" type='spell'}}'>
-            <i class='fas fa-edit'></i>
-          </a>
           <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='spell'}}'>
             <i class='fas fa-trash'></i>
           </a>

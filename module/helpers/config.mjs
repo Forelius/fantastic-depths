@@ -55,12 +55,12 @@ FADE.Classes = {
          { level: 24, xp: 1700000, thac0: 9, hd: "9d6+15" },
       ],
       saves: [
-         { level: 4, death: 11, magic: 12, paralysis: 14, breath: 16, spell: 15 },
-         { level: 8, death: 9, magic: 10, paralysis: 12, breath: 14, spell: 13 },
-         { level: 12, death: 7, magic: 8, paralysis: 10, breath: 12, spell: 11 },
-         { level: 16, death: 6, magic: 7, paralysis: 8, breath: 10, spell: 9 },
-         { level: 20, death: 5, magic: 6, paralysis: 6, breath: 8, spell: 7 },
-         { level: 24, death: 4, magic: 5, paralysis: 5, breath: 6, spell: 5 },
+         { level: 4, death: 11, wand: 12, paralysis: 14, breath: 16, spell: 15 },
+         { level: 8, death: 9, wand: 10, paralysis: 12, breath: 14, spell: 13 },
+         { level: 12, death: 7, wand: 8, paralysis: 10, breath: 12, spell: 11 },
+         { level: 16, death: 6, wand: 7, paralysis: 8, breath: 10, spell: 9 },
+         { level: 20, death: 5, wand: 6, paralysis: 6, breath: 8, spell: 7 },
+         { level: 24, death: 4, wand: 5, paralysis: 5, breath: 6, spell: 5 },
       ],
       spells: [
          // 1 - 6
@@ -103,15 +103,15 @@ FADE.Classes = {
          { level: 24, xp: 2040000, thac0: 5, hd: "9d8+30" },
       ],
       saves: [
-         { level: 0, death: 14, magic: 15, paralysis: 16, breath: 17, spell: 17 },
-         { level: 3, death: 12, magic: 13, paralysis: 14, breath: 15, spell: 16 },
-         { level: 6, death: 10, magic: 11, paralysis: 12, breath: 13, spell: 14 },
-         { level: 9, death: 8, magic: 9, paralysis: 10, breath: 11, spell: 12 },
-         { level: 12, death: 6, magic: 7, paralysis: 8, breath: 9, spell: 10 },
-         { level: 15, death: 6, magic: 6, paralysis: 7, breath: 8, spell: 9 },
-         { level: 18, death: 5, magic: 6, paralysis: 6, breath: 7, spell: 8 },
-         { level: 21, death: 5, magic: 5, paralysis: 6, breath: 6, spell: 7 },
-         { level: 24, death: 4, magic: 5, paralysis: 5, breath: 4, spell: 6 },
+         { level: 0, death: 14, wand: 15, paralysis: 16, breath: 17, spell: 17 },
+         { level: 3, death: 12, wand: 13, paralysis: 14, breath: 15, spell: 16 },
+         { level: 6, death: 10, wand: 11, paralysis: 12, breath: 13, spell: 14 },
+         { level: 9, death: 8, wand: 9, paralysis: 10, breath: 11, spell: 12 },
+         { level: 12, death: 6, wand: 7, paralysis: 8, breath: 9, spell: 10 },
+         { level: 15, death: 6, wand: 6, paralysis: 7, breath: 8, spell: 9 },
+         { level: 18, death: 5, wand: 6, paralysis: 6, breath: 7, spell: 8 },
+         { level: 21, death: 5, wand: 5, paralysis: 6, breath: 6, spell: 7 },
+         { level: 24, death: 4, wand: 5, paralysis: 5, breath: 4, spell: 6 },
       ]
    },
    magic_user: {
@@ -143,11 +143,11 @@ FADE.Classes = {
          { level: 24, xp: 2550000, thac0: 11, hd: "9d4+15" },
       ],
       saves: [
-         { level: 5, death: 13, magic: 14, paralysis: 13, breath: 16, spell: 15 },
-         { level: 10, death: 11, magic: 12, paralysis: 11, breath: 14, spell: 12 },
-         { level: 15, death: 9, magic: 8, paralysis: 9, breath: 12, spell: 19 },
-         { level: 20, death: 7, magic: 6, paralysis: 7, breath: 10, spell: 6 },
-         { level: 24, death: 5, magic: 4, paralysis: 5, breath: 8, spell: 4 },
+         { level: 5, death: 13, wand: 14, paralysis: 13, breath: 16, spell: 15 },
+         { level: 10, death: 11, wand: 12, paralysis: 11, breath: 14, spell: 12 },
+         { level: 15, death: 9, wand: 8, paralysis: 9, breath: 12, spell: 19 },
+         { level: 20, death: 7, wand: 6, paralysis: 7, breath: 10, spell: 6 },
+         { level: 24, death: 5, wand: 4, paralysis: 5, breath: 8, spell: 4 },
       ],
       spells: [
          // 1 - 5
@@ -191,12 +191,12 @@ FADE.Classes = {
          { level: 24, xp: 1960000, thac0: 9, hd: "9d4+30" },
       ],
       saves: [
-         { level: 4, death: 13, magic: 14, paralysis: 13, breath: 16, spell: 15 },
-         { level: 8, death: 11, magic: 12, paralysis: 11, breath: 14, spell: 13 },
-         { level: 12, death: 9, magic: 10, paralysis: 9, breath: 12, spell: 11 },
-         { level: 16, death: 7, magic: 8, paralysis: 7, breath: 10, spell: 9 },
-         { level: 20, death: 5, magic: 6, paralysis: 5, breath: 8, spell: 7 },
-         { level: 24, death: 4, magic: 5, paralysis: 4, breath: 6, spell: 5 },
+         { level: 4, death: 13, wand: 14, paralysis: 13, breath: 16, spell: 15 },
+         { level: 8, death: 11, wand: 12, paralysis: 11, breath: 14, spell: 13 },
+         { level: 12, death: 9, wand: 10, paralysis: 9, breath: 12, spell: 11 },
+         { level: 16, death: 7, wand: 8, paralysis: 7, breath: 10, spell: 9 },
+         { level: 20, death: 5, wand: 6, paralysis: 5, breath: 8, spell: 7 },
+         { level: 24, death: 4, wand: 5, paralysis: 4, breath: 6, spell: 5 },
       ]
    },
    dwarf: {
@@ -226,10 +226,10 @@ FADE.Classes = {
          { level: 22, xp: 2600000, thac0: 3, hd: "9d8+39", attackRank: "M" },
       ],
       saves: [
-         { level: 3, death: 8, magic: 9, paralysis: 10, breath: 13, spell: 12 },
-         { level: 6, death: 6, magic: 7, paralysis: 8, breath: 10, spell: 9 },
-         { level: 9, death: 4, magic: 5, paralysis: 6, breath: 7, spell: 6 },
-         { level: 12, death: 2, magic: 3, paralysis: 4, breath: 4, spell: 3 },
+         { level: 3, death: 8, wand: 9, paralysis: 10, breath: 13, spell: 12 },
+         { level: 6, death: 6, wand: 7, paralysis: 8, breath: 10, spell: 9 },
+         { level: 9, death: 4, wand: 5, paralysis: 6, breath: 7, spell: 6 },
+         { level: 12, death: 2, wand: 3, paralysis: 4, breath: 4, spell: 3 },
       ],
    },
    elf: {
@@ -260,10 +260,10 @@ FADE.Classes = {
          { level: 20, xp: 3100000, thac0: 5, hd: "9d6+11", attackRank: "M" }
       ],
       saves: [
-         { level: 3, death: 12, magic: 13, paralysis: 13, breath: 15, spell: 15 },
-         { level: 6, death: 8, magic: 10, paralysis: 10, breath: 11, spell: 11 },
-         { level: 9, death: 4, magic: 5, paralysis: 6, breath: 7, spell: 6 },
-         { level: 12, death: 2, magic: 3, paralysis: 4, breath: 4, spell: 3 }
+         { level: 3, death: 12, wand: 13, paralysis: 13, breath: 15, spell: 15 },
+         { level: 6, death: 8, wand: 10, paralysis: 10, breath: 11, spell: 11 },
+         { level: 9, death: 4, wand: 5, paralysis: 6, breath: 7, spell: 6 },
+         { level: 12, death: 2, wand: 3, paralysis: 4, breath: 4, spell: 3 }
       ],
       spells: [
          // 1 - 5
