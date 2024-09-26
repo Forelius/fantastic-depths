@@ -244,7 +244,7 @@
          "level": "basic"
       },
       "specialAbility": {
-         "templates": [ "base" ],
+         "templates": [ "base" ]
       },
       "feature": {
          "templates": [ "base" ]
