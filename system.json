@@ -41,7 +41,6 @@
          "label": "Item Compendium",
          "system": "fantastic-depths",
          "path": "packs/items.db",
-         "entity": "Item",
          "type": "Item"
       },
       {
@@ -49,7 +48,6 @@
          "label": "Actor Compendium",
          "system": "fantastic-depths",
          "path": "packs/actors.db",
-         "entity": "Actor",
          "type": "Actor"
       }
    ],
