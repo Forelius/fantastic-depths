@@ -21,6 +21,7 @@ import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { MacroManager } from './helpers/MacroManager.mjs';
 import { LightManager } from './helpers/LightManager.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
+import { ContentImporter } from './helpers/ContentImporter.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -37,7 +38,8 @@ Hooks.once('init', function () {
       WeaponItem,
       MacroManager,
       LightManager,
-      TurnTrackerForm
+      TurnTrackerForm,
+      ContentImporter
    };
 
    // Add custom constants for configuration.

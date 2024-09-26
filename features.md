@@ -6,6 +6,7 @@
 	- Actors and items effects tab for GM only
 - Actor sheets
 	- Player characters 
+		- Track spell memorized#/max# per level and show how many of each type of spell is memorized. [TODO]
 	- Monsters
 	- NPCS/Retainers [PARTIAL]
 - Item sheets
@@ -14,7 +15,7 @@
 	- Armor
 	- General skills
 	- Weapon masteries [TODO]
-	- Spells [TODO]
+	- Spells
 	- Treasure
 	- Containers [TODO]
 	
@@ -45,11 +46,11 @@
 	- Weapons
 	- Armor
 	- Magic items [TODO]
-- Actors [TODO]
-	- Monsters
-- Treasure [TODO]
+- Actors 
+	- Monsters [TODO]
+- Treasure 
 	- Coins (500 cp = 50 sp = 10 ep = 5 gp = 1 pp)
-	- Common gems
+	- Common gems [TODO]
 
 ## Ranged weapon attack [TODO]
 - (optional) Ammo use on attack roll. Log to chat that ammo deducted.

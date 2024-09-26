@@ -1,0 +1,32 @@
+<div>
+   <div class="form-group">
+      <label for="type">Select Content Type:</label>
+      <select id="type" name="type" style="width: 100%;">
+         <option value="character">Character</option>
+         <option value="monster">Monster</option>
+         <option value="npc">NPC</option>
+         <option value="spell">Spell</option>
+         <option value="skill">Skill</option>
+      </select>
+   </div>
+
+   <!-- Spell Level Input (Hidden by default) -->
+   <div id="spell-level-field" class="form-group">
+      <label for="spellLevel">Spell Level:</label>
+      <input id="spellLevel" name="spellLevel" type="number" min="1" max="9" style="width: 100%;" value="1" placeholder="Enter Spell Level" />
+   </div>
+
+   <!-- Skill Attribute Field (Hidden by default) -->
+   <div id="attribute-field" class="form-group">
+      <label for="attribute">Skill Attribute:</label>
+      <select id="attribute" name="attribute" style="width: 100%;">
+         {{selectOptions config.Abilities selected=""}}
+      </select>
+   </div>
+
+   <!-- Main Text Area -->
+   <div class="form-group">
+      <label for="importText">Paste Data Here:</label>
+      <textarea id="importText" name="importText" rows="10" style="width: 100%;"></textarea>
+   </div>
+</div>

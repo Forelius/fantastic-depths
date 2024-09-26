@@ -10,7 +10,7 @@ export class fadeActorSheet extends ActorSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'actor'],
-         width: 570,
+         width: 650,
          height: 540,
          tabs: [
             {
@@ -20,6 +20,24 @@ export class fadeActorSheet extends ActorSheet {
             },
          ],
       });
+   }
+
+   /** @override */
+   render(force, options = {}) {
+      // Adjust options before rendering based on item type
+      if (this.actor.type === 'character') {
+         options.width = 600;
+         options.height = 540;
+      } else if (this.actor.type === "monster") {
+         options.width = 650;
+         options.height = 540;
+      } else {
+         options.width = 600;
+         options.height = 540;
+      }
+
+      // Call the original render method with modified options
+      return super.render(force, options);
    }
 
    /** @override */
@@ -51,7 +69,7 @@ export class fadeActorSheet extends ActorSheet {
 
       // Prepare shared actor data and items.
       this._prepareItems(context);
-
+      console.log("getData", context);
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
       context.enrichedBiography = await TextEditor.enrichHTML(
@@ -92,56 +110,57 @@ export class fadeActorSheet extends ActorSheet {
       const armor = [];
       const skills = [];
       const masteries = [];
-      const spells = {
-         1: [],
-         2: [],
-         3: [],
-         4: [],
-         5: [],
-         6: [],
-         7: [],
-         8: [],
-         9: [],
+      const spellSlots = {
+         1: { spells: [] },
+         2: { spells: [] },
+         3: { spells: [] },
+         4: { spells: [] },
+         5: { spells: [] },
+         6: { spells: [] },
+         7: { spells: [] },
+         8: { spells: [] },
+         9: { spells: [] },
       };
       const treasure = [];
       const specialAbilities = [];
 
       // Iterate through items, allocating to containers
-      for (let i of context.items) {
-         i.img = i.img || Item.DEFAULT_ICON;
+      for (let item of context.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
-         if (i.type === 'item') {
+         if (item.type === 'item') {
             // If treasure...
-            if (i.system.tags.includes("treasure")) {
-               treasure.push(i);
+            if (item.system.tags.includes("treasure")) {
+               treasure.push(item);
             } else {
-               gear.push(i);
+               gear.push(item);
             }
          }
          // Append to spells.
-         else if (i.type === 'spell') {
-            if (i.system.spellLevel != undefined) {
-               spells[i.system.spellLevel].push(i);
+         else if (item.type === 'spell') {
+            console.log("sheet spell:", item);
+            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
+               spellSlots[item.system.spellLevel].spells.push(item);
             }
          }
          // Append to weapons.
-         else if (i.type === 'weapon') {
-            weapons.push(i);
+         else if (item.type === 'weapon') {
+            weapons.push(item);
          }
          // Append to armor.
-         else if (i.type === 'armor') {
-            armor.push(i);
+         else if (item.type === 'armor') {
+            armor.push(item);
          }
          // Append to skills.
-         else if (i.type === 'skill') {
-            skills.push(i);
+         else if (item.type === 'skill') {
+            skills.push(item);
          }
          // Append to masteries.
-         else if (i.type === 'mastery') {
-            masteries.push(i);
+         else if (item.type === 'mastery') {
+            masteries.push(item);
          }// Append to specialAbility.
-         else if (i.type === 'specialAbility') {
-            specialAbilities.push(i);
+         else if (item.type === 'specialAbility') {
+            specialAbilities.push(item);
          }
       }
 
@@ -151,10 +170,10 @@ export class fadeActorSheet extends ActorSheet {
       context.armor = armor;
       context.skills = skills;
       context.masteries = masteries;
-      context.spells = spells;
       context.specialAbilities = specialAbilities;
       context.treasure = treasure;
       context.treasureValue = this.getTreasureValue(context);
+      context.spellSlots = spellSlots;
    }
 
    getTreasureValue(context) {
@@ -273,6 +292,18 @@ export class fadeActorSheet extends ActorSheet {
       html.find(".consumable-counter .empty-mark").click((event) => {
          this._useConsumable(event, false);
       });
+
+      // Spells
+      html
+         .find(".memorize input")
+         .click((event) => event.target.select())
+         .change(this._onSpellChange.bind(this));
+
+      html
+         .find(".spells .item-reset[data-action='reset-spells']")
+         .click((event) => {
+            this._resetSpells(event);
+         });
    }
 
    /**
@@ -378,5 +409,33 @@ export class fadeActorSheet extends ActorSheet {
       }
 
       return false;
+   }
+
+   async _onSpellChange(event) {
+      event.preventDefault();
+      const item = this._getItemFromActor(event);
+      if (event.target.dataset.field === "cast") {
+         return item.update({ "system.cast": parseInt(event.target.value) });
+      }
+      if (event.target.dataset.field === "memorize") {
+         return item.update({
+            "system.memorized": parseInt(event.target.value),
+         });
+      }
+   }
+
+   async _resetSpells(event) {
+      const spells = $(event.currentTarget)
+         .closest(".inventory.spells")
+         .find(".item-entry");
+      spells.each((_, el) => {
+         const { itemId } = el.dataset;
+         const item = this.actor.items.get(itemId);
+         const itemData = item?.system;
+         item.update({
+            _id: item.id,
+            "system.cast": itemData.memorized,
+         });
+      });
    }
 }

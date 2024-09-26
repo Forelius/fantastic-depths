@@ -83,6 +83,8 @@ export class fadeActor extends Actor {
       savingThrows.forEach(savingThrow => {
          systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
       });
+
+      this._prepareSpells();
    }
 
    /** @override */
@@ -138,10 +140,15 @@ export class fadeActor extends Actor {
    _prepareMovement() {
       const systemData = this.system;
       systemData.movement = systemData.movement || {};
-      systemData.movement.turn = systemData.movement.turn || 120;
-      systemData.movement.round = Math.floor(systemData.movement.turn / 3);
-      systemData.movement.day = Math.floor(systemData.movement.turn / 5);
+      systemData.movement.turn = systemData.movement.turn || 0;
+      systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
+      systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
       systemData.movement.run = systemData.movement.turn;
+      systemData.flight = systemData.flight || {};
+      systemData.flight.turn = systemData.flight.turn || 0;
+      systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
+      systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
+      systemData.flight.run = systemData.flight.turn;
    }
 
    _prepareArmorClass() {
@@ -176,5 +183,16 @@ export class fadeActor extends Actor {
 
       // Now dex modifier and other mods.
       systemData.ac.total = systemData.ac.total - (systemData.mod.ac ?? 0) - (systemData.abilities?.dex.mod ?? 0);
+   }
+
+   _prepareSpells() {
+      const systemData = this.system;
+      systemData.spellSlots = systemData.spellSlots || {};
+      for (let i = 0; i < 9; i++) {
+         systemData.spellSlots[i] = systemData.spellSlots[i] || {};
+         systemData.spellSlots[i].spellLevel = i + 1;
+         systemData.spellSlots[i].used = systemData.spellSlots[i].used || 0;
+         systemData.spellSlots[i].max = systemData.spellSlots[i].max || 0;
+      }
    }
 }

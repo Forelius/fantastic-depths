@@ -1,17 +1,19 @@
 export class MacroManager {
    // Method to create all macros if they don't exist
    static async createAllMacros() {
+      const fdPath = `systems/fantastic-depths/assets/img/`;
+
       const folder = await MacroManager.getOrCreateFolder("GM Only");
       await MacroManager.createMacro({
          name: "Open Turn Tracker",
          type: "script",
          command: `if (game.user.isGM) {
-                  if (!window.turnTracker) window.turnTracker = new game.fade.TurnTrackerForm();
-                  if (window.turnTracker.rendered) window.turnTracker.close();
-                  else window.turnTracker.render(true);
-                } else { 
-                  ui.notifications.warn("Only the GM can open the Turn Tracker.");
-                }`,
+   if (!window.turnTracker) window.turnTracker = new game.fade.TurnTrackerForm();
+   if (window.turnTracker.rendered) window.turnTracker.close();
+   else window.turnTracker.render(true);
+} else { 
+   ui.notifications.warn("Only the GM can open the Turn Tracker.");
+}`,
          img: "icons/magic/time/clock-analog-gray.webp",
          folder: folder.id, // Place macro in the GM Only folder
       }, true); // true indicates it should be assigned to the hotbar
@@ -20,15 +22,26 @@ export class MacroManager {
          name: "Light Manager",
          type: "script",
          command: `if (game.user.isGM) {
-                  game.fade.LightManager.showLightDialog();
-                } else { 
-                  ui.notifications.warn("Only the GM can use this macro.");
-                }`,
+   game.fade.LightManager.showLightDialog();
+} else { 
+   ui.notifications.warn("Only the GM can use this macro.");
+}`,
          img: "icons/magic/light/orb-lightbulb-gray.webp",
          folder: folder.id,
       }, true);  // Set to false if you don't want automatic hotbar assignment
-   }
 
+      await MacroManager.createMacro({
+         name: "Content Importer",
+         type: "script",
+         command: `if (game.user.isGM) {
+   game.fade.ContentImporter.showImportDialog();
+} else {
+   ui.notifications.warn("Only the GM can use this macro.");
+}`,
+         img: `${fdPath}/ui/import.webp`,
+         folder: folder.id,
+      }, false);  // Set to false if you don't want automatic hotbar assignment
+   }
 
    // Helper method to get or create a folder
    static async getOrCreateFolder(folderName) {

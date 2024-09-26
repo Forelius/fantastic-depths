@@ -1,7 +1,7 @@
 <section class="flexrow">
-   <section class="flex1" style="max-width: 180px;">
-      <div class="bordered resources">
-         <div class="flexrow">
+   <section class="flex1">
+      <section class="bordered resources">
+         <section class="flexrow">
             <!-- Hit Points -->
             <div class="hit-points">
                <input name="system.hp.value" class="hp-value hp-top" type="text" value="{{system.hp.value}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthShort'}}" />
@@ -17,10 +17,10 @@
                <div class="shield" title="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
                {{/if}}
             </div>
-         </div>
-      </div>
+         </section>
+      </section>
       <section class="flexrow">
-         <div class="bordered">
+         <section class="bordered">
             <!-- Saving Throws -->
             <div class="saving-throws">
                <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
@@ -33,27 +33,12 @@
                </div>
                {{/each}}
             </div>
-         </div>
-      </section>
-      <section class="flexrow">
-         <div class="bordered text-center flex1">
-            <h4>Other</h4>
-            <div class="grid grid-2col label-12px">
-               <div>
-                  <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
-                  <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
-               </div>
-               <div>
-                  <label for="system.details.saveAs" title="{{localize 'FADE.Actor.Saves.saveAs.long'}}">{{localize 'FADE.Actor.Saves.saveAs.abbr'}}</label>
-                  <input name="system.details.saveAs" type="text" data-dtype="String" value="{{system.details.saveAs}}" />
-               </div>
-            </div>
-         </div>
+         </section>
       </section>
    </section>
    <section class="flex2">
       <div class="flexrow">
-         <div class="bordered text-center">
+         <section class="bordered text-center flex2">
             <!-- Movement -->
             <h4>{{localize 'FADE.Actor.Movement.long'}}</h4>
             <div class="grid grid-4col label-12px">
@@ -73,36 +58,27 @@
                   <label for="system.movement.run">{{localize 'FADE.Actor.Movement.run'}}</label>
                   <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" />
                </div>
-            </div>           
-         </div>
-         <div class="bordered text-center">
-             <!--Flight--> 
-            <h4>{{localize 'FADE.Actor.Flight.long'}}</h4>
-            <div class="grid grid-4col label-12px">
+            </div>
+         </section>
+         <section class="bordered text-center flex1">
+            <h4>Other</h4>
+            <div class="grid grid-2col label-12px">
                <div>
-                  <label for="system.flight.turn">{{localize 'FADE.Actor.Movement.turn'}}</label>
-                  <input name="system.flight.turn" type="text" data-dtype="Number" value="{{system.flight.turn}}" />
+                  <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+                  <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
                </div>
                <div>
-                  <label for="system.flight.round">{{localize 'FADE.Actor.Movement.round'}}</label>
-                  <input name="system.flight.round" type="text" data-dtype="Number" readonly value="{{system.flight.round}}" />
-               </div>
-               <div>
-                  <label for="system.flight.day">{{localize 'FADE.Actor.Movement.day'}}</label>
-                  <input name="system.flight.day" type="text" data-dtype="Number" readonly value="{{system.flight.day}}" />
-               </div>
-               <div>
-                  <label for="system.flight.run">{{localize 'FADE.Actor.Movement.run'}}</label>
-                  <input name="system.flight.run" type="text" data-dtype="Number" readonly value="{{system.flight.run}}" />
+                  <label for="system.details.saveAs" title="{{localize 'FADE.Actor.Saves.saveAs.long'}}">{{localize 'FADE.Actor.Saves.saveAs.abbr'}}</label>
+                  <input name="system.details.saveAs" type="text" data-dtype="String" value="{{system.details.saveAs}}" />
                </div>
             </div>
-         </div>
+         </section>
       </div>
-      <div class="bordered">
+      <section class="bordered">
          {{> "systems/fantastic-depths/templates/item/parts/item-weapons.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/item-armor.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/item-gear.hbs"}}
-      </div>
+      </section>
    </section>
 </section>

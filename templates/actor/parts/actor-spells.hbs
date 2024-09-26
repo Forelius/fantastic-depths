@@ -1,30 +1,73 @@
-<ol class='items-list'>
-  {{#each spells as |spells spellLevel|}}
-    <li class='item flexrow items-header'>
-      <div class='item-name'>
-        {{localize 'FADE.Spell.SpellLVL' level=spellLevel}}
+<section class="inventory spells">
+   <div class="item-category-title flexrow" style="line-height: 15px">
+      <div class="item-controls">
+         <a class="item-control item-reset"
+            title='{{localize "FADE.Spell.resetSlots"}}'
+            data-action="reset-spells">
+            <i class="fas fa-sync"></i>
+         </a>
       </div>
-      <div class='item-controls'>
-        <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type='Spell'}}' data-type='spell' data-spell-level='{{spellLevel}}'>
-          <i class='fas fa-plus'></i>
-          {{localize 'FADE.Spell.AddLVL' level=spellLevel}}
-        </a>
-      </div>
-    </li>
-    {{#each spells as |item id|}}
-      <li class='item flexrow' data-item-id='{{item._id}}'>
+   </div>
+   <ol class='items-list'>
+      {{#each spellSlots as |slot|}}
+      <li class='item flexrow items-header'>
+         <div class='item-name'>
+            {{localize 'FADE.Spell.SpellLVL' level=@key}}
+         </div>
+         <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
+         <div class="item-80px flexrow">
+            <input type="text"
+                   value="{{slot.used}}"
+                   name="system.spellSlots.{{@key}}.value"
+                   data-dtype="Number"
+                   placeholder="0"
+                   readonly
+                   title="{{localize 'FADE.Spell.memorizedSlots'}}" />/
+            <input type="text"
+                   value="{{slot.max}}"
+                   name="system.spellSlots.{{@key}}.max"
+                   data-dtype="Number"
+                   placeholder="0"
+                   title="{{localize 'FADE.Spell.availableSlots'}}" />
+         </div>
+         <div class='item-controls'>
+            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type='Spell'}}' data-type='spell' data-spell-level='{{@key}}'>
+               <i class='fas fa-plus'></i>
+               {{localize 'FADE.Spell.AddLVL' level=@key}}
+            </a>
+         </div>
+      </li>
+      {{#each slot.spells as |spell id|}}
+      <li class='item flexrow' data-item-id='{{spell._id}}'>
          <div class='item-name flexrow'>
             <div class='item-image'>
-               <a class='rollable' data-roll-type='item'><img src='{{item.img}}' title='{{item.name}}' width='24' height='24' /></a>
+               <a class='rollable' data-roll-type='item'><img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' /></a>
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type='Spell'}}'>{{item.name}}</a>
+            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type='Spell'}}'>{{spell.name}}</a>
          </div>
-        <div class='item-controls'>
-          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='spell'}}'>
-            <i class='fas fa-trash'></i>
-          </a>
-        </div>
+         <div class="item-40px"></div>
+         <div class="item-80px flexrow memorize">
+            <input type="text"
+                   value="{{system.cast}}"
+                   data-dtype="Number"
+                   placeholder="0"
+                   data-field="cast"
+                   title="{{localize 'FADE.Spell.cast'}}" />
+            /
+            <input type="text"
+                   value="{{system.memorized}}"
+                   data-field="memorize"
+                   data-dtype="Number"
+                   placeholder="0"
+                   title="{{localize 'FADE.Spell.memorized'}}" />
+         </div>
+         <div class='item-controls'>
+            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='spell'}}'>
+               <i class='fas fa-trash'></i>
+            </a>
+         </div>
       </li>
-    {{/each}}
-  {{/each}}
-</ol>
+      {{/each}}
+      {{/each}}
+   </ol>
+</section>

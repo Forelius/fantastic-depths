@@ -32,11 +32,15 @@
             "short": "Wrestling",
             "abbr": "WR"
          },
+         "Flight": {
+            "abbr": "FLY",
+            "long": "Flight"
+         },
          "Movement": {
             "abbr": "MV",
             "long": "Movement",
             "turn": "Base",
-            "round": "Encounter",
+            "round": "Round",
             "day": "Overland",
             "run": "Run"
          },
@@ -165,6 +169,12 @@
       },
       "Spell": {
          "SpellLVL": "Level {level} Spells",
+         "slots": "Slots",
+         "resetSlots": "Reset slots",
+         "memorizedSlots": "Memorized slots",
+         "availableSlots": "Available slots",
+         "cast": "Cast",
+         "memorized": "Memorized",
          "AddLVL": "LVL {level}",
          "level": "Level",
          "duration": "Duration",

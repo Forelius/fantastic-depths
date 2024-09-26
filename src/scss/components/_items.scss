@@ -72,6 +72,10 @@
             background-image: url('/icons/svg/d20-highlight.svg');
          }
       }
+
+      input {
+         text-align: center;
+      }
    }
 
    .item-40px {
@@ -178,5 +182,5 @@
 }
 
 .item-info {
-   text-align:center;
+   text-align: center;
 }
