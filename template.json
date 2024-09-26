@@ -158,7 +158,7 @@
                "size": "M",
                "intelligence": 7,
                "monsterType": "Monster (Common)",
-               "saveAs":  "F1"
+               "saveAs": "F1"
             },
             "na": {
                "wandering": "1d6",
@@ -207,7 +207,7 @@
          "damageRoll": "1d6",
          "canMelee": true,
          "canRanged": false,
-         "isSlow":  false,
+         "isSlow": false,
          "range": {
             "short": null,
             "medium": null,
@@ -244,10 +244,12 @@
          "level": "basic"
       },
       "specialAbility": {
-         "templates": [ "base" ]
+         "templates": [ "base" ],
+         "biography": ""
       },
       "feature": {
-         "templates": [ "base" ]
+         "templates": [ "base" ],
+         "biography": ""
       }
    }
 }
