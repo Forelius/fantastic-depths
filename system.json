@@ -62,6 +62,5 @@
       "distance": 5,
       "units": "ft"
    },
-   "primaryTokenAttribute": "hp",
-   "secondaryTokenAttribute": ""
+   "primaryTokenAttribute": "hp"
 }
