@@ -63,5 +63,5 @@
       "units": "ft"
    },
    "primaryTokenAttribute": "hp",
-   "secondaryTokenAttribute": "ac.total"
+   "secondaryTokenAttribute": ""
 }
