@@ -1,6 +1,7 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { onManageActiveEffect, prepareActiveEffectCategories } from '../helpers/effects.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { fadeItem } from '../item/fadeItem.mjs';
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -69,7 +70,7 @@ export class fadeActorSheet extends ActorSheet {
 
       // Prepare shared actor data and items.
       this._prepareItems(context);
-      console.log("getData", context);
+
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
       context.enrichedBiography = await TextEditor.enrichHTML(
@@ -138,7 +139,6 @@ export class fadeActorSheet extends ActorSheet {
          }
          // Append to spells.
          else if (item.type === 'spell') {
-            console.log("sheet spell:", item);
             if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
                spellSlots[item.system.spellLevel].spells.push(item);
             }
@@ -341,7 +341,7 @@ export class fadeActorSheet extends ActorSheet {
       delete itemData.system['type'];
 
       // Finally, create the item!
-      return await Item.create(itemData, { parent: this.actor });
+      return await fadeItem.create(itemData, { parent: this.actor });
    }
 
    /**
@@ -412,16 +412,16 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    async _onSpellChange(event) {
+      let result = null;
       event.preventDefault();
       const item = this._getItemFromActor(event);
       if (event.target.dataset.field === "cast") {
-         return item.update({ "system.cast": parseInt(event.target.value) });
+         result = item.update({ "system.cast": parseInt(event.target.value) });
       }
-      if (event.target.dataset.field === "memorize") {
-         return item.update({
-            "system.memorized": parseInt(event.target.value),
-         });
+      else if (event.target.dataset.field === "memorize") {
+         result = item.update({ "system.memorized": parseInt(event.target.value) });
       }
+      return result;
    }
 
    async _resetSpells(event) {

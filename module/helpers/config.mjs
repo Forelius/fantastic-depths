@@ -11,6 +11,13 @@ FADE.Abilities = {
    wis: "Wisdom",
    cha: "Charisma"
 };
+FADE.MasteryLevels = {
+   basic: "Basic",
+   skilled: "Skilled",
+   expert: "Expert",
+   master: "Master",
+   grandMaster: "Grand Master",
+};
 FADE.Armor = {
    acNaked: 9
 }

@@ -19,6 +19,7 @@ export class fadeItem extends Item {
          skill: `${fdPath}/skill.png`,
          armor: `${fdPath}/armor.png`,
          weapon: "icons/svg/sword.svg",
+         mastery: "icons/svg/combat.svg",
          item: "icons/svg/item-bag.svg",
          container: "icons/svg/chest.svg",
       };
@@ -151,5 +152,4 @@ export class fadeItem extends Item {
       // Update the tags separately
       return this.update({ "system.tags": systemData.tags });
    }
-
 }

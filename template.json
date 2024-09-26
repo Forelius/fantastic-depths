@@ -241,12 +241,10 @@
       },
       "mastery": {
          "templates": [ "base" ],
-         "level": 1,
-         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
+         "level": "basic"
       },
       "specialAbility": {
          "templates": [ "base" ],
-         "formula": "d20 + @str.mod + ceil(@lvl / 2)"
       },
       "feature": {
          "templates": [ "base" ]
