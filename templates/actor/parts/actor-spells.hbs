@@ -17,14 +17,14 @@
          <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
          <div class="item-80px flexrow">
             <input type="text"
-                   value="{{slot.used}}"
-                   name="system.spellSlots.{{@key}}.value"
+                   value="{{lookup (lookup @root.system.spellSlots @key) 'used'}}"
+                   name="system.spellSlots.{{@key}}.used"
                    data-dtype="Number"
                    placeholder="0"
                    readonly
                    title="{{localize 'FADE.Spell.memorizedSlots'}}" />/
             <input type="text"
-                   value="{{slot.max}}"
+                   value="{{lookup (lookup @root.system.spellSlots @key) 'max'}}"
                    name="system.spellSlots.{{@key}}.max"
                    data-dtype="Number"
                    placeholder="0"
