@@ -1,5 +1,4 @@
 # CHANGELOG
 
-## 1.2.0
-
-- Add support for Foundry v10
+## 0.1.0
+- Prerelease 1. First public release for preview and testing purpose.

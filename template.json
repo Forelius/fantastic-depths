@@ -3,7 +3,7 @@
       "types": [ "character", "monster", "npc" ],
       "templates": {
          "base": {
-            "description": "",
+            "biography": "",
             "retainer": {
                "enabled": false,
                "loyalty": 0,
@@ -94,7 +94,10 @@
                   "max": 0
                }
             },
-            "languages": ""
+            "languages": "",
+            "gm": {
+               "notes":  ""
+            }
          },
          "character": {
             "templates": [ "base" ],
@@ -124,16 +127,16 @@
                "str": {
                   "value": 10
                },
-               "dex": {
-                  "value": 10
-               },
-               "con": {
-                  "value": 10
-               },
                "int": {
                   "value": 10
                },
                "wis": {
+                  "value": 10
+               },
+               "dex": {
+                  "value": 10
+               },
+               "con": {
                   "value": 10
                },
                "cha": {
@@ -207,7 +210,6 @@
          "damageRoll": "1d6",
          "canMelee": true,
          "canRanged": false,
-         "isSlow": false,
          "range": {
             "short": null,
             "medium": null,
@@ -244,12 +246,10 @@
          "level": "basic"
       },
       "specialAbility": {
-         "templates": [ "base" ],
-         "biography": ""
+         "templates": [ "base" ]
       },
       "feature": {
-         "templates": [ "base" ],
-         "biography": ""
+         "templates": [ "base" ]
       }
    }
 }

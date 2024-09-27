@@ -61,10 +61,16 @@ export class CharacterActor extends fadeActor {
       // Initialize abilities if missing
       systemData.abilities = systemData.abilities || {};
 
-      const abilities = ["str", "dex", "con", "int", "wis", "cha"];
+      const abilities = ["str", "int", "wis", "dex", "con", "cha"];
+      // Create a new ordered abilities object
+      const orderedAbilities = {};
       abilities.forEach(ability => {
-         systemData.abilities[ability] = systemData.abilities[ability] || { value: 10 };
+         // Ensure each ability has a default value if missing
+         orderedAbilities[ability] = systemData.abilities[ability] || { value: 10 };
       });
+
+      // Replace the original abilities object with the ordered one
+      systemData.abilities = orderedAbilities;
 
       const adjustments = CONFIG.FADE.AdjustmentTable;
       for (let [key, ability] of Object.entries(systemData.abilities)) {

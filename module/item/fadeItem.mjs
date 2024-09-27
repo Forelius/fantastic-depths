@@ -37,8 +37,8 @@ export class fadeItem extends Item {
    prepareDerivedData() {      
       super.prepareDerivedData();
       if (this.type === "item") {
-         this.system.totalWeight = this.system.weight * this.system.quantity;
-         this.system.totalCost = this.system.cost * this.system.quantity;
+         this.system.totalWeight = Math.round((this.system.weight * this.system.quantity) * 100) /100;
+         this.system.totalCost = Math.round((this.system.cost * this.system.quantity) * 100) / 100;
       }
    }
 

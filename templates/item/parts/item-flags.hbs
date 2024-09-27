@@ -10,7 +10,7 @@
             {{#each system.tags as |tag|}}
             <li class="tag" data-tag="{{tag}}">
                <span>{{tag}}</span>
-               {{#if isGM}}
+               {{#if @root.isGM}}
                <a class="tag-delete"><i class="fas fa-times"></i></a>
                {{/if}}
             </li>
