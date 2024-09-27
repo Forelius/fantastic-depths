@@ -13,7 +13,7 @@
 	- Generic items
 	- Weapons
 	- Armor
-	- Special abilities [PARTIAL]
+	- Special abilities
 	- General skills
 	- Weapon masteries
 	- Spells

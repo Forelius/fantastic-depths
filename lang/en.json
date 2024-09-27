@@ -296,7 +296,10 @@
          "damageRoll": "Damage Roll"
       },
       "roll": "Roll",
+      "rollMode": "Roll Mode",
+      "operator": "Operator",
       "modifier": "Modifier",
+      "target": "Target",
       "dialog": {
          "abilityCheck": "Ability Check",
          "skillCheck": "Skill Check"
@@ -305,7 +308,7 @@
          "sessionCount": "Session Count",
          "totalCount": "Total Count",
          "sinceRest": "Since Rest",
-         "rest":  "Rest",
+         "rest": "Rest",
          "next": "Next",
          "nextDesc": "Advance Turn",
          "prev": "Previous",

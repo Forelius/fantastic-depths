@@ -81,10 +81,17 @@ export class fadeItemSheet extends ItemSheet {
          // Prepare active effects for easier access
          context.effects = prepareActiveEffectCategories(this.item.effects);
       }
-      if (this.item.type === 'skill') {
+      if (this.item.type === 'skill' || this.item.type === 'specialAbility') {
          // Prepare roll modes select options
          context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
             acc[key] = game.i18n.localize(value);
+            return acc;
+         }, {});
+      }
+      if (this.item.type === 'specialAbility') {
+         // Prepare roll modes select options
+         context.operators = Object.entries(CONFIG.FADE.Operators).reduce((acc, [key, value]) => {
+            acc[key] = value;
             return acc;
          }, {});
       }

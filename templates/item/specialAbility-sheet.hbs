@@ -9,7 +9,29 @@
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
                <label>{{localize 'FADE.Actor.Name'}}</label>
             </li>
-         </ul>         
+         </ul>
+         <ul class="summary flexrow">
+            <li>
+               <input type='text' name="system.roll" value='{{system.roll}}' data-dtype='String' />
+               <label for="system.roll">{{localize 'FADE.roll'}}</label>
+            </li>
+            <li>
+               <select name="system.operator">
+                  {{selectOptions operators selected=system.operator}}
+               </select>
+               <label for="system.operator">{{localize 'FADE.operator'}}</label>
+            </li>
+            <li>
+               <input type='text' name="system.target" value='{{system.target}}' data-dtype='Number' />
+               <label for="system.target">{{localize 'FADE.target'}}</label>
+            </li>
+            <li class="flex2">
+               <select name="system.rollMode">
+                  {{selectOptions rollModes selected=system.rollMode}}
+               </select>
+               <label for="system.operator">{{localize 'FADE.rollMode'}}</label>
+            </li>
+         </ul>
       </div>
    </header>
 

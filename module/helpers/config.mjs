@@ -21,6 +21,13 @@ FADE.MasteryLevels = {
 FADE.Armor = {
    acNaked: 9
 }
+FADE.Operators = {
+   eq: "=",
+   gt: ">",
+   lt: "<",
+   gte: ">=",
+   lte: "<="
+}
 FADE.Encumbrance = {
    max: 2400,
    table: [

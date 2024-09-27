@@ -185,6 +185,12 @@
                "notes": ""
             }
          },
+         "rollable": {
+            "roll": "",
+            "operator": "",
+            "target": 0,
+            "rollMode":  ""
+         },
          "physical": {
             "quantity": 1,
             "quantityMax": 0,
@@ -246,7 +252,7 @@
          "level": "basic"
       },
       "specialAbility": {
-         "templates": [ "base" ]
+         "templates": [ "base", "rollable" ]
       },
       "feature": {
          "templates": [ "base" ]
