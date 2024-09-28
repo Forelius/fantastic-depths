@@ -293,11 +293,10 @@ export class fadeActorSheet extends ActorSheet {
          this._useConsumable(event, false);
       });
 
-      // Spells
-      html
-         .find(".memorize input")
+      // Editable
+      html.find(".editable input")
          .click((event) => event.target.select())
-         .change(this._onSpellChange.bind(this));
+         .change(this._onDataChange.bind(this));
 
       html
          .find(".spells .item-reset[data-action='reset-spells']")
@@ -411,16 +410,18 @@ export class fadeActorSheet extends ActorSheet {
       return false;
    }
 
-   async _onSpellChange(event) {
+   async _onDataChange(event) {
       let result = null;
-      event.preventDefault();
-      const item = this._getItemFromActor(event);
-      if (event.target.dataset.field === "cast") {
-         result = item.update({ "system.cast": parseInt(event.target.value) });
-      }
-      else if (event.target.dataset.field === "memorize") {
-         result = item.update({ "system.memorized": parseInt(event.target.value) });
-      }
+      //event.preventDefault();
+      //const item = this._getItemFromActor(event);
+      //if (event.target.dataset.field === "quantity") {
+      //   result = item.update({ "system.quantity": parseInt(event.target.value) });
+      //} else if (event.target.dataset.field === "cast") {
+      //   result = item.update({ "system.cast": parseInt(event.target.value) });
+      //}
+      //else if (event.target.dataset.field === "memorize") {
+      //   result = item.update({ "system.memorized": parseInt(event.target.value) });
+      //}
       return result;
    }
 

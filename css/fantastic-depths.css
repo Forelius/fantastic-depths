@@ -289,6 +289,13 @@ h1, h2, h3, h4 {
   background: rgba(20, 20, 20, 0.7);
   border: 2px groove #4e4d40;
 }
+.dark-mode .fantastic-depths .window-content .items-list .item-prop {
+  border-left: 1px solid #4b4a44;
+  border-right: 1px solid #4b4a44;
+}
+.dark-mode .fantastic-depths .window-content .items-list .item {
+  border-bottom: 1px solid #4b4a44;
+}
 .dark-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #ebeae4;
 }

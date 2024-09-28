@@ -11,28 +11,30 @@
       </div>
    </li>
    {{#each treasure as |item id|}}
-   <li class='item collapsible-content' data-item-id='{{item._id}}'>
-      <div class="flexrow">
-         <div class='item-name'>
-            <div class='item-image'>
-               <a data-roll-type='item'>
-                  <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
-               </a>
-            </div>
-            <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
-         </div>
-         <div class="item-60px item-prop" title="{{localize 'FADE.Item.cost.long'}}"><label>{{item.system.totalCost}}</label></div>
-         <div class="item-40px item-prop"><label>{{item.system.quantity}}</label></div>
-         <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
-         <div class='item-controls'>
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
-               <i class='fas fa-trash'></i>
+   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
+      <div class='item-name'>
+         <div class='item-image'>
+            <a data-roll-type='item'>
+               <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
             </a>
          </div>
+         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
       </div>
-      {{/each}}
+      <div class="item-60px item-prop" title="{{localize 'FADE.Item.cost.long'}}"><label>{{item.system.totalCost}}</label></div>
+      <div class="item-40px item-prop editable">
+         <input type="text"
+                value="{{item.system.quantity}}"
+                data-dtype="Number"
+                placeholder="0"
+                data-field="quantity"
+                title="{{localize 'FADE.Item.quantity.long'}}" />
+      </div>
+      <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
+      <div class='item-controls'>
+         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
+            <i class='fas fa-trash'></i>
+         </a>
+      </div>
    </li>
-   <!--<li class="item flexrow items-footer">
-      <div><strong>Treasure total:</strong> {{treasureValue}} gp</div>
-   </li>-->
+   {{/each}}
 </ol>

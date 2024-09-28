@@ -11,8 +11,7 @@
       </div>
    </li>
    {{#each gear as |item id|}}
-<li class='item collapsible-content' data-item-id='{{item._id}}'>
-   <div class="flexrow">
+   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
       <div class='item-name'>
          <div class='item-image'>
             <a data-roll-type='item'>
@@ -28,17 +27,20 @@
             <i class='fas fa-trash'></i>
          </a>
       </div>
-   </div>
-   {{#if item.system.quantityMax }} {{#if (lte item.system.quantityMax 38)}}
-   <div class="consumable-counter">
-      <label>{{localize 'FADE.Item.uses'}}</label>
-      {{#times item.system.quantity}}
-      <div class="full-mark"></div>
-      {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
-      <div class="empty-mark"></div>
-      {{/times}}
-   </div>
-   {{/if}} {{/if}}
+   </li>
+   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
+      {{#if item.system.quantityMax }}
+      {{#if (lte item.system.quantityMax 38)}}
+      <div class="consumable-counter">
+         <label>{{localize 'FADE.Item.uses'}}</label>
+         {{#times item.system.quantity}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
+      {{/if}}
+      {{/if}}
+   </li>
    {{/each}}
-</li>
 </ol>
