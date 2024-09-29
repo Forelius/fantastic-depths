@@ -407,9 +407,7 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    async _resetSpells(event) {
-      const spells = $(event.currentTarget)
-         .closest(".inventory.spells")
-         .find(".item-entry");
+      const spells = $(event.currentTarget).closest(".inventory.spells").find(".item-entry");
       spells.each((_, el) => {
          const { itemId } = el.dataset;
          const item = this.actor.items.get(itemId);
