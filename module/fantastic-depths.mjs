@@ -146,20 +146,6 @@ Hooks.on('renderSidebarTab', (app, html) => {
 /* -------------------------------------------- */
 let oldData = {};
 
-//Hooks.on("preUpdateActor", (actor, updateData, options, userId) => {
-//   console.log("preUpdateActor hook triggered for actor:", actor.name, updateData);
-//   // Capture the current state of the actor before the update
-//   oldData[actor.id] = structuredClone(actor);  // Store a deep clone of the actor's current data
-//});
-
-//// Hook into the rendering of the actor sheet to capture old data (works for updates from the UI)
-//Hooks.on("renderActorSheet", (app, html, data) => {
-//   const actor = app.object;
-//   // Capture the actor data before updates are made
-//   oldData[actor.id] = structuredClone(actor); // Deep clone the actor data
-//});
-
-
 // Hook into `updateActor` to compare the old and new values
 Hooks.on("updateActor", async (actor, updateData, options, userId) => {
    const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");

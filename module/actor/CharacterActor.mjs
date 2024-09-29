@@ -83,7 +83,6 @@ export class CharacterActor extends fadeActor {
       return changes;  // This allows recursion to accumulate changes
    }
 
-
    // Helper function to send a change message to the GM
    _sendChangeMessageToGM(changes, user, type) {
       let changeDescs = null;

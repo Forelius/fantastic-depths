@@ -103,110 +103,12 @@ export class fadeActorSheet extends ActorSheet {
       return context;
    }
 
-   /**
-    * Organize and classify Items for Actor sheets.
-    *
-    * @param {object} context The context object to mutate
-    */
-   _prepareItems(context) {
-      // Initialize containers.
-      const gear = [];
-      const weapons = [];
-      const armor = [];
-      const skills = [];
-      const masteries = [];
-      const spellSlots = {
-         1: { spells: [] },
-         2: { spells: [] },
-         3: { spells: [] },
-         4: { spells: [] },
-         5: { spells: [] },
-         6: { spells: [] },
-         7: { spells: [] },
-         8: { spells: [] },
-         9: { spells: [] },
-      };
-      const treasure = [];
-      const specialAbilities = [];
-
-      // Iterate through items, allocating to containers
-      for (let item of context.items) {
-         item.img = item.img || Item.DEFAULT_ICON;
-         // Append to gear or treasure.
-         if (item.type === 'item') {
-            // If treasure...
-            if (item.system.tags.includes("treasure")) {
-               treasure.push(item);
-            } else {
-               gear.push(item);
-            }
-         }
-         // Append to spells.
-         else if (item.type === 'spell') {
-            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
-               spellSlots[item.system.spellLevel].spells.push(item);
-            }
-         }
-         // Append to weapons.
-         else if (item.type === 'weapon') {
-            weapons.push(item);
-         }
-         // Append to armor.
-         else if (item.type === 'armor') {
-            armor.push(item);
-         }
-         // Append to skills.
-         else if (item.type === 'skill') {
-            skills.push(item);
-         }
-         // Append to masteries.
-         else if (item.type === 'mastery') {
-            masteries.push(item);
-         }// Append to specialAbility.
-         else if (item.type === 'specialAbility') {
-            specialAbilities.push(item);
-         }
-      }
-
-      // Assign and return
-      context.gear = gear;
-      context.weapons = weapons;
-      context.armor = armor;
-      context.skills = skills;
-      context.masteries = masteries;
-      context.specialAbilities = specialAbilities;
-      context.treasure = treasure;
-      context.treasureValue = this.getTreasureValue(context);
-      context.spellSlots = spellSlots;
-   }
-
    getTreasureValue(context) {
       const total = context.treasure.reduce(
          (acc, current) => acc + current.system.totalCost,
          0
       );
       return Math.round(total * 100) / 100;
-   }
-
-   /* -------------------------------------------- */
-   _getItemFromActor(event) {
-      const li = $(event.currentTarget).parents('.item');
-      return this.actor.items.get(li.data('itemId'));
-   }
-
-   /**
-  * @param event
-  * @param {bool} decrement
-  */
-   _useConsumable(event, decrement) {
-      const item = this._getItemFromActor(event);
-      if (item.type === "weapon") {
-         let quantity = item.system.ammo.load;
-         item.update({ "system.ammo.load": decrement ? --quantity : ++quantity, });
-      } else {
-         let quantity = item.system.quantity;
-         item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
-      }
    }
 
    /** @override */
@@ -288,6 +190,104 @@ export class fadeActorSheet extends ActorSheet {
          .click((event) => {
             this._resetSpells(event);
          });
+   }
+
+   /**
+    * Organize and classify Items for Actor sheets.
+    *
+    * @param {object} context The context object to mutate
+    */
+   _prepareItems(context) {
+      // Initialize containers.
+      const gear = [];
+      const weapons = [];
+      const armor = [];
+      const skills = [];
+      const masteries = [];
+      const spellSlots = {
+         1: { spells: [] },
+         2: { spells: [] },
+         3: { spells: [] },
+         4: { spells: [] },
+         5: { spells: [] },
+         6: { spells: [] },
+         7: { spells: [] },
+         8: { spells: [] },
+         9: { spells: [] },
+      };
+      const treasure = [];
+      const specialAbilities = [];
+
+      // Iterate through items, allocating to containers
+      for (let item of context.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         // Append to gear or treasure.
+         if (item.type === 'item') {
+            // If treasure...
+            if (item.system.tags.includes("treasure")) {
+               treasure.push(item);
+            } else {
+               gear.push(item);
+            }
+         }
+         // Append to spells.
+         else if (item.type === 'spell') {
+            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
+               spellSlots[item.system.spellLevel].spells.push(item);
+            }
+         }
+         // Append to weapons.
+         else if (item.type === 'weapon') {
+            weapons.push(item);
+         }
+         // Append to armor.
+         else if (item.type === 'armor') {
+            armor.push(item);
+         }
+         // Append to skills.
+         else if (item.type === 'skill') {
+            skills.push(item);
+         }
+         // Append to masteries.
+         else if (item.type === 'mastery') {
+            masteries.push(item);
+         }// Append to specialAbility.
+         else if (item.type === 'specialAbility') {
+            specialAbilities.push(item);
+         }
+      }
+
+      // Assign and return
+      context.gear = gear;
+      context.weapons = weapons;
+      context.armor = armor;
+      context.skills = skills;
+      context.masteries = masteries;
+      context.specialAbilities = specialAbilities;
+      context.treasure = treasure;
+      context.treasureValue = this.getTreasureValue(context);
+      context.spellSlots = spellSlots;
+   }
+
+   /* -------------------------------------------- */
+   _getItemFromActor(event) {
+      const li = $(event.currentTarget).parents('.item');
+      return this.actor.items.get(li.data('itemId'));
+   }
+
+   /**
+  * @param event
+  * @param {bool} decrement
+  */
+   _useConsumable(event, decrement) {
+      const item = this._getItemFromActor(event);
+      if (item.type === "weapon") {
+         let quantity = item.system.ammo.load;
+         item.update({ "system.ammo.load": decrement ? --quantity : ++quantity, });
+      } else {
+         let quantity = item.system.quantity;
+         item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+      }
    }
 
    /**
