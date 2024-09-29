@@ -66,13 +66,9 @@ export class CharacterActor extends fadeActor {
                const newValue = foundry.utils.getProperty(updateData, key);
                if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
                   // Recursively log changes for nested objects
-                  this.logActorChanges(newValue, oldData, user, fullKey);
+                  this.logActorChanges(newValue, oldData, user, type, fullKey);
                } else if (oldValue) {
-                  changes.push({
-                     field: fullKey,
-                     oldValue: oldValue,
-                     newValue: newValue,
-                  });
+                  changes.push({ field: fullKey, oldValue: oldValue, newValue: newValue });
                }
             }
          }
@@ -93,7 +89,7 @@ export class CharacterActor extends fadeActor {
       let changeDescs = null;
       if (type === "property") {
          changeDescs = changes.map(change => {
-            return `${change.field}: <strong>${change.oldValue}</strong> ➔ <strong>${change.newValue}</strong>`;
+            return `${change.field}: <strong>${change.newValue}</strong>`;
          }).join("<br>");
       } else if (type === "addItem") {
          const item = changes[0];
@@ -106,9 +102,9 @@ export class CharacterActor extends fadeActor {
       if (changeDescs) {
          // Create a chat message only visible to the GM
          ChatMessage.create({
-            user: user.id,
+            user: game.user.id,
             content: `<p>Player ${user.name} updated ${this.name}:</p><p>${changeDescs}</p>`,
-            whisper: ChatMessage.getWhisperRecipients("GM") // Whisper to all active GMs
+            whisper: ChatMessage.getWhisperRecipients("GM"), // Whisper to all active GMs
          });
       }
    }
