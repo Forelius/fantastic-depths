@@ -24,7 +24,7 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /** @override */
-   render(force, options = {}) {
+   async render(force, options = {}) {
       // Adjust options before rendering based on item type
       if (this.actor.type === 'character') {
          options.width = 600;
@@ -38,7 +38,10 @@ export class fadeActorSheet extends ActorSheet {
       }
 
       // Call the original render method with modified options
-      return super.render(force, options);
+      await super.render(force, options);
+
+      // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
+      setTimeout(() => { this._restoreCollapsedState(); }, 0);
    }
 
    /** @override */
@@ -190,28 +193,6 @@ export class fadeActorSheet extends ActorSheet {
       return this.actor.items.get(li.data('itemId'));
    }
 
-   _toggleCollapsibleContent(event) {
-      const header = event.currentTarget; // Get the clicked element
-      $(header).siblings('.collapsible-content').each(function () {
-         const $content = $(this);
-         if ($content.hasClass('collapsed')) {
-            // Expanding
-            $content.removeClass('collapsed');
-            $content.css('height', $content.prop('scrollHeight') + 'px');
-            setTimeout(function () {
-               $content.css('height', '');
-            }, 500); // Match this duration to your CSS transition duration
-         } else {
-            // Collapsing
-            $content.css('height', $content.height() + 'px');
-            $content.addClass('collapsed');
-            setTimeout(function () {
-               $content.css('height', '0');
-            }, 0);
-         }
-      });
-   }
-
    /**
   * @param event
   * @param {bool} decrement
@@ -273,8 +254,8 @@ export class fadeActorSheet extends ActorSheet {
       }
 
       // Bind the collapsible functionality to the header click event
-      html.find('.collapsible-header').on('click', (event) => {
-         this._toggleCollapsibleContent(event);
+      html.find('.collapsible-header').on('click', async (event) => {
+         await this._toggleCollapsibleContent(event);
       });
 
       // Toggle Equipment
@@ -412,16 +393,16 @@ export class fadeActorSheet extends ActorSheet {
 
    async _onDataChange(event) {
       let result = null;
-      //event.preventDefault();
-      //const item = this._getItemFromActor(event);
-      //if (event.target.dataset.field === "quantity") {
-      //   result = item.update({ "system.quantity": parseInt(event.target.value) });
-      //} else if (event.target.dataset.field === "cast") {
-      //   result = item.update({ "system.cast": parseInt(event.target.value) });
-      //}
-      //else if (event.target.dataset.field === "memorize") {
-      //   result = item.update({ "system.memorized": parseInt(event.target.value) });
-      //}
+      event.preventDefault();
+      const item = this._getItemFromActor(event);
+      if (event.target.dataset.field === "quantity") {
+         result = item.update({ "system.quantity": parseInt(event.target.value) });
+      } else if (event.target.dataset.field === "cast") {
+         result = item.update({ "system.cast": parseInt(event.target.value) });
+      }
+      else if (event.target.dataset.field === "memorize") {
+         result = item.update({ "system.memorized": parseInt(event.target.value) });
+      }
       return result;
    }
 
@@ -438,5 +419,80 @@ export class fadeActorSheet extends ActorSheet {
             "system.cast": itemData.memorized,
          });
       });
+   }
+
+   /**
+    * Toggles the collapsible content based on the isCollapsed state
+    * @param {jQuery} $content - The collapsible content to toggle
+    * @param {Boolean} isCollapsed - If true, collapse the content; if false, expand the content
+    */
+   async _toggleContent($parent, skipAnim=false) {
+      const children = $parent.find('.collapsible-content');
+      const isCollapsed = $(children[0]).hasClass('collapsed');
+
+      if (isCollapsed === true) {
+         // Expand the content
+         children.each(async function (index, content) {
+            let $content = $(content);
+            $content.removeClass('collapsed');
+            $content.css('height', $content.prop('scrollHeight') + 'px');
+            setTimeout(() => { $content.css('height', ''); }, 100); // Adjust to match CSS transition duration
+         });
+      } else {
+         // Collapse the content
+         children.each(async function (index, content) {
+            let $content = $(content);
+            $content.css('height', $content.height() + 'px');
+            $content.addClass('collapsed');
+            setTimeout(() => { $content.css('height', '0'); }, 0);
+         });
+      }
+
+      // If remember state is enabled, store the collapsed state
+      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+      if (rememberCollapsedState === true) {
+         const sectionName = $parent.attr('name'); // Access the `name` attribute from the DOM element
+         const actor = game.actors.get(this.actor.id);
+         await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+      }
+   }
+
+   /**
+    * Handles the click event for toggling collapsible sections.
+    * @param {Event} event - The click event on the collapsible header
+    */
+   async _toggleCollapsibleContent(event) {
+      const $parent = $(event.currentTarget.parentNode); // Get the parent container
+      await this._toggleContent($parent);
+   }
+
+   _restoreCollapsedState() {
+      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+
+      if (rememberCollapsedState === true) {
+         const actor = game.actors.get(this.actor.id);
+
+         // Retrieve all flags that start with 'collapsed-'
+         const flags = actor.flags[game.system.id] || {};
+
+         Object.keys(flags).forEach(async (key) => {
+            // Only process flags that start with 'collapsed-'
+            if (key.startsWith('collapsed-') && key !== 'collapsed-undefined') {
+               const sectionName = key.replace('collapsed-', ''); // Extract section name
+               const isCollapsed = flags[key];
+               if (isCollapsed === true) {
+                  // Find the collapsible section by the 'name' attribute
+                  const parent = document.querySelector(`[name="${sectionName}"]`);
+                  if (parent) {
+                     await this._toggleContent($(parent), true);
+                  }
+               }
+            } else if (key === 'collapsed-undefined') {
+               // Clean up any invalid flags (optional)
+               await actor.unsetFlag(game.system.id, key);
+               console.warn("Removed invalid flag: collapsed-undefined");
+            }
+         });
+      }
    }
 }

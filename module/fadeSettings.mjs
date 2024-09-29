@@ -99,15 +99,24 @@ export class fadeSettings {
          }
       });
 
-      // Register party rest frequency
-      game.settings.register(game.system.id, "autoNumber", {
-         name: "SETTINGS.autoNumber.name",
-         hint: "SETTINGS.autoNumber.hint",
-         scope: "world",
+      game.settings.register(game.system.id, "rememberCollapsedState", {
+         name: "Remember Collapse State",
+         hint: "When enabled, the item lists will remember their collapse state individually for each character.",
+         scope: "client", // This setting is player-specific
          config: true,
-         default: false,  // Default is 0, no rest
-         type: Boolean
+         type: Boolean,
+         default: true // Enable by default
       });
+
+      // Register party rest frequency
+      //game.settings.register(game.system.id, "autoNumber", {
+      //   name: "SETTINGS.autoNumber.name",
+      //   hint: "SETTINGS.autoNumber.hint",
+      //   scope: "world",
+      //   config: true,
+      //   default: false,  // Default is 0, no rest
+      //   type: Boolean
+      //});
    }
 
    // This function applies the selected theme by adding/removing relevant classes

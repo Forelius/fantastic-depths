@@ -657,13 +657,13 @@ h1, h2, h3, h4 {
 .fantastic-depths .collapsible-content {
   overflow: hidden;
   height: auto;
-  transition: height 0.3s ease-in;
+  transition: height 0.1s ease-in;
 }
 .fantastic-depths .collapsible-content.collapsed {
   height: 0;
   padding-top: 0;
   padding-bottom: 0;
-  transition: height 0.3s ease-in, padding 0.3s ease-in;
+  transition: height 0.1s ease-in, padding 0.1s ease-in;
 }
 .fantastic-depths .summary {
   flex: 0 0 100%;
