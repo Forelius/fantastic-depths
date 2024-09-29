@@ -14,7 +14,8 @@ export class fadeSettings {
          choices: {
             none: "SETTINGS.Encumbrance.None",
             normal: "SETTINGS.Encumbrance.Normal"
-         }
+         },
+         restricted: true // Only the GM can change this setting
       });
 
       game.settings.register(game.system.id, "theme", {
@@ -41,7 +42,8 @@ export class fadeSettings {
          scope: "world",     // This means the setting is stored globally for the world
          config: true,       // This makes it appear in the Settings menu
          default: "1d6",  // Default formula, using DEX modifier
-         type: String
+         type: String,
+         restricted: true // Only the GM can change this setting
       });
 
       game.settings.register(game.system.id, "initiativeMode", {
@@ -56,6 +58,8 @@ export class fadeSettings {
             "group": "SETTINGS.initiative.mode.choices.group"
          },
          onChange: value => this.toggleGroupModifier(value)  // Dynamically toggle based on mode
+         ,
+         restricted: true // Only the GM can change this setting
       });
 
       // Register the group initiative modifier setting with 'none' as the default
@@ -70,7 +74,8 @@ export class fadeSettings {
             "none": "SETTINGS.initiative.modifier.choices.none",
             "average": "SETTINGS.initiative.modifier.choices.average",
             "highest": "SETTINGS.initiative.modifier.choices.highest"
-         }
+         },
+         restricted: true // Only the GM can change this setting
       });
 
       // Register party rest frequency
@@ -80,7 +85,8 @@ export class fadeSettings {
          scope: "world",
          config: true,
          default: 0,  // Default is 0, no rest
-         type: Number         
+         type: Number,
+         restricted: true // Only the GM can change this setting
       });
 
       game.settings.register(game.system.id, 'turnData', {
@@ -96,7 +102,8 @@ export class fadeSettings {
                session: 0,
                total: 0
             }
-         }
+         },
+         restricted: true // Only the GM can change this setting
       });
 
       game.settings.register(game.system.id, "rememberCollapsedState", {
@@ -106,6 +113,16 @@ export class fadeSettings {
          config: true,
          type: Boolean,
          default: true // Enable by default
+      });
+
+      game.settings.register(game.system.id, "logCharacterChanges", {
+         name: "Log Character Sheet Changes",
+         hint: "If enabled, logs character sheet changes to the GM via chat.",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: false,
+         restricted: true // Only the GM can change this setting
       });
 
       // Register party rest frequency

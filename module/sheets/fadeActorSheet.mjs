@@ -224,7 +224,7 @@ export class fadeActorSheet extends ActorSheet {
       if (!this.isEditable) return;
 
       // Add Inventory Item
-      html.on('click', '.item-create', this._onItemCreate.bind(this));
+      html.on('click', '.item-create', async (event) => { await this._onItemCreate(event) });
 
       // Delete Inventory Item
       html.on('click', '.item-delete', (event) => {
@@ -256,7 +256,10 @@ export class fadeActorSheet extends ActorSheet {
 
       // Bind the collapsible functionality to the header click event
       html.find('.collapsible-header').on('click', async (event) => {
-         await this._toggleCollapsibleContent(event);
+         // If not the create item column...
+         if ($(event.target).closest('.item-create').length === 0) {
+            await this._toggleCollapsibleContent(event);
+         }
       });
 
       // Toggle Equipment

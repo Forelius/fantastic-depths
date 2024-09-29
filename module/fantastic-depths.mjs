@@ -140,3 +140,81 @@ Hooks.on('renderSidebarTab', (app, html) => {
    if (game.user.isGM) {
    }
 });
+
+/* -------------------------------------------- */
+/*  Log Changes                                 */
+/* -------------------------------------------- */
+let oldData = {};
+
+// Hook into `preUpdateActor` to capture the current state before changes
+Hooks.on("preUpdateActor", (actor, updateData, options, userId) => {
+   // Capture the current state of the actor before the update
+   oldData[actor.id] = structuredClone(actor);  // Store a deep clone of the actor's current data
+});
+
+// Hook into `updateActor` to compare the old and new values
+Hooks.on("updateActor", async (actor, updateData, options, userId) => {
+   const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
+
+   // Only proceed if logging is enabled and the update is by a player (not GM)
+   if (isLoggingEnabled && game.user.isGM) {
+      const user = game.users.get(userId);
+
+      // Ensure we are logging player actions (not GM's own changes)
+      if (!user.isGM && actor instanceof CharacterActor) {
+         // Get the old actor data before changes
+         const oldActorData = oldData[actor.id];
+         // Log changes between the old and new data
+         actor.logActorChanges(updateData, oldActorData, user, "property");
+      }
+   }
+   // Clean up the oldData entry
+   try {
+      delete oldData[actor.id];
+   }
+   catch (err) { }
+});
+
+// Hook into item creation (added to the actor)
+Hooks.on("createItem", (item, options, userId) => {
+   const actor = item.parent; // The actor the item belongs to
+
+   // Check if the logging feature is enabled and the user is not a GM
+   const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
+   if (isLoggingEnabled /*&& !game.users.get(userId).isGM*/) {
+      const user = game.users.get(userId);
+
+      actor.logActorChanges(item, null, user, "addItem");
+   }
+});
+
+// Hook into item updates (e.g., changes to an existing item)
+Hooks.on("updateItem", (item, updateData, options, userId) => {
+   const actor = item.parent; // The actor the item belongs to
+
+   // Check if the logging feature is enabled and the user is not a GM
+   const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
+   if (isLoggingEnabled /*&& !game.users.get(userId).isGM*/) {
+      const user = game.users.get(userId);
+
+      // Log the item update and notify the GM
+      console.log(`Item updated: ${item.name} by ${game.users.get(userId).name}`);
+
+      actor.logActorChanges(item, null, user, "updateItem");
+   }
+});
+
+// Hook into item deletion (removed from the actor)
+Hooks.on("deleteItem", (item, options, userId) => {
+   const actor = item.parent; // The actor the item belongs to
+
+   // Check if the logging feature is enabled and the user is not a GM
+   const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
+   if (isLoggingEnabled /*&& !game.users.get(userId).isGM*/) {
+      const user = game.users.get(userId);
+      // Log the item removal and notify the GM
+      console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
+
+      actor.logActorChanges(item, null, user, "deleteItem");
+   }
+});

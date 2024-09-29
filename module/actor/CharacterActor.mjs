@@ -1,4 +1,4 @@
-// actor-character.mjs
+﻿// actor-character.mjs
 import { fadeActor } from './fadeActor.mjs';
 import Formatter from '../utils/Formatter.mjs';
 
@@ -29,12 +29,12 @@ export class CharacterActor extends fadeActor {
       this._prepareWrestling();
    }
 
- /**
- * @override
- * Prepare all embedded Document instances which exist within this primary Document.
- * @memberof ClientDocumentMixin#
- * active effects are applied
- */
+   /**
+   * @override
+   * Prepare all embedded Document instances which exist within this primary Document.
+   * @memberof ClientDocumentMixin#
+   * active effects are applied
+   */
    prepareEmbeddedDocuments() {
       super.prepareEmbeddedDocuments();
    }
@@ -43,6 +43,74 @@ export class CharacterActor extends fadeActor {
    getRollData() {
       const data = super.getRollData();
       return data;
+   }
+
+   /**
+    * get changes and send to GM
+    * @param {any} updateData
+    * @param {any} oldData - The old state of the actor before the update
+    * @param {any} user
+    * @param {any} parentKey
+    * @returns
+    */
+   logActorChanges(updateData, oldData, user, type, parentKey = '') {
+      let changes = [];
+      const ignore = ["_stats", "_id", "flags"];
+
+      if (type === "property") {
+         for (let key in updateData) {
+            const fullKey = parentKey ? `${parentKey}.${key}` : key;
+
+            if (ignore.includes(fullKey) === false) {
+               const oldValue = foundry.utils.getProperty(oldData, fullKey);
+               const newValue = foundry.utils.getProperty(updateData, key);
+               if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
+                  // Recursively log changes for nested objects
+                  this.logActorChanges(newValue, oldData, user, fullKey);
+               } else if (oldValue) {
+                  changes.push({
+                     field: fullKey,
+                     oldValue: oldValue,
+                     newValue: newValue,
+                  });
+               }
+            }
+         }
+      } else {
+         changes.push(updateData);
+      }
+
+      if (changes.length > 0) {
+         this._sendChangeMessageToGM(changes, user, type);
+      }
+
+      return changes;  // This allows recursion to accumulate changes
+   }
+
+
+   // Helper function to send a change message to the GM
+   _sendChangeMessageToGM(changes, user, type) {
+      let changeDescs = null;
+      if (type === "property") {
+         changeDescs = changes.map(change => {
+            return `${change.field}: <strong>${change.oldValue}</strong> ➔ <strong>${change.newValue}</strong>`;
+         }).join("<br>");
+      } else if (type === "addItem") {
+         const item = changes[0];
+         changeDescs = `Added ${item.type}: ${item.name}`;
+      } else if (type === "deleteItem") {
+         const item = changes[0];
+         changeDescs = `Removed ${item.type}: ${item.name}`;
+      }
+
+      if (changeDescs) {
+         // Create a chat message only visible to the GM
+         ChatMessage.create({
+            user: user.id,
+            content: `<p>Player ${user.name} updated ${this.name}:</p><p>${changeDescs}</p>`,
+            whisper: ChatMessage.getWhisperRecipients("GM") // Whisper to all active GMs
+         });
+      }
    }
 
    /** @override */
@@ -161,7 +229,7 @@ export class CharacterActor extends fadeActor {
          systemData.details.species = classData.species;
 
          // Saving throws
-         super.prepareSavingThrows(classNameInput, currentLevel);         
+         super.prepareSavingThrows(classNameInput, currentLevel);
       }
 
       return classData; // Return null if no match found
