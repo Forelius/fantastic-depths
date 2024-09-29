@@ -98,6 +98,7 @@ export class fadeActorSheet extends ActorSheet {
       );
 
       context.isGM = game.user.isGM;
+      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
 
       return context;
    }

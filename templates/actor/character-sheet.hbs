@@ -8,7 +8,7 @@
    <nav class="sheet-tabs tabs" data-group="primary">
       {{!-- Default tab is specified in fadeActorSheet.mjs --}}
       <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
-      {{#if actor.hasPerm(game.user, "OWNER")}}
+      {{#if isOwner}}
       <a class="item" data-tab="items">{{localize 'FADE.Actor.Tabs.Items'}}</a>
       <a class="item" data-tab="skills">{{localize 'FADE.Actor.Tabs.Skills'}}</a>
       <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
@@ -26,7 +26,7 @@
       <div class="tab abilities" data-group="primary" data-tab="abilities">
          {{> "systems/fantastic-depths/templates/actor/parts/character-abilities.hbs"}}
       </div>
-      {{#if actor.hasPerm(game.user, "OWNER")}}
+      {{#if isOwner}}
       {{!-- Owned Items Tab --}}
       <div class="tab items" data-group="primary" data-tab="items">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
