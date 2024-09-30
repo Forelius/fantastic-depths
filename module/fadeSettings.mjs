@@ -124,16 +124,15 @@ export class fadeSettings {
          default: false,
          restricted: true // Only the GM can change this setting
       });
-
-      // Register party rest frequency
-      //game.settings.register(game.system.id, "autoNumber", {
-      //   name: "SETTINGS.autoNumber.name",
-      //   hint: "SETTINGS.autoNumber.hint",
-      //   scope: "world",
-      //   config: true,
-      //   default: false,  // Default is 0, no rest
-      //   type: Boolean
-      //});
+      
+      game.settings.register(game.system.id, "autoNumber", {
+         name: "SETTINGS.autoNumber.name",
+         hint: "SETTINGS.autoNumber.hint",
+         scope: "world",
+         config: true,
+         default: false, 
+         type: Boolean
+      });
    }
 
    // This function applies the selected theme by adding/removing relevant classes

@@ -89,7 +89,7 @@ FADE.Classes = {
          { level: 24, death: 4, wand: 5, paralysis: 5, breath: 6, spell: 5 },
          { level: 28, death: 3, wand: 4, paralysis: 4, breath: 4, spell: 4 },
          { level: 32, death: 2, wand: 3, paralysis: 3, breath: 3, spell: 3 },
-         { level: 36, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 },
+         { level: 99, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 },
       ],
       spells: [
          // 1 - 6
@@ -160,7 +160,7 @@ FADE.Classes = {
          { level: 27, death: 4, wand: 4, paralysis: 5, breath: 4, spell: 5 },
          { level: 30, death: 3, wand: 4, paralysis: 4, breath: 3, spell: 4 },
          { level: 33, death: 3, wand: 3, paralysis: 3, breath: 2, spell: 3 },
-         { level: 36, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
+         { level: 99, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
       ]
    },
    magic_user: {
@@ -190,13 +190,28 @@ FADE.Classes = {
          { level: 22, xp: 2250000, thac0: 11, hd: "9d4+13" },
          { level: 23, xp: 2400000, thac0: 11, hd: "9d4+14" },
          { level: 24, xp: 2550000, thac0: 11, hd: "9d4+15" },
+         { level: 25, xp: 2700000, thac0: 9, hd: "9d4+16" },
+         { level: 26, xp: 2850000, thac0: 9, hd: "9d4+17" },
+         { level: 27, xp: 3000000, thac0: 9, hd: "9d4+18" },
+         { level: 28, xp: 3150000, thac0: 9, hd: "9d4+19" },
+         { level: 29, xp: 3300000, thac0: 7, hd: "9d4+20" },
+         { level: 30, xp: 3450000, thac0: 7, hd: "9d4+21" },
+         { level: 31, xp: 3600000, thac0: 7, hd: "9d4+22" },
+         { level: 32, xp: 3750000, thac0: 7, hd: "9d4+23" },
+         { level: 33, xp: 3900000, thac0: 5, hd: "9d4+24" },
+         { level: 34, xp: 4050000, thac0: 5, hd: "9d4+25" },
+         { level: 35, xp: 4200000, thac0: 5, hd: "9d4+26" },
+         { level: 36, xp: 4350000, thac0: 5, hd: "9d4+27" }
       ],
       saves: [
          { level: 5, death: 13, wand: 14, paralysis: 13, breath: 16, spell: 15 },
          { level: 10, death: 11, wand: 12, paralysis: 11, breath: 14, spell: 12 },
-         { level: 15, death: 9, wand: 8, paralysis: 9, breath: 12, spell: 19 },
-         { level: 20, death: 7, wand: 6, paralysis: 7, breath: 10, spell: 6 },
-         { level: 24, death: 5, wand: 4, paralysis: 5, breath: 8, spell: 4 },
+         { level: 15, death: 9, wand: 10, paralysis: 9, breath: 12, spell: 9 },  
+         { level: 20, death: 7, wand: 8, paralysis: 7, breath: 10, spell: 6 },   
+         { level: 24, death: 5, wand: 6, paralysis: 5, breath: 8, spell: 4 },    
+         { level: 28, death: 4, wand: 4, paralysis: 4, breath: 6, spell: 3 },
+         { level: 32, death: 3, wand: 3, paralysis: 3, breath: 4, spell: 2 },
+         { level: 99, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
       ],
       spells: [
          // 1 - 5
@@ -207,8 +222,25 @@ FADE.Classes = {
          [4, 3, 3, 3, 2, 0, 0, 0, 0], [4, 4, 4, 3, 2, 1, 0, 0, 0], [4, 4, 4, 3, 2, 2, 0, 0, 0], [4, 4, 4, 4, 3, 2, 0, 0, 0], [5, 4, 4, 4, 3, 2, 1, 0, 0],
          // 16 - 20
          [5, 5, 5, 4, 3, 2, 2, 0, 0], [6, 5, 5, 4, 4, 3, 2, 0, 0], [6, 5, 5, 4, 4, 3, 2, 1, 0], [6, 5, 5, 5, 4, 3, 2, 2, 0], [6, 5, 5, 5, 4, 4, 3, 2, 0],
-         // 21 - 24
-         [6, 5, 5, 5, 4, 4, 3, 2, 1], [6, 6, 5, 5, 5, 4, 3, 2, 2], [6, 6, 6, 6, 5, 4, 3, 3, 2], [7, 7, 6, 6, 5, 5, 4, 3, 2],
+         // 21 - 25
+         [6, 5, 5, 5, 4, 4, 3, 2, 1],
+         [6, 6, 5, 5, 5, 4, 3, 2, 2],
+         [6, 6, 6, 6, 5, 4, 3, 3, 2],
+         [7, 7, 6, 6, 5, 5, 4, 3, 2],
+         [7, 7, 6, 6, 5, 5, 4, 4, 3],
+         // 26 - 30
+         [7, 7, 7, 6, 6, 5, 5, 4, 3],
+         [7, 7, 7, 6, 6, 5, 5, 5, 4],
+         [8, 8, 7, 6, 6, 6, 6, 5, 4],
+         [8, 8, 7, 7, 7, 6, 6, 5, 5],
+         [8, 8, 8, 7, 7, 7, 6, 6, 5],
+         // 31 - 36
+         [8, 8, 8, 7, 7, 7, 7, 6, 6],
+         [9, 8, 8, 8, 8, 7, 7, 7, 6],
+         [9, 9, 9, 8, 8, 8, 7, 7, 7],
+         [9, 9, 9, 9, 8, 8, 8, 8, 7],
+         [9, 9, 9, 9, 9, 9, 8, 8, 8],
+         [9, 9, 9, 9, 9, 9, 9, 9, 9]
       ]
    },
    thief: {
@@ -238,6 +270,18 @@ FADE.Classes = {
          { level: 22, xp: 1720000, thac0: 9, hd: "9d4+26" },
          { level: 23, xp: 1840000, thac0: 9, hd: "9d4+28" },
          { level: 24, xp: 1960000, thac0: 9, hd: "9d4+30" },
+         { level: 25, xp: 2080000, thac0: 7, hd: "9d4+32" },
+         { level: 26, xp: 2200000, thac0: 7, hd: "9d4+34" },
+         { level: 27, xp: 2320000, thac0: 7, hd: "9d4+36" },
+         { level: 28, xp: 2440000, thac0: 7, hd: "9d4+38" },
+         { level: 29, xp: 2560000, thac0: 5, hd: "9d4+40" },
+         { level: 30, xp: 2680000, thac0: 5, hd: "9d4+42" },
+         { level: 31, xp: 2800000, thac0: 5, hd: "9d4+44" },
+         { level: 32, xp: 2920000, thac0: 5, hd: "9d4+46" },
+         { level: 33, xp: 3040000, thac0: 3, hd: "9d4+48" },
+         { level: 34, xp: 3160000, thac0: 3, hd: "9d4+50" },
+         { level: 35, xp: 3280000, thac0: 3, hd: "9d4+52" },
+         { level: 36, xp: 3400000, thac0: 2, hd: "9d4+54" }
       ],
       saves: [
          { level: 4, death: 13, wand: 14, paralysis: 13, breath: 16, spell: 15 },
@@ -246,6 +290,9 @@ FADE.Classes = {
          { level: 16, death: 7, wand: 8, paralysis: 7, breath: 10, spell: 9 },
          { level: 20, death: 5, wand: 6, paralysis: 5, breath: 8, spell: 7 },
          { level: 24, death: 4, wand: 5, paralysis: 4, breath: 6, spell: 5 },
+         { level: 28, death: 3, wand: 4, paralysis: 3, breath: 4, spell: 4 },
+         { level: 32, death: 2, wand: 3, paralysis: 2, breath: 3, spell: 3 },
+         { level: 99, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
       ]
    },
    dwarf: {
@@ -278,7 +325,7 @@ FADE.Classes = {
          { level: 3, death: 8, wand: 9, paralysis: 10, breath: 13, spell: 12 },
          { level: 6, death: 6, wand: 7, paralysis: 8, breath: 10, spell: 9 },
          { level: 9, death: 4, wand: 5, paralysis: 6, breath: 7, spell: 6 },
-         { level: 12, death: 2, wand: 3, paralysis: 4, breath: 4, spell: 3 },
+         { level: 99, death: 2, wand: 3, paralysis: 4, breath: 4, spell: 3 },
       ],
    },
    elf: {
@@ -311,14 +358,194 @@ FADE.Classes = {
       saves: [
          { level: 3, death: 12, wand: 13, paralysis: 13, breath: 15, spell: 15 },
          { level: 6, death: 8, wand: 10, paralysis: 10, breath: 11, spell: 11 },
-         { level: 9, death: 4, wand: 5, paralysis: 6, breath: 7, spell: 6 },
-         { level: 12, death: 2, wand: 3, paralysis: 4, breath: 4, spell: 3 }
+         { level: 9, death: 4, wand: 7, paralysis: 7, breath: 7, spell: 7 },
+         { level: 99, death: 2, wand: 4, paralysis: 4, breath: 3, spell: 3 }
       ],
       spells: [
          // 1 - 5
          [1, 0, 0, 0, 0], [2, 0, 0, 0, 0], [2, 1, 0, 0, 0], [2, 2, 0, 0, 0], [2, 2, 1, 0, 0],
          // 6 - 10
          [3, 2, 2, 0, 0], [3, 3, 2, 1, 0], [4, 3, 2, 2, 0], [4, 4, 3, 2, 0], [5, 4, 3, 3, 1],
+      ]
+   },
+   halfling: {
+      name: "Halfling",
+      species: "Halfling",
+      primeReqs: [
+         { ability: "str", xpBonus5: 13, xpBonus10: 16 },
+         { ability: "dex", xpBonus5: 13, xpBonus10: 16 }
+      ],
+      minDex: 9,
+      minCon: 9,
+      maxLevel: 8,
+      levels: [
+         { level: 1, xp: 0, thac0: 19, hd: "1d6", hdcon: true, title: "Halfling Veteran" },
+         { level: 2, xp: 2000, thac0: 19, hd: "2d6", hdcon: true, title: "Halfling Warrior" },
+         { level: 3, xp: 4000, thac0: 19, hd: "3d6", hdcon: true, title: "Halfling Swordmaster" },
+         { level: 4, xp: 8000, thac0: 17, hd: "4d6", hdcon: true, title: "Halfling Hero" },
+         { level: 5, xp: 16000, thac0: 17, hd: "5d6", hdcon: true, title: "Halfling Swashbuckler" },
+         { level: 6, xp: 32000, thac0: 17, hd: "6d6", hdcon: true, title: "Halfling Myrmidon" },
+         { level: 7, xp: 64000, thac0: 15, hd: "7d6", hdcon: true, title: "Halfling Champion" },
+         { level: 8, xp: 120000, thac0: 15, hd: "8d6", hdcon: true, title: "Sheriff", attackRank: "A" },
+         { level: 9, xp: 300000, thac0: 15, hd: "8d6", attackRank: "B" },
+         { level: 10, xp: 600000, thac0: 13, hd: "8d6", attackRank: "C" },
+         { level: 11, xp: 900000, thac0: 13, hd: "8d6", attackRank: "D" },
+         { level: 12, xp: 1200000, thac0: 13, hd: "8d6", attackRank: "E" },
+         { level: 13, xp: 1500000, thac0: 11, hd: "8d6", attackRank: "F" },
+         { level: 14, xp: 1800000, thac0: 11, hd: "8d6", attackRank: "G" },
+         { level: 15, xp: 2100000, thac0: 9, hd: "8d6", attackRank: "H" },
+         { level: 16, xp: 2400000, thac0: 9, hd: "8d6", attackRank: "I" },
+         { level: 17, xp: 2700000, thac0: 7, hd: "8d6", attackRank: "J" },
+         { level: 18, xp: 3000000, thac0: 7, hd: "8d6", attackRank: "K" }
+      ],
+      saves: [
+         { level: 3, death: 8, wand: 9, paralysis: 10, breath: 13, spell: 12 },
+         { level: 6, death: 5, wand: 6, paralysis: 7, breath: 9, spell: 8 },
+         { level: 8, death: 2, wand: 3, paralysis: 4, breath: 5, spell: 4 }
+      ]
+   },
+   mystic: {
+      name: "Mystic",
+      species: "Human",
+      primeReqs: [
+         { ability: "str", xpBonus5: 13, xpBonus10: 16 },
+         { ability: "dex", xpBonus5: 13 }
+      ],
+      minDex: 13,
+      minWis: 13,
+      maxLevel: 16,
+      levels: [
+         { level: 1, xp: 0, thac0: 19, hd: "1d6", hdcon: true, title: "Initiate" },
+         { level: 2, xp: 2000, thac0: 19, hd: "2d6", hdcon: true, title: "Brother/Sister" },
+         { level: 3, xp: 4000, thac0: 19, hd: "3d6", hdcon: true, title: "Disciple" },
+         { level: 4, xp: 8000, thac0: 17, hd: "4d6", hdcon: true, title: "Immaculate" },
+         { level: 5, xp: 16000, thac0: 17, hd: "5d6", hdcon: true, title: "Enlightened" },
+         { level: 6, xp: 32000, thac0: 17, hd: "6d6", hdcon: true, title: "Master" },
+         { level: 7, xp: 64000, thac0: 15, hd: "7d6", hdcon: true, title: "Exalted Master" },
+         { level: 8, xp: 120000, thac0: 15, hd: "8d6", hdcon: true, title: "Illuminated Master" },
+         { level: 9, xp: 240000, thac0: 13, hd: "9d6", hdcon: true, title: "Great Master" },
+         { level: 10, xp: 360000, thac0: 13, hd: "9d6+2" },
+         { level: 11, xp: 480000, thac0: 11, hd: "9d6+4" },
+         { level: 12, xp: 600000, thac0: 11, hd: "9d6+6" },
+         { level: 13, xp: 720000, thac0: 9, hd: "9d6+8" },
+         { level: 14, xp: 840000, thac0: 9, hd: "9d6+10" },
+         { level: 15, xp: 960000, thac0: 7, hd: "9d6+12" },
+         { level: 16, xp: 1080000, thac0: 7, hd: "9d6+14" }
+      ],
+      saves: [
+         { level: 3, death: 12, wand: 13, paralysis: 14, breath: 15, spell: 16 },
+         { level: 6, death: 10, wand: 11, paralysis: 12, breath: 13, spell: 14 },
+         { level: 9, death: 8, wand: 9, paralysis: 10, breath: 11, spell: 12 },
+         { level: 12, death: 6, wand: 7, paralysis: 8, breath: 9, spell: 10 },
+         { level: 15, death: 6, wand: 6, paralysis: 7, breath: 8, spell: 9 },
+         { level: 16, death: 5, wand: 6, paralysis: 6, breath: 7, spell: 8 }
+      ],
+      specialAbilities: {
+         acBonuses: [
+            { level: 1, ac: 9, mv: "120'", attacks: 1, damage: "1d4" },
+            { level: 2, ac: 8, mv: "130'", attacks: 1, damage: "1d4+1", ability: "Awareness" },
+            { level: 3, ac: 7, mv: "140'", attacks: 1, damage: "1d6" },
+            { level: 4, ac: 6, mv: "150'", attacks: 1, damage: "1d6+1", ability: "Heal Self" },
+            { level: 5, ac: 5, mv: "160'", attacks: 2, damage: "1d8" },
+            { level: 6, ac: 4, mv: "170'", attacks: 2, damage: "1d8+1", ability: "Speak with Animals" },
+            { level: 7, ac: 3, mv: "180'", attacks: 2, damage: "1d10" },
+            { level: 8, ac: 2, mv: "190'", attacks: 2, damage: "1d12", ability: "Resistance" },
+            { level: 9, ac: 1, mv: "200'", attacks: 3, damage: "2d8" },
+            { level: 10, ac: 0, mv: "210'", attacks: 3, damage: "2d10", ability: "Speak with Anyone" },
+            { level: 11, ac: -1, mv: "220'", attacks: 3, damage: "2d12" },
+            { level: 12, ac: -2, mv: "240'", attacks: 3, damage: "3d8+1", ability: "Mind Block" },
+            { level: 13, ac: -3, mv: "260'", attacks: 4, damage: "4d6+2" },
+            { level: 14, ac: -4, mv: "280'", attacks: 4, damage: "5d6", ability: "Blankout" },
+            { level: 15, ac: -5, mv: "300'", attacks: 4, damage: "4d8" },
+            { level: 16, ac: -6, mv: "320'", attacks: 4, damage: "3d12", ability: "Gentle Touch" }
+         ],
+         unarmedAttackEquivalents: [
+            { level: 2, equivalent: "Silver Weapon" },
+            { level: 5, equivalent: "+1 Weapon" },
+            { level: 8, equivalent: "+2 Weapon" },
+            { level: 11, equivalent: "+3 Weapon" },
+            { level: 14, equivalent: "+4 Weapon" },
+            { level: 16, equivalent: "+5 Weapon" }
+         ],
+         mysticAbilities: [
+            { level: 2, ability: "Awareness" },
+            { level: 4, ability: "Heal Self" },
+            { level: 6, ability: "Speak with Animals" },
+            { level: 8, ability: "Resistance" },
+            { level: 10, ability: "Speak with Anyone" },
+            { level: 12, ability: "Mind Block" },
+            { level: 14, ability: "Blankout" },
+            { level: 16, ability: "Gentle Touch" }
+         ],
+         thiefAbilities: ["Find Traps", "Remove Traps", "Move Silently", "Climb Walls", "Hide in Shadows"],
+         acrobatics: {
+            xpPenalty: "-20% XP",
+            abilities: ["Jumps/Leaps", "Tumbles/Flips", "Catches", "Swings", "Balancing"],
+            checkFormula: "(3 * Dex) + (2 * Level)"
+         }
+      },
+      restrictions: {
+         noArmor: true,
+         noMagicDevices: true,
+         cloisterOwnership: true
+      }
+   },
+   druid: {
+      name: "Druid", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], alignment: "Neutral", maxLevel: 36,
+      levels: [
+         { level: 9, xp: 200000, thac0: 12, hd: "9d8", hdcon: true, title: "Druid" },
+         { level: 10, xp: 300000, thac0: 12, hd: "9d8+1" },
+         { level: 11, xp: 400000, thac0: 11, hd: "9d8+2" },
+         { level: 12, xp: 500000, thac0: 11, hd: "9d8+3" },
+         { level: 13, xp: 600000, thac0: 11, hd: "9d8+4" },
+         { level: 14, xp: 700000, thac0: 10, hd: "9d8+5" },
+         { level: 15, xp: 800000, thac0: 10, hd: "9d8+6" },
+         { level: 16, xp: 900000, thac0: 10, hd: "9d8+7" },
+         { level: 17, xp: 1000000, thac0: 9, hd: "9d8+8" },
+         { level: 18, xp: 1100000, thac0: 9, hd: "9d8+9" },
+         { level: 19, xp: 1200000, thac0: 9, hd: "9d8+10" },
+         { level: 20, xp: 1300000, thac0: 8, hd: "9d8+11" },
+         { level: 21, xp: 1400000, thac0: 8, hd: "9d8+12" },
+         { level: 22, xp: 1500000, thac0: 8, hd: "9d8+13" },
+         { level: 23, xp: 1600000, thac0: 7, hd: "9d8+14" },
+         { level: 24, xp: 1700000, thac0: 7, hd: "9d8+15" },
+         { level: 25, xp: 1800000, thac0: 7, hd: "9d8+16" },
+         { level: 26, xp: 1900000, thac0: 6, hd: "9d8+17" },
+         { level: 27, xp: 2000000, thac0: 6, hd: "9d8+18" },
+         { level: 28, xp: 2100000, thac0: 6, hd: "9d8+19" },
+         { level: 29, xp: 2200000, thac0: 5, hd: "9d8+20" },
+         { level: 30, xp: 2300000, thac0: 5, hd: "9d8+21" },
+         { level: 31, xp: 2400000, thac0: 5, hd: "9d8+22" },
+         { level: 32, xp: 2500000, thac0: 5, hd: "9d8+23" },
+         { level: 33, xp: 2600000, thac0: 4, hd: "9d8+24" },
+         { level: 34, xp: 2700000, thac0: 4, hd: "9d8+25" },
+         { level: 35, xp: 2800000, thac0: 4, hd: "9d8+26" },
+         { level: 36, xp: 2900000, thac0: 3, hd: "9d8+27" }
+      ],
+      saves: [
+         { level: 12, death: 7, wand: 8, paralysis: 10, breath: 12, spell: 11 },
+         { level: 16, death: 6, wand: 7, paralysis: 8, breath: 10, spell: 9 },
+         { level: 20, death: 5, wand: 6, paralysis: 6, breath: 8, spell: 7 },
+         { level: 24, death: 4, wand: 5, paralysis: 5, breath: 6, spell: 5 },
+         { level: 28, death: 3, wand: 4, paralysis: 4, breath: 4, spell: 4 },
+         { level: 32, death: 2, wand: 3, paralysis: 3, breath: 3, spell: 3 },
+         { level: 36, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
+      ],
+      spells: [
+         // Spells for levels 9-12
+         [3, 3, 3, 2, 0, 0, 0], [4, 4, 3, 2, 1, 0, 0], [4, 4, 3, 3, 2, 0, 0], [4, 4, 4, 3, 2, 1, 0],
+         // Spells for levels 13-16
+         [5, 5, 4, 3, 2, 2, 0], [5, 5, 5, 3, 3, 2, 0], [6, 5, 5, 3, 3, 3, 0], [6, 5, 5, 4, 4, 3, 0],
+         // Spells for levels 17-20
+         [6, 6, 5, 4, 4, 3, 1], [6, 6, 5, 4, 4, 3, 2], [7, 6, 5, 4, 4, 4, 2], [7, 6, 5, 4, 4, 4, 3],
+         // Spells for levels 21-24
+         [7, 6, 5, 5, 5, 4, 3], [7, 6, 5, 5, 5, 4, 4], [7, 7, 6, 6, 5, 4, 4], [8, 7, 6, 6, 5, 5, 4],
+         // Spells for levels 25-28
+         [8, 7, 6, 6, 5, 5, 5], [8, 7, 7, 6, 6, 5, 5], [8, 8, 7, 6, 6, 6, 5], [8, 8, 7, 7, 7, 6, 5],
+         // Spells for levels 29-32
+         [8, 8, 7, 7, 7, 6, 6], [8, 8, 8, 7, 7, 7, 6], [8, 8, 8, 8, 8, 7, 6], [9, 8, 8, 8, 8, 7, 7],
+         // Spells for levels 33-36
+         [9, 9, 8, 8, 8, 8, 7], [9, 9, 9, 8, 8, 8, 8], [9, 9, 9, 9, 9, 8, 8], [9, 9, 9, 9, 9, 9, 9]
       ]
    }
 };
