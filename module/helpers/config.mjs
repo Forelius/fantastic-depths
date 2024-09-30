@@ -67,6 +67,18 @@ FADE.Classes = {
          { level: 22, xp: 1500000, thac0: 9, hd: "9d6+13" },
          { level: 23, xp: 1600000, thac0: 9, hd: "9d6+14" },
          { level: 24, xp: 1700000, thac0: 9, hd: "9d6+15" },
+         { level: 25, xp: 1800000, thac0: 7, hd: "9d6+16" },
+         { level: 26, xp: 1900000, thac0: 7, hd: "9d6+17" },
+         { level: 27, xp: 2000000, thac0: 7, hd: "9d6+18" },
+         { level: 28, xp: 2100000, thac0: 7, hd: "9d6+19" },
+         { level: 29, xp: 2200000, thac0: 5, hd: "9d6+20" },
+         { level: 30, xp: 2300000, thac0: 5, hd: "9d6+21" },
+         { level: 31, xp: 2400000, thac0: 5, hd: "9d6+22" },
+         { level: 32, xp: 2500000, thac0: 5, hd: "9d6+23" },
+         { level: 33, xp: 2600000, thac0: 3, hd: "9d6+24" },
+         { level: 34, xp: 2700000, thac0: 3, hd: "9d6+25" },
+         { level: 35, xp: 2800000, thac0: 3, hd: "9d6+26" },
+         { level: 36, xp: 2900000, thac0: 2, hd: "9d6+27" },
       ],
       saves: [
          { level: 4, death: 11, wand: 12, paralysis: 14, breath: 16, spell: 15 },
@@ -75,6 +87,9 @@ FADE.Classes = {
          { level: 16, death: 6, wand: 7, paralysis: 8, breath: 10, spell: 9 },
          { level: 20, death: 5, wand: 6, paralysis: 6, breath: 8, spell: 7 },
          { level: 24, death: 4, wand: 5, paralysis: 5, breath: 6, spell: 5 },
+         { level: 28, death: 3, wand: 4, paralysis: 4, breath: 4, spell: 4 },
+         { level: 32, death: 2, wand: 3, paralysis: 3, breath: 3, spell: 3 },
+         { level: 36, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 },
       ],
       spells: [
          // 1 - 6
@@ -85,6 +100,10 @@ FADE.Classes = {
          [5, 5, 4, 3, 2, 2, 0], [5, 5, 5, 3, 3, 2, 0], [6, 5, 5, 3, 3, 3, 0], [6, 5, 5, 4, 4, 3, 0], [6, 6, 5, 4, 4, 3, 1], [6, 6, 5, 4, 4, 3, 2],
          // 19 - 24
          [7, 6, 5, 4, 4, 4, 2], [7, 6, 5, 4, 4, 4, 3], [7, 6, 5, 5, 5, 4, 3], [7, 6, 5, 5, 5, 4, 4], [7, 7, 6, 6, 5, 4, 4], [8, 7, 6, 6, 5, 5, 4],
+         // 25 - 30
+         [8, 7, 6, 6, 5, 5, 5], [8, 7, 7, 6, 6, 5, 5], [8, 8, 7, 6, 6, 6, 5], [8, 8, 7, 7, 7, 6, 5], [8, 8, 7, 7, 7, 6, 6], [8, 8, 8, 7, 7, 7, 6],
+         // 31 - 36
+         [8, 8, 8, 8, 8, 7, 6], [9, 8, 8, 8, 8, 7, 7], [9, 9, 8, 8, 8, 8, 7], [9, 9, 9, 8, 8, 8, 8], [9, 9, 9, 9, 9, 8, 8], [9, 9, 9, 9, 9, 9, 9]
       ]
    },
    fighter: {
@@ -115,6 +134,18 @@ FADE.Classes = {
          { level: 22, xp: 1800000, thac0: 5, hd: "9d8+26" },
          { level: 23, xp: 1920000, thac0: 5, hd: "9d8+28" },
          { level: 24, xp: 2040000, thac0: 5, hd: "9d8+30" },
+         { level: 25, xp: 2160000, thac0: 3, hd: "9d8+32" },
+         { level: 26, xp: 2280000, thac0: 3, hd: "9d8+34" },
+         { level: 27, xp: 2400000, thac0: 3, hd: "9d8+36" },
+         { level: 28, xp: 2520000, thac0: 2, hd: "9d8+38" },
+         { level: 29, xp: 2640000, thac0: 2, hd: "9d8+40" },
+         { level: 30, xp: 2760000, thac0: 2, hd: "9d8+42" },
+         { level: 31, xp: 2880000, thac0: 2, hd: "9d8+44" },
+         { level: 32, xp: 3000000, thac0: 2, hd: "9d8+46" },
+         { level: 33, xp: 3120000, thac0: 2, hd: "9d8+48" },
+         { level: 34, xp: 3240000, thac0: 1, hd: "9d8+50" },
+         { level: 35, xp: 3360000, thac0: 1, hd: "9d8+52" },
+         { level: 36, xp: 3480000, thac0: 1, hd: "9d8+54" }
       ],
       saves: [
          { level: 0, death: 14, wand: 15, paralysis: 16, breath: 17, spell: 17 },
@@ -126,6 +157,10 @@ FADE.Classes = {
          { level: 18, death: 5, wand: 6, paralysis: 6, breath: 7, spell: 8 },
          { level: 21, death: 5, wand: 5, paralysis: 6, breath: 6, spell: 7 },
          { level: 24, death: 4, wand: 5, paralysis: 5, breath: 4, spell: 6 },
+         { level: 27, death: 4, wand: 4, paralysis: 5, breath: 4, spell: 5 },
+         { level: 30, death: 3, wand: 4, paralysis: 4, breath: 3, spell: 4 },
+         { level: 33, death: 3, wand: 3, paralysis: 3, breath: 2, spell: 3 },
+         { level: 36, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
       ]
    },
    magic_user: {

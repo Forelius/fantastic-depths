@@ -176,7 +176,7 @@ Hooks.on("createItem", (item, options, userId) => {
    const user = game.users.get(userId);
    // Check if the logging feature is enabled and the user is not a GM
    const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-   if (isLoggingEnabled && game.user.isGM) {
+   if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
       actor.logActorChanges(item, null, user, "addItem");
    }
 });
@@ -187,11 +187,9 @@ Hooks.on("updateItem", (item, updateData, options, userId) => {
    const user = game.users.get(userId);
    // Check if the logging feature is enabled and the user is not a GM
    const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-   if (isLoggingEnabled && game.user.isGM) {
+   if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
       // Log the item update and notify the GM
-      console.log(`Item updated: ${item.name} by ${game.users.get(userId).name}`);
-
-      actor.logActorChanges(item, null, user, "updateItem");
+      console.log(`Item updated: ${item.name} by ${game.users.get(userId).name}`);     
    }
 });
 
@@ -201,7 +199,7 @@ Hooks.on("deleteItem", (item, options, userId) => {
    const user = game.users.get(userId);
    // Check if the logging feature is enabled and the user is not a GM
    const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-   if (isLoggingEnabled && game.user.isGM) {
+   if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
       
       // Log the item removal and notify the GM
       console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);

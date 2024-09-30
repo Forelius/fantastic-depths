@@ -112,7 +112,7 @@ export class fadeActor extends Actor {
    prepareSavingThrows(className, classLevel) {
       const systemData = this.system;
       // Replace hyphen with underscore for "Magic-User"
-      const classNameInput = className.toLowerCase();
+      const classNameInput = className.toLowerCase().replace('_', '-');
       const classes = CONFIG.FADE.Classes;
       // Find a match in the FADE.Classes data
       const classData = Object.values(classes).find(cdata => cdata.name.toLowerCase() === classNameInput);

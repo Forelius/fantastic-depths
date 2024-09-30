@@ -88,6 +88,7 @@ export class MonsterActor extends fadeActor {
          }
       }
    }
+
    _prepareHitPoints() {
       const systemData = this.system;
       let hd = systemData.hp.hd;
