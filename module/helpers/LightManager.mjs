@@ -1,3 +1,4 @@
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
 export class LightManager {
    static initialize() {
       Hooks.on('turnTrackerUpdate', (turnData) => {
@@ -5,63 +6,46 @@ export class LightManager {
       });
    }
 
-   static showLightDialog() {
+   static async showLightDialog() {
       if (!LightManager.hasSelectedTokens()) {
          ui.notifications.error("No token selected. Please select a token to set lighting.");
       } else {
-         let token = canvas.tokens.controlled[0];
+         const dataset = { dialog: 'lightmgr' };
+         const caller = game.user;
 
+         let token = canvas.tokens.controlled[0];
          let items = token.actor.items;
          // Filter items to get those with a "light" tag and map them to options
-         let options = "";
+         let lightItems = [];
          items.forEach(item => {
             if (item.system.tags?.includes("light")) {
-               options += `<option value="${item.id}">${item.name}</option>`;
+               lightItems.push(item);
             }
          });
 
-         // Check if there are any items with the "light" tag
-         if (!options) {
+         if (lightItems.length === 0) {
             ui.notifications.warn("No light source items found on this actor.");
          } else {
-            new Dialog({
-               title: "Light Manager",
-               content: `<p>Select a lighting option for the selected token:</p>
-<div style="margin-bottom: 10px;">
-   <label for="light-item">Select Light Source:</label>
-   <select id="light-item" name="light-item">
-      ${options}
-   </select>
-</div>`,
-               buttons: {
-                  ignite: {
-                     label: "Ignite",
-                     callback: (html) => {
-                        let selectedItemId = html.find('[name="light-item"]').val();
-                        if (selectedItemId) {
-                           // Get the item object from the items Map using the selected item ID
-                           let selectedItem = items.get(selectedItemId);
-                           if (selectedItem) {
-                              LightManager.updateTokenLight(token, selectedItem.system.light?.type, selectedItem);
-                           } else {
-                              ui.notifications.warn("Selected light source item not found.");
-                           }
-                        } else {
-                           ui.notifications.warn("No light source selected.");
-                        }
-                     }
-                  },
-                  extinguish: {
-                     label: "Extinguish",
-                     callback: () => LightManager.toggleLight(token, false)
-                  },
-                  close: {
-                     label: "Close"
+            // Render the dialog with the necessary data
+            const dialogResponse = await DialogFactory(dataset, caller, { lightItems });
+
+            // Early return if dialog was cancelled
+            if (!dialogResponse || !dialogResponse.resp) {
+               // Do nothing?
+            } else {
+               if (dialogResponse.resp.action === 'ignite') {
+                  let selectedItem = items.get(dialogResponse.resp.itemId);
+                  if (selectedItem) {
+                     LightManager.updateTokenLight(token, selectedItem.system.light?.type, selectedItem);
+                  } else {
+                     ui.notifications.warn("Selected light source item not found.");
                   }
-               },
-               default: "close",
-               close: () => console.log("Light Manager dialog closed.")
-            }).render(true);
+               } else if (dialogResponse.resp.action === 'extinguish') {
+                  LightManager.toggleLight(token, false);
+               } else {
+                  // Do nothing?
+               }
+            }
          }
       }
    }
@@ -79,10 +63,10 @@ export class LightManager {
 
          if (type !== "none") {
             if (!lightSource) {
-               ui.notifications.warn(`The character ${token.name} does not have a ${type}.`);
+               ui.notifications.warn(`The character ${token.name} does not have a ${type} light item.`);
                canUpdate = false;
             } else if (lightSource.system.quantity <= 0) {
-               ui.notifications.error(`${token.name} has no more ${type} to light.`);
+               ui.notifications.error(`${token.name} has no more ${lightSource.name} to light.`);
                canUpdate = false;
             } else {
                // Check for fuel source if applicable
@@ -92,7 +76,7 @@ export class LightManager {
                   : LightManager.getFuelItem(token.actor, lightSource);
 
                if (fuelSource == null || fuelSource.system.quantity <= 0) {
-                  ui.notifications.error(`${token.name} has no fuel for the ${type}.`);
+                  ui.notifications.error(`${token.name} has no fuel for the ${lightSource.name}.`);
                   canUpdate = false;
                } else {
                   LightManager.initializeLightUsage(lightSource);
@@ -106,7 +90,7 @@ export class LightManager {
                token.document.update({ light: lightSettings });
                token.document.setFlag('world', 'lightActive', type !== "none");
                token.document.setFlag('world', 'lightType', type);
-               ui.notifications.info(`${token.name} has ${type === "none" ? 'extinguished the light' : `lit a ${type}`}.`);
+               ui.notifications.info(`${token.name} has ${type === "none" ? 'extinguished the light' : `lit a ${lightSource.name}`}.`);
             }
          }
       }

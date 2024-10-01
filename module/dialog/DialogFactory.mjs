@@ -17,6 +17,8 @@ export const DialogFactory = (dataset=null, caller = null, opt = {}) => {
       result = fadeDialog.getAttackDialog(opt.weapon, caller);
    } else if (dataset.dialog === 'contentImport') {
       result = fadeDialog.getContentImportDialog(dataset, caller);
+   } else if (dataset.dialog === 'lightmgr') {
+      result = fadeDialog.getLightMgrDialog(dataset, caller, opt);
    }
    return result;
 };

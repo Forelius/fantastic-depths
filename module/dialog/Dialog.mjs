@@ -1,9 +1,9 @@
-function getDialogData() {
-   return {
-      rollModes: CONFIG.Dice.rollModes,
-      rollMode: game.settings.get('core', 'rollMode'),
-   };
-}
+//function getDialogData() {
+//   return {
+//      rollModes: CONFIG.Dice.rollModes,
+//      rollMode: game.settings.get('core', 'rollMode'),
+//   };
+//}
 
 function focusById(id) {
    return setTimeout(() => { document.getElementById(id).focus(); }, 50);
@@ -121,6 +121,43 @@ export class fadeDialog {
             }
          },
          default: 'import'
+      });
+      dialogResp.context = caller;
+      return dialogResp;
+   }
+
+   static async getLightMgrDialog(dataset, caller, opt) {
+      const dialogData = {};
+      const dialogResp = { caller };
+      // Check if there are any items with the "light" tag
+      const template = 'systems/fantastic-depths/templates/dialog/lightmgr.hbs';
+
+      dialogData.label = dataset.label;
+      dialogData.lightItems = opt.lightItems;
+
+      dialogResp.resp = await Dialog.wait({
+         title: "Light Manager",
+         content: await renderTemplate(template, dialogData),
+         buttons: {
+            ignite: {
+               label: "Ignite",
+               callback: (html) => ({
+                  action: "ignite",
+                  itemId: document.getElementById('lightItem').value,
+               })
+            },
+            extinguish: {
+               label: "Extinguish",
+               callback: () => ({
+                  action: "extinguish"
+               })
+            },
+            close: {
+               label: "Close"
+            }
+         },
+         default: "close",
+         close: () => console.log("Light Manager dialog closed.")
       });
       dialogResp.context = caller;
       return dialogResp;

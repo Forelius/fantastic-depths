@@ -1,4 +1,5 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
+
 export class ContentImporter {
 
    // Method to show the content importer dialog
@@ -10,27 +11,29 @@ export class ContentImporter {
       const dialogResponse = await DialogFactory(dataset, caller);
 
       // Early return if dialog was cancelled
-      if (!dialogResponse || !dialogResponse.resp) return;
-
-      const { type, importText, spellLevel, attribute } = dialogResponse.resp;
-      if (!type || !importText) {
-         ui.notifications.warn("No content type or data provided.");
-         return;
-      }
-
-      // Process the import based on type (simplified for clarity)
-      try {
-         if (type === 'spell') {
-            await this.importSpells(importText, spellLevel);
-         } else if (type === 'skill') {
-            await this.importSkill(importText, attribute);
-         } else {
-            await this[`import${type.charAt(0).toUpperCase() + type.slice(1)}`](importText);
+      if (!dialogResponse || !dialogResponse.resp) {
+         // Do nothing
+      } else {
+         const { type, importText, spellLevel, attribute } = dialogResponse.resp;
+         if (!type || !importText) {
+            ui.notifications.warn("No content type or data provided.");
+            return;
          }
-         ui.notifications.info(`Successfully imported ${type} content.`);
-      } catch (error) {
-         ui.notifications.error(`Failed to import ${type} content.`);
-         console.error(`Error importing ${type}:`, error);
+
+         // Process the import based on type (simplified for clarity)
+         try {
+            if (type === 'spell') {
+               await this.importSpells(importText, spellLevel);
+            } else if (type === 'skill') {
+               await this.importSkill(importText, attribute);
+            } else {
+               await this[`import${type.charAt(0).toUpperCase() + type.slice(1)}`](importText);
+            }
+            ui.notifications.info(`Successfully imported ${type} content.`);
+         } catch (error) {
+            ui.notifications.error(`Failed to import ${type} content.`);
+            console.error(`Error importing ${type}:`, error);
+         }
       }
    }
 
