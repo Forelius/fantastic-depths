@@ -401,7 +401,7 @@ FADE.Classes = {
       saves: [
          { level: 3, death: 8, wand: 9, paralysis: 10, breath: 13, spell: 12 },
          { level: 6, death: 5, wand: 6, paralysis: 7, breath: 9, spell: 8 },
-         { level: 8, death: 2, wand: 3, paralysis: 4, breath: 5, spell: 4 }
+         { level: 99, death: 2, wand: 3, paralysis: 4, breath: 5, spell: 4 }
       ]
    },
    mystic: {
@@ -438,7 +438,7 @@ FADE.Classes = {
          { level: 9, death: 8, wand: 9, paralysis: 10, breath: 11, spell: 12 },
          { level: 12, death: 6, wand: 7, paralysis: 8, breath: 9, spell: 10 },
          { level: 15, death: 6, wand: 6, paralysis: 7, breath: 8, spell: 9 },
-         { level: 16, death: 5, wand: 6, paralysis: 6, breath: 7, spell: 8 }
+         { level: 99, death: 5, wand: 6, paralysis: 6, breath: 7, spell: 8 }
       ],
       specialAbilities: {
          acBonuses: [
@@ -529,7 +529,7 @@ FADE.Classes = {
          { level: 24, death: 4, wand: 5, paralysis: 5, breath: 6, spell: 5 },
          { level: 28, death: 3, wand: 4, paralysis: 4, breath: 4, spell: 4 },
          { level: 32, death: 2, wand: 3, paralysis: 3, breath: 3, spell: 3 },
-         { level: 36, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
+         { level: 99, death: 2, wand: 2, paralysis: 2, breath: 2, spell: 2 }
       ],
       spells: [
          // Spells for levels 9-12

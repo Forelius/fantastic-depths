@@ -73,10 +73,10 @@
                   <label for="system.movement.run">{{localize 'FADE.Actor.Movement.run'}}</label>
                   <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" />
                </div>
-            </div>           
+            </div>
          </div>
          <div class="bordered text-center">
-             <!--Flight--> 
+            <!--Flight-->
             <h4>{{localize 'FADE.Actor.Flight.long'}}</h4>
             <div class="grid grid-4col label-12px">
                <div>
@@ -103,6 +103,12 @@
          {{> "systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/item-armor.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/item-gear.hbs"}}
+         {{> "systems/fantastic-depths/templates/item/parts/item-treasure.hbs"}}
+      </div>
+      <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
+         <span>
+            Total: {{system.encumbrance.value}} cn
+         </span>
       </div>
    </section>
 </section>

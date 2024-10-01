@@ -36,6 +36,7 @@ export class MonsterActor extends fadeActor {
       super.prepareDerivedData();
       this._prepareWrestling();
       this._prepareSavingThrows();
+      this._prepareEncumbrance();
    }
 
    /**
@@ -117,5 +118,26 @@ export class MonsterActor extends fadeActor {
 
       // Persist the updated values to the actor's document
       this.update({ 'system.hp.value': systemData.hp.value, 'system.hp.max': systemData.hp.max });
+   }
+
+   _prepareEncumbrance() {
+      const systemData = this.system;
+      systemData.encumbrance = systemData.encumbrance || {};
+      let enc = 0;
+      let max = CONFIG.FADE.Encumbrance.max;
+
+      enc = this.items.reduce((sum, item) => {
+         const itemWeight = item.system.weight || 0;
+         const itemQuantity = item.system.quantity || 1;
+         return sum + (itemWeight * itemQuantity);
+      }, 0);
+      systemData.encumbrance.value = enc;
+      systemData.encumbrance.max = max;
+
+      const encTier = CONFIG.FADE.Encumbrance.table.find(tier => enc <= tier.max)
+         || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
+
+      systemData.encumbrance.label = encTier.label;
+      systemData.encumbrance.mv = encTier.mv;
    }
 }
