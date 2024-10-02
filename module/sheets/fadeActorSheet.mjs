@@ -41,7 +41,7 @@ export class fadeActorSheet extends ActorSheet {
       await super.render(force, options);
 
       // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
-      setTimeout(() => { this._restoreCollapsedState(); }, 0);
+      setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
    }
 
    /** @override */
@@ -451,7 +451,7 @@ export class fadeActorSheet extends ActorSheet {
       }
 
       // If remember state is enabled, store the collapsed state
-      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+      const rememberCollapsedState = await game.settings.get(game.system.id, "rememberCollapsedState");
       if (rememberCollapsedState === true) {
          const sectionName = $parent.attr('name'); // Access the `name` attribute from the DOM element
          const actor = game.actors.get(this.actor.id);
@@ -468,8 +468,8 @@ export class fadeActorSheet extends ActorSheet {
       await this._toggleContent($parent);
    }
 
-   _restoreCollapsedState() {
-      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+   async _restoreCollapsedState() {
+      const rememberCollapsedState = await game.settings.get(game.system.id, "rememberCollapsedState");
 
       if (rememberCollapsedState === true) {
          const actor = game.actors.get(this.actor.id);

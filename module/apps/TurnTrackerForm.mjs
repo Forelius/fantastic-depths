@@ -41,7 +41,7 @@ export class TurnTrackerForm extends FormApplication {
       };
 
       context.turnData = this.turnData;
-      context.restFrequency = game.settings.get(game.system.id, "restFrequency");
+      context.restFrequency = await game.settings.get(game.system.id, "restFrequency");
       return context;
    }
 
@@ -65,7 +65,7 @@ export class TurnTrackerForm extends FormApplication {
 
 
          // Rest message
-         const restFrequency = game.settings.get(game.system.id, "restFrequency");
+         const restFrequency = await game.settings.get(game.system.id, "restFrequency");
          if (restFrequency > 0 && this.turnData.dungeon.rest > restFrequency - 1) {
             chatContent += "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>";
          }

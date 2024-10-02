@@ -118,13 +118,13 @@ export class LightManager {
             lightSettings = {
                dim: lightData.radius,
                bright: 6,
-               color: "#d0D730",
+               color: "#d0a740",
                attenuation: 0.7,
                luminosity: 0.5,
                animation: {
                   type: "torch",
                   speed: 2,
-                  intensity: 1
+                  intensity: 2
                }
             };
             break;

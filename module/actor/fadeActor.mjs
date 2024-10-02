@@ -63,9 +63,15 @@ export class fadeActor extends Actor {
 
    /** @override */
    prepareBaseData() {
-      this._prepareMovement();
       const systemData = this.system;
 
+      systemData.config = systemData.config || {
+         isSpellcaster: false,
+      };
+      systemData.encumbrance = systemData.encumbrance || {
+         max: CONFIG.FADE.Encumbrance.max
+      }
+      this._prepareMovement();
       systemData.details = systemData.details || {};
       systemData.ac = systemData.ac || {};
       systemData.hp = systemData.hp || {};
@@ -84,14 +90,18 @@ export class fadeActor extends Actor {
          systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
       });
 
-      this._prepareSpells();
+      if (systemData.config.isSpellcaster === true) {
+         this._prepareSpells();
+      }
    }
 
    /** @override */
-   prepareDerivedData() {
+   async prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareMods();
       this._prepareArmorClass();
+      await this._prepareEncumbrance();
+      await this._prepareDerivedMovement();
    }
 
    /**
@@ -139,16 +149,20 @@ export class fadeActor extends Actor {
 
    _prepareMovement() {
       const systemData = this.system;
-      systemData.movement = systemData.movement || {};
-      systemData.movement.turn = systemData.movement.turn || 0;
-      systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
-      systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
-      systemData.movement.run = systemData.movement.turn;
-      systemData.flight = systemData.flight || {};
-      systemData.flight.turn = systemData.flight.turn || 0;
-      systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
-      systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
-      systemData.flight.run = systemData.flight.turn;
+      systemData.movement = systemData.movement || {
+         max: CONFIG.FADE.Encumbrance.table[0].mv
+      };
+      delete systemData.movement.maxFlight;
+      systemData.flight = systemData.flight || {
+         max: 0
+      };
+      if (this.type === "monster") {
+         systemData.movement.max = systemData.movement.max || systemData.movement.turn || 0;
+         systemData.flight.max = systemData.flight.max || systemData.flight.turn || 0;
+      } else {
+         systemData.movement.max = systemData.movement.max || CONFIG.FADE.Encumbrance.table[0].mv;
+         systemData.flight.max = systemData.flight.max || 0;
+      }
    }
 
    _prepareArmorClass() {
@@ -193,6 +207,82 @@ export class fadeActor extends Actor {
          systemData.spellSlots[i].spellLevel = i + 1;
          systemData.spellSlots[i].used = systemData.spellSlots[i].used || 0;
          systemData.spellSlots[i].max = systemData.spellSlots[i].max || 0;
+      }
+   }
+
+   async _prepareEncumbrance() {
+      const systemData = this.system;
+      const encSetting = await game.settings.get(game.system.id, "encumbrance");
+
+      systemData.encumbrance = systemData.encumbrance || {};
+
+      let enc = 0;
+      // If using detailed encumbrance, similar to expert rules...
+      if (encSetting === 'expert') {
+         enc = this.items.reduce((sum, item) => {
+            const itemWeight = item.system.weight || 0;
+            const itemQuantity = item.system.quantity || 1;
+            return sum + (itemWeight * itemQuantity);
+         }, 0);
+         systemData.encumbrance.value = enc || 0;
+      }
+      // Else if using simple encumbrance, similar to basic rules...
+      else if (encSetting === 'basic') {
+         enc = this.items.filter((item) => {
+            return item.type === "armor";
+         }).reduce((sum, item) => {
+            const itemWeight = item.system.weight || 0;
+            const itemQuantity = item.system.quantity || 1;
+            return sum + (itemWeight * itemQuantity);
+         }, 0);
+         systemData.encumbrance.value = enc || 0;
+      } else {
+         systemData.encumbrance.value = 0;
+      }
+
+      // If not a monster...
+      if (this.type !== "monster") {
+         let encTier = CONFIG.FADE.Encumbrance.table.find(tier => enc <= tier.max && tier.max > 0)
+            || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
+         systemData.encumbrance.label = encTier.label;
+         // This is a maximum movement for the current encumbered tier
+         systemData.encumbrance.mv = encTier.mv > 0 ? encTier.mv : 0;
+      }
+      // Else this is a monster
+      else {
+         // Monsters don't have a gradiated scale, instead none, half or full.
+         if (enc >= systemData.encumbrance.max) {
+            let encTier = CONFIG.FADE.Encumbrance.table.find(tier => tier.mvFactor < 0);
+            systemData.encumbrance.label = encTier.label;
+            systemData.encumbrance.mv = 0;
+         } else if (enc >= systemData.encumbrance.max / 2) {
+            let encTier = CONFIG.FADE.Encumbrance.table.find(tier => tier.mvFactor == 0.5);
+            systemData.encumbrance.label = encTier.label;
+            systemData.encumbrance.mv = Math.round(systemData.movement.max/2);
+         } else {
+            let encTier = CONFIG.FADE.Encumbrance.table.find(tier => tier.mvFactor == 1.0);
+            systemData.encumbrance.label = encTier.label;
+            systemData.encumbrance.mv = systemData.movement.max;
+         }
+      }
+   }
+
+   async _prepareDerivedMovement() {
+      // if this is an npc...otherwise handled by subclass
+      if (this.type === "npc") {
+         const systemData = this.system;
+         const encSetting = await game.settings.get(game.system.id, "encumbrance");
+
+         systemData.movement.turn = systemData.movement.turn || 0;
+         systemData.flight.turn = systemData.flight.turn || 0;
+
+         systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
+         systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
+         systemData.movement.run = systemData.movement.turn;
+
+         systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
+         systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
+         systemData.flight.run = systemData.flight.turn;
       }
    }
 }

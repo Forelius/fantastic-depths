@@ -31,12 +31,12 @@ FADE.Operators = {
 FADE.Encumbrance = {
    max: 2400,
    table: [
-      { max: 400, mv: 120, label: "Unencumbered", desc: "Free to move without any hindrance." },
-      { max: 800, mv: 90, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
-      { max: 1200, mv: 60, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted." },
-      { max: 1600, mv: 30, label: "Encumbered", desc: "Significantly burdened, movement is sluggish." },
-      { max: 2400, mv: 15, label: "Heavily Encumbered", desc: "Struggling under weight, movement is laborious." },
-      { max: 9999999, mv: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
+      { max: 400, mv: 120, wtFactor: 0.166, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
+      { max: 800, mv: 90, wtFactor: 0.333, mvFactor: 0.75, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
+      { max: 1200, mv: 60, wtFactor: 0.5, mvFactor: 0.5, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted. Half of maximum." },
+      { max: 1600, mv: 30, wtFactor: 0.666, mvFactor: 0.2155, label: "Encumbered", desc: "Significantly burdened, movement is sluggish." },
+      { max: 2400, mv: 15, wtFactor: 1.0, mvFactor: 0.125, label: "Heavily Encumbered", desc: "Struggling under weight, movement is laborious." },
+      { max: -1, mv: 0, wtFactor: -1, mvFactor: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
    ]
 };
 FADE.Classes = {

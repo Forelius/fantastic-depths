@@ -32,11 +32,11 @@ export class MonsterActor extends fadeActor {
    }
 
    /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
+   async prepareDerivedData() {
+      await super.prepareDerivedData();
       this._prepareWrestling();
       this._prepareSavingThrows();
-      this._prepareEncumbrance();
+      await this._prepareDerivedMovement();
    }
 
    /**
@@ -120,24 +120,19 @@ export class MonsterActor extends fadeActor {
       this.update({ 'system.hp.value': systemData.hp.value, 'system.hp.max': systemData.hp.max });
    }
 
-   _prepareEncumbrance() {
+   async _prepareDerivedMovement() {
       const systemData = this.system;
-      systemData.encumbrance = systemData.encumbrance || {};
-      let enc = 0;
-      let max = CONFIG.FADE.Encumbrance.max;
+      const encSetting = await game.settings.get(game.system.id, "encumbrance");
 
-      enc = this.items.reduce((sum, item) => {
-         const itemWeight = item.system.weight || 0;
-         const itemQuantity = item.system.quantity || 1;
-         return sum + (itemWeight * itemQuantity);
-      }, 0);
-      systemData.encumbrance.value = enc;
-      systemData.encumbrance.max = max;
+      systemData.movement.turn = systemData.encumbrance.mv;
+      systemData.flight.turn = systemData.flight.turn || 0;
 
-      const encTier = CONFIG.FADE.Encumbrance.table.find(tier => enc <= tier.max)
-         || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
+      systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
+      systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
+      systemData.movement.run = systemData.movement.turn;
 
-      systemData.encumbrance.label = encTier.label;
-      systemData.encumbrance.mv = encTier.mv;
+      systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
+      systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
+      systemData.flight.run = systemData.flight.turn;
    }
 }

@@ -342,17 +342,33 @@
          "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much.",
          "Name": "Encumbrance Tracking",
          "None": "None",
-         "Normal": "Normal"
+         "Basic": "Basic",
+         "Expert": "Expert"
       },
       "EncMax": {
          "Hint": "The maximum amount a character may carry, in coins, and still be able to move.",
+         "Hint2": "The maximum amount, in coins, that can be carried while still able to move.",
          "Name": "Encumbrance Max"
+      },
+      "isSpellcaster": {
+         "hint": "Can this actor or item cast spells.",
+         "name": "Is Spellcaster"
       },
       "Theme": {
          "Hint": "Dark mode features a dark backround with light text and light mode features a light background with dark text.",
          "Name": "Theme",
          "Dark": "Dark Mode",
          "Light": "Light Mode"
+      },
+      "move": {
+         "max": {
+            "name": "Max. Move Speed",
+            "hint": "The maximum distance this being can move per turn."
+         },
+         "maxFlight": {
+            "name": "Max. Flight Speed",
+            "hint": "The maximum distance this being can fly per turn."
+         }
       },
       "rest": {
          "name": "Rest Turns",

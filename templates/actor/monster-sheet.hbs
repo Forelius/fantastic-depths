@@ -6,16 +6,18 @@
    </header>
 
    {{!-- Sheet Tab Navigation --}}
-<nav class="sheet-tabs tabs" data-group="primary">
-   {{!-- Default tab is specified in fadeActorSheet.mjs --}}
-   <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
-   <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
-   <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
-   {{#if isGM}}
-   <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
-   <a class='item' data-tab='gm-only'>GM Only</a>
-   {{/if}}
-</nav>
+   <nav class="sheet-tabs tabs" data-group="primary">
+      {{!-- Default tab is specified in fadeActorSheet.mjs --}}
+      <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
+      <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
+      {{#if system.config.isSpellcaster}}
+      <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
+      {{/if}}
+      {{#if isGM}}
+      <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
+      <a class='item' data-tab='gm-only'>GM Only</a>
+      {{/if}}
+   </nav>
 
    {{!-- Sheet Body --}}
    <section class="sheet-body">
@@ -27,10 +29,12 @@
       <div class="tab effects flexcol" data-group="primary" data-tab="effects">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
       </div>
+      {{#if system.config.isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
       </div>
+      {{/if}}
       {{!-- Description Tab --}}
       <div class="tab biography" data-group="primary" data-tab="description">
          {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
@@ -39,10 +43,7 @@
       {{! GM-Only Tab }}
       {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         <!-- Content that only the GM should see goes here -->
-         <label for="gm-notes">GM Notes:</label>
-         <textarea id="gm-notes" name="system.gm.notes" rows="18">{{system.gm.notes}}</textarea>
-         <!-- You can add more GM-specific content here -->
+         {{> "systems/fantastic-depths/templates/actor/parts/actor-gm-only.hbs"}}
       </div>
       {{/if}}
    </section>

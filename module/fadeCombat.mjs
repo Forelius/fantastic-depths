@@ -79,9 +79,9 @@ export class fadeCombat extends Combat {
     * override
     * @returns Combatant[]
     */
-   setupTurns() {
-      let combatants = super.setupTurns();
-      const initiativeMode = game.settings.get(game.system.id, "initiativeMode");
+   async setupTurns() {
+      let combatants = await super.setupTurns();
+      const initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
       if (initiativeMode === "group") {
          combatants.sort(this.sortCombatantsGroup);
       } else {
@@ -101,8 +101,8 @@ export class fadeCombat extends Combat {
 
    // Function to handle group-based initiative
    async #rollForGroup(group, groupName) {
-      const groupModifier = game.settings.get(game.system.id, "groupInitiativeModifier");
-      const initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
+      const groupModifier = await game.settings.get(game.system.id, "groupInitiativeModifier");
+      const initiativeFormula = await game.settings.get(game.system.id, "initiativeFormula");
       let rollData = {};
       let result = null;
       let usedMod = 0; // Track the modifier used for this group
@@ -158,8 +158,8 @@ export class fadeCombat extends Combat {
  */
    async #doInitiativeRoll() {
       // Fetch the initiative formula and mode from settings
-      const initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
-      const initiativeMode = game.settings.get(game.system.id, "initiativeMode");
+      const initiativeFormula = await game.settings.get(game.system.id, "initiativeFormula");
+      const initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
 
       // Get all combatants and group them by disposition
       const combatants = this.combatants;

@@ -22,10 +22,10 @@ export class CharacterActor extends fadeActor {
    }
 
    /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
+   async prepareDerivedData() {
+      await super.prepareDerivedData();
+      await this._prepareDerivedMovement()
       this._prepareClassInfo();
-      this._prepareEncumbrance();
       this._prepareWrestling();
    }
 
@@ -147,27 +147,6 @@ export class CharacterActor extends fadeActor {
       systemData.retainer.morale = 5 + systemData.abilities.cha.mod;
    }
 
-   _prepareEncumbrance() {
-      const systemData = this.system;
-      systemData.encumbrance = systemData.encumbrance || {};
-      let enc = 0;
-      let max = CONFIG.FADE.Encumbrance.max;
-
-      enc = this.items.reduce((sum, item) => {
-         const itemWeight = item.system.weight || 0;
-         const itemQuantity = item.system.quantity || 1;
-         return sum + (itemWeight * itemQuantity);
-      }, 0);
-      systemData.encumbrance.value = enc;
-      systemData.encumbrance.max = max;
-
-      const encTier = CONFIG.FADE.Encumbrance.table.find(tier => enc <= tier.max)
-         || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
-
-      systemData.encumbrance.label = encTier.label;
-      systemData.encumbrance.mv = encTier.mv;
-   }
-
    _prepareExploration() {
       const systemData = this.system;
       let explore = systemData.exploration || {};
@@ -235,5 +214,21 @@ export class CharacterActor extends fadeActor {
       const systemData = this.system;
       systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
       systemData.wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
+   }
+
+   async _prepareDerivedMovement() {
+      const systemData = this.system;
+      const encSetting = await game.settings.get(game.system.id, "encumbrance");
+
+      systemData.movement.turn = systemData.encumbrance.mv;
+      systemData.flight.turn = systemData.flight.turn || 0;
+
+      systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
+      systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
+      systemData.movement.run = systemData.movement.turn;
+
+      systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
+      systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
+      systemData.flight.run = systemData.flight.turn;
    }
 }

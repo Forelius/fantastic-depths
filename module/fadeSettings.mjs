@@ -2,20 +2,25 @@ export class fadeSettings {
    /**
     * Register all of the system's settings.
     */
-   registerSystemSettings() {    
+   async registerSystemSettings() {
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
          name: "SETTINGS.Encumbrance.Name",
          hint: "SETTINGS.Encumbrance.Hint",
          scope: "world",
          config: true,
-         default: "normal",
+         default: "expert",
          type: String,
          choices: {
             none: "SETTINGS.Encumbrance.None",
-            normal: "SETTINGS.Encumbrance.Normal"
+            basic: "SETTINGS.Encumbrance.Basic",
+            expert: "SETTINGS.Encumbrance.Expert"
          },
-         restricted: true // Only the GM can change this setting
+         restricted: true, // Only the GM can change this setting
+         onChange: value => {
+            // This is called once the "Save" button is clicked
+            ui.notifications.warn("A system restart is required for changes to take effect.");            
+         }
       });
 
       game.settings.register(game.system.id, "theme", {
@@ -33,7 +38,7 @@ export class fadeSettings {
       });
 
       // Apply the current theme when the game is initialized
-      const currentTheme = game.settings.get(game.system.id, "theme");
+      const currentTheme = await game.settings.get(game.system.id, "theme");
       this.applyTheme(currentTheme);
 
       game.settings.register(game.system.id, "initiativeFormula", {
@@ -124,15 +129,15 @@ export class fadeSettings {
          default: false,
          restricted: true // Only the GM can change this setting
       });
-      
-      game.settings.register(game.system.id, "autoNumber", {
-         name: "SETTINGS.autoNumber.name",
-         hint: "SETTINGS.autoNumber.hint",
-         scope: "world",
-         config: true,
-         default: false, 
-         type: Boolean
-      });
+
+      //game.settings.register(game.system.id, "autoNumber", {
+      //   name: "SETTINGS.autoNumber.name",
+      //   hint: "SETTINGS.autoNumber.hint",
+      //   scope: "world",
+      //   config: true,
+      //   default: false, 
+      //   type: Boolean
+      //});
    }
 
    // This function applies the selected theme by adding/removing relevant classes
@@ -163,7 +168,7 @@ export class fadeSettings {
       }
    }
 
-   renderSettingsConfig(app, html, data) {
+   async renderSettingsConfig(app, html, data) {
       // Select the Initiative Mode dropdown by its name attribute
       const initiativeModeSetting = html.find(`select[name="${game.system.id}.initiativeMode"]`);
       // Select the Initiative Formula input by its name attribute
@@ -197,7 +202,7 @@ export class fadeSettings {
       });
 
       // Set the initial state when the settings form is rendered
-      const currentValue = game.settings.get(game.system.id, "initiativeMode");
+      const currentValue = await game.settings.get(game.system.id, "initiativeMode");
       this.toggleGroupModifier(currentValue);
    }
 }
