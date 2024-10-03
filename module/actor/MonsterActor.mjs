@@ -36,7 +36,6 @@ export class MonsterActor extends fadeActor {
       await super.prepareDerivedData();
       this._prepareWrestling();
       this._prepareSavingThrows();
-      await this._prepareDerivedMovement();
    }
 
    /**
@@ -56,7 +55,7 @@ export class MonsterActor extends fadeActor {
    }
 
    /** @override */
-   async _onUpdate(changed, options, userId) {
+   _onUpdate(changed, options, userId) {
       super._onUpdate(changed, options, userId);
       // Check if the class property has changed
       if (changed.system?.hp?.hd) {
@@ -68,9 +67,11 @@ export class MonsterActor extends fadeActor {
       // Wrestling skill
       const systemData = this.system;
       const hitDice = systemData.hp.hd?.match(/^\d+/)[0];
+      let wrestling = systemData.ac.value;
       if (hitDice) {
-         systemData.wrestling = Math.ceil(hitDice * 2) + systemData.ac.value;
+         wrestling = Math.ceil(hitDice * 2) + systemData.ac.value;
       }
+      systemData.wrestling = wrestling;
    }
 
    _prepareSavingThrows() {
@@ -85,7 +86,7 @@ export class MonsterActor extends fadeActor {
          const classKey = Object.keys(CONFIG.FADE.Classes).find(key => key[0].toLowerCase() === classId);
 
          if (classKey !== undefined && isNaN(level) == false) {
-            super.prepareSavingThrows(classKey, level);
+            super._prepareSavingThrows(classKey, level);
          }
       }
    }
@@ -93,7 +94,6 @@ export class MonsterActor extends fadeActor {
    _prepareHitPoints() {
       const systemData = this.system;
       let hd = systemData.hp.hd;
-      console.log("_prepareHitPoints", systemData, hd);
       // Regular expression to check for a dice specifier like d<number>
       const diceRegex = /d(\d+)/;
       // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
@@ -111,28 +111,9 @@ export class MonsterActor extends fadeActor {
       let base = hd.replace(modifierRegex, ''); // Extract base number
       let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
       base = parseInt(base);
-      modifier = parseInt(modifier,10);
+      modifier = parseInt(modifier, 10);
 
       systemData.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);
       systemData.hp.max = systemData.hp.value;
-
-      // Persist the updated values to the actor's document
-      this.update({ 'system.hp.value': systemData.hp.value, 'system.hp.max': systemData.hp.max });
-   }
-
-   async _prepareDerivedMovement() {
-      const systemData = this.system;
-      const encSetting = await game.settings.get(game.system.id, "encumbrance");
-
-      systemData.movement.turn = systemData.encumbrance.mv;
-      systemData.flight.turn = systemData.flight.turn || 0;
-
-      systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
-      systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
-      systemData.movement.run = systemData.movement.turn;
-
-      systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
-      systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
-      systemData.flight.run = systemData.flight.turn;
    }
 }

@@ -65,43 +65,43 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       const systemData = this.system;
 
-      systemData.config = systemData.config || {
+      let config = systemData.config || {
          isSpellcaster: false,
       };
-      systemData.encumbrance = systemData.encumbrance || {
+      systemData.config = config;
+
+      let encumbrance = systemData.encumbrance || {
          max: CONFIG.FADE.Encumbrance.max
-      }
+      };
+      systemData.encumbrance = encumbrance;
+
       this._prepareMovement();
       systemData.details = systemData.details || {};
       systemData.ac = systemData.ac || {};
-      systemData.hp = systemData.hp || {};
-      systemData.hp.value = systemData.hp.value || 5;
-      systemData.hp.max = systemData.hp.max || 5;
-      if (this.type === "monster") {
-         systemData.hp.hd = systemData.hp.hd || "1";
-      } else {
-         systemData.hp.hd = systemData.hp.hd || "1d8";
-      }
+
+      this._prepareHitPoints();
       systemData.thac0 = systemData.thac0 || {};
 
-      systemData.savingThrows = systemData.savingThrows || {};
-      const savingThrows = ["death", "wand", "paralysis", "breath", "spell"];
-      savingThrows.forEach(savingThrow => {
-         systemData.savingThrows[savingThrow] = systemData.savingThrows[savingThrow] || { value: 15 };
+      let savingThrows = systemData.savingThrows || {};
+      const savingThrowTypes = ["death", "wand", "paralysis", "breath", "spell"];
+      savingThrowTypes.forEach(savingThrow => {
+         savingThrows[savingThrow] = savingThrows[savingThrow] || { value: 15 };
       });
+      systemData.savingThrows = savingThrows;
 
       if (systemData.config.isSpellcaster === true) {
          this._prepareSpells();
       }
+
+      systemData.mod = {};
    }
 
    /** @override */
    async prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareMods();
       this._prepareArmorClass();
       await this._prepareEncumbrance();
-      await this._prepareDerivedMovement();
+      this._prepareDerivedMovement();
    }
 
    /**
@@ -119,7 +119,7 @@ export class fadeActor extends Actor {
       return data;
    }
 
-   prepareSavingThrows(className, classLevel) {
+   _prepareSavingThrows(className, classLevel) {
       const systemData = this.system;
       // Replace hyphen with underscore for "Magic-User"
       const classNameInput = className.toLowerCase().replace('_', '-');
@@ -127,53 +127,64 @@ export class fadeActor extends Actor {
       // Find a match in the FADE.Classes data
       const classData = Object.values(classes).find(cdata => cdata.name.toLowerCase() === classNameInput);
 
+      let savingThrows = systemData.savingThrows || {};
+
       if (classData !== undefined) {
          const savesData = classData.saves.find(save => classLevel <= save.level);
          for (let saveType in savesData) {
-            if (systemData.savingThrows.hasOwnProperty(saveType)) {
-               systemData.savingThrows[saveType].value = savesData[saveType];
+            if (savingThrows.hasOwnProperty(saveType)) {
+               savingThrows[saveType].value = savesData[saveType];
             }
          }
       }
+      systemData.savingThrows = savingThrows;
    }
 
-   _prepareMods() {
+   _prepareHitPoints() {
       const systemData = this.system;
-      systemData.mod = systemData.mod ?? {};
-      systemData.mod.ac = systemData.mod.ac ?? null;
-      systemData.mod.toHit = null;
-      systemData.mod.toHitRanged = null;
-      systemData.mod.dmg = null;
-      systemData.mod.dmgRanged = null;
+      let hp = this.system.hp || {};
+      hp.value = hp.value || 5;
+      hp.max = hp.max || 5;
+      if (this.type === "monster") {
+         hp.hd = hp.hd || "1";
+      } else {
+         hp.hd = hp.hd || "1d8";
+      }
+      systemData.hp = hp;
    }
 
+   /**
+    * Prepare ground movement and flight rates.
+    */
    _prepareMovement() {
       const systemData = this.system;
-      systemData.movement = systemData.movement || {
-         max: CONFIG.FADE.Encumbrance.table[0].mv
-      };
-      delete systemData.movement.maxFlight;
-      systemData.flight = systemData.flight || {
-         max: 0
-      };
+      let movement = systemData.movement || {};
+      let flight = systemData.flight || {};
       if (this.type === "monster") {
-         systemData.movement.max = systemData.movement.max || systemData.movement.turn || 0;
-         systemData.flight.max = systemData.flight.max || systemData.flight.turn || 0;
+         movement.max = movement.max || movement.turn || 0;
+         flight.max = flight.max || flight.turn || 0;
+         flight.turn = flight.turn || 0;
       } else {
-         systemData.movement.max = systemData.movement.max || CONFIG.FADE.Encumbrance.table[0].mv;
-         systemData.flight.max = systemData.flight.max || 0;
+         movement.max = movement.max || CONFIG.FADE.Encumbrance.table[0].mv;
+         flight.max = flight.max || 0;
+         flight.turn = flight.turn || 0;
       }
+      systemData.movement = movement;
+      systemData.flight = flight;
    }
 
+   /**
+    * Prepare derived armor class values.
+    */
    _prepareArmorClass() {
       const systemData = this.system;
-
       let baseAC = CONFIG.FADE.Armor.acNaked;
-      systemData.ac.naked = baseAC;
-      systemData.ac.value = baseAC;
-      systemData.ac.total = baseAC;
-      systemData.ac.mod = 0;
-      systemData.ac.shield = 0;
+      let ac = {};
+      ac.naked = baseAC;
+      ac.value = baseAC;
+      ac.total = baseAC;
+      ac.mod = 0;
+      ac.shield = 0;
 
       const equippedArmor = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && !item.system.isShield
@@ -185,38 +196,41 @@ export class fadeActor extends Actor {
 
       // If an equipped armor is found
       if (equippedArmor) {
-         systemData.ac.value = equippedArmor.system.ac;
-         systemData.ac.mod = equippedArmor.system.mod ?? 0;
-         systemData.ac.total = equippedArmor.system.totalAc;
+         ac.value = equippedArmor.system.ac;
+         ac.mod = equippedArmor.system.mod ?? 0;
+         ac.total = equippedArmor.system.totalAc;
       }
 
       if (equippedShield) {
-         systemData.ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
-         systemData.ac.total -= systemData.ac.shield;
+         ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
+         ac.total -= ac.shield;
       }
 
       // Now dex modifier and other mods.
-      systemData.ac.total = systemData.ac.total - (systemData.mod.ac ?? 0) - (systemData.abilities?.dex.mod ?? 0);
+      ac.total = ac.total - (systemData.mod.ac ?? 0) - (systemData.abilities?.dex.mod ?? 0);
+
+      systemData.ac = ac;
    }
 
    _prepareSpells() {
       const systemData = this.system;
-      systemData.spellSlots = systemData.spellSlots || {};
+      let spellSlots = systemData.spellSlots || {};
       for (let i = 0; i < 9; i++) {
-         systemData.spellSlots[i] = systemData.spellSlots[i] || {};
-         systemData.spellSlots[i].spellLevel = i + 1;
-         systemData.spellSlots[i].used = systemData.spellSlots[i].used || 0;
-         systemData.spellSlots[i].max = systemData.spellSlots[i].max || 0;
+         spellSlots[i] = systemData.spellSlots[i] || {};
+         spellSlots[i].spellLevel = i + 1;
+         spellSlots[i].used = systemData.spellSlots[i].used || 0;
+         spellSlots[i].max = systemData.spellSlots[i].max || 0;
       }
+      systemData.spellSlots = spellSlots;
    }
 
    async _prepareEncumbrance() {
       const systemData = this.system;
       const encSetting = await game.settings.get(game.system.id, "encumbrance");
-
-      systemData.encumbrance = systemData.encumbrance || {};
-
+      let encumbrance = systemData.encumbrance || {};
       let enc = 0;
+
+      //-- Caclulate how much is being carried/tracked --//
       // If using detailed encumbrance, similar to expert rules...
       if (encSetting === 'expert') {
          enc = this.items.reduce((sum, item) => {
@@ -224,7 +238,7 @@ export class fadeActor extends Actor {
             const itemQuantity = item.system.quantity || 1;
             return sum + (itemWeight * itemQuantity);
          }, 0);
-         systemData.encumbrance.value = enc || 0;
+         encumbrance.value = enc || 0;
       }
       // Else if using simple encumbrance, similar to basic rules...
       else if (encSetting === 'basic') {
@@ -235,54 +249,49 @@ export class fadeActor extends Actor {
             const itemQuantity = item.system.quantity || 1;
             return sum + (itemWeight * itemQuantity);
          }, 0);
-         systemData.encumbrance.value = enc || 0;
+         encumbrance.value = enc || 0;
       } else {
-         systemData.encumbrance.value = 0;
+         encumbrance.value = 0;
       }
 
+      //-- Calculate movement and label --//
       // If not a monster...
-      if (this.type !== "monster") {
-         let encTier = CONFIG.FADE.Encumbrance.table.find(tier => enc <= tier.max && tier.max > 0)
-            || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
-         systemData.encumbrance.label = encTier.label;
-         // This is a maximum movement for the current encumbered tier
-         systemData.encumbrance.mv = encTier.mv > 0 ? encTier.mv : 0;
-      }
-      // Else this is a monster
-      else {
-         // Monsters don't have a gradiated scale, instead none, half or full.
-         if (enc >= systemData.encumbrance.max) {
-            let encTier = CONFIG.FADE.Encumbrance.table.find(tier => tier.mvFactor < 0);
-            systemData.encumbrance.label = encTier.label;
-            systemData.encumbrance.mv = 0;
-         } else if (enc >= systemData.encumbrance.max / 2) {
-            let encTier = CONFIG.FADE.Encumbrance.table.find(tier => tier.mvFactor == 0.5);
-            systemData.encumbrance.label = encTier.label;
-            systemData.encumbrance.mv = Math.round(systemData.movement.max/2);
-         } else {
-            let encTier = CONFIG.FADE.Encumbrance.table.find(tier => tier.mvFactor == 1.0);
-            systemData.encumbrance.label = encTier.label;
-            systemData.encumbrance.mv = systemData.movement.max;
-         }
-      }
+      this._calculateEncMovement(enc, encumbrance);
+      systemData.encumbrance = encumbrance;
+      this.update({ "system.encumbrance": encumbrance });
+   }
+      
+   _calculateEncMovement(enc, encumbrance) {
+      const systemData = this.system;
+      const isMonster = this.type === "monster";
+      let weightPortion = systemData.encumbrance.max / enc;
+      const table = (this.type === "monster") ? CONFIG.FADE.Encumbrance.monster : CONFIG.FADE.Encumbrance.pc;
+      let encTier = table.find(tier => weightPortion >= tier.wtPortion) || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
+      encumbrance.label = encTier.label;
+      encumbrance.desc = encTier.desc;
+      // This is a maximum movement for the current encumbered tier
+      encumbrance.mv = systemData.movement.max * encTier.mvFactor;
+      encumbrance.fly = systemData.flight.max * encTier.mvFactor;
    }
 
-   async _prepareDerivedMovement() {
-      // if this is an npc...otherwise handled by subclass
-      if (this.type === "npc") {
-         const systemData = this.system;
-         const encSetting = await game.settings.get(game.system.id, "encumbrance");
+   _prepareDerivedMovement() {
+      const systemData = this.system;
+      let movement = systemData.movement || {};
+      let flight = systemData.flight || {};
 
-         systemData.movement.turn = systemData.movement.turn || 0;
-         systemData.flight.turn = systemData.flight.turn || 0;
+      movement.turn = systemData.encumbrance.mv;
+      flight.turn = flight.turn || 0;
 
-         systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
-         systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
-         systemData.movement.run = systemData.movement.turn;
+      movement.round = movement.turn > 0 ? Math.floor(movement.turn / 3) : 0;
+      movement.day = movement.turn > 0 ? Math.floor(movement.turn / 5) : 0;
+      movement.run = movement.turn;
 
-         systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
-         systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
-         systemData.flight.run = systemData.flight.turn;
-      }
+      flight.round = flight.turn > 0 ? Math.floor(flight.turn / 3) : 0;
+      flight.day = flight.turn > 0 ? Math.floor(flight.turn / 5) : 0;
+      flight.run = flight.turn;
+
+      systemData.movement = movement;
+      systemData.flight = flight;
+      this.update({ "system.movement": movement, "system.flight": flight });
    }
 }

@@ -3,6 +3,9 @@
       "types": [ "character", "monster", "npc" ],
       "templates": {
          "base": {
+            "config": {
+               "isSpellcaster": false
+            },
             "biography": "",
             "retainer": {
                "enabled": false,
@@ -50,15 +53,14 @@
             },
             "movement": {
                "turn": 120,
-               "round": 40,
-               "day": 24,
-               "run": 120
+               "max": 120
             },
             "flight": {
                "turn": 0,
-               "round": 0,
-               "day": 0,
-               "run": 0
+               "max": 0
+            },
+            "encumbrance": {
+               "max": 2400
             },
             "initiative": {
                "value": 0,
@@ -96,7 +98,7 @@
             },
             "languages": "",
             "gm": {
-               "notes":  ""
+               "notes": ""
             }
          },
          "character": {
@@ -119,10 +121,7 @@
                "eyes": "Blue",
                "hair": "brown"
             },
-            "encumbrance": {
-               "value": 0,
-               "max": 2400
-            },
+
             "abilities": {
                "str": {
                   "value": 10
@@ -189,7 +188,7 @@
             "roll": "",
             "operator": "",
             "target": 0,
-            "rollMode":  ""
+            "rollMode": ""
          },
          "physical": {
             "quantity": 1,

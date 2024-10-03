@@ -106,11 +106,11 @@
          {{> "systems/fantastic-depths/templates/item/parts/item-treasure.hbs"}}
       </div>
       <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
-         <span>
-            Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) {{system.encumbrance.label}}
+         <span class="flex3">
+            Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span title="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
          </span>
-         <span>
-            Calculated base movement: {{system.encumbrance.mv}}
+         <span class="flex2">
+            Base movement: {{system.encumbrance.mv}}
          </span>
       </div>
    </section>

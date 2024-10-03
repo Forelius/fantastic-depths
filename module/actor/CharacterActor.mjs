@@ -24,7 +24,7 @@ export class CharacterActor extends fadeActor {
    /** @override */
    async prepareDerivedData() {
       await super.prepareDerivedData();
-      await this._prepareDerivedMovement()
+      this._prepareDerivedMovement()
       this._prepareClassInfo();
       this._prepareWrestling();
    }
@@ -108,8 +108,13 @@ export class CharacterActor extends fadeActor {
       }
    }
 
-   /** @override */
-   async _onUpdate(changed, options, userId) {
+   /**
+    * @override
+    * @param {any} changed
+    * @param {any} options
+    * @param {any} userId
+    */
+   _onUpdate(changed, options, userId) {
       super._onUpdate(changed, options, userId);
 
       // Check if the class property has changed
@@ -122,29 +127,32 @@ export class CharacterActor extends fadeActor {
       const systemData = this.system;
 
       // Initialize abilities if missing
-      systemData.abilities = systemData.abilities || {};
+      let abilities = systemData.abilities || {};
 
-      const abilities = ["str", "int", "wis", "dex", "con", "cha"];
+      const abilityTypes = ["str", "int", "wis", "dex", "con", "cha"];
       // Create a new ordered abilities object
       const orderedAbilities = {};
-      abilities.forEach(ability => {
+      abilityTypes.forEach(ability => {
          // Ensure each ability has a default value if missing
-         orderedAbilities[ability] = systemData.abilities[ability] || { value: 10 };
+         orderedAbilities[ability] = abilities[ability] || { value: 10 };
       });
 
       // Replace the original abilities object with the ordered one
-      systemData.abilities = orderedAbilities;
+      abilities = orderedAbilities;
 
       const adjustments = CONFIG.FADE.AdjustmentTable;
-      for (let [key, ability] of Object.entries(systemData.abilities)) {
+      for (let [key, ability] of Object.entries(abilities)) {
          let adjustment = adjustments.find(item => ability.value <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;
       }
 
       // Retainer
-      systemData.retainer = systemData.retainer || {};
-      systemData.retainer.max = 4 + systemData.abilities.cha.mod;
-      systemData.retainer.morale = 5 + systemData.abilities.cha.mod;
+      let retainer = systemData.retainer || {};
+      retainer.max = 4 + abilities.cha.mod;
+      retainer.morale = 5 + abilities.cha.mod;
+
+      systemData.abilities = abilities;
+      systemData.retainer = retainer;
    }
 
    _prepareExploration() {
@@ -159,9 +167,10 @@ export class CharacterActor extends fadeActor {
 
    _prepareClassInfo() {
       const systemData = this.system;
+      let details = systemData.details || {};
       // Replace hyphen with underscore for "Magic-User"
-      const classNameInput = systemData.details.class?.toLowerCase();
-      const classLevel = systemData.details.level;
+      const classNameInput = details.class?.toLowerCase();
+      const classLevel = details.level;
       const classes = CONFIG.FADE.Classes;
       let classData = null;
 
@@ -187,23 +196,26 @@ export class CharacterActor extends fadeActor {
             if (value >= primeReq.xpBonus10) counts.pr10Count++;
             return counts;
          }, { pr5Count: 0, pr10Count: 0 });
-         systemData.details.xp.bonus = pr10Count === classData.primeReqs.length ? 10 : pr5Count === classData.primeReqs.length ? 5 : 0;
+         details.xp.bonus = pr10Count === classData.primeReqs.length ? 10 : pr5Count === classData.primeReqs.length ? 5 : 0;
 
          if (levelData) {
             systemData.hp.hd = levelData.hd;
             systemData.thac0.value = levelData.thac0;
-            if (systemData.details.title == "" || systemData.details.title == null) {
+
+            if (details.title == "" || details.title == null) {
                let ordinalized = Formatter.formatOrdinal(currentLevel);
-               systemData.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
+               details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
             }
          }
          if (nextLevelData) {
-            systemData.details.xp.next = nextLevelData.xp;
+            details.xp.next = nextLevelData.xp;
          }
-         systemData.details.species = classData.species;
+         details.species = classData.species;
+
+         systemData.details = details;
 
          // Saving throws
-         super.prepareSavingThrows(classNameInput, currentLevel);
+         super._prepareSavingThrows(classNameInput, currentLevel);
       }
 
       return classData; // Return null if no match found
@@ -212,23 +224,9 @@ export class CharacterActor extends fadeActor {
    _prepareWrestling() {
       // Wrestling skill
       const systemData = this.system;
-      systemData.wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
-      systemData.wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
-   }
-
-   async _prepareDerivedMovement() {
-      const systemData = this.system;
-      const encSetting = await game.settings.get(game.system.id, "encumbrance");
-
-      systemData.movement.turn = systemData.encumbrance.mv;
-      systemData.flight.turn = systemData.flight.turn || 0;
-
-      systemData.movement.round = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 3) : 0;
-      systemData.movement.day = systemData.movement.turn > 0 ? Math.floor(systemData.movement.turn / 5) : 0;
-      systemData.movement.run = systemData.movement.turn;
-
-      systemData.flight.round = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 3) : 0;
-      systemData.flight.day = systemData.flight.turn > 0 ? Math.floor(systemData.flight.turn / 5) : 0;
-      systemData.flight.run = systemData.flight.turn;
-   }
+      let wrestling = systemData.wrestling || {};
+      wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
+      wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
+      systemData.wrestling = wrestling;
+   }   
 }
