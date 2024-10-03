@@ -213,6 +213,11 @@ export class CharacterActor extends fadeActor {
          details.species = classData.species;
 
          systemData.details = details;
+         this.update({
+            "system.details": systemData.details,
+            "system.hp.hd": systemData.hp.hd,
+            "system.thac0.value": systemData.thac0.value
+         });
 
          // Saving throws
          super._prepareSavingThrows(classNameInput, currentLevel);
