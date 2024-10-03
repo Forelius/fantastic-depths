@@ -65,15 +65,13 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       const systemData = this.system;
 
-      let config = systemData.config || {
-         isSpellcaster: false,
-      };
-      systemData.config = config;
-
-      let encumbrance = systemData.encumbrance || {
-         max: CONFIG.FADE.Encumbrance.max
-      };
-      systemData.encumbrance = encumbrance;
+      systemData.config = systemData.config || { isSpellcaster: false, };
+      systemData.encumbrance = systemData.encumbrance || {};
+      if (this.type === "monster") {
+         systemData.encumbrance.max = systemData.encumbrance.max || 0;
+      } else {
+         systemData.encumbrance.max = systemData.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
+      }
 
       this._prepareMovement();
       systemData.details = systemData.details || {};
@@ -97,10 +95,10 @@ export class fadeActor extends Actor {
    }
 
    /** @override */
-   async prepareDerivedData() {
+   prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareArmorClass();
-      await this._prepareEncumbrance();
+      this._prepareEncumbrance();
       this._prepareDerivedMovement();
    }
 
@@ -165,7 +163,7 @@ export class fadeActor extends Actor {
          flight.max = flight.max || flight.turn || 0;
          flight.turn = flight.turn || 0;
       } else {
-         movement.max = movement.max || CONFIG.FADE.Encumbrance.table[0].mv;
+         movement.max = movement.max || CONFIG.FADE.Encumbrance.maxMove;
          flight.max = flight.max || 0;
          flight.turn = flight.turn || 0;
       }
@@ -224,9 +222,10 @@ export class fadeActor extends Actor {
       systemData.spellSlots = spellSlots;
    }
 
-   async _prepareEncumbrance() {
+   _prepareEncumbrance() {
       const systemData = this.system;
-      const encSetting = await game.settings.get(game.system.id, "encumbrance");
+      const encSetting = game.settings.get(game.system.id, "encumbrance");
+      if (!encSetting) console.error("_prepareEncumbrance(): encSetting has no value!");
       let encumbrance = systemData.encumbrance || {};
       let enc = 0;
 
@@ -258,7 +257,7 @@ export class fadeActor extends Actor {
       // If not a monster...
       this._calculateEncMovement(enc, encumbrance);
       systemData.encumbrance = encumbrance;
-      this.update({ "system.encumbrance": encumbrance });
+      //this.update({ "system.encumbrance": systemData.encumbrance });
    }
       
    _calculateEncMovement(enc, encumbrance) {
@@ -266,7 +265,7 @@ export class fadeActor extends Actor {
       const isMonster = this.type === "monster";
       let weightPortion = systemData.encumbrance.max / enc;
       const table = (this.type === "monster") ? CONFIG.FADE.Encumbrance.monster : CONFIG.FADE.Encumbrance.pc;
-      let encTier = table.find(tier => weightPortion >= tier.wtPortion) || CONFIG.FADE.Encumbrance.table[CONFIG.FADE.Encumbrance.table.length - 1];
+      let encTier = table.find(tier => weightPortion >= tier.wtPortion) || table[table.length - 1];
       encumbrance.label = encTier.label;
       encumbrance.desc = encTier.desc;
       // This is a maximum movement for the current encumbered tier
@@ -292,6 +291,6 @@ export class fadeActor extends Actor {
 
       systemData.movement = movement;
       systemData.flight = flight;
-      this.update({ "system.movement": movement, "system.flight": flight });
+      //this.update({ "system.movement": movement, "system.flight": flight });
    }
 }

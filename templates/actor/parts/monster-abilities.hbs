@@ -105,6 +105,7 @@
          {{> "systems/fantastic-depths/templates/item/parts/item-gear.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/item-treasure.hbs"}}
       </div>
+      {{#if system.encumbrance.max}}
       <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
          <span class="flex3">
             Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span title="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
@@ -113,5 +114,6 @@
             Base movement: {{system.encumbrance.mv}}
          </span>
       </div>
+      {{/if}}
    </section>
 </section>

@@ -118,9 +118,10 @@ export class CharacterActor extends fadeActor {
       super._onUpdate(changed, options, userId);
 
       // Check if the class property has changed
-      if (changed.system && changed.system.details && changed.system.details.class) {
-         this._prepareClassInfo();
-      }
+      //if (changed.system && changed.system.details && changed.system.details.class) {
+      //   console.log("CharacterActor._onUpdate");
+      //   this._prepareClassInfo();         
+      //}
    }
 
    _prepareAbilities() {
@@ -213,6 +214,7 @@ export class CharacterActor extends fadeActor {
          details.species = classData.species;
 
          systemData.details = details;
+
          this.update({
             "system.details": systemData.details,
             "system.hp.hd": systemData.hp.hd,
@@ -233,5 +235,6 @@ export class CharacterActor extends fadeActor {
       wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
       wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
       systemData.wrestling = wrestling;
+      /*this.update({ "system.wrestling": systemData.wrestling });*/
    }   
 }

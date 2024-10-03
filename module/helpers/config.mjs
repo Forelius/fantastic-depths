@@ -29,6 +29,8 @@ FADE.Operators = {
    lte: "<="
 }
 FADE.Encumbrance = {
+   maxMove: 120, // The default maximum movement rate per turn for an unencumbered character.
+   maxLoad: 2400, // The default maximum load (cn) that a character can carry.
    pc: [
       { wtPortion: 6, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
       { wtPortion: 3, mvFactor: 0.75, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
