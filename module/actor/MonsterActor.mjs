@@ -112,8 +112,9 @@ export class MonsterActor extends fadeActor {
       let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
       base = parseInt(base);
       modifier = parseInt(modifier, 10);
-
-      systemData.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);
-      systemData.hp.max = systemData.hp.value;
+      if (!systemData.hp.value) {
+         systemData.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);
+         systemData.hp.max = systemData.hp.value;
+      }
    }
 }
