@@ -268,30 +268,33 @@ export class fadeCombat extends Combat {
    }
 
    static async updateCombat(combat, updateData, options, userId) {
-      // Check if the round has changed
-      if (updateData.round) {
-         const user = game.users.get(game.userId);  // Get the user who initiated the roll
-         const speaker = { alias: user.name };  // Use the player's name as the speaker
+      const user = game.users.get(game.userId);  // Get the user who initiated the roll
+      if (user.isGM) {
+         // Check if the round has changed
+         if (updateData.round) {
+            const user = game.users.get(game.userId);  // Get the user who initiated the roll
+            const speaker = { alias: user.name };  // Use the player's name as the speaker
 
-         // Check if the combat has just started (round goes from null/undefined to 1)
-         if (updateData.round === 1 && (combat.round === null || combat.round === undefined)) {
-            // Send a chat message when combat officially begins (round 1)
+            // Check if the combat has just started (round goes from null/undefined to 1)
+            if (updateData.round === 1 && (combat.round === null || combat.round === undefined)) {
+               // Send a chat message when combat officially begins (round 1)
+               ChatMessage.create({
+                  speaker: speaker,
+                  content: `Combat has begun!`,
+               });
+            }
+
+            // Reset initiative for all combatants
+            for (let combatant of combat.combatants) {
+               await combatant.update({ initiative: null });  // Reset initiative to null
+            }
+
+            // Optionally send a chat message to notify players
             ChatMessage.create({
                speaker: speaker,
-               content: `Combat has begun!`,
+               content: `Round ${combat.round} started. Initiative rolls reset.`,
             });
          }
-
-         // Reset initiative for all combatants
-         for (let combatant of combat.combatants) {
-            await combatant.update({ initiative: null });  // Reset initiative to null
-         }
-
-         // Optionally send a chat message to notify players
-         ChatMessage.create({
-            speaker: speaker,
-            content: `Round ${combat.round} started. Initiative rolls reset.`,
-         });
       }
    }
 }
@@ -306,22 +309,25 @@ Hooks.on('updateCombat', fadeCombat.updateCombat);
 
 Hooks.on('createCombat', (combat) => {
    const user = game.users.get(game.userId);  // Get the user who initiated the roll
-   const speaker = { alias: user.name };  // Use the player's name as the speaker
+   if (user.isGM) {
+      const speaker = { alias: user.name };  // Use the player's name as the speaker
 
-   // Send a chat message when combat begins
-   ChatMessage.create({
-      speaker: speaker,
-      content: `Combat encounter created.`,
-   });
+      // Send a chat message when combat begins
+      ChatMessage.create({
+         speaker: speaker,
+         content: `Combat encounter created.`,
+      });
+   }
 });
 
 Hooks.on('deleteCombat', (combat) => {
    const user = game.users.get(game.userId);  // Get the user who initiated the roll
-   const speaker = { alias: user.name };  // Use the player's name as the speaker
-
-   // Send a chat message when combat ends
-   ChatMessage.create({
-      speaker: speaker,
-      content: `Combat encounter has ended.`,
-   });
+   if (user.isGM) {
+      const speaker = { alias: user.name };  // Use the player's name as the speaker
+      // Send a chat message when combat ends
+      ChatMessage.create({
+         speaker: speaker,
+         content: `Combat encounter has ended.`,
+      });
+   }
 });
