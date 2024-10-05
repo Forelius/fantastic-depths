@@ -32,8 +32,8 @@ export class MonsterActor extends fadeActor {
    }
 
    /** @override */
-   async prepareDerivedData() {
-      await super.prepareDerivedData();
+   prepareDerivedData() {
+      super.prepareDerivedData();
       this._prepareWrestling();
       this._prepareSavingThrows();
    }

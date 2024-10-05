@@ -33,7 +33,7 @@ export class fadeSettings {
             "light": "SETTINGS.Theme.Light",
             "dark": "SETTINGS.Theme.Dark"
          },
-         default: "light",
+         default: "dark",
          onChange: value => this.applyTheme(value)
       });
 

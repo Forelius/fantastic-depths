@@ -124,7 +124,6 @@ export class fadeActor extends Actor {
       const classes = CONFIG.FADE.Classes;
       // Find a match in the FADE.Classes data
       const classData = Object.values(classes).find(cdata => cdata.name.toLowerCase() === classNameInput);
-
       let savingThrows = systemData.savingThrows || {};
 
       if (classData !== undefined) {
@@ -134,6 +133,10 @@ export class fadeActor extends Actor {
                savingThrows[saveType].value = savesData[saveType];
             }
          }
+      }
+      // Apply modifier for wisdom, if needed
+      if (this.type !== "monster") {
+         savingThrows.spell.value -= systemData.abilities.wis.mod;
       }
       systemData.savingThrows = savingThrows;
    }
@@ -176,7 +179,7 @@ export class fadeActor extends Actor {
     */
    _prepareArmorClass() {
       const systemData = this.system;
-      let baseAC = CONFIG.FADE.Armor.acNaked;
+      let baseAC = CONFIG.FADE.Armor.acNaked - (systemData.abilities?.dex.mod ?? 0);
       let ac = {};
       ac.naked = baseAC;
       ac.value = baseAC;
@@ -204,8 +207,8 @@ export class fadeActor extends Actor {
          ac.total -= ac.shield;
       }
 
-      // Now dex modifier and other mods.
-      ac.total = ac.total - (systemData.mod.ac ?? 0) - (systemData.abilities?.dex.mod ?? 0);
+      // Now other mods.
+      ac.total = ac.total - (systemData.mod.ac ?? 0);
 
       systemData.ac = ac;
    }
@@ -257,7 +260,6 @@ export class fadeActor extends Actor {
       // If not a monster...
       this._calculateEncMovement(enc, encumbrance);
       systemData.encumbrance = encumbrance;
-      //this.update({ "system.encumbrance": systemData.encumbrance });
    }
       
    _calculateEncMovement(enc, encumbrance) {
@@ -291,6 +293,5 @@ export class fadeActor extends Actor {
 
       systemData.movement = movement;
       systemData.flight = flight;
-      //this.update({ "system.movement": movement, "system.flight": flight });
    }
 }

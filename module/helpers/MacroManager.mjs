@@ -41,6 +41,27 @@ export class MacroManager {
          img: `${fdPath}/ui/import.webp`,
          folder: folder.id,
       }, false);  // Set to false if you don't want automatic hotbar assignment
+
+      await MacroManager.createMacro({
+         name: "Roll Abilty Scores 4d6kh",
+         type: "script",
+         command: "let results = ''; \
+let accum = 0; \
+for(let i = 0; i < 6; i++) { \
+let roll; \
+do { \
+  roll = new Roll('4d6kh3'); \
+  await roll.evaluate(); \
+} while (roll.total < 6); \
+accum += roll.total; \
+results += `Roll ${i + 1}: ${roll.total}<br>`; \
+} \
+let average = Math.round(accum / 6, 2); \
+results += `<strong>Average:</strong> ${average}`; \
+ChatMessage.create({content: results, flavor: 'Ability Score Rolls'});",
+         img: `${fdPath}/ui/import.webp`,
+         folder: folder.id
+      }, false);
    }
 
    // Helper method to get or create a folder

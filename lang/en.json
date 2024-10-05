@@ -52,26 +52,26 @@
             "Effects": "Effects",
             "Description": "Description"
          },
-         "Ex": {
+         "explore": {
             "long": "Exploration",
             "OpenDoor": {
                "long": "Force open door or lift heavy object. Roll greater than or equal to.",
-               "value": "Open Door",
+               "short": "Open Door",
                "abbr": "OD"
             },
             "SecretDoor": {
                "long": "Detect a hidden door or compartment. Roll less than or equal to.",
-               "value": "Secret Door",
+               "short": "Secret Door",
                "abbr": "SD"
             },
             "ListenDoor": {
                "long": "Hear a sound on the other side of a door or in the distance. Roll less than or equal to.",
-               "value": "Listen Door",
+               "short": "Listen Door",
                "abbr": "LD"
             },
             "FindTrap": {
                "long": "Find a concealed medium to large trap or hazard. Roll less than or equal to.",
-               "value": "Find Trap",
+               "short": "Find Trap",
                "abbr": "FT"
             }
          },

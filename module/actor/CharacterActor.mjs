@@ -22,8 +22,8 @@ export class CharacterActor extends fadeActor {
    }
 
    /** @override */
-   async prepareDerivedData() {
-      await super.prepareDerivedData();
+   prepareDerivedData() {
+      super.prepareDerivedData();
       this._prepareDerivedMovement()
       this._prepareClassInfo();
       this._prepareWrestling();

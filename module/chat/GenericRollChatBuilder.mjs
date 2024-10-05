@@ -9,8 +9,9 @@ export class GenericRollChatBuilder extends ChatBuilder {
       const rollContent = await roll.render();
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
       let resultString = null;
+
+      // Determine the roll result based on the provided data
       if (mdata.pass !== undefined && mdata.pass !== null) {
-         // Determine if the roll is successful based on the roll type and target number      
          let testResult = this.getBoolRollResultType(roll.total, targetNumber, mdata.pass);
          resultString = this.getBoolResult(testResult);
       } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {
@@ -20,6 +21,8 @@ export class GenericRollChatBuilder extends ChatBuilder {
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
+
+      // Prepare data for the chat template
       const chatData = {
          rollContent,
          mdata,
@@ -27,8 +30,22 @@ export class GenericRollChatBuilder extends ChatBuilder {
          actorName,
          userName,
       };
+
+      // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
-      const chatMessageData = await this.getChatMessageData({ content, rolls });
+
+      // Determine rollMode (use mdata.rollmode if provided, fallback to default)
+      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
+
+      // Prepare chat message data, including rollMode from mdata
+      const chatMessageData = await this.getChatMessageData({
+         content,
+         rolls,
+         rollMode, // Pass the determined rollMode
+      });
+
+      // Create the chat message
       await ChatMessage.create(chatMessageData);
    }
+
 }

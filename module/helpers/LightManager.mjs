@@ -104,7 +104,7 @@ export class LightManager {
             lightSettings = {
                dim: lightData.radius,
                bright: 6,
-               color: "#d0A530",
+               color: "#d0A540",
                attenuation: 0.8,
                luminosity: 0.5,
                animation: {
@@ -118,7 +118,7 @@ export class LightManager {
             lightSettings = {
                dim: lightData.radius,
                bright: 6,
-               color: "#d0a740",
+               color: "#d0a750",
                attenuation: 0.7,
                luminosity: 0.5,
                animation: {

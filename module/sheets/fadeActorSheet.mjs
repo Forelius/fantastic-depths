@@ -123,73 +123,73 @@ export class fadeActorSheet extends ActorSheet {
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable
-      if (!this.isEditable) return;
+      if (this.isEditable) {
+         // Add Inventory Item
+         html.on('click', '.item-create', async (event) => { await this._onItemCreate(event) });
 
-      // Add Inventory Item
-      html.on('click', '.item-create', async (event) => { await this._onItemCreate(event) });
-
-      // Delete Inventory Item
-      html.on('click', '.item-delete', (event) => {
-         const item = this._getItemFromActor(event);
-         const li = $(event.currentTarget).parents('.item');
-         item.delete();
-         li.slideUp(200, () => this.render(false));
-      });
-
-      // Active Effect management
-      html.on('click', '.effect-control', (event) => {
-         const row = event.currentTarget.closest('li');
-         const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
-         onManageActiveEffect(event, document);
-      });
-
-      // Rollable abilities.
-      html.on('click', '.rollable', this._onRoll.bind(this));
-
-      // Drag events for macros.
-      if (this.actor.isOwner) {
-         let handler = (event) => this._onDragStart(event);
-         html.find('li.item').each((i, li) => {
-            if (li.classList.contains('inventory-header')) return;
-            li.setAttribute('draggable', true);
-            li.addEventListener('dragstart', handler, false);
+         // Delete Inventory Item
+         html.on('click', '.item-delete', (event) => {
+            const item = this._getItemFromActor(event);
+            const li = $(event.currentTarget).parents('.item');
+            item.delete();
+            li.slideUp(200, () => this.render(false));
          });
-      }
 
-      // Bind the collapsible functionality to the header click event
-      html.find('.collapsible-header').on('click', async (event) => {
-         // If not the create item column...
-         if ($(event.target).closest('.item-create').length === 0) {
-            await this._toggleCollapsibleContent(event);
+         // Active Effect management
+         html.on('click', '.effect-control', (event) => {
+            const row = event.currentTarget.closest('li');
+            const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
+            onManageActiveEffect(event, document);
+         });
+
+         // Rollable abilities.
+         html.on('click', '.rollable', this._onRoll.bind(this));
+
+         // Drag events for macros.
+         if (this.actor.isOwner) {
+            let handler = (event) => this._onDragStart(event);
+            html.find('li.item').each((i, li) => {
+               if (li.classList.contains('inventory-header')) return;
+               li.setAttribute('draggable', true);
+               li.addEventListener('dragstart', handler, false);
+            });
          }
-      });
 
-      // Toggle Equipment
-      html.find(".item-toggle").click(async (event) => {
-         const item = this._getItemFromActor(event);
-         // Toggle the equipped state and store the new state in isEquipped
-         const isEquipped = !item.system.equipped;
-         await item.update({ "system.equipped": isEquipped });
-      });
-
-      // Consumables
-      html.find(".consumable-counter .full-mark").click((event) => {
-         this._useConsumable(event, true);
-      });
-      html.find(".consumable-counter .empty-mark").click((event) => {
-         this._useConsumable(event, false);
-      });
-
-      // Editable
-      html.find(".editable input")
-         .click((event) => event.target.select())
-         .change(this._onDataChange.bind(this));
-
-      html
-         .find(".spells .item-reset[data-action='reset-spells']")
-         .click((event) => {
-            this._resetSpells(event);
+         // Bind the collapsible functionality to the header click event
+         html.find('.collapsible-header').on('click', async (event) => {
+            // If not the create item column...
+            if ($(event.target).closest('.item-create').length === 0) {
+               await this._toggleCollapsibleContent(event);
+            }
          });
+
+         // Toggle Equipment
+         html.find(".item-toggle").click(async (event) => {
+            const item = this._getItemFromActor(event);
+            // Toggle the equipped state and store the new state in isEquipped
+            const isEquipped = !item.system.equipped;
+            await item.update({ "system.equipped": isEquipped });
+         });
+
+         // Consumables
+         html.find(".consumable-counter .full-mark").click((event) => {
+            this._useConsumable(event, true);
+         });
+         html.find(".consumable-counter .empty-mark").click((event) => {
+            this._useConsumable(event, false);
+         });
+
+         // Editable
+         html.find(".editable input")
+            .click((event) => event.target.select())
+            .change(this._onDataChange.bind(this));
+
+         html
+            .find(".spells .item-reset[data-action='reset-spells']")
+            .click((event) => {
+               this._resetSpells(event);
+            });
+      }
    }
 
    /**
@@ -361,6 +361,10 @@ export class fadeActorSheet extends ActorSheet {
          }
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
+         let title = elem.getAttribute("title");
+         if (title) { // Do this because dataset stringifies all properties.
+            dataset.desc = title;
+         }
          cardType = CHAT_TYPE.GENERIC_ROLL;
          try {
             dialogResp = await DialogFactory(dataset, this.actor);
@@ -428,7 +432,7 @@ export class fadeActorSheet extends ActorSheet {
     * @param {jQuery} $content - The collapsible content to toggle
     * @param {Boolean} isCollapsed - If true, collapse the content; if false, expand the content
     */
-   async _toggleContent($parent, skipAnim=false) {
+   async _toggleContent($parent, skipAnim = false) {
       const children = $parent.find('.collapsible-content');
       const isCollapsed = $(children[0]).hasClass('collapsed');
 
