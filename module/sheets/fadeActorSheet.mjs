@@ -184,11 +184,22 @@ export class fadeActorSheet extends ActorSheet {
             .click((event) => event.target.select())
             .change(this._onDataChange.bind(this));
 
-         html
-            .find(".spells .item-reset[data-action='reset-spells']")
+         html.find(".spells .item-reset[data-action='reset-spells']")
             .click((event) => {
                this._resetSpells(event);
             });
+
+         html.find('input[data-action="add-tag"]').keypress((ev) => {
+            if (ev.which === 13) {
+               const value = $(ev.currentTarget).val();
+               this.object.tagManager.pushTag(value);
+            }
+         });
+         html.find(".tag-delete").click((ev) => {
+            const value = ev.currentTarget.parentElement.dataset.tag;
+            this.object.tagManager.popTag(value);
+         });
+
       }
    }
 

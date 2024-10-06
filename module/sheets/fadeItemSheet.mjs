@@ -109,24 +109,21 @@ export class fadeItemSheet extends ItemSheet {
       super.activateListeners(html);
 
       // Everything below here is only needed if the sheet is editable
-      if (!this.isEditable) return;
-
-      // Roll handlers, click handlers, etc. would go here.
-
-      // Active Effect management
-      html.on('click', '.effect-control', (ev) =>
-         onManageActiveEffect(ev, this.item)
-      );
-
-      html.find('input[data-action="add-tag"]').keypress((ev) => {
-         if (ev.which === 13) {
-            const value = $(ev.currentTarget).val();
-            this.object.pushTag(value);
-         }
-      });
-      html.find(".tag-delete").click((ev) => {
-         const value = ev.currentTarget.parentElement.dataset.tag;
-         this.object.popTag(value);
-      });
+      if (this.isEditable) {
+         // Active Effect management
+         html.on('click', '.effect-control', (ev) =>
+            onManageActiveEffect(ev, this.item)
+         );
+         html.find('input[data-action="add-tag"]').keypress((ev) => {
+            if (ev.which === 13) {
+               const value = $(ev.currentTarget).val();
+               this.object.tagManager.pushTag(value);
+            }
+         });
+         html.find(".tag-delete").click((ev) => {
+            const value = ev.currentTarget.parentElement.dataset.tag;
+            this.object.tagManager.popTag(value);
+         });
+      }
    }
 }

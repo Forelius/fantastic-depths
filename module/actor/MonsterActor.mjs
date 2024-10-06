@@ -1,11 +1,13 @@
 // actor-character.mjs
 import { fadeActor } from './fadeActor.mjs';
+import { TagManager } from '../helpers/TagManager.mjs';
 
 export class MonsterActor extends fadeActor {
 
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context)
+      super(data, context);
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    /** @override */

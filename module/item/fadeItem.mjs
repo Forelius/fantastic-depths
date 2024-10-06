@@ -1,5 +1,6 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { TagManager } from '../helpers/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -8,6 +9,7 @@ import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 export class fadeItem extends Item {
    constructor(data, context) {
       super(data, context);
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    // Define default icons for various item types using core data paths
@@ -109,47 +111,5 @@ export class fadeItem extends Item {
          const builder = new ChatFactory(cardType, chatData);
          return builder.createChatMessage();
       }
-   }
-
-   pushTag(value) {
-      const systemData = this.system;
-      systemData.tags = systemData.tags || [];
-
-      const trimmedValue = value.trim();
-      if (!systemData.tags.includes(trimmedValue)) {
-         systemData.tags.push(trimmedValue);
-      }
-
-      // Check if "light" tag is being added and initialize the system.light property
-      if (trimmedValue === "light" && !systemData.light) {
-         systemData.light = {};
-         systemData.light.duration = 6;
-         systemData.light.radius = 30;
-         systemData.light.fuel = "none";
-         systemData.light.type = "torch";
-         this.update({ "system.light": systemData.light }); // Update light separately
-      }
-
-      // Update the tags separately
-      return this.update({ "system.tags": systemData.tags });
-   }
-
-   popTag(value) {
-      const systemData = this.system;
-      systemData.tags = systemData.tags || [];
-
-      const index = systemData.tags.indexOf(value);
-      if (index > -1) {
-         systemData.tags.splice(index, 1);
-      }
-
-      // Check if "light" tag is being removed and clear the system.light property
-      if (value === "light") {
-         systemData.light = null; // Or {}, depending on your needs
-         this.update({ "system.light": systemData.light }); // Update light separately
-      }
-
-      // Update the tags separately
-      return this.update({ "system.tags": systemData.tags });
-   }
+   }   
 }

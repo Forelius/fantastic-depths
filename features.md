@@ -9,6 +9,7 @@
 		- Track spell memorized#/max# per level and show how many of each type of spell is memorized.
 		- Non-owners can only view attributes tab, inventory and other details hidden.
 	- Monsters
+		- Tags
 	- NPCS/Retainers [PARTIAL]
 - Item sheets
 	- Generic items
