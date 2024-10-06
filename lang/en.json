@@ -3,7 +3,8 @@
       "Actor": {
          "Name": "Name",
          "Health": "Hit Points",
-         "HealthMax": "Max HP",
+         "HealthMax": "Max HP.",
+         "HealthMaxMonster": "Max HP. Set to zero to autocalculate max HP from hit dice.",
          "Max": "Max",
          "HealthShort": "HP",
          "HitDice": "Hit Dice",

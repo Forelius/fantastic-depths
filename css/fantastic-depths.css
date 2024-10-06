@@ -640,11 +640,12 @@ h1, h2, h3, h4 {
   height: 30px;
 }
 .fantastic-depths .tag-section {
-  padding: 2px;
+  padding: 1px 2px 0 1px;
+  margin: 0 0 1px 0;
 }
 .fantastic-depths .tag-section .tag-list {
   margin: 0;
-  height: 25px;
+  height: 24px;
   overflow: auto;
   list-style: none;
   padding: 1px;
@@ -669,6 +670,7 @@ h1, h2, h3, h4 {
   max-height: 28px;
 }
 .fantastic-depths .tag-section .add-tag input {
+  margin-top: 1px;
   max-height: 20px;
   min-width: 70px;
 }

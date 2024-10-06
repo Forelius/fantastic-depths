@@ -13,7 +13,6 @@
       {{#if system.config.isSpellcaster}}
       <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
       {{/if}}
-      <a class="item" data-tab="skills">{{localize 'FADE.Actor.Tabs.Skills'}}</a>
       <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
       {{#if isGM}}
       <a class="item" data-tab="effects">{{localize 'FADE.Actor.Tabs.Effects'}}</a>
@@ -27,10 +26,9 @@
       <div class="tab abilities" data-group="primary" data-tab="abilities">
          {{> "systems/fantastic-depths/templates/actor/parts/character-abilities.hbs"}}
       </div>
-      {{!-- Biography Tab --}}
+      {{!-- Description Tab --}}
       <div class="tab biography" data-group="primary" data-tab="description">
-         {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
-         {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+         {{> "systems/fantastic-depths/templates/actor/parts/character-desc.hbs"}}
       </div>
       {{!-- Owned Items Tab --}}
       <div class="tab items" data-group="primary" data-tab="items">

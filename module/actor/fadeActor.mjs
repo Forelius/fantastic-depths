@@ -147,8 +147,8 @@ export class fadeActor extends Actor {
    _prepareHitPoints() {
       const systemData = this.system;
       let hp = this.system.hp || {};
-      hp.value = hp.value || 5;
-      hp.max = hp.max || 5;
+      hp.value = hp.value ?? 0;
+      hp.max = hp.max ?? 0;
       if (this.type === "monster") {
          hp.hd = hp.hd || "1";
       } else {

@@ -26,6 +26,9 @@ export class MonsterActor extends fadeActor {
       systemData.details.intelligence = systemData.details.intelligence || 6;
       systemData.details.size = systemData.details.size || "M";
       systemData.details.monsterType = systemData.details.monsterType || "Monster (Common)";
+      systemData.details.attacks = systemData.details.attacks || 1;
+      systemData.details.alignment = systemData.details.alignment || "Chaotic";
+      systemData.thac0.value = systemData.thac0.value ?? 19;
       systemData.na = systemData.na || {};
       systemData.na.wandering = systemData.na.wandering || "1d4";
       systemData.na.lair = systemData.na.lair || "1d6";
@@ -56,15 +59,6 @@ export class MonsterActor extends fadeActor {
       return data;
    }
 
-   /** @override */
-   _onUpdate(changed, options, userId) {
-      super._onUpdate(changed, options, userId);
-      // Check if the class property has changed
-      if (changed.system?.hp?.hd) {
-         this._prepareHitPoints();
-      }
-   }
-
    _prepareWrestling() {
       // Wrestling skill
       const systemData = this.system;
@@ -93,28 +87,36 @@ export class MonsterActor extends fadeActor {
       }
    }
 
+   /**
+    * @override
+    * Calculate average hitpoints based on hitdice.
+    */
    _prepareHitPoints() {
+      super._prepareHitPoints();
       const systemData = this.system;
-      let hd = systemData.hp.hd;
-      // Regular expression to check for a dice specifier like d<number>
-      const diceRegex = /d(\d+)/;
-      // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
-      const modifierRegex = /([+\-*/]\d+)$/;
 
-      const match = hd.match(diceRegex);
-      let dieSides = 8;
-      if (match) {
-         dieSides = parseInt(match[1], 10);
-      } else {
-         dieSides = 8;
-      }
+      if (systemData.hp.max == 0) {
+         let hd = systemData.hp.hd;
 
-      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      let base = hd.replace(modifierRegex, ''); // Extract base number
-      let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
-      base = parseInt(base);
-      modifier = parseInt(modifier, 10);
-      if (!systemData.hp.value) {
+         // Regular expression to check for a dice specifier like d<number>
+         const diceRegex = /d(\d+)/;
+         // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
+         const modifierRegex = /([+\-*/]\d+)$/;
+
+         const match = hd.match(diceRegex);
+         let dieSides = 8;
+         if (match) {
+            dieSides = parseInt(match[1], 10);
+         } else {
+            dieSides = 8;
+         }
+
+         // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
+         let base = hd.replace(modifierRegex, ''); // Extract base number
+         let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
+         base = parseInt(base);
+         modifier = parseInt(modifier, 10);
+
          systemData.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);
          systemData.hp.max = systemData.hp.value;
       }
