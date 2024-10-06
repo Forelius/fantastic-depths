@@ -65,8 +65,11 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       const systemData = this.system;
 
-      systemData.config = systemData.config || { isSpellcaster: false, };
+      systemData.config = systemData.config || {};
+      systemData.config.isSpellcaster = systemData.config.isSpellcaster || false;
+      systemData.config.isRetainer = systemData.config.isRetainer || false;
       systemData.encumbrance = systemData.encumbrance || {};
+
       if (this.type === "monster") {
          systemData.encumbrance.max = systemData.encumbrance.max || 0;
       } else {

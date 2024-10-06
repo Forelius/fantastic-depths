@@ -42,3 +42,42 @@
    min-width: 460px !important;
    min-height: 340px !important;
 }
+
+
+.party-tracker {
+   .party-tracker-list {
+      max-height: 100%; /* Ensure the list is scrollable */
+      overflow-y: auto;
+      padding: 4px;
+
+      .party-member {
+         position: relative; /* Relative positioning allows the delete button to be positioned inside */
+         margin-bottom: 4px;
+         /* Delete button styles */
+         .delete-actor {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 24px; /* Control size of the button */
+            height: 24px; /* Equal height */
+            display: flex; /* Use flex to center icon */
+            align-items: center;
+            justify-content: center;
+            font-size: 14px; /* Ensure icon is small */
+         }
+         /* Ensure icon inherits size */
+         .delete-actor i {
+            font-size: inherit;
+            color: #555555; /* Darken color on hover */
+         }
+         /* Hover effect for better feedback */
+         .delete-actor:hover {
+            color: #888888; /* Darken color on hover */
+         }
+      }
+   }
+}

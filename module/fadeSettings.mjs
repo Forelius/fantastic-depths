@@ -19,7 +19,7 @@ export class fadeSettings {
          restricted: true, // Only the GM can change this setting
          onChange: value => {
             // This is called once the "Save" button is clicked
-            ui.notifications.warn("A system restart is required for changes to take effect.");            
+            ui.notifications.warn("A system restart is required for changes to take effect.");
          }
       });
 
@@ -135,9 +135,17 @@ export class fadeSettings {
       //   hint: "SETTINGS.autoNumber.hint",
       //   scope: "world",
       //   config: true,
-      //   default: false, 
+      //   default: false,
       //   type: Boolean
       //});
+
+      game.settings.register('mySystem', 'partyTrackerData', {
+         name: "Party Tracker Data",
+         scope: "world",      // This means it's stored for the whole world
+         config: false,       // No need to show it in the UI
+         type: Object,        // The data type is an object
+         default: []          // Default value is an empty array
+      });
    }
 
    // This function applies the selected theme by adding/removing relevant classes

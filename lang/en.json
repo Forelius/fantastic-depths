@@ -27,6 +27,14 @@
          "Experience": "Experience",
          "XPBonus": "Bonus %",
          "THAC0": "THAC0",
+         "isSpellcaster": {
+            "hint": "Can this actor or item cast spells.",
+            "name": "Spellcaster"
+         },
+         "isRetainer": {
+            "hint": "Is this character a retainer, hireling or other hired hand.",
+            "name": "Retainer"
+         },
          "Wrestling": {
             "long": "Wrestling Rating",
             "short": "Wrestling",
@@ -349,10 +357,6 @@
          "Hint": "The maximum amount a character may carry, in coins, and still be able to move.",
          "Hint2": "The maximum amount, in coins, that can be carried while still able to move.",
          "Name": "Encumbrance Max"
-      },
-      "isSpellcaster": {
-         "hint": "Can this actor or item cast spells.",
-         "name": "Is Spellcaster"
       },
       "Theme": {
          "Hint": "Dark mode features a dark backround with light text and light mode features a light background with dark text.",

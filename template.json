@@ -4,7 +4,8 @@
       "templates": {
          "base": {
             "config": {
-               "isSpellcaster": false
+               "isSpellcaster": false,
+               "isRetainer": false
             },
             "biography": "",
             "retainer": {

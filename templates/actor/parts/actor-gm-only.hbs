@@ -14,8 +14,12 @@
          <label for="system.flight.max">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
       </li>
       <li>
-         <input type="checkbox" name="system.config.isSpellcaster" data-dtype="Boolean" {{#if system.config.isSpellcaster}} checked{{/if}} title="{{localize 'SETTINGS.isSpellcaster.hint'}}" />
-         <label for="system.config.isSpellcaster">{{localize 'SETTINGS.isSpellcaster.name'}}</label>
+         <input type="checkbox" name="system.config.isSpellcaster" data-dtype="Boolean" {{#if system.config.isSpellcaster}} checked{{/if}} title="{{localize 'FADE.Actor.isSpellcaster.hint'}}" />
+         <label for="system.config.isSpellcaster">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
+      </li>
+      <li>
+         <input type="checkbox" name="system.config.isRetainer" data-dtype="Boolean" {{#if system.config.isRetainer}} checked{{/if}} title="{{localize 'FADE.Actor.isRetainer.hint'}}" />
+         <label for="system.config.isRetainer">{{localize 'FADE.Actor.isRetainer.name'}}</label>
       </li>
    </ul>
 </section>

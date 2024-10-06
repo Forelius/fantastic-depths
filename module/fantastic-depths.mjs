@@ -18,6 +18,7 @@ import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './fadeCombat.mjs'
 // Import TurnTrackerForm class
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
+import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
 import { MacroManager } from './helpers/MacroManager.mjs';
 import { LightManager } from './helpers/LightManager.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
@@ -39,6 +40,7 @@ Hooks.once('init', function () {
       MacroManager,
       LightManager,
       TurnTrackerForm,
+      PartyTrackerForm,
       ContentImporter
    };
 

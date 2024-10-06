@@ -1,0 +1,26 @@
+<div class="party-tracker">   
+   <div class="party-tracker-list">
+      {{#each trackedActors}}
+      <div class="party-member bordered" data-actor-id="{{id}}">
+         <!-- Delete button positioned in the top-right corner -->
+         <span class="delete-actor" title="Remove Actor">
+            <i class="fas fa-trash"></i> <!-- Trash icon -->
+         </span>
+         <!-- Actor details -->
+         <div>
+            <span><strong>{{name}}</strong></span>
+            <span> {{system.details.class}}</span>
+            <span> Level: {{system.details.level}}</span>
+         </div>
+         <div>
+            <span>HP: {{system.hp.value}}/{{system.hp.max}}</span>
+            <span> AC: {{system.ac.total}}</span>
+            <span> THAC0: {{system.thac0.value}}</span>
+         </div>
+         <div>
+            <span> Movement: {{system.movement.turn}} (Turn), {{system.movement.round}} (Round)</span>
+         </div>
+      </div>
+      {{/each}}
+   </div>
+</div>
