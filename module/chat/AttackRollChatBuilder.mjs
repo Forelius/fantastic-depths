@@ -81,7 +81,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
    }
 
    #getToHitResult() {
-      const { caller, context, resp } = this.data;
+      const { context } = this.data;
       const thac0 = context.system.thac0.value;
       let ac = this.#selectedActor?.system.ac?.total;
       const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
@@ -120,7 +120,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       let descData = target ? { attackerid: context.id, attacker: actorName, attackType: resp.attackType, target: target, weapon: caller.name }
          : { attackerid: context.id, attacker: actorName, attackType: resp.attackType, weapon: caller.name };
       const description = target ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
-      const rollContent = await roll.render();
+      const rollContent = await roll.render({ flavor: 'Attack Roll' });
       const toHitResult = this.#getToHitResult();
       let damageRoll = caller.getDamageRoll(resp.attackType, context);
 

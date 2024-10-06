@@ -3,10 +3,18 @@ import { ChatBuilder } from './ChatBuilder.mjs';
 export class GenericRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/generic-roll.hbs';
 
+   async getRollContent(roll, mdata) {
+      if (mdata.flavor) {
+         return roll.render({ flavor: mdata.flavor });
+      } else {
+         return roll.render();
+      }
+   }
+
    async createChatMessage() {
       const { context, mdata, resp, roll } = this.data;
       const rolls = [roll];
-      const rollContent = await roll.render();
+      const rollContent = await this.getRollContent(roll, mdata);
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
       let resultString = null;
 

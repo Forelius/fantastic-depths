@@ -1,5 +1,11 @@
-<div>{{actorName}}: {{mdata.label}}</div>
-{{#if mdata.desc}}<i>{{mdata.desc}}</i>{{/if}}
+{{#if mdata.label}}
+<div>{{mdata.label}}{{#if mdata.target}}({{mdata.target}}){{/if}}</div>
+{{/if}}
+{{#if mdata.desc}}
+<i style="font-size:12px;">{{mdata.desc}}</i>
+{{/if}}
 <hr>
-{{#if resultString}}{{{resultString}}}{{/if}}
+{{#if resultString}}
+{{{resultString}}}
+{{/if}}
 {{{rollContent}}}

@@ -351,24 +351,25 @@ export class fadeActorSheet extends ActorSheet {
       const elem = event.currentTarget;
       const dataset = elem.dataset;
       let formula = dataset.formula;
-      let cardType = null;
+      let chatType = null;
       let dialogResp;
 
       if (dataset.rollType === 'item') {
+         // If clicking an item then have item handle roll.
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
          if (item) item.roll(dataset);
       }
       else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
-         cardType = CHAT_TYPE.ABILITY_CHECK;
+         chatType = CHAT_TYPE.ABILITY_CHECK;
          try {
             dialogResp = await DialogFactory(dataset, this.actor);
             formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
          }
          // If close button is pressed
          catch (error) {
-            cardType = null;
+            chatType = null;
          }
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
@@ -376,34 +377,31 @@ export class fadeActorSheet extends ActorSheet {
          if (title) { // Do this because dataset stringifies all properties.
             dataset.desc = title;
          }
-         cardType = CHAT_TYPE.GENERIC_ROLL;
+         chatType = CHAT_TYPE.GENERIC_ROLL;
          try {
             dialogResp = await DialogFactory(dataset, this.actor);
             formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`) : formula;
          }
          // If close button is pressed
          catch (error) {
-            cardType = null;
+            chatType = null;
          }
-      } else if (dataset.rollType === 'damage') {
-         cardType = CHAT_TYPE.GENERIC_ROLL;
-         console.log("Damage Roll", dataset);
       } else {
          // Basic roll with roll formula and label
-         cardType = CHAT_TYPE.GENERIC_ROLL;
+         chatType = CHAT_TYPE.GENERIC_ROLL;
       }
 
-      if (cardType !== null) {
+      if (chatType !== null) {
          const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
          let rolled = await new Roll(formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
-            caller: this,
+            caller: this.actor,
             context: this.actor,
             mdata: dataset,
             roll: rolled,
          };
-         const builder = new ChatFactory(cardType, chatData);
+         const builder = new ChatFactory(chatType, chatData);
          return builder.createChatMessage();
       }
 

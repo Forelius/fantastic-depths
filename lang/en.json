@@ -64,22 +64,22 @@
          "explore": {
             "long": "Exploration",
             "OpenDoor": {
-               "long": "Force open door or lift heavy object. Roll greater than or equal to.",
+               "long": "Force open door or lift heavy object.",
                "short": "Open Door",
                "abbr": "OD"
             },
             "SecretDoor": {
-               "long": "Detect a hidden door or compartment. Roll less than or equal to.",
+               "long": "Detect a hidden door or compartment.",
                "short": "Secret Door",
                "abbr": "SD"
             },
             "ListenDoor": {
-               "long": "Hear a sound on the other side of a door or in the distance. Roll less than or equal to.",
+               "long": "Hear a sound through a door or in the distance.",
                "short": "Listen Door",
                "abbr": "LD"
             },
             "FindTrap": {
-               "long": "Find a concealed medium to large trap or hazard. Roll less than or equal to.",
+               "long": "Find a concealed medium to large trap or hazard.",
                "short": "Find Trap",
                "abbr": "FT"
             }

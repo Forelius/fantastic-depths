@@ -8,7 +8,7 @@
             <label>{{localize 'FADE.Actor.Name'}}</label>
          </div>
       </li>
-      {{#if system.retainer.enabled}}
+      {{#if system.config.isRetainer}}
       <li>
          <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
          <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
@@ -36,7 +36,9 @@
       </li>
       <li style="min-width:70px;">
          <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDice'}}" />
-         <label class="hitdie rollable" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
+         <label class="hitdie rollable" 
+                data-formula="{{system.hp.hd}}"
+                data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
       </li>
    </ul>
    <ul class="summary flexrow">

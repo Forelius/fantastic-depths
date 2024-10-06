@@ -60,7 +60,44 @@ export class WeaponItem extends fadeItem {
       return result;
    }
 
-   getToHitRoll(attackType, mod, attacker) {
+     /**
+ * Handle clickable rolls.
+ * @param {Event} event The originating click event
+ */
+   async roll() {
+      const systemData = this.system;
+
+      // Initialize chat data.
+      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      const rollMode = await game.settings.get('core', 'rollMode');
+      const label = `[${this.type}] ${this.name}`;
+      const rollData = this.getRollData();
+      let dialogResp;
+
+      try {
+         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
+         rollData.formula = this._getToHitRoll(dialogResp.resp.attackType, dialogResp.resp.mod, this.actor);
+      }
+      // If close button is pressed
+      catch (error) {
+         // Shhhh
+      }
+      let result = null;
+      if (dialogResp !== null) {
+         const rollContext = { ...rollData, ...dialogResp.resp || {} };
+         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const chatData = {
+            resp: dialogResp.resp, // the dialog response
+            caller: this, // the weapon
+            context: this.actor, // the weapon owner
+            roll: rolled,
+         };
+         const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
+         return builder.createChatMessage();
+      }
+   }
+
+   _getToHitRoll(attackType, mod, attacker) {
       const systemData = this.system;
       const attackerData = attacker.system;
       let result = mod != 0 ? '1d20+@mod' : '1d20';
@@ -85,43 +122,6 @@ export class WeaponItem extends fadeItem {
          }
       }
       return result;
-   }
-
-   /**
- * Handle clickable rolls.
- * @param {Event} event The originating click event
- */
-   async roll() {
-      const systemData = this.system;
-
-      // Initialize chat data.
-      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const rollMode = await game.settings.get('core', 'rollMode');
-      const label = `[${this.type}] ${this.name}`;
-      const rollData = this.getRollData();
-      let dialogResp;
-
-      try {
-         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
-         rollData.formula = this.getToHitRoll(dialogResp.resp.attackType, dialogResp.resp.mod, this.actor);
-      }
-      // If close button is pressed
-      catch (error) {
-         // Shhhh
-      }
-      let result = null;
-      if (dialogResp !== null) {
-         const rollContext = { ...rollData, ...dialogResp.resp || {} };
-         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
-         const chatData = {
-            resp: dialogResp.resp, // the dialog response
-            caller: this, // the weapon
-            context: this.actor, // the weapon owner
-            roll: rolled,
-         };
-         const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
-         return builder.createChatMessage();
-      }
    }
 
    _prepareModText() {

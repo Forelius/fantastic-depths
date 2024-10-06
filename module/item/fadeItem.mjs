@@ -72,7 +72,8 @@ export class fadeItem extends Item {
    }
 
    /**
-    * Handle clickable rolls.
+    * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
+    * does not override this message the result is a chat message with the item description.
     * @param {dataset} event The data- tag values from the clicked element
     * @private
     */
@@ -82,34 +83,15 @@ export class fadeItem extends Item {
       // Initialize chat data.
       const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = await game.settings.get('core', 'rollMode');
-      const label = `[${item.type}] ${item.name}`;
-      let formula = dataset.formula;
-      let cardType = null;
-      let dialogResp;
-      //console.log("fadeItem.roll", label, item, dataset);
 
-      // If there's no roll data, send a chat message.
+      // If there's no roll data, send a chat message with the item description.
       if (dataset.test === null || dataset.test === undefined) {
          ChatMessage.create({
             speaker: speaker,
             rollMode: rollMode,
-            flavor: label,
+            flavor: `${item.name}`,
             content: item.system.description ?? '',
          });
-      }
-
-      if (cardType !== null) {
-         const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
-         let rolled = await new Roll(formula, rollContext).evaluate();
-         const chatData = {
-            dialogResp: dialogResp,
-            caller: item,
-            context: this.actor,
-            mdata: dataset,
-            roll: rolled,
-         };
-         const builder = new ChatFactory(cardType, chatData);
-         return builder.createChatMessage();
       }
    }   
 }

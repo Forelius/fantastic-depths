@@ -9,7 +9,6 @@
             },
             "biography": "",
             "retainer": {
-               "enabled": false,
                "loyalty": 0,
                "wage": ""
             },
@@ -68,7 +67,6 @@
                "mod": 0
             },
             "spells": {
-               "enabled": true,
                "1": {
                   "max": 0
                },

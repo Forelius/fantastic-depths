@@ -99,7 +99,13 @@
          {{#each system.savingThrows as |savingThrow key|}}
          <div class="flexrow flex-group-center">
             <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-            <label for="system.savingThrows.{{key}}.value" class="rollable" data-test="generic" data-formula="d20" data-pass="gte" data-target="{{savingThrow.value}}" data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
+            <label for="system.savingThrows.{{key}}.value" class="rollable" 
+                   data-test="generic" 
+                   data-formula="d20" 
+                   data-pass="gte" 
+                   data-flavor="Saving Throw"
+                   data-target="{{savingThrow.value}}" 
+                   data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
                {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
             </label>
          </div>

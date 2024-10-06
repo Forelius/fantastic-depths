@@ -2,7 +2,7 @@ import { fadeDialog } from './Dialog.mjs';
 
 /**
  * Create a type of dialog to be used.
- * @param {any} dataset
+ * @param {any} dataset Requires that dataset.dialog be set.
  * @param {any} caller For attack dialog this is the item.
  * @param {any} opt
  * @returns
