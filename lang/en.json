@@ -400,6 +400,15 @@
                "average": "Average Dexterity",
                "highest": "Highest Dexterity"
             }
+         },
+         "nextRound": {
+            "name": "Initiative Next Round Mode",
+            "hint": "Decide what will occur when the next round is activated in the combat tracker..",
+            "choices": {
+               "hold": "Hold Initiative",
+               "reset": "Reset Initiative",
+               "reroll": "Reroll Initiative"
+            }
          }
       },
       "autoNumber": {

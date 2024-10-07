@@ -79,13 +79,18 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
-      game.settings.register(game.system.id, "resetInitiative", {
-         name: "Reset Initiative on Round Change",
-         hint: "If enabled, the initiative rolls of all combatants will be reset when the round is changed.",
+      game.settings.register(game.system.id, "nextRound", {
+         name: "SETTINGS.initiative.nextRound.name",
+         hint: "SETTINGS.initiative.nextRound.hint",
          scope: "world",
          config: true,
-         type: Boolean,
-         default: true,
+         default: "reset",
+         type: String,
+         choices: {
+            "hold": "SETTINGS.initiative.nextRound.choices.hold",
+            "reset": "SETTINGS.initiative.nextRound.choices.reset",
+            "reroll": "SETTINGS.initiative.nextRound.choices.reroll"
+         },
          restricted: true // Only the GM can change this setting
          , onChange: value => { ui.notifications.warn("A system restart is required for changes to take effect."); }
       });
@@ -155,22 +160,10 @@ export class fadeSettings {
       });
    }
 
-   // This function applies the selected theme by adding/removing relevant classes
-   applyTheme(theme) {
-      let root = document.documentElement;
-      if (theme === "dark") {
-         root.classList.add("dark-mode");
-         root.classList.remove("light-mode");
-      } else {
-         root.classList.add("light-mode");
-         root.classList.remove("dark-mode");
-      }
-   }
-
    /**
-    * Toggles the group initiative modifier setting based on the selected initiative mode.
-    * @param {string} value - The value of the initiative mode setting (either 'individual' or 'group').
-    */
+   * Toggles the group initiative modifier setting based on the selected initiative mode.
+   * @param {string} value - The value of the initiative mode setting (either 'individual' or 'group').
+   */
    toggleGroupModifier(value) {
       const groupModifierSetting = document.querySelector(`select[name="${game.system.id}.groupInitiativeModifier"]`);
       // Set default value to 'none' when disabled
@@ -180,6 +173,18 @@ export class fadeSettings {
       } else {
          groupModifierSetting.disabled = true;   // Disable the setting if individual mode is selected      
          groupModifierSetting.value = "none";
+      }
+   }
+
+   // This function applies the selected theme by adding/removing relevant classes
+   applyTheme(theme) {
+      let root = document.documentElement;
+      if (theme === "dark") {
+         root.classList.add("dark-mode");
+         root.classList.remove("light-mode");
+      } else {
+         root.classList.add("light-mode");
+         root.classList.remove("dark-mode");
       }
    }
 
