@@ -23,6 +23,7 @@ import { MacroManager } from './helpers/MacroManager.mjs';
 import { LightManager } from './helpers/LightManager.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { ContentImporter } from './helpers/ContentImporter.mjs';
+import { fadeDialog } from './dialog/fadeDialog.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -41,7 +42,8 @@ Hooks.once('init', function () {
       LightManager,
       TurnTrackerForm,
       PartyTrackerForm,
-      ContentImporter
+      ContentImporter,
+      fadeDialog
    };
 
    // Add custom constants for configuration.

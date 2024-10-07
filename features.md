@@ -1,33 +1,34 @@
 # Fantastic Depths Foundry VTT System
 
 ## Sheets
-- GM-only Sheet Sections
-	- Sheets should have a special section for GM notes
-	- Actors and items effects tab for GM only
-- Actor sheets
-	- Player characters 
-		- Track spell memorized#/max# per level and show how many of each type of spell is memorized.
-		- Non-owners can only view attributes tab, inventory and other details hidden.
-		- Custom class support [TODO]
-	- Monsters
-		- Tags
-	- NPCS/Retainers [PARTIAL]
-- Item sheets
-	- Generic items/Gear
-		- Tags
-		- Effects
-	- Weapons
-		- Tags
-		- Effects
-	- Armor
-		- Effects
-	- Special abilities
-	- General skills
-	- Weapon masteries
-	- Spells
-	- Treasure
-		- Tags
-	- Containers [TODO]
+### GM-only Sheet Sections
+- Sheets should have a special section for GM notes
+- Actors and items effects tab for GM only
+
+### Actor sheets
+- Player characters 
+	- Track spell memorized#/max# per level and show how many of each type of spell is memorized.
+	- Non-owners can only view attributes tab, inventory and other details hidden.
+	- Custom class support [TODO]
+- Monsters
+	- Tags
+- NPCS/Retainers [PARTIAL]
+### Item sheets
+- Generic items/Gear
+	- Tags
+	- Effects
+- Weapons
+	- Tags
+	- Effects
+- Armor
+	- Effects
+- Special abilities
+- General skills
+- Weapon masteries
+- Spells
+- Treasure
+	- Tags
+- Containers [TODO]
 	
 ## Encounter tracker
 - (optional) Individual initiative 

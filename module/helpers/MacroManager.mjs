@@ -46,17 +46,13 @@ export class MacroManager {
          folder: gmFolder.id,
       }, true);  // Set to false if you don't want automatic hotbar assignment
 
-//      await MacroManager.createMacro({
-//         name: "Content Importer",
-//         type: "script",
-//         command: `if (game.user.isGM) {
-//   game.fade.ContentImporter.showImportDialog();
-//} else {
-//   ui.notifications.warn("Only the GM can use this macro.");
-//}`,
-//         img: `${fdPath}/ui/import.webp`,
-//         folder: gmFolder.id,
-//      }, false);  // Set to false if you don't want automatic hotbar assignment
+      await MacroManager.createMacro({
+         name: "Roll Abilty Scores 4d6kh",
+         type: "script",
+         command: "game.fade.LightManager.showLightDialog();",
+         img: `${fdPath}/ui/import.webp`,
+         folder: miscFolder.id
+      }, false);
 
       await MacroManager.createMacro({
          name: "Roll Abilty Scores 4d6kh",
@@ -78,6 +74,14 @@ ChatMessage.create({content: results, flavor: 'Ability Score Rolls'});",
          img: `${fdPath}/ui/import.webp`,
          folder: miscFolder.id
       }, false);
+
+      await MacroManager.createMacro({
+         name: "Attack",
+         type: "script",
+         command: "game.fade.fadeDialog.getSelectAttackDialog();",
+         img: `icons/svg/dice-target.svg`,
+         folder: miscFolder.id
+      }, false);      
    }
 
    // Helper method to get or create a folder

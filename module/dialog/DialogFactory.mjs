@@ -1,4 +1,4 @@
-import { fadeDialog } from './Dialog.mjs';
+import { fadeDialog } from './fadeDialog.mjs';
 
 /**
  * Create a type of dialog to be used.

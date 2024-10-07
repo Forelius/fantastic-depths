@@ -162,4 +162,55 @@ export class fadeDialog {
       dialogResp.context = caller;
       return dialogResp;
    }
+
+   static async getSelectAttackDialog(dataset, caller, opt) {
+      const dialogData = { };
+      const dialogResp = { caller };
+      // Check if there are any items with the "light" tag
+      const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
+
+      dialogData.label = "Select Attack Type";
+
+      let token = canvas.tokens.controlled[0];
+      if (!token) {
+         // Show a warning notification if no token is selected
+         ui.notifications.warn("You must select a token to perform this action.");
+      } else {
+         let items = token.actor.items;
+         let attackItems = [];
+         items.forEach(item => { if (item.type === "weapon") { attackItems.push(item); } });
+         if (items.length === 0) {
+            ui.notifications.warn("The selected actor does not have anything to attack with.");
+         } else {
+            dialogData.attackItems = attackItems;
+
+            dialogResp.resp = await Dialog.wait({
+               title: "Select Attack Type",
+               content: await renderTemplate(template, dialogData),
+               buttons: {
+                  attack: {
+                     label: "Attack",
+                     callback: function (html) {
+                        let itemId = document.getElementById('weaponItem').value;
+                        let item = token.actor.items.get(itemId);
+                        item.roll();
+                        return true;
+                     }
+                  },
+                  close: {
+                     label: "Close",
+                     callback: function (html) {
+                        return false;
+                     }
+                  }
+               },
+               default: "close",
+               close: () => { return false; }
+            });
+            dialogResp.context = caller;
+         }
+      }
+
+      return dialogResp;
+   }
 }

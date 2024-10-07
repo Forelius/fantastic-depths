@@ -83,7 +83,7 @@ export class WeaponItem extends fadeItem {
          // Shhhh
       }
       let result = null;
-      if (dialogResp !== null) {
+      if (dialogResp) {
          const rollContext = { ...rollData, ...dialogResp.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
