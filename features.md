@@ -8,22 +8,30 @@
 	- Player characters 
 		- Track spell memorized#/max# per level and show how many of each type of spell is memorized.
 		- Non-owners can only view attributes tab, inventory and other details hidden.
+		- Custom class support [TODO]
 	- Monsters
 		- Tags
 	- NPCS/Retainers [PARTIAL]
 - Item sheets
-	- Generic items
+	- Generic items/Gear
+		- Tags
+		- Effects
 	- Weapons
+		- Tags
+		- Effects
 	- Armor
+		- Effects
 	- Special abilities
 	- General skills
 	- Weapon masteries
 	- Spells
 	- Treasure
+		- Tags
 	- Containers [TODO]
 	
 ## Encounter tracker
 - (optional) Individual initiative 
+- (optional) Auto-roll initiative on round change.
 - Roll type, roll formula to use 
 - 'slow' tag makes character go last for party or last for initiative 
 
@@ -31,7 +39,7 @@
 - Session count, reset session count
 - (optional) Party rest tracking and chat message for resting
 - (optional) wandering monster check (GM roll). [TODO]
-- (optional) Hunger and thirst tracking  [TODO]
+- (optional) Hunger and thirst tracking [TODO]
 	
 ## Light emitting items
 - Toggle on and off dialog
@@ -45,21 +53,21 @@
 
 ## Compendiums
 - Items
-	- Adventuring gear [TODO]
+	- Adventuring gear
 	- Weapons
 	- Armor
-	- Magic items [TODO]
+	- Magic items [PARTIAL]
 - Actors 
-	- Monsters [TODO]
+	- Monsters [PARTIAL]
 - Treasure 
 	- Coins (500 cp = 50 sp = 10 ep = 5 gp = 1 pp)
 	- Gems
-	- Potions [TODO]
+	- Potions [PARTIAL]
 
-## Party tracker. [TODO]
+## Party tracker.
 - Show important info for each character
-- Allow re-arranging to indicate marching order
-- Allocate XP to party
+- Allow re-arranging to indicate marching order [TODO]
+- Allocate XP to party [TODO]
 
 ## Ranged weapon attack [TODO]
 - (optional) Ammo use on attack roll. Log to chat that ammo deducted.

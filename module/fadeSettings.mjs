@@ -16,11 +16,8 @@ export class fadeSettings {
             basic: "SETTINGS.Encumbrance.Basic",
             expert: "SETTINGS.Encumbrance.Expert"
          },
-         restricted: true, // Only the GM can change this setting
-         onChange: value => {
-            // This is called once the "Save" button is clicked
-            ui.notifications.warn("A system restart is required for changes to take effect.");
-         }
+         restricted: true // Only the GM can change this setting
+         , onChange: value => { ui.notifications.warn("A system restart is required for changes to take effect."); }
       });
 
       game.settings.register(game.system.id, "theme", {
@@ -63,8 +60,7 @@ export class fadeSettings {
             "group": "SETTINGS.initiative.mode.choices.group"
          },
          onChange: value => this.toggleGroupModifier(value)  // Dynamically toggle based on mode
-         ,
-         restricted: true // Only the GM can change this setting
+         , restricted: true // Only the GM can change this setting
       });
 
       // Register the group initiative modifier setting with 'none' as the default
@@ -81,6 +77,17 @@ export class fadeSettings {
             "highest": "SETTINGS.initiative.modifier.choices.highest"
          },
          restricted: true // Only the GM can change this setting
+      });
+
+      game.settings.register(game.system.id, "resetInitiative", {
+         name: "Reset Initiative on Round Change",
+         hint: "If enabled, the initiative rolls of all combatants will be reset when the round is changed.",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: true,
+         restricted: true // Only the GM can change this setting
+         , onChange: value => { ui.notifications.warn("A system restart is required for changes to take effect."); }
       });
 
       // Register party rest frequency
