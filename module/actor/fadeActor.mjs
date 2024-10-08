@@ -260,8 +260,14 @@ export class fadeActor extends Actor {
       }
 
       //-- Calculate movement and label --//
-      // If not a monster...
-      this._calculateEncMovement(enc, encumbrance);
+      // If max encumbrace is set to zero...
+      if (encumbrance.max === 0) {
+         encumbrance.mv = systemData.movement.max;
+         encumbrance.fly = systemData.flight.max;
+      } else {
+         this._calculateEncMovement(enc, encumbrance);
+      }
+
       systemData.encumbrance = encumbrance;
    }
       
