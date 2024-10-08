@@ -13,6 +13,7 @@
 - Monsters
 	- Tags
 - NPCS/Retainers [PARTIAL]
+- 
 ### Item sheets
 - Generic items/Gear
 	- Tags
@@ -22,6 +23,7 @@
 	- Effects
 - Armor
 	- Effects
+	- Indicate if natural (naked) armor.
 - Special abilities
 - General skills
 - Weapon masteries

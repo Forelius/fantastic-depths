@@ -197,7 +197,8 @@
             "containerId": ""
          },
          "equippable": {
-            "equipped": false
+            "equipped": false,
+            "natural": false
          }
       },
       "item": {

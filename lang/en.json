@@ -264,6 +264,10 @@
             "long": "Shield Equipped",
             "short": "Shield"
          },
+         "natural": {
+            "short": "Natural",
+            "desc": "This is considered natural or 'naked' armor."
+         },
          "mod": "AC Mod"
       },
       "Skill": {

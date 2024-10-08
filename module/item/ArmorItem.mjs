@@ -14,7 +14,8 @@ export class ArmorItem extends fadeItem {
       systemData.ac = systemData.ac !== undefined ? systemData.ac : 9;
       systemData.mod = systemData.mod !== undefined ? systemData.mod : 0;
       systemData.isShield = systemData.isShield || false;
-      systemData.equipped = systemData.equipped || false;
+      systemData.natural = systemData.natural || false;
+      systemData.equipped = systemData.natural || systemData.equipped || false;
    }
 
    /** @override */

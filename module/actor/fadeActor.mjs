@@ -1,57 +1,81 @@
+/**
+ * Extends the basic actor class with modifications for all system actors.
+ * @extends {Actor}
+ */
 export class fadeActor extends Actor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context)
    }
 
-   /** @override */
+   /**
+    * Pre-create method. Being used to set some defaults on the prototype token.
+    * @override
+    * @param {any} data
+    * @param {any} options
+    * @param {any} userId
+    * @returns
+    */
    async _preCreate(data, options, userId) {
       const allowed = await super._preCreate(data, options, userId);
       const fdPath = `systems/fantastic-depths/assets/img/actor`;
       const changeData = {};
 
+      // Skip if the document is being created within a compendium
+      if (this.pack) {
+         return allowed;
+      }
+
+      // Skip if the actor is being updated rather than created
+      if (this._id) {
+         return allowed;
+      }
+
+      const assignIfUndefined = (obj, key, value) => {
+         if (!foundry.utils.getProperty(obj, key)) {
+            foundry.utils.setProperty(obj, key, value);
+         }
+      };
+
       switch (this.type) {
          case "character":
             Object.assign(changeData, {
-               "prototypeToken.sight": {
-                  "enabled": true,
-                  "visionMode": "basic",
-               },
-               "img": `${fdPath}/fighter1.webp`, // Set the actor image
-               "prototypeToken.texture.src": `${fdPath}/fighter1a.webp`, // Set the token image
-               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-               "prototypeToken.actorLink": true,
-               "prototypeToken.scale": 0.9,
-               "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.HOVER
+               "prototypeToken.sight.enabled": true,
+               "prototypeToken.sight.visionMode": "basic"
             });
+            assignIfUndefined(changeData, "img", `${fdPath}/fighter1.webp`);
+            assignIfUndefined(changeData, "prototypeToken.texture.src", `${fdPath}/fighter1a.webp`);
+            assignIfUndefined(changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.FRIENDLY);
+            assignIfUndefined(changeData, "prototypeToken.actorLink", true);
+            assignIfUndefined(changeData, "prototypeToken.scale", 0.9);
+            assignIfUndefined(changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
             break;
          case "npc":
             Object.assign(changeData, {
-               "prototypeToken.sight": {
-                  "enabled": true,
-                  "visionMode": "basic",
-               },
-               "img": `${fdPath}/hero1.webp`, // Set the actor image
-               "prototypeToken.texture.src": `${fdPath}/hero1a.webp`, // Set the token image
-               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
-               "prototypeToken.actorLink": true,
-               "prototypeToken.scale": 0.9,
-               "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.HOVER
+               "prototypeToken.sight.enabled": true,
+               "prototypeToken.sight.visionMode": "basic"
             });
+            assignIfUndefined(changeData, "img", `${fdPath}/hero1.webp`);
+            assignIfUndefined(changeData, "prototypeToken.texture.src", `${fdPath}/hero1a.webp`);
+            assignIfUndefined(changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.NEUTRAL);
+            assignIfUndefined(changeData, "prototypeToken.actorLink", true);
+            assignIfUndefined(changeData, "prototypeToken.scale", 0.9);
+            assignIfUndefined(changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
             break;
          case "monster":
-            Object.assign(changeData, {
-               "img": `${fdPath}/monster1.webp`, // Set the actor image
-               "prototypeToken.texture.src": `${fdPath}/monster1a.webp`, // Set the token image
-               "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
-               "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.HOSTILE,
-               "prototypeToken.actorLink": false,
-               "prototypeToken.scale": 0.9
-            });
+            assignIfUndefined(changeData, "img", `${fdPath}/monster1.webp`);
+            assignIfUndefined(changeData, "prototypeToken.texture.src", `${fdPath}/monster1a.webp`);
+            assignIfUndefined(changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER);
+            assignIfUndefined(changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.HOSTILE);
+            assignIfUndefined(changeData, "prototypeToken.actorLink", false);
+            assignIfUndefined(changeData, "prototypeToken.scale", 0.9);
             break;
       }
 
-      await this.updateSource(changeData);
+      // Update the document with the changed data if it's a new actor
+      if (Object.keys(changeData).length) {
+         this.updateSource(changeData); // updateSource instead of update, no _id needed
+      }
 
       return allowed;
    }
@@ -106,11 +130,11 @@ export class fadeActor extends Actor {
    }
 
    /**
- * @override
- * Prepare all embedded Document instances which exist within this primary Document.
- * @memberof ClientDocumentMixin#
- * active effects are applied
- */
+    * Prepare all embedded Document instances which exist within this primary Document.
+   * @override
+   * @memberof ClientDocumentMixin#
+   * active effects are applied
+   */
    prepareEmbeddedDocuments() {
       super.prepareEmbeddedDocuments();
    }
@@ -120,6 +144,12 @@ export class fadeActor extends Actor {
       return data;
    }
 
+   /**
+    * Prepares saving throw values based on class name and class level.
+    * @protected
+    * @param {any} className The class name (Fighter, Cleric, etc.)
+    * @param {number} classLevel The level of the class.
+    */
    _prepareSavingThrows(className, classLevel) {
       const systemData = this.system;
       // Replace hyphen with underscore for "Magic-User"
@@ -144,6 +174,10 @@ export class fadeActor extends Actor {
       systemData.savingThrows = savingThrows;
    }
 
+   /**
+    * Prepares the hit point related values.
+    * @protected
+    */
    _prepareHitPoints() {
       const systemData = this.system;
       let hp = this.system.hp || {};
@@ -159,6 +193,7 @@ export class fadeActor extends Actor {
 
    /**
     * Prepare ground movement and flight rates.
+    * @protected
     */
    _prepareMovement() {
       const systemData = this.system;
@@ -179,6 +214,7 @@ export class fadeActor extends Actor {
 
    /**
     * Prepare derived armor class values.
+    * @protected
     */
    _prepareArmorClass() {
       const systemData = this.system;
@@ -190,6 +226,10 @@ export class fadeActor extends Actor {
       ac.mod = 0;
       ac.shield = 0;
 
+      const naturalArmor = this.items.find(item =>
+         item.type === 'armor' && item.system.natural
+      );
+
       const equippedArmor = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && !item.system.isShield
       );
@@ -197,6 +237,9 @@ export class fadeActor extends Actor {
       const equippedShield = this.items.find(item =>
          item.type === 'armor' && item.system.equipped && item.system.isShield
       );
+
+      // If natural armor
+      ac.naked = naturalArmor?.system.totalAc || ac.naked;
 
       // If an equipped armor is found
       if (equippedArmor) {
@@ -216,6 +259,10 @@ export class fadeActor extends Actor {
       systemData.ac = ac;
    }
 
+   /**
+    * Prepares the spell slots used and max values.
+    * @protected
+    */
    _prepareSpells() {
       const systemData = this.system;
       let spellSlots = systemData.spellSlots || {};
@@ -228,6 +275,10 @@ export class fadeActor extends Actor {
       systemData.spellSlots = spellSlots;
    }
 
+   /**
+    * Prepares the actor's encumbrance values. Supports optional settings for different encumbrance systems.
+    * @protected
+    */
    _prepareEncumbrance() {
       const systemData = this.system;
       const encSetting = game.settings.get(game.system.id, "encumbrance");
@@ -270,7 +321,13 @@ export class fadeActor extends Actor {
 
       systemData.encumbrance = encumbrance;
    }
-      
+
+   /**
+    * Calculate movement rate based on encumbrance.
+    * @protected
+    * @param {number} enc The total encumbrance in coins.
+    * @param {any} encumbrance The encumbrance object to set.
+    */
    _calculateEncMovement(enc, encumbrance) {
       const systemData = this.system;
       const isMonster = this.type === "monster";
@@ -284,6 +341,10 @@ export class fadeActor extends Actor {
       encumbrance.fly = systemData.flight.max * encTier.mvFactor;
    }
 
+   /**
+    * Prepare the actor's movement rate values.
+    * @protected
+    */
    _prepareDerivedMovement() {
       const systemData = this.system;
       let movement = systemData.movement || {};

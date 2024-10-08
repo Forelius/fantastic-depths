@@ -25,7 +25,7 @@ export class fadeItemSheet extends ItemSheet {
    render(force, options = {}) {
       // Adjust options before rendering based on item type
       if (this.item.type === 'armor') {
-         options.width = 470;
+         options.width = 520;
          options.height = 340;
       } else if (this.item.type === "weapon") {
          options.width = 470;
