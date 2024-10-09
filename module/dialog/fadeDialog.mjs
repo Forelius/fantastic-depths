@@ -163,26 +163,29 @@ export class fadeDialog {
       return dialogResp;
    }
 
-   static async getSelectAttackDialog(dataset, caller, opt) {
-      const dialogData = { };
-      const dialogResp = { caller };
+   static async getSelectAttackDialog(equippedOnly = false) {
+      const dialogData = {};
+      const dialogResp = {};
       // Check if there are any items with the "light" tag
       const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
 
       dialogData.label = "Select Attack Type";
 
-      let token = canvas.tokens.controlled[0];
-      if (!token) {
+      let actor = canvas.tokens.controlled[0]?.actor || game.user.character;
+      if (!actor) {
          // Show a warning notification if no token is selected
-         ui.notifications.warn("You must select a token to perform this action.");
+         ui.notifications.warn("You must select a token or assign a default character to perform this action.");
       } else {
-         let items = token.actor.items;
          let attackItems = [];
-         items.forEach(item => { if (item.type === "weapon") { attackItems.push(item); } });
-         if (items.length === 0) {
+         let equippedWeapons = [];
+         actor.items.forEach(item => { if (item.type === "weapon") { attackItems.push(item); } });
+         actor.items.forEach(item => { if (item.type === "weapon" && item.system.equipped === true) { equippedWeapons.push(item); } });
+         if (attackItems === 0) {
             ui.notifications.warn("The selected actor does not have anything to attack with.");
+         } else if (equippedOnly && equippedWeapons.length === 0) {
+            ui.notifications.warn("The selected actor does not have any weapons equipped.");
          } else {
-            dialogData.attackItems = attackItems;
+            dialogData.attackItems = equippedOnly ? equippedWeapons : attackItems;
 
             dialogResp.resp = await Dialog.wait({
                title: "Select Attack Type",
@@ -194,7 +197,7 @@ export class fadeDialog {
                         let itemId = document.getElementById('weaponItem').value;
                         let item = token.actor.items.get(itemId);
                         item.roll();
-                        return true;
+                        return { item };
                      }
                   },
                   close: {
@@ -207,7 +210,7 @@ export class fadeDialog {
                default: "close",
                close: () => { return false; }
             });
-            dialogResp.context = caller;
+            dialogResp.context = actor;
          }
       }
 

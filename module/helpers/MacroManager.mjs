@@ -82,6 +82,13 @@ ChatMessage.create({content: results, flavor: 'Ability Score Rolls'});",
          img: `icons/svg/dice-target.svg`,
          folder: miscFolder.id
       }, false);      
+      await MacroManager.createMacro({
+         name: "Attack Equipped",
+         type: "script",
+         command: "game.fade.fadeDialog.getSelectAttackDialog(true);",
+         img: `icons/svg/dice-target.svg`,
+         folder: miscFolder.id
+      }, false);    
    }
 
    // Helper method to get or create a folder
