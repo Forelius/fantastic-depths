@@ -153,7 +153,12 @@
                <input name="system.retainer.max" type="text" data-dtype="Number" value="{{system.retainer.max}}" />
             </div>
             <div>
-               <label for="system.retainer">{{localize 'FADE.Actor.Abilities.cha.morale'}}</label>
+               <label class="rollable" for="system.retainer.morale"
+                      data-test="generic"
+                      data-formula="1d20"
+                      data-pass="lte"
+                      data-target="{{system.retainer.morale}}"
+                      data-label="{{localize 'FADE.Actor.Abilities.cha.morale'}}">{{localize 'FADE.Actor.Abilities.cha.morale'}}</label>
                <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
             </div>
          </div>

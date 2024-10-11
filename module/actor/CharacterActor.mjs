@@ -24,9 +24,10 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareDerivedMovement()
+      this._prepareDerivedAbilities();
+      this._prepareDerivedMovement();
       this._prepareClassInfo();
-      this._prepareWrestling();
+      this._prepareWrestling();      
    }
 
    /**
@@ -139,20 +140,25 @@ export class CharacterActor extends fadeActor {
       });
 
       // Replace the original abilities object with the ordered one
-      abilities = orderedAbilities;
+      systemData.abilities = orderedAbilities;
+   }
 
+   _prepareDerivedAbilities() {
+      const systemData = this.system;
+      // Initialize abilities if missing
+      const abilityTypes = ["str", "int", "wis", "dex", "con", "cha"];
       const adjustments = CONFIG.FADE.AdjustmentTable;
-      for (let [key, ability] of Object.entries(abilities)) {
+      for (let [key, ability] of Object.entries(systemData.abilities)) {
          let adjustment = adjustments.find(item => ability.value <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;
       }
 
       // Retainer
+      let charisma = systemData.abilities.cha.value;
+      let adjustment = adjustments.find(item => charisma <= item.max);
       let retainer = systemData.retainer || {};
-      retainer.max = 4 + abilities.cha.mod;
-      retainer.morale = 5 + abilities.cha.mod;
-
-      systemData.abilities = abilities;
+      retainer.max = adjustment.maxRetainers;
+      retainer.morale = adjustment.retainerMorale;
       systemData.retainer = retainer;
    }
 
