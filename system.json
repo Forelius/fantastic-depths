@@ -49,6 +49,13 @@
          "system": "fantastic-depths",
          "path": "packs/actors.db",
          "type": "Actor"
+      },
+      {
+         "name": "roll-table-compendium",
+         "label": "Roll Table Compendium",
+         "system": "fantastic-depths",
+         "path": "packs/rollTables.db",
+         "type": "RollTable"
       }
    ],
    "packFolders": [],

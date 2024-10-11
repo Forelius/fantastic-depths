@@ -239,7 +239,9 @@ export class fadeActor extends Actor {
       );
 
       // If natural armor
-      ac.naked = naturalArmor?.system.totalAc || ac.naked;
+      if (naturalArmor?.system.totalAc !== null && naturalArmor?.system.totalAc !== undefined) {
+         ac.naked = naturalArmor.system.totalAc;
+      }
 
       // If an equipped armor is found
       if (equippedArmor) {
@@ -351,7 +353,7 @@ export class fadeActor extends Actor {
       let flight = systemData.flight || {};
 
       movement.turn = systemData.encumbrance.mv;
-      flight.turn = flight.turn || 0;
+      flight.turn = systemData.encumbrance.fly || 0;
 
       movement.round = movement.turn > 0 ? Math.floor(movement.turn / 3) : 0;
       movement.day = movement.turn > 0 ? Math.floor(movement.turn / 5) : 0;

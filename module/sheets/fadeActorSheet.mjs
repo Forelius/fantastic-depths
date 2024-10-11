@@ -488,7 +488,7 @@ export class fadeActorSheet extends ActorSheet {
          const actor = game.actors.get(this.actor.id);
 
          // Retrieve all flags that start with 'collapsed-'
-         const flags = actor.flags[game.system.id] || {};
+         const flags = actor?.flags[game.system.id] || {};
 
          Object.keys(flags).forEach(async (key) => {
             // Only process flags that start with 'collapsed-'
