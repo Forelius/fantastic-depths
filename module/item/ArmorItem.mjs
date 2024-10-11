@@ -21,8 +21,8 @@ export class ArmorItem extends fadeItem {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      const systemData = this.system;
       this._prepareEffects();
+      const systemData = this.system;
       //console.log("ArmorItem.prepareDerivedData:", systemData);
       systemData.totalAc = systemData.ac - systemData.mod;
    }

@@ -3,6 +3,7 @@ import { AbilityCheckChatBuilder } from './AbilityCheckChatBuilder.mjs';
 import { GenericRollChatBuilder } from './GenericRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 import { SkillRollChatBuilder } from './SkillRollChatBuilder.mjs';
+import { DamageRollChatBuilder } from './DamageRollChatBuilder.mjs';
 /**
  * Enumeration for chat factory types.
  * @enum {Symbol}
@@ -12,6 +13,7 @@ export const CHAT_TYPE = Object.freeze({
    ABILITY_CHECK: Symbol('cftype_abil_check'),
    ATTACK_ROLL: Symbol('cftype_attack'),
    SKILL_ROLL: Symbol('cftype_skill'),
+   DAMAGE_ROLL: Symbol('cftype_damage'),
 });
 
 /**
@@ -31,9 +33,11 @@ const handler = {
          result = new AttackRollChatBuilder(...bArgs);
       } else if (type === CHAT_TYPE.SKILL_ROLL) {
          result = new SkillRollChatBuilder(...bArgs);
+      } else if (type === CHAT_TYPE.DAMAGE_ROLL) {
+         result = new DamageRollChatBuilder(...bArgs);
       } else {
          result = new GenericRollChatBuilder(...bArgs);
-      } 
+      }
 
       return result;
    },

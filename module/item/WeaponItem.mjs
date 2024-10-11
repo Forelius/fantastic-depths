@@ -11,6 +11,7 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.system.damageType = this.system.damageType || "physical";
    }
 
    /** @override */
@@ -35,29 +36,32 @@ export class WeaponItem extends fadeItem {
    getDamageRoll(attackType, attacker) {
       const systemData = this.system;
       const attackerData = attacker.system;
-      let result = systemData.damageRoll;
-
+      
+      let formula = systemData.damageRoll;
       if (attackType == 'melee') {
          if (systemData.mod.dmg != null && systemData.mod.dmg != 0) {
-            result = `${result}+${systemData.mod.dmg}`;
+            formula = `${formula }+${systemData.mod.dmg}`;
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
-            result = `${result}+${attackerData.abilities.str.mod}`;
+            formula = `${formula}+${attackerData.abilities.str.mod}`;
          }
       } else {
          if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
-            result = `${result}+${systemData.mod.dmgRanged}`;
+            formula = `${formula}+${systemData.mod.dmgRanged}`;
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && systemData.tags.includes("thrown")) {
-            result = `${result}+${attackerData.abilities.str.mod}`;
+            formula = `${formula}+${attackerData.abilities.str.mod}`;
          } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
-            result = `${result}+${attackerData.abilities.dex.mod}`;
+            formula = `${formula}+${attackerData.abilities.dex.mod}`;
          }
       }
 
-      return result;
+      return {
+         formula: formula,
+         type: systemData.damageType
+      };
    }
 
      /**

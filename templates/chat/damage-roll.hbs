@@ -1,0 +1,20 @@
+{{#if mdata.label}}
+<div>{{mdata.label}}{{#if mdata.target}}({{mdata.target}}){{/if}}</div>
+{{/if}}
+{{#if mdata.desc}}
+<i style="font-size:12px;">{{mdata.desc}}</i>
+{{/if}}
+<hr>
+{{{resultString}}}
+{{{rollContent}}}
+{{#if showApplyDamage}}
+<button class="apply-damage" type="button" title="Apply damage to target."
+        data-attacktype="{{mdata.attacktype}}"
+        data-targetid="{{mdata.targetid}}"
+        data-amount="{{damage}}"
+        data-messageid="{{messageId}}"
+        data-label="{{mdata.label}}"
+        data-desc="{{mdata-desc}}">
+   <i class="fas fa-tint"></i> <!-- Blood drop icon -->
+</button>
+{{/if}}

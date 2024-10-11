@@ -5,11 +5,14 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    // The currently selected target, if any.
    #selectedActor;
+   #selectedToken;
 
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
       // Get first selected target, if any.
-      this.#selectedActor = game.user.targets.first()?.actor;
+      // Get the first selected target token, if any.
+      this.#selectedToken = game.user.targets.first(); // The selected token, not the actor
+      this.#selectedActor = this.#selectedToken?.actor; // Actor associated with the token
    }
 
    /**
@@ -116,22 +119,35 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       const rolls = [roll];
       const actorName = context.name;
-      const target = this.#selectedActor?.name;
-      let descData = target ? { attackerid: context.id, attacker: actorName, attackType: resp.attackType, target: target, weapon: caller.name }
-         : { attackerid: context.id, attacker: actorName, attackType: resp.attackType, weapon: caller.name };
-      const description = target ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
+      const targetName = this.#selectedToken?.name;
+      let descData = targetName ? {
+         attackerid: context.id,
+         attacker: actorName,
+         attackType: resp.attackType,
+         targetName: targetName,
+         weapon: caller.name
+      } : {
+            attackerid: context.id,
+            attacker: actorName,
+            attackType: resp.attackType,
+            weapon: caller.name
+      };
+      const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
       const rollContent = await roll.render({ flavor: 'Attack Roll' });
       const toHitResult = this.#getToHitResult();
       let damageRoll = caller.getDamageRoll(resp.attackType, context);
 
       // Get the actor and user names
       const userName = game.users.current.name; // User name (e.g., player name)
+      const targetToken = this.#selectedToken; // Get the selected token
+      const targetTokenId = targetToken?.id;   // Token ID, specific to this token
       const chatData = {
          damageRoll,
          rollContent,
          description,
          descData,
          toHitResult,
+         targetId: targetTokenId,
       };
 
       const content = await renderTemplate(this.template, chatData);

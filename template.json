@@ -118,9 +118,9 @@
                "height": "6",
                "weight": "165 lbs.",
                "eyes": "Blue",
-               "hair": "brown"
+               "hair": "brown",
+               "deathCount": 0
             },
-
             "abilities": {
                "str": {
                   "value": 10
@@ -213,6 +213,7 @@
       "weapon": {
          "templates": [ "base", "physical", "equippable" ],
          "damageRoll": "1d6",
+         "damageType": "physical",
          "canMelee": true,
          "canRanged": false,
          "range": {

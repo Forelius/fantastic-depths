@@ -117,12 +117,32 @@ export class fadeActor extends Actor {
       if (systemData.config.isSpellcaster === true) {
          this._prepareSpells();
       }
-
-      systemData.mod = {};
    }
 
    /** @override */
    prepareDerivedData() {
+      // Modifiers are often applied as a negative value, even though the modifer is a positive value.
+      this.system.mod = {
+         ac: 0,
+         combat: {
+            toHit: 0,
+            dmg: 0,
+            toHitRanged: 0,
+            dmgRange: 0,
+            // These only work with damage automation
+            selfDmg: 0,
+            selfDmgBreath: 0,
+            selfDmgMagic: 0,
+         },
+         save: {
+            death: 0,
+            wand: 0,
+            paralysis: 0,
+            breath: 0,
+            spell: 0
+         }
+      };
+
       super.prepareDerivedData();
       this._prepareArmorClass();
       this._prepareEncumbrance();
@@ -144,6 +164,44 @@ export class fadeActor extends Actor {
       return data;
    }
 
+   async applyDamage(amount, type, source = null) {
+      const systemData = this.system;
+      let dmgAmt = amount;
+      const prevHP = systemData.hp.value;
+
+      switch (type) {
+         case 'physical':
+            dmgAmt -= systemData.mod.combat.selfDmg;
+            break;
+         case 'breath':
+            dmgAmt -= systemData.mod.combat.selfDmgBreath;
+            break;
+         case 'magic':
+            dmgAmt -= systemData.mod.combat.selfDmgMagic;
+            break;
+      }
+      systemData.hp.value -= dmgAmt;
+      this.update({ "system.hp.value": systemData.hp.value })
+
+      // Check if the actor already has the "Dead" effect
+      let hasDeadEffect = this.effects.some(e => e.getFlag("core", "statusId") === "dead");
+
+      if (prevHP > 0 && systemData.hp.value <= 0) {
+         if (this.type === 'character') {
+            systemData.details.deathCount++;
+            this.update({ "system.details.deathCount": systemData.details.deathCount })
+         }
+         if (hasDeadEffect === false) {
+            // Apply the "Dead" status effect
+            await this.toggleEffect(CONFIG.statusEffects.find(e => e.id === "dead"));
+         }
+      } else if (prevHP < 0 && systemData.hp.value > 0) {
+         if (hasDeadEffect === true) {
+            await this.toggleEffect(CONFIG.statusEffects.find(e => e.id === "dead"));
+         }
+      }
+   }
+
    /**
     * Prepares saving throw values based on class name and class level.
     * @protected
@@ -158,8 +216,9 @@ export class fadeActor extends Actor {
       // Find a match in the FADE.Classes data
       const classData = Object.values(classes).find(cdata => cdata.name.toLowerCase() === classNameInput);
       let savingThrows = systemData.savingThrows || {};
-
+      // If matching class data was found...
       if (classData !== undefined) {
+         // Apply the class data
          const savesData = classData.saves.find(save => classLevel <= save.level);
          for (let saveType in savesData) {
             if (savingThrows.hasOwnProperty(saveType)) {
@@ -167,10 +226,19 @@ export class fadeActor extends Actor {
             }
          }
       }
+
+      // Apply mods, mostly from effects
+      savingThrows.death.value -= systemData.mod.save.death;
+      savingThrows.wand.value -= systemData.mod.save.wand;
+      savingThrows.paralysis.value -= systemData.mod.save.paralysis;
+      savingThrows.breath.value -= systemData.mod.save.breath;
+      savingThrows.spell.value -= systemData.mod.save.spell;
+
       // Apply modifier for wisdom, if needed
       if (this.type !== "monster") {
          savingThrows.spell.value -= systemData.abilities.wis.mod;
       }
+
       systemData.savingThrows = savingThrows;
    }
 

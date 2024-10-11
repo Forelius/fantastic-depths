@@ -17,6 +17,8 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+
+      this._prepareDetails();
       this._prepareAbilities();
       this._prepareExploration();
    }
@@ -125,6 +127,26 @@ export class CharacterActor extends fadeActor {
       //}
    }
 
+   _prepareDetails() {
+      let systemData = this.system;
+      systemData.details.level = systemData.details.level || 0;
+      systemData.details.xp = systemData.details.xp || {};
+      systemData.details.xp.value = systemData.details.xp.value || 0;
+      systemData.details.xp.bonus = systemData.details.xp.bonus || 0;
+      systemData.details.xp.next = systemData.details.xp.next || 0;
+      systemData.details.class = systemData.details.class || "Fighter";
+      systemData.details.species = systemData.details.species || "";
+      systemData.details.alignment = systemData.details.alignment || "Neutral";
+      systemData.details.title = systemData.details.title || "";
+      systemData.details.age = systemData.details.age || 18;
+      systemData.details.sex = systemData.details.sex || "";
+      systemData.details.height = systemData.details.height || "";
+      systemData.details.weight = systemData.details.weight || "";
+      systemData.details.eyes = systemData.details.eyes || "";
+      systemData.details.hair = systemData.details.hair || "";
+      systemData.details.deathCount = systemData.details.deathCount || 0;
+   }
+
    _prepareAbilities() {
       const systemData = this.system;
 
@@ -220,13 +242,7 @@ export class CharacterActor extends fadeActor {
          details.species = classData.species;
 
          systemData.details = details;
-
-         this.update({
-            "system.details": systemData.details,
-            "system.hp.hd": systemData.hp.hd,
-            "system.thac0.value": systemData.thac0.value
-         });
-
+         
          // Saving throws
          super._prepareSavingThrows(classNameInput, currentLevel);
       }
@@ -241,6 +257,5 @@ export class CharacterActor extends fadeActor {
       wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
       wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
       systemData.wrestling = wrestling;
-      /*this.update({ "system.wrestling": systemData.wrestling });*/
    }   
 }

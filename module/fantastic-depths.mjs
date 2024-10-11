@@ -24,6 +24,7 @@ import { LightManager } from './helpers/LightManager.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { ContentImporter } from './helpers/ContentImporter.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
+import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -100,39 +101,9 @@ Hooks.once('ready', async function () {
    LightManager.initialize();
 
    // inline-roll handler
-   $(document).on('click', '.damage-roll', clickDamageRoll);
+   $(document).on('click', '.damage-roll', DamageRollChatBuilder.clickDamageRoll);
+   $(document).on('click', '.apply-damage', DamageRollChatBuilder.clickApplyDamage);
 });
-
-/**
- * Handle user clicking on element with .damage-roll css class.
- * @param {any} ev
- */
-async function clickDamageRoll(ev) {
-   const element = ev.currentTarget;
-   const dataset = element.dataset;
-
-   // Custom behavior for damage rolls
-   if (dataset.type === "damage") {
-      ev.preventDefault(); // Prevent the default behavior
-      ev.stopPropagation(); // Stop other handlers from triggering the event
-      const { attackerid, attacker, target, weapon } = dataset;
-
-      // Roll the damage and wait for the result
-      const roll = new Roll(dataset.formula);
-      await roll.evaluate(); // Wait for the roll result
-      const damage = roll.total;
-      let descData = target ? { attacker, target, weapon, damage } : { attacker, weapon, damage };
-      dataset.resultstring = target ? game.i18n.format('FADE.Chat.damageFlavor1', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
-      dataset.resultstring = `<div class='roll-info'>${dataset.resultstring}</div>`
-      const chatData = {
-         context: game.actors.get(attackerid),
-         mdata: dataset,
-         roll: roll,
-      };
-      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
-      builder.createChatMessage();
-   }
-}
 
 fadeHandlebars.registerHelpers();
 
