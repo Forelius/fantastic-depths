@@ -195,7 +195,7 @@ export class fadeDialog {
                      label: "Attack",
                      callback: function (html) {
                         let itemId = document.getElementById('weaponItem').value;
-                        let item = token.actor.items.get(itemId);
+                        let item = actor.items.get(itemId);
                         item.roll();
                         return { item };
                      }
