@@ -42,12 +42,13 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
-.window-app.fantastic-depths.sheet.actor {
+/* Apply these styles only when the "minimized" class is not present */
+.window-app.fantastic-depths.sheet.actor:not(.minimized) {
   min-width: 600px !important;
   min-height: 540px !important;
 }
 
-.window-app.fantastic-depths.sheet.item {
+.window-app.fantastic-depths.sheet.item:not(.minimized) {
   min-width: 460px !important;
   min-height: 340px !important;
 }
