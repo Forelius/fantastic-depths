@@ -45,7 +45,7 @@ export const migrateData = async function migrate() {
       }
 
       // Set the new version after migration is complete
-      //await game.settings.set(SYSTEM_ID, 'gameVer', newVer);
+      await game.settings.set(SYSTEM_ID, 'gameVer', newVer);
       console.log("FaDe migration complete.");
    }
 };
