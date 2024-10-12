@@ -147,6 +147,7 @@ export class fadeActor extends Actor {
       this._prepareArmorClass();
       this._prepareEncumbrance();
       this._prepareDerivedMovement();
+      this._prepareSpellsUsed();
    }
 
    /**
@@ -334,14 +335,40 @@ export class fadeActor extends Actor {
     * @protected
     */
    _prepareSpells() {
-      const systemData = this.system;
-      let spellSlots = systemData.spellSlots || {};
+      const systemData = this.system;      
+      let spellSlots = systemData.spellSlots || [];
+
       for (let i = 0; i < 9; i++) {
-         spellSlots[i] = systemData.spellSlots[i] || {};
-         spellSlots[i].spellLevel = i + 1;
-         spellSlots[i].used = systemData.spellSlots[i].used || 0;
-         spellSlots[i].max = systemData.spellSlots[i].max || 0;
+         spellSlots[i] = systemData.spellSlots?.[i] || {};
+         spellSlots[i].spellLevel = i;
+         spellSlots[i].used = systemData.spellSlots?.[i].used || 0;
+         spellSlots[i].max = systemData.spellSlots?.[i]?.max || 0;
       }
+
+      systemData.spellSlots = spellSlots;
+   }
+
+   /**
+    * Prepares the used spells per level totals
+    * @protected
+    */
+   _prepareSpellsUsed() {
+      const systemData = this.system;
+      let spellSlots = systemData.spellSlots || [];
+
+      // Reset used spells to zero
+      for (let i = 0; i < 9; i++) {
+         let slot = spellSlots[i] || {};
+         slot.used = 0;
+      }
+
+      const spells = this.items.filter((item) => item.type === 'spell');
+      for(let spell of spells) {
+         if (spell.system.memorized > 0) {
+            spellSlots[spell.system.spellLevel].used += spell.system.memorized;
+         }
+      }
+
       systemData.spellSlots = spellSlots;
    }
 

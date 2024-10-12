@@ -1,6 +1,6 @@
 // actor-character.mjs
 import { fadeActor } from './fadeActor.mjs';
-import { TagManager } from '../helpers/TagManager.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 export class MonsterActor extends fadeActor {
 

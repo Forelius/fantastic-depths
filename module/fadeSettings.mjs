@@ -3,6 +3,17 @@ export class fadeSettings {
     * Register all of the system's settings.
     */
    async registerSystemSettings() {
+
+      // Register the systemMigrationVersion setting
+      game.settings.register(game.system.id, "gameVer", {
+         name: "System Migration Version",
+         hint: "Stores the current version of the system to manage data migrations.",
+         scope: "world",  // "world" scope means it's stored at the world level, shared by all users
+         config: false,   // Set to false to hide it from the settings UI
+         type: String,    // The type of the setting (String, Number, Boolean, etc.)
+         default: "0.0.0" // Set a default version, e.g., "0.0.0"
+      });
+
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
          name: "SETTINGS.Encumbrance.Name",

@@ -1,5 +1,5 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { onManageActiveEffect, prepareActiveEffectCategories } from '../helpers/effects.mjs';
+import { onManageActiveEffect, prepareActiveEffectCategories } from '../sys/effects.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
 /**
@@ -424,15 +424,10 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    async _resetSpells(event) {
-      const spells = $(event.currentTarget).closest(".inventory.spells").find(".item-entry");
-      spells.each((_, el) => {
-         const { itemId } = el.dataset;
-         const item = this.actor.items.get(itemId);
-         const itemData = item?.system;
-         item.update({
-            _id: item.id,
-            "system.cast": itemData.memorized,
-         });
+      const spells = this.actor.items.filter((item) => item.type === 'spell');
+      spells.forEach((spell) => {
+         spell.system.cast = 0;
+         spell.update({ "system.cast": spell.system.cast });
       });
    }
 

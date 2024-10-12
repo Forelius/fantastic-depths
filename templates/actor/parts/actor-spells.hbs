@@ -22,7 +22,7 @@
                    data-dtype="Number"
                    placeholder="0"
                    readonly
-                   title="{{localize 'FADE.Spell.memorizedSlots'}}" />/
+                   title="{{localize 'FADE.Spell.usedSlots'}}" />/
             <input type="text"
                    value="{{lookup (lookup @root.system.spellSlots @key) 'max'}}"
                    name="system.spellSlots.{{@key}}.max"
@@ -45,17 +45,17 @@
             </div>
             <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type='Spell'}}'>{{spell.name}}</a>
          </div>
-         <div class="item-40px"></div>
+         <div class="item-40px">casts</div>
          <div class="item-80px flexrow editable">
             <input type="text"
-                   value="{{system.cast}}"
+                   value="{{spell.system.cast}}"
                    data-dtype="Number"
                    placeholder="0"
                    data-field="cast"
                    title="{{localize 'FADE.Spell.cast'}}" />
             /
             <input type="text"
-                   value="{{system.memorized}}"
+                   value="{{spell.system.memorized}}"
                    data-field="memorize"
                    data-dtype="Number"
                    placeholder="0"

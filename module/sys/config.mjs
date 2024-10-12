@@ -1,3 +1,5 @@
+export const SYSTEM_ID = "fantastic-depths";
+
 export const FADE = {};
 /**
  * The set of Ability Scores used within the system.

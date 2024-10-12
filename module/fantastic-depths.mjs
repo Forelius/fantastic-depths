@@ -12,19 +12,20 @@ import { ItemFactory } from './item/ItemFactory.mjs';
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 // Import helper/utility classes and constants.
-import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
-import { FADE } from './helpers/config.mjs';
+import { preloadHandlebarsTemplates } from './sys/templates.mjs';
+import { FADE } from './sys/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './fadeCombat.mjs'
 // Import TurnTrackerForm class
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
-import { MacroManager } from './helpers/MacroManager.mjs';
-import { LightManager } from './helpers/LightManager.mjs';
+import { MacroManager } from './sys/MacroManager.mjs';
+import { LightManager } from './sys/LightManager.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
-import { ContentImporter } from './helpers/ContentImporter.mjs';
+import { ContentImporter } from './sys/ContentImporter.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
+import { migrateData } from './sys/migration.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -88,6 +89,8 @@ Hooks.once('init', function () {
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 Hooks.once('ready', async function () {
+   migrateData();
+
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => {
       MacroManager.createItemMacro(data, slot);
