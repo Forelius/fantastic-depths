@@ -1,10 +1,3 @@
-//function getDialogData() {
-//   return {
-//      rollModes: CONFIG.Dice.rollModes,
-//      rollMode: game.settings.get('core', 'rollMode'),
-//   };
-//}
-
 function focusById(id) {
    return setTimeout(() => { document.getElementById(id).focus(); }, 50);
 }
@@ -32,7 +25,8 @@ export class fadeDialog {
                }),
             },
          },
-         default: 'check'
+         default: 'check',
+         close: () => { return false; }
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -58,7 +52,8 @@ export class fadeDialog {
                }),
             },
          },
-         default: 'check'
+         default: 'check',
+         close: () => { return false; }
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -87,7 +82,8 @@ export class fadeDialog {
                }),
             },
          },
-         default: 'check'
+         default: 'check',
+         close: () => { return false; }
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -120,7 +116,8 @@ export class fadeDialog {
                label: "Cancel"
             }
          },
-         default: 'import'
+         default: 'import',
+         close: () => { return false; }
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -157,7 +154,7 @@ export class fadeDialog {
             }
          },
          default: "close",
-         close: () => console.log("Light Manager dialog closed.")
+         close: () => { return false; }
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -213,6 +210,34 @@ export class fadeDialog {
             dialogResp.context = actor;
          }
       }
+
+      return dialogResp;
+   }
+
+   static async getYesNoDialog(dataset) {
+      const { title = "Confirm", content = "Are you sure?", yesLabel = "Yes", noLabel = "No", defaultChoice = "no" } = dataset;
+      const dialogResp = {};
+
+      dialogResp.resp = await Dialog.wait({
+         title: title,
+         content: `<p>${content}</p>`,
+         buttons: {
+            yes: {
+               label: yesLabel,
+               callback: () => ({
+                  result: true
+               })
+            },
+            no: {
+               label: noLabel,
+               callback: () => ({
+                  result: false
+               })
+            }
+         },
+         default: defaultChoice,
+         close: () => { return false; }
+      });
 
       return dialogResp;
    }

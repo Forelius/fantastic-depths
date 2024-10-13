@@ -28,6 +28,10 @@ export class fadeCombat extends Combat {
    async setupTurns() {
       // console.debug("setupTurns sorting...");
       let combatants = await super.setupTurns();
+
+      // Check to make sure all combatants still exist.
+      combatants = combatants.filter((combatant) => combatant.actor !== null && combatant.actor !== undefined);
+
       //const initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
       if (this.initiativeMode === "group") {
          combatants.sort(this.sortCombatantsGroup);
@@ -118,32 +122,34 @@ export class fadeCombat extends Combat {
       let aActor = a.actor;
       let bActor = b.actor;
 
-      let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-      let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-      let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
-      let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
-      // Compare slowEquipped, true comes before false
-      if (aSlowEquipped !== bSlowEquipped) {
-         result = aSlowEquipped ? 1 : -1;
-      }
+      if (aActor && bActor) {
+         let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+         let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+         let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
+         let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
+         // Compare slowEquipped, true comes before false
+         if (aSlowEquipped !== bSlowEquipped) {
+            result = aSlowEquipped ? 1 : -1;
+         }
 
-      // Compare initiative, descending order
-      if (result === 0 && a.initiative !== b.initiative) {
-         result = b.initiative - a.initiative;
-      }
+         // Compare initiative, descending order
+         if (result === 0 && a.initiative !== b.initiative) {
+            result = b.initiative - a.initiative;
+         }
 
-      // Compare dexterity, descending order; treat null/undefined as last
-      let aDex = aActor.system.abilities?.dex.val;
-      let bDex = bActor.system.abilities?.dex.val;
-      if (result === 0) {
-         if (!aDex) {
-            if (bDex) {
-               result = 1;
+         // Compare dexterity, descending order; treat null/undefined as last
+         let aDex = aActor.system.abilities?.dex.val;
+         let bDex = bActor.system.abilities?.dex.val;
+         if (result === 0) {
+            if (!aDex) {
+               if (bDex) {
+                  result = 1;
+               }
+            } else if (!bDex) {
+               result = -1;
+            } else if (aDex !== bDex) {
+               result = bDex - aDex;
             }
-         } else if (!bDex) {
-            result = -1;
-         } else if (aDex !== bDex) {
-            result = bDex - aDex;
          }
       }
 

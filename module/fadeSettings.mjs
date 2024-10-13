@@ -135,8 +135,8 @@ export class fadeSettings {
       });
 
       game.settings.register(game.system.id, "rememberCollapsedState", {
-         name: "Remember Collapse State",
-         hint: "When enabled, the item lists will remember their collapse state individually for each character.",
+         name: "SETTINGS.collapseState.name",
+         hint: "SETTINGS.collapseState.hint",
          scope: "client", // This setting is player-specific
          config: true,
          type: Boolean,
@@ -144,23 +144,14 @@ export class fadeSettings {
       });
 
       game.settings.register(game.system.id, "logCharacterChanges", {
-         name: "Log Character Sheet Changes",
-         hint: "If enabled, logs character sheet changes to the GM via chat.",
+         name: "SETTINGS.logChanges.name",
+         hint: "SETTINGS.logChanges.hint",
          scope: "world",
          config: true,
          type: Boolean,
          default: false,
          restricted: true // Only the GM can change this setting
       });
-
-      //game.settings.register(game.system.id, "autoNumber", {
-      //   name: "SETTINGS.autoNumber.name",
-      //   hint: "SETTINGS.autoNumber.hint",
-      //   scope: "world",
-      //   config: true,
-      //   default: false,
-      //   type: Boolean
-      //});
 
       game.settings.register('mySystem', 'partyTrackerData', {
          name: "Party Tracker Data",

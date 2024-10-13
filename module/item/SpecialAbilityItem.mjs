@@ -8,30 +8,6 @@ export class SpecialAbilityItem extends fadeItem {
       super(data, context);
    }
 
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-      const systemData = this.system;
-
-   }
-
-   /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-      const systemData = this.system;
-   }
-
-   /** @override */
-   prepareData() {
-      super.prepareData();
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
-   }
-
    /**
    * Handle clickable rolls.
    * @param {Event} event The originating click event

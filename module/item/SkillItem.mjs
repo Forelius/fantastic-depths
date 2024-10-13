@@ -26,12 +26,12 @@ export class SkillItem extends fadeItem {
       }
    }
 
- /**
- * Handle clickable rolls.
- * @override
- * @param {Event} event The originating click event
- * @private
- */
+   /**
+   * Handle clickable rolls.
+   * @override
+   * @param {Event} event The originating click event
+   * @private
+   */
    async roll(dataset) {
       const item = this;
       const systemData = this.system;

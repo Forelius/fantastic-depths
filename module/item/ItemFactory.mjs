@@ -3,6 +3,7 @@ import { ArmorItem } from '../item/ArmorItem.mjs';
 import { WeaponItem } from '../item/WeaponItem.mjs';
 import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs';
 import { SkillItem } from '../item/SkillItem.mjs';
+import { SpellItem } from '../item/SpellItem.mjs';
 
 const handler = {
    construct(_item, args) {
@@ -13,7 +14,7 @@ const handler = {
       else if (args[0]?.type === 'specialAbility') result = new SpecialAbilityItem(...args);
       else if (args[0]?.type === 'mastery') result = new fadeItem(...args);
       else if (args[0]?.type === 'skill') result = new SkillItem(...args);
-      else if (args[0]?.type === 'spell') result = new fadeItem(...args);
+      else if (args[0]?.type === 'spell') result = new SpellItem(...args);
       else throw new Error(SYSTEM_ID, { type: args[0]?.type });
       return result;
    }

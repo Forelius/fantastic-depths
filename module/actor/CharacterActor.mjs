@@ -10,11 +10,6 @@ export class CharacterActor extends fadeActor {
    }
 
    /** @override */
-   prepareData() {
-      super.prepareData();
-   }
-
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
 
@@ -30,22 +25,6 @@ export class CharacterActor extends fadeActor {
       this._prepareDerivedMovement();
       this._prepareClassInfo();
       this._prepareWrestling();      
-   }
-
-   /**
-   * @override
-   * Prepare all embedded Document instances which exist within this primary Document.
-   * @memberof ClientDocumentMixin#
-   * active effects are applied
-   */
-   prepareEmbeddedDocuments() {
-      super.prepareEmbeddedDocuments();
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
    }
 
    /**
@@ -109,22 +88,6 @@ export class CharacterActor extends fadeActor {
             whisper: ChatMessage.getWhisperRecipients("GM"), // Whisper to all active GMs
          });
       }
-   }
-
-   /**
-    * @override
-    * @param {any} changed
-    * @param {any} options
-    * @param {any} userId
-    */
-   _onUpdate(changed, options, userId) {
-      super._onUpdate(changed, options, userId);
-
-      // Check if the class property has changed
-      //if (changed.system && changed.system.details && changed.system.details.class) {
-      //   console.log("CharacterActor._onUpdate");
-      //   this._prepareClassInfo();         
-      //}
    }
 
    _prepareDetails() {
@@ -194,6 +157,10 @@ export class CharacterActor extends fadeActor {
       systemData.exploration = explore;
    }
 
+   /**
+    * Prepares all derived class-related data when the class name is recognized.
+    * @returns
+    */
    _prepareClassInfo() {
       const systemData = this.system;
       let details = systemData.details || {};
@@ -227,6 +194,7 @@ export class CharacterActor extends fadeActor {
          }, { pr5Count: 0, pr10Count: 0 });
          details.xp.bonus = pr10Count === classData.primeReqs.length ? 10 : pr5Count === classData.primeReqs.length ? 5 : 0;
 
+         // Level stuff
          if (levelData) {
             systemData.hp.hd = levelData.hd;
             systemData.thac0.value = levelData.thac0;
@@ -242,7 +210,12 @@ export class CharacterActor extends fadeActor {
          details.species = classData.species;
 
          systemData.details = details;
-         
+
+         // Spells
+         if (classData.spells) {
+            // Set max memorized for each spell level.
+         }
+
          // Saving throws
          super._prepareSavingThrows(classNameInput, currentLevel);
       }

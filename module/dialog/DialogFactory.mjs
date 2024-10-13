@@ -19,6 +19,8 @@ export const DialogFactory = (dataset=null, caller = null, opt = {}) => {
       result = fadeDialog.getContentImportDialog(dataset, caller);
    } else if (dataset.dialog === 'lightmgr') {
       result = fadeDialog.getLightMgrDialog(dataset, caller, opt);
+   } else if (dataset.dialog === 'yesno') {
+      result = fadeDialog.getYesNoDialog(dataset);
    }
    return result;
 };

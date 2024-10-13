@@ -81,11 +81,6 @@ export class fadeActor extends Actor {
    }
 
    /** @override */
-   prepareData() {
-      super.prepareData();
-   }
-
-   /** @override */
    prepareBaseData() {
       const systemData = this.system;
 
@@ -148,16 +143,6 @@ export class fadeActor extends Actor {
       this._prepareEncumbrance();
       this._prepareDerivedMovement();
       this._prepareSpellsUsed();
-   }
-
-   /**
-    * Prepare all embedded Document instances which exist within this primary Document.
-   * @override
-   * @memberof ClientDocumentMixin#
-   * active effects are applied
-   */
-   prepareEmbeddedDocuments() {
-      super.prepareEmbeddedDocuments();
    }
 
    getRollData() {

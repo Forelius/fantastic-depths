@@ -415,9 +415,13 @@
             }
          }
       },
-      "autoNumber": {
-         "name": "Auto-Number Unlinked Actors",
-         "hint": "Enables automatic numbering of unlinked actors when they are dragged onto a scene."
+      "collapseState": {
+         "name": "Remember Collapse State",
+         "hint": "When enabled, the item lists will remember their collapse state individually for each character."
+      },
+      "logChanges": {
+         "name": "Log Character Sheet Changes",
+         "hint": "If enabled, logs character sheet changes to the GM via chat."
       }
    }
 }

@@ -184,10 +184,7 @@ export class fadeActorSheet extends ActorSheet {
             .click((event) => event.target.select())
             .change(this._onDataChange.bind(this));
 
-         html.find(".spells .item-reset[data-action='reset-spells']")
-            .click((event) => {
-               this._resetSpells(event);
-            });
+         html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
 
          html.find('input[data-action="add-tag"]').keypress((ev) => {
             if (ev.which === 13) {
@@ -429,6 +426,11 @@ export class fadeActorSheet extends ActorSheet {
          spell.system.cast = 0;
          spell.update({ "system.cast": spell.system.cast });
       });
+
+      const msg = `${this.actor.name} reset memorized spells. Cast counts set to zero.`;
+      ui.notifications.info(msg);
+      // Create the chat message
+      await ChatMessage.create({ content: msg });
    }
 
    /**

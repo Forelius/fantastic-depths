@@ -22,17 +22,6 @@ export class WeaponItem extends fadeItem {
       this._prepareModText();
    }
 
-   /** @override */
-   prepareData() {
-      super.prepareData();
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
-   }
-
    getDamageRoll(attackType, attacker) {
       const systemData = this.system;
       const attackerData = attacker.system;
@@ -66,6 +55,7 @@ export class WeaponItem extends fadeItem {
 
    /**
    * Handle clickable rolls.
+   * @override
    * @param {Event} event The originating click event
    */
    async roll() {
@@ -77,17 +67,18 @@ export class WeaponItem extends fadeItem {
       const label = `[${this.type}] ${this.name}`;
       const rollData = this.getRollData();
       let dialogResp;
+      let canAttack = true;
 
       try {
          dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
          rollData.formula = this._getToHitRoll(dialogResp.resp.attackType, dialogResp.resp.mod, this.actor);
       } catch (error) {
          // Close button pressed or other error
-         return;
+         canAttack = false;
       }
 
       // Check if the attack type is a missile/ranged attack
-      if (dialogResp.resp.attackType !== 'melee' && systemData.ammo.type) {
+      if (canAttack  && dialogResp.resp.attackType !== 'melee' && systemData.ammo.type) {
          // Handle ammo usage
          const currentAmmo = systemData.ammo.load; // Current ammo
          const ammoType = systemData.ammo.type;   // Ammo type (if relevant)
@@ -95,20 +86,20 @@ export class WeaponItem extends fadeItem {
          // If there's no ammo, show a UI notification
          if (currentAmmo <= 0) {
             ui.notifications.warn(`No ${ammoType ? ammoType : 'ammo'} remaining!`);
-            return; // Stop the roll if there's no ammo
+            canAttack = false;
+         } else {
+            // Deduct 1 ammo
+            systemData.ammo.load -= 1;
+
+            // Update the weapon/item's data to reflect the new ammo count
+            await this.update({ 'system.ammo.load': systemData.ammo.load });
          }
-
-         // Deduct 1 ammo
-         systemData.ammo.load -= 1;
-
-         // Update the weapon/item's data to reflect the new ammo count
-         await this.update({ 'system.ammo.load': systemData.ammo.load });
       }
 
       // Perform the roll if there's ammo or if it's a melee attack
       let result = null;
 
-      if (dialogResp) {
+      if (canAttack && dialogResp) {
          const rollContext = { ...rollData, ...dialogResp.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {

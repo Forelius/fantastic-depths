@@ -11,11 +11,6 @@ export class MonsterActor extends fadeActor {
    }
 
    /** @override */
-   prepareData() {
-      super.prepareData();
-   }
-
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
       const systemData = this.system;
@@ -41,22 +36,6 @@ export class MonsterActor extends fadeActor {
       super.prepareDerivedData();
       this._prepareWrestling();
       this._prepareSavingThrows();
-   }
-
-   /**
-    * @override
-    * Prepare all embedded Document instances which exist within this primary Document.
-    * @memberof ClientDocumentMixin#
-    * active effects are applied
-    */
-   prepareEmbeddedDocuments() {
-      super.prepareEmbeddedDocuments();
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
    }
 
    _prepareWrestling() {
