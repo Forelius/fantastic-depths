@@ -24,7 +24,7 @@ export class CharacterActor extends fadeActor {
       this._prepareDerivedAbilities();
       this._prepareDerivedMovement();
       this._prepareClassInfo();
-      this._prepareWrestling();      
+      this._prepareWrestling();
    }
 
    /**
@@ -212,8 +212,22 @@ export class CharacterActor extends fadeActor {
          systemData.details = details;
 
          // Spells
-         if (classData.spells) {
-            // Set max memorized for each spell level.
+         const classSpellsIdx = details.level - 1;
+         if (classData.spells && classSpellsIdx < classData.spells.length) {
+            // Get the spell progression for the given character level
+            const spellProgression = classData.spells[classSpellsIdx];
+
+            // Loop through the spell slots in the systemData and update the 'max' values
+            systemData.spellSlots.forEach((slot, index) => {
+               // Check if the index is within the spellProgression array bounds
+               if (index - 1 >= 0 && index - 1 < spellProgression.length) {
+                  // Set the max value based on the class spell progression
+                  slot.max = spellProgression[index-1];
+               } else {
+                  // Set max to 0 if the character's class doesn't have spells at this level
+                  slot.max = 0;
+               }
+            });
          }
 
          // Saving throws
@@ -230,5 +244,5 @@ export class CharacterActor extends fadeActor {
       wrestling = Math.ceil(systemData.details.level / 2) + systemData.ac.value;
       wrestling += systemData.abilities.str.mod + systemData.abilities.dex.mod;
       systemData.wrestling = wrestling;
-   }   
+   }
 }

@@ -212,19 +212,13 @@ export class fadeActorSheet extends ActorSheet {
       const armor = [];
       const skills = [];
       const masteries = [];
-      const spellSlots = {
-         1: { spells: [] },
-         2: { spells: [] },
-         3: { spells: [] },
-         4: { spells: [] },
-         5: { spells: [] },
-         6: { spells: [] },
-         7: { spells: [] },
-         8: { spells: [] },
-         9: { spells: [] },
-      };
+      const spellSlots = [];
       const treasure = [];
       const specialAbilities = [];
+
+      for (let i = 0; i < 10; i++) {
+         spellSlots.push({ spells: [] })
+      }
 
       // Iterate through items, allocating to containers
       for (let item of context.items) {

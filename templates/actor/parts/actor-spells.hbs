@@ -10,6 +10,7 @@
    </div>
    <ol class='items-list'>
       {{#each spellSlots as |slot|}}
+      {{#if @index}}
       <li class='item flexrow items-header'>
          <div class='item-name'>
             {{localize 'FADE.Spell.SpellLVL' level=@key}}
@@ -17,15 +18,15 @@
          <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
          <div class="item-80px flexrow">
             <input type="text"
-                   value="{{lookup (lookup @root.system.spellSlots @key) 'used'}}"
-                   name="system.spellSlots.{{@key}}.used"
+                   value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
+                   name="system.spellSlots[{{@key}}].used"
                    data-dtype="Number"
                    placeholder="0"
                    readonly
                    title="{{localize 'FADE.Spell.usedSlots'}}" />/
             <input type="text"
                    value="{{lookup (lookup @root.system.spellSlots @key) 'max'}}"
-                   name="system.spellSlots.{{@key}}.max"
+                   name="system.spellSlots[{{@key}}].max"
                    data-dtype="Number"
                    placeholder="0"
                    title="{{localize 'FADE.Spell.availableSlots'}}" />
@@ -52,8 +53,7 @@
                    data-dtype="Number"
                    placeholder="0"
                    data-field="cast"
-                   title="{{localize 'FADE.Spell.cast'}}" />
-            /
+                   title="{{localize 'FADE.Spell.cast'}}" />/
             <input type="text"
                    value="{{spell.system.memorized}}"
                    data-field="memorize"
@@ -68,6 +68,7 @@
          </div>
       </li>
       {{/each}}
+      {{/if}}
       {{/each}}
    </ol>
 </section>
