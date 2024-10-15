@@ -3,7 +3,7 @@ export class PartyTrackerForm extends FormApplication {
       super();
       this.isGM = game.user.isGM;
       // Load tracked actors from the settings
-      this.trackedActors = game.settings.get('mySystem', 'partyTrackerData') || [];
+      this.trackedActors = game.settings.get(game.system.id, 'partyTrackerData') || [];
    }
 
    static get defaultOptions() {
@@ -14,6 +14,7 @@ export class PartyTrackerForm extends FormApplication {
       options.height = 500;
       options.resizable = true; // Make the form resizable
       options.title = "Party Tracker";
+      options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
       return options;
    }
 
@@ -159,7 +160,7 @@ export class PartyTrackerForm extends FormApplication {
    }
 
    _saveTrackedActors() {
-      game.settings.set('mySystem', 'partyTrackerData', this.trackedActors);
+      game.settings.set(game.system.id, 'partyTrackerData', this.trackedActors);
    }
 
    /** 

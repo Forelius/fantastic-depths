@@ -2,18 +2,12 @@ export class fadeSettings {
    /**
     * Register all of the system's settings.
     */
-   async registerSystemSettings() {
+   async RegisterSystemSettings() {
+      await this.#registerConfigSettings();      
+      await this.#registerNonConfigSettings();
+   }
 
-      // Register the systemMigrationVersion setting
-      game.settings.register(game.system.id, "gameVer", {
-         name: "System Migration Version",
-         hint: "Stores the current version of the system to manage data migrations.",
-         scope: "world",  // "world" scope means it's stored at the world level, shared by all users
-         config: false,   // Set to false to hide it from the settings UI
-         type: String,    // The type of the setting (String, Number, Boolean, etc.)
-         default: "0.0.0" // Set a default version, e.g., "0.0.0"
-      });
-
+   async #registerConfigSettings() {
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
          name: "SETTINGS.Encumbrance.Name",
@@ -117,23 +111,6 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
-      game.settings.register(game.system.id, 'turnData', {
-         name: 'Turn Data',  // Name shown in the settings menu
-         hint: 'Tracks the turns information.',
-         scope: 'world',      // 'world' means it's shared across all users
-         config: false,       // Don't show it in the settings menu
-         type: Object,        // Data type
-         default: {
-            dungeon: {
-               rest: 0,
-               restWarnCount: 0,
-               session: 0,
-               total: 0
-            }
-         },
-         restricted: true // Only the GM can change this setting
-      });
-
       game.settings.register(game.system.id, "rememberCollapsedState", {
          name: "SETTINGS.collapseState.name",
          hint: "SETTINGS.collapseState.hint",
@@ -152,13 +129,50 @@ export class fadeSettings {
          default: false,
          restricted: true // Only the GM can change this setting
       });
+   }
 
-      game.settings.register('mySystem', 'partyTrackerData', {
+   async #registerNonConfigSettings() {
+      game.settings.register(game.system.id, 'partyTrackerData', {
          name: "Party Tracker Data",
          scope: "world",      // This means it's stored for the whole world
          config: false,       // No need to show it in the UI
          type: Object,        // The data type is an object
          default: []          // Default value is an empty array
+      });
+
+      await game.settings.register(game.system.id, 'globalEffects', {
+         name: 'Global Active Effects',
+         scope: 'world',
+         config: false,
+         type: Array,
+         default: [],
+      });
+
+      game.settings.register(game.system.id, 'turnData', {
+         name: 'Turn Data',  // Name shown in the settings menu
+         hint: 'Tracks the turns information.',
+         scope: 'world',      // 'world' means it's shared across all users
+         config: false,       // Don't show it in the settings menu
+         type: Object,        // Data type
+         default: {
+            dungeon: {
+               rest: 0,
+               restWarnCount: 0,
+               session: 0,
+               total: 0
+            }
+         },
+         restricted: true // Only the GM can change this setting
+      });
+
+      // Register the systemMigrationVersion setting
+      await game.settings.register(game.system.id, "gameVer", {
+         name: "System Migration Version",
+         hint: "Stores the current version of the system to manage data migrations.",
+         scope: "world",  // "world" scope means it's stored at the world level, shared by all users
+         config: false,   // Set to false to hide it from the settings UI
+         type: String,    // The type of the setting (String, Number, Boolean, etc.)
+         default: "0.0.0" // Set a default version, e.g., "0.0.0"
       });
    }
 

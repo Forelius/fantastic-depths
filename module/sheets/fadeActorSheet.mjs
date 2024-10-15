@@ -1,5 +1,5 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { onManageActiveEffect, prepareActiveEffectCategories } from '../sys/effects.mjs';
+import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
 /**
@@ -91,7 +91,7 @@ export class fadeActorSheet extends ActorSheet {
       );
 
       // Prepare active effects
-      context.effects = prepareActiveEffectCategories(
+      context.effects = EffectManager.prepareActiveEffectCategories(
          // A generator that returns all effects stored on the actor
          // as well as any items
          this.actor.allApplicableEffects()
@@ -139,7 +139,7 @@ export class fadeActorSheet extends ActorSheet {
          html.on('click', '.effect-control', (event) => {
             const row = event.currentTarget.closest('li');
             const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
-            onManageActiveEffect(event, document);
+            EffectManager.onManageActiveEffect(event, document);
          });
 
          // Rollable abilities.
@@ -180,23 +180,23 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Editable
-         html.find(".editable input")
-            .click((event) => event.target.select())
+         html.find(".editable input").click((event) => event.target.select())
             .change(this._onDataChange.bind(this));
 
          html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
 
-         html.find('input[data-action="add-tag"]').keypress((ev) => {
-            if (ev.which === 13) {
-               const value = $(ev.currentTarget).val();
-               this.object.tagManager.pushTag(value);
-            }
-         });
+         html.find('input[data-action="add-tag"]')
+            .keypress((ev) => {
+               if (ev.which === 13) {
+                  const value = $(ev.currentTarget).val();
+                  this.object.tagManager.pushTag(value);
+               }
+            });
+
          html.find(".tag-delete").click((ev) => {
             const value = ev.currentTarget.parentElement.dataset.tag;
             this.object.tagManager.popTag(value);
          });
-
       }
    }
 

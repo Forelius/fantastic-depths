@@ -19,6 +19,7 @@ export class TurnTrackerForm extends FormApplication {
       options.width = 400;
       options.height = 170;
       options.title = "Turn Tracker";
+      options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
       return options;
    }
 

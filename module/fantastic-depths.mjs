@@ -26,11 +26,13 @@ import { ContentImporter } from './sys/ContentImporter.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { migrateData } from './sys/migration.mjs';
+import { EffectManager } from './sys/EffectManager.mjs';
+import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
-Hooks.once('init', function () {
+Hooks.once('init', async function () {
    // Add utility classes to the global game object so that they're more easily
    // accessible in global contexts.
    game.fade = {
@@ -44,6 +46,7 @@ Hooks.once('init', function () {
       LightManager,
       TurnTrackerForm,
       PartyTrackerForm,
+      EffectLibraryForm,
       ContentImporter,
       fadeDialog
    };
@@ -51,13 +54,7 @@ Hooks.once('init', function () {
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
 
-   // Register System Settings
-   let settings = new fadeSettings();
-   settings.registerSystemSettings();
-   // Hook into the rendering of the settings form
-   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
-
-   // Replace the default Combat class with the custom fadeCombat class
+    // Replace the default Combat class with the custom fadeCombat class
    CONFIG.Combat.documentClass = fadeCombat;
 
    // Define custom Document classes
@@ -81,9 +78,22 @@ Hooks.once('init', function () {
       label: 'FADE.SheetLabel.Item',
    });
 
+   await handleAsyncInit();
+
    // Preload Handlebars templates.
    return preloadHandlebarsTemplates();
 });
+
+async function handleAsyncInit() {
+   // Register System Settings
+   const settings = new fadeSettings();
+   await settings.RegisterSystemSettings();
+   // Hook into the rendering of the settings form
+   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
+
+   const fxMgr = new EffectManager();
+   await fxMgr.OnGameInit();
+}
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
@@ -106,6 +116,9 @@ Hooks.once('ready', async function () {
    // inline-roll handler
    $(document).on('click', '.damage-roll', DamageRollChatBuilder.clickDamageRoll);
    $(document).on('click', '.apply-damage', DamageRollChatBuilder.clickApplyDamage);
+
+   const fxMgr = new EffectManager();
+   await fxMgr.OnGameReady();
 });
 
 fadeHandlebars.registerHelpers();

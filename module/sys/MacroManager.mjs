@@ -35,6 +35,20 @@ export class MacroManager {
       }, true); // true indicates it should be assigned to the hotbar
 
       await MacroManager.createMacro({
+         name: "Open Active EFfect Library",
+         type: "script",
+         command: `if (game.user.isGM) {
+   if (!window.effectLibrary) window.effectLibrary = new game.fade.EffectLibraryForm();
+   if (window.effectLibrary.rendered) window.effectLibrary.close();
+   else window.effectLibrary.render(true);
+} else { 
+   ui.notifications.warn("Only the GM can open the Effect Library.");
+}`,
+         img: "icons/svg/paralysis.svg",
+         folder: gmFolder.id, // Place macro in the GM Only folder
+      }, true); // true indicates it should be assigned to the hotbar
+
+      await MacroManager.createMacro({
          name: "Light Manager",
          type: "script",
          command: `if (game.user.isGM) {
@@ -45,14 +59,6 @@ export class MacroManager {
          img: "icons/magic/light/orb-lightbulb-gray.webp",
          folder: gmFolder.id,
       }, true);  // Set to false if you don't want automatic hotbar assignment
-
-      await MacroManager.createMacro({
-         name: "Roll Abilty Scores 4d6kh",
-         type: "script",
-         command: "game.fade.LightManager.showLightDialog();",
-         img: `${fdPath}/ui/import.webp`,
-         folder: miscFolder.id
-      }, false);
 
       await MacroManager.createMacro({
          name: "Roll Abilty Scores 4d6kh",

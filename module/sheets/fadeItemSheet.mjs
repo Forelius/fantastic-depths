@@ -1,4 +1,4 @@
-import { onManageActiveEffect, prepareActiveEffectCategories } from '../sys/effects.mjs';
+import { EffectManager } from '../sys/EffectManager.mjs';
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -79,7 +79,7 @@ export class fadeItemSheet extends ItemSheet {
 
       if (this.item.type === 'weapon' || this.item.type === 'armor' || this.item.type === 'item') {
          // Prepare active effects for easier access
-         context.effects = prepareActiveEffectCategories(this.item.effects);
+         context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
       }
       if (this.item.type === 'skill' || this.item.type === 'specialAbility') {
          // Prepare roll modes select options
@@ -112,7 +112,7 @@ export class fadeItemSheet extends ItemSheet {
       if (this.isEditable) {
          // Active Effect management
          html.on('click', '.effect-control', (ev) =>
-            onManageActiveEffect(ev, this.item)
+            EffectManager.onManageActiveEffect(ev, this.item)
          );
          html.find('input[data-action="add-tag"]').keypress((ev) => {
             if (ev.which === 13) {
