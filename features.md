@@ -13,7 +13,6 @@
 - Monsters
 	- Tags
 - NPCS/Retainers [PARTIAL]
-- 
 ### Item sheets
 - Generic items/Gear
 	- Tags

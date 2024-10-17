@@ -19,15 +19,14 @@ export class DamageRollChatBuilder extends ChatBuilder {
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
-      const speaker = {
-         alias: userName,  // Use the player name as the speaker
-         user: game.users.current.id,  // Set the current user as the speaker
-      };
+      // Determine rollMode (use mdata.rollmode if provided, fallback to default)
+      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
 
       // First, create an empty message to get the message ID
       const tempMessage = await ChatMessage.create({
          content: "",  // Temporary empty content
          rolls: rolls,  // Pass the roll(s) directly in the rolls field
+         rollMode
       });
 
       // Prepare data for the chat template, including the message ID
@@ -43,9 +42,13 @@ export class DamageRollChatBuilder extends ChatBuilder {
          messageId: tempMessage.id, // Pass the message ID into the render data
       };
 
+      if (window.toastManager) {
+         let toast = `${resultString}`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+
       // Render the content using the template, now with messageId
       const content = await renderTemplate(this.template, renderData);
-
       // Update the temporary chat message with the final content and roll data
       await tempMessage.update({
          content,  // Set the final content including the message ID

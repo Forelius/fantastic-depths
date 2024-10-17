@@ -9,6 +9,69 @@ h1, h2, h3, h4 {
 }
 
 /* Global styles */
+.toast-container {
+  position: fixed;
+  top: 10px;
+  left: 100px;
+  z-index: 9999; /* Ensure it's on top of other UI elements */
+  max-width: 400px;
+  pointer-events: none; /* Ensure it doesn't interfere with other UI elements */
+}
+
+.toast {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: flex-start; /* Align items to the start */
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  border-color: #333;
+  border-width: 3px;
+  margin-bottom: 10px;
+  opacity: 1; /* Start fully visible */
+  pointer-events: auto;
+  animation: fadein 0.5s forwards;
+}
+.toast.fadeout {
+  animation: fadeout 0.5s forwards;
+}
+.toast.success {
+  background-color: #142715;
+  color: #e4e4e4;
+}
+.toast.error {
+  background-color: #30120f;
+  color: #e4e4e4;
+}
+.toast.warning {
+  background-color: #282214;
+  color: #e4e4e4;
+}
+.toast.info {
+  background-color: #1b262b;
+  color: #e4e4e4;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
 .window-app {
   font-family: "Barlow", sans-serif;
 }

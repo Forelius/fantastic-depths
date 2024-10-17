@@ -29,6 +29,8 @@ export class GenericRollChatBuilder extends ChatBuilder {
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
+      // Determine rollMode (use mdata.rollmode if provided, fallback to default)
+      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
 
       // Prepare data for the chat template
       const chatData = {
@@ -39,11 +41,13 @@ export class GenericRollChatBuilder extends ChatBuilder {
          userName,
       };
 
+      if (window.toastManager) {
+         let toast = `${actorName}: ${mdata.label ?? ''}${mdata.desc ?? ''} <div>${resultString}</div>`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
-
-      // Determine rollMode (use mdata.rollmode if provided, fallback to default)
-      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = await this.getChatMessageData({

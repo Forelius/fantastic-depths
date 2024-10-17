@@ -115,7 +115,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * Called by the various Actor and Item derived classes to create a chat message.
     */
    async createChatMessage() {
-      const { caller, context, resp, roll } = this.data;
+      const { caller, context, resp, roll, mdata } = this.data;
 
       const rolls = [roll];
       const actorName = context.name;
@@ -127,16 +127,17 @@ export class AttackRollChatBuilder extends ChatBuilder {
          targetName: targetName,
          weapon: caller.name
       } : {
-            attackerid: context.id,
-            attacker: actorName,
-            attackType: resp.attackType,
-            weapon: caller.name
+         attackerid: context.id,
+         attacker: actorName,
+         attackType: resp.attackType,
+         weapon: caller.name
       };
       const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
       const rollContent = await roll.render({ flavor: 'Attack Roll' });
       const toHitResult = this.#getToHitResult();
       let damageRoll = caller.getDamageRoll(resp.attackType, context);
 
+      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       // Get the actor and user names
       const userName = game.users.current.name; // User name (e.g., player name)
       const targetToken = this.#selectedToken; // Get the selected token
@@ -150,8 +151,13 @@ export class AttackRollChatBuilder extends ChatBuilder {
          targetId: targetTokenId,
       };
 
+      if (window.toastManager) {
+         let toast = `${description}${toHitResult.message}`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+
       const content = await renderTemplate(this.template, chatData);
-      const chatMessageData = await this.getChatMessageData({ content, rolls });
+      const chatMessageData = await this.getChatMessageData({ content, rolls, rollMode });
       await ChatMessage.create(chatMessageData);
    }
 }
