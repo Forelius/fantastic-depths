@@ -1,8 +1,8 @@
 // toast.scss
 .toast-container {
    position: fixed;
-   top: 10px;
-   left: 100px;
+   bottom: 130px;
+   left: 250px;
    z-index: 9999; /* Ensure it's on top of other UI elements */
    max-width: 400px;
    pointer-events: none; /* Ensure it doesn't interfere with other UI elements */
@@ -13,7 +13,8 @@
    flex-direction: column; /* Stack elements vertically */
    align-items: flex-start; /* Align items to the start */
    background-color: #333;
-   color: #fff;
+   color: #e4e4e4;
+   font-size: 15px;
    padding: 10px;
    border-radius: 5px;
    border-color: #333;
@@ -23,28 +24,39 @@
    pointer-events: auto;
    animation: fadein 0.5s forwards;
 
+   .attack-success, .roll-success {
+      font-size: 20px;
+      color: #bee8b1;
+   }
+
+   .attack-fail, .roll-fail {
+      font-size: 20px;
+      color: #faa4a4;
+   }
+
+   .damage {
+      font-size: 20px;
+      font-weight: bold;
+   }
+
    &.fadeout {
       animation: fadeout 0.5s forwards;
    }
 
    &.success {
       background-color: #142715;
-      color: #e4e4e4;
    }
 
    &.error {
       background-color: #30120f;
-      color: #e4e4e4;
    }
 
    &.warning {
       background-color: #282214;
-      color: #e4e4e4;
    }
 
    &.info {
       background-color: #1b262b;
-      color: #e4e4e4;
    }
 }
 

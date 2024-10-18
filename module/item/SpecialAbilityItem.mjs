@@ -29,6 +29,7 @@ export class SpecialAbilityItem extends fadeItem {
          dataset.dialog = "generic";
          dataset.pass = systemData.operator;
          dataset.target = systemData.target;
+         dataset.rollmode = systemData.rollMode;
          let dialogResp = null;
          try {
             dialogResp = await DialogFactory(dataset, this.actor);

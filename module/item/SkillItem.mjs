@@ -61,6 +61,7 @@ export class SkillItem extends fadeItem {
          // Show the chat message
          dataset.pass = "lte"; // this is a less than or equal to roll
          dataset.target = systemData.rollTarget;
+         dataset.rollmode = systemData.rollMode;
          const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
          dataset.desc = `${localizeAbility} (${ownerData.abilities[systemData.ability].value})`
          const chatData = {

@@ -63,7 +63,6 @@ export class WeaponItem extends fadeItem {
 
       // Initialize chat data.
       const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const rollMode = await game.settings.get('core', 'rollMode');
       const label = `[${this.type}] ${this.name}`;
       const rollData = this.getRollData();
       let dialogResp;

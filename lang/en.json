@@ -304,8 +304,8 @@
          "attackSuccess": "Attack hit!",
          "attackFail": "Attack missed!",
          "attackRoll": "Attacks",
-         "damageFlavor1": "{attacker} hits {targetname} with {weapon} for {damage} points of damage.",
-         "damageFlavor2": "{attacker} hits with {weapon} for {damage} points of damage.",
+         "damageFlavor1": "<div>{attacker} hits with {weapon}</div><div>{targetname} takes <span class='damage'>{damage}</span> points of damage.</div>",
+         "damageFlavor2": "<div>{attacker} hits with {weapon}</div><div>Target takes <span class='damage'>{damage}</span> points of damage.</div>",
          "damageRoll": "Damage Roll"
       },
       "roll": "Roll",

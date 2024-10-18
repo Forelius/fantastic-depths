@@ -1,6 +1,6 @@
 // fadeCombat.mjs
 // Import any required modules (if necessary)
-import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 // Custom Combat class
 export class fadeCombat extends Combat {
@@ -12,13 +12,6 @@ export class fadeCombat extends Combat {
    async _initVariables() {
       this.initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
       this.nextRoundMode = await game.settings.get(game.system.id, "nextRound");
-   }
-
-   /**
-    * @override 
-    * */
-   async startCombat() {
-      return super.startCombat();
    }
 
    /**
@@ -38,7 +31,7 @@ export class fadeCombat extends Combat {
       } else {
          combatants.sort(this.sortCombatants);
       }
-      return combatants;
+      return this.turns = combatants;
    }
 
    /**
@@ -127,7 +120,7 @@ export class fadeCombat extends Combat {
          let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
          let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
          let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
-         // Compare slowEquipped, true comes before false
+         // Compare slowEquipped, true comes after false
          if (aSlowEquipped !== bSlowEquipped) {
             result = aSlowEquipped ? 1 : -1;
          }

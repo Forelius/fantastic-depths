@@ -15,7 +15,7 @@ import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
-import { fadeCombat } from './fadeCombat.mjs'
+import { fadeCombat } from './sys/fadeCombat.mjs'
 // Import TurnTrackerForm class
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';

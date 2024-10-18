@@ -16,21 +16,18 @@ export class GenericRollChatBuilder extends ChatBuilder {
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
-      let resultString = null;
 
       // Determine the roll result based on the provided data
-      if (mdata.pass !== undefined && mdata.pass !== null) {
-         let testResult = this.getBoolRollResultType(roll.total, targetNumber, mdata.pass);
-         resultString = this.getBoolResult(testResult);
-      } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {
-         resultString = mdata.resultstring;
-      }
+      let resultString = this.getResultString(mdata, roll, targetNumber);
 
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
+
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
+
+      this.handleToast(actorName, mdata, roll, resultString, rollMode);
 
       // Prepare data for the chat template
       const chatData = {
@@ -40,12 +37,6 @@ export class GenericRollChatBuilder extends ChatBuilder {
          actorName,
          userName,
       };
-
-      if (window.toastManager) {
-         let toast = `${actorName}: ${mdata.label ?? ''}${mdata.desc ?? ''} <div>${resultString}</div>`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
-
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
 
@@ -60,4 +51,23 @@ export class GenericRollChatBuilder extends ChatBuilder {
       await ChatMessage.create(chatMessageData);
    }
 
+   handleToast(actorName, mdata, roll, resultString, rollMode) {
+      if (window.toastManager) {
+         let toast = `${actorName}: ${mdata.label ?? ''}${mdata.desc ?? ''}`;
+         toast += `<div>Roll: ${roll.total}</div>`;
+         if (resultString) toast += `<div>${resultString}</div>`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+   }
+
+   getResultString(mdata, roll, targetNumber) {
+      let resultString = null;
+      if (mdata.pass !== undefined && mdata.pass !== null) {
+         let testResult = this.getBoolRollResultType(roll.total, targetNumber, mdata.pass);
+         resultString = this.getBoolResult(testResult);
+      } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {
+         resultString = mdata.resultstring;
+      }
+      return resultString;
+   }
 }

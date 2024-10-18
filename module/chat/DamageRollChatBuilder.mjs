@@ -43,7 +43,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       };
 
       if (window.toastManager) {
-         let toast = `${resultString}`;
+         let toast = `${options.resultString}`;
          window.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
@@ -77,7 +77,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const damage = roll.total;
          let descData = targetname ? { attacker, targetname, weapon, damage } : { attacker, weapon, damage };
          let resultString = targetname ? game.i18n.format('FADE.Chat.damageFlavor1', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
-         resultString = `<div class='roll-info'>${resultString}</div>`
+         
          const chatData = {
             context: game.actors.get(attackerid),
             mdata: dataset,

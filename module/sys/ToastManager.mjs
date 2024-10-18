@@ -11,7 +11,7 @@ export class ToastManager {
    #canSendToast(userId) {
       const now = Date.now();
       const lastToast = this.lastToastTime[userId] || 0;
-      const cooldown = 5000; // 5-second cooldown
+      const cooldown = 2000; // 5-second cooldown
 
       if (now - lastToast >= cooldown) {
          this.lastToastTime[userId] = now;

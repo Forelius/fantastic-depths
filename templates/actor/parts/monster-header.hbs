@@ -19,19 +19,37 @@
    <ul class="summary flexrow">
       <li class="flex1">
          <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" title="{{localize 'FADE.Actor.HitDice'}}" />
-         <label class="hitdie rollable" data-formula="{{formatHitDice system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
+         <label class="hitdie rollable" 
+                data-formula="{{formatHitDice system.hp.hd}}" 
+                data-rollmode="blindroll"
+                data-label="{{localize 'FADE.Actor.Health'}}">
+         {{localize 'FADE.Actor.HitDiceShort'}}</label>
       </li>
       <li class="flex2" style="max-width:90px">
          <input type="text" name="system.na.wandering" value="{{system.na.wandering}}" data-dtype="String" title="{{localize 'FADE.Actor.NumberAppearing.long'}}" />
-         <label class="rollable" data-formula="{{system.na.wandering}}" data-label="{{localize 'FADE.Actor.NumberAppearing.long'}}" title="{{localize 'FADE.Actor.NumberAppearing.long'}}">{{localize 'FADE.Actor.NumberAppearing.short'}}</label>
+         <label class="rollable" 
+                data-formula="{{system.na.wandering}}" 
+                data-label="{{localize 'FADE.Actor.NumberAppearing.long'}}" 
+                data-rollmode="blindroll"
+                title="{{localize 'FADE.Actor.NumberAppearing.long'}}">{{localize 'FADE.Actor.NumberAppearing.short'}}</label>
       </li>
       <li class="flex2" style="max-width:90px">
          <input type="text" name="system.na.lair" value="{{system.na.lair}}" data-dtype="String" title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" />
-         <label class="rollable" data-formula="{{system.na.lair}}" data-label="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}">{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
+         <label class="rollable" 
+                data-formula="{{system.na.lair}}" 
+                data-rollmode="blindroll"
+                data-label="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" 
+                title="{{localize 'FADE.Actor.NumberAppearing.longLair'}}">{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
       </li>
       <li class="flex1">
          <input type="number" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
-         <label>{{localize 'FADE.Actor.Morale'}}</label>
+         <label class="rollable" 
+                data-formula="2d6" 
+                data-target="{{system.details.morale}}"
+                data-pass="lte"
+                data-rollmode="blindroll"
+                data-label="{{localize 'FADE.Actor.Morale'}}">
+         {{localize 'FADE.Actor.Morale'}}</label>
       </li>
       <li class="flex1">
          <input type="text" name="system.treasure" value="{{system.treasure}}" data-dtype="String" title="{{localize 'FADE.Actor.Treasure.long'}}" />

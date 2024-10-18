@@ -10,9 +10,19 @@
          color: #106020;
       }
 
-      .attack-info, .roll-info {
+      .damage {
+         font-size: 19px;
+         font-weight: bold;
+      }
+
+      .attack-info {
          font-size: 16px;
-         color: #2a3550;
+         color: #303030;
+      }
+
+      .roll-info {
+         font-size: 16px;
+         color: #101030;
       }
 
       .warning {
