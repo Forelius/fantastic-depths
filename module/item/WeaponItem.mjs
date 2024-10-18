@@ -17,7 +17,6 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      //console.log("WeaponItem.prepareDerivedData()", this);
       this._prepareEffects();
       this._prepareModText();
    }

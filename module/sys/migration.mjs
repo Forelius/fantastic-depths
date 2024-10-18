@@ -11,7 +11,7 @@ export const migrateData = async function migrate() {
    const newVer = game.system.version;
 
    // Only proceed if a migration is needed
-   if (oldVer !== newVer) {
+   if (oldVer < "0.4.7") {
       console.log(`Migrating from version ${oldVer} to ${newVer}`);
 
       // Iterate over all actors in the game
