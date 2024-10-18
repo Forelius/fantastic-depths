@@ -1,4 +1,4 @@
-<section name="spellItems" class="items-list">
+<section name="spellItemsSection" class="items-list">
    <div class="item-category-title flexrow" style="line-height: 15px">
       <div class="item-controls">
          <a class="item-control item-reset"
@@ -8,10 +8,10 @@
          </a>
       </div>
    </div>
-   <ol class='items-list'>
+   <ol name="spellItems" class='items-list'>
       {{#each spellSlots as |slot|}}
       {{#if @index}}
-      <li class='item flexrow items-header'>
+      <li class='item flexrow items-header collapsible-header'>
          <div class='item-name'>
             {{localize 'FADE.Spell.SpellLVL' level=@key}}
          </div>
@@ -39,7 +39,7 @@
          </div>
       </li>
       {{#each slot.spells as |spell id|}}
-      <li class='item flexrow' data-item-id='{{spell._id}}'>
+      <li class='item flexrow collapsible-content' data-item-id='{{spell._id}}'>
          <div class='item-name flexrow'>
             <div class='item-image rollable' data-roll-type='item'>
                <img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' />

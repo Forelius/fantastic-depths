@@ -36,10 +36,20 @@ export class fadeItem extends Item {
    }
 
    /** @override */
-   prepareDerivedData() {      
+   prepareBaseData() {
+      super.prepareBaseData();
+      const systemData = this.system;
+      if (this.type === "item" && systemData.isEquippable === true) {
+         
+      }
+      systemData.equipped = systemData.equipped || false;
+   }
+
+   /** @override */
+   prepareDerivedData() {
       super.prepareDerivedData();
       if (this.type === "item") {
-         this.system.totalWeight = Math.round((this.system.weight * this.system.quantity) * 100) /100;
+         this.system.totalWeight = Math.round((this.system.weight * this.system.quantity) * 100) / 100;
          this.system.totalCost = Math.round((this.system.cost * this.system.quantity) * 100) / 100;
       }
    }
@@ -83,5 +93,5 @@ export class fadeItem extends Item {
             content: item.system.description ?? '',
          });
       }
-   }   
+   }
 }

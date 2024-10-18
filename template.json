@@ -220,21 +220,24 @@
             "containerId": ""
          },
          "equippable": {
-            "equipped": false,
+            "equipped": false
+         },
+         "natural": {
             "natural": false
          }
       },
       "item": {
-         "templates": [ "base", "physical" ],
+         "templates": [ "base", "physical", "equippable" ],
          "treasure": false,
-         "isContainer": false
+         "isContainer": false,
+         "isEquippable": false
       },
       "container": {
          "templates": [ "common", "physical" ],
          "itemIds": []
       },
       "weapon": {
-         "templates": [ "base", "physical", "equippable" ],
+         "templates": [ "base", "physical", "equippable", "natural" ],
          "damageRoll": "1d6",
          "damageType": "physical",
          "canMelee": true,
@@ -251,7 +254,7 @@
          }
       },
       "armor": {
-         "templates": [ "base", "physical", "equippable" ],
+         "templates": [ "base", "physical", "equippable", "natural" ],
          "ac": 9,
          "isShield": false
       },

@@ -84,6 +84,8 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       const systemData = this.system;
 
+      this._prepareEffects();
+
       systemData.config = systemData.config || {};
       systemData.config.isSpellcaster = systemData.config.isSpellcaster || false;
       systemData.config.isRetainer = systemData.config.isRetainer || false;
@@ -102,12 +104,7 @@ export class fadeActor extends Actor {
       this._prepareHitPoints();
       systemData.thac0 = systemData.thac0 || {};
 
-      let savingThrows = systemData.savingThrows || {};
-      const savingThrowTypes = ["death", "wand", "paralysis", "breath", "spell"];
-      savingThrowTypes.forEach(savingThrow => {
-         savingThrows[savingThrow] = savingThrows[savingThrow] || { value: 15 };
-      });
-      systemData.savingThrows = savingThrows;
+      this._prepareBaseSavingThrows();
 
       if (systemData.config.isSpellcaster === true) {
          this._prepareSpells();
@@ -188,8 +185,30 @@ export class fadeActor extends Actor {
       }
    }
 
+   _prepareEffects() {
+      // Iterate over all applicable effects
+      this.allApplicableEffects().forEach((effect) => {
+         const parentItem = effect.parent;
+         // If the effect has a parent and the parent is an equippable item...
+         if (parentItem && parentItem.type === 'item' && parentItem.system.isEquippable === true) {
+            // Set disabled state of effect based on item equipped state
+            effect.disabled = !parentItem.system.equipped;
+         }
+      });
+   }
+
+   _prepareBaseSavingThrows() {
+      const systemData = this.system;
+      let savingThrows = systemData.savingThrows || {};
+      const savingThrowTypes = ["death", "wand", "paralysis", "breath", "spell"];
+      savingThrowTypes.forEach(savingThrow => {
+         savingThrows[savingThrow] = savingThrows[savingThrow] || { value: 15 };
+      });
+      systemData.savingThrows = savingThrows;
+   }
+
    /**
-    * Prepares saving throw values based on class name and class level.
+    * Prepares derived saving throw values based on class name and class level.
     * @protected
     * @param {any} className The class name (Fighter, Cleric, etc.)
     * @param {number} classLevel The level of the class.
@@ -320,7 +339,7 @@ export class fadeActor extends Actor {
     * @protected
     */
    _prepareSpells() {
-      const systemData = this.system;      
+      const systemData = this.system;
       let spellSlots = systemData.spellSlots || [];
 
       for (let i = 0; i < 9; i++) {
@@ -348,7 +367,7 @@ export class fadeActor extends Actor {
       }
 
       const spells = this.items.filter((item) => item.type === 'spell');
-      for(let spell of spells) {
+      for (let spell of spells) {
          if (spell.system.memorized > 0) {
             spellSlots[spell.system.spellLevel].used += spell.system.memorized;
          }

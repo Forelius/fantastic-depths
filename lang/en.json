@@ -195,6 +195,7 @@
          "uses": "Uses",
          "equip": "Equip",
          "unequip": "Unequip",
+         "isEquippable":  "Equippable",
          "quantity": {
             "long": "Quantity",
             "maxLong": "Max. Quantity",

@@ -44,6 +44,17 @@ export const migrateData = async function migrate() {
          }
       }
 
+      for (let item of game.items.contents) {
+         if (item.system["equippable"]) {
+            delete actor.system["equippable"];
+            await actor.update({ "system.-=equippable": null });  // Use -= to remove key in Foundry updates
+         }
+         if (item.system["isEquippable"]) {
+            delete actor.system["isEquippable"];
+            await actor.update({ "system.-=isEquippable": null });  // Use -= to remove key in Foundry updates
+         }
+      }
+
       // Set the new version after migration is complete
       await game.settings.set(SYSTEM_ID, 'gameVer', newVer);
       console.log("FaDe migration complete.");

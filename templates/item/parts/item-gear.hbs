@@ -23,6 +23,12 @@
       <div class="item-40px item-prop"><label>{{item.system.quantity}}</label></div>
       <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
       <div class='item-controls'>
+         {{#if item.system.equippable}}
+         <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
+            title="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
+            <i class="fas fa-tshirt"></i>
+         </a>
+         {{/if}}
          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
             <i class='fas fa-trash'></i>
          </a>

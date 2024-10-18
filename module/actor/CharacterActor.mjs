@@ -145,12 +145,14 @@ export class CharacterActor extends fadeActor {
       retainer.max = adjustment.maxRetainers;
       retainer.morale = adjustment.retainerMorale;
       systemData.retainer = retainer;
+      // Safe to override because no rules or classes change this.
+      systemData.exploration.openDoor = Math.min(5 - systemData.abilities.str.mod, 6);
    }
 
    _prepareExploration() {
       const systemData = this.system;
       let explore = systemData.exploration || {};
-      explore.openDoor = explore.openDoor || Math.min(5 - systemData.abilities.str.mod, 6);
+      explore.openDoor = explore.openDoor;// || 5;
       explore.secretDoor = explore.secretDoor || 1;
       explore.listenDoor = explore.listenDoor || 2;
       explore.findTrap = explore.findTrap || 1;

@@ -125,6 +125,7 @@ export class EffectManager {
             break;
       }
    }
+
    /**
    * Manage Active Effect instances through an Actor or Item Sheet via effect control buttons.
    * @param {MouseEvent} event      The left-click event on the effect control
@@ -184,6 +185,12 @@ export class EffectManager {
 
       // Iterate over active effects, classifying them into categories
       for (let e of effects) {
+         // Fix for unknown source
+         e.sourceNameFix = e.sourceName;
+         if (e.sourceName === "Unknown" && e.parent) {
+            e.sourceNameFix = e.parent.name ?? e.sourceName;
+         }
+
          if (e.disabled) categories.inactive.effects.push(e);
          else if (e.isTemporary) categories.temporary.effects.push(e);
          else categories.passive.effects.push(e);
