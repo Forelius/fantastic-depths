@@ -242,6 +242,7 @@
          "damageType": "physical",
          "canMelee": true,
          "canRanged": false,
+         "mastery": "",
          "range": {
             "short": null,
             "medium": null,
@@ -279,9 +280,6 @@
       },
       "specialAbility": {
          "templates": [ "base", "rollable" ]
-      },
-      "feature": {
-         "templates": [ "base" ]
-      }
+      }      
    }
 }

@@ -427,6 +427,10 @@
       "logChanges": {
          "name": "Log Character Sheet Changes",
          "hint": "If enabled, logs character sheet changes to the GM via chat."
+      },
+      "weaponMastery": {
+         "name": "Weapon Mastery",
+         "hint": "If enabled, weapon mastery rules will be used."
       }
    }
 }

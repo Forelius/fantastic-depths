@@ -31,9 +31,8 @@ export class EffectLibraryForm extends FormApplication {
 		if (this.isGM === true) {
 			// Handle effect management (edit, delete, etc.) using EffectManager
 			html.find('[data-action="edit"], [data-action="delete"], [data-action="create"], [data-action="toggle"]').click((event) => {
-				ui.notifications.warn("Not implemented yet.");
 				// Retrieve the owner if relevant (e.g., Actor or Item)
-				//this.effectMgr.onManageGlobalActiveEffect(event);
+				this.effectMgr.onManageGlobalActiveEffect(event);
 			});
 		}
 	}

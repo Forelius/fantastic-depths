@@ -69,7 +69,7 @@ export class fadeActorSheet extends ActorSheet {
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
 
-      //console.log("fadeActorSheet.getData()", context);
+      context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
 
       // Prepare shared actor data and items.
       this._prepareItems(context);

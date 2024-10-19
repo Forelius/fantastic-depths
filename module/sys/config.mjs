@@ -1,18 +1,19 @@
 export const SYSTEM_ID = "fantastic-depths";
-
 export const FADE = {};
+const path = 'systems/fantastic-depths/assets/';
+
 /**
  * The set of Ability Scores used within the system.
  * @type {Object}
  */
-FADE.Abilities = {
-   str: "Strength",
-   dex: "Dexterity",
-   con: "Constitution",
-   int: "Intelligence",
-   wis: "Wisdom",
-   cha: "Charisma"
-};
+//FADE.Abilities = {
+//   str: "Strength",
+//   dex: "Dexterity",
+//   con: "Constitution",
+//   int: "Intelligence",
+//   wis: "Wisdom",
+//   cha: "Charisma"
+//};
 FADE.MasteryLevels = {
    basic: "Basic",
    skilled: "Skilled",
@@ -604,3 +605,56 @@ FADE.Languages = [
    { name: "Chaotic", script: "None", description: "Chaotic alignment language is spoken only and has no written script." },
    { name: "Neutral", script: "None", description: "Neutral alignment language is spoken only and has no written script." }
 ];
+FADE.Conditions = [
+   {
+      id: "invulnerable",
+      name: "Invulnerable",
+      img: `${path}img/ui/invulnerable.webp`,
+      changes: [
+         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to AC
+         { key: "system.mod.save.death", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to death saves
+         { key: "system.mod.save.wand", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to wand saves
+         { key: "system.mod.save.paralysis", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to paralysis saves
+         { key: "system.mod.save.breath", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to breath saves
+         { key: "system.mod.save.spell", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to spell saves
+      ],
+      duration: { seconds: 600 },  // Duration (e.g., 10 minutes)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "invulnerable",
+            "appliedCount": 0,  // Tracks application count
+            "lastApplied": null  // Tracks the last time applied for the "once per week" rule
+         }
+      }
+   },
+   {
+      id: "exhausted",
+      name: "Exhausted",
+      img: `icons/svg/unconscious.svg`,
+      changes: [
+         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to AC
+         { key: "system.mod.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+         { key: "system.mod.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+      ],
+      duration: { seconds: 600*3 },  // Duration (30 minutes)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "exhausted",
+         }
+      }
+   }
+];
+FADE.Actions = [
+   {
+      id: "attack",
+      img: "icons/svg/sword.svg",
+   },
+   {
+      id: "consume",
+      img: "icons/consumables/drinks/pitcher-dripping-white.webp",
+   },
+   {
+      id: "cast",
+      img: "icons/magic/fire/orb-fireball-puzzle.webp",
+   }
+]

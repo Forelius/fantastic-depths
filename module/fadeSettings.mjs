@@ -139,6 +139,15 @@ export class fadeSettings {
          default: true,
          restricted: true // Only the GM can change this setting
       });
+      game.settings.register(game.system.id, "weaponMastery", {
+         name: "SETTINGS.weaponMastery.name",
+         hint: "SETTINGS.weaponMastery.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
    async #registerNonConfigSettings() {

@@ -41,12 +41,11 @@
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
          {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
       </div>
+      {{#if isGM}}
       {{! Effects Tab }}
       <div class="tab effects" data-group="primary" data-tab="effects">
          {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
       </div>
-      {{! GM-Only Tab }}
-      {{#if isGM}}
       {{! Attributes Tab }}
       <div class='tab' data-group='primary' data-tab='attributes'>
          <section class="bordered">
@@ -80,6 +79,7 @@
          </section>
          {{/if}}
       </div>
+      {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>
          <label for="gm-notes">GM Notes:</label>
          <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>

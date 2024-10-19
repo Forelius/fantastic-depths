@@ -1,39 +1,20 @@
 export class EffectManager {
    async OnGameInit() {
-      //const path = 'systems/fantastic-depths/assets/img';
-      //let globalEffects = await game.settings.get(game.system.id, 'globalEffects') || [];
+      const path = 'systems/fantastic-depths/assets/img';
+      let allEffects = [];
 
-      //// Filter the existing status effects to keep only the ones you want
-      //if (globalEffects.length === 0) {
-      //   const effectsToKeep = ["dead", "sleep", "prone", "fly", "invisible"];
-      //   const sfx = CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
-      //   globalEffects = [...globalEffects.slice(sfx.length - globalEffects.length), ...sfx];
-      //}
+      // Filter the existing status effects to keep only the ones you want
+      if (allEffects.length === 0) {
+         const effectsToKeep = ["dead", "sleep", "prone", "fly", "invisible"];
+         const sfx = CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
+         allEffects = [...allEffects.slice(sfx.length - allEffects.length), ...sfx];
+      }
 
-      //// Sync global effects into CONFIG.statusEffects
-      //CONFIG.statusEffects = globalEffects;
+      allEffects.push(...CONFIG.FADE.Conditions);
 
-      //CONFIG.statusEffects.push({
-      //   id: "invulnerability",
-      //   name: "Invulnerability",
-      //   img: `${path}/ui/invulnerable.webp`,
-      //   changes: [
-      //      { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to AC
-      //      { key: "system.mod.save.death", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to death saves
-      //      { key: "system.mod.save.wand", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to wand saves
-      //      { key: "system.mod.save.paralysis", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to paralysis saves
-      //      { key: "system.mod.save.breath", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to breath saves
-      //      { key: "system.mod.save.spell", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to spell saves
-      //   ],
-      //   duration: { seconds: 600 },  // Duration (e.g., 10 minutes)
-      //   flags: {
-      //      [game.system.id]: {
-      //         "statusId": "invulnerability",
-      //         "appliedCount": 0,  // Tracks application count
-      //         "lastApplied": null  // Tracks the last time applied for the "once per week" rule
-      //      }
-      //   }
-      //});
+      // Sync global effects into CONFIG.statusEffects
+      CONFIG.statusEffects = allEffects;
+      //await game.settings.set(game.system.id, 'globalEffects', allEffects);
    }
 
    async OnGameReady() {
@@ -46,7 +27,7 @@ export class EffectManager {
       //   globalEffects = [...globalEffects.slice(sfx.length - globalEffects.length), ...sfx];
       //}
 
-      //await game.settings.set(game.system.id, 'globalEffects', globalEffects);
+      await game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
    }
 
    //static async applyInvulnerabilityEffect(token) {
@@ -109,7 +90,7 @@ export class EffectManager {
          case 'edit':
             if (effect) {
                // Edit global effect by creating a temporary ActiveEffect
-               const tempEffect = new ActiveEffect(effect, { parent: null });
+               const tempEffect = new ActiveEffect(effect);
                return tempEffect.sheet.render(true);
             }
             break;

@@ -74,7 +74,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          // Roll the damage and wait for the result
          const roll = new Roll(dataset.formula);
          await roll.evaluate(); // Wait for the roll result
-         const damage = roll.total;
+         const damage = Math.max(roll.total, 0);
          let descData = targetname ? { attacker, targetname, weapon, damage } : { attacker, weapon, damage };
          let resultString = targetname ? game.i18n.format('FADE.Chat.damageFlavor1', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
          

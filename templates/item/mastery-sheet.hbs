@@ -21,6 +21,9 @@
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='description'>Description</a>
+      {{#if isGM}}
+      <a class='item' data-tab='effects'>Effects</a>
+      {{/if}}
    </nav>
 
    {{! Sheet Body }}
@@ -30,5 +33,11 @@
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
          {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable }}
       </div>
+      {{#if isGM}}
+      {{! Effects Tab }}
+      <div class="tab effects" data-group="primary" data-tab="effects">
+         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+      </div>
+      {{/if}}
    </section>
 </form>

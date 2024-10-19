@@ -5,7 +5,7 @@
 export class fadeActor extends Actor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context)
+      super(data, context);
    }
 
    /**
@@ -109,32 +109,12 @@ export class fadeActor extends Actor {
       if (systemData.config.isSpellcaster === true) {
          this._prepareSpells();
       }
+
+      this._prepareModifiers();
    }
 
    /** @override */
    prepareDerivedData() {
-      // Modifiers are often applied as a negative value, even though the modifer is a positive value.
-      this.system.mod = {
-         ac: 0,
-         combat: {
-            toHit: 0,
-            dmg: 0,
-            toHitRanged: 0,
-            dmgRange: 0,
-            // These only work with damage automation
-            selfDmg: 0,
-            selfDmgBreath: 0,
-            selfDmgMagic: 0,
-         },
-         save: {
-            death: 0,
-            wand: 0,
-            paralysis: 0,
-            breath: 0,
-            spell: 0
-         }
-      };
-
       super.prepareDerivedData();
       this._prepareArmorClass();
       this._prepareEncumbrance();
@@ -145,6 +125,49 @@ export class fadeActor extends Actor {
    getRollData() {
       const data = { ...this.system };
       return data;
+   }
+
+   getAttackRoll(weapon, attackType, mod) {
+      const weaponData = weapon.system;
+      const systemData = this.system;
+      let formula = mod != 0 ? '1d20+@mod' : '1d20';
+      if (attackType === "melee") {
+         if (weaponData.mod.toHit !== 0) {
+            formula = `${formula}+${weaponData.mod.toHit}`;
+         }
+         if (systemData.mod.toHit !== 0) {
+            formula = `${formula}+${systemData.mod.toHit}`;
+         }
+         // If the attacker has ability scores...
+         if (systemData.abilities && systemData.abilities.str.mod !== 0) {
+            formula = `${formula}+${systemData.abilities.str.mod}`;
+         }
+      } else {
+         // Missile attack
+         if (weaponData.mod.toHitRanged !== 0) {
+            formula = `${formula}+${weaponData.mod.toHitRanged}`;
+         }
+         if (systemData.mod.toHitRanged !== 0) {
+            formula = `${formula}+${systemData.mod.toHitRanged}`;
+         }
+         // If the attacker has ability scores...
+         if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
+            formula = `${formula}+${systemData.abilities.str.mod}`;
+         } else if (systemData.abilities && systemData.abilities.dex.mod) {
+            formula = `${formula}+${systemData.abilities.dex.mod}`;
+         }
+         const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+         if (weaponMastery && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
+            const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
+            if (attackerMastery) {
+               // do stuff
+            } else {
+               // Unskilled use
+               formula = `${formula}-1`;
+            }
+         }
+      }
+      return formula;
    }
 
    async applyDamage(amount, type, source = null) {
@@ -183,6 +206,30 @@ export class fadeActor extends Actor {
             await this.toggleEffect(CONFIG.statusEffects.find(e => e.id === "dead"));
          }
       }
+   }
+
+   _prepareModifiers() {
+      // Modifiers are often applied as a negative value, even though the modifer is a positive value.
+      this.system.mod = {
+         ac: 0,
+         combat: {
+            toHit: 0,
+            dmg: 0,
+            toHitRanged: 0,
+            dmgRanged: 0,
+            // These only work with damage automation
+            selfDmg: 0,
+            selfDmgBreath: 0,
+            selfDmgMagic: 0
+         },
+         save: {
+            death: 0,
+            wand: 0,
+            paralysis: 0,
+            breath: 0,
+            spell: 0
+         }
+      };
    }
 
    _prepareEffects() {
@@ -291,7 +338,8 @@ export class fadeActor extends Actor {
     */
    _prepareArmorClass() {
       const systemData = this.system;
-      let baseAC = CONFIG.FADE.Armor.acNaked - (systemData.abilities?.dex.mod ?? 0);
+      const dexMod = (systemData.abilities?.dex.mod ?? 0);
+      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod;
       let ac = {};
       ac.naked = baseAC;
       ac.value = baseAC;
@@ -329,8 +377,7 @@ export class fadeActor extends Actor {
       }
 
       // Now other mods.
-      ac.total = ac.total - (systemData.mod.ac ?? 0);
-
+      ac.total = ac.total - (systemData.mod.ac ?? 0) - dexMod;
       systemData.ac = ac;
    }
 

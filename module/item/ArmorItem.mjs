@@ -4,7 +4,6 @@ export class ArmorItem extends fadeItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
-      //console.log(`ArmorItem constructor: type=${data.type}`, this.name, context, this?.actor);
    }
 
    /** @override */

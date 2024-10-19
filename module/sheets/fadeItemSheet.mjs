@@ -28,8 +28,8 @@ export class fadeItemSheet extends ItemSheet {
          options.width = 520;
          options.height = 340;
       } else if (this.item.type === "weapon") {
-         options.width = 470;
-         options.height = 340;
+         options.width = 520;
+         options.height = 360;
       } else {
          options.width = 470;
          options.height = 400;
@@ -77,10 +77,9 @@ export class fadeItemSheet extends ItemSheet {
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
 
-      if (this.item.type === 'weapon' || this.item.type === 'armor' || this.item.type === 'item') {
-         // Prepare active effects for easier access
-         context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
-      }
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+
       if (this.item.type === 'skill' || this.item.type === 'specialAbility') {
          // Prepare roll modes select options
          context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {

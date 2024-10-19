@@ -12,6 +12,7 @@ export class WeaponItem extends fadeItem {
    prepareBaseData() {
       super.prepareBaseData();
       this.system.damageType = this.system.damageType || "physical";
+      this.system.mastery = this.system.mastery || this.name;
    }
 
    /** @override */
@@ -34,6 +35,9 @@ export class WeaponItem extends fadeItem {
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
             formula = `${formula}+${attackerData.abilities.str.mod}`;
          }
+         if (attackerData.mod.dmg != null && attackerData.mod.dmg != 0) {
+            formula = `${formula}+${attackerData.mod.dmg}`;
+         }
       } else {
          if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
             formula = `${formula}+${systemData.mod.dmgRanged}`;
@@ -43,6 +47,21 @@ export class WeaponItem extends fadeItem {
             formula = `${formula}+${attackerData.abilities.str.mod}`;
          } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
             formula = `${formula}+${attackerData.abilities.dex.mod}`;
+         }
+         if (attackerData.mod.dmgRanged != null && attackerData.mod.dmgRanged != 0) {
+            formula = `${formula}+${attackerData.mod.dmgRanged}`;
+         }
+      }
+
+      // Check weapon mastery
+      const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+      if (weaponMastery && systemData.mastery !== "" && attacker.type==="character" && attackerData.details.species === "Human") {
+         const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === systemData.mastery);
+         if (attackerMastery) {
+            // do stuff
+         } else {
+            // Half damage if unskilled use.
+            formula = `floor(${formula}/2)`;
          }
       }
 
@@ -69,7 +88,7 @@ export class WeaponItem extends fadeItem {
 
       try {
          dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
-         rollData.formula = this._getToHitRoll(dialogResp.resp.attackType, dialogResp.resp.mod, this.actor);
+         rollData.formula = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod);
       } catch (error) {
          // Close button pressed or other error
          canAttack = false;
@@ -112,34 +131,6 @@ export class WeaponItem extends fadeItem {
          result = builder.createChatMessage();
       }
 
-      return result;
-   }
-
-
-   _getToHitRoll(attackType, mod, attacker) {
-      const systemData = this.system;
-      const attackerData = attacker.system;
-      let result = mod != 0 ? '1d20+@mod' : '1d20';
-      if (attackType === "melee") {
-         if (systemData.mod.toHit !== 0) {
-            result = `${result}+${systemData.mod.toHit}`;
-         }
-         // If the attacker has ability scores...
-         if (attackerData.abilities && attackerData.abilities.str.mod !== 0) {
-            result = `${result}+${attackerData.abilities.str.mod}`;
-         }
-      } else {
-         // Missile attack
-         if (systemData.mod.toHitRanged !== 0) {
-            result = `${result}+${systemData.mod.toHitRanged}`;
-         }
-         // If the attacker has ability scores...
-         if (attackerData.abilities && systemData.tags.includes("thrown") && attackerData.abilities.str.mod != 0) {
-            result = `${result}+${attackerData.abilities.str.mod}`;
-         } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
-            result = `${result}+${attackerData.abilities.dex.mod}`;
-         }
-      }
       return result;
    }
 
