@@ -1,7 +1,9 @@
 <div>{{description}}</div>
 {{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
 {{{rollContent}}}
-
+{{#each digest as |ditem|}}
+<div>{{ditem}}</div>
+{{/each}}
 {{#if toHitResult.success}}
 <p>
    <button class="damage-roll"

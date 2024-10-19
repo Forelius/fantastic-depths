@@ -24,6 +24,7 @@ export class ChatBuilderSchema extends foundry.abstract.DataModel {
          mdata: new fields.ObjectField(datasetOpts),
          batch: new fields.ArrayField(new fields.ObjectField(), datasetOpts),
          options: new fields.ObjectField(),
+         digest: new fields.ArrayField(new fields.StringField(), datasetOpts)
       };
    }
 }

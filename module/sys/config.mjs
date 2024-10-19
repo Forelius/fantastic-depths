@@ -612,11 +612,7 @@ FADE.Conditions = [
       img: `${path}img/ui/invulnerable.webp`,
       changes: [
          { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to AC
-         { key: "system.mod.save.death", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to death saves
-         { key: "system.mod.save.wand", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to wand saves
-         { key: "system.mod.save.paralysis", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to paralysis saves
-         { key: "system.mod.save.breath", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to breath saves
-         { key: "system.mod.save.spell", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to spell saves
+         { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to all saves
       ],
       duration: { seconds: 600 },  // Duration (e.g., 10 minutes)
       flags: {
@@ -637,6 +633,22 @@ FADE.Conditions = [
          { key: "system.mod.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
       ],
       duration: { seconds: 600*3 },  // Duration (30 minutes)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "exhausted",
+         }
+      }
+   },
+   {
+      id: "protected1",
+      name: "Protection from Evil",
+      img: `icons/magic/holy/barrier-shield-winged-cross.webp`,
+      changes: [
+         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to AC
+         { key: "system.mod.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+         { key: "system.mod.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+      ],
+      duration: { seconds: 600 * 3 },  // Duration (30 minutes)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "exhausted",

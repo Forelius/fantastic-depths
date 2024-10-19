@@ -127,34 +127,48 @@ export class fadeActor extends Actor {
       return data;
    }
 
-   getAttackRoll(weapon, attackType, mod) {
+   getAttackRoll(weapon, attackType, mod, target) {
       const weaponData = weapon.system;
       const systemData = this.system;
-      let formula = mod != 0 ? '1d20+@mod' : '1d20';
+      let formula = '1d20';
+      let digest = [];
+
+      if (mod && mod !== 0) {
+         formula = `${formula}+@mod`; 
+         digest.push(`Manual mod: ${mod}`);
+      }
+
       if (attackType === "melee") {
          if (weaponData.mod.toHit !== 0) {
             formula = `${formula}+${weaponData.mod.toHit}`;
+            digest.push(`Weapon mod: ${weaponData.mod.toHit}`);
          }
-         if (systemData.mod.toHit !== 0) {
-            formula = `${formula}+${systemData.mod.toHit}`;
+         if (systemData.mod.combat.toHit !== 0) {
+            formula = `${formula}+${systemData.mod.combat.toHit}`;
+            digest.push(`Attacker mod: ${systemData.mod.combat.toHit}`);
          }
          // If the attacker has ability scores...
          if (systemData.abilities && systemData.abilities.str.mod !== 0) {
             formula = `${formula}+${systemData.abilities.str.mod}`;
+            digest.push(`STR bonus: ${systemData.abilities.str.mod}`);
          }
       } else {
          // Missile attack
          if (weaponData.mod.toHitRanged !== 0) {
             formula = `${formula}+${weaponData.mod.toHitRanged}`;
+            digest.push(`Weapon mod: ${weaponData.mod.toHitRanged}`);
          }
-         if (systemData.mod.toHitRanged !== 0) {
-            formula = `${formula}+${systemData.mod.toHitRanged}`;
+         if (systemData.mod.combat.toHitRanged !== 0) {
+            formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
+            digest.push(`Attacker mod: ${systemData.mod.combat.toHitRanged}`);
          }
          // If the attacker has ability scores...
          if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
             formula = `${formula}+${systemData.abilities.str.mod}`;
+            digest.push(`STR bonus: ${systemData.abilities.str.mod}`);
          } else if (systemData.abilities && systemData.abilities.dex.mod) {
             formula = `${formula}+${systemData.abilities.dex.mod}`;
+            digest.push(`DEX bonus: ${systemData.abilities.dex.mod}`);
          }
          const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
          if (weaponMastery && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
@@ -164,10 +178,11 @@ export class fadeActor extends Actor {
             } else {
                // Unskilled use
                formula = `${formula}-1`;
+               digest.push(`Unskilled: -1`);
             }
          }
       }
-      return formula;
+      return { formula, digest };
    }
 
    async applyDamage(amount, type, source = null) {
@@ -175,6 +190,7 @@ export class fadeActor extends Actor {
       let dmgAmt = amount;
       const prevHP = systemData.hp.value;
 
+      // Damage mitigation
       switch (type) {
          case 'physical':
             dmgAmt -= systemData.mod.combat.selfDmg;
@@ -220,9 +236,13 @@ export class fadeActor extends Actor {
             // These only work with damage automation
             selfDmg: 0,
             selfDmgBreath: 0,
-            selfDmgMagic: 0
+            selfDmgMagic: 0,
+            // These only work if actor is targetted
+            selfToHit: 0, // to hit this actor
+            selfToHitRange: 0 // to hit this actor
          },
          save: {
+            all: 0,
             death: 0,
             wand: 0,
             paralysis: 0,
@@ -280,11 +300,12 @@ export class fadeActor extends Actor {
       }
 
       // Apply mods, mostly from effects
-      savingThrows.death.value -= systemData.mod.save.death;
-      savingThrows.wand.value -= systemData.mod.save.wand;
-      savingThrows.paralysis.value -= systemData.mod.save.paralysis;
-      savingThrows.breath.value -= systemData.mod.save.breath;
-      savingThrows.spell.value -= systemData.mod.save.spell;
+      const mods = systemData.mod.save;
+      savingThrows.death.value -= mods.death + mods.all;
+      savingThrows.wand.value -= mods.wand + mods.all;
+      savingThrows.paralysis.value -= mods.paralysis + mods.all;
+      savingThrows.breath.value -= mods.breath + mods.all;
+      savingThrows.spell.value -= mods.spell + mods.all;
 
       // Apply modifier for wisdom, if needed
       if (this.type !== "monster") {

@@ -35,8 +35,8 @@ export class WeaponItem extends fadeItem {
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
             formula = `${formula}+${attackerData.abilities.str.mod}`;
          }
-         if (attackerData.mod.dmg != null && attackerData.mod.dmg != 0) {
-            formula = `${formula}+${attackerData.mod.dmg}`;
+         if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
+            formula = `${formula}+${attackerData.mod.combat.dmg}`;
          }
       } else {
          if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
@@ -48,8 +48,8 @@ export class WeaponItem extends fadeItem {
          } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
             formula = `${formula}+${attackerData.abilities.dex.mod}`;
          }
-         if (attackerData.mod.dmgRanged != null && attackerData.mod.dmgRanged != 0) {
-            formula = `${formula}+${attackerData.mod.dmgRanged}`;
+         if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
+            formula = `${formula}+${attackerData.mod.combat.dmgRanged}`;
          }
       }
 
@@ -78,17 +78,20 @@ export class WeaponItem extends fadeItem {
    */
    async roll() {
       const systemData = this.system;
-
-      // Initialize chat data.
       const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      const selectedToken = game.user.targets.first(); // The selected token, not the actor
+      const selectedActor = selectedToken?.actor; // Actor associated with the token
       const label = `[${this.type}] ${this.name}`;
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;
+      let digest = [];
 
       try {
          dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
-         rollData.formula = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod);
+         let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, selectedActor);
+         rollData.formula = attackRoll.formula;
+         digest = attackRoll.digest;
       } catch (error) {
          // Close button pressed or other error
          canAttack = false;
@@ -123,7 +126,8 @@ export class WeaponItem extends fadeItem {
             resp: dialogResp.resp, // the dialog response
             caller: this, // the weapon
             context: this.actor, // the weapon owner
-            roll: rolled
+            roll: rolled,
+            digest: digest
          };
 
          const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
