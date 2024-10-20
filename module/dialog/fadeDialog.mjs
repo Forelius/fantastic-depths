@@ -3,16 +3,22 @@ function focusById(id) {
 }
 
 export class fadeDialog {
+   /**
+    * Display a dialog allowing the caller to select a type of attack and attack roll modifier.
+    * @param {any} weapon Reference to weapon instance
+    * @param {any} caller 
+    * @returns
+    */
    static async getAttackDialog(weapon, caller) {
       const dialogData = { caller };
-      const dialogResp = {};
+      const result = {};
 
       dialogData.weapon = weapon.system;
       dialogData.label = weapon.name;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
-      dialogResp.resp = await Dialog.wait({
+      result.resp = await Dialog.wait({
          title: title,
          content: await renderTemplate(template, dialogData),
          render: () => focusById('mod'),
@@ -26,10 +32,10 @@ export class fadeDialog {
             },
          },
          default: 'check',
-         close: () => { return false; }
+         close: () => { return null; }
       });
-      dialogResp.context = caller;
-      return dialogResp;
+      result.context = caller;
+      return result;
    }
 
    static async getGenericDialog(dataset, caller) {
@@ -161,57 +167,52 @@ export class fadeDialog {
    }
 
    static async getSelectAttackDialog(equippedOnly = false) {
-      const dialogData = {};
-      const dialogResp = {};
-      // Check if there are any items with the "light" tag
-      const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
+      // The selected token, not the actor
+      const result = {};
+      const attackerToken = canvas.tokens.controlled?.[0] || this.actor?.getDependentTokens()?.[0] || game.user.character?.getDependentTokens()?.[0]; 
+      if (attackerToken) {
+         const dialogData = { label: "Select Attack Type" };
+         const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
+         const attackerActor = attackerToken?.actor; // Actor associated with the token
+         const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped));
 
-      dialogData.label = "Select Attack Type";
-
-      let actor = canvas.tokens.controlled[0]?.actor || game.user.character;
-      if (!actor) {
-         // Show a warning notification if no token is selected
-         ui.notifications.warn("You must select a token or assign a default character to perform this action.");
-      } else {
-         let attackItems = [];
-         let equippedWeapons = [];
-         actor.items.forEach(item => { if (item.type === "weapon") { attackItems.push(item); } });
-         actor.items.forEach(item => { if (item.type === "weapon" && item.system.equipped === true) { equippedWeapons.push(item); } });
          if (attackItems === 0) {
             ui.notifications.warn("The selected actor does not have anything to attack with.");
-         } else if (equippedOnly && equippedWeapons.length === 0) {
+         } else if (equippedOnly && attackItems.length === 0) {
             ui.notifications.warn("The selected actor does not have any weapons equipped.");
          } else {
-            dialogData.attackItems = equippedOnly ? equippedWeapons : attackItems;
-
-            dialogResp.resp = await Dialog.wait({
+            dialogData.attackItems = attackItems;
+            dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
+            result.resp = await Dialog.wait({
                title: "Select Attack Type",
                content: await renderTemplate(template, dialogData),
                buttons: {
                   attack: {
                      label: "Attack",
                      callback: function (html) {
-                        let itemId = document.getElementById('weaponItem').value;
-                        let item = actor.items.get(itemId);
+                        const itemId = document.getElementById('weaponItem').value;
+                        const item = attackerActor.items.get(itemId);
+                        // Call item's roll method.
                         item.roll();
                         return { item };
                      }
                   },
                   close: {
                      label: "Close",
-                     callback: function (html) {
-                        return false;
-                     }
+                     callback: function (html) { return null; }
                   }
                },
                default: "close",
-               close: () => { return false; }
+               close: () => { return null; }
             });
-            dialogResp.context = actor;
+            result.context = attackerToken;
          }
+      } else {
+         // Show a warning notification if no token is selected
+         ui.notifications.warn("You must select a token or assign a default character to perform this action.");
       }
 
-      return dialogResp;
+      return result;
    }
 
    static async getYesNoDialog(dataset) {

@@ -132,6 +132,54 @@
          }
       }
    }
+
+   .chat-message {
+      background: url('../assets/img/grungeyellow.jpg');
+      color: $lighterColor;
+      border: 1px solid #545140;
+
+      hr {
+         border-top: none;
+         border-bottom: 2px solid #645140;
+      }
+
+      .message-header {
+         color: $lightColor;
+      }
+
+      .attack-info {
+         color: $lightColor;
+      }
+
+      .dice-formula, .dice-total {
+         background: url('../assets/img/grungeblue.jpg');
+         border: 1px solid $darkColor;
+         box-shadow: none;
+      }
+
+      .damage-roll, .apply-damage {
+         background: url('../assets/img/grungered.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #774444;
+      }
+
+      .attack-fail, .roll-fail {
+         color: #d85d48;
+      }
+
+      .attack-success, .roll-success {
+         color: #7edb89;
+      }
+
+      .roll-info {
+         color: #789ad0;
+      }
+
+      .warning {
+         color: #deb56a;
+      }
+   }
 }
 /* Light mode styles */
 .light-mode {
@@ -217,6 +265,35 @@
                text-shadow: 0 0 2px $lighterColor, 0 1px 2px $lighterColor, 1px 0 2px $lighterColor, 1px 1px 2px $lighterColor;
             }
          }
+      }
+   }
+
+   .chat-message {
+      .attack-fail, .roll-fail {
+         color: #602010;
+      }
+
+      .attack-success, .roll-success {
+         color: #106020;
+      }
+
+      .damage {
+         font-weight: bold;
+      }
+
+      .roll-info {
+         color: #101030;
+      }
+
+      .warning {
+         color: #702010;
+      }
+
+      .damage-roll, .apply-damage {
+         background: url('../assets/img/grungered.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #774444;
       }
    }
 }

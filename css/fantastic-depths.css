@@ -442,6 +442,44 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .character .armor-class .ac-value, .dark-mode .fantastic-depths .monster .armor-class .ac-value {
   text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
 }
+.dark-mode .chat-message {
+  background: url("../assets/img/grungeyellow.jpg");
+  color: #ebeae4;
+  border: 1px solid #545140;
+}
+.dark-mode .chat-message hr {
+  border-top: none;
+  border-bottom: 2px solid #645140;
+}
+.dark-mode .chat-message .message-header {
+  color: #bbbab4;
+}
+.dark-mode .chat-message .attack-info {
+  color: #bbbab4;
+}
+.dark-mode .chat-message .dice-formula, .dark-mode .chat-message .dice-total {
+  background: url("../assets/img/grungeblue.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+}
+.dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage {
+  background: url("../assets/img/grungered.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #774444;
+}
+.dark-mode .chat-message .attack-fail, .dark-mode .chat-message .roll-fail {
+  color: #d85d48;
+}
+.dark-mode .chat-message .attack-success, .dark-mode .chat-message .roll-success {
+  color: #7edb89;
+}
+.dark-mode .chat-message .roll-info {
+  color: #789ad0;
+}
+.dark-mode .chat-message .warning {
+  color: #deb56a;
+}
 
 /* Light mode styles */
 .light-mode .fantastic-depths .window-content .bordered {
@@ -495,14 +533,33 @@ h1, h2, h3, h4 {
 .light-mode .fantastic-depths .character .armor-class .ac-value, .light-mode .fantastic-depths .monster .armor-class .ac-value {
   text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
 }
+.light-mode .chat-message .attack-fail, .light-mode .chat-message .roll-fail {
+  color: #602010;
+}
+.light-mode .chat-message .attack-success, .light-mode .chat-message .roll-success {
+  color: #106020;
+}
+.light-mode .chat-message .damage {
+  font-weight: bold;
+}
+.light-mode .chat-message .roll-info {
+  color: #101030;
+}
+.light-mode .chat-message .warning {
+  color: #702010;
+}
+.light-mode .chat-message .damage-roll, .light-mode .chat-message .apply-damage {
+  background: url("../assets/img/grungered.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #774444;
+}
 
 .chat-message .message-content .attack-fail, .chat-message .message-content .roll-fail {
   font-size: 18px;
-  color: #602010;
 }
 .chat-message .message-content .attack-success, .chat-message .message-content .roll-success {
   font-size: 18px;
-  color: #106020;
 }
 .chat-message .message-content .damage {
   font-size: 19px;
@@ -510,15 +567,12 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .attack-info {
   font-size: 16px;
-  color: #303030;
 }
 .chat-message .message-content .roll-info {
   font-size: 16px;
-  color: #101030;
 }
 .chat-message .message-content .warning {
   font-size: 16px;
-  color: #702010;
 }
 .chat-message .message-content .collapsible-header {
   cursor: pointer;

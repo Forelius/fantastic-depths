@@ -22,53 +22,59 @@ export class WeaponItem extends fadeItem {
       this._prepareModText();
    }
 
-   getDamageRoll(attackType, attacker) {
+   getDamageRoll(attackType, attackerToken) {
       const systemData = this.system;
-      const attackerData = attacker.system;
-
+      const attackerData = attackerToken.actor.system;
       let formula = systemData.damageRoll;
+      let digest = [];
+
       if (attackType == 'melee') {
          if (systemData.mod.dmg != null && systemData.mod.dmg != 0) {
             formula = `${formula}+${systemData.mod.dmg}`;
+            digest.push(`Weapon mod: ${systemData.mod.dmg}`);
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
             formula = `${formula}+${attackerData.abilities.str.mod}`;
+            digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
          }
          if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
             formula = `${formula}+${attackerData.mod.combat.dmg}`;
+            digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
       } else {
          if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
             formula = `${formula}+${systemData.mod.dmgRanged}`;
+            digest.push(`Weapon mod: ${systemData.mod.dmg}`);
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && systemData.tags.includes("thrown")) {
             formula = `${formula}+${attackerData.abilities.str.mod}`;
+            digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
          } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
             formula = `${formula}+${attackerData.abilities.dex.mod}`;
+            digest.push(`Dexterity mod: ${attackerData.abilities.str.mod}`);
          }
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
             formula = `${formula}+${attackerData.mod.combat.dmgRanged}`;
+            digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
       }
 
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-      if (weaponMastery && systemData.mastery !== "" && attacker.type==="character" && attackerData.details.species === "Human") {
-         const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === systemData.mastery);
+      if (weaponMastery && systemData.mastery !== "" && attackerToken.type==="character" && attackerData.details.species === "Human") {
+         const attackerMastery = attackerToken.items.find((item) => item.type === 'mastery' && item.name === systemData.mastery);
          if (attackerMastery) {
             // do stuff
          } else {
             // Half damage if unskilled use.
             formula = `floor(${formula}/2)`;
+            digest.push(`Unskilled use: /2`);
          }
       }
 
-      return {
-         formula: formula,
-         type: systemData.damageType
-      };
+      return { formula, type: systemData.damageType, digest };
    }
 
    /**
@@ -78,61 +84,68 @@ export class WeaponItem extends fadeItem {
    */
    async roll() {
       const systemData = this.system;
-      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const selectedToken = game.user.targets.first(); // The selected token, not the actor
-      const selectedActor = selectedToken?.actor; // Actor associated with the token
+      // The selected token, not the actor
+      const attackerToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0]; 
+      const attackerActor = attackerToken?.actor; // Actor associated with the token
+      const speaker = ChatMessage.getSpeaker({ actor: attackerToken });
       const label = `[${this.type}] ${this.name}`;
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;
       let digest = [];
-
-      try {
-         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
-         let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, selectedActor);
-         rollData.formula = attackRoll.formula;
-         digest = attackRoll.digest;
-      } catch (error) {
-         // Close button pressed or other error
-         canAttack = false;
-      }
-
-      // Check if the attack type is a missile/ranged attack
-      if (canAttack  && dialogResp.resp.attackType !== 'melee' && systemData.ammo.type) {
-         // Handle ammo usage
-         const currentAmmo = systemData.ammo.load; // Current ammo
-         const ammoType = systemData.ammo.type;   // Ammo type (if relevant)
-
-         // If there's no ammo, show a UI notification
-         if (currentAmmo <= 0) {
-            ui.notifications.warn(`No ${ammoType ? ammoType : 'ammo'} remaining!`);
-            canAttack = false;
-         } else {
-            // Deduct 1 ammo
-            systemData.ammo.load -= 1;
-
-            // Update the weapon/item's data to reflect the new ammo count
-            await this.update({ 'system.ammo.load': systemData.ammo.load });
-         }
-      }
-
-      // Perform the roll if there's ammo or if it's a melee attack
       let result = null;
 
-      if (canAttack && dialogResp) {
-         const rollContext = { ...rollData, ...dialogResp.resp || {} };
-         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
-         const chatData = {
-            resp: dialogResp.resp, // the dialog response
-            caller: this, // the weapon
-            context: this.actor, // the weapon owner
-            roll: rolled,
-            digest: digest
-         };
+      if (attackerToken) {
+         try {
+            dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
+            if (dialogResp?.resp) {
+               let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, attackerActor);
+               rollData.formula = attackRoll.formula;
+               digest = attackRoll.digest;
+            } else {
+               canAttack = false;
+            }
+         } catch (error) {
+            // Close button pressed or other error
+            canAttack = false;
+         }
 
-         const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
+         // Check if the attack type is a missile/ranged attack
+         if (canAttack && dialogResp.resp.attackType !== 'melee' && systemData.ammo.type) {
+            // Handle ammo usage
+            const currentAmmo = systemData.ammo.load; // Current ammo
+            const ammoType = systemData.ammo.type;   // Ammo type (if relevant)
 
-         result = builder.createChatMessage();
+            // If there's no ammo, show a UI notification
+            if (currentAmmo <= 0) {
+               ui.notifications.warn(`No ${ammoType ? ammoType : 'ammo'} remaining!`);
+               canAttack = false;
+            } else {
+               // Deduct 1 ammo
+               systemData.ammo.load -= 1;
+
+               // Update the weapon/item's data to reflect the new ammo count
+               await this.update({ 'system.ammo.load': systemData.ammo.load });
+            }
+         }
+
+         // Perform the roll if there's ammo or if it's a melee attack
+         if (canAttack && dialogResp) {
+            const rollContext = { ...rollData, ...dialogResp.resp || {} };
+            let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+            const chatData = {
+               resp: dialogResp.resp, // the dialog response
+               caller: this, // the weapon
+               context: attackerToken,
+               roll: rolled,
+               digest: digest,
+            };
+
+            const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
+            result = builder.createChatMessage();
+         }
+      } else {
+         ui.notifications.warn("You must have your token selected to attack");
       }
 
       return result;

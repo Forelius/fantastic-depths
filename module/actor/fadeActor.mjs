@@ -145,12 +145,12 @@ export class fadeActor extends Actor {
          }
          if (systemData.mod.combat.toHit !== 0) {
             formula = `${formula}+${systemData.mod.combat.toHit}`;
-            digest.push(`Attacker mod: ${systemData.mod.combat.toHit}`);
+            digest.push(`Attacker effect mod: ${systemData.mod.combat.toHit}`);
          }
          // If the attacker has ability scores...
          if (systemData.abilities && systemData.abilities.str.mod !== 0) {
             formula = `${formula}+${systemData.abilities.str.mod}`;
-            digest.push(`STR bonus: ${systemData.abilities.str.mod}`);
+            digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
          }
       } else {
          // Missile attack
@@ -160,15 +160,15 @@ export class fadeActor extends Actor {
          }
          if (systemData.mod.combat.toHitRanged !== 0) {
             formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
-            digest.push(`Attacker mod: ${systemData.mod.combat.toHitRanged}`);
+            digest.push(`Attacker effect mod: ${systemData.mod.combat.toHitRanged}`);
          }
          // If the attacker has ability scores...
          if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
             formula = `${formula}+${systemData.abilities.str.mod}`;
-            digest.push(`STR bonus: ${systemData.abilities.str.mod}`);
+            digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
          } else if (systemData.abilities && systemData.abilities.dex.mod) {
             formula = `${formula}+${systemData.abilities.dex.mod}`;
-            digest.push(`DEX bonus: ${systemData.abilities.dex.mod}`);
+            digest.push(`Dexterity mod: ${systemData.abilities.dex.mod}`);
          }
          const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
          if (weaponMastery && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
@@ -178,20 +178,20 @@ export class fadeActor extends Actor {
             } else {
                // Unskilled use
                formula = `${formula}-1`;
-               digest.push(`Unskilled: -1`);
+               digest.push(`Unskilled use: -1`);
             }
          }
       }
       return { formula, digest };
    }
 
-   async applyDamage(amount, type, source = null) {
+   async applyDamage(amount, damageType, source = null) {
       const systemData = this.system;
       let dmgAmt = amount;
       const prevHP = systemData.hp.value;
 
       // Damage mitigation
-      switch (type) {
+      switch (damageType) {
          case 'physical':
             dmgAmt -= systemData.mod.combat.selfDmg;
             break;

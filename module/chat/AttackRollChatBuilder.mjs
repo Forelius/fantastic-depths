@@ -4,15 +4,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
 
    // The currently selected target, if any.
-   #selectedActor;
-   #selectedToken;
+   #targetActor;
+   #targetToken;
 
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
       // Get first selected target, if any.
       // Get the first selected target token, if any.
-      this.#selectedToken = game.user.targets.first(); // The selected token, not the actor
-      this.#selectedActor = this.#selectedToken?.actor; // Actor associated with the token
+      this.#targetToken = game.user.targets.first(); // The selected token, not the actor
+      this.#targetActor = this.#targetToken?.actor; // Actor associated with the token
    }
 
    /**
@@ -84,9 +84,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
    }
 
    #getToHitResult() {
-      const { context } = this.data;
-      const thac0 = context.system.thac0.value;
-      let ac = this.#selectedActor?.system.ac?.total;
+      const attackerToken = this.data.context;
+      const thac0 = attackerToken.actor.system.thac0.value;
+      let ac = this.#targetActor?.system.ac?.total;
       const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
       let message = `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`;
       let success = false;
@@ -116,32 +116,31 @@ export class AttackRollChatBuilder extends ChatBuilder {
     */
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest } = this.data;
-
       const rolls = [roll];
-      const actorName = context.name;
-      const targetName = this.#selectedToken?.name;
+      const attackerToken = context;
+      const attackerName = attackerToken.name;
+      const targetName = this.#targetToken?.name;
       let descData = targetName ? {
          attackerid: context.id,
-         attacker: actorName,
+         attacker: attackerName,
          attackType: resp.attackType,
          targetName: targetName,
          weapon: caller.name
       } : {
-         attackerid: context.id,
-         attacker: actorName,
+         attackerid: attackerToken.id,
+         attacker: attackerName,
          attackType: resp.attackType,
          weapon: caller.name
       };
       const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
       const rollContent = await roll.render({ flavor: 'Attack Roll' });
       const toHitResult = this.#getToHitResult();
-      let damageRoll = caller.getDamageRoll(resp.attackType, context);
+      const damageRoll = caller.getDamageRoll(resp.attackType, attackerToken);
 
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       // Get the actor and user names
       const userName = game.users.current.name; // User name (e.g., player name)
-      const targetToken = this.#selectedToken; // Get the selected token
-      const targetTokenId = targetToken?.id;   // Token ID, specific to this token
+      const targetTokenId = this.#targetToken?.id;   // Token ID, specific to this token
       const chatData = {
          damageRoll,
          rollContent,
@@ -149,7 +148,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
          descData,
          toHitResult,
          targetId: targetTokenId,
-         digest: digest
+         digest: digest,
+         weaponId: caller.id,
+         attackType: resp.attackType
       };
 
       if (window.toastManager) {
@@ -157,8 +158,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
          window.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      const content = await renderTemplate(this.template, chatData);
+      let content = await renderTemplate(this.template, chatData);
+      // Manipulated the dom to place digest info in roll's tooltip
+      content = this.moveDigest(content);
+
       const chatMessageData = await this.getChatMessageData({ content, rolls, rollMode });
       await ChatMessage.create(chatMessageData);
-   }
+   }   
 }

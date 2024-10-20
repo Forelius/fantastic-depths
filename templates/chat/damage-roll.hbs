@@ -6,6 +6,11 @@
 {{/if}}
 <hr>
 {{{resultString}}}
+<div name="digest">
+   {{#each digest as |ditem|}}
+   <div>{{ditem}}</div>
+   {{/each}}
+</div>
 {{{rollContent}}}
 {{#if showApplyDamage}}
 <button class="apply-damage" type="button" title="Apply damage to target."

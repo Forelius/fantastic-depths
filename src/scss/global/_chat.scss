@@ -2,12 +2,10 @@
    .message-content {
       .attack-fail, .roll-fail {
          font-size: 18px;
-         color: #602010;
       }
 
       .attack-success, .roll-success {
          font-size: 18px;
-         color: #106020;
       }
 
       .damage {
@@ -16,18 +14,15 @@
       }
 
       .attack-info {
-         font-size: 16px;
-         color: #303030;
+         font-size: 16px;         
       }
 
       .roll-info {
          font-size: 16px;
-         color: #101030;
       }
 
       .warning {
          font-size: 16px;
-         color: #702010;
       }
 
       .collapsible-header{

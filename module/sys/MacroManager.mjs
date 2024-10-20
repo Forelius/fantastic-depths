@@ -34,19 +34,19 @@ export class MacroManager {
          folder: gmFolder.id, // Place macro in the GM Only folder
       }, true); // true indicates it should be assigned to the hotbar
 
-      await MacroManager.createMacro({
-         name: "Open Active EFfect Library",
-         type: "script",
-         command: `if (game.user.isGM) {
-   if (!window.effectLibrary) window.effectLibrary = new game.fade.EffectLibraryForm();
-   if (window.effectLibrary.rendered) window.effectLibrary.close();
-   else window.effectLibrary.render(true);
-} else { 
-   ui.notifications.warn("Only the GM can open the Effect Library.");
-}`,
-         img: "icons/svg/paralysis.svg",
-         folder: gmFolder.id, // Place macro in the GM Only folder
-      }, true); // true indicates it should be assigned to the hotbar
+//      await MacroManager.createMacro({
+//         name: "Open Active EFfect Library",
+//         type: "script",
+//         command: `if (game.user.isGM) {
+//   if (!window.effectLibrary) window.effectLibrary = new game.fade.EffectLibraryForm();
+//   if (window.effectLibrary.rendered) window.effectLibrary.close();
+//   else window.effectLibrary.render(true);
+//} else { 
+//   ui.notifications.warn("Only the GM can open the Effect Library.");
+//}`,
+//         img: "icons/svg/paralysis.svg",
+//         folder: gmFolder.id, // Place macro in the GM Only folder
+//      }, true); // true indicates it should be assigned to the hotbar
 
       await MacroManager.createMacro({
          name: "Light Manager",

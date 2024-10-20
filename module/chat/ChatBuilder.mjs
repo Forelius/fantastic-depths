@@ -198,4 +198,25 @@ export class ChatBuilder {
       }
       return sum;
    }
+
+   /**
+    * Move digest info to roll collapsible dice-tooltip area
+    * @param {any} content
+    * @returns
+    */
+   moveDigest(content) {
+      // Create a temporary DOM element to manipulate the HTML content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = content;
+      // Find the 'digest' div and 'dice-tooltip' div
+      const digestDiv = tempDiv.querySelector('div[name="digest"]');
+      const tooltipDiv = tempDiv.querySelector('.dice-tooltip');
+      // Move the 'digest' div inside the 'dice-tooltip' div
+      if (digestDiv && tooltipDiv) {
+         tooltipDiv.appendChild(digestDiv);
+      }
+      // Convert the updated DOM back to a string and assign it to 'content'
+      content = tempDiv.innerHTML;
+      return content;
+   }
 }
