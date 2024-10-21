@@ -98,6 +98,22 @@ export const migrateData = async function migrate() {
          }
       }
 
+      async function removeEquipped(item, actorName = "World Item") {
+         try {
+            if (item.system.equipped !== undefined) {
+               // Set rollFormula to roll value and remove the old roll key in a single update call
+               const updatedData = {
+                  "system.-=equipped": null  // Remove roll key
+               };
+               await item.update(updatedData);
+            }
+         } catch (error) {
+            console.error(`Failed to remove equipped during migrate item: ${item.name} (${actorName})`, error);
+         }
+      }
+
+      const notEquippable = ["container", "spell", "skill", "specialAbility", "mastery"];
+
       // Iterate over all actors in the game
       for (let actor of game.actors) {
          // If the actor has spells then make sure they are configured to be a spellcaster
@@ -105,12 +121,19 @@ export const migrateData = async function migrate() {
          for (let specialAbility of specialAbilities) {
             await fixRollFormula(specialAbility, actor.name);
          }
+         
+         for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
+            await removeEquipped(item, actor.name);
+         }
       }
 
       // Fix world items
       const specialAbilities = game.items.filter((item) => item.type === 'specialAbility');
       for (let specialAbility of specialAbilities) {
          await fixRollFormula(specialAbility);
+      }
+      for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
+         await removeEquipped(item);
       }
    }
 
