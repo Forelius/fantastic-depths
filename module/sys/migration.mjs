@@ -80,12 +80,12 @@ export const migrateData = async function migrate() {
       }
    }
 
-   if (oldVer < "0.5.1") {
+   if (oldVer < "0.5.2") {
       console.log(`Migrating from version ${oldVer} to ${newVer}`);
 
       async function fixRollFormula(specialAbility, actorName = "World Item") {
          try {
-            if (specialAbility.system.rollFormula === undefined || specialAbility.system.rollFormula === null) {
+            if (specialAbility.system.roll !== undefined) {
                // Set rollFormula to roll value and remove the old roll key in a single update call
                const updatedData = {
                   "system.rollFormula": specialAbility.system.roll,
