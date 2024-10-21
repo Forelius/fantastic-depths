@@ -98,17 +98,17 @@ export const migrateData = async function migrate() {
          }
       }
 
-      async function removeEquipped(item, actorName = "World Item") {
+      async function removeField(item, removeField, actorName = "World Item") {
          try {
-            if (item.system.equipped !== undefined) {
-               // Set rollFormula to roll value and remove the old roll key in a single update call
+            if (item.system[removeField] !== undefined) {
+               // Set up the update object using dynamic key with square brackets
                const updatedData = {
-                  "system.-=equipped": null  // Remove roll key
+                  [`system.-=${removeField}`]: null  // Remove the specified key
                };
                await item.update(updatedData);
             }
          } catch (error) {
-            console.error(`Failed to remove equipped during migrate item: ${item.name} (${actorName})`, error);
+            console.error(`Failed to remove ${removeField} during migration of item: ${item.name} (${actorName})`, error);
          }
       }
 
@@ -123,7 +123,10 @@ export const migrateData = async function migrate() {
          }
          
          for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
-            await removeEquipped(item, actor.name);
+            await removeField(item, "equipped", actor.name);
+         }
+         for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
+            await removeField(item, "formula", actor.name);
          }
       }
 
@@ -132,8 +135,11 @@ export const migrateData = async function migrate() {
       for (let specialAbility of specialAbilities) {
          await fixRollFormula(specialAbility);
       }
-      for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
-         await removeEquipped(item);
+      for (let item of game.items.filter((item) => notEquippable.includes(item.type))) {
+         await removeField(item, "equipped");
+      }
+      for (let item of game.items.filter((item) => notEquippable.includes(item.type))) {
+         await removeField(item, "formula");
       }
    }
 

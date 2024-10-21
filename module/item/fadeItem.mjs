@@ -38,11 +38,10 @@ export class fadeItem extends Item {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      const systemData = this.system;
-      if (this.type === "item" && systemData.isEquippable === true) {
-         
+      const notEquippable = ["container", "spell", "skill", "specialAbility", "mastery"];
+      if (notEquippable.includes(this.type) === false) {
+         this.system.equipped = this.system.equipped || false;
       }
-      systemData.equipped = systemData.equipped || false;
    }
 
    /** @override */
