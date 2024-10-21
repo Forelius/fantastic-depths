@@ -6,14 +6,14 @@ const path = 'systems/fantastic-depths/assets/';
  * The set of Ability Scores used within the system.
  * @type {Object}
  */
-//FADE.Abilities = {
-//   str: "Strength",
-//   dex: "Dexterity",
-//   con: "Constitution",
-//   int: "Intelligence",
-//   wis: "Wisdom",
-//   cha: "Charisma"
-//};
+FADE.Abilities = {
+   str: "Strength",
+   dex: "Dexterity",
+   con: "Constitution",
+   int: "Intelligence",
+   wis: "Wisdom",
+   cha: "Charisma"
+};
 FADE.MasteryLevels = {
    basic: "Basic",
    skilled: "Skilled",

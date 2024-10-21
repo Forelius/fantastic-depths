@@ -18,7 +18,7 @@ export class SpecialAbilityItem extends fadeItem {
       const item = this;
       const systemData = this.system;
 
-      if (systemData.roll && systemData.target) {
+      if (systemData.rollFormula && systemData.target) {
          // Initialize chat data.
          const speaker = ChatMessage.getSpeaker({ actor: this.actor });
          const label = `[${item.type}] ${item.name}`;
@@ -33,13 +33,12 @@ export class SpecialAbilityItem extends fadeItem {
          let dialogResp = null;
          try {
             dialogResp = await DialogFactory(dataset, this.actor);
-            rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.roll}+@mod` : `${systemData.roll}`;
-            //console.log("roll", rollData);
+            rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
          }
          // If close button is pressed
          catch (error) {
             // Like Weird Al says, eat it
-            console.error("SpecialAbilityItem.roll:", error);
+            console.error("SpecialAbilityItem.roll():", error);
          }
          
          if (dialogResp !== null) {

@@ -207,10 +207,11 @@
             }
          },
          "rollable": {
-            "roll": "",
+            "rollFormula": "",
             "operator": "",
             "target": 0,
-            "rollMode": ""
+            "rollMode": "",
+            "savingThrow": null
          },
          "physical": {
             "quantity": 1,
@@ -280,6 +281,6 @@
       },
       "specialAbility": {
          "templates": [ "base", "rollable" ]
-      }      
+      }
    }
 }
