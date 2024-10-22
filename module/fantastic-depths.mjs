@@ -52,6 +52,8 @@ Hooks.once('init', async function () {
       fadeDialog
    };
 
+   CONFIG.time.roundTime = 10;
+
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
 
@@ -135,6 +137,19 @@ Hooks.once('ready', async function () {
 });
 
 fadeHandlebars.registerHelpers();
+
+/**
+ * Hook for time advancement.
+ */
+Hooks.on('updateWorldTime', (worldTime, dt, options, userId) => {
+   //console.debug("updateWorldTime", worldTime, dt, options, userId);
+   const tokens = canvas?.tokens.placeables;
+   for (let token of tokens) {
+      if (token.actor) {  // Only process tokens with an actor
+         token.actor.updateTempEffects();  // Correctly call the actor's method
+      }
+   }
+});
 
 /* -------------------------------------------- */
 /*  Render Sidebar Hook                         */

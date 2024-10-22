@@ -611,10 +611,10 @@ FADE.Conditions = [
       name: "Invulnerable",
       img: `${path}img/ui/invulnerable.webp`,
       changes: [
-         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to AC
-         { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to all saves
+         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 bonus to AC (actually substracts 2)
+         { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 2 },  // +2 to all saving throw rolls
       ],
-      duration: { seconds: 600 },  // Duration (e.g., 10 minutes)
+      duration: { seconds: 60 * 10 },  // Duration (10 minutes, 1 turn)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "invulnerable",
@@ -632,7 +632,7 @@ FADE.Conditions = [
          { key: "system.mod.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
          { key: "system.mod.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
       ],
-      duration: { seconds: 600*3 },  // Duration (30 minutes)
+      duration: { seconds: 60 * 10 * 3 },  // Duration (30 minutes. 3 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "exhausted",
@@ -641,20 +641,37 @@ FADE.Conditions = [
    },
    {
       id: "protected1",
-      name: "Protection from Evil",
+      name: "Protection from Evil (Holy)",
       img: `icons/magic/holy/barrier-shield-winged-cross.webp`,
       changes: [
-         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to AC
-         { key: "system.mod.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
-         { key: "system.mod.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+         { key: "system.mod.selfToHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against 
+         { key: "system.mod.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
+         { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to all saving throw rolls
       ],
-      duration: { seconds: 600 * 3 },  // Duration (30 minutes)
+      duration: { seconds: 60 * 10 * 12 },  // Duration (120 minutes, 12 turns)
       flags: {
          [SYSTEM_ID]: {
-            "statusId": "exhausted",
+            "statusId": "protected1",
+         }
+      }
+   },
+   {
+      id: "protected2",
+      name: "Protection from Evil (Arcane)",
+      img: `icons/magic/holy/barrier-shield-winged-cross.webp`,
+      changes: [
+         { key: "system.mod.selfToHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against 
+         { key: "system.mod.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
+         { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to all saving throw rolls
+      ],
+      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "protected2",
          }
       }
    }
+
 ];
 FADE.Actions = [
    {

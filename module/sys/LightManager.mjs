@@ -170,13 +170,11 @@ export class LightManager {
    static updateLightUsage(turnData) {
       const turnDelta = Number(turnData.dungeon.session) - Number(turnData.dungeon.prevTurn);
 
-      canvas.tokens.placeables.forEach(token => {
+      for (let token of canvas.tokens.placeables) {
          const lightActive = token.document.getFlag('world', 'lightActive');
          const type = token.document.getFlag('world', 'lightType');
-         const lightSource = LightManager.getLightSource(token.actor, type);
-         if (!(lightActive && lightSource && !isNaN(turnDelta))) {
-            console.warn(`Skipping update for ${token.name}. Conditions not met.`);
-         } else {
+         const lightSource = lightActive ? LightManager.getLightSource(token.actor, type) : null;
+         if (lightActive && lightSource && !isNaN(turnDelta)) {
             let { turnsActive } = lightSource.system.light.usage;
             let duration = lightSource.system.light.duration;
             let fuel = lightSource.system.light.fuel;
@@ -199,7 +197,7 @@ export class LightManager {
                lightSource.update({ "system.light.usage.turnsActive": turnsActive });
             }
          }
-      });
+      }
    }
 
    static toggleLight(token, state) {

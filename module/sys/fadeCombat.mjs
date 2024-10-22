@@ -77,12 +77,12 @@ export class fadeCombat extends Combat {
     * */
    async nextRound() {
       let nextRound = this.round + 1;
-      let result = super.nextRound();
+      let result = await super.nextRound();
       const user = game.users.get(game.userId);  // Get the user who initiated the roll
       const speaker = { alias: user.name };  // Use the player's name as the speaker
 
       if (user.isGM) {
-         // Check if the round has changed
+         // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
             // Reset initiative for all combatants
             for (let combatant of this.combatants) {
@@ -105,9 +105,16 @@ export class fadeCombat extends Combat {
                content: `Round ${nextRound} started. Initiative rerolled for all combatants.`,
             });
          }
+         else {
+            // Optionally send a chat message to notify players
+            ChatMessage.create({
+               speaker: speaker,
+               content: `Round ${nextRound} started. Initiative held for all combatants.`,
+            });
+         }
       }
 
-      return result;
+      return null;
    }
 
    sortCombatants(a, b) {

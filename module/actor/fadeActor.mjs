@@ -224,6 +224,37 @@ export class fadeActor extends Actor {
       }
    }
 
+   updateTempEffects() {
+      // Only the GM should handle updating effects
+      if (!game.user.isGM) return;
+
+      // Ensure there's an active scene and tokens on the canvas
+      if (!canvas?.scene) return;
+
+      if (this.effects.size > 0) {
+         // Ensure the actor has active effects to update
+         for (let effect of this.effects) {
+            if (effect.isTemporary && effect.duration) {
+               effect.updateDuration();
+               // Adjust the duration based on the time passed
+               if (effect.duration.remaining <= 0) {
+                  // Effect expired
+                  effect.delete();
+
+                  // Notify chat.
+                  const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
+                  let chatContent = `<div>${effect.name} on ${this.name} ends.</div>`;
+                  ChatMessage.create({ speaker: speaker, content: chatContent });
+               }
+            }
+         }
+
+         if (this.sheet) {
+            this.sheet.render(true);  // Pass true to force a full re-render of the actor sheet
+         }
+      }
+   }
+
    _prepareModifiers() {
       // Modifiers are often applied as a negative value, even though the modifer is a positive value.
       this.system.mod = {

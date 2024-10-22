@@ -1,8 +1,8 @@
 export class TurnTrackerForm extends FormApplication {
    static timeSteps = {
-      round: 10,
-      turn: 600,
-      hour: 3600,
+      round: 10, // 10 seconds
+      turn: 10 * 60, // 10 minutes
+      hour: 10 * 60 * 6, // 60 minutes
       day: 86400
    };
 
@@ -64,17 +64,13 @@ export class TurnTrackerForm extends FormApplication {
          const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
          let chatContent = turns > 0 ? `<div>Time advances ${turns} turn.</div>` : `<div>Time reverses ${turns} turn.</div>`;
 
-
          // Rest message
          const restFrequency = await game.settings.get(game.system.id, "restFrequency");
          if (restFrequency > 0 && this.turnData.dungeon.rest > restFrequency - 1) {
             chatContent += "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>";
          }
 
-         ChatMessage.create({
-            speaker: speaker,
-            content: chatContent
-         });
+         ChatMessage.create({ speaker: speaker, content: chatContent });
 
          // Emit custom event
          Hooks.call('turnTrackerUpdate', this.turnData);
