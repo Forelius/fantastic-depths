@@ -24,6 +24,7 @@
          </ul>
          <ul class="summary flexrow">
             <li>
+               {{! Not the same as ActiveEffects }}
                <input type='text' name='system.effect' value='{{system.effect}}' data-dtype='String' />
                <label for="system.effect">{{localize 'FADE.Spell.effect'}}</label>
             </li>
@@ -34,8 +35,11 @@
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='description'>Description</a>
+      {{#if isGM}}
+      <a class='item' data-tab='attributes'>Attributes</a>
+      <a class='item' data-tab='effects'>Effects</a>
+      {{/if}}
    </nav>
-
    {{! Sheet Body }}
    <section class='sheet-body'>
       {{! Description Tab }}
@@ -43,5 +47,40 @@
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
          {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
       </div>
+      {{#if isGM}}
+      {{! Effects Tab }}
+      <div class="tab effects" data-group="primary" data-tab="effects">
+         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+      </div>
+      {{! Attributes Tab }}
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         <section class="bordered">
+            <ul class="summary flexrow">
+               <li class="flex1">
+                  <input type="checkbox" name="system.targetSelf" data-dtype="Boolean" {{#if system.targetSelf}} checked{{/if}} />
+                  <label for="system.targetSelf">{{localize "FADE.Spell.targetSelf"}}</label>
+               </li>
+               <li class="flex1">
+                  <input type="checkbox" name="system.targetOther" data-dtype="Boolean" {{#if system.targetOther}} checked{{/if}} />
+                  <label for="system.targetOther">{{localize "FADE.Spell.targetOther"}}</label>
+               </li>
+               <li>
+                  <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+                  <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
+               </li>
+            </ul>
+            <ul class="summary flexrow">
+               <li>
+                  <input type='text' name='system.maxTargetFormula' value='{{system.maxTargetFormula}}' data-dtype='String' />
+                  <label for="system.maxTargetFormula">{{localize 'FADE.Spell.maxTargetFormula'}}</label>
+               </li>
+               <li>
+                  <input type='text' name='system.durationFormula' value='{{system.durationFormula}}' data-dtype='String' />
+                  <label for="system.durationFormula">{{localize 'FADE.Spell.durationFormula'}}</label>
+               </li>
+            </ul>
+         </section>
+      </div>
+      {{/if}}
    </section>
 </form>

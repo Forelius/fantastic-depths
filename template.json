@@ -263,11 +263,16 @@
       "spell": {
          "templates": [ "base" ],
          "spellLevel": 1,
-         "range": "",
+         "range": 0,
          "duration": "Instant",
          "effect": "",
          "memorized": 0,
-         "cast": 0
+         "cast": 0,
+         "targetSelf": true,
+         "targetOther": true,
+         "dmgFormula": null,
+         "maxTargetFormula": "1",
+         "durationFormula": null
       },
       "skill": {
          "templates": [ "base" ],

@@ -8,6 +8,18 @@ export class SpellItem extends fadeItem {
       super(data, context);
    }
 
+   /** @override */
+   prepareBaseData() {
+      super.prepareBaseData();
+      const systemData = this.system;
+
+      systemData.targetSelf = systemData.targetSelf || true;
+      systemData.targetOther = systemData.targetOther || true;
+      systemData.dmgFormula = systemData.dmgFormula || null;
+      systemData.maxTargetFormula = systemData.maxTargetFormula || 1;
+      systemData.durationFormula = systemData.durationFormula || null;      
+   }
+
    /**
    * Handle clickable rolls.
    * @override
@@ -28,31 +40,33 @@ export class SpellItem extends fadeItem {
       }, this.actor);
 
       if (dialogResp?.resp?.result === true) {
-         this.doSpellcast();
+         await this.doSpellcast();
       } else if (dialogResp?.resp?.result === false) {
          super.roll(dataset);
       }
+
+      return null;
    }
 
    async doSpellcast() {
       const systemData = this.system;
+      const casterToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0]; 
       const itemLink = `@UUID[Actor.${this.actor.id}.Item.${this.id}]{${this.name}}`;
 
       if (systemData.cast < systemData.memorized) {
-         const targets = game.user.targets;
-         const targetNamesArray = Array.from(targets).map(target => target.name).filter(Boolean);
-         const targetNames = targetNamesArray.length > 1
-            ? targetNamesArray.slice(0, -1).join(", ") + " and " + targetNamesArray.slice(-1)
-            : targetNamesArray[0] || "";
-         const msg = targetNamesArray.length > 0
-            ? `${this.actor.name} casts ${itemLink} at ${targetNames}!`
-            : `${this.actor.name} casts ${itemLink}!`
-
          systemData.cast += 1;
          await this.update({ "system.cast": systemData.cast });
 
-         // Create the chat message
-         await ChatMessage.create({ content: msg });
+         const chatData = {
+            caller: this, // the spell
+            context: casterToken, // the caster
+            options: { 
+               itemLink
+            }
+         };
+
+         const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData);
+         await builder.createChatMessage();
       } else {
          const msg = `${this.actor.name} tries to cast ${this.name}, but the spell is not memorized.`;
          ui.notifications.warn(msg);

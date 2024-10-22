@@ -1,0 +1,22 @@
+{{#if hasTarget}}
+<div>{{context.name}} casts {{caller.name}} at {{targetNames}}</div>
+{{else}}
+<div>{{context.name}} casts {{caller.name}}</div>
+{{/if}}
+<div>
+   <img class="item-image" src='{{caller.img}}' title='{{caller.name}}' />
+   {{{caller.system.description}}}
+</div>
+{{#if damageRoll.formula}}
+<div>
+   <button class="damage-roll"
+           data-damagetype="{{damageRoll.type}}"
+           data-label="Damage"
+           data-type="magic"
+           data-attackerid="{{context.id}}"
+           data-targetid="{{targetIds}}"
+           data-spellid="{{caller.id}}">
+      {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}
+   </button>
+</div>
+{{/if}}

@@ -198,6 +198,7 @@ export class fadeActor extends Actor {
       const systemData = this.system;
       let dmgAmt = amount;
       const prevHP = systemData.hp.value;
+      let digest = [];
 
       // Damage mitigation
       switch (damageType) {
@@ -211,6 +212,9 @@ export class fadeActor extends Actor {
             dmgAmt -= systemData.mod.combat.selfDmgMagic;
             break;
       }
+
+      digest.push(`${this.name} mitigated ${systemData.mod.combat.selfDmg} points of ${damageType} damage.`)
+
       systemData.hp.value -= dmgAmt;
       this.update({ "system.hp.value": systemData.hp.value })
 

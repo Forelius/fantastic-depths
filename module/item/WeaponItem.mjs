@@ -23,15 +23,15 @@ export class WeaponItem extends fadeItem {
    }
 
    getDamageRoll(attackType, attackerToken) {
-      const systemData = this.system;
+      const weaponData = this.system;
       const attackerData = attackerToken.actor.system;
-      let formula = systemData.damageRoll;
+      let formula = weaponData.damageRoll;
       let digest = [];
 
       if (attackType == 'melee') {
-         if (systemData.mod.dmg != null && systemData.mod.dmg != 0) {
-            formula = `${formula}+${systemData.mod.dmg}`;
-            digest.push(`Weapon mod: ${systemData.mod.dmg}`);
+         if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
+            formula = `${formula}+${weaponData.mod.dmg}`;
+            digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
@@ -43,12 +43,12 @@ export class WeaponItem extends fadeItem {
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
       } else {
-         if (systemData.mod.dmgRanged != null && systemData.mod.dmgRanged != 0) {
-            formula = `${formula}+${systemData.mod.dmgRanged}`;
-            digest.push(`Weapon mod: ${systemData.mod.dmg}`);
+         if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
+            formula = `${formula}+${weaponData.mod.dmgRanged}`;
+            digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
          }
          // If the attacker has ability scores...
-         if (attackerData.abilities && attackerData.abilities.str.mod != 0 && systemData.tags.includes("thrown")) {
+         if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
             formula = `${formula}+${attackerData.abilities.str.mod}`;
             digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
          } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
@@ -63,8 +63,8 @@ export class WeaponItem extends fadeItem {
 
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-      if (weaponMastery && systemData.mastery !== "" && attackerToken.type==="character" && attackerData.details.species === "Human") {
-         const attackerMastery = attackerToken.items.find((item) => item.type === 'mastery' && item.name === systemData.mastery);
+      if (weaponMastery && weaponData.mastery !== "" && attackerToken.type==="character" && attackerData.details.species === "Human") {
+         const attackerMastery = attackerToken.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // do stuff
          } else {
@@ -74,7 +74,7 @@ export class WeaponItem extends fadeItem {
          }
       }
 
-      return { formula, type: systemData.damageType, digest };
+      return { formula, type: weaponData.damageType, digest };
    }
 
    /**
@@ -142,7 +142,7 @@ export class WeaponItem extends fadeItem {
             };
 
             const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
-            result = builder.createChatMessage();
+            await builder.createChatMessage();
          }
       } else {
          ui.notifications.warn("You must have your token selected to attack");

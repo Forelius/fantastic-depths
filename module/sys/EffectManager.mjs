@@ -1,4 +1,5 @@
 export class EffectManager {
+
    async OnGameInit() {
       const path = 'systems/fantastic-depths/assets/img';
       let allEffects = [];
@@ -45,12 +46,12 @@ export class EffectManager {
    //   }
    //}
 
-   //static async applyEffect(actor, effectId) {
-   //   const effect = CONFIG.statusEffects.find(e => e.id === effectId);
-   //   if (effect) {
-   //      await ActiveEffect.create(effect, { parent: actor });
-   //   }
-   //}
+   static async applyEffect(actor, effectId) {
+      const effect = CONFIG.statusEffects.find(e => e.id === effectId);
+      if (effect) {
+         await ActiveEffect.create(effect, { parent: actor });
+      }
+   }
 
    //static async applySicknessEffect(actor) {
    //   const sicknessEffect = {

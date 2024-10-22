@@ -70,50 +70,54 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const dataset = element.dataset;
 
       // Custom behavior for damage rolls
-      if (dataset.type === "damage") {
-         ev.preventDefault(); // Prevent the default behavior
-         ev.stopPropagation(); // Stop other handlers from triggering the event
+      if (dataset.type === "damage" && dataset.damagetype === "physical") {
+         await DamageRollChatBuilder.handlePhysicalDamageRoll(ev, dataset);
+      }
+   }
 
-         const { targetid, attackerid, weaponid, attacktype, damagetype } = dataset;
-         const targetToken = canvas.tokens.get(targetid);
-         const attackerToken = canvas.tokens.get(attackerid);
-         let weaponItem = attackerToken.actor.items.find((item) => item.id === weaponid);
-         const damageRoll = weaponItem.getDamageRoll(attacktype, attackerToken);
+   static async handlePhysicalDamageRoll(ev, dataset) {
+        ev.preventDefault(); // Prevent the default behavior
+        ev.stopPropagation(); // Stop other handlers from triggering the event
 
-         // Roll the damage and wait for the result
-         const roll = new Roll(damageRoll.formula);
-         await roll.evaluate(); // Wait for the roll result
-         const damage = Math.max(roll.total, 0);
-         const descData = targetToken ? {
+        const { targetid, attackerid, weaponid, attacktype, damagetype } = dataset;
+        const targetToken = canvas.tokens.get(targetid);
+        const attackerToken = canvas.tokens.get(attackerid);
+        let weaponItem = attackerToken.actor.items.find((item) => item.id === weaponid);
+        const damageRoll = weaponItem.getDamageRoll(attacktype, attackerToken);
+
+        // Roll the damage and wait for the result
+        const roll = new Roll(damageRoll.formula);
+        await roll.evaluate(); // Wait for the roll result
+        const damage = Math.max(roll.total, 0);
+        const descData = targetToken ? {
             attacker: attackerToken.name,
             targetname: targetToken.name,
             weapon: weaponItem.name,
             damage
-         } : {
+        } : {
             attacker: attackerToken.name,
             weapon: weaponItem.name,
             damage
-         };
-         let resultString = targetToken ?
+        };
+        let resultString = targetToken ?
             game.i18n.format('FADE.Chat.damageFlavor1', descData)
             : game.i18n.format('FADE.Chat.damageFlavor2', descData);
 
-         const chatData = {
+        const chatData = {
             context: attackerToken,
             mdata: dataset,
             roll: roll,
             digest: damageRoll.digest
-         };
-         const options = {
+        };
+        const options = {
             targetid,
             damage: damage,
             resultString,
             showApplyDamage: targetid && damage > 0
-         }
-         const builder = new DamageRollChatBuilder(chatData, options);
-         builder.createChatMessage();
-      }
-   }
+        };
+        const builder = new DamageRollChatBuilder(chatData, options);
+        builder.createChatMessage();
+    }
 
    static async clickApplyDamage(ev) {
       const element = ev.currentTarget;

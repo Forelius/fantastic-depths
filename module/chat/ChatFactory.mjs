@@ -4,6 +4,7 @@ import { GenericRollChatBuilder } from './GenericRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 import { SkillRollChatBuilder } from './SkillRollChatBuilder.mjs';
 import { DamageRollChatBuilder } from './DamageRollChatBuilder.mjs';
+import { SpellCastChatBuilder } from './SpellCastChatBuilder.mjs';
 /**
  * Enumeration for chat factory types.
  * @enum {Symbol}
@@ -14,6 +15,7 @@ export const CHAT_TYPE = Object.freeze({
    ATTACK_ROLL: Symbol('cftype_attack'),
    SKILL_ROLL: Symbol('cftype_skill'),
    DAMAGE_ROLL: Symbol('cftype_damage'),
+   SPELL_CAST: Symbol('cftype_spell_cast'),
 });
 
 /**
@@ -35,6 +37,8 @@ const handler = {
          result = new SkillRollChatBuilder(...bArgs);
       } else if (type === CHAT_TYPE.DAMAGE_ROLL) {
          result = new DamageRollChatBuilder(...bArgs);
+      } else if (type === CHAT_TYPE.SPELL_CAST) {
+         result = new SpellCastChatBuilder(...bArgs);
       } else {
          result = new GenericRollChatBuilder(...bArgs);
       }

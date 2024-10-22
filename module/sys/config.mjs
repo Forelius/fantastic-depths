@@ -628,9 +628,10 @@ FADE.Conditions = [
       name: "Exhausted",
       img: `icons/svg/unconscious.svg`,
       changes: [
-         { key: "system.mod.ac", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to AC
-         { key: "system.mod.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
-         { key: "system.mod.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+         { key: "system.mod.combat.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+         { key: "system.mod.combat.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to attack rolls
+         { key: "system.mod.combat.dmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to damage rolls
+         { key: "system.mod.combat.dmgRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to ranged damage rolls
       ],
       duration: { seconds: 60 * 10 * 3 },  // Duration (30 minutes. 3 turns)
       flags: {
@@ -641,37 +642,24 @@ FADE.Conditions = [
    },
    {
       id: "protected1",
-      name: "Protection from Evil (Holy)",
-      img: `icons/magic/holy/barrier-shield-winged-cross.webp`,
+      name: "Protected from Evil",
+      img: `${path}img/ui/protectfromevil.webp`,
+      description: `<p>This effect creates an invisible magical barrier surrounding the spell target's body, less than an inch away.</p>
+<p>In addition, enchanted creatures cannot touch the spell target. (An enchanted creature is one that cannot be harmed by normal weapons and can only be affected by magical weapons. A creature that can only be harmed by silver weapons, such as a werewolf, is not considered enchanted.Creatures that are magically summoned or controlled, like a charmed character, are also classified as enchanted.) The barrier completely protects the spell target from all melee or hand- to - hand attacks from these creatures, although it does not block attacks from missile weapons.Enchanted creatures using missile weapons still suffer the - 1 attack penalty but can hit the spell target.</p>
+<p>This effect does not block magic missile spells used by magic - users.</p>
+<p>If the spell target attacks an enchanted creature while this effect is active, the barrier's properties change slightly. Enchanted creatures can then touch the spell target, but they still suffer the attack roll penalty.The attack penalty and the spell target's saving throw bonus remain until the effect ends.</p>`,
       changes: [
          { key: "system.mod.selfToHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against 
          { key: "system.mod.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
          { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to all saving throw rolls
       ],
-      duration: { seconds: 60 * 10 * 12 },  // Duration (120 minutes, 12 turns)
+      duration: { seconds: 60 * 10 * 6 },  // Duration (120 minutes, 12 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "protected1",
          }
       }
-   },
-   {
-      id: "protected2",
-      name: "Protection from Evil (Arcane)",
-      img: `icons/magic/holy/barrier-shield-winged-cross.webp`,
-      changes: [
-         { key: "system.mod.selfToHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against 
-         { key: "system.mod.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
-         { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to all saving throw rolls
-      ],
-      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
-      flags: {
-         [SYSTEM_ID]: {
-            "statusId": "protected2",
-         }
-      }
    }
-
 ];
 FADE.Actions = [
    {

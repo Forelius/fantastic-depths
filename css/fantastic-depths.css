@@ -447,6 +447,9 @@ h1, h2, h3, h4 {
   color: #ebeae4;
   border: 1px solid #545140;
 }
+.dark-mode .chat-message a.inline-roll {
+  background: url("../assets/img/grungeblue.jpg");
+}
 .dark-mode .chat-message .content-link {
   background: url("../assets/img/grungeblue.jpg");
 }
@@ -579,6 +582,19 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .collapsible-header {
   cursor: pointer;
+}
+.chat-message .message-content .item-image {
+  float: left;
+  flex: 0 0 32px;
+  height: 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  margin-right: 6px;
+  margin-bottom: 3px;
+  position: relative;
+  top: 2px;
 }
 
 .combatant.disposition-friendly::before {

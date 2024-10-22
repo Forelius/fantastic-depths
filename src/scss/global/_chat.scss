@@ -14,7 +14,7 @@
       }
 
       .attack-info {
-         font-size: 16px;         
+         font-size: 16px;
       }
 
       .roll-info {
@@ -25,8 +25,22 @@
          font-size: 16px;
       }
 
-      .collapsible-header{
-         cursor:pointer;
+      .collapsible-header {
+         cursor: pointer;
+      }
+
+      .item-image {
+         float: left;
+         flex: 0 0 32px;
+         height: 32px;
+         background-size: contain;
+         background-repeat: no-repeat;
+         background-position: center;
+         border: none;
+         margin-right: 6px;
+         margin-bottom: 3px;
+         position: relative;
+         top: 2px;
       }
    }
 }

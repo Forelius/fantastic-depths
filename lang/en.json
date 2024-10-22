@@ -90,6 +90,7 @@
                "abbr": "SA"
             },
             "long": "Saving Throws",
+            "singular": "Saving Throw",
             "death": {
                "long": "Death Ray or Poison",
                "abbr": "Death"
@@ -188,14 +189,18 @@
          "level": "Level",
          "duration": "Duration",
          "effect": "Effect",
-         "range": "Range"
+         "range": "Range",
+         "targetSelf": "Target Self",
+         "targetOther": "Target Other",
+         "maxTargetFormula": "Max. Target Roll",
+         "durationFormula": "Duration Roll"
       },
       "Item": {
          "plural": "Gear",
          "uses": "Uses",
          "equip": "Equip",
          "unequip": "Unequip",
-         "isEquippable":  "Equippable",
+         "isEquippable": "Equippable",
          "quantity": {
             "long": "Quantity",
             "maxLong": "Max. Quantity",
@@ -307,6 +312,8 @@
          "attackRoll": "Attacks",
          "damageFlavor1": "<div>{attacker} hits with {weapon}</div><div>{targetname} takes <span class='damage'>{damage}</span> points of damage.</div>",
          "damageFlavor2": "<div>{attacker} hits with {weapon}</div><div>Target takes <span class='damage'>{damage}</span> points of damage.</div>",
+         "spellCast1": "<div>{caster} casts {spell} at {targetNames}</div>",
+         "spellCast2": "<div>{caster} casts {spell}</div>",
          "damageRoll": "Damage Roll"
       },
       "roll": "Roll",
