@@ -130,6 +130,7 @@ export class fadeActor extends Actor {
    getAttackRoll(weapon, attackType, mod, target) {
       const weaponData = weapon.system;
       const systemData = this.system;
+      const targetMods = target?.system.mod.combat;
       let formula = '1d20';
       let digest = [];
 
@@ -152,6 +153,10 @@ export class fadeActor extends Actor {
             formula = `${formula}+${systemData.abilities.str.mod}`;
             digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
          }
+         if (targetMods && targetMods.selfToHit !== 0) {
+            formula = `${formula}+${targetMods.selfToHit}`;
+            digest.push(`Target effect mod: ${targetMods.selfToHit}`);
+         }
       } else {
          // Missile attack
          if (weaponData.mod.toHitRanged !== 0) {
@@ -169,6 +174,10 @@ export class fadeActor extends Actor {
          } else if (systemData.abilities && systemData.abilities.dex.mod) {
             formula = `${formula}+${systemData.abilities.dex.mod}`;
             digest.push(`Dexterity mod: ${systemData.abilities.dex.mod}`);
+         }
+         if (targetMods && targetMods.selfToHitRanged !== 0) {
+            formula = `${formula}+${targetMods.selfToHitRanged}`;
+            digest.push(`Target effect mod: ${targetMods.selfToHitRanged}`);
          }
          const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
          if (weaponMastery && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
@@ -224,7 +233,11 @@ export class fadeActor extends Actor {
       }
    }
 
-   updateTempEffects() {
+   /**
+    * Handler for updateWorldTime event.
+    * @returns
+    */
+   onUpdateWorldTime() {
       // Only the GM should handle updating effects
       if (!game.user.isGM) return;
 
@@ -270,7 +283,7 @@ export class fadeActor extends Actor {
             selfDmgMagic: 0,
             // These only work if actor is targetted
             selfToHit: 0, // to hit this actor
-            selfToHitRange: 0 // to hit this actor
+            selfToHitRanged: 0 // to hit this actor
          },
          save: {
             all: 0,

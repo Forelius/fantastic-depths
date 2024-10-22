@@ -146,7 +146,7 @@ Hooks.on('updateWorldTime', (worldTime, dt, options, userId) => {
    const tokens = canvas?.tokens.placeables;
    for (let token of tokens) {
       if (token.actor) {  // Only process tokens with an actor
-         token.actor.updateTempEffects();  // Correctly call the actor's method
+         token.actor.onUpdateWorldTime();  // Correctly call the actor's method
       }
    }
 });
