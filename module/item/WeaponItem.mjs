@@ -22,9 +22,10 @@ export class WeaponItem extends fadeItem {
       this._prepareModText();
    }
 
-   getDamageRoll(attackType, attackerToken) {
+   getDamageRoll(attackType) {
       const weaponData = this.system;
-      const attackerData = attackerToken.actor.system;
+      const attackerToken = this.parent.getActiveTokens()?.[0];
+      const attackerData = this.parent.system;
       let formula = weaponData.damageRoll;
       let digest = [];
 

@@ -20,6 +20,13 @@ export class SpellItem extends fadeItem {
       systemData.durationFormula = systemData.durationFormula || null;      
    }
 
+   getDamageRoll() {
+      return {
+         formula: this.system.dmgFormula,
+         damageType: "magic"
+      };
+   }
+
    /**
    * Handle clickable rolls.
    * @override

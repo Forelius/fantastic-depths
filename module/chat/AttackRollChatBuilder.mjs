@@ -135,7 +135,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
       const rollContent = await roll.render({ flavor: 'Attack Roll' });
       const toHitResult = this.#getToHitResult();
-      const damageRoll = caller.getDamageRoll(resp.attackType, attackerToken);
+      const damageRoll = caller.getDamageRoll(resp.attackType);
 
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       // Get the actor and user names

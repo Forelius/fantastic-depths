@@ -17,14 +17,12 @@ export class SpellCastChatBuilder extends ChatBuilder {
    async createChatMessage() {
       const { context, caller, options } = this.data;
       const targetNamesArray = Array.from(this.#targetTokens).map(target => target.name).filter(Boolean);
+      const targetIdsArray = Array.from(this.#targetTokens).map(target => target.id).filter(Boolean);
       const targetNames = targetNamesArray.length > 1
          ? targetNamesArray.slice(0, -1).join(", ") + " and " + targetNamesArray.slice(-1)
          : targetNamesArray[0] || "";
 
-      const damageRoll = {
-         formula: caller.system.dmgFormula,
-         damageType: "magic"
-      };
+      const damageRoll = caller.getDamageRoll();
 
       // Prepare data for the chat template
       const chatData = {
@@ -32,7 +30,9 @@ export class SpellCastChatBuilder extends ChatBuilder {
          context,
          targetNames,
          hasTarget: (targetNamesArray.length > 0),
-         damageRoll
+         targetids: targetIdsArray?.join(","),
+         damageRoll,
+         damageType:"magic"
       };
 
       // Render the content using the template
@@ -40,7 +40,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = game.settings.get("core", "rollMode");
       const descData = { caster: context.name, spell: caller.name, targetNames };
-      const description = chatData.hasTarget ? game.i18n.format('FADE.Chat.spellCast1', descData) : game.i18n.format('FADE.Chat.spellCast1', descData);
+      const description = chatData.hasTarget ? game.i18n.format('FADE.Chat.spellCast1', descData) : game.i18n.format('FADE.Chat.spellCast2', descData);
 
       if (window.toastManager) {
          let toast = `${description}`;

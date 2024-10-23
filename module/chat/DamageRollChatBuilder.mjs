@@ -69,21 +69,38 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const element = ev.currentTarget;
       const dataset = element.dataset;
 
-      // Custom behavior for damage rolls
-      if (dataset.type === "damage" && dataset.damagetype === "physical") {
-         await DamageRollChatBuilder.handlePhysicalDamageRoll(ev, dataset);
+      // Custom behavior for damage rolls      
+      if (dataset.type === "damage") {
+         ev.preventDefault(); // Prevent the default behavior
+         ev.stopPropagation(); // Stop other handlers from triggering the event
+
+         if (dataset.damagetype === "physical") {
+            await DamageRollChatBuilder.handlePhysicalDamageRoll(ev, dataset);
+         } else if (dataset.damagetype === "magic") {
+            await DamageRollChatBuilder.handleMagicDamageRoll(ev, dataset);
+         }
       }
    }
 
-   static async handlePhysicalDamageRoll(ev, dataset) {
-        ev.preventDefault(); // Prevent the default behavior
-        ev.stopPropagation(); // Stop other handlers from triggering the event
+   static async handleMagicDamageRoll(ev, dataset) {
+      const { targetids, attackerid, spellid, attacktype, damagetype } = dataset;
+      const attackerToken = canvas.tokens.get(attackerid);
+      const targetTokens = targetids?.split(",").map((id)=> canvas.tokens.get(id));
+      let spellItem = attackerToken.actor.items.find((item) => item.id === spellid);
+      const damageRoll = spellItem.getDamageRoll();
 
+      // Roll the damage and wait for the result
+      const roll = new Roll(damageRoll.formula);
+      await roll.evaluate(); // Wait for the roll result
+      const damage = Math.max(roll.total, 0);
+   }
+
+   static async handlePhysicalDamageRoll(ev, dataset) {
         const { targetid, attackerid, weaponid, attacktype, damagetype } = dataset;
         const targetToken = canvas.tokens.get(targetid);
         const attackerToken = canvas.tokens.get(attackerid);
         let weaponItem = attackerToken.actor.items.find((item) => item.id === weaponid);
-        const damageRoll = weaponItem.getDamageRoll(attacktype, attackerToken);
+        const damageRoll = weaponItem.getDamageRoll(attacktype);
 
         // Roll the damage and wait for the result
         const roll = new Roll(damageRoll.formula);

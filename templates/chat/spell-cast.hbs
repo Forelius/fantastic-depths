@@ -7,16 +7,17 @@
    <img class="item-image" src='{{caller.img}}' title='{{caller.name}}' />
    {{{caller.system.description}}}
 </div>
-{{#if damageRoll.formula}}
+
+{{!-- {{#if damageRoll.formula}}
 <div>
    <button class="damage-roll"
-           data-damagetype="{{damageRoll.type}}"
+           data-damagetype="{{damageRoll.damageType}}"
            data-label="Damage"
-           data-type="magic"
+           data-type="damage"
            data-attackerid="{{context.id}}"
-           data-targetid="{{targetIds}}"
+           data-targetids="{{targetIds}}"
            data-spellid="{{caller.id}}">
       {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}
    </button>
 </div>
-{{/if}}
+{{/if}}--}}
