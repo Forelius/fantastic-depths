@@ -12,8 +12,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
    }
 
    /**
-    * Called by the various Actor and Item derived classes to create a chat message.
-    */
+   * Called by the various Actor and Item derived classes to create a chat message.
+   */
    async createChatMessage() {
       const { context, caller, options } = this.data;
       const targetNamesArray = Array.from(this.#targetTokens).map(target => target.name).filter(Boolean);
@@ -32,7 +32,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          hasTarget: (targetNamesArray.length > 0),
          targetids: targetIdsArray?.join(","),
          damageRoll,
-         damageType:"magic"
+         damageType: "magic"
       };
 
       // Render the content using the template
@@ -48,6 +48,6 @@ export class SpellCastChatBuilder extends ChatBuilder {
       }
 
       const chatMessageData = await this.getChatMessageData({ content, rollMode });
-      await ChatMessage.create(chatMessageData);
-   }   
+      await ChatMessage.create(chatMessageData);     
+   }
 }

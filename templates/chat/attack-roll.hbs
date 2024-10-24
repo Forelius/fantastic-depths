@@ -1,5 +1,7 @@
-<div>{{description}}</div>
-{{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
+<div>
+   <div>{{description}}</div>
+   {{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
+</div>
 {{{rollContent}}}
 <div name="digest">
    {{#each digest as |ditem|}}
@@ -14,7 +16,6 @@
            data-label="Damage"
            data-type="damage"
            data-attackerid="{{descData.attackerid}}"
-           data-targetid="{{targetId}}"
            data-weaponid="{{weaponId}}"">
       {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}} ({{damageRoll.type}})
    </button>

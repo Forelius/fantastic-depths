@@ -160,6 +160,55 @@ h1, h2, h3, h4 {
   color: #888888; /* Darken color on hover */
 }
 
+.collapsible-content {
+  overflow: hidden;
+  height: auto;
+  transition: height 0.1s ease-in;
+}
+
+.collapsible-content.collapsed {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: height 0.1s ease-in, padding 0.1s ease-in;
+}
+
+/* ----------------------------------------- */
+/*  Accordion                                */
+/* ----------------------------------------- */
+/*.accordion {
+   transition: margin-bottom 500ms ease;
+}
+
+.accordion.collapsed {
+   > .accordion-content {
+      height: 0;
+   }
+}
+
+.accordion-indicator {
+   display: none;
+   transition: transform 500ms ease;
+}
+
+.accordion .accordion-indicator {
+   display: inherit;
+   transform: rotate(0deg);
+}
+
+.accordion.collapsed .accordion-indicator {
+   transform: rotate(-90deg);
+}
+
+.accordion-heading {
+   cursor: pointer;
+   position: relative;
+}
+
+.accordion-content {
+   overflow: hidden;
+   transition: height 500ms ease;
+}*/
 :root {
   --max-column-width: 200px;
 }
@@ -350,6 +399,9 @@ h1, h2, h3, h4 {
 }
 
 /* Dark mode styles */
+.dark-mode .bordered {
+  border-color: #4b4a44;
+}
 .dark-mode .fantastic-depths .window-content {
   background: url("../assets/img/grunge2.jpg");
   color: #ebeae4;
@@ -374,9 +426,6 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content select option {
   background: #4b4a44;
   color: #ebeae4;
-}
-.dark-mode .fantastic-depths .window-content .bordered {
-  border-color: #4b4a44;
 }
 .dark-mode .fantastic-depths .window-content nav.sheet-tabs {
   margin: 4px 0;
@@ -564,6 +613,10 @@ h1, h2, h3, h4 {
 .chat-message .message-content .attack-fail, .chat-message .message-content .roll-fail {
   font-size: 18px;
 }
+.chat-message .message-content .item-name {
+  font-size: 20px;
+  font-weight: 600;
+}
 .chat-message .message-content .attack-success, .chat-message .message-content .roll-success {
   font-size: 18px;
 }
@@ -585,16 +638,29 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .item-image {
   float: left;
-  flex: 0 0 32px;
-  height: 32px;
+  flex: 0 0 28px;
+  height: 28px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   border: none;
   margin-right: 6px;
-  margin-bottom: 3px;
   position: relative;
-  top: 2px;
+  top: -4px;
+}
+.chat-message .message-content .expander {
+  width: 30px; /* Set a fixed width to control the space for the symbol */
+  height: 30px; /* Adjust height as needed */
+  cursor: pointer; /* Optional: to make it appear clickable */
+}
+.chat-message .message-content .expander::after {
+  font-size: 30px; /* Keep the size as you intended */
+  content: ">";
+  transform: translateY(-50%); /* Vertically center the symbol */
+  transition: transform 0.3s ease; /* Smooth transition for rotation */
+}
+.chat-message .message-content .expander.expanded::after {
+  transform: translateY(-50%) rotate(90deg); /* Rotate downwards when expanded */
 }
 
 .combatant.disposition-friendly::before {
@@ -847,17 +913,6 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .label-12px label {
   font-size: 12px;
-}
-.fantastic-depths .collapsible-content {
-  overflow: hidden;
-  height: auto;
-  transition: height 0.1s ease-in;
-}
-.fantastic-depths .collapsible-content.collapsed {
-  height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  transition: height 0.1s ease-in, padding 0.1s ease-in;
 }
 .fantastic-depths .summary {
   flex: 0 0 100%;

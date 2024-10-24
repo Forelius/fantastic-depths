@@ -1,5 +1,9 @@
 /* Dark mode styles */
 .dark-mode {
+   .bordered {
+      border-color: $darkColor;
+   }
+
    .fantastic-depths {
       .window-content {
          background: url('../assets/img/grunge2.jpg');
@@ -30,10 +34,6 @@
                background: $darkColor;
                color: $lighterColor;
             }
-         }
-
-         .bordered {
-            border-color: $darkColor;
          }
 
          nav.sheet-tabs {

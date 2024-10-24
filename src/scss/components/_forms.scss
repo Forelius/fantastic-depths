@@ -115,19 +115,6 @@ h4 {
    font-size: 12px;
 }
 
-.collapsible-content {
-   overflow: hidden;
-   height: auto;
-   transition: height 0.1s ease-in;
-}
-
-.collapsible-content.collapsed {
-   height: 0;
-   padding-top: 0;
-   padding-bottom: 0;
-   transition: height 0.1s ease-in, padding 0.1s ease-in;
-}
-
 .summary {
    flex: 0 0 100%;
    height: $detailsHeight;

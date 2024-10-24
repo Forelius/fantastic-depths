@@ -4,6 +4,11 @@
          font-size: 18px;
       }
 
+      .item-name {
+         font-size: 20px;
+         font-weight: 600;
+      }
+
       .attack-success, .roll-success {
          font-size: 18px;
       }
@@ -31,16 +36,32 @@
 
       .item-image {
          float: left;
-         flex: 0 0 32px;
-         height: 32px;
+         flex: 0 0 28px;
+         height: 28px;
          background-size: contain;
          background-repeat: no-repeat;
          background-position: center;
          border: none;
          margin-right: 6px;
-         margin-bottom: 3px;
          position: relative;
-         top: 2px;
+         top: -4px;
+      }
+
+      .expander {
+         width: 30px; /* Set a fixed width to control the space for the symbol */
+         height: 30px; /* Adjust height as needed */
+         cursor: pointer; /* Optional: to make it appear clickable */
+      }
+
+      .expander::after {
+         font-size: 30px; /* Keep the size as you intended */
+         content: '>';
+         transform: translateY(-50%); /* Vertically center the symbol */
+         transition: transform 0.3s ease; /* Smooth transition for rotation */
+      }
+
+      .expander.expanded::after {
+         transform: translateY(-50%) rotate(90deg); /* Rotate downwards when expanded */
       }
    }
 }

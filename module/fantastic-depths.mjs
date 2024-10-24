@@ -29,6 +29,7 @@ import { migrateData } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
+import { Collapser } from './utils/Collapser.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -119,6 +120,8 @@ Hooks.once('ready', async function () {
    // inline-roll handler
    $(document).on('click', '.damage-roll', DamageRollChatBuilder.clickDamageRoll);
    $(document).on('click', '.apply-damage', DamageRollChatBuilder.clickApplyDamage);
+   // Bind the collapsible functionality to the header click event
+   $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();

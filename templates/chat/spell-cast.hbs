@@ -3,21 +3,26 @@
 {{else}}
 <div>{{context.name}} casts {{caller.name}}</div>
 {{/if}}
-<div>
-   <img class="item-image" src='{{caller.img}}' title='{{caller.name}}' />
-   {{{caller.system.description}}}
+<div class="bordered" style="padding-bottom:2px;">
+   <div class="flexrow collapser">
+      <img class="item-image" src='{{caller.img}}' title='{{caller.name}}' />
+      <div class="item-name">{{caller.name}}</div>
+      <!--<div class="expander"></div>-->
+   </div>
+   <div class="collapsible-content collapsed">
+      {{{caller.system.description}}}
+   </div>
 </div>
 
-{{!-- {{#if damageRoll.formula}}
+{{#if damageRoll.formula}}
 <div>
    <button class="damage-roll"
            data-damagetype="{{damageRoll.damageType}}"
            data-label="Damage"
            data-type="damage"
            data-attackerid="{{context.id}}"
-           data-targetids="{{targetIds}}"
            data-spellid="{{caller.id}}">
       {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}
    </button>
 </div>
-{{/if}}--}}
+{{/if}}

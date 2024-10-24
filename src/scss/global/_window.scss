@@ -81,3 +81,53 @@
       }
    }
 }
+
+.collapsible-content {
+   overflow: hidden;
+   height: auto;
+   transition: height 0.1s ease-in;
+}
+
+.collapsible-content.collapsed {
+   height: 0;
+   padding-top: 0;
+   padding-bottom: 0;
+   transition: height 0.1s ease-in, padding 0.1s ease-in;
+}
+
+/* ----------------------------------------- */
+/*  Accordion                                */
+/* ----------------------------------------- */
+/*.accordion {
+   transition: margin-bottom 500ms ease;
+}
+
+.accordion.collapsed {
+   > .accordion-content {
+      height: 0;
+   }
+}
+
+.accordion-indicator {
+   display: none;
+   transition: transform 500ms ease;
+}
+
+.accordion .accordion-indicator {
+   display: inherit;
+   transform: rotate(0deg);
+}
+
+.accordion.collapsed .accordion-indicator {
+   transform: rotate(-90deg);
+}
+
+.accordion-heading {
+   cursor: pointer;
+   position: relative;
+}
+
+.accordion-content {
+   overflow: hidden;
+   transition: height 500ms ease;
+}*/
