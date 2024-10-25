@@ -33,6 +33,7 @@
          }
 
          select {
+            background: $darkerColor;
             color: $lighterColor;
 
             option {
@@ -161,7 +162,7 @@
       }
 
       .attack-info {
-         color: $lightColor;
+         color: #90b0e0;         
       }
 
       .dice-formula, .dice-total {
@@ -288,6 +289,10 @@
 
       .attack-success, .roll-success {
          color: #106020;
+      }
+
+      .attack-info {
+         color: #3b4a55;
       }
 
       .damage {

@@ -237,7 +237,7 @@ export class fadeDialog {
 
       dialogResp.resp = await Dialog.wait({
          title: title,
-         content: `<div>${content}</div>`,
+         content: `<div style="margin:0 0 8px;">${content}</div>`,
          buttons: {
             yes: {
                label: yesLabel,

@@ -86,7 +86,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
       let result = {
          hitAC,
-         message: (hitAC !== null) ? `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>` : '',
+         message: (hitAC !== null) ? game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC }) : '',
          targetResults: []
       };
 
@@ -95,7 +95,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          let targetResult = {
             success: false,
             targetToken,
-            message: `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`
+            message: game.i18n.localize('FADE.Chat.attackFail')
          };
 
          // If a natural 20...
@@ -106,11 +106,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
          if (hitAC !== null) {
             if (ac !== null && ac !== undefined) {
                if (ac >= hitAC) {
-                  targetResult.message = `<div class='attack-success'>${game.i18n.localize('FADE.Chat.attackSuccess')}</div>`;
+                  targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
                   targetResult.success = true;
                }
             } else {
-               targetResult.message = `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>`;
+               targetResult.message = game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC });
                targetResult.success = true;
             }
          }
@@ -135,10 +135,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
          attackType: resp.attackType,
          weapon: caller.name
       };
-      const description = game.i18n.format('FADE.Chat.attackFlavor2', descData);
-      const rollContent = await roll.render({ flavor: 'Attack Roll' });
+      const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
+      const rollContent = await roll.render();
       const toHitResult = this.#getToHitResults();
-      const damageRoll = caller.getDamageRoll(resp.attackType);
+      const damageRoll = caller.getDamageRoll(resp.attackType, resp.attackMode);
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       // Get the actor and user names
       const userName = game.users.current.name; // User name (e.g., player name)
@@ -156,7 +156,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          toHitResult,
          digest: digest,
          weapon: caller,
-         attackType: resp.attackType
+         resp
       };
 
       let content = await renderTemplate(this.template, chatData);

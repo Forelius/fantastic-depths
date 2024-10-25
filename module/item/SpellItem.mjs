@@ -17,13 +17,22 @@ export class SpellItem extends fadeItem {
       systemData.targetOther = systemData.targetOther || true;
       systemData.dmgFormula = systemData.dmgFormula || null;
       systemData.maxTargetFormula = systemData.maxTargetFormula || 1;
-      systemData.durationFormula = systemData.durationFormula || null;      
+      systemData.durationFormula = systemData.durationFormula || null;
    }
 
-   getDamageRoll() {
+   getDamageRoll(resp) {
+      let formula = this.system.dmgFormula;
+      let digest = [];
+
+      if (resp?.mod && resp?.mod !== 0) {
+         formula = `${formula}+${resp.mod}`;
+         digest.push(`Manual mod: ${resp.mod}`);
+      }
+
       return {
-         formula: this.system.dmgFormula,
-         damageType: "magic"
+         formula,
+         damageType: "magic",
+         digest
       };
    }
 
@@ -57,7 +66,7 @@ export class SpellItem extends fadeItem {
 
    async doSpellcast() {
       const systemData = this.system;
-      const casterToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0]; 
+      const casterToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
       const itemLink = `@UUID[Actor.${this.actor.id}.Item.${this.id}]{${this.name}}`;
 
       if (systemData.cast < systemData.memorized) {
@@ -67,7 +76,7 @@ export class SpellItem extends fadeItem {
          const chatData = {
             caller: this, // the spell
             context: casterToken, // the caster
-            options: { 
+            options: {
                itemLink
             }
          };

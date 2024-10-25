@@ -4,6 +4,14 @@ h1, h2, h3, h4 {
   font-weight: bold;
 }
 
+.text-size20 {
+  font-size: 20px;
+}
+
+.text-size18 {
+  font-size: 18px;
+}
+
 :root {
   --color-shadow-primary: #ae7615;
 }
@@ -35,12 +43,19 @@ h1, h2, h3, h4 {
   animation: fadein 0.5s forwards;
 }
 .toast .attack-success, .toast .roll-success {
+  margin-top: 2px;
   font-size: 20px;
   color: #bee8b1;
 }
 .toast .attack-fail, .toast .roll-fail {
+  margin-top: 2px;
   font-size: 20px;
   color: #faa4a4;
+}
+.toast .attack-info {
+  margin-top: 2px;
+  font-size: 20px;
+  color: #90b0e0;
 }
 .toast .damage {
   font-size: 20px;
@@ -173,42 +188,6 @@ h1, h2, h3, h4 {
   transition: height 0.1s ease-in, padding 0.1s ease-in;
 }
 
-/* ----------------------------------------- */
-/*  Accordion                                */
-/* ----------------------------------------- */
-/*.accordion {
-   transition: margin-bottom 500ms ease;
-}
-
-.accordion.collapsed {
-   > .accordion-content {
-      height: 0;
-   }
-}
-
-.accordion-indicator {
-   display: none;
-   transition: transform 500ms ease;
-}
-
-.accordion .accordion-indicator {
-   display: inherit;
-   transform: rotate(0deg);
-}
-
-.accordion.collapsed .accordion-indicator {
-   transform: rotate(-90deg);
-}
-
-.accordion-heading {
-   cursor: pointer;
-   position: relative;
-}
-
-.accordion-content {
-   overflow: hidden;
-   transition: height 500ms ease;
-}*/
 :root {
   --max-column-width: 200px;
 }
@@ -425,6 +404,7 @@ h1, h2, h3, h4 {
   color: #bbbab4;
 }
 .dark-mode .fantastic-depths .window-content select {
+  background: #2b2a24;
   color: #ebeae4;
 }
 .dark-mode .fantastic-depths .window-content select option {
@@ -514,7 +494,7 @@ h1, h2, h3, h4 {
   color: #bbbab4;
 }
 .dark-mode .chat-message .attack-info {
-  color: #bbbab4;
+  color: #90b0e0;
 }
 .dark-mode .chat-message .dice-formula, .dark-mode .chat-message .dice-total {
   background: url("../assets/img/grungeblue.jpg");
@@ -598,6 +578,9 @@ h1, h2, h3, h4 {
 .light-mode .chat-message .attack-success, .light-mode .chat-message .roll-success {
   color: #106020;
 }
+.light-mode .chat-message .attack-info {
+  color: #3b4a55;
+}
 .light-mode .chat-message .damage {
   font-weight: bold;
 }
@@ -617,6 +600,12 @@ h1, h2, h3, h4 {
 .chat-message {
   padding: 4px 6px 4px 6px;
 }
+.chat-message .message-content {
+  padding: 5px 6px;
+}
+.chat-message .message-content .digest {
+  margin-bottom: 6px;
+}
 .chat-message .message-content .collapser {
   margin-bottom: 4px;
 }
@@ -633,21 +622,28 @@ h1, h2, h3, h4 {
   color: #808080;
 }
 .chat-message .message-content .attack-fail, .chat-message .message-content .roll-fail {
-  font-size: 18px;
+  font-size: 20px;
 }
 .chat-message .message-content .item-name {
   font-size: 20px;
   font-weight: 600;
 }
 .chat-message .message-content .attack-success, .chat-message .message-content .roll-success {
-  font-size: 18px;
+  font-size: 20px;
 }
 .chat-message .message-content .damage {
   font-size: 19px;
   font-weight: bold;
 }
+.chat-message .message-content .attack-desc {
+  margin-top: 4px;
+}
+.chat-message .message-content .attack-result {
+  margin: 2px 0 6px 0;
+  font-size: 20px;
+}
 .chat-message .message-content .attack-info {
-  font-size: 16px;
+  font-size: 20px;
 }
 .chat-message .message-content .roll-info {
   font-size: 16px;

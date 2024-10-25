@@ -25,13 +25,21 @@
    animation: fadein 0.5s forwards;
 
    .attack-success, .roll-success {
+      margin-top: 2px;
       font-size: 20px;
       color: #bee8b1;
    }
 
    .attack-fail, .roll-fail {
+      margin-top: 2px;
       font-size: 20px;
       color: #faa4a4;
+   }
+
+   .attack-info {
+      margin-top: 2px;
+      font-size: 20px;
+      color: #90b0e0;
    }
 
    .damage {

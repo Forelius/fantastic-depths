@@ -1,14 +1,11 @@
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
 
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
 
    async getRollContent(roll, mdata) {
-      if (mdata.flavor) {
-         return roll.render({ flavor: mdata.flavor });
-      } else {
-         return roll.render();
-      }
+      return roll.render();
    }
 
    async createChatMessage() {
@@ -68,106 +65,111 @@ export class DamageRollChatBuilder extends ChatBuilder {
    static async clickDamageRoll(ev) {
       const element = ev.currentTarget;
       const dataset = element.dataset;
+      const { attackerid, weaponid, attacktype, damagetype } = dataset;
 
       // Custom behavior for damage rolls      
       if (dataset.type === "damage") {
          ev.preventDefault(); // Prevent the default behavior
          ev.stopPropagation(); // Stop other handlers from triggering the event
 
-         if (dataset.damagetype === "physical") {
-            await DamageRollChatBuilder.handlePhysicalDamageRoll(ev, dataset);
-         } else if (dataset.damagetype === "magic") {
-            await DamageRollChatBuilder.handleMagicDamageRoll(ev, dataset);
-         }
+         await DamageRollChatBuilder.handleDamageRoll(ev, dataset);
       }
    }
 
-   static async handleMagicDamageRoll(ev, dataset) {
-      const { attackerid, spellid, attacktype, damagetype } = dataset;
-      const attackerToken = canvas.tokens.get(attackerid);
-      let spellItem = attackerToken.actor.items.find((item) => item.id === spellid);
-      const damageRoll = spellItem.getDamageRoll();
-
-      // Roll the damage and wait for the result
-      const roll = new Roll(damageRoll.formula);
-      await roll.evaluate(); // Wait for the roll result
-      const damage = Math.max(roll.total, 0);
-
-      const descData = {
-         attacker: attackerToken.name,
-         weapon: spellItem.name,
-         damage
-      };
-      const resultString = game.i18n.format('FADE.Chat.damageFlavor2', descData);
-
-      const chatData = {
-         context: attackerToken,
-         mdata: dataset,
-         roll: roll,
-         digest: damageRoll.digest
-      };
-      const options = {
-         attackName: spellItem.name,
-         resultString,
-         damage: damage
-      };
-      const builder = new DamageRollChatBuilder(chatData, options);
-      builder.createChatMessage();
-   }
-
-   static async handlePhysicalDamageRoll(ev, dataset) {
-      const { attackerid, weaponid, attacktype, damagetype } = dataset;
+   static async handleDamageRoll(ev, dataset) {
+      const { attackerid, weaponid, attacktype, attackmode, damagetype } = dataset;
       const attackerToken = canvas.tokens.get(attackerid);
       let weaponItem = attackerToken.actor.items.find((item) => item.id === weaponid);
-      const damageRoll = weaponItem.getDamageRoll(attacktype);
+      let canRoll = true;
+      let dialogResp = null;
 
-      // Roll the damage and wait for the result
-      const roll = new Roll(damageRoll.formula);
-      await roll.evaluate(); // Wait for the roll result
-      const damage = Math.max(roll.total, 0);
-      const descData = {
-         attacker: attackerToken.name,
-         weapon: weaponItem.name,
-         damage
-      };
-      const resultString = game.i18n.format('FADE.Chat.damageFlavor2', descData);
+      try {
+         dialogResp = await DialogFactory({ dialog: 'generic', label: "Damage" }, weaponItem);
+         if (!dialogResp?.resp) {
+            canRoll = false;
+         }
+      } catch (error) {
+         // Close button pressed or other error
+         canRoll = false;
+      }
 
-      const chatData = {
-         context: attackerToken,
-         mdata: dataset,
-         roll: roll,
-         digest: damageRoll.digest
-      };
-      const options = {
-         damage: damage,
-         resultString,
-         attackName: weaponItem.name,
-      };
-      const builder = new DamageRollChatBuilder(chatData, options);
-      builder.createChatMessage();
+      let damageRoll = null;
+      if (dataset.damagetype === "physical") {
+         damageRoll = weaponItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp);
+      } else if (dataset.damagetype === "magic") {
+         damageRoll = weaponItem.getDamageRoll(dialogResp?.resp);
+      }
+
+      if (canRoll === true) {
+         // Roll the damage and wait for the result
+         const roll = new Roll(damageRoll.formula);
+         await roll.evaluate(); // Wait for the roll result
+         const damage = Math.max(roll.total, 0);
+         const descData = {
+            attacker: attackerToken.name,
+            weapon: weaponItem.name,
+            damage
+         };
+         const resultString = game.i18n.format('FADE.Chat.damageFlavor2', descData);
+
+         const chatData = {
+            context: attackerToken,
+            mdata: dataset,
+            roll: roll,
+            digest: damageRoll.digest
+         };
+         const options = {
+            damage: damage,
+            resultString,
+            attackName: weaponItem.name,
+         };
+         const builder = new DamageRollChatBuilder(chatData, options);
+         builder.createChatMessage();
+      }
    }
 
    static async clickApplyDamage(ev) {
       const element = ev.currentTarget;
       const dataset = element.dataset;
-      element.disabled = true;
+      const attackerToken = canvas.tokens.get(dataset.attackerid);
+      const weapon = attackerToken?.actor.items.find((item) => item.id === dataset.weaponid);
+      const selected = Array.from(canvas.tokens.controlled);
+      const targeted = Array.from(game.user.targets);
+      let applyTo = [];
+      let hasTarget = targeted.length > 0;
+      let hasSelected = selected.length > 0;
+
+      if (hasTarget && hasSelected) {
+         const dialogResp = await DialogFactory({
+            dialog: "yesno",
+            title: "Select Targeted or Selected",
+            content: "Do you want to apply damage to targeted or selected?",
+            yesLabel: "Targeted",
+            noLabel: "Selected",
+            defaultChoice: "yes"
+         }, attackerToken);
+
+         if (dialogResp?.resp?.result === true) {
+            hasSelected = false;
+         } else if (dialogResp?.resp?.result === false) {
+            hasTarget = false;
+         }
+      }
+
+      if (hasTarget) {
+         applyTo = targeted;
+      } else if (hasSelected) {
+         applyTo = selected;
+      } else {
+         ui.notifications.warn("Select or target the token(s) you are applying damage to.");
+      }
 
       // Ensure we have a target ID
-      if (dataset.targetid) {
-         // Get the token from the scene by its token ID
-         let targetToken = canvas.tokens.get(dataset.targetid);
-
-         // Ensure the token exists and fetch the associated actor
-         if (targetToken) {
-            let targetActor = targetToken.actor; // Get the actor associated with the token
-
+      if (applyTo.length > 0) {
+         for (let target of applyTo) {
             // Apply damage to the token's actor
-            targetActor.applyDamage(parseInt(dataset.amount, 10), dataset.damagetype);
-         } else {
-            ui.notifications.warn('Target token was specified, but no longer exists.');
+            target.actor.applyDamage(parseInt(dataset.amount, 10), dataset.damagetype, weapon);
          }
-      } else {
-         ui.notifications.warn(`Target token was not specified.`);
       }
    }
 

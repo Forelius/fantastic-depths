@@ -20,10 +20,15 @@
    <div class="collapsible-content">
       <button class="apply-damage" type="button" title="Apply damage to target."
               data-attacktype="{{mdata.attacktype}}"
+              data-attackmode="{{mdata.attackmode}}"
+              data-damagetype="{{mdata.damagetype}}"
+              data-attackerid="{{mdata.attackerid}}"
+              data-weaponid="{{mdata.weaponid}}"
               data-amount="{{damage}}"
               data-label="{{mdata.label}}"
               data-desc="{{mdata-desc}}">
-         <i class="fas fa-tint"></i> <!-- Blood drop icon -->
+         <i class="fa-solid fa-reply-all fa-flip-horizontal"></i>
+         <span style="margin-left:4px;">Apply</span>
       </button>
    </div>
 </div>

@@ -250,7 +250,9 @@
          "damage": {
             "abbr": "Dmg",
             "short": "Damage",
-            "long": "Damage Roll"
+            "short2": "2-Hand Damage",
+            "long": "Damage Roll",
+            "long2":  "Two-Handed Damage Roll. Only if weapon can be used one-handed, otherwise use damage roll field."
          },
          "ammo": {
             "short": "Ammo",
@@ -304,16 +306,13 @@
       "Chat": {
          "pass": "Success!",
          "fail": "Failed",
-         "attackFlavor1": "{attacker} {attackType} attacks {targetName} with {weapon}",
-         "attackFlavor2": "{attacker} {attackType} attacks with {weapon}",
-         "spellCast1": "<div>{caster} casts {spell} at {targetNames}</div>",
-         "spellCast2": "<div>{caster} casts {spell}</div>",
-         "attackAC": "Attack hits <strong>AC {hitAC}</strong>.",
-         "attackSuccess": "Attack hit!",
-         "attackFail": "Attack missed!",
+         "attackFlavor": "{attacker} {attackType} attacks with {weapon}",
+         "spellCast2": "{caster} casts {spell}",
+         "attackAC": "<div class='attack-info'>Attack hits <strong>AC {hitAC}</strong>.</div>",
+         "attackSuccess": "<div class='attack-success'>Attack hit!</div>",
+         "attackFail": "<div class='attack-fail'>Attack missed!</div>",
          "attackRoll": "Attacks",
-         "damageFlavor1": "<div>{attacker} hits with {weapon}</div><div>{targetname} takes <span class='damage'>{damage}</span> points of damage.</div>",
-         "damageFlavor2": "<div>{attacker} hits with {weapon}</div><div>Target takes <span class='damage'>{damage}</span> points of damage.</div>",
+         "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
          "damageRoll": "Damage"
       },
       "roll": "Roll",

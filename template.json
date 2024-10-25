@@ -240,6 +240,7 @@
       "weapon": {
          "templates": [ "base", "physical", "equippable", "natural" ],
          "damageRoll": "1d6",
+         "damageRoll2": null,
          "damageType": "physical",
          "canMelee": true,
          "canRanged": false,

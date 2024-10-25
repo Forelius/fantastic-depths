@@ -220,22 +220,28 @@ export class fadeActor extends Actor {
       let digest = [];
 
       // Damage mitigation
+      let damageMitigated = 0;
       switch (damageType) {
          case 'physical':
-            dmgAmt -= systemData.mod.combat.selfDmg;
+            damageMitigated = systemData.mod.combat.selfDmg;
             break;
          case 'breath':
-            dmgAmt -= systemData.mod.combat.selfDmgBreath;
+            damageMitigated = systemData.mod.combat.selfDmgBreath;
             break;
          case 'magic':
-            dmgAmt -= systemData.mod.combat.selfDmgMagic;
+            damageMitigated = systemData.mod.combat.selfDmgMagic;
             break;
       }
 
-      digest.push(`${this.name} mitigated ${systemData.mod.combat.selfDmg} points of ${damageType} damage.`)
+      if (damageMitigated !== 0) {
+         dmgAmt -= damageMitigated;
+         digest.push(`${damageMitigated} points of ${damageType} damage mitigated.`);
+      }
 
       systemData.hp.value -= dmgAmt;
       this.update({ "system.hp.value": systemData.hp.value })
+
+      digest.push(`${dmgAmt} points of ${damageType} damage applied to ${this.name}.`);
 
       // Check if the actor already has the "Dead" effect
       let hasDeadEffect = this.effects.some(e => e.getFlag("core", "statusId") === "dead");
@@ -254,6 +260,18 @@ export class fadeActor extends Actor {
             await this.toggleEffect(CONFIG.statusEffects.find(e => e.id === "dead"));
          }
       }
+
+      let chatContent = source ? `<div class="text-size18">${source.name}</div>` : "";
+      for (let msg of digest) {
+         chatContent += `<div>${msg}</div>`;
+      }
+
+      if (window.toastManager) {
+         window.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+      }
+
+      const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
+      ChatMessage.create({ speaker: speaker, content: chatContent });
    }
 
    /**

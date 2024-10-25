@@ -2,6 +2,12 @@
    padding: 4px 6px 4px 6px;
 
    .message-content {
+      padding: 5px 6px;
+
+      .digest {
+         margin-bottom: 6px;
+      }
+
       .collapser {
          margin-bottom: 4px;
       }
@@ -22,7 +28,7 @@
       }
 
       .attack-fail, .roll-fail {
-         font-size: 18px;
+         font-size: 20px;
       }
 
       .item-name {
@@ -31,7 +37,7 @@
       }
 
       .attack-success, .roll-success {
-         font-size: 18px;
+         font-size: 20px;
       }
 
       .damage {
@@ -39,8 +45,17 @@
          font-weight: bold;
       }
 
+      .attack-desc {
+         margin-top: 4px;
+      }
+
+      .attack-result {
+         margin: 2px 0 6px 0;
+         font-size: 20px;
+      }
+
       .attack-info {
-         font-size: 16px;
+         font-size: 20px;
       }
 
       .roll-info {

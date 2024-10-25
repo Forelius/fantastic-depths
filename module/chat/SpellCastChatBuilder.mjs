@@ -16,12 +16,6 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { context, caller, options } = this.data;
-      //const targetNamesArray = Array.from(this.#targetTokens).map(target => target.name).filter(Boolean);
-      //const targetIdsArray = Array.from(this.#targetTokens).map(target => target.id).filter(Boolean);
-      //const targetNames = targetNamesArray.length > 1
-      //   ? targetNamesArray.slice(0, -1).join(", ") + " and " + targetNamesArray.slice(-1)
-      //   : targetNamesArray[0] || "";
-
       const damageRoll = caller.getDamageRoll();
 
       // Prepare data for the chat template
@@ -29,7 +23,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
          caller,
          context,
          damageRoll,
-         damageType: "magic"
+         damageType: "magic",
+         targets: this.#targetTokens
       };
 
       // Render the content using the template

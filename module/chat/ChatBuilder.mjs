@@ -133,7 +133,7 @@ export class ChatBuilder {
       };
 
       // Adds chat flavor property if specified, otherwise the caller's name.
-      const hasFlavor = Object.prototype.hasOwnProperty.call(chatMessageData, 'flavor');
+      //const hasFlavor = Object.prototype.hasOwnProperty.call(chatMessageData, 'flavor');
       //if (hasFlavor === false) {
       //   chatMessageData.flavor = this.data.caller?.name;
       //}

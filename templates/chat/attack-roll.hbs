@@ -1,6 +1,8 @@
 <div>
-   <div>{{description}}</div>
-   {{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
+   <div class="attack-desc">{{description}}</div>
+   {{#if toHitResult.message}}
+   <div class="attack-result">{{{toHitResult.message}}}</div>
+   {{/if}}
 </div>
 {{{rollContent}}}
 <div name="digest" class="digest">
@@ -10,19 +12,21 @@
 </div>
 <div style="margin-top:8px;">
    <button class="damage-roll"
-           data-attacktype="{{attackType}}"
+           data-attacktype="{{resp.attackType}}"
            data-damagetype="{{damageRoll.type}}"
+           data-attackmode="{{resp.attackMode}}"
            data-label="Damage"
            data-type="damage"
            data-attackerid="{{descData.attackerid}}"
            data-weaponid="{{weapon.id}}">
-      {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}} <span class="small-text">{{damageRoll.type}}</span>
+      <i class="fa-solid fa-burst"></i>      
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
 </div>
 <div class="card-tray">
    <label class="collapser">
       <i class="fas fa-bullseye" inert></i>
-      <span>Targets</span>      
+      <span>Targets</span>
    </label>
    <div class="collapsible-content">
       {{#each toHitResult.targetResults as |targetResult|}}

@@ -1,6 +1,8 @@
 <div>
-   <div>{{description}}</div>
-   {{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
+   <div class="attack-desc">{{description}}</div>
+   {{#if toHitResult.message}}
+   <div class="attack-result">{{{toHitResult.message}}}</div>
+   {{/if}}
 </div>
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
@@ -14,14 +16,29 @@
 </div>
 
 {{#if damageRoll.formula}}
-<div>
+<div style="margin-top:8px;">
    <button class="damage-roll"
            data-damagetype="{{damageRoll.damageType}}"
+           data-attacktype="spell"
            data-label="Damage"
            data-type="damage"
            data-attackerid="{{context.id}}"
-           data-spellid="{{caller.id}}">
-      {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}
+           data-weaponid="{{caller.id}}">
+      <i class="fa-solid fa-burst"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
 </div>
 {{/if}}
+<div class="card-tray">
+   <label class="collapser">
+      <i class="fas fa-bullseye" inert></i>
+      <span>Targets</span>
+   </label>
+   <div class="collapsible-content">
+      {{#each targets as |target|}}
+      <div class="flexrow">
+         <div class="flex3" style="margin-left:5px;">{{target.name}}</div>
+      </div>
+      {{/each}}
+   </div>
+</div>
