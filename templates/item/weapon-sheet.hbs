@@ -16,19 +16,23 @@
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li>
+            <li class="flex2">
                <input type='text' name="system.damageRoll" value='{{system.damageRoll}}' data-dtype='String' />
                <label for="system.damageRoll">{{localize 'FADE.Weapon.damage.long'}}</label>
             </li>
             {{#if system.multiGrip}}
-            <li>
+            <li class="flex2">
                <input type='text' name="system.damageRoll2" value='{{system.damageRoll2}}' data-dtype='String' />
                <label for="system.damageRoll2" title="{{localize 'FADE.Weapon.damage.long2'}}">{{localize 'FADE.Weapon.damage.short2'}}</label>
             </li>
             {{/if}}
-            <li>
+            <li class="flex2">
                <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.mastery">{{localize 'FADE.Mastery.short'}}</label>
+            </li>
+            <li class="flex1">
+               <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} title="{{localize "FADE.Armor.natural.desc"}}" />
+               <label for="system.natural" title="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">

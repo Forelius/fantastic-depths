@@ -7,7 +7,7 @@ export class EffectManager {
       // Filter the existing status effects to keep only the ones you want
       if (allEffects.length === 0) {
          const effectsToKeep = ["dead", "sleep", "prone", "fly", "invisible", "blind", "deaf", "stunned", "silenced", "frightened"];
-         const sfx = CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
+         const sfx = CONFIG.statusEffects;// CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
          allEffects = [...allEffects.slice(sfx.length - allEffects.length), ...sfx];
       }
 

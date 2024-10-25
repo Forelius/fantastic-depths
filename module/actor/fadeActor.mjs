@@ -322,6 +322,8 @@ export class fadeActor extends Actor {
             selfDmg: 0,
             selfDmgBreath: 0,
             selfDmgMagic: 0,
+            selfDmgFrost: 0,
+            selfDmgFire: 0,
             // These only work if actor is targetted
             selfToHit: 0, // to hit this actor
             selfToHitRanged: 0 // to hit this actor

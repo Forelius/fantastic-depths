@@ -20,8 +20,8 @@ export class SpellItem extends fadeItem {
       systemData.durationFormula = systemData.durationFormula || null;
    }
 
-   getDamageRoll(resp) {
-      let formula = this.system.dmgFormula;
+   async getDamageRoll(resp) {
+      let formula = await this.getEvaluatedRollFormula(weaponData.damageRoll);
       let digest = [];
 
       if (resp?.mod && resp?.mod !== 0) {

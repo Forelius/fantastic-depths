@@ -22,7 +22,7 @@ export class fadeDialog {
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
       result.resp = await Dialog.wait({
-         title: title,         
+         title: title,
          content: await renderTemplate(template, dialogData),
          render: () => focusById('mod'),
          buttons: {
@@ -183,7 +183,7 @@ export class fadeDialog {
    static async getSelectAttackDialog(equippedOnly = false) {
       // The selected token, not the actor
       const result = {};
-      const attackerToken = canvas.tokens.controlled?.[0] || this.actor?.getDependentTokens()?.[0] || game.user.character?.getDependentTokens()?.[0]; 
+      const attackerToken = canvas.tokens.controlled?.[0] || this.actor?.getDependentTokens()?.[0] || game.user.character?.getDependentTokens()?.[0];
       if (attackerToken) {
          const dialogData = { label: "Select with What to Attack" };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';

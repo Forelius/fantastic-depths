@@ -6,13 +6,14 @@
          {{selectOptions types selected='melee' valueAttr="value" labelAttr="text"}}
       </select>
    </div>
+   {{#if modes}}
    <div class="form-group">
       <label for="attackMode">Attack Mode</label>
       <select id="attackMode" class="form-control">
          {{selectOptions modes selected='1hand' valueAttr="value" labelAttr="text"}}
       </select>
    </div>
-
+   {{/if}}
    <!-- Modifier Input Field -->
    <div class="form-group">
       <label>{{localize "FADE.modifier"}}</label>

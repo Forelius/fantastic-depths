@@ -93,4 +93,20 @@ export class fadeItem extends Item {
          });
       }
    }
+
+   async getEvaluatedRollFormula(formula) {
+      let result = null;
+      if (formula !== null && formula !== "") {
+         const rollData = this.getRollData();
+         try {
+            let roll = new Roll(formula, rollData);
+            await roll.evaluate();
+            result = roll.formula;
+         }
+         catch (error) {
+            console.error(`Invalid damage formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+         }
+      }
+      return result;
+   }
 }

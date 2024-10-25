@@ -274,7 +274,7 @@
          },
          "natural": {
             "short": "Natural",
-            "desc": "This is considered natural or 'naked' armor."
+            "desc": "This is considered a natural part of its owner."
          },
          "mod": "AC Mod"
       },

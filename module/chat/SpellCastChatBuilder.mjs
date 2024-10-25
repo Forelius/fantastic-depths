@@ -16,7 +16,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { context, caller, options } = this.data;
-      const damageRoll = caller.getDamageRoll();
+      const damageRoll = await caller.getDamageRoll();
 
       // Prepare data for the chat template
       const chatData = {

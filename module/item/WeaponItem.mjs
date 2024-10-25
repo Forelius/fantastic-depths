@@ -12,7 +12,8 @@ export class WeaponItem extends fadeItem {
    prepareBaseData() {
       super.prepareBaseData();
       this.system.damageType = this.system.damageType || "physical";
-      this.system.mastery = this.system.mastery || this.name;
+      this.system.mastery = this.system.mastery || "";
+      this.system.natural = this.system.natural || false;
    }
 
    /** @override */
@@ -20,16 +21,17 @@ export class WeaponItem extends fadeItem {
       super.prepareDerivedData();
       this._prepareEffects();
       this._prepareModText();
+      this._prepareDamageRollLabel();
 
       const modes = this.getAttackModes();
       this.system.multiGrip = modes.find((mode) => mode.value === "2hand2");
    }
 
-   getDamageRoll(attackType, attackMode, resp) {
+   async getDamageRoll(attackType, attackMode, resp) {
       const weaponData = this.system;
       const attackerToken = this.parent.getActiveTokens()?.[0];
       const attackerData = this.parent.system;
-      let formula = weaponData.damageRoll;
+      let formula = await this.getEvaluatedRollFormula(weaponData.damageRoll);
       let digest = [];
       let modifier = 0;
 
@@ -48,11 +50,11 @@ export class WeaponItem extends fadeItem {
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
          if (attackMode === "2hand2") {
-            formula = weaponData.damageRoll2;
+            formula = await this.getEvaluatedRollFormula(weaponData.damageRoll2);
          } else if (attackMode === "2hand1") {
             modifier += 1;
             digest.push(`Double grip: 1`);
-         } 
+         }
       } else {
          if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
             modifier += weaponData.mod.dmgRanged;
@@ -104,7 +106,10 @@ export class WeaponItem extends fadeItem {
       let result = [];
       const twoHand = this.system.tags?.includes("2-handed");
       const oneHand = this.system.tags?.includes("1-handed");
-      if (oneHand && twoHand) {
+
+      if (this.system.natural === true) {
+         result.push({ text: "Natural", value: "natural" });
+      } else if (oneHand && twoHand) {
          result.push({ text: "Two-Handed", value: "2hand2" });
          result.push({ text: "One-Handed", value: "1hand" });
       } else if (twoHand) {
@@ -245,5 +250,9 @@ export class WeaponItem extends fadeItem {
             }
          });
       });
+   }
+   
+   async _prepareDamageRollLabel() {
+      this.system.damageRollLabel = await this.getEvaluatedRollFormula(this.system.damageRoll);
    }
 }
