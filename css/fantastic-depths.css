@@ -406,6 +406,11 @@ h1, h2, h3, h4 {
   background: url("../assets/img/grunge2.jpg");
   color: #ebeae4;
 }
+.dark-mode .fantastic-depths .window-content button {
+  background: url("../assets/img/grungeyellow.jpg");
+  color: #ebeae4;
+  border: 1px solid #545140;
+}
 .dark-mode .fantastic-depths .window-content a:hover {
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
@@ -415,7 +420,6 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content input[type=text], .dark-mode .fantastic-depths .window-content input[type=number], .dark-mode .fantastic-depths .window-content input[type=password], .dark-mode .fantastic-depths .window-content input[type=date], .dark-mode .fantastic-depths .window-content input[type=time], .dark-mode .fantastic-depths .window-content input[type=search] {
   background: rgba(210, 200, 180, 0.1);
   color: #ebeae4;
-  /*border: 1px solid var(--color-border-light-tertiary);*/
 }
 .dark-mode .fantastic-depths .window-content input::placeholder {
   color: #bbbab4;
@@ -610,6 +614,24 @@ h1, h2, h3, h4 {
   border: 1px solid #774444;
 }
 
+.chat-message {
+  padding: 4px 6px 4px 6px;
+}
+.chat-message .message-content .collapser {
+  margin-bottom: 4px;
+}
+.chat-message .message-content .apply-damage {
+  margin-top: 4px;
+}
+.chat-message .message-content .damage-roll {
+  font-size: 15px;
+  padding: 5px 4px;
+}
+.chat-message .message-content .damage-roll .small-text {
+  margin-left: 4px;
+  font-size: 10px;
+  color: #808080;
+}
 .chat-message .message-content .attack-fail, .chat-message .message-content .roll-fail {
   font-size: 18px;
 }
@@ -661,6 +683,25 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .expander.expanded::after {
   transform: translateY(-50%) rotate(90deg); /* Rotate downwards when expanded */
+}
+.chat-message .message-content .card-tray {
+  margin: 8px 0 4px 0;
+}
+.chat-message .message-content .card-tray label {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 11px;
+}
+.chat-message .message-content .card-tray label > span {
+  flex: none;
+}
+.chat-message .message-content .card-tray label::before, .chat-message .message-content .card-tray label::after {
+  content: "";
+  flex-basis: 50%;
+  border-top: 1px dotted #808060;
+  align-self: center;
 }
 
 .combatant.disposition-friendly::before {

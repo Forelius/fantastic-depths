@@ -9,6 +9,12 @@
          background: url('../assets/img/grunge2.jpg');
          color: $lighterColor;
 
+         button {
+            background: url('../assets/img/grungeyellow.jpg');
+            color: $lighterColor;
+            border: 1px solid #545140;
+         }
+
          a:hover {
             text-shadow: $glowForDarkMode;
          }
@@ -20,7 +26,6 @@
          input[type="text"], input[type="number"], input[type="password"], input[type="date"], input[type="time"], input[type="search"] {
             background: rgb(210, 200, 180, 0.1);
             color: $lighterColor;
-            /*border: 1px solid var(--color-border-light-tertiary);*/
          }
 
          input::placeholder {

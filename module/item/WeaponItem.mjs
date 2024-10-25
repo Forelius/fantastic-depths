@@ -22,44 +22,56 @@ export class WeaponItem extends fadeItem {
       this._prepareModText();
    }
 
-   getDamageRoll(attackType) {
+   getDamageRoll(attackType, attackMode) {
       const weaponData = this.system;
       const attackerToken = this.parent.getActiveTokens()?.[0];
       const attackerData = this.parent.system;
       let formula = weaponData.damageRoll;
       let digest = [];
+      let modifier = 0;
 
       if (attackType == 'melee') {
          if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
-            formula = `${formula}+${weaponData.mod.dmg}`;
+            //formula = `${formula}+${weaponData.mod.dmg}`;
+            modifier += weaponData.mod.dmg;
             digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
-            formula = `${formula}+${attackerData.abilities.str.mod}`;
+            modifier += attackerData.abilities.str.mod;
+            //formula = `${formula}+${attackerData.abilities.str.mod}`;
             digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
          }
          if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
-            formula = `${formula}+${attackerData.mod.combat.dmg}`;
+            modifier += attackerData.mod.combat.dmg;
+            //formula = `${formula}+${attackerData.mod.combat.dmg}`;
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
       } else {
          if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
-            formula = `${formula}+${weaponData.mod.dmgRanged}`;
+            modifier += weaponData.mod.dmgRanged;
+            //formula = `${formula}+${weaponData.mod.dmgRanged}`;
             digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
-            formula = `${formula}+${attackerData.abilities.str.mod}`;
+            //formula = `${formula}+${attackerData.abilities.str.mod}`;
+            modifier += attackerData.abilities.str.mod;
             digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
          } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
-            formula = `${formula}+${attackerData.abilities.dex.mod}`;
+            modifier += attackerData.abilities.dex.mod;
+            //formula = `${formula}+${attackerData.abilities.dex.mod}`;
             digest.push(`Dexterity mod: ${attackerData.abilities.str.mod}`);
          }
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
-            formula = `${formula}+${attackerData.mod.combat.dmgRanged}`;
+            modifier += attackerData.mod.combat.dmgRanged;
+            //formula = `${formula}+${attackerData.mod.combat.dmgRanged}`;
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
+      }
+
+      if (modifier !== 0) {
+         formula = `${formula}+${modifier}`;
       }
 
       // Check weapon mastery
@@ -76,6 +88,25 @@ export class WeaponItem extends fadeItem {
       }
 
       return { formula, type: weaponData.damageType, digest };
+   }
+
+   /**
+    * Attack modes are things like one-handed, offhand and two-handed
+    */
+   getAttackModes() {
+      let result = [];
+      const twoHanded = this.system.tags?.includes("2-handed");
+      const oneHanded = this.system.tags?.includes("1-handed") || twoHanded === false;
+      if (twoHanded) result.push({ text: "Two-Handed", value: "2hand" });
+      if (oneHanded) result.push({ text: "One-Handed", value: "1hand" });
+      return result;
+   }
+
+   getAttackTypes() {
+      let result = [];
+      if (this.system.canRanged) result.push({text:"Missile", value: "missile"});
+      if (this.system.canMelee) result.push({ text: "Melee", value: "melee" });
+      return result;
    }
 
    /**

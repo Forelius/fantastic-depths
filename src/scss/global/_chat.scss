@@ -1,5 +1,26 @@
 .chat-message {
+   padding: 4px 6px 4px 6px;
+
    .message-content {
+      .collapser {
+         margin-bottom: 4px;
+      }
+
+      .apply-damage {
+         margin-top: 4px;
+      }
+
+      .damage-roll {
+         font-size: 15px;
+         padding: 5px 4px;
+
+         .small-text {
+            margin-left: 4px;
+            font-size: 10px;
+            color: #808080;
+         }
+      }
+
       .attack-fail, .roll-fail {
          font-size: 18px;
       }
@@ -62,6 +83,29 @@
 
       .expander.expanded::after {
          transform: translateY(-50%) rotate(90deg); /* Rotate downwards when expanded */
+      }
+
+      .card-tray {
+         margin: 8px 0 4px 0;
+
+         label {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            gap: .25rem;
+            font-size: 11px;
+
+            > span {
+               flex: none;
+            }
+
+            &::before, &::after {
+               content: "";
+               flex-basis: 50%;
+               border-top: 1px dotted #808060;
+               align-self: center;
+            }
+         }
       }
    }
 }

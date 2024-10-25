@@ -1,24 +1,29 @@
 {{#if mdata.label}}
-<div>{{actorName}}: {{attackName}}</div>
+<div style="margin-bottom:6px;">{{actorName}}: {{attackName}}</div>
 {{/if}}
 {{#if mdata.desc}}
 <div class="bordered">
    <i style="font-size:12px;">{{mdata.desc}}</i>
 </div>
 {{/if}}
-<div name="digest">
+<div name="digest" class="digest">
    {{#each digest as |ditem|}}
    <div>{{ditem}}</div>
    {{/each}}
 </div>
 {{{rollContent}}}
-{{#if showApplyDamage}}
-<button class="apply-damage" type="button" title="Apply damage to target."
-        data-attacktype="{{mdata.attacktype}}"
-        data-amount="{{damage}}"
-        data-messageid="{{messageId}}"
-        data-label="{{mdata.label}}"
-        data-desc="{{mdata-desc}}">
-   <i class="fas fa-tint"></i> <!-- Blood drop icon -->
-</button>
-{{/if}}
+<div class="card-tray">
+   <label class="collapser">
+      <i class="fa-solid fa-heart-crack" inert></i>
+      <span>Apply</span>
+   </label>
+   <div class="collapsible-content">
+      <button class="apply-damage" type="button" title="Apply damage to target."
+              data-attacktype="{{mdata.attacktype}}"
+              data-amount="{{damage}}"
+              data-label="{{mdata.label}}"
+              data-desc="{{mdata-desc}}">
+         <i class="fas fa-tint"></i> <!-- Blood drop icon -->
+      </button>
+   </div>
+</div>

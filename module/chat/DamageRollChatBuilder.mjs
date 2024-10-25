@@ -163,27 +163,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
             // Apply damage to the token's actor
             targetActor.applyDamage(parseInt(dataset.amount, 10), dataset.damagetype);
-
-            //// Retrieve the chat message by its message ID
-            //const chatMessage = game.messages.get(dataset.messageid);
-
-            //if (chatMessage) {
-            //   // Retrieve resultString from the message flags
-            //   const resultString = chatMessage.getFlag(game.system.id, "resultString");
-            //   // Re-render the chat message with showApplyDamage set to false
-            //   const rollContent = await chatMessage.rolls[0].render();  // Use render() to get HTML
-            //   await DamageRollChatBuilder.updateChatMessageWithApplyDamage({
-            //      dataset,
-            //      chatMessage,
-            //      showApplyDamage: false,
-            //      rollContent,
-            //      targetName: targetActor.name,
-            //      resultString
-            //   });
-
-            //} else {
-            //   ui.notifications.warn('Chat message not found.');
-            //}
          } else {
             ui.notifications.warn('Target token was specified, but no longer exists.');
          }

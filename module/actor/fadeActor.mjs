@@ -133,52 +133,64 @@ export class fadeActor extends Actor {
       const targetMods = target?.system.mod.combat;
       let formula = '1d20';
       let digest = [];
+      let modifier = 0;
 
       if (mod && mod !== 0) {
-         formula = `${formula}+@mod`; 
+         modifier += mod;
+         //formula = `${formula}+@mod`; 
          digest.push(`Manual mod: ${mod}`);
       }
 
       if (attackType === "melee") {
          if (weaponData.mod.toHit !== 0) {
-            formula = `${formula}+${weaponData.mod.toHit}`;
+            //formula = `${formula}+${weaponData.mod.toHit}`;
+            modifier += weaponData.mod.toHit;
             digest.push(`Weapon mod: ${weaponData.mod.toHit}`);
          }
          if (systemData.mod.combat.toHit !== 0) {
-            formula = `${formula}+${systemData.mod.combat.toHit}`;
-            digest.push(`Attacker effect mod: ${systemData.mod.combat.toHit}`);
+            //formula = `${formula}+${systemData.mod.combat.toHit}`;
+            modifier += systemData.mod.combat.toHit;
+            digest.push(`AttsystemData.mod.combat.toHitacker effect mod: ${systemData.mod.combat.toHit}`);
          }
          // If the attacker has ability scores...
          if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-            formula = `${formula}+${systemData.abilities.str.mod}`;
+            //formula = `${formula}+${systemData.abilities.str.mod}`;
+            modifier += systemData.abilities.str.mod;
             digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
          }
          if (targetMods && targetMods.selfToHit !== 0) {
-            formula = `${formula}+${targetMods.selfToHit}`;
+            //formula = `${formula}+${targetMods.selfToHit}`;
+            modifier += targetMods.selfToHit;
             digest.push(`Target effect mod: ${targetMods.selfToHit}`);
          }
       } else {
          // Missile attack
          if (weaponData.mod.toHitRanged !== 0) {
-            formula = `${formula}+${weaponData.mod.toHitRanged}`;
+            //formula = `${formula}+${weaponData.mod.toHitRanged}`;
+            modifier += weaponData.mod.toHitRanged;
             digest.push(`Weapon mod: ${weaponData.mod.toHitRanged}`);
          }
          if (systemData.mod.combat.toHitRanged !== 0) {
-            formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
+            modifier += systemData.mod.combat.toHitRanged;
+            //formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
             digest.push(`Attacker effect mod: ${systemData.mod.combat.toHitRanged}`);
          }
          // If the attacker has ability scores...
          if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
-            formula = `${formula}+${systemData.abilities.str.mod}`;
+            modifier += systemData.abilities.str.mod;
+            //formula = `${formula}+${systemData.abilities.str.mod}`;
             digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
          } else if (systemData.abilities && systemData.abilities.dex.mod) {
-            formula = `${formula}+${systemData.abilities.dex.mod}`;
+            modifier += systemData.abilities.dex.mod;
+            //formula = `${formula}+${systemData.abilities.dex.mod}`;
             digest.push(`Dexterity mod: ${systemData.abilities.dex.mod}`);
          }
          if (targetMods && targetMods.selfToHitRanged !== 0) {
-            formula = `${formula}+${targetMods.selfToHitRanged}`;
+            modifier += targetMods.selfToHitRanged;
+            //formula = `${formula}+${targetMods.selfToHitRanged}`;
             digest.push(`Target effect mod: ${targetMods.selfToHitRanged}`);
          }
+
          const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
          if (weaponMastery && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
             const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
@@ -186,11 +198,18 @@ export class fadeActor extends Actor {
                // do stuff
             } else {
                // Unskilled use
-               formula = `${formula}-1`;
+               //formula = `${formula}-1`;
+               modifier -= 1;
                digest.push(`Unskilled use: -1`);
             }
          }
+
       }
+
+      if (modifier !== 0) {
+         formula = `${formula}+${modifier}`;
+      }
+
       return { formula, digest };
    }
 

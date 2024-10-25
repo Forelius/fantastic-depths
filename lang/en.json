@@ -314,7 +314,7 @@
          "attackRoll": "Attacks",
          "damageFlavor1": "<div>{attacker} hits with {weapon}</div><div>{targetname} takes <span class='damage'>{damage}</span> points of damage.</div>",
          "damageFlavor2": "<div>{attacker} hits with {weapon}</div><div>Target takes <span class='damage'>{damage}</span> points of damage.</div>",
-         "damageRoll": "Damage Roll"
+         "damageRoll": "Damage"
       },
       "roll": "Roll",
       "rollMode": "Roll Mode",

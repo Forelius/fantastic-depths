@@ -3,21 +3,41 @@
    {{#if toHitResult.message}}{{{toHitResult.message}}}{{/if}}
 </div>
 {{{rollContent}}}
-<div name="digest">
+<div name="digest" class="digest">
    {{#each digest as |ditem|}}
    <div>{{ditem}}</div>
    {{/each}}
 </div>
-{{#if toHitResult.success}}
-<p>
+<div style="margin-top:8px;">
    <button class="damage-roll"
            data-attacktype="{{attackType}}"
            data-damagetype="{{damageRoll.type}}"
            data-label="Damage"
            data-type="damage"
            data-attackerid="{{descData.attackerid}}"
-           data-weaponid="{{weaponId}}"">
-      {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}} ({{damageRoll.type}})
+           data-weaponid="{{weapon.id}}">
+      {{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}} <span class="small-text">{{damageRoll.type}}</span>
    </button>
-</p>
-{{/if}}
+</div>
+<div class="card-tray">
+   <label class="collapser">
+      <i class="fas fa-bullseye" inert></i>
+      <span>Targets</span>      
+   </label>
+   <div class="collapsible-content">
+      {{#each toHitResult.targetResults as |targetResult|}}
+      <div class="flexrow">
+         {{#if targetResult.success}}
+         <i class="fas fa-check flex0" style="color:green;"></i>
+         {{else}}
+         <i class="fas fa-times flex0" style="color:red;"></i>
+         {{/if}}
+         <div class="flex3" style="margin-left:5px;">{{targetResult.targetToken.name}}</div>
+         <div class="ac flex1">
+            <i class="fas fa-shield-halved"></i>
+            <span>{{targetResult.targetToken.actor.system.ac.total}}</span>
+         </div>
+      </div>
+      {{/each}}
+   </div>
+</div>

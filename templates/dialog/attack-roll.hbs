@@ -3,13 +3,13 @@
    <div class="form-group">
       <label for="attackType">Attack Type</label>
       <select id="attackType" class="form-control">
-         {{#if weapon.canMelee}}
-         <option value="melee">Melee</option>
-         {{/if}}
-         {{#if weapon.canRanged}}
-         <!--<option value="throw">Throw</option>-->
-         <option value="missile">Missile</option>
-         {{/if}}
+         {{selectOptions types selected='melee' valueAttr="value" labelAttr="text"}}
+      </select>
+   </div>
+   <div class="form-group">
+      <label for="attackMode">Attack Mode</label>
+      <select id="attackMode" class="form-control">
+         {{selectOptions modes valueAttr="value" labelAttr="text"}}
       </select>
    </div>
 

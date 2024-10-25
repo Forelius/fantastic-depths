@@ -134,9 +134,9 @@ export class ChatBuilder {
 
       // Adds chat flavor property if specified, otherwise the caller's name.
       const hasFlavor = Object.prototype.hasOwnProperty.call(chatMessageData, 'flavor');
-      if (hasFlavor === false) {
-         chatMessageData.flavor = this.data.caller?.name;
-      }
+      //if (hasFlavor === false) {
+      //   chatMessageData.flavor = this.data.caller?.name;
+      //}
 
       const { roll } = this.data;
       // If there was a roll involved in the chat message...
@@ -208,6 +208,7 @@ export class ChatBuilder {
       // Create a temporary DOM element to manipulate the HTML content
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = content;
+      tempDiv.classList = "digest";
       // Find the 'digest' div and 'dice-tooltip' div
       const digestDiv = tempDiv.querySelector('div[name="digest"]');
       const tooltipDiv = tempDiv.querySelector('.dice-tooltip');

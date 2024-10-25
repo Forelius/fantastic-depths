@@ -3,16 +3,13 @@ import { ChatBuilder } from './ChatBuilder.mjs';
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
 
-   // The currently selected target, if any.
-   #targetActor;
-   #targetToken;
+   // Declarations
+   #targetTokens;
 
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
-      // Get first selected target, if any.
-      // Get the first selected target token, if any.
-      this.#targetToken = game.user.targets.first(); // The selected token, not the actor
-      this.#targetActor = this.#targetToken?.actor; // Actor associated with the token
+      // Get targetted tokens
+      this.#targetTokens = Array.from(game.user.targets);
    }
 
    /**
@@ -83,32 +80,45 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return result;
    }
 
-   #getToHitResult() {
+   #getToHitResults() {
       const attackerToken = this.data.context;
       const thac0 = attackerToken.actor.system.thac0.value;
-      let ac = this.#targetActor?.system.ac?.total;
       const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
-      let message = `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`;
-      let success = false;
+      let result = {
+         hitAC,
+         message: (hitAC !== null) ? `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>` : '',
+         targetResults: []
+      };
 
-      // If a natural 20...
-      if (hitAC === -100) {
-         // Setup to show success message.
-         ac = 100;
-      }
-      if (hitAC !== null) {
-         if (ac !== null && ac !== undefined) {
-            if (ac >= hitAC) {
-               message = `<div class='attack-success'>${game.i18n.localize('FADE.Chat.attackSuccess')}</div>`;
-               success = true;
-            }
-         } else {
-            message = `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>`;
-            success = true;
+      this.#targetTokens.forEach((targetToken) => {
+         let ac = targetToken.actor.system.ac?.total;
+         let targetResult = {
+            success: false,
+            targetToken,
+            message: `<div class='attack-fail'>${game.i18n.localize('FADE.Chat.attackFail')}</div>`
+         };
+
+         // If a natural 20...
+         if (hitAC === -100) {
+            // Setup to show success message.
+            ac = 100;
          }
-      }
+         if (hitAC !== null) {
+            if (ac !== null && ac !== undefined) {
+               if (ac >= hitAC) {
+                  targetResult.message = `<div class='attack-success'>${game.i18n.localize('FADE.Chat.attackSuccess')}</div>`;
+                  targetResult.success = true;
+               }
+            } else {
+               targetResult.message = `<div class='attack-info'>${game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC })}</div>`;
+               targetResult.success = true;
+            }
+         }
 
-      return { message, success };
+         result.targetResults.push(targetResult);
+      });
+
+      return result;
    }
 
    /**
@@ -119,44 +129,35 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const rolls = [roll];
       const attackerToken = context;
       const attackerName = attackerToken.name;
-      const targetName = this.#targetToken?.name;
-      let descData = targetName ? {
+      let descData = {
          attackerid: context.id,
-         attacker: attackerName,
-         attackType: resp.attackType,
-         targetName: targetName,
-         weapon: caller.name
-      } : {
-         attackerid: attackerToken.id,
          attacker: attackerName,
          attackType: resp.attackType,
          weapon: caller.name
       };
-      const description = targetName ? game.i18n.format('FADE.Chat.attackFlavor1', descData) : game.i18n.format('FADE.Chat.attackFlavor2', descData);
+      const description = game.i18n.format('FADE.Chat.attackFlavor2', descData);
       const rollContent = await roll.render({ flavor: 'Attack Roll' });
-      const toHitResult = this.#getToHitResult();
+      const toHitResult = this.#getToHitResults();
       const damageRoll = caller.getDamageRoll(resp.attackType);
-
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       // Get the actor and user names
       const userName = game.users.current.name; // User name (e.g., player name)
-      const targetTokenId = this.#targetToken?.id;   // Token ID, specific to this token
+
+      if (window.toastManager) {
+         const toast = `${description}${toHitResult.message}`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+
       const chatData = {
          damageRoll,
          rollContent,
          description,
          descData,
          toHitResult,
-         targetId: targetTokenId,
          digest: digest,
-         weaponId: caller.id,
+         weapon: caller,
          attackType: resp.attackType
       };
-
-      if (window.toastManager) {
-         let toast = `${description}${toHitResult.message}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
 
       let content = await renderTemplate(this.template, chatData);
       // Manipulated the dom to place digest info in roll's tooltip
@@ -164,5 +165,5 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       const chatMessageData = await this.getChatMessageData({ content, rolls, rollMode });
       await ChatMessage.create(chatMessageData);
-   }   
+   }
 }

@@ -15,11 +15,14 @@ export class fadeDialog {
 
       dialogData.weapon = weapon.system;
       dialogData.label = weapon.name;
+      dialogData.modes = weapon.getAttackModes();
+      dialogData.types = weapon.getAttackTypes();
+
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
       result.resp = await Dialog.wait({
-         title: title,
+         title: title,         
          content: await renderTemplate(template, dialogData),
          render: () => focusById('mod'),
          buttons: {
@@ -27,12 +30,15 @@ export class fadeDialog {
                label: game.i18n.localize('FADE.roll'),
                callback: () => ({
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  attackType: document.getElementById('attackType').value
+                  attackType: document.getElementById('attackType').value,
+                  attackMode: document.getElementById('attackMode').value
                }),
             },
          },
          default: 'check',
          close: () => { return null; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       result.context = caller;
       return result;
@@ -60,6 +66,8 @@ export class fadeDialog {
          },
          default: 'check',
          close: () => { return false; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -90,6 +98,8 @@ export class fadeDialog {
          },
          default: 'check',
          close: () => { return false; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -124,6 +134,8 @@ export class fadeDialog {
          },
          default: 'import',
          close: () => { return false; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -161,6 +173,8 @@ export class fadeDialog {
          },
          default: "close",
          close: () => { return false; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -171,7 +185,7 @@ export class fadeDialog {
       const result = {};
       const attackerToken = canvas.tokens.controlled?.[0] || this.actor?.getDependentTokens()?.[0] || game.user.character?.getDependentTokens()?.[0]; 
       if (attackerToken) {
-         const dialogData = { label: "Select Attack Type" };
+         const dialogData = { label: "Select with What to Attack" };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
          const attackerActor = attackerToken?.actor; // Actor associated with the token
          const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped));
@@ -184,7 +198,7 @@ export class fadeDialog {
             dialogData.attackItems = attackItems;
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
             result.resp = await Dialog.wait({
-               title: "Select Attack Type",
+               title: dialogData.label,
                content: await renderTemplate(template, dialogData),
                buttons: {
                   attack: {
@@ -204,6 +218,8 @@ export class fadeDialog {
                },
                default: "close",
                close: () => { return null; }
+            }, {
+               classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
             });
             result.context = attackerToken;
          }
@@ -221,7 +237,7 @@ export class fadeDialog {
 
       dialogResp.resp = await Dialog.wait({
          title: title,
-         content: `<p>${content}</p>`,
+         content: `<div>${content}</div>`,
          buttons: {
             yes: {
                label: yesLabel,
@@ -238,6 +254,8 @@ export class fadeDialog {
          },
          default: defaultChoice,
          close: () => { return false; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
 
       return dialogResp;
