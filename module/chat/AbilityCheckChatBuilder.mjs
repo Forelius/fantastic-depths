@@ -7,7 +7,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       const { context, mdata, resp, roll } = this.data;
 
       const rolls = [roll];
-      const rollContent = await roll.render({ flavor: 'Ability Check' });
+      const rollContent = await roll.render();
       mdata.score = context.system.abilities[mdata.ability].value;
 
       // Determine if the roll is successful based on the roll type and target number      

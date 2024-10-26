@@ -1,5 +1,9 @@
-<b>{{localize (concat 'FADE.Actor.Abilities.' mdata.ability '.long')}}</b> ({{mdata.score}})
-<br>
+{{#if actorName}}
+<div class="text-size16">{{actorName}}</div>
+{{/if}}
+<div>{{localize (concat 'FADE.Actor.Abilities.' mdata.ability '.long')}} ({{mdata.score}})</div>
 <hr>
-{{#if resultString}}{{{resultString}}}{{/if}}
+{{#if resultString}}
+{{{resultString}}}
+{{/if}}
 {{{rollContent}}}

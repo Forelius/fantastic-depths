@@ -1,3 +1,6 @@
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+
 /**
  * Extends the basic actor class with modifications for all system actors.
  * @extends {Actor}
@@ -306,6 +309,47 @@ export class fadeActor extends Actor {
          if (this.sheet) {
             this.sheet.render(true);  // Pass true to force a full re-render of the actor sheet
          }
+      }
+   }
+
+   /**
+    * Performs the requested saving throw roll on the actor.
+    * @public
+    * @param {any} type A string key of the saving throw type.
+    */
+   async rollSavingThrow(type) {
+      const systemData = this.system;
+      const savingThrow = systemData.savingThrows[type];
+      const rollData = this.getRollData();
+      let dataset = {};
+      dataset.dialog = "generic";
+      dataset.pass = ">=";
+      dataset.target = savingThrow.value;
+      dataset.rollmode = game.settings.get("core", "rollMode");
+      dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
+
+      let dialogResp = null;
+      try {
+         dialogResp = await DialogFactory(dataset, this);
+         rollData.formula = dialogResp.resp.mod != 0 ? `1d20+@mod` : `1d20`;
+      }
+      // If close button is pressed
+      catch (error) {
+         // Like Weird Al says, eat it
+         console.error("fadeActor.rollSavingThrow():", error);
+      }
+
+      if (dialogResp !== null) {
+         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const chatData = {
+            dialogResp: dialogResp,
+            context: this,
+            mdata: dataset,
+            roll: rolled,
+         };
+         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+         return await builder.createChatMessage();
       }
    }
 

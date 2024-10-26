@@ -35,7 +35,7 @@ export class WeaponItem extends fadeItem {
       let digest = [];
       let modifier = 0;
 
-      if (attackType == 'melee') {
+      if (attackType === 'melee') {
          if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
             modifier += weaponData.mod.dmg;
             digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
@@ -55,7 +55,7 @@ export class WeaponItem extends fadeItem {
             modifier += 1;
             digest.push(`Double grip: 1`);
          }
-      } else {
+      } else if (attackType === 'missile') {
          if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
             modifier += weaponData.mod.dmgRanged;
             digest.push(`Weapon mod: ${weaponData.mod.dmg}`);

@@ -10,6 +10,12 @@ h1, h2, h3, h4 {
 
 .text-size18 {
   font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.text-size16 {
+  font-size: 18px;
+  margin-bottom: 3px;
 }
 
 :root {
@@ -601,7 +607,7 @@ h1, h2, h3, h4 {
   padding: 4px 6px 4px 6px;
 }
 .chat-message .message-content {
-  padding: 5px 6px;
+  padding: 1px 6px 5px 6px;
 }
 .chat-message .message-content button {
   margin: 0;

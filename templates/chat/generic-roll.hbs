@@ -1,5 +1,8 @@
+{{#if actorName}}
+<div class="text-size16">{{actorName}}</div>
+{{/if}}
 {{#if mdata.label}}
-<div>{{mdata.label}}{{#if mdata.target}}({{mdata.target}}){{/if}}</div>
+<div>{{mdata.label}}{{#if mdata.target}} ({{mdata.target}}){{/if}}</div>
 {{/if}}
 {{#if mdata.desc}}
 <i style="font-size:12px;">{{mdata.desc}}</i>

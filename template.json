@@ -46,9 +46,6 @@
                },
                "spell": {
                   "value": 0
-               },
-               "gm": {
-                  "notes": ""
                }
             },
             "movement": {
@@ -244,6 +241,8 @@
          "damageType": "physical",
          "canMelee": true,
          "canRanged": false,
+         "savingThrow": null,
+         "saveDmgFormula": null,
          "mastery": "",
          "range": {
             "short": null,
