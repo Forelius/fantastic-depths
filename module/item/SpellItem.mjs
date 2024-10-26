@@ -21,7 +21,7 @@ export class SpellItem extends fadeItem {
    }
 
    async getDamageRoll(resp) {
-      let formula = await this.getEvaluatedRollFormula(weaponData.damageRoll);
+      let formula = await this.getEvaluatedRollFormula(this.system.dmgFormula);
       let digest = [];
 
       if (resp?.mod && resp?.mod !== 0) {
