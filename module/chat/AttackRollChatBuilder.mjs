@@ -80,7 +80,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return result;
    }
 
-   #getToHitResults() {
+   getToHitResults() {
       const attackerToken = this.data.context;
       const thac0 = attackerToken.actor.system.thac0.value;
       const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
@@ -94,7 +94,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
          let ac = targetToken.actor.system.ac?.total;
          let targetResult = {
             success: false,
-            targetToken,
+            targetid: targetToken.id,
+            targetname: targetToken.name,
+            targetac: targetToken.actor.system.ac.total,
             message: game.i18n.localize('FADE.Chat.attackFail')
          };
 
@@ -137,7 +139,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
       const rollContent = await roll.render();
-      const toHitResult = this.#getToHitResults();
+      const toHitResult = this.getToHitResults();
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode);
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       // Get the actor and user names
@@ -156,15 +158,21 @@ export class AttackRollChatBuilder extends ChatBuilder {
          toHitResult,
          digest: digest,
          weapon: caller,
-         resp, 
-         isGM: game.user.isGM
+         resp,
       };
 
       let content = await renderTemplate(this.template, chatData);
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
-      const chatMessageData = await this.getChatMessageData({ content, rolls, rollMode });
-      await ChatMessage.create(chatMessageData);
+      const chatMessageData = await this.getChatMessageData({
+         content, rolls, rollMode,
+         flags: {
+            [game.system.id]: {
+               targets: toHitResult.targetResults
+            }
+         }
+      });
+      const chatMsg = await ChatMessage.create(chatMessageData);
    }
 }

@@ -19,13 +19,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
 
-      // First, create an empty message to get the message ID
-      const tempMessage = await ChatMessage.create({
-         content: "",  // Temporary empty content
-         rolls: rolls,  // Pass the roll(s) directly in the rolls field
-         rollMode
-      });
-
       // Prepare data for the chat template, including the message ID
       const renderData = {
          rollContent,
@@ -36,7 +29,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
          damage: options.damage,
          showApplyDamage: options.showApplyDamage,
          attackName: options.attackName,
-         messageId: tempMessage.id, // Pass the message ID into the render data
          digest
       };
 
@@ -50,12 +42,14 @@ export class DamageRollChatBuilder extends ChatBuilder {
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
-      // Update the temporary chat message with the final content and roll data
-      await tempMessage.update({
-         content,  // Set the final content including the message ID
-         rolls,    // Attach roll data
-         [`flags.${game.system.id}.resultString`]: options.resultString,  // Store resultString in the flags
+      const chatMessageData = await this.getChatMessageData({
+         content, rolls, rollMode,
+         [`flags.${game.system.id}.attackdata`]: {
+            mdata, 
+            damage: options.damage
+         }
       });
+      const chatMsg = await ChatMessage.create(chatMessageData);
    }
 
    /**

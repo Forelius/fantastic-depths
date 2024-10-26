@@ -23,7 +23,8 @@
       <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
 </div>
-<div class="card-tray">
+{{#if 0}}
+<div id="targetsTray" class="card-tray" style="visibility: collapse; ">
    <label class="collapser">
       <i class="fas fa-bullseye" inert></i>
       <span>Targets</span>
@@ -36,12 +37,13 @@
          {{else}}
          <i class="fas fa-times flex0" style="color:red;"></i>
          {{/if}}
-         <div class="flex3" style="margin-left:5px;">{{targetResult.targetToken.name}}</div>
-         <!--<div class="ac flex1">
+         <div class="flex3" style="margin-left:5px;">{{targetResult.targetname}}</div>
+         <div class="ac flex1">
             <i class="fas fa-shield-halved"></i>
-            <span>{{targetResult.targetToken.actor.system.ac.total}}</span>
-         </div>-->
+            <span>{{targetac}}</span>
+         </div>
       </div>
       {{/each}}
    </div>
 </div>
+{{/if}}

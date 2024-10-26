@@ -30,6 +30,7 @@ import { EffectManager } from './sys/EffectManager.mjs';
 import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/Collapser.mjs';
+import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -62,6 +63,7 @@ Hooks.once('init', async function () {
    CONFIG.Combat.documentClass = fadeCombat;
 
    // Define custom Document classes
+   CONFIG.ChatMessage.documentClass = fadeChatMessage;
    CONFIG.Actor.documentClass = ActorFactory;
    CONFIG.Item.documentClass = ItemFactory;
 
