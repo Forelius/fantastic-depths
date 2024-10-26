@@ -82,43 +82,64 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    getToHitResults() {
       const attackerToken = this.data.context;
-      const thac0 = attackerToken.actor.system.thac0.value;
-      const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
-      let result = {
-         hitAC,
-         message: (hitAC !== null) ? game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC }) : '',
-         targetResults: []
-      };
+      const weapon = this.data.caller;
+      let result = null;
 
-      this.#targetTokens.forEach((targetToken) => {
-         let ac = targetToken.actor.system.ac?.total;
-         let targetResult = {
-            success: false,
-            targetid: targetToken.id,
-            targetname: targetToken.name,
-            targetac: targetToken.actor.system.ac.total,
-            message: game.i18n.localize('FADE.Chat.attackFail')
+      if (this.data.roll) {
+         const thac0 = attackerToken.actor.system.thac0.value;
+         const hitAC = this.#getLowestACHitProcedurally(ChatBuilder.getDiceSum(this.data.roll), this.data.roll.total, thac0);
+         result = {
+            hitAC,
+            message: (hitAC !== null) ? game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC }) : '',
+            targetResults: []
          };
 
-         // If a natural 20...
-         if (hitAC === -100) {
-            // Setup to show success message.
-            ac = 100;
-         }
-         if (hitAC !== null) {
-            if (ac !== null && ac !== undefined) {
-               if (ac >= hitAC) {
-                  targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
+         this.#targetTokens.forEach((targetToken) => {
+            let ac = targetToken.actor.system.ac?.total;
+            let targetResult = {
+               success: false,
+               targetid: targetToken.id,
+               targetname: targetToken.name,
+               targetac: targetToken.actor.system.ac.total,
+               message: game.i18n.localize('FADE.Chat.attackFail')
+            };
+
+            // If a natural 20...
+            if (hitAC === -100) {
+               // Setup to show success message.
+               ac = 100;
+            }
+            if (hitAC !== null) {
+               if (ac !== null && ac !== undefined) {
+                  if (ac >= hitAC) {
+                     targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
+                     targetResult.success = true;
+                  }
+               } else {
+                  targetResult.message = game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC });
                   targetResult.success = true;
                }
-            } else {
-               targetResult.message = game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC });
-               targetResult.success = true;
             }
-         }
 
-         result.targetResults.push(targetResult);
-      });
+            result.targetResults.push(targetResult);
+         });
+      } else if (weapon.system.breath?.length > 0) {
+         // Always hits, but saving throw
+         result = {
+            savingThrow: weapon.system.savingThrow,
+            message: 'Saving throw required.',
+            targetResults: []
+         };
+         this.#targetTokens.forEach((targetToken) => {
+            const saveLocalized = game.i18n.localize(`FADE.Actor.Saves.${weapon.system.savingThrow}.abbr`);
+            let targetResult = {
+               targetid: targetToken.id,
+               targetname: targetToken.name,
+               message: `save vs. ${saveLocalized}`
+            };
+            result.targetResults.push(targetResult);
+         });
+      }
 
       return result;
    }
@@ -128,7 +149,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
     */
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest } = this.data;
-      const rolls = [roll];
+      const rolls = roll ? [roll] : null;
       const attackerToken = context;
       const attackerName = attackerToken.name;
       let descData = {
@@ -138,7 +159,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
          weapon: caller.name
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
-      const rollContent = await roll.render();
+      let rollContent = null;
+      if (roll) {
+         rollContent = await roll.render();
+      }
       const toHitResult = this.getToHitResults();
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode);
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");

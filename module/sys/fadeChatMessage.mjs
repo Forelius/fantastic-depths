@@ -53,29 +53,29 @@ export class fadeChatMessage extends ChatMessage {
 
       const tray = document.createElement("div");
       //  tray.classList.add("dnd5e2");
-      tray.innerHTML = `
- <div id="targetsTray" class="card-tray">
+      tray.innerHTML = `<div id="targetsTray" class="card-tray">
    <label class="collapser">
       <i class="fas fa-bullseye" inert></i>
       <span>Targets</span>
    </label>
    <div id="targetsList" class="collapsible-content">      
    </div>
-</div>
-    `;
+</div>`;
       const targetsList = tray.querySelector("#targetsList");
       targetsList.innerHTML = targets.map((target) => {
-         return [`
-      <div class="flexrow">         
-         <i class="fas ${target.success ? "fa-check" : "fa-times"} flex0" style="color: ${target.success ? "green" : "red"};"></i>
-         <div class="flex3" style="margin-left:5px;">${target.targetname}</div>
-         <div class="ac flex1">
-            <i class="fas fa-shield-halved"></i>
-            <span>${target.targetac}</span>
-         </div>
-      </div>
-         `]
-      });
+         let targetInfo = `<div class="flexrow">`;
+         if (target.success !== undefined && target.success !== null) {
+            targetInfo += `<i class="fas ${target.success ? "fa-check" : "fa-times"} flex0" style="color: ${target.success ? "green" : "red"};"></i>`;
+         }
+         targetInfo += `<div class="flex3" style="margin-left:5px;">${target.targetname}</div>`;
+         if (target.targetac !== undefined && target.targetac !== null) {
+            targetInfo += `<div class="ac flex1"><i class="fas fa-shield-halved"></i><span>${target.targetac}</span></div>`;
+         } else if (target.message) {
+            targetInfo += `<div class="flex2">${target.message}</div>`;
+         }
+         targetInfo += `</div>`;
+         return targetInfo;
+      }).join('');
       //  evaluation.querySelectorAll("li.target").forEach(target => {
       //     target.addEventListener("click", this._onTargetMouseDown.bind(this));
       //     target.addEventListener("pointerover", this._onTargetHoverIn.bind(this));

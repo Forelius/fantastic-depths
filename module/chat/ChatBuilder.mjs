@@ -54,28 +54,28 @@ export class ChatBuilder {
       foundry.utils.mergeObject(this.data[key], value);
    }
 
-	/**
-	 * Mapping of result types to their corresponding HTML representations.
-	 * @type {Object.<Symbol, string|undefined>}
-	 * @private
-	 */
-	static resultCache;
+   /**
+    * Mapping of result types to their corresponding HTML representations.
+    * @type {Object.<Symbol, string|undefined>}
+    * @private
+    */
+   static resultCache;
 
-	/**
-	 * Initializes resultCache with the mapping of result types to their corresponding HTML.
-	 * Called only once when the cache isn't created yet.
-	 * @return {Object.<Symbol, string|undefined} - The initialized result mapping object.
-	 * @private
-	 * @static
-	 */
-	static initializeResultCache() {
-		this.resultCache = {
-			[RESULT_TYPE.NONE]: undefined,
+   /**
+    * Initializes resultCache with the mapping of result types to their corresponding HTML.
+    * Called only once when the cache isn't created yet.
+    * @return {Object.<Symbol, string|undefined} - The initialized result mapping object.
+    * @private
+    * @static
+    */
+   static initializeResultCache() {
+      this.resultCache = {
+         [RESULT_TYPE.NONE]: undefined,
          [RESULT_TYPE.FAILED]: `<div class='roll-fail'>${game.i18n.localize('FADE.Chat.fail')}</div>`,
          [RESULT_TYPE.PASSED]: `<div class='roll-success'>${game.i18n.localize('FADE.Chat.pass')}</div>`,
-		};
-		return this.resultCache;
-	}
+      };
+      return this.resultCache;
+   }
 
    /**
     * Returns HTML for a given RESULT_TYPE.
@@ -100,15 +100,19 @@ export class ChatBuilder {
 
       switch (operator) {
          case 'lt':
+         case "<":
             success = rollTotal < target;
             break;
          case 'lte':
+         case "<=":
             success = rollTotal <= target;
             break;
          case 'gt':
+         case ">":
             success = rollTotal > target;
             break;
          case 'gte':
+         case ">=":
             success = rollTotal >= target;
             break;
          default:
@@ -131,12 +135,6 @@ export class ChatBuilder {
          author: game.user.id,
          type: obj.type ?? CONST.CHAT_MESSAGE_STYLES.OTHER,
       };
-
-      // Adds chat flavor property if specified, otherwise the caller's name.
-      //const hasFlavor = Object.prototype.hasOwnProperty.call(chatMessageData, 'flavor');
-      //if (hasFlavor === false) {
-      //   chatMessageData.flavor = this.data.caller?.name;
-      //}
 
       const { roll } = this.data;
       // If there was a roll involved in the chat message...

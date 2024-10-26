@@ -14,6 +14,13 @@ FADE.Abilities = {
    wis: "Wisdom",
    cha: "Charisma"
 };
+FADE.SavingThrows = [
+   "death",
+   "wand",
+   "paralysis",
+   "breath",
+   "spell"
+];
 FADE.MasteryLevels = {
    basic: "Basic",
    skilled: "Skilled",

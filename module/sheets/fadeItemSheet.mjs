@@ -80,6 +80,17 @@ export class fadeItemSheet extends ItemSheet {
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
+      if (this.item.type === "weapon") {
+         context.showAttributes = this.item.system.canRanged || game.user.isGM;
+      }
+      if (this.item.type === "weapon") {
+         let saves = [];
+         saves.push({ value: "", text: "None" });
+         saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
+            return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
+         }));         
+         context.savingThrows = saves;
+      }
       if (this.item.type === 'skill' || this.item.type === 'specialAbility') {
          // Prepare roll modes select options
          context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {

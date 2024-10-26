@@ -92,6 +92,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
          damageRoll = await weaponItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp);
       } else if (dataset.damagetype === "magic") {
          damageRoll = await weaponItem.getDamageRoll(dialogResp?.resp);
+      } else if (dataset.damagetype === "breath") {
+         damageRoll = await weaponItem.getDamageRoll(dialogResp?.resp);
       }
 
       if (canRoll === true) {

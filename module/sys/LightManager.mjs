@@ -232,8 +232,6 @@ export class LightManager {
    }
 
    static consumeItem(item, token = null) {
-      console.log("consumeItem:", item);
-
       let newQuantity = item.system.quantity - 1;
       item.update({ "system.quantity": newQuantity });
 

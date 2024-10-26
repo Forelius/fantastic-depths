@@ -239,6 +239,7 @@
          "damageRoll": "1d6",
          "damageRoll2": null,
          "damageType": "physical",
+         "breath": false,
          "canMelee": true,
          "canRanged": false,
          "savingThrow": null,
@@ -274,7 +275,8 @@
          "dmgFormula": null,
          "maxTargetFormula": "1",
          "durationFormula": null,
-         "savingThrow": null
+         "savingThrow": null,
+         "saveDmgFormula": null
       },
       "skill": {
          "templates": [ "base" ],

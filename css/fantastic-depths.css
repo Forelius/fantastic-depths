@@ -507,6 +507,12 @@ h1, h2, h3, h4 {
   border: 1px solid #4b4a44;
   box-shadow: none;
 }
+.dark-mode .chat-message .saving-roll {
+  background: url("../assets/img/grungeblue.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
+}
 .dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
@@ -621,11 +627,11 @@ h1, h2, h3, h4 {
 .chat-message .message-content .apply-damage {
   margin-top: 4px;
 }
-.chat-message .message-content .damage-roll {
+.chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll {
   font-size: 15px;
   padding: 5px 4px;
 }
-.chat-message .message-content .damage-roll .small-text {
+.chat-message .message-content .damage-roll .small-text, .chat-message .message-content .saving-Roll .small-text {
   margin-left: 4px;
   font-size: 10px;
   color: #808080;
@@ -893,8 +899,8 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .sheet-header .profile-img-sm {
   flex: 0 0 10px;
-  height: 100px;
-  width: 100px;
+  height: 90px;
+  width: 90px;
   margin-right: 10px;
 }
 .fantastic-depths .sheet-header .header-fields {

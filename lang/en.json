@@ -90,6 +90,7 @@
                "abbr": "SA"
             },
             "long": "Saving Throws",
+            "short": "Save",
             "singular": "Saving Throw",
             "death": {
                "long": "Death Ray or Poison",
@@ -250,9 +251,10 @@
          "damage": {
             "abbr": "Dmg",
             "short": "Damage",
+            "type": "Damage Type",
             "short2": "2-Hand Damage",
             "long": "Damage Roll",
-            "long2":  "Two-Handed Damage Roll. Only if weapon can be used one-handed, otherwise use damage roll field."
+            "long2": "Two-Handed Damage Roll. Only if weapon can be used one-handed, otherwise use damage roll field."
          },
          "ammo": {
             "short": "Ammo",

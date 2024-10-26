@@ -4,7 +4,9 @@
    <div class="attack-result">{{{toHitResult.message}}}</div>
    {{/if}}
 </div>
+{{#if rollContent}}
 {{{rollContent}}}
+{{/if}}
 <div name="digest" class="digest">
    {{#each digest as |ditem|}}
    <div>{{ditem}}</div>
@@ -19,31 +21,18 @@
            data-type="damage"
            data-attackerid="{{descData.attackerid}}"
            data-weaponid="{{weapon.id}}">
-      <i class="fa-solid fa-burst"></i>      
+      <i class="fa-solid fa-burst"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
 </div>
-{{#if 0}}
-<div id="targetsTray" class="card-tray" style="visibility: collapse; ">
-   <label class="collapser">
-      <i class="fas fa-bullseye" inert></i>
-      <span>Targets</span>
-   </label>
-   <div class="collapsible-content">
-      {{#each toHitResult.targetResults as |targetResult|}}
-      <div class="flexrow">
-         {{#if targetResult.success}}
-         <i class="fas fa-check flex0" style="color:green;"></i>
-         {{else}}
-         <i class="fas fa-times flex0" style="color:red;"></i>
-         {{/if}}
-         <div class="flex3" style="margin-left:5px;">{{targetResult.targetname}}</div>
-         <div class="ac flex1">
-            <i class="fas fa-shield-halved"></i>
-            <span>{{targetac}}</span>
-         </div>
-      </div>
-      {{/each}}
-   </div>
+{{#if weapon.system.savingThrow}}
+<div style="margin-top:6px;">
+   <button class="saving-roll"
+           data-attackerid="{{descData.attackerid}}"
+           data-type="{{weapon.system.savingThrow}}"
+           data-weaponid="{{weapon.id}}">
+      <i class="fa-solid fa-life-ring"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{localize (concat 'FADE.Actor.Saves.' weapon.system.savingThrow '.abbr')}}</span>
+   </button>
 </div>
 {{/if}}

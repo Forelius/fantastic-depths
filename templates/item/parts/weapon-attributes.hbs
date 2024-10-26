@@ -34,3 +34,37 @@
       </ul>
    </section>
 </section>
+{{#if isGM}}
+<section class="bordered">
+   <ul class="summary flexrow">
+      <li class="flex1">
+         <input type="checkbox" name="system.canMelee" data-dtype="Boolean" {{#if system.canMelee}} checked{{/if}} />
+         <label for="system.canMelee">Melee</label>
+      </li>
+      <li class="flex1">
+         <input type="checkbox" name="system.canRanged" data-dtype="Boolean" {{#if system.canRanged}} checked{{/if}} />
+         <label for="system.canRanged">Ranged</label>
+      </li>
+      <li class="flex1">
+         <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} title="{{localize "FADE.Armor.natural.desc"}}" />
+         <label for="system.natural" title="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
+      </li>
+      <li class="flex2">
+         <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String"/>
+         <label for="system.breath">Breath</label>
+      </li>
+      <li class="flex1">
+         <select name="system.savingThrow">
+            {{selectOptions savingThrows selected=system.savingThrow valueAttr="value" labelAttr="text"}}
+         </select>
+         <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+      </li>
+      <li class="flex2">
+         <input type='text' name="system.saveDmgFormula" value='{{system.saveDmgFormula}}' data-dtype='String' />
+         <label for="system.saveDmgFormula">{{localize 'FADE.Actor.Saves.short'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+      </li>
+   </ul>
+   <ul class="summary flexrow">     
+   </ul>
+</section>
+{{/if}}

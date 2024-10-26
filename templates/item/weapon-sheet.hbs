@@ -30,20 +30,43 @@
                <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.mastery">{{localize 'FADE.Mastery.short'}}</label>
             </li>
-            <li class="flex1">
-               <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} title="{{localize "FADE.Armor.natural.desc"}}" />
-               <label for="system.natural" title="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
+            <li class="flex2">
+               <input type='text' name="system.damageType" value='{{system.damageType}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
+               <label for="system.damageType">{{localize 'FADE.Weapon.damage.type'}}</label>
             </li>
-         </ul>
+         </ul>         
+      </div>
+   </header>
+   {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+   {{! Sheet Tab Navigation }}
+   <nav class='sheet-tabs tabs' data-group='primary'>
+      {{#if showAttributes}}
+      <a class='item' data-tab='attributes'>Attributes</a>
+      {{/if}}
+      <a class='item' data-tab='description'>Description</a>
+      {{#if isGM}}
+      <a class='item' data-tab='effects'>Effects</a>
+      <a class='item' data-tab='gm-only'>GM Only</a>
+      {{/if}}
+   </nav>
+
+   {{! Sheet Body }}
+   <section class='sheet-body'>
+      {{! attributes Tab }}
+      {{#if showAttributes}}
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         {{> "systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs"}}
+      </div>
+      {{/if}}
+      {{! Description Tab }}
+      <div class='tab' data-group='primary' data-tab='description'>
+         {{! Editors must receive enriched text data from getData to properly handle rolls }}
+         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+      </div>
+      {{#if isGM}}
+      {{! Effects Tab }}
+      <div class="tab effects" data-group="primary" data-tab="effects">
          <ul class="summary flexrow">
-            <li class="flex1">
-               <input type="checkbox" name="system.canMelee" data-dtype="Boolean" {{#if system.canMelee}} checked{{/if}} />
-               <label for="system.canMelee">Melee</label>
-            </li>
-            <li class="flex1">
-               <input type="checkbox" name="system.canRanged" data-dtype="Boolean" {{#if system.canRanged}} checked{{/if}} />
-               <label for="system.canRanged">Ranged</label>
-            </li>
             <li class="flex1">
                <div>{{system.mod.dmg}}</div>
                <label for="system.mod.dmg">{{localize 'FADE.Weapon.mod.dmg.short'}}</label>
@@ -61,35 +84,6 @@
                <label class="text-center" for="system.mod.toHitRanged">{{localize 'FADE.Weapon.mod.toHitRanged.short'}}</label>
             </li>
          </ul>
-      </div>
-   </header>
-   {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
-   {{! Sheet Tab Navigation }}
-   <nav class='sheet-tabs tabs' data-group='primary'>
-      {{#if system.canRanged}}
-      <a class='item' data-tab='attributes'>Attributes</a>
-      {{/if}}
-      <a class='item' data-tab='description'>Description</a>
-      {{#if isGM}}
-      <a class='item' data-tab='effects'>Effects</a>
-      <a class='item' data-tab='gm-only'>GM Only</a>
-      {{/if}}
-   </nav>
-
-   {{! Sheet Body }}
-   <section class='sheet-body'>
-      {{! Description Tab }}
-      <div class='tab' data-group='primary' data-tab='attributes'>
-         {{> "systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs"}}
-      </div>
-      {{! Description Tab }}
-      <div class='tab' data-group='primary' data-tab='description'>
-         {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
-      </div>
-      {{#if isGM}}
-      {{! Effects Tab }}
-      <div class="tab effects" data-group="primary" data-tab="effects">
          {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
       </div>
       {{! GM-Only Tab }}

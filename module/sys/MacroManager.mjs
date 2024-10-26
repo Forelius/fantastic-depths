@@ -99,23 +99,16 @@ ChatMessage.create({content: results, flavor: 'Ability Score Rolls'});",
 
    // Helper method to get or create a folder
    static async getOrCreateFolder(folderName, parentFolderId = null) {
-      console.log(`Searching for folder: ${folderName}`);
-      console.log(`Parent folder ID: ${parentFolderId}`);
-
       // Find the folder by name and type, ignoring parent
       let folder = game.folders.find(f => f.name === folderName && f.type === "Macro");
 
       // If the folder doesn't exist, create it under the specified parent (or root if parentFolderId is null)
       if (!folder) {
-         console.log(`Folder not found. Creating new folder under parent ID: ${parentFolderId}`);
          folder = await Folder.create({
             name: folderName,
             type: "Macro",
             parent: parentFolderId || null // Use parentFolderId if provided, otherwise root (null)
          });
-         console.log(`Created folder with ID: ${folder.id}`);
-      } else {
-         console.log(`Folder found with ID: ${folder.id}`);
       }
 
       return folder;
@@ -174,8 +167,6 @@ ChatMessage.create({content: results, flavor: 'Ability Score Rolls'});",
 
       // Stop the default Foundry behavior
       const item = await Item.fromDropData(data);
-
-      console.log("createItemMacro", data, item);
 
       // Create the macro command using the item's UUID.
       const command = `game.fade.MacroManager.rollItemMacro("${data.uuid}");`;

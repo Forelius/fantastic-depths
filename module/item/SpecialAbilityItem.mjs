@@ -30,18 +30,10 @@ export class SpecialAbilityItem extends fadeItem {
          dataset.pass = systemData.operator;
          dataset.target = systemData.target;
          dataset.rollmode = systemData.rollMode;
-         let dialogResp = null;
-         try {
-            dialogResp = await DialogFactory(dataset, this.actor);
-            rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
-         }
-         // If close button is pressed
-         catch (error) {
-            // Like Weird Al says, eat it
-            console.error("SpecialAbilityItem.roll():", error);
-         }
-         
-         if (dialogResp !== null) {
+         let dialogResp = await DialogFactory(dataset, this.actor);
+         rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
+
+         if (dialogResp?.resp?.rolling === true) {
             const rollContext = { ...rollData, ...dialogResp?.resp || {} };
             let rolled = await new Roll(rollData.formula, rollContext).evaluate();
             const chatData = {

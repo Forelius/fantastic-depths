@@ -122,8 +122,8 @@ Hooks.once('ready', async function () {
    // inline-roll handler
    $(document).on('click', '.damage-roll', DamageRollChatBuilder.clickDamageRoll);
    $(document).on('click', '.apply-damage', DamageRollChatBuilder.clickApplyDamage);
-   // Bind the collapsible functionality to the header click event
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
+   $(document).on('click', '.saving-roll', fadeActor.handleSavingThrowRequest);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();

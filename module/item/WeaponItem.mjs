@@ -14,6 +14,7 @@ export class WeaponItem extends fadeItem {
       this.system.damageType = this.system.damageType || "physical";
       this.system.mastery = this.system.mastery || "";
       this.system.natural = this.system.natural || false;
+      this.system.breath = this.system.breath || "";
    }
 
    /** @override */
@@ -72,6 +73,8 @@ export class WeaponItem extends fadeItem {
             modifier += attackerData.mod.combat.dmgRanged;
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
          }
+      } else if (attackType === "breath") {
+
       }
 
       if (resp?.mod && resp?.mod !== 0) {
@@ -106,8 +109,10 @@ export class WeaponItem extends fadeItem {
       let result = [];
       const twoHand = this.system.tags?.includes("2-handed");
       const oneHand = this.system.tags?.includes("1-handed");
+      const breath = this.system.breath?.length > 0;
+      const natural = this.system.natural === true;
 
-      if (this.system.natural === true) {
+      if (natural || breath) {
          result.push({ text: "Natural", value: "natural" });
       } else if (oneHand && twoHand) {
          result.push({ text: "Two-Handed", value: "2hand2" });
@@ -118,13 +123,19 @@ export class WeaponItem extends fadeItem {
          result.push({ text: "Two-Handed", value: "2hand1" });
          result.push({ text: "One-Handed", value: "1hand" });
       }
+
       return result;
    }
 
    getAttackTypes() {
       let result = [];
-      if (this.system.canRanged) result.push({ text: "Missile", value: "missile" });
-      if (this.system.canMelee) result.push({ text: "Melee", value: "melee" });
+      const breath = this.system.breath?.length > 0;
+      if (breath) {
+         result.push({ text: "Breath", value: "breath" });
+      } else {
+         if (this.system.canRanged) result.push({ text: "Missile", value: "missile" });
+         if (this.system.canMelee) result.push({ text: "Melee", value: "melee" });
+      }
       return result;
    }
 
@@ -145,14 +156,18 @@ export class WeaponItem extends fadeItem {
       let canAttack = true;
       let digest = [];
       let result = null;
+      let hasRoll = false;
 
       if (attackerToken) {
          try {
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
             if (dialogResp?.resp) {
-               let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, attackerActor);
-               rollData.formula = attackRoll.formula;
-               digest = attackRoll.digest;
+               if (dialogResp.resp.attackType !== "breath") {
+                  let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, attackerActor);
+                  rollData.formula = attackRoll.formula;
+                  digest = attackRoll.digest;
+                  hasRoll = true;
+               }
             } else {
                canAttack = false;
             }
@@ -162,7 +177,7 @@ export class WeaponItem extends fadeItem {
          }
 
          // Check if the attack type is a missile/ranged attack
-         if (canAttack && dialogResp.resp.attackType !== 'melee' && systemData.ammo.type) {
+         if (canAttack && dialogResp.resp.attackType === 'missile' && systemData.ammo.type) {
             // Handle ammo usage
             const currentAmmo = systemData.ammo.load; // Current ammo
             const ammoType = systemData.ammo.type;   // Ammo type (if relevant)
@@ -182,8 +197,11 @@ export class WeaponItem extends fadeItem {
 
          // Perform the roll if there's ammo or if it's a melee attack
          if (canAttack && dialogResp) {
-            const rollContext = { ...rollData, ...dialogResp.resp || {} };
-            let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+            let rolled = null;
+            if (hasRoll) {
+               const rollContext = { ...rollData, ...dialogResp.resp || {} };
+               rolled = await new Roll(rollData.formula, rollContext).evaluate();
+            }
             const chatData = {
                resp: dialogResp.resp, // the dialog response
                caller: this, // the weapon
@@ -251,7 +269,7 @@ export class WeaponItem extends fadeItem {
          });
       });
    }
-   
+
    async _prepareDamageRollLabel() {
       this.system.damageRollLabel = await this.getEvaluatedRollFormula(this.system.damageRoll);
    }

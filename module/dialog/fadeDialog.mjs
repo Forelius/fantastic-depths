@@ -29,6 +29,7 @@ export class fadeDialog {
             check: {
                label: game.i18n.localize('FADE.roll'),
                callback: () => ({
+                  rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
                   attackType: document.getElementById('attackType').value,
                   attackMode: document.getElementById('attackMode').value
@@ -57,14 +58,15 @@ export class fadeDialog {
          content: await renderTemplate(template, dialogData),
          render: () => focusById('mod'),
          buttons: {
-            check: {
+            roll: {
                label: game.i18n.localize('FADE.roll'),
                callback: () => ({
+                  rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
                }),
-            },
+            }
          },
-         default: 'check',
+         default: 'roll',
          close: () => { return false; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
@@ -242,12 +244,14 @@ export class fadeDialog {
             yes: {
                label: yesLabel,
                callback: () => ({
+                  rolling: true,
                   result: true
                })
             },
             no: {
                label: noLabel,
                callback: () => ({
+                  rolling: true,
                   result: false
                })
             }

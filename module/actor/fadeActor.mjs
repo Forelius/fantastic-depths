@@ -323,23 +323,15 @@ export class fadeActor extends Actor {
       const rollData = this.getRollData();
       let dataset = {};
       dataset.dialog = "generic";
-      dataset.pass = ">=";
+      dataset.pass = "gte";
       dataset.target = savingThrow.value;
       dataset.rollmode = game.settings.get("core", "rollMode");
       dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
 
-      let dialogResp = null;
-      try {
-         dialogResp = await DialogFactory(dataset, this);
-         rollData.formula = dialogResp.resp.mod != 0 ? `1d20+@mod` : `1d20`;
-      }
-      // If close button is pressed
-      catch (error) {
-         // Like Weird Al says, eat it
-         console.error("fadeActor.rollSavingThrow():", error);
-      }
+      let dialogResp = await DialogFactory(dataset, this);
+      rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
 
-      if (dialogResp !== null) {
+      if (dialogResp?.resp?.rolling === true) {
          const rollContext = { ...rollData, ...dialogResp?.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
@@ -350,6 +342,22 @@ export class fadeActor extends Actor {
          };
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
          return await builder.createChatMessage();
+      }
+   }
+
+   static async handleSavingThrowRequest(event) {
+      event.preventDefault(); // Prevent the default behavior
+      event.stopPropagation(); // Stop other handlers from triggering the event
+      const dataset = event.currentTarget.dataset;
+      const selected = Array.from(canvas.tokens.controlled);
+      let hasSelected = selected.length > 0;
+      if (hasSelected === false) {
+         ui.notifications.warn("A token must first be selected.")
+      } else {
+         for (let target of selected) {
+            // Apply damage to the token's actor
+            target.actor.rollSavingThrow(dataset.type);
+         }
       }
    }
 

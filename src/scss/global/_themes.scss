@@ -162,13 +162,20 @@
       }
 
       .attack-info {
-         color: #90b0e0;         
+         color: #90b0e0;
       }
 
       .dice-formula, .dice-total {
          background: url('../assets/img/grungeblue.jpg');
          border: 1px solid $darkColor;
          box-shadow: none;
+      }
+
+      .saving-roll {         
+         background: url('../assets/img/grungeblue.jpg');
+         border: 1px solid $darkColor;
+         box-shadow: none;
+         color: $lighterColor;
       }
 
       .damage-roll, .apply-damage {

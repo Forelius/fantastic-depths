@@ -127,8 +127,6 @@ export class PartyTrackerForm extends FormApplication {
 
       // Step 5: Process based on validity
       if (isValid && !isAlreadyTracked) {
-         console.log("Adding actor:", actor.name);
-
          // Extract actor details safely and push to the tracked list
          const actorDetails = {
             id: actor.id,
