@@ -156,7 +156,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
          toHitResult,
          digest: digest,
          weapon: caller,
-         resp
+         resp, 
+         isGM: game.user.isGM
       };
 
       let content = await renderTemplate(this.template, chatData);

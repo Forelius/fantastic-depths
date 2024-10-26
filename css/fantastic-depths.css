@@ -603,6 +603,9 @@ h1, h2, h3, h4 {
 .chat-message .message-content {
   padding: 5px 6px;
 }
+.chat-message .message-content button {
+  margin: 0;
+}
 .chat-message .message-content .digest {
   margin-bottom: 6px;
 }

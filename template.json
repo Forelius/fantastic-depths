@@ -259,7 +259,8 @@
       "armor": {
          "templates": [ "base", "physical", "equippable", "natural" ],
          "ac": 9,
-         "isShield": false
+         "isShield": false,
+         "dmgRoll": null
       },
       "spell": {
          "templates": [ "base" ],
@@ -273,7 +274,8 @@
          "targetOther": true,
          "dmgFormula": null,
          "maxTargetFormula": "1",
-         "durationFormula": null
+         "durationFormula": null,
+         "savingThrow": null
       },
       "skill": {
          "templates": [ "base" ],
@@ -286,7 +288,8 @@
          "level": "basic"
       },
       "specialAbility": {
-         "templates": [ "base", "rollable" ]
+         "templates": [ "base", "rollable" ],
+         "dmgRoll": null
       }
    }
 }
