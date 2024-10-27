@@ -230,6 +230,7 @@ export class fadeActor extends Actor {
             break;
          case 'breath':
             damageMitigated = systemData.mod.combat.selfDmgBreath;
+            damageMitigated += dmgAmt * systemData.mod.combat.selfDmgBreathScale;
             break;
          case 'magic':
             damageMitigated = systemData.mod.combat.selfDmgMagic;
@@ -373,6 +374,7 @@ export class fadeActor extends Actor {
             // These only work with damage automation
             selfDmg: 0,
             selfDmgBreath: 0,
+            selfDmgBreathScale: 1,
             selfDmgMagic: 0,
             selfDmgFrost: 0,
             selfDmgFire: 0,
