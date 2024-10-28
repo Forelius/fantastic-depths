@@ -169,7 +169,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       }
 
       const chatData = {
-         damageRoll,
+         damageRoll,         
          rollContent,
          description,
          descData,

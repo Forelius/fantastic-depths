@@ -23,6 +23,7 @@
    </button>
 </div>
 {{/if}}
+{{#if damageRoll.hasDamage}}
 <div style="margin-top:8px;">
    <button class="damage-roll"
            data-attacktype="{{resp.attackType}}"
@@ -36,3 +37,4 @@
       <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
 </div>
+{{/if}}

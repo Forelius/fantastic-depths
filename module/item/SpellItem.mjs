@@ -26,18 +26,27 @@ export class SpellItem extends fadeItem {
 
    async getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      let formula = await this.getEvaluatedRollFormula(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      let formula = evaluatedRoll?.formula;
       let digest = [];
+      let modifier = 0;
+      let hasDamage = true;
 
       if (resp?.mod && resp?.mod !== 0) {
-         formula = `${formula}+${resp.mod}`;
+         formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
+         modifier += resp.mod;
          digest.push(`Manual mod: ${resp.mod}`);
+      }
+
+      if (modifier <= 0 && evaluatedRoll.total <= 0) {
+         hasDamage = false;
       }
 
       return {
          formula,
          damageType: isHeal ? "heal" : "magic",
-         digest
+         digest,
+         hasDamage
       };
    }
 
@@ -63,7 +72,6 @@ export class SpellItem extends fadeItem {
          }, this.actor);
 
          if (dialogResp?.resp?.result === true) {
-
             await this.doSpellcast(casterToken);
          } else if (dialogResp?.resp?.result === false) {
             super.roll(dataset);

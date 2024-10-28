@@ -32,9 +32,11 @@ export class WeaponItem extends fadeItem {
       const weaponData = this.system;
       const attackerToken = this.parent.getActiveTokens()?.[0];
       const attackerData = this.parent.system;
-      let formula = await this.getEvaluatedRollFormula(weaponData.damageRoll);
+      let evaluatedRoll = await this.getEvaluatedRoll(weaponData.damageRoll);
+      let formula = evaluatedRoll?.formula;
       let digest = [];
       let modifier = 0;
+      let hasDamage = true;
 
       if (attackType === 'melee') {
          if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
@@ -83,12 +85,16 @@ export class WeaponItem extends fadeItem {
       }
 
       if (modifier !== 0) {
-         formula = `${formula}+${modifier}`;
+         formula = formula ? `${formula}+${modifier}` : `${modifier}`;
+      }
+
+      if (modifier <= 0 && evaluatedRoll?.total <= 0) {
+         hasDamage = false;
       }
 
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-      if (weaponMastery && weaponData.mastery !== "" && attackerToken.type === "character" && attackerData.details.species === "Human") {
+      if (hasDamage && weaponMastery && weaponData.mastery !== "" && attackerToken.type === "character" && attackerData.details.species === "Human") {
          const attackerMastery = attackerToken.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // do stuff
@@ -99,7 +105,7 @@ export class WeaponItem extends fadeItem {
          }
       }
 
-      return { formula, type: weaponData.damageType, digest };
+      return { formula, type: weaponData.damageType, digest, hasDamage };
    }
 
    /**

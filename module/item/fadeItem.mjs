@@ -94,19 +94,23 @@ export class fadeItem extends Item {
       }
    }
 
-   async getEvaluatedRollFormula(formula) {
+   async getEvaluatedRoll(formula, options = { minimize: true }) {
       let result = null;
       if (formula !== null && formula !== "") {
          const rollData = this.getRollData();
          try {
             let roll = new Roll(formula, rollData);
-            await roll.evaluate();
-            result = roll.formula;
+            await roll.evaluate(options);
+            result = roll;
          }
          catch (error) {
             console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
          }
       }
       return result;
+   }
+
+   async getEvaluatedRollFormula(formula) {
+      return await this.getEvaluatedRoll(formula)?.formula;
    }
 }
