@@ -137,6 +137,7 @@ export class fadeActor extends Actor {
       let formula = '1d20';
       let digest = [];
       let modifier = 0;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
 
       if (mod && mod !== 0) {
          modifier += mod;
@@ -145,12 +146,12 @@ export class fadeActor extends Actor {
       }
 
       if (attackType === "melee") {
-         if (weaponData.mod.toHit !== 0) {
+         if (hasWeaponMod && weaponData.mod.toHit !== 0) {
             //formula = `${formula}+${weaponData.mod.toHit}`;
             modifier += weaponData.mod.toHit;
             digest.push(`Weapon mod: ${weaponData.mod.toHit}`);
          }
-         if (systemData.mod.combat.toHit !== 0) {
+         if (systemData.mod?.combat.toHit !== 0) {
             //formula = `${formula}+${systemData.mod.combat.toHit}`;
             modifier += systemData.mod.combat.toHit;
             digest.push(`AttsystemData.mod.combat.toHitacker effect mod: ${systemData.mod.combat.toHit}`);
@@ -168,12 +169,12 @@ export class fadeActor extends Actor {
          }
       } else {
          // Missile attack
-         if (weaponData.mod.toHitRanged !== 0) {
+         if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
             //formula = `${formula}+${weaponData.mod.toHitRanged}`;
             modifier += weaponData.mod.toHitRanged;
             digest.push(`Weapon mod: ${weaponData.mod.toHitRanged}`);
          }
-         if (systemData.mod.combat.toHitRanged !== 0) {
+         if (systemData.mod.combat?.toHitRanged !== 0) {
             modifier += systemData.mod.combat.toHitRanged;
             //formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
             digest.push(`Attacker effect mod: ${systemData.mod.combat.toHitRanged}`);
@@ -206,7 +207,6 @@ export class fadeActor extends Actor {
                digest.push(`Unskilled use: -1`);
             }
          }
-
       }
 
       if (modifier !== 0) {
@@ -221,6 +221,7 @@ export class fadeActor extends Actor {
       let dmgAmt = amount;
       const prevHP = systemData.hp.value;
       let digest = [];
+      const isHeal = damageType === "heal";
 
       // Damage mitigation
       let damageMitigated = 0;
@@ -242,10 +243,14 @@ export class fadeActor extends Actor {
          digest.push(`${damageMitigated} points of ${damageType} damage mitigated.`);
       }
 
-      systemData.hp.value -= dmgAmt;
-      this.update({ "system.hp.value": systemData.hp.value })
-
-      digest.push(`${dmgAmt} points of ${damageType} damage applied to ${this.name}.`);
+      if (isHeal) {         
+         systemData.hp.value = Math.min((systemData.hp.value + dmgAmt), systemData.hp.max);
+         digest.push(`${systemData.hp.value - prevHP} hit points restored to ${this.name}.`);
+      } else {
+         systemData.hp.value -= dmgAmt;
+         digest.push(`${dmgAmt} points of ${damageType} damage applied to ${this.name}.`);
+      }
+      this.update({ "system.hp.value": systemData.hp.value });      
 
       // Check if the actor already has the "Dead" effect
       let hasDeadEffect = this.effects.some(e => e.getFlag("core", "statusId") === "dead");

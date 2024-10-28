@@ -31,7 +31,7 @@ export class fadeItemSheet extends ItemSheet {
          options.width = 520;
          options.height = 360;
       } else {
-         options.width = 470;
+         options.width = 520;
          options.height = 400;
       }
 
@@ -83,21 +83,46 @@ export class fadeItemSheet extends ItemSheet {
       if (this.item.type === "weapon") {
          context.showAttributes = this.item.system.canRanged || game.user.isGM;
       }
-      if (this.item.type === "weapon") {
-         let saves = [];
+
+      const hasAttackTypes = ["spell"];
+      if (hasAttackTypes.includes(this.item.type)) {
+         const types = []
+         types.push({ value: "", text: "None" });
+         types.push(...CONFIG.FADE.AttackTypes.map((type) => {
+            return { value: type, text: game.i18n.localize(`FADE.AttackTypes.types.${type}`) }
+         }));
+         context.attackTypes = types;
+      }
+
+      const hasDamageTypes = ["spell"];
+      if (hasDamageTypes.includes(this.item.type)) {
+         const types = []
+         types.push({ value: "", text: "None" });
+         types.push(...CONFIG.FADE.DamageTypes.map((type) => {
+            return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
+         }));
+         context.damageTypes = types;
+      }
+
+      const hasSave = ["weapon", "spell"];
+      if (hasSave.includes(this.item.type)) {
+         const saves = [];
          saves.push({ value: "", text: "None" });
          saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
             return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
          }));         
          context.savingThrows = saves;
       }
-      if (this.item.type === 'skill' || this.item.type === 'specialAbility') {
+
+      const hasRollModes = ["skill", "specialAbility"];
+      if (hasRollModes.includes(this.item.type)) {
          // Prepare roll modes select options
          context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
             acc[key] = game.i18n.localize(value);
             return acc;
          }, {});
       }
+
       if (this.item.type === 'specialAbility') {
          // Prepare roll modes select options
          context.operators = Object.entries(CONFIG.FADE.Operators).reduce((acc, [key, value]) => {

@@ -1,4 +1,5 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 
 export class SpellCastChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/spell-cast.hbs';
@@ -8,38 +9,57 @@ export class SpellCastChatBuilder extends ChatBuilder {
 
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
-      this.#targetTokens = Array.from(game.user.targets);
    }
 
    /**
    * Called by the various Actor and Item derived classes to create a chat message.
    */
    async createChatMessage() {
-      const { context, caller, options } = this.data;
-      const damageRoll = await caller.getDamageRoll();
-
-      // Prepare data for the chat template
-      const chatData = {
-         caller,
-         context,
-         damageRoll,
-         damageType: "magic",
-         targets: this.#targetTokens
-      };
-
-      // Render the content using the template
-      const content = await renderTemplate(this.template, chatData);
-      // Determine rollMode (use mdata.rollmode if provided, fallback to default)
+      const { context, caller, options, roll } = this.data;
+      const damageRoll = await caller.getDamageRoll(null);
+      const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
-      const descData = { caster: context.name, spell: caller.name };
-      const description = game.i18n.format('FADE.Chat.spellCast2', descData);
+      const casterToken = context;
+      const spellItem = caller;
+
+      const descData = { caster: casterToken.name, spell: spellItem.name };
+      const description = game.i18n.format('FADE.Chat.spellCast', descData);
+
+      let rollContent = null;
+      let toHitResult = {message:""};
+      if (roll) {
+         rollContent = await roll.render();
+         toHitResult = AttackRollChatBuilder.getToHitResults(casterToken, spellItem, targetTokens, roll);
+      }
 
       if (window.toastManager) {
-         let toast = `${description}`;
+         let toast = `${description}${toHitResult.message}`;
          window.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      const chatMessageData = await this.getChatMessageData({ content, rollMode });
-      await ChatMessage.create(chatMessageData);     
+      // Prepare data for the chat template
+      const chatData = {
+         rollContent,
+         toHitResult,
+         spellItem, // spell item
+         casterToken,
+         damageRoll,
+         isHeal: damageRoll.damageType === "heal",
+         targets: targetTokens,
+         showTargets: !roll
+      };
+      // Render the content using the template
+      const content = await renderTemplate(this.template, chatData);
+
+      const rolls = roll ? [roll] : null;
+      const chatMessageData = await this.getChatMessageData({
+         content, rolls, rollMode,
+         flags: {
+            [game.system.id]: {
+               targets: toHitResult.targetResults
+            }
+         }
+      });
+      await ChatMessage.create(chatMessageData);
    }
 }

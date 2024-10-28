@@ -45,7 +45,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const chatMessageData = await this.getChatMessageData({
          content, rolls, rollMode,
          [`flags.${game.system.id}.attackdata`]: {
-            mdata, 
+            mdata,
             damage: options.damage
          }
       });
@@ -53,7 +53,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
    }
 
    /**
-   * Handle user clicking on element with .damage-roll css class.
+   * Click event handler for damage/heal roll buttons.
    * @param {any} ev
    */
    static async clickDamageRoll(ev) {
@@ -62,7 +62,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const { attackerid, weaponid, attacktype, damagetype } = dataset;
 
       // Custom behavior for damage rolls      
-      if (dataset.type === "damage") {
+      if (dataset.type === "damage" || dataset.type==="heal") {
          ev.preventDefault(); // Prevent the default behavior
          ev.stopPropagation(); // Stop other handlers from triggering the event
 
@@ -70,15 +70,21 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
    }
 
+   /**
+    * Handles the damage/heal roll
+    * @param {any} ev
+    * @param {any} dataset
+    */
    static async handleDamageRoll(ev, dataset) {
       const { attackerid, weaponid, attacktype, attackmode, damagetype } = dataset;
       const attackerToken = canvas.tokens.get(attackerid);
       let weaponItem = attackerToken.actor.items.find((item) => item.id === weaponid);
       let canRoll = true;
       let dialogResp = null;
+      const isHeal = damagetype === 'heal';
 
       try {
-         dialogResp = await DialogFactory({ dialog: 'generic', label: "Damage" }, weaponItem);
+         dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, weaponItem);
          if (!dialogResp?.resp) {
             canRoll = false;
          }
@@ -88,11 +94,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       let damageRoll = null;
-      if (dataset.damagetype === "physical") {
+      const weaponTypes = ["physical", "breath"];
+      const spellType = ["magic", "heal"];
+      if (weaponTypes.includes(dataset.damagetype)) {
          damageRoll = await weaponItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp);
-      } else if (dataset.damagetype === "magic") {
-         damageRoll = await weaponItem.getDamageRoll(dialogResp?.resp);
-      } else if (dataset.damagetype === "breath") {
+      } else if (spellType.includes(dataset.damagetype)) {
          damageRoll = await weaponItem.getDamageRoll(dialogResp?.resp);
       }
 
@@ -106,7 +112,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
             weapon: weaponItem.name,
             damage
          };
-         const resultString = game.i18n.format('FADE.Chat.damageFlavor2', descData);
+         const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
 
          const chatData = {
             context: attackerToken,
@@ -124,6 +130,10 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
    }
 
+   /**
+    * Click event handler for apply damage/heal buttons.
+    * @param {any} ev
+    */
    static async clickApplyDamage(ev) {
       const element = ev.currentTarget;
       const dataset = element.dataset;
@@ -139,7 +149,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: "Select Targeted or Selected",
-            content: "Do you want to apply damage to targeted or selected?",
+            content: "Apply to targeted or selected?",
             yesLabel: "Targeted",
             noLabel: "Selected",
             defaultChoice: "yes"
@@ -157,7 +167,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       } else if (hasSelected) {
          applyTo = selected;
       } else {
-         ui.notifications.warn("Select or target the token(s) you are applying damage to.");
+         ui.notifications.warn("Select or target the token(s).");
       }
 
       // Ensure we have a target ID
@@ -167,29 +177,5 @@ export class DamageRollChatBuilder extends ChatBuilder {
             target.actor.applyDamage(parseInt(dataset.amount, 10), dataset.damagetype, weapon);
          }
       }
-   }
-
-   static async updateChatMessageWithApplyDamage(updatedFields) {
-      let { dataset, chatMessage, showApplyDamage, rollContent, targetName, resultString } = updatedFields;
-
-      // Prepare data for the chat template
-      const renderData = {
-         rollContent,
-         mdata: {
-            ...dataset,
-            showApplyDamage, // Dynamically set showApplyDamage
-         },
-         actorName: targetName,
-         resultString,
-         damage: dataset.amount,
-         targetid: dataset.targetid,
-         messageId: chatMessage.id,
-      };
-
-      // Render the content
-      const content = await renderTemplate(DamageRollChatBuilder.template, renderData);
-
-      // Update the chat message with the new content
-      await chatMessage.update({ content });
    }
 }

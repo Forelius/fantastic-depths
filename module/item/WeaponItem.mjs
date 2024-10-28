@@ -163,7 +163,7 @@ export class WeaponItem extends fadeItem {
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
             if (dialogResp?.resp) {
                if (dialogResp.resp.attackType !== "breath") {
-                  let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, attackerActor);
+                  let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, dialogResp.resp.mod, null);
                   rollData.formula = attackRoll.formula;
                   digest = attackRoll.digest;
                   hasRoll = true;

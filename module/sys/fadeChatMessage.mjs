@@ -17,14 +17,28 @@ export class fadeChatMessage extends ChatMessage {
       const mdata = attackData.mdata;
       const damage = attackData.damage;
       const tray = document.createElement("div");
-      tray.innerHTML = `
+      let innerHTML = `
  <div class="card-tray">
-   <label class="collapser">
-      <i class="fa-solid fa-heart-crack" inert></i>
+   <label class="collapser">`;
+      if (mdata.type === 'heal') {
+         innerHTML += `
+      <i class="fa-solid fa-heart" inert></i>`;
+      } else {
+         innerHTML += `
+      <i class="fa-solid fa-heart-crack" inert></i>`;
+      }
+      innerHTML += `
       <span>Apply</span>
    </label>
-   <div class="collapsible-content">
-      <button class="apply-damage" type="button" title="Apply damage to target."
+   <div class="collapsible-content">`;
+      if (mdata.type === 'heal') {
+         innerHTML += `
+         <button class="apply-heal" type="button" title="Apply healing." `;
+      } else {
+         innerHTML += `
+         <button class="apply-damage" type="button" title="Apply damage." `;
+      }
+      innerHTML += `
               data-attacktype="${mdata.attacktype}"
               data-attackmode="${mdata.attackmode}"
               data-damagetype="${mdata.damagetype}"
@@ -37,8 +51,8 @@ export class fadeChatMessage extends ChatMessage {
          <span style="margin-left:2px;">Apply</span>
       </button>
    </div>
-</div>
-    `;
+</div>`;
+      tray.innerHTML = innerHTML
       html.querySelector(".message-content")?.appendChild(tray);
    }
 
@@ -51,8 +65,7 @@ export class fadeChatMessage extends ChatMessage {
       const targets = this.getFlag(game.system.id, "targets");
       if (!game.user.isGM || !targets?.length) return;
 
-      const tray = document.createElement("div");
-      //  tray.classList.add("dnd5e2");
+      const tray = document.createElement("div");      
       tray.innerHTML = `<div id="targetsTray" class="card-tray">
    <label class="collapser">
       <i class="fas fa-bullseye" inert></i>
@@ -69,18 +82,13 @@ export class fadeChatMessage extends ChatMessage {
          }
          targetInfo += `<div class="flex3" style="margin-left:5px;">${target.targetname}</div>`;
          if (target.targetac !== undefined && target.targetac !== null) {
-            targetInfo += `<div class="ac flex1"><i class="fas fa-shield-halved"></i><span>${target.targetac}</span></div>`;
+            targetInfo += `<div class="ac flex1"><i class="fas fa-shield-halved"></i> <span>${target.targetac}</span></div>`;
          } else if (target.message) {
             targetInfo += `<div class="flex2">${target.message}</div>`;
          }
          targetInfo += `</div>`;
          return targetInfo;
       }).join('');
-      //  evaluation.querySelectorAll("li.target").forEach(target => {
-      //     target.addEventListener("click", this._onTargetMouseDown.bind(this));
-      //     target.addEventListener("pointerover", this._onTargetHoverIn.bind(this));
-      //     target.addEventListener("pointerout", this._onTargetHoverOut.bind(this));
-      //  });
       html.querySelector(".message-content")?.appendChild(tray);
    }
 }

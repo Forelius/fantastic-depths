@@ -171,11 +171,18 @@
          box-shadow: none;
       }
 
-      .saving-roll {         
+      .saving-roll {
          background: url('../assets/img/grungeblue.jpg');
          border: 1px solid $darkColor;
          box-shadow: none;
          color: $lighterColor;
+      }
+
+      .heal-roll, .apply-heal {
+         background: url('../assets/img/grungegreen.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #447744;
       }
 
       .damage-roll, .apply-damage {
@@ -312,6 +319,13 @@
 
       .warning {
          color: #702010;
+      }
+
+      .heal-roll, .apply-heal {
+         background: url('../assets/img/grungegreen.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #447744;
       }
 
       .damage-roll, .apply-damage {

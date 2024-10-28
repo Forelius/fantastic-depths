@@ -194,7 +194,8 @@
          "targetSelf": "Target Self",
          "targetOther": "Target Other",
          "maxTargetFormula": "Max. Target Roll",
-         "durationFormula": "Duration Roll"
+         "durationFormula": "Duration Roll",
+         "healFormula": "Heal Roll"
       },
       "Item": {
          "plural": "Gear",
@@ -309,13 +310,15 @@
          "pass": "Success!",
          "fail": "Failed",
          "attackFlavor": "{attacker} {attackType} attacks with {weapon}",
-         "spellCast2": "{caster} casts {spell}",
+         "spellCast": "{caster} casts {spell}",
          "attackAC": "<div class='attack-info'>Attack hits <strong>AC {hitAC}</strong>.</div>",
          "attackSuccess": "<div class='attack-success'>Attack hit!</div>",
          "attackFail": "<div class='attack-fail'>Attack missed!</div>",
          "attackRoll": "Attacks",
          "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
-         "damageRoll": "Damage"
+         "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
+         "damageRoll": "Damage",
+         "healRoll": "Heal"
       },
       "roll": "Roll",
       "rollMode": "Roll Mode",
@@ -337,6 +340,26 @@
          "prevDesc": "Revert Turn",
          "resetSession": "Reset Session",
          "resetTotal": "Reset Total"
+      },
+      "AttackTypes": {
+         "name": "Attack Type",
+         "types": {
+            "melee": "Melee",
+            "missile": "Missile",
+            "save": "Saving Throw"
+         }
+      },
+      "DamageTypes": {
+         "name": "Damage Types",
+         "types": {
+            "physical": "Physical",
+            "breath": "Breath",
+            "fire": "Fire",
+            "frost": "Frost",
+            "spell": "Spell",
+            "poison": "Poison",
+            "heal": "Healing"
+         }
       }
    },
 

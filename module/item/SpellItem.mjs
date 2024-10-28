@@ -16,12 +16,17 @@ export class SpellItem extends fadeItem {
       systemData.targetSelf = systemData.targetSelf || true;
       systemData.targetOther = systemData.targetOther || true;
       systemData.dmgFormula = systemData.dmgFormula || null;
+      systemData.healFormula = systemData.healFormula || null;
       systemData.maxTargetFormula = systemData.maxTargetFormula || 1;
       systemData.durationFormula = systemData.durationFormula || null;
+      systemData.savingThrow = systemData.savingThrow || "";
+      systemData.attackType = systemData.attackType || ""
+      systemData.damageType = systemData.damageType || ""
    }
 
    async getDamageRoll(resp) {
-      let formula = await this.getEvaluatedRollFormula(this.system.dmgFormula);
+      const isHeal = this.system.healFormula?.length > 0;
+      let formula = await this.getEvaluatedRollFormula(isHeal ? this.system.healFormula : this.system.dmgFormula);
       let digest = [];
 
       if (resp?.mod && resp?.mod !== 0) {
@@ -31,7 +36,7 @@ export class SpellItem extends fadeItem {
 
       return {
          formula,
-         damageType: "magic",
+         damageType: isHeal ? "heal" : "magic",
          digest
       };
    }
@@ -45,44 +50,86 @@ export class SpellItem extends fadeItem {
       const item = this;
       const systemData = this.system;
       const ownerData = this.actor.system;
+      const casterToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
 
-      const dialogResp = await DialogFactory({
-         dialog: "yesno",
-         title: "Cast Spell?",
-         content: "Do you want to cast the spell or view its description?",
-         yesLabel: "Cast Spell",
-         noLabel: "View Description",
-         defaultChoice: "yes"
-      }, this.actor);
+      if (casterToken) {
+         const dialogResp = await DialogFactory({
+            dialog: "yesno",
+            title: "Cast Spell?",
+            content: "Do you want to cast the spell or view its description?",
+            yesLabel: "Cast Spell",
+            noLabel: "View Description",
+            defaultChoice: "yes"
+         }, this.actor);
 
-      if (dialogResp?.resp?.result === true) {
-         await this.doSpellcast();
-      } else if (dialogResp?.resp?.result === false) {
-         super.roll(dataset);
+         if (dialogResp?.resp?.result === true) {
+
+            await this.doSpellcast(casterToken);
+         } else if (dialogResp?.resp?.result === false) {
+            super.roll(dataset);
+         }
+      } else {
+         ui.notifications.warn("You must have your token selected to cast a spell.");
       }
 
       return null;
    }
 
-   async doSpellcast() {
+   async doSpellcast(casterToken) {
       const systemData = this.system;
-      const casterToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
-      const itemLink = `@UUID[Actor.${this.actor.id}.Item.${this.id}]{${this.name}}`;
+      let result = null;
 
       if (systemData.cast < systemData.memorized) {
-         systemData.cast += 1;
-         await this.update({ "system.cast": systemData.cast });
+         const itemLink = `@UUID[Actor.${this.actor.id}.Item.${this.id}]{${this.name}}`;
+         const rollData = this.getRollData();
+         const rollMode = game.settings.get("core", "rollMode");
+         let canProceed = true;
+         let digest = [];
+         let hasRoll = systemData.attackType === 'melee';
+         let rolled = null;
 
-         const chatData = {
-            caller: this, // the spell
-            context: casterToken, // the caster
-            options: {
-               itemLink
+         if (hasRoll) {
+            try {
+               // Get roll modification
+               let dataset = {
+                  dialog: "generic",
+                  label: "Attack",
+                  rollMode
+               };
+               let dialogResp = await DialogFactory(dataset, this.actor);
+               if (dialogResp?.resp) {
+                  let attackRoll = casterToken.actor.getAttackRoll(this, systemData.attackType, dialogResp.resp.mod, null);
+                  rollData.formula = attackRoll.formula;
+                  digest = attackRoll.digest;
+                  const rollContext = { ...rollData };
+                  rolled = await new Roll(rollData.formula, rollContext).evaluate();
+               } else {
+                  canProceed = false;
+               }
+            } catch (error) {
+               // Close button pressed or other error
+               canProceed = false;
             }
-         };
+         }
 
-         const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData);
-         await builder.createChatMessage();
+         if (canProceed) {
+            systemData.cast += 1;
+            await this.update({ "system.cast": systemData.cast });
+
+            const chatData = {
+               rollData,
+               caller: this, // the spell
+               context: casterToken, // the caster
+               options: {
+                  itemLink
+               },
+               roll: rolled,
+               digest
+            };
+
+            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData);
+            await builder.createChatMessage();
+         }
       } else {
          const msg = `${this.actor.name} tries to cast ${this.name}, but the spell is not memorized.`;
          ui.notifications.warn(msg);
@@ -90,5 +137,7 @@ export class SpellItem extends fadeItem {
          // Create the chat message
          await ChatMessage.create({ content: msg });
       }
+
+      return result;
    }
 }

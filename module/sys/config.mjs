@@ -21,6 +21,20 @@ FADE.SavingThrows = [
    "breath",
    "spell"
 ];
+FADE.AttackTypes = [
+   "melee",
+   "missile",
+   "save"
+];
+FADE.DamageTypes = [
+   "physical",
+   "breath",
+   "fire",
+   "frost",
+   "spell",
+   "poison",
+   "heal"
+]
 FADE.MasteryLevels = {
    basic: "Basic",
    skilled: "Skilled",

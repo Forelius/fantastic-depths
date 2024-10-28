@@ -513,6 +513,12 @@ h1, h2, h3, h4 {
   box-shadow: none;
   color: #ebeae4;
 }
+.dark-mode .chat-message .heal-roll, .dark-mode .chat-message .apply-heal {
+  background: url("../assets/img/grungegreen.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #447744;
+}
 .dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
@@ -602,6 +608,12 @@ h1, h2, h3, h4 {
 .light-mode .chat-message .warning {
   color: #702010;
 }
+.light-mode .chat-message .heal-roll, .light-mode .chat-message .apply-heal {
+  background: url("../assets/img/grungegreen.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #447744;
+}
 .light-mode .chat-message .damage-roll, .light-mode .chat-message .apply-damage {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
@@ -610,10 +622,10 @@ h1, h2, h3, h4 {
 }
 
 .chat-message {
-  padding: 4px 6px 4px 6px;
+  padding: 3px 4px 3px 4px;
 }
 .chat-message .message-content {
-  padding: 1px 6px 5px 6px;
+  padding: 1px 5px 4px 5px;
 }
 .chat-message .message-content button {
   margin: 0;
@@ -624,14 +636,14 @@ h1, h2, h3, h4 {
 .chat-message .message-content .collapser {
   margin-bottom: 4px;
 }
-.chat-message .message-content .apply-damage {
+.chat-message .message-content .apply-damage, .chat-message .message-content .apply-heal {
   margin-top: 4px;
 }
-.chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll {
+.chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll, .chat-message .message-content .heal-roll {
   font-size: 15px;
   padding: 5px 4px;
 }
-.chat-message .message-content .damage-roll .small-text, .chat-message .message-content .saving-Roll .small-text {
+.chat-message .message-content .damage-roll .small-text, .chat-message .message-content .saving-Roll .small-text, .chat-message .message-content .heal-roll .small-text {
   margin-left: 4px;
   font-size: 10px;
   color: #808080;
@@ -986,7 +998,7 @@ h1, h2, h3, h4 {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
-  bottom: 2px;
+  top: 31px;
   left: 2px;
 }
 .fantastic-depths .summary li.notify input {

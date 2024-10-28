@@ -120,8 +120,8 @@ Hooks.once('ready', async function () {
    LightManager.initialize();
 
    // inline-roll handler
-   $(document).on('click', '.damage-roll', DamageRollChatBuilder.clickDamageRoll);
-   $(document).on('click', '.apply-damage', DamageRollChatBuilder.clickApplyDamage);
+   $(document).on('click', '.damage-roll,.heal-roll', DamageRollChatBuilder.clickDamageRoll);
+   $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
    $(document).on('click', '.saving-roll', fadeActor.handleSavingThrowRequest);
 

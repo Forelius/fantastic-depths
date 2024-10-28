@@ -273,10 +273,13 @@
          "targetSelf": true,
          "targetOther": true,
          "dmgFormula": null,
+         "healFormula": null,
          "maxTargetFormula": "1",
          "durationFormula": null,
          "savingThrow": null,
-         "saveDmgFormula": null
+         "saveDmgFormula": null,
+         "attackType": "",
+         "damageType": ""
       },
       "skill": {
          "templates": [ "base" ],

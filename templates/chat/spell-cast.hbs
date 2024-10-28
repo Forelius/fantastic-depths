@@ -6,28 +6,60 @@
 </div>
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
-      <img class="item-image" src='{{caller.img}}' title='{{caller.name}}' />
-      <div class="item-name">{{caller.name}}</div>
+      <img class="item-image" src='{{spellItem.img}}' title='{{spellItem.name}}' />
+      <div class="item-name">{{spellItem.name}}</div>
    </div>
    <div class="collapsible-content collapsed">
-      {{{caller.system.description}}}
+      {{{spellItem.system.description}}}
    </div>
 </div>
-
+{{#if rollContent}}
+{{{rollContent}}}
+{{/if}}
+<div name="digest" class="digest">
+   {{#each digest as |ditem|}}
+   <div>{{ditem}}</div>
+   {{/each}}
+</div>
+{{#if spellItem.system.savingThrow}}
+<div style="margin-top:6px;">
+   <button class="saving-roll"
+           data-attackerid="{{descData.attackerid}}"
+           data-type="{{spellItem.system.savingThrow}}"
+           data-weaponid="{{spellItem.id}}">
+      <i class="fa-solid fa-life-ring"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{localize (concat 'FADE.Actor.Saves.' spellItem.system.savingThrow '.abbr')}}</span>
+   </button>
+</div>
+{{/if}}
 {{#if damageRoll.formula}}
 <div style="margin-top:8px;">
+   {{#if isHeal}}
+   <button class="heal-roll"
+           data-damagetype="{{damageRoll.damageType}}"
+           data-attacktype="spell"
+           data-label="Heal"
+           data-type="heal"
+           data-attackerid="{{context.id}}"
+           data-weaponid="{{spellItem.id}}">
+      <i class="fa-solid fa-heart"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
+   </button>
+   {{else}}
    <button class="damage-roll"
            data-damagetype="{{damageRoll.damageType}}"
            data-attacktype="spell"
            data-label="Damage"
            data-type="damage"
            data-attackerid="{{context.id}}"
-           data-weaponid="{{caller.id}}">
+           data-weaponid="{{spellItem.id}}">
       <i class="fa-solid fa-burst"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
+   {{/if}}
 </div>
 {{/if}}
+{{#if roll}}
 <div class="card-tray">
    <label class="collapser">
       <i class="fas fa-bullseye" inert></i>
@@ -41,3 +73,4 @@
       {{/each}}
    </div>
 </div>
+{{/if}}

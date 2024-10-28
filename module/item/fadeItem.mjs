@@ -104,7 +104,7 @@ export class fadeItem extends Item {
             result = roll.formula;
          }
          catch (error) {
-            console.error(`Invalid damage formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
          }
       }
       return result;
