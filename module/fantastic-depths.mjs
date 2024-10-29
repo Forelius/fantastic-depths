@@ -29,7 +29,7 @@ import { migrateData } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
-import { Collapser } from './utils/Collapser.mjs';
+import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 
 /* -------------------------------------------- */
