@@ -13,8 +13,8 @@ export class SpellItem extends fadeItem {
       super.prepareBaseData();
       const systemData = this.system;
 
-      systemData.targetSelf = systemData.targetSelf || true;
-      systemData.targetOther = systemData.targetOther || true;
+      systemData.targetSelf = systemData.targetSelf === undefined ? true : systemData.targetSelf;
+      systemData.targetOther = systemData.targetOther === undefined ? true : systemData.targetOther
       systemData.dmgFormula = systemData.dmgFormula || null;
       systemData.healFormula = systemData.healFormula || null;
       systemData.maxTargetFormula = systemData.maxTargetFormula || 1;
