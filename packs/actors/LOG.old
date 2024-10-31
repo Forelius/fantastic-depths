@@ -1,5 +1,9 @@
-2024/10/31-05:13:21.417 2ecc Recovering log #656
-2024/10/31-05:13:21.417 2ecc Level-0 table #658: started
-2024/10/31-05:13:21.419 2ecc Level-0 table #658: 248 bytes OK
-2024/10/31-05:13:21.423 2ecc Delete type=0 #656
-2024/10/31-05:13:21.423 2ecc Delete type=3 #654
+2024/10/31-15:21:00.575 4a6c Recovering log #659
+2024/10/31-15:21:00.579 4a6c Level-0 table #661: started
+2024/10/31-15:21:00.587 4a6c Level-0 table #661: 772970 bytes OK
+2024/10/31-15:21:00.591 4a6c Delete type=0 #659
+2024/10/31-15:21:00.592 4a6c Delete type=3 #657
+2024/10/31-15:21:00.592 b10 Compacting 4@0 + 1@1 files
+2024/10/31-15:21:00.604 b10 Generated table #663@0: 945 keys, 574054 bytes
+2024/10/31-15:21:00.604 b10 Compacted 4@0 + 1@1 files => 574054 bytes
+2024/10/31-15:21:00.606 b10 compacted to: files[ 0 1 0 0 0 0 0 ]

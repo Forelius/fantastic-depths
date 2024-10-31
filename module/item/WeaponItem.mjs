@@ -67,10 +67,11 @@ export class WeaponItem extends fadeItem {
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
             modifier += attackerData.abilities.str.mod;
             digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
-         } else if (attackerData.abilities && attackerData.abilities.dex.mod) {
-            modifier += attackerData.abilities.dex.mod;
-            digest.push(`Dexterity mod: ${attackerData.abilities.str.mod}`);
          }
+         //} else if (attackerData.abilities && attackerData.abilities.dex.mod) {
+         //   modifier += attackerData.abilities.dex.mod;
+         //   digest.push(`Dexterity mod: ${attackerData.abilities.dex.mod}`);
+         //}
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
             modifier += attackerData.mod.combat.dmgRanged;
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);

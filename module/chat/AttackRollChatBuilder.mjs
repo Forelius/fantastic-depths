@@ -20,8 +20,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
       // Check for automatic hit or miss
       if (roll === 1) {
          result = null;  // Natural 1 always misses
-      } else if (roll === 20) {
-         result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
+      //} else if (roll === 20) {
+        // result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
       } else {
          // Loop through AC values from 19 down to -20
          let repeater = 0;
