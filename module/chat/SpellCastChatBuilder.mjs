@@ -39,6 +39,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
 
       // Prepare data for the chat template
       const chatData = {
+         context,
          rollContent,
          toHitResult,
          spellItem, // spell item
