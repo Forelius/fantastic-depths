@@ -85,13 +85,15 @@ export class WeaponItem extends fadeItem {
          digest.push(`Manual mod: ${resp.mod}`);
       }
 
+      if (modifier <= 0 && evaluatedRoll?.total <= 0) {
+         hasDamage = false;
+      }
+
+      // This is where the modifiers are applied to the formula. It only supports addition mode.
       if (modifier !== 0) {
          formula = formula ? `${formula}+${modifier}` : `${modifier}`;
       }
 
-      if (modifier <= 0 && evaluatedRoll?.total <= 0) {
-         hasDamage = false;
-      }
 
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
@@ -257,7 +259,7 @@ export class WeaponItem extends fadeItem {
       };
 
       // Filter effects that target any part of system.mod
-      const modEffects = this.effects.filter(effect =>
+      const modEffects = this.effects.filter(effect => effect.disabled === false &&
          effect.changes.some(change => change.key.startsWith('system.mod.'))
       );
 

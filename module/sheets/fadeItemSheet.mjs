@@ -27,6 +27,9 @@ export class fadeItemSheet extends ItemSheet {
       if (this.item.type === 'armor') {
          options.width = 520;
          options.height = 340;
+      } else if (this.item.type === "mastery") {
+         options.width = 540;
+         options.height = 360;
       } else if (this.item.type === "weapon") {
          options.width = 520;
          options.height = 360;
@@ -129,6 +132,14 @@ export class fadeItemSheet extends ItemSheet {
             acc[key] = value;
             return acc;
          }, {});
+      }
+
+      if (this.item.type === "mastery") {
+         const types = [];
+         types.push(...CONFIG.FADE.TargetTypes.map((type) => {
+            return { value: type, text: game.i18n.localize(`FADE.Mastery.targetTypes.${type}.abbr`) }
+         }));  
+         context.targetTypes = types;
       }
 
       // Is this user the game master?

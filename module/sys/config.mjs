@@ -35,6 +35,11 @@ FADE.DamageTypes = [
    "poison",
    "heal"
 ]
+FADE.TargetTypes = [
+   "monster",
+   "handheld",
+   "all"
+];
 FADE.MasteryLevels = {
    basic: "Basic",
    skilled: "Skilled",

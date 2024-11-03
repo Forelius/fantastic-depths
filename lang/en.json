@@ -288,7 +288,28 @@
       },
       "Mastery": {
          "plural": "Weapon Masteries",
-         "short": "Mastery"
+         "short": "Mastery",
+         "primary": "Primary",
+         "secondary": "Secondary",
+         "targetTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
+         "targetTypes": {
+            "monster": {
+               "long": "Monster/Missile",
+               "abbr": "M"
+            },
+            "handheld": {
+               "long": "Hand-held",
+               "abbr": "H"
+            },
+            "all": {
+               "long": "All",
+               "abbr": "A"
+            }
+         },
+         "acBonus": "AC Bonus",
+         "acBonusType": "Type",
+         "acBonusAT": "AT#",
+         "acBonusATTitle": "AC bonus attacks per round"
       },
       "SpecialAbility": {
          "plural": "Special Abilities",

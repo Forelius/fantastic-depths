@@ -289,7 +289,18 @@
       },
       "mastery": {
          "templates": [ "base" ],
-         "level": "basic"
+         "level": "basic",
+         "pDmgFormula": null,
+         "sDmgFormula": null,
+         "primaryType": null,
+         "acBonusType": null,
+         "acBonus": 0,
+         "acBonusAT": null,
+         "range": {
+            "short": null,
+            "medium": null,
+            "long": null
+         }
       },
       "specialAbility": {
          "templates": [ "base", "rollable" ],

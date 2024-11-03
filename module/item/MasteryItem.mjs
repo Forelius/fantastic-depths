@@ -7,6 +7,11 @@ export class MasteryItem extends fadeItem {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
    }
+      
+   //applyMasteryDamage(attackerToken, weaponData) {
+   //   const attackerData = attackerToken.actor.system;
+   //   const rollFormula = weaponData.damageRoll;
+   //}
 
    /** @override */
    prepareBaseData() {
