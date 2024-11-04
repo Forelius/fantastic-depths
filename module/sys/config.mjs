@@ -796,7 +796,7 @@ FADE.WeaponMastery =
    },
    "Net": {
       "basic": {
-         "primaryType": "handheld",
+         "primaryType": "monster",
          "range": { "short": 10, "medium": 20, "long": 30 },
          "pDmgFormula": "nil",
          "sDmgFormula": null,
@@ -808,7 +808,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "skilled": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": 15, "medium": 25, "long": 35 },
          "pDmgFormula": "nil",
          "sDmgFormula": null,
@@ -820,7 +820,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "expert": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": 20, "medium": 30, "long": 40 },
          "pDmgFormula": "nil",
          "sDmgFormula": null,
@@ -832,7 +832,7 @@ FADE.WeaponMastery =
          "sToHit": 1
       },
       "master": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": 25, "medium": 35, "long": 45 },
          "pDmgFormula": "nil",
          "sDmgFormula": null,
@@ -844,7 +844,7 @@ FADE.WeaponMastery =
          "sToHit": 2
       },
       "grandMaster": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": 30, "medium": 40, "long": 50 },
          "pDmgFormula": "nil",
          "sDmgFormula": null,
@@ -1924,7 +1924,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "skilled": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": null, "medium": null, "long": null },
          "pDmgFormula": "1d6+1",
          "sDmgFormula": null,
@@ -1936,7 +1936,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "expert": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": null, "medium": 15, "long": 25 },
          "pDmgFormula": "1d6+3",
          "sDmgFormula": null,
@@ -1948,7 +1948,7 @@ FADE.WeaponMastery =
          "sToHit": 1
       },
       "master": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": 15, "medium": 25, "long": 40 },
          "pDmgFormula": "1d6+5",
          "sDmgFormula": "1d4+5",
@@ -1960,7 +1960,7 @@ FADE.WeaponMastery =
          "sToHit": 2
       },
       "grandMaster": {
-         "primaryType": "all",
+         "primaryType": "monster",
          "range": { "short": 10, "medium": 25, "long": 40 },
          "pDmgFormula": "1d6+6",
          "sDmgFormula": "1d4+6",
@@ -1986,7 +1986,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "skilled": {
-         "primaryType": "monster",
+         "primaryType": "handheld",
          "range": { "short": null, "medium": null, "long": null },
          "pDmgFormula": "1d6+2",
          "sDmgFormula": null,
@@ -1998,7 +1998,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "expert": {
-         "primaryType": "monster",
+         "primaryType": "handheld",
          "range": { "short": null, "medium": 10, "long": 20 },
          "pDmgFormula": "1d8+2",
          "sDmgFormula": null,
@@ -2010,7 +2010,7 @@ FADE.WeaponMastery =
          "sToHit": 1
       },
       "master": {
-         "primaryType": "monster",
+         "primaryType": "handheld",
          "range": { "short": 10, "medium": 20, "long": 30 },
          "pDmgFormula": "1d8+5",
          "sDmgFormula": "1d6+4",
@@ -2022,7 +2022,7 @@ FADE.WeaponMastery =
          "sToHit": 2
       },
       "grandMaster": {
-         "primaryType": "monster",
+         "primaryType": "handheld",
          "range": { "short": 10, "medium": 20, "long": 30 },
          "pDmgFormula": "1d8+7",
          "sDmgFormula": "1d6+7",
@@ -2048,7 +2048,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "skilled": {
-         "primaryType": "handheld",
+         "primaryType": "all",
          "range": { "short": null, "medium": null, "long": null },
          "pDmgFormula": "2d4",
          "sDmgFormula": null,
@@ -2060,7 +2060,7 @@ FADE.WeaponMastery =
          "sToHit": 0
       },
       "expert": {
-         "primaryType": "handheld",
+         "primaryType": "all",
          "range": { "short": null, "medium": 10, "long": 20 },
          "pDmgFormula": "2d4+2",
          "sDmgFormula": null,
@@ -2072,7 +2072,7 @@ FADE.WeaponMastery =
          "sToHit": 1
       },
       "master": {
-         "primaryType": "handheld",
+         "primaryType": "all",
          "range": { "short": 10, "medium": 20, "long": 30 },
          "pDmgFormula": "2d4+4",
          "sDmgFormula": null,
@@ -2084,7 +2084,7 @@ FADE.WeaponMastery =
          "sToHit": 2
       },
       "grandMaster": {
-         "primaryType": "handheld",
+         "primaryType": "all",
          "range": { "short": 10, "medium": 20, "long": 30 },
          "pDmgFormula": "2d4+6",
          "sDmgFormula": null,

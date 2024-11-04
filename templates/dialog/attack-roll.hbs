@@ -6,6 +6,14 @@
          {{selectOptions types selected='melee' valueAttr="value" labelAttr="text"}}
       </select>
    </div>
+   {{#if masteryTargetTypes}}
+   <div class="form-group">
+      <label for="targetType">Mastery Target Type</label>
+      <select id="targetType" class="form-control">
+         {{selectOptions masteryTargetTypes valueAttr="value" labelAttr="text"}}
+      </select>
+   </div>
+   {{/if}}
    {{#if modes}}
    <div class="form-group">
       <label for="attackMode">Attack Mode</label>

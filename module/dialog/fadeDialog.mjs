@@ -6,17 +6,29 @@ export class fadeDialog {
    /**
     * Display a dialog allowing the caller to select a type of attack and attack roll modifier.
     * @param {any} weapon Reference to weapon instance
-    * @param {any} caller 
+    * @param {any} caller The owning actor
     * @returns
     */
    static async getAttackDialog(weapon, caller) {
       const dialogData = { caller };
       const result = {};
+      const weaponData = weapon.system;
 
-      dialogData.weapon = weapon.system;
+      dialogData.weapon = weaponData;
       dialogData.label = weapon.name;
       dialogData.modes = weapon.getAttackModes();
       dialogData.types = weapon.getAttackTypes();
+
+      const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+      // if optional weapon mastery is being used and the weapon has a mastery specified...
+      if (weaponMastery && weaponData.mastery !== "") {
+         const attackerMastery = caller.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
+         if (attackerMastery) {
+            dialogData.masteryTargetTypes = [];
+            dialogData.masteryTargetTypes.push({ text: game.i18n.localize('FADE.Mastery.targetTypes.monster.long'), value: 'monster' });
+            dialogData.masteryTargetTypes.push({ text: game.i18n.localize('FADE.Mastery.targetTypes.handheld.long'), value: 'handheld' });
+         }
+      }
 
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
@@ -32,7 +44,8 @@ export class fadeDialog {
                   rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
                   attackType: document.getElementById('attackType').value,
-                  attackMode: document.getElementById('attackMode').value
+                  attackMode: document.getElementById('attackMode').value,
+                  targetType: document.getElementById('targetType')?.value,
                }),
             },
          },

@@ -106,7 +106,7 @@ export class SpellItem extends fadeItem {
                };
                let dialogResp = await DialogFactory(dataset, this.actor);
                if (dialogResp?.resp) {
-                  let attackRoll = casterToken.actor.getAttackRoll(this, systemData.attackType, dialogResp.resp.mod, null);
+                  let attackRoll = casterToken.actor.getAttackRoll(this, systemData.attackType, { mod: dialogResp.resp.mod });
                   rollData.formula = attackRoll.formula;
                   digest = attackRoll.digest;
                   const rollContext = { ...rollData };

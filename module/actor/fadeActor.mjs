@@ -130,19 +130,29 @@ export class fadeActor extends Actor {
       return data;
    }
 
-   getAttackRoll(weapon, attackType, mod, target) {
+   /**
+    * Get the attack roll formula for the specified weapon, attack type, mod and target.
+    * @param {any} weapon The weapon being used to attack with.
+    * @param {any} attackType The type of attack. Values are melee or missile
+    * @param {any} options An object containing one or more of the following:
+    *    mod - A manual modifier entered by the user.
+    *    target - The target actor, if any.
+    *    targetType - For weapon mastery system, the type of target (monster or handheld).
+    * @returns
+    */
+   getAttackRoll(weapon, attackType, options = {}) {
       const weaponData = weapon.system;
       const systemData = this.system;
-      const targetMods = target?.system.mod.combat;
+      const targetMods = options.target?.system.mod.combat;
       let formula = '1d20';
       let digest = [];
       let modifier = 0;
       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
 
-      if (mod && mod !== 0) {
-         modifier += mod;
+      if (options.mod && options.mod !== 0) {
+         modifier += options.mod;
          //formula = `${formula}+@mod`; 
-         digest.push(`Manual mod: ${mod}`);
+         digest.push(`Manual mod: ${options.mod}`);
       }
 
       if (attackType === "melee") {
@@ -194,18 +204,23 @@ export class fadeActor extends Actor {
             //formula = `${formula}+${targetMods.selfToHitRanged}`;
             digest.push(`Target effect mod: ${targetMods.selfToHitRanged}`);
          }
+      }
 
-         const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-         if (weaponMastery && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
-            const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
-            if (attackerMastery) {
-               // do stuff
-            } else {
-               // Unskilled use
-               //formula = `${formula}-1`;
-               modifier -= 1;
-               digest.push(`Unskilled use: -1`);
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      if (masteryEnabled && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
+         const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
+         if (attackerMastery) {
+            const bIsPrimary = options.targetType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
+            // Get the to hit bonus, if any.
+            const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
+            if (toHitMod > 0) {
+               modifier += toHitMod;
+               digest.push(`Mastery mod: ${toHitMod}`);
             }
+         } else if (attackType === "missile") {
+            // Unskilled use
+            modifier -= 1;
+            digest.push(`Unskilled ranged weapon use: -1`);
          }
       }
 
@@ -243,14 +258,14 @@ export class fadeActor extends Actor {
          digest.push(`${damageMitigated} points of ${damageType} damage mitigated.`);
       }
 
-      if (isHeal) {         
+      if (isHeal) {
          systemData.hp.value = Math.min((systemData.hp.value + dmgAmt), systemData.hp.max);
          digest.push(`${systemData.hp.value - prevHP} hit points restored to ${this.name}.`);
       } else {
          systemData.hp.value -= dmgAmt;
          digest.push(`${dmgAmt} points of ${damageType} damage applied to ${this.name}.`);
       }
-      this.update({ "system.hp.value": systemData.hp.value });      
+      this.update({ "system.hp.value": systemData.hp.value });
 
       // Check if the actor already has the "Dead" effect
       let hasDeadEffect = this.effects.some(e => e.getFlag("core", "statusId") === "dead");
