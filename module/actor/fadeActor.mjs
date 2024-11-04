@@ -89,6 +89,7 @@ export class fadeActor extends Actor {
 
       this._prepareEffects();
 
+      systemData.combat = { attacksAgainst: 0 };
       systemData.config = systemData.config || {};
       systemData.config.isSpellcaster = systemData.config.isSpellcaster || false;
       systemData.config.isRetainer = systemData.config.isRetainer || false;
@@ -136,18 +137,18 @@ export class fadeActor extends Actor {
     * @param {any} attackType The type of attack. Values are melee or missile
     * @param {any} options An object containing one or more of the following:
     *    mod - A manual modifier entered by the user.
-    *    target - The target actor, if any.
+    *    target - This doesn't work when there are multiple targets.
     *    targetType - For weapon mastery system, the type of target (monster or handheld).
     * @returns
     */
    getAttackRoll(weapon, attackType, options = {}) {
       const weaponData = weapon.system;
       const systemData = this.system;
-      const targetMods = options.target?.system.mod.combat;
+      const targetData = options.target?.system;
       let formula = '1d20';
       let digest = [];
       let modifier = 0;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
 
       if (options.mod && options.mod !== 0) {
          modifier += options.mod;
@@ -156,72 +157,19 @@ export class fadeActor extends Actor {
       }
 
       if (attackType === "melee") {
-         if (hasWeaponMod && weaponData.mod.toHit !== 0) {
-            //formula = `${formula}+${weaponData.mod.toHit}`;
-            modifier += weaponData.mod.toHit;
-            digest.push(`Weapon mod: ${weaponData.mod.toHit}`);
-         }
-         if (systemData.mod?.combat.toHit !== 0) {
-            //formula = `${formula}+${systemData.mod.combat.toHit}`;
-            modifier += systemData.mod.combat.toHit;
-            digest.push(`AttsystemData.mod.combat.toHitacker effect mod: ${systemData.mod.combat.toHit}`);
-         }
-         // If the attacker has ability scores...
-         if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-            //formula = `${formula}+${systemData.abilities.str.mod}`;
-            modifier += systemData.abilities.str.mod;
-            digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
-         }
-         if (targetMods && targetMods.selfToHit !== 0) {
-            //formula = `${formula}+${targetMods.selfToHit}`;
-            modifier += targetMods.selfToHit;
-            digest.push(`Target effect mod: ${targetMods.selfToHit}`);
-         }
+         modifier += this.getMeleeAttackRollMods(weaponData, digest, targetData);
       } else {
          // Missile attack
-         if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
-            //formula = `${formula}+${weaponData.mod.toHitRanged}`;
-            modifier += weaponData.mod.toHitRanged;
-            digest.push(`Weapon mod: ${weaponData.mod.toHitRanged}`);
-         }
-         if (systemData.mod.combat?.toHitRanged !== 0) {
-            modifier += systemData.mod.combat.toHitRanged;
-            //formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
-            digest.push(`Attacker effect mod: ${systemData.mod.combat.toHitRanged}`);
-         }
-         // If the attacker has ability scores...
-         if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
-            modifier += systemData.abilities.str.mod;
-            //formula = `${formula}+${systemData.abilities.str.mod}`;
-            digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
-         } else if (systemData.abilities && systemData.abilities.dex.mod) {
-            modifier += systemData.abilities.dex.mod;
-            //formula = `${formula}+${systemData.abilities.dex.mod}`;
-            digest.push(`Dexterity mod: ${systemData.abilities.dex.mod}`);
-         }
-         if (targetMods && targetMods.selfToHitRanged !== 0) {
-            modifier += targetMods.selfToHitRanged;
-            //formula = `${formula}+${targetMods.selfToHitRanged}`;
-            digest.push(`Target effect mod: ${targetMods.selfToHitRanged}`);
-         }
+         modifier += this.getMissileAttackRollMods(weaponData, digest, targetData);
       }
 
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      if (targetData) {
+         // Track number of attacks against target.
+         targetData.combat.attacksAgainst++;
+      }
+
       if (masteryEnabled && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
-         const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
-         if (attackerMastery) {
-            const bIsPrimary = options.targetType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
-            // Get the to hit bonus, if any.
-            const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
-            if (toHitMod > 0) {
-               modifier += toHitMod;
-               digest.push(`Mastery mod: ${toHitMod}`);
-            }
-         } else if (attackType === "missile") {
-            // Unskilled use
-            modifier -= 1;
-            digest.push(`Unskilled ranged weapon use: -1`);
-         }
+         modifier += this.getMasteryAttackRollMods(weaponData, options, digest, attackType);
       }
 
       if (modifier !== 0) {
@@ -229,6 +177,91 @@ export class fadeActor extends Actor {
       }
 
       return { formula, digest };
+   }
+
+   getMasteryAttackRollMods(weaponData, options, digest, attackType) {
+      let result = 0;
+      const targetData = options.target?.system;
+      const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
+      if (attackerMastery) {
+         const bIsPrimary = options.targetType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
+         // Get the to hit bonus, if any.
+         const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
+         if (toHitMod > 0) {
+            result += toHitMod;
+            digest.push(`Mastery mod: ${toHitMod}`);
+         }
+      } else if (attackType === "missile") {
+         // Unskilled use
+         result -= 1;
+         digest.push(`Unskilled ranged weapon use: -1`);
+      }
+      return result;
+   }
+
+   getMissileAttackRollMods(weaponData, digest, targetData) {
+      let result = 0;
+      const systemData = this.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
+         //formula = `${formula}+${weaponData.mod.toHitRanged}`;
+         result += weaponData.mod.toHitRanged;
+         digest.push(`Weapon mod: ${weaponData.mod.toHitRanged}`);
+      }
+      if (systemData.mod.combat?.toHitRanged !== 0) {
+         result += systemData.mod.combat.toHitRanged;
+         //formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
+         digest.push(`Attacker effect mod: ${systemData.mod.combat.toHitRanged}`);
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
+         result += systemData.abilities.str.mod;
+         //formula = `${formula}+${systemData.abilities.str.mod}`;
+         digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
+      } else if (systemData.abilities && systemData.abilities.dex.mod) {
+         result += systemData.abilities.dex.mod;
+         //formula = `${formula}+${systemData.abilities.dex.mod}`;
+         digest.push(`Dexterity mod: ${systemData.abilities.dex.mod}`);
+      }
+      if (targetMods && targetMods.selfToHitRanged !== 0) {
+         result += targetMods.selfToHitRanged;
+         //formula = `${formula}+${targetMods.selfToHitRanged}`;
+         digest.push(`Target effect mod: ${targetMods.selfToHitRanged}`);
+      }
+      return result;
+   }
+
+   getMeleeAttackRollMods(weaponData, digest, targetData) {
+      let result = 0;
+      const systemData = this.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
+         //formula = `${formula}+${weaponData.mod.toHit}`;
+         result += weaponData.mod.toHit;
+         digest.push(`Weapon mod: ${weaponData.mod.toHit}`);
+      }
+      if (systemData.mod?.combat.toHit !== 0) {
+         //formula = `${formula}+${systemData.mod.combat.toHit}`;
+         result += systemData.mod.combat.toHit;
+         digest.push(`AttsystemData.mod.combat.toHitacker effect mod: ${systemData.mod.combat.toHit}`);
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
+         //formula = `${formula}+${systemData.abilities.str.mod}`;
+         result += systemData.abilities.str.mod;
+         digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
+      }
+      if (targetMods && targetMods.selfToHit !== 0) {
+         //formula = `${formula}+${targetMods.selfToHit}`;
+         result += targetMods.selfToHit;
+         digest.push(`Target effect mod: ${targetMods.selfToHit}`);
+      }
+
+      return result;
    }
 
    async applyDamage(amount, damageType, source = null) {
@@ -327,8 +360,9 @@ export class fadeActor extends Actor {
             }
          }
 
-         if (this.sheet) {
-            this.sheet.render(true);  // Pass true to force a full re-render of the actor sheet
+         // Only re-render the sheet if it's already rendered
+         if (sheetNeedsRerender && this.sheet && this.sheet.rendered) {
+            this.sheet.render(true);  // Force a re-render of the actor sheet
          }
       }
    }

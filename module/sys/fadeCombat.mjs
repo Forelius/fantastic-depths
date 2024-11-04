@@ -86,7 +86,8 @@ export class fadeCombat extends Combat {
          if (this.nextRoundMode === "reset") {
             // Reset initiative for all combatants
             for (let combatant of this.combatants) {
-               combatant.update({ initiative: null });  // Reset initiative to null
+               // Reset initiative to null
+               combatant.update({ initiative: null, "actor.system.combat.attacksAgainst": 0 });  
             }
 
             // Optionally send a chat message to notify players

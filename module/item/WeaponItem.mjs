@@ -173,7 +173,12 @@ export class WeaponItem extends fadeItem {
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
             if (dialogResp?.resp) {
                if (dialogResp.resp.attackType !== "breath") {
-                  let rollOptions = { mod: dialogResp.resp.mod };
+                  const targetTokens = Array.from(game.user.targets);
+                  const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
+                  let rollOptions = {
+                     mod: dialogResp.resp.mod,
+                     target: targetToken?.actor
+                  };
                   if (dialogResp.resp.targetType) {
                      rollOptions.targetType = dialogResp.resp.targetType;
                   }
