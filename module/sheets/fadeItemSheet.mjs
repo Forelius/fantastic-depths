@@ -29,7 +29,7 @@ export class fadeItemSheet extends ItemSheet {
          options.height = 340;
       } else if (this.item.type === "mastery") {
          options.width = 540;
-         options.height = 360;
+         options.height = 240;
       } else if (this.item.type === "weapon") {
          options.width = 520;
          options.height = 360;
@@ -113,7 +113,7 @@ export class fadeItemSheet extends ItemSheet {
          saves.push({ value: "", text: "None" });
          saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
             return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
-         }));         
+         }));
          context.savingThrows = saves;
       }
 
@@ -138,8 +138,12 @@ export class fadeItemSheet extends ItemSheet {
          const types = [];
          types.push(...CONFIG.FADE.TargetTypes.map((type) => {
             return { value: type, text: game.i18n.localize(`FADE.Mastery.targetTypes.${type}.abbr`) }
-         }));  
+         }));
          context.targetTypes = types;
+         context.masteryNames = Object.keys(CONFIG.FADE.WeaponMastery).map(name => ({
+            text: name,
+            value: name
+         }));
       }
 
       // Is this user the game master?

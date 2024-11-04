@@ -143,7 +143,7 @@ h1, h2, h3, h4 {
 
 .window-app.fantastic-depths.sheet.item:not(.minimized) {
   min-width: 460px !important;
-  min-height: 340px !important;
+  min-height: 230px !important;
 }
 
 .party-tracker .party-tracker-list {
@@ -915,13 +915,19 @@ h1, h2, h3, h4 {
   width: 90px;
   margin-right: 10px;
 }
+.fantastic-depths .sheet-header .profile-img-xsm {
+  flex: 0 0 10px;
+  height: 50px;
+  width: 50px;
+  margin-right: 10px;
+}
 .fantastic-depths .sheet-header .header-fields {
   flex: 1;
 }
 .fantastic-depths .sheet-header .charname {
   height: 34px;
 }
-.fantastic-depths .sheet-header .charname input {
+.fantastic-depths .sheet-header .charname input, .fantastic-depths .sheet-header .charname select {
   font-size: 22px;
   font-weight: 500;
   height: 30px;

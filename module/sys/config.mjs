@@ -47,7 +47,8 @@ FADE.MasteryLevels = {
    master: "Master",
    grandMaster: "Grand Master",
 };
-FADE.WeaponMastery = {
+FADE.WeaponMastery =
+{
    "Blowgun, to 2'": {
       "basic": {
          "primaryType": "all",
@@ -109,6 +110,7 @@ FADE.WeaponMastery = {
          "pToHit": 4,
          "sToHit": 3
       }
+
    },
    "Blowgun, over 2'": {
       "basic": {
@@ -2342,7 +2344,7 @@ FADE.WeaponMastery = {
          "sToHit": 3
       }
    }
-}
+};
 FADE.Armor = {
    acNaked: 9
 }

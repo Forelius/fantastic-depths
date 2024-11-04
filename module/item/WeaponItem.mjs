@@ -13,6 +13,7 @@ export class WeaponItem extends fadeItem {
       super.prepareBaseData();
       this.system.damageType = this.system.damageType || "physical";
       this.system.mastery = this.system.mastery || "";
+      this.system.mastery2 = this.system.mastery2 || "";
       this.system.natural = this.system.natural || false;
       this.system.breath = this.system.breath || "";
    }

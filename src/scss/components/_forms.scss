@@ -35,6 +35,13 @@ h4 {
       margin-right: 10px;
    }
 
+   .profile-img-xsm {
+      flex: 0 0 10px;
+      height: 50px;
+      width: 50px;
+      margin-right: 10px;
+   }
+
    .header-fields {
       flex: 1;
    }
@@ -42,7 +49,7 @@ h4 {
    .charname {
       height: 34px;
 
-      input {
+      input, select {
          font-size: 22px;
          font-weight: 500;
          height: 30px;

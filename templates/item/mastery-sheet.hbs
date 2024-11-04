@@ -1,11 +1,19 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li>
-               <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
-               <label>{{localize 'FADE.Actor.Name'}}</label>
+               <div class='charname'>
+                  {{#if false}}
+                  <select name="name">
+                     {{selectOptions masteryNames selected=item.name valueAttr="value" labelAttr="text"}}
+                  </select>
+                  {{else}}
+                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
+                  {{/if}}
+               </div>
+               <label for="name">{{localize 'FADE.Actor.Name'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
@@ -35,32 +43,48 @@
                <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' title="{{localize 'FADE.Mastery.acBonusATTitle'}}" />
                <label for="system.acBonusAT">{{localize 'FADE.Mastery.acBonusAT'}}</label>
             </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex2">
-               <input type='text' name="system.pDmgFormula" value='{{system.pDmgFormula}}' data-dtype='String' />
-               <label for="system.pDmgFormula">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
-            </li>
-            <li class="flex2">
-               <input type='text' name="system.sDmgFormula" value='{{system.sDmgFormula}}' data-dtype='String' />
-               <label for="system.sDmgFormula">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
-               <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
-               <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
-               <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
-            </li>
-         </ul>
+         </ul>         
       </div>
    </header>
-
+   <div>
+      <ul class="summary flexrow">
+         <li class="flex3">
+            <input type='text' name="system.pDmgFormula" value='{{system.pDmgFormula}}' data-dtype='String' />
+            <label for="system.pDmgFormula">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+         </li>
+         <li class="flex2">
+            <input type='text' name="system.pToHit" value='{{system.pToHit}}' data-dtype='Number' />
+            <label for="system.pToHit">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</label>
+         </li>
+         <li class="flex3">
+            <input type='text' name="system.sDmgFormula" value='{{system.sDmgFormula}}' data-dtype='String' />
+            <label for="system.sDmgFormula">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+         </li>
+         <li class="flex2">
+            <input type='text' name="system.sToHit" value='{{system.sToHit}}' data-dtype='Number' />
+            <label for="system.sToHit">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</label>
+         </li>         
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex2">
+            <input type='text' name="system.special" value='{{system.special}}' data-dtype='String' />
+            <label for="system.special">Special Effects</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
+            <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
+            <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
+            <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
+         </li>
+      </ul>
+   </div>
+   {{#if false}}
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='description'>Description</a>
@@ -83,4 +107,5 @@
       </div>
       {{/if}}
    </section>
+   {{/if}}
 </form>
