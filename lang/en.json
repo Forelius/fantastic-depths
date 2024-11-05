@@ -291,8 +291,8 @@
          "short": "Mastery",
          "primary": "Primary",
          "secondary": "Secondary",
-         "targetTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
-         "targetTypes": {
+         "weaponTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
+         "weaponType": {
             "monster": {
                "long": "Monster/Missile",
                "abbr": "M"

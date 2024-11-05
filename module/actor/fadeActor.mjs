@@ -89,7 +89,8 @@ export class fadeActor extends Actor {
 
       this._prepareEffects();
 
-      systemData.combat = { attacksAgainst: 0 };
+      systemData.combat = systemData.combat || {};
+      systemData.combat.attacksAgainst = systemData.combat.attacksAgainst || 0;
       systemData.config = systemData.config || {};
       systemData.config.isSpellcaster = systemData.config.isSpellcaster || false;
       systemData.config.isRetainer = systemData.config.isRetainer || false;
@@ -138,7 +139,7 @@ export class fadeActor extends Actor {
     * @param {any} options An object containing one or more of the following:
     *    mod - A manual modifier entered by the user.
     *    target - This doesn't work when there are multiple targets.
-    *    targetType - For weapon mastery system, the type of target (monster or handheld).
+    *    targetWeaponType - For weapon mastery system, the type of weapon the target is using (monster or handheld).
     * @returns
     */
    getAttackRoll(weapon, attackType, options = {}) {
@@ -157,19 +158,14 @@ export class fadeActor extends Actor {
       }
 
       if (attackType === "melee") {
-         modifier += this.getMeleeAttackRollMods(weaponData, digest, targetData);
+         modifier += this.#getMeleeAttackRollMods(weaponData, digest, targetData);
       } else {
          // Missile attack
-         modifier += this.getMissileAttackRollMods(weaponData, digest, targetData);
-      }
-
-      if (targetData) {
-         // Track number of attacks against target.
-         targetData.combat.attacksAgainst++;
+         modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData);
       }
 
       if (masteryEnabled && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
-         modifier += this.getMasteryAttackRollMods(weaponData, options, digest, attackType);
+         modifier += this.#getMasteryAttackRollMods(weaponData, options, digest, attackType);
       }
 
       if (modifier !== 0) {
@@ -179,12 +175,13 @@ export class fadeActor extends Actor {
       return { formula, digest };
    }
 
-   getMasteryAttackRollMods(weaponData, options, digest, attackType) {
+   #getMasteryAttackRollMods(weaponData, options, digest, attackType) {
       let result = 0;
+      const target = options.target;
       const targetData = options.target?.system;
       const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
       if (attackerMastery) {
-         const bIsPrimary = options.targetType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
+         const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
          // Get the to hit bonus, if any.
          const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
          if (toHitMod > 0) {
@@ -199,7 +196,7 @@ export class fadeActor extends Actor {
       return result;
    }
 
-   getMissileAttackRollMods(weaponData, digest, targetData) {
+   #getMissileAttackRollMods(weaponData, digest, targetData) {
       let result = 0;
       const systemData = this.system;
       const targetMods = targetData?.mod.combat;
@@ -233,7 +230,7 @@ export class fadeActor extends Actor {
       return result;
    }
 
-   getMeleeAttackRollMods(weaponData, digest, targetData) {
+   #getMeleeAttackRollMods(weaponData, digest, targetData) {
       let result = 0;
       const systemData = this.system;
       const targetMods = targetData?.mod.combat;
@@ -361,7 +358,7 @@ export class fadeActor extends Actor {
          }
 
          // Only re-render the sheet if it's already rendered
-         if (sheetNeedsRerender && this.sheet && this.sheet.rendered) {
+         if (this.sheet && this.sheet.rendered) {
             this.sheet.render(true);  // Force a re-render of the actor sheet
          }
       }
@@ -594,6 +591,28 @@ export class fadeActor extends Actor {
 
       // Now other mods.
       ac.total = ac.total - (systemData.mod.ac ?? 0) - dexMod;
+
+      // Weapon mastery defense bonuses
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      const masteries = this.items.filter(item => item.type === "mastery");
+      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
+      if (masteryEnabled && masteries?.length > 0 && equippedWeapons?.length > 0) {
+         ac.mastery = [];
+         for (let weapon of equippedWeapons) {
+            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
+            //console.debug(this.name, weaponMastery?.system, systemData.combat.attacksAgainst);
+            if (weaponMastery/* && weaponMastery.system.acBonusAT > systemData.combat.attacksAgainst*/) {
+               ac.mastery.push({
+                  acBonusType: weaponMastery.system.acBonusType,
+                  acBonus: weaponMastery.system.acBonus,
+                  total: ac.total + weaponMastery.system.acBonus,
+                  acBonusAT: weaponMastery.system.acBonusAT
+               });
+            }
+         }
+         //console.debug(this.name, ac.mastery);
+      }
+
       systemData.ac = ac;
    }
 

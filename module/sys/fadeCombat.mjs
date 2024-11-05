@@ -82,12 +82,16 @@ export class fadeCombat extends Combat {
       const speaker = { alias: user.name };  // Use the player's name as the speaker
 
       if (user.isGM) {
+         for (let combatant of this.combatants) {
+            // Reset initiative to null
+            combatant.actor.update({ "system.combat.attacksAgainst": 0 });
+         }
          // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
             // Reset initiative for all combatants
             for (let combatant of this.combatants) {
                // Reset initiative to null
-               combatant.update({ initiative: null, "actor.system.combat.attacksAgainst": 0 });  
+               combatant.update({ initiative: null });  
             }
 
             // Optionally send a chat message to notify players

@@ -18,17 +18,7 @@ export class fadeDialog {
       dialogData.label = weapon.name;
       dialogData.modes = weapon.getAttackModes();
       dialogData.types = weapon.getAttackTypes();
-
-      const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-      // if optional weapon mastery is being used and the weapon has a mastery specified...
-      if (weaponMastery && weaponData.mastery !== "") {
-         const attackerMastery = caller.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
-         if (attackerMastery) {
-            dialogData.masteryTargetTypes = [];
-            dialogData.masteryTargetTypes.push({ text: game.i18n.localize('FADE.Mastery.targetTypes.monster.long'), value: 'monster' });
-            dialogData.masteryTargetTypes.push({ text: game.i18n.localize('FADE.Mastery.targetTypes.handheld.long'), value: 'handheld' });
-         }
-      }
+      dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes(weaponData, caller, dialogData);
 
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
@@ -45,7 +35,7 @@ export class fadeDialog {
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
                   attackType: document.getElementById('attackType').value,
                   attackMode: document.getElementById('attackMode').value,
-                  targetType: document.getElementById('targetType')?.value,
+                  targetWeaponType: document.getElementById('targetWeaponType')?.value,
                }),
             },
          },
@@ -55,6 +45,54 @@ export class fadeDialog {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       result.context = caller;
+      return result;
+   }
+
+   static async getSpellAttackDialog(dataset, caller) {
+      const dialogData = {};
+      const dialogResp = { caller };
+
+      dialogData.label = dataset.label;
+      dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes("spell", caller, dialogData);
+
+      const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
+      const template = 'systems/fantastic-depths/templates/dialog/spell-attack-roll.hbs';
+
+      dialogResp.resp = await Dialog.wait({
+         title: title,
+         content: await renderTemplate(template, dialogData),
+         render: () => focusById('mod'),
+         buttons: {
+            roll: {
+               label: game.i18n.localize('FADE.roll'),
+               callback: () => ({
+                  rolling: true,
+                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
+                  targetWeaponType: document.getElementById('targetWeaponType')?.value,
+               }),
+            }
+         },
+         default: 'roll',
+         close: () => { return false; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+      });
+      dialogResp.context = caller;
+      return dialogResp;
+   }
+
+   static getWeaponTypes(weaponData, caller, dialogData) {
+      const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+      let result = null;
+      // if optional weapon mastery is being used and the weapon has a mastery specified...
+      if (weaponMastery) {
+         const attackerMastery = caller.items.find((item) => item.type === 'mastery' && item.name === weaponData?.mastery);
+         if (caller.type === "monster" || weaponData === "spell" || attackerMastery) {
+            result = [];
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponType.monster.long'), value: 'monster' });
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponType.handheld.long'), value: 'handheld' });
+         }
+      }
       return result;
    }
 
@@ -87,7 +125,7 @@ export class fadeDialog {
       dialogResp.context = caller;
       return dialogResp;
    }
-
+      
    static async getAbilityDialog(dataset, caller) {
       const dialogData = {};
       const dialogResp = { caller };

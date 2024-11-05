@@ -1,0 +1,14 @@
+<form>
+   {{#if targetWeaponTypes}}
+   <div class="form-group">
+      <label for="targetWeaponType">Target Weapon Type</label>
+      <select id="targetWeaponType" class="form-control">
+         {{selectOptions targetWeaponTypes valueAttr="value" labelAttr="text"}}
+      </select>
+   </div>
+   {{/if}}
+   <div class="form-group">
+      <label>{{localize "FADE.modifier"}}</label>
+      <input id="mod" placeholder=0 type="number" />
+   </div>
+</form>

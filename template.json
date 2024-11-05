@@ -116,6 +116,9 @@
                }
             ],
             "languages": "",
+            "combat": {
+               "attacksAgainst":  0
+            },
             "gm": {
                "notes": ""
             }
@@ -245,6 +248,7 @@
          "savingThrow": null,
          "saveDmgFormula": null,
          "mastery": "",
+         "weaponType": "",
          "range": {
             "short": null,
             "medium": null,

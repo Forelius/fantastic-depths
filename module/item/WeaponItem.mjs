@@ -179,8 +179,8 @@ export class WeaponItem extends fadeItem {
                      mod: dialogResp.resp.mod,
                      target: targetToken?.actor
                   };
-                  if (dialogResp.resp.targetType) {
-                     rollOptions.targetType = dialogResp.resp.targetType;
+                  if (dialogResp.resp.targetWeaponType) {
+                     rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                   }
                   let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
                   rollData.formula = attackRoll.formula;
@@ -221,6 +221,7 @@ export class WeaponItem extends fadeItem {
                const rollContext = { ...rollData, ...dialogResp.resp || {} };
                rolled = await new Roll(rollData.formula, rollContext).evaluate();
             }
+
             const chatData = {
                resp: dialogResp.resp, // the dialog response
                caller: this, // the weapon

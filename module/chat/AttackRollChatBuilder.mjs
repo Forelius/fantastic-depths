@@ -20,8 +20,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
       // Check for automatic hit or miss
       if (roll === 1) {
          result = null;  // Natural 1 always misses
-      //} else if (roll === 20) {
-        // result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
+         //} else if (roll === 20) {
+         // result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
       } else {
          // Loop through AC values from 19 down to -20
          let repeater = 0;
@@ -75,7 +75,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return result;
    }
 
-   static getToHitResults(attackerToken, weapon, targetTokens, roll) {
+   static async getToHitResults(attackerToken, weapon, targetTokens, roll, targetWeaponType = null) {
       let result = null;
 
       if (roll) {
@@ -87,35 +87,63 @@ export class AttackRollChatBuilder extends ChatBuilder {
             targetResults: []
          };
 
-         targetTokens.forEach((targetToken) => {
-            let ac = targetToken.actor.system.ac?.total;
+         // Target results for each individual target.
+         // Warning: This is not correctly handling weapon mastery-based mods to attack roll, since
+         //    attack rolls assume a single target weapon type.
+         for (let targetToken of targetTokens) {
+            let targetActor = targetToken.actor;
             let targetResult = {
-               success: false,
                targetid: targetToken.id,
                targetname: targetToken.name,
-               targetac: targetToken.actor.system.ac.total,
-               message: game.i18n.localize('FADE.Chat.attackFail')
+               targetac: `${targetToken.actor.system.ac?.total}`, // regular ac
+               success: null,
+               message: null
             };
 
-            // If a natural 20...
-            if (hitAC === -100) {
-               // Setup to show success message.
-               ac = 100;
+            let ac = targetActor.system.ac?.total;
+
+            const defenseMasteries = targetActor.system.ac.mastery;
+            if (targetWeaponType && defenseMasteries?.length > 0) {
+               console.debug(`${attackerToken.name} vs ${targetToken.name}:`, defenseMasteries);
+               const defenseMastery = defenseMasteries.filter(mastery => mastery.acBonusType === targetWeaponType)
+                  .reduce((minMastery, current) =>
+                     current.acBonus < minMastery.acBonus ? current : minMastery
+                     , { acBonus: Infinity });
+
+               if (defenseMastery) {
+                  // Normal AC/Mastery Def. AC
+                  const isApplicable = targetActor.system.combat.attacksAgainst < defenseMastery.acBonusAT;
+                  targetResult.targetac = `<span title='Normal AC' ${isApplicable?"":"style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
+<span ${isApplicable ? "style='color:green'" : ""} title='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
+                  if (isApplicable) {
+                     ac = defenseMastery.total;
+                  }
+               }
             }
-            if (hitAC !== null) {
+
+            if (hitAC !== null) { // null if rolled a natural 1
                if (ac !== null && ac !== undefined) {
                   if (ac >= hitAC) {
                      targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
                      targetResult.success = true;
+                  } else {
+                     targetResult.success = false;
+                     targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
                   }
                } else {
                   targetResult.message = game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC });
                   targetResult.success = true;
                }
+            } else {
+               targetResult.success = false;
+               targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
             }
 
+            // Track number of attacks against target. Do it after getting the tohit result;
+            await targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });
+
             result.targetResults.push(targetResult);
-         });
+         }
       } else if (weapon.system.breath?.length > 0) {
          // Always hits, but saving throw
          result = {
@@ -123,7 +151,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             message: 'Saving throw required.',
             targetResults: []
          };
-         targetTokens.forEach((targetToken) => {
+         for (let targetToken of targetTokens) {
             const saveLocalized = game.i18n.localize(`FADE.Actor.Saves.${weapon.system.savingThrow}.abbr`);
             let targetResult = {
                targetid: targetToken.id,
@@ -131,7 +159,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                message: `save vs. ${saveLocalized}`
             };
             result.targetResults.push(targetResult);
-         });
+         }
       }
 
       return result;
@@ -141,10 +169,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * Called by the various Actor and Item derived classes to create a chat message.
     */
    async createChatMessage() {
-      const { caller, context, resp, roll, mdata, digest } = this.data;      
+      const { caller, context, resp, roll, mdata, digest } = this.data;
       const attackerToken = context;
       const attackerName = attackerToken.name;
       const targetTokens = Array.from(game.user.targets);
+      const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
 
       let descData = {
@@ -160,7 +189,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = AttackRollChatBuilder.getToHitResults(attackerToken, caller, targetTokens, roll);
+      const toHitResult = await AttackRollChatBuilder.getToHitResults(attackerToken, caller, targetTokens, roll, resp.targetWeaponType);
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode);
 
       if (window.toastManager) {
@@ -169,7 +198,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       }
 
       const chatData = {
-         damageRoll,         
+         damageRoll,
          rollContent,
          description,
          descData,

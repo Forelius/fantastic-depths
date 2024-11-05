@@ -93,18 +93,19 @@ export class SpellItem extends fadeItem {
          const rollMode = game.settings.get("core", "rollMode");
          let canProceed = true;
          let digest = [];
-         let hasRoll = systemData.attackType === 'melee';
+         let hasAttackRoll = systemData.attackType === 'melee';
          let rolled = null;
+         let dialogResp = null;
 
-         if (hasRoll) {
+         if (hasAttackRoll) {
             try {
                // Get roll modification
                let dataset = {
-                  dialog: "generic",
+                  dialog: "spellattack",
                   label: "Attack",
                   rollMode
                };
-               let dialogResp = await DialogFactory(dataset, this.actor);
+               dialogResp = await DialogFactory(dataset, this.actor);
                if (dialogResp?.resp) {
                   const targetTokens = Array.from(game.user.targets);
                   const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
@@ -112,6 +113,9 @@ export class SpellItem extends fadeItem {
                      mod: dialogResp.resp.mod,
                      target: targetToken?.actor
                   };
+                  if (dialogResp.resp.targetWeaponType) {
+                     rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
+                  }
                   let attackRoll = casterToken.actor.getAttackRoll(this, systemData.attackType, rollOptions);
                   rollData.formula = attackRoll.formula;
                   digest = attackRoll.digest;
@@ -138,6 +142,7 @@ export class SpellItem extends fadeItem {
                   itemLink
                },
                roll: rolled,
+               dialogResp: dialogResp?.resp,
                digest
             };
 

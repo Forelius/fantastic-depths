@@ -35,7 +35,10 @@ FADE.DamageTypes = [
    "poison",
    "heal"
 ]
-FADE.TargetTypes = [
+/** 
+ * This is the type of weapon being used.
+ */
+FADE.WeaponTypes = [
    "monster",
    "handheld",
    "all"
