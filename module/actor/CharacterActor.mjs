@@ -106,8 +106,7 @@ export class CharacterActor extends fadeActor {
       systemData.details.height = systemData.details.height || "";
       systemData.details.weight = systemData.details.weight || "";
       systemData.details.eyes = systemData.details.eyes || "";
-      systemData.details.hair = systemData.details.hair || "";
-      systemData.details.deathCount = systemData.details.deathCount || 0;
+      systemData.details.hair = systemData.details.hair || "";      
    }
 
    _prepareAbilities() {

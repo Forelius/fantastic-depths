@@ -117,7 +117,9 @@
             ],
             "languages": "",
             "combat": {
-               "attacksAgainst":  0
+               "attacksAgainst": 0,
+               "deathCount": 0,
+               "isDead":  false
             },
             "gm": {
                "notes": ""
@@ -136,13 +138,12 @@
                "species": "Human",
                "alignment": "Neutral",
                "title": "",
-               "age": 18,
+               "age": 20,
                "sex": "Male",
                "height": "6",
-               "weight": "165 lbs.",
+               "weight": "170 lbs.",
                "eyes": "Blue",
-               "hair": "brown",
-               "deathCount": 0
+               "hair": "brown"
             },
             "abilities": {
                "str": {

@@ -16,6 +16,7 @@ export class WeaponItem extends fadeItem {
       this.system.mastery2 = this.system.mastery2 || "";
       this.system.natural = this.system.natural || false;
       this.system.breath = this.system.breath || "";
+      this.system.weaponType = this.system.weaponType || "";
    }
 
    /** @override */

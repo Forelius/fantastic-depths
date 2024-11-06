@@ -30,7 +30,7 @@
          "THAC0": "THAC0",
          "isSpellcaster": {
             "hint": "Can this actor or item cast spells.",
-            "name": "Spellcaster"
+            "name": "Caster"
          },
          "isRetainer": {
             "hint": "Is this character a retainer, hireling or other hired hand.",

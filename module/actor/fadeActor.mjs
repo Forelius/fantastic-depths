@@ -91,6 +91,9 @@ export class fadeActor extends Actor {
 
       systemData.combat = systemData.combat || {};
       systemData.combat.attacksAgainst = systemData.combat.attacksAgainst || 0;
+      systemData.combat.attacks = systemData.combat.attacks || 0;
+      systemData.combat.deathCount = systemData.combat.deathCount || 0;
+      systemData.combat.isDead = systemData.combat.isDead || false;
       systemData.config = systemData.config || {};
       systemData.config.isSpellcaster = systemData.config.isSpellcaster || false;
       systemData.config.isRetainer = systemData.config.isRetainer || false;
@@ -303,18 +306,24 @@ export class fadeActor extends Actor {
       let hasDeadStatus = this.statuses.has("dead");
 
       if (prevHP > 0 && systemData.hp.value <= 0) {
-         if (this.type === 'character') {
-            systemData.details.deathCount++;
-            this.update({ "system.details.deathCount": systemData.details.deathCount })
-         }
          isKilled = hasDeadStatus === false;
-         if (isKilled) {
+         if (isKilled) {            
+            if (this.type === 'character') {
+               systemData.combat.deathCount++;
+               this.update({
+                  "system.combat.deathCount": systemData.combat.deathCount,
+                  "system.combat.isDead": true
+               });
+            }
             await this.toggleStatusEffect("dead", { active: true, overlay: true });
             digest.push(`<span class='attack-fail'>${tokenName} has fallen in battle.</span>`);
          }
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
+            this.update({
+               "system.combat.isDead": false
+            });
             await this.toggleStatusEffect("dead", { active: false });
             digest.push(`<span class='attack-success'>${tokenName} has been restored to life.</span>`);
          }

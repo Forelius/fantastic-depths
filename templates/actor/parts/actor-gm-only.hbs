@@ -4,31 +4,41 @@
    <ul class="summary flexrow">
       <li class="flex2">
          <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' title="{{localize 'SETTINGS.EncMax.Hint2'}}" />
-         <label for="system.encumbrance.max">{{localize 'SETTINGS.EncMax.Name'}}</label>
+         <label for="system.encumbrance.max" title="{{localize 'SETTINGS.EncMax.Hint2'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
       </li>
       <li class="flex2">
          <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' title="{{localize 'SETTINGS.move.max.hint'}}" />
-         <label for="system.movement.max">{{localize 'SETTINGS.move.max.name'}}</label>
+         <label for="system.movement.max" title="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
       </li>
       <li class="flex2">
          <input type='text' name="system.flight.max" value='{{system.flight.max}}' data-dtype='Number' title="{{localize 'SETTINGS.move.maxFlight.hint'}}" />
-         <label for="system.flight.max">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
+         <label for="system.flight.max" title="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
       </li>
       <li class="flex1">
          <input type="checkbox" name="system.config.isSpellcaster" data-dtype="Boolean" {{#if system.config.isSpellcaster}} checked{{/if}} title="{{localize 'FADE.Actor.isSpellcaster.hint'}}" />
-         <label for="system.config.isSpellcaster">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
+         <label for="system.config.isSpellcaster" title="{{localize 'FADE.Actor.isSpellcaster.hint'}}">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
       </li>
       <li class="flex1">
          <input type="checkbox" name="system.config.isRetainer" data-dtype="Boolean" {{#if system.config.isRetainer}} checked{{/if}} title="{{localize 'FADE.Actor.isRetainer.hint'}}" />
-         <label for="system.config.isRetainer">{{localize 'FADE.Actor.isRetainer.name'}}</label>
+         <label for="system.config.isRetainer" title="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
+      </li>      
+   </ul>
+   <ul class="summary flexrow">
+      <li>
+         <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' title="Number of attacks this round." />
+         <label for="system.combat.attacks" title="Number of attacks this round.">AT#</label>
       </li>
-      <li class="flex2">
-         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number'/>
-         <label for="system.combat.attacksAgainst">Attacks Against</label>
+      <li>
+         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' title="Number of attacks received this round." />
+         <label for="system.combat.attacksAgainst" title="Number of attacks received this round.">AT# recv.</label>
+      </li>
+      <li>
+         <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' title="Total number of times this actor has died." />
+         <label for="system.combat.attacksAgainst" title="Total number of times this actor has died.">Deaths</label>
       </li>
    </ul>
 </section>
 <section class="bordered">
    <label for="gm-notes">GM Notes:</label>
-   <textarea id="gm-notes" name="system.gm.notes" rows="14">{{system.gm.notes}}</textarea>
+   <textarea id="gm-notes" name="system.gm.notes" rows="10">{{system.gm.notes}}</textarea>
 </section>
