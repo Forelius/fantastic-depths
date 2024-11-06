@@ -513,13 +513,13 @@ h1, h2, h3, h4 {
   box-shadow: none;
   color: #ebeae4;
 }
-.dark-mode .chat-message .heal-roll, .dark-mode .chat-message .apply-heal {
+.dark-mode .chat-message .heal-roll, .dark-mode .chat-message .apply-heal, .dark-mode .chat-message .flags-restored-true {
   background: url("../assets/img/grungegreen.jpg");
   color: #ebeae4;
   box-shadow: none;
   border: 1px solid #447744;
 }
-.dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage {
+.dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage, .dark-mode .chat-message .flags-killed-true {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
   box-shadow: none;

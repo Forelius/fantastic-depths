@@ -263,13 +263,16 @@ export class fadeActor extends Actor {
 
    async applyDamage(amount, damageType, source = null) {
       const systemData = this.system;
+      const tokenName = this.parent?.name ?? this.name;
       let dmgAmt = amount;
       const prevHP = systemData.hp.value;
       let digest = [];
       const isHeal = damageType === "heal";
-
       // Damage mitigation
       let damageMitigated = 0;
+      let isKilled = false;
+      let isRestoredToLife = false;
+
       switch (damageType) {
          case 'physical':
             damageMitigated = systemData.mod.combat.selfDmg;
@@ -283,35 +286,37 @@ export class fadeActor extends Actor {
             break;
       }
 
-      if (damageMitigated !== 0) {
-         dmgAmt -= damageMitigated;
-         digest.push(`${damageMitigated} points of ${damageType} damage mitigated.`);
-      }
-
       if (isHeal) {
          systemData.hp.value = Math.min((systemData.hp.value + dmgAmt), systemData.hp.max);
-         digest.push(`${systemData.hp.value - prevHP} hit points restored to ${this.name}.`);
+         digest.push(`${systemData.hp.value - prevHP} hit points restored to ${tokenName}.`);
       } else {
+         if (damageMitigated !== 0) {
+            dmgAmt -= damageMitigated;
+            digest.push(`${damageMitigated} points of ${damageType} damage mitigated.`);
+         }
          systemData.hp.value -= dmgAmt;
-         digest.push(`${dmgAmt} points of ${damageType} damage applied to ${this.name}.`);
+         digest.push(`${dmgAmt} points of ${damageType} damage applied to ${tokenName}.`);
       }
       this.update({ "system.hp.value": systemData.hp.value });
 
       // Check if the actor already has the "Dead" effect
-      let hasDeadEffect = this.effects.some(e => e.getFlag("core", "statusId") === "dead");
+      let hasDeadStatus = this.statuses.has("dead");
 
       if (prevHP > 0 && systemData.hp.value <= 0) {
          if (this.type === 'character') {
             systemData.details.deathCount++;
             this.update({ "system.details.deathCount": systemData.details.deathCount })
          }
-         if (hasDeadEffect === false) {
-            // Apply the "Dead" status effect
-            await this.toggleEffect(CONFIG.statusEffects.find(e => e.id === "dead"));
+         isKilled = hasDeadStatus === false;
+         if (isKilled) {
+            await this.toggleStatusEffect("dead", { active: true, overlay: true });
+            digest.push(`<span class='attack-fail'>${tokenName} has fallen in battle.</span>`);
          }
       } else if (prevHP < 0 && systemData.hp.value > 0) {
-         if (hasDeadEffect === true) {
-            await this.toggleEffect(CONFIG.statusEffects.find(e => e.id === "dead"));
+         isRestoredToLife = hasDeadStatus === true;
+         if (isRestoredToLife) {
+            await this.toggleStatusEffect("dead", { active: false });
+            digest.push(`<span class='attack-success'>${tokenName} has been restored to life.</span>`);
          }
       }
 
@@ -325,7 +330,11 @@ export class fadeActor extends Actor {
       }
 
       const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-      ChatMessage.create({ speaker: speaker, content: chatContent });
+      let chatData = {
+         speaker: speaker,
+         content: chatContent
+      };      
+      ChatMessage.create(chatData);
    }
 
    /**

@@ -178,14 +178,14 @@
          color: $lighterColor;
       }
 
-      .heal-roll, .apply-heal {
+      .heal-roll, .apply-heal, .flags-restored-true {
          background: url('../assets/img/grungegreen.jpg');
          color: $lighterColor;
          box-shadow: none;
          border: 1px solid #447744;
       }
 
-      .damage-roll, .apply-damage {
+      .damage-roll, .apply-damage, .flags-killed-true {
          background: url('../assets/img/grungered.jpg');
          color: $lighterColor;
          box-shadow: none;

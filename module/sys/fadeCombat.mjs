@@ -389,5 +389,9 @@ Hooks.on('deleteCombat', (combat) => {
          speaker: speaker,
          content: `Combat encounter has ended.`,
       });
+      for (let combatant of combat.combatants) {
+         // Reset initiative to null
+         combatant.actor.update({ "system.combat.attacksAgainst": 0 });
+      }
    }
 });
