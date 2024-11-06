@@ -14,7 +14,7 @@ export const DialogFactory = (dataset=null, caller = null, opt = {}) => {
    } else if (dataset.dialog === 'generic') {
       result = fadeDialog.getGenericDialog(dataset, caller);
    } else if (dataset.dialog === 'attack') {
-      result = fadeDialog.getAttackDialog(opt.weapon, caller);
+      result = fadeDialog.getAttackDialog(opt.weapon, caller, opt);
    } else if (dataset.dialog === 'spellattack') {
       result = fadeDialog.getSpellAttackDialog(dataset, caller, opt);
    } else if (dataset.dialog === 'contentImport') {

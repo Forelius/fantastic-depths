@@ -99,16 +99,16 @@ export class SpellItem extends fadeItem {
 
          if (hasAttackRoll) {
             try {
+               const targetTokens = Array.from(game.user.targets);
+               const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
                // Get roll modification
                let dataset = {
                   dialog: "spellattack",
                   label: "Attack",
                   rollMode
                };
-               dialogResp = await DialogFactory(dataset, this.actor);
+               dialogResp = await DialogFactory(dataset, this.actor, { targetToken: targetToken });
                if (dialogResp?.resp) {
-                  const targetTokens = Array.from(game.user.targets);
-                  const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
                   const rollOptions = {
                      mod: dialogResp.resp.mod,
                      target: targetToken?.actor

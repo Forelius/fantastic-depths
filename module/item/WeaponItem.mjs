@@ -167,11 +167,12 @@ export class WeaponItem extends fadeItem {
 
       if (attackerToken) {
          try {
-            dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this });
+            const targetTokens = Array.from(game.user.targets);
+            const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
+
+            dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
             if (dialogResp?.resp) {
                if (dialogResp.resp.attackType !== "breath") {
-                  const targetTokens = Array.from(game.user.targets);
-                  const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
                   let rollOptions = {
                      mod: dialogResp.resp.mod,
                      target: targetToken?.actor
@@ -189,6 +190,7 @@ export class WeaponItem extends fadeItem {
             }
          } catch (error) {
             // Close button pressed or other error
+            console.error("attack roll error:", error);
             canAttack = false;
          }
 

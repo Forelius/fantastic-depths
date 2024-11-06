@@ -9,7 +9,7 @@ export class fadeDialog {
     * @param {any} caller The owning actor
     * @returns
     */
-   static async getAttackDialog(weapon, caller) {
+   static async getAttackDialog(weapon, caller, opt) {
       const dialogData = { caller };
       const result = {};
       const weaponData = weapon.system;
@@ -18,7 +18,9 @@ export class fadeDialog {
       dialogData.label = weapon.name;
       dialogData.modes = weapon.getAttackModes();
       dialogData.types = weapon.getAttackTypes();
-      dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes(weaponData, caller, dialogData);
+      dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes(weaponData, caller);
+      dialogData.selectedWeaponType = opt.targetToken?.actor.getWeaponType();
+      console.debug("selectedWeaponType", dialogData.selectedWeaponType);
 
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
@@ -81,7 +83,7 @@ export class fadeDialog {
       return dialogResp;
    }
 
-   static getWeaponTypes(weaponData, caller, dialogData) {
+   static getWeaponTypes(weaponData, caller) {
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       let result = null;
       // if optional weapon mastery is being used and the weapon has a mastery specified...
