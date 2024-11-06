@@ -2,17 +2,30 @@ export class PartyTrackerForm extends FormApplication {
    constructor() {
       super();
       this.isGM = game.user.isGM;
+
       // Load tracked actors from the settings
-      this.trackedActors = game.settings.get(game.system.id, 'partyTrackerData') || [];
+      let storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
+
+      // Check if data needs migration (old format: array of objects with `id` properties)
+      if (Array.isArray(storedData) && storedData.length > 0 && typeof storedData[0] === "object" && storedData[0].id) {
+         console.log("Migrating old party tracker data format to new format (IDs only).");
+         // Migrate old data to IDs-only format
+         storedData = storedData.map(actor => actor.id);
+         // Save the migrated data
+         game.settings.set(game.system.id, 'partyTrackerData', storedData);
+      }
+
+      // Store the updated tracked actor IDs
+      this.trackedActorIds = storedData;
    }
 
    static get defaultOptions() {
       const options = super.defaultOptions;
       options.id = "party-tracker-form";
-      options.template = `systems/${game.system.id}/templates/apps/party-tracker.hbs`; // Dynamic path
+      options.template = `systems/${game.system.id}/templates/apps/party-tracker.hbs`;
       options.width = 300;
       options.height = 500;
-      options.resizable = true; // Make the form resizable
+      options.resizable = true;
       options.title = "Party Tracker";
       options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
       return options;
@@ -23,7 +36,8 @@ export class PartyTrackerForm extends FormApplication {
     */
    async getData() {
       const context = super.getData();
-      context.trackedActors = this.trackedActors; // Pass tracked actors to the template
+      // Fetch actor data dynamically based on stored IDs
+      context.trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
       return context;
    }
 
@@ -33,47 +47,21 @@ export class PartyTrackerForm extends FormApplication {
    async activateListeners(html) {
       super.activateListeners(html);
 
-      // Make the entire form a drop zone
-      let dropArea = html.closest('.party-tracker'); // Make sure we are attaching the events to the whole form
-
-      // Prevent default dragover behavior so the drop works
-      dropArea.on("dragover", event => {
-         event.preventDefault();
-      });
-
-      // Handle the drop event for actors
+      let dropArea = html.closest('.party-tracker');
+      dropArea.on("dragover", event => event.preventDefault());
       dropArea.on("drop", this._onDropActor.bind(this));
 
-      // Attach click event listener for delete buttons
       html.find(".delete-actor").on("click", (event) => {
          const actorId = $(event.currentTarget).closest(".party-member").data("actor-id");
-         this._removeTrackedActor(actorId); // Remove the actor
+         this._removeTrackedActor(actorId);
       });
 
-      // Hook into actor updates to make the tracker reactive
-      Hooks.on('updateActor', (actor, data, options, userId) => {
-         // Check if the updated actor is in the tracked actors list
-         if (this.trackedActors.some(a => a.id === actor.id)) {
-            this._updateTrackedActor(actor); // Update the actor in the tracker
-            this.render();                   // Rerender the tracker
+      Hooks.on('updateActor', (actor) => {
+         // Check if the updated actor is in the tracked actors list by ID
+         if (this.trackedActorIds.includes(actor.id)) {
+            this.render();  // Re-render to reflect updated actor data
          }
       });
-   }
-
-   /** 
-   * Update the tracked actor's data in the tracker list 
-   */
-   _updateTrackedActor(updatedActor) {
-      const index = this.trackedActors.findIndex(a => a.id === updatedActor.id);
-
-      if (index !== -1) {
-         // Update the actor details in the trackedActors array
-         this.trackedActors[index] = {
-            id: updatedActor.id,
-            name: updatedActor.name,
-            system: updatedActor.system // Update with the new system data
-         };
-      }
    }
 
    /** 
@@ -82,83 +70,55 @@ export class PartyTrackerForm extends FormApplication {
    async _onDropActor(event) {
       event.preventDefault();
 
-      // Step 1: Extract the data from the drop event
       let data = null;
       let actor = null;
-      let isValid = true;
 
-      // Try parsing the data
       try {
          data = JSON.parse(event.originalEvent.dataTransfer.getData('text/plain'));
       } catch (err) {
          console.error("Failed to parse drop data:", err);
-         isValid = false;  // Mark as invalid
+         ui.notifications.warn("Invalid data dropped.");
+         return;
       }
 
-      // Step 2: Validate the drop data type and check if the UUID is available
-      if (isValid && data.type !== "Actor") {
-         console.error("Dropped data is not an actor.");
-         isValid = false;
+      if (data.type !== "Actor" || !data.uuid) {
+         console.error("Dropped data is not a valid actor.");
          ui.notifications.warn("Only actors can be dropped onto the party tracker.");
-      } else if (isValid && !data.uuid) {
-         console.error("Actor data is missing a UUID.");
-         isValid = false;
+         return;
       }
 
-      // Step 3: Try to retrieve the actor using the UUID
-      if (isValid) {
-         try {
-            actor = await fromUuid(data.uuid); // Use fromUuid to get the actor
-            if (!actor || actor.documentName !== "Actor") {
-               console.error("Failed to retrieve an actor from the UUID:", data.uuid);
-               isValid = false;
-            }
-         } catch (err) {
-            console.error("Error retrieving actor from UUID:", err);
-            isValid = false;
+      try {
+         actor = await fromUuid(data.uuid);
+         if (!actor || actor.documentName !== "Actor") {
+            console.error("Failed to retrieve an actor from the UUID:", data.uuid);
+            return;
          }
+      } catch (err) {
+         console.error("Error retrieving actor from UUID:", err);
+         return;
       }
 
-      // Step 4: Check if the actor is already in the tracked list
-      let isAlreadyTracked = false;
-      if (isValid) {
-         isAlreadyTracked = this.trackedActors.some(a => a.id === actor.id);
-      }
-
-      // Step 5: Process based on validity
-      if (isValid && !isAlreadyTracked) {
-         // Extract actor details safely and push to the tracked list
-         const actorDetails = {
-            id: actor.id,
-            name: actor.name,
-            system: actor.system
-         };
-
-         this.trackedActors.push(actorDetails);
-         this._saveTrackedActors();  // Save the updated list to settings
-
-         // Re-render the form to display the updated list
-         this.render();
-      } else if (isAlreadyTracked) {
+      // Check if the actor is already tracked by ID
+      if (this.trackedActorIds.includes(actor.id)) {
          console.log("Actor is already being tracked:", actor.name);
-      } else {
-         console.warning("Could not add actor due to invalid data.");
+         return;
       }
+
+      // Add the actor's ID to the tracked list
+      this.trackedActorIds.push(actor.id);
+      this._saveTrackedActors();  // Save the updated list to settings
+      this.render();  // Re-render the form to display the updated list
    }
 
    _removeTrackedActor(actorId) {
-      // Remove the actor from the trackedActors array
-      this.trackedActors = this.trackedActors.filter(a => a.id !== actorId);
-
-      // Save the updated list to settings
+      // Remove the actor ID from the tracked IDs array
+      this.trackedActorIds = this.trackedActorIds.filter(id => id !== actorId);
       this._saveTrackedActors();
-
-      // Re-render the form
-      this.render();
+      this.render();  // Re-render the form
    }
 
    _saveTrackedActors() {
-      game.settings.set(game.system.id, 'partyTrackerData', this.trackedActors);
+      game.settings.set(game.system.id, 'partyTrackerData', this.trackedActorIds);
    }
 
    /** 

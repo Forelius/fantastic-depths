@@ -11,6 +11,15 @@ export class fadeActor extends Actor {
       super(data, context);
    }
 
+   async updateActor(updateData, options, userId) {
+      //console.debug(updateData);
+      if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
+         this.update({ "system.combat.isDead": true });
+      } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
+         this.update({ "system.combat.isDead": false });
+      }
+   }
+
    /**
     * Pre-create method. Being used to set some defaults on the prototype token.
     * @override
@@ -307,7 +316,7 @@ export class fadeActor extends Actor {
 
       if (prevHP > 0 && systemData.hp.value <= 0) {
          isKilled = hasDeadStatus === false;
-         if (isKilled) {            
+         if (isKilled) {
             if (this.type === 'character') {
                systemData.combat.deathCount++;
                this.update({
@@ -321,9 +330,7 @@ export class fadeActor extends Actor {
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
-            this.update({
-               "system.combat.isDead": false
-            });
+            this.update({ "system.combat.isDead": false });
             await this.toggleStatusEffect("dead", { active: false });
             digest.push(`<span class='attack-success'>${tokenName} has been restored to life.</span>`);
          }
@@ -342,7 +349,7 @@ export class fadeActor extends Actor {
       let chatData = {
          speaker: speaker,
          content: chatContent
-      };      
+      };
       ChatMessage.create(chatData);
    }
 

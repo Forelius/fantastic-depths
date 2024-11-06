@@ -104,7 +104,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
             const defenseMasteries = targetActor.system.ac.mastery;
             if (targetWeaponType && defenseMasteries?.length > 0) {
-               console.debug(`${attackerToken.name} vs ${targetToken.name}:`, defenseMasteries);
+               //console.debug(`${attackerToken.name} vs ${targetToken.name}:`, defenseMasteries);
                const defenseMastery = defenseMasteries.filter(mastery => mastery.acBonusType === targetWeaponType)
                   .reduce((minMastery, current) =>
                      current.acBonus < minMastery.acBonus ? current : minMastery

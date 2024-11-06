@@ -151,6 +151,9 @@ h1, h2, h3, h4 {
   overflow-y: auto;
   padding: 4px;
 }
+.party-tracker .party-tracker-list .is-dead {
+  background: url("../assets/img/grungered.jpg");
+}
 .party-tracker .party-tracker-list .party-member {
   position: relative; /* Relative positioning allows the delete button to be positioned inside */
   margin-bottom: 4px;

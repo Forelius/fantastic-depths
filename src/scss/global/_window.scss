@@ -50,6 +50,10 @@
       overflow-y: auto;
       padding: 4px;
 
+      .is-dead {
+         background: url('../assets/img/grungered.jpg');
+      }
+
       .party-member {
          position: relative; /* Relative positioning allows the delete button to be positioned inside */
          margin-bottom: 4px;

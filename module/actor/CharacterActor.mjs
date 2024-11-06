@@ -27,6 +27,21 @@ export class CharacterActor extends fadeActor {
       this._prepareWrestling();
    }
 
+   async updateActor(updateData, options, userId) {
+      super.updateActor(updateData, options, userId)
+      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      const user = await game.users.get(userId);
+
+      // Only proceed if logging is enabled and the update is by a player
+      if (isLoggingEnabled && game.user.isGM) {
+         // Get the old actor data before changes
+         const oldActorData = updateData;
+
+         // Log changes between the old and new data
+         this.logActorChanges(updateData, oldActorData, user, "property");
+      }
+   }
+
    /**
     * get changes and send to GM
     * @param {any} updateData

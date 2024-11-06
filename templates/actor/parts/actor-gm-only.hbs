@@ -33,6 +33,10 @@
          <label for="system.combat.attacksAgainst" title="Number of attacks received this round.">AT# recv.</label>
       </li>
       <li>
+         <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
+         <label for="system.combat.isDead" title="Does the system think the actor is dead.">Dead?</label>
+      </li>
+      <li>
          <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' title="Total number of times this actor has died." />
          <label for="system.combat.attacksAgainst" title="Total number of times this actor has died.">Deaths</label>
       </li>

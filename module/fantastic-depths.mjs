@@ -168,30 +168,10 @@ Hooks.on('renderSidebarTab', (app, html) => {
 /* -------------------------------------------- */
 /*  Log Changes                                 */
 /* -------------------------------------------- */
-let oldData = {};
 
 // Hook into `updateActor` to compare the old and new values
 Hooks.on("updateActor", async (actor, updateData, options, userId) => {
-   const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
-   const user = await game.users.get(userId);
-
-   // Only proceed if logging is enabled and the update is by a player
-   if (isLoggingEnabled && game.user.isGM) {
-
-      // Ensure we are logging player actions (not GM's own changes)
-      if (actor instanceof CharacterActor) {
-         // Get the old actor data before changes
-         const oldActorData = updateData;// oldData[actor.id];
-
-         // Log changes between the old and new data
-         actor.logActorChanges(updateData, oldActorData, user, "property");
-      }
-   }
-   // Clean up the oldData entry
-   try {
-      delete oldData[actor.id];
-   }
-   catch (err) { }
+   actor.updateActor(updateData, options, userId);
 });
 
 // Hook into item creation (added to the actor)
