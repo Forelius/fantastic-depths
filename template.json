@@ -117,9 +117,10 @@
             ],
             "languages": "",
             "combat": {
+               "attacks": 0,
                "attacksAgainst": 0,
                "deathCount": 0,
-               "isDead":  false
+               "isDead": false
             },
             "gm": {
                "notes": ""
