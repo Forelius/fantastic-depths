@@ -292,7 +292,8 @@
          "primary": "Primary",
          "secondary": "Secondary",
          "weaponTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
-         "weaponType": {
+         "weaponType": "Weapon Type",
+         "weaponTypes": {
             "monster": {
                "long": "Monster/Missile",
                "abbr": "M"

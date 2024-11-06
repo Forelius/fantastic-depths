@@ -27,7 +27,7 @@ export class WeaponItem extends fadeItem {
       this._prepareDamageRollLabel();
 
       const modes = this.getAttackModes();
-      this.system.multiGrip = modes.find((mode) => mode.value === "2hand2");
+      this.system.multiGrip = false;// modes.find((mode) => mode.value === "2hand2");
    }
 
    async getDamageRoll(attackType, attackMode, resp) {
@@ -70,10 +70,6 @@ export class WeaponItem extends fadeItem {
             modifier += attackerData.abilities.str.mod;
             digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
          }
-         //} else if (attackerData.abilities && attackerData.abilities.dex.mod) {
-         //   modifier += attackerData.abilities.dex.mod;
-         //   digest.push(`Dexterity mod: ${attackerData.abilities.dex.mod}`);
-         //}
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
             modifier += attackerData.mod.combat.dmgRanged;
             digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
@@ -125,13 +121,13 @@ export class WeaponItem extends fadeItem {
 
       if (natural || breath) {
          result.push({ text: "Natural", value: "natural" });
-      } else if (oneHand && twoHand) {
-         result.push({ text: "Two-Handed", value: "2hand2" });
-         result.push({ text: "One-Handed", value: "1hand" });
+      //} else if (oneHand && twoHand) {
+         //result.push({ text: "Two-Handed", value: "2hand2" });
+         //result.push({ text: "One-Handed", value: "1hand" });
       } else if (twoHand) {
          result.push({ text: "Two-Handed", value: "2hand" });
       } else {
-         result.push({ text: "Two-Handed", value: "2hand1" });
+         //result.push({ text: "Two-Handed", value: "2hand1" });
          result.push({ text: "One-Handed", value: "1hand" });
       }
 

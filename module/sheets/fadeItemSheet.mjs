@@ -85,6 +85,16 @@ export class fadeItemSheet extends ItemSheet {
 
       if (this.item.type === "weapon") {
          context.showAttributes = this.item.system.canRanged || game.user.isGM;
+         const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+         let result = null;
+         // if optional weapon mastery is being used and the weapon has a mastery specified...
+         if (weaponMastery) {
+            result = [];
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.abbr'), value: 'monster' });
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.abbr'), value: 'handheld' });
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.abbr'), value: 'all' });
+            context.weaponTypes = result;
+         }
       }
 
       const hasAttackTypes = ["spell"];
@@ -137,7 +147,7 @@ export class fadeItemSheet extends ItemSheet {
       if (this.item.type === "mastery") {
          const types = [];
          types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
-            return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponType.${type}.abbr`) }
+            return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.abbr`) }
          }));
          context.weaponTypes = types;
          context.masteryNames = Object.keys(CONFIG.FADE.WeaponMastery).map(name => ({

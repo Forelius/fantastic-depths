@@ -89,8 +89,8 @@ export class fadeDialog {
          const attackerMastery = caller.items.find((item) => item.type === 'mastery' && item.name === weaponData?.mastery);
          if (caller.type === "monster" || weaponData === "spell" || attackerMastery) {
             result = [];
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponType.monster.long'), value: 'monster' });
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponType.handheld.long'), value: 'handheld' });
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });
+            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
          }
       }
       return result;
