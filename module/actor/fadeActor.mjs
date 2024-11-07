@@ -12,11 +12,14 @@ export class fadeActor extends Actor {
    }
 
    async updateActor(updateData, options, userId) {
-      //console.debug(updateData);
-      if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
-         this.update({ "system.combat.isDead": true });
-      } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
-         this.update({ "system.combat.isDead": false });
+      if (game.user.isGM) {
+         if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
+            this.update({ "system.combat.isDead": true });
+            this.toggleStatusEffect("dead", { active: true, overlay: true });
+         } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
+            this.update({ "system.combat.isDead": false });
+            this.toggleStatusEffect("dead", { active: false });
+         }
       }
    }
 
@@ -252,7 +255,7 @@ export class fadeActor extends Actor {
             if (this.type === 'character') {
                systemData.combat.deathCount++;
                this.update({
-                  "system.combat.deathCount": systemData.combat.deathCount,
+                  "system.combat.deathCount": systemData.combat.deathCount + 1,
                   "system.combat.isDead": true
                });
             }

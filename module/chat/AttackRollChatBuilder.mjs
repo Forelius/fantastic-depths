@@ -1,4 +1,5 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { GMMessageSender } from '../sys/GMMessageSender.mjs'
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -140,7 +141,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
             }
 
             // Track number of attacks against target. Do it after getting the tohit result;
-            await targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });
+            /*await targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });*/
+            GMMessageSender.sendToGM("incAttacksAgainst", { tokenid: targetToken.id });
 
             result.targetResults.push(targetResult);
          }

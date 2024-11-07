@@ -31,6 +31,7 @@ import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
+import { GMMessageSender } from './sys/GMMessageSender.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -128,16 +129,20 @@ Hooks.once('ready', async function () {
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();
 
-   const toastsEnabled = game.settings.get(game.system.id, "toasts");
-   if (toastsEnabled && game.socket) {
-      // Ensure that the socket is ready before using it
-      window.toastManager = new ToastManager();
-      game.socket.on(`system.${game.system.id}`, (data) => {
-         if (data.action === 'showToast') {
-            // Call the public method to create the toast
-            window.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
-         }
-      });
+   if (game.socket) {
+      const toastsEnabled = game.settings.get(game.system.id, "toasts");
+      if (toastsEnabled) {
+         // Ensure that the socket is ready before using it
+         window.toastManager = new ToastManager();
+         game.socket.on(`system.${game.system.id}`, (data) => {
+            if (data.action === 'showToast') {
+               // Call the public method to create the toast
+               window.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
+            }
+         });
+      }
+
+      GMMessageSender.SetupOnReady();
    }
 });
 

@@ -24,23 +24,23 @@
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.primaryType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+               <select name="system.primaryType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.primaryType valueAttr="value" labelAttr="text"}}
                </select>
                <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.acBonus" value='{{system.acBonus}}' data-dtype='Number' />
+               <input type='text' name="system.acBonus" value='{{system.acBonus}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}}/>
                <label for="system.acBonus">{{localize 'FADE.Mastery.acBonus'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.acBonusType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+               <select name="system.acBonusType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType valueAttr="value" labelAttr="text"}}
                </select>
                <label for="system.acBonusType">{{localize 'FADE.Mastery.acBonusType'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' title="{{localize 'FADE.Mastery.acBonusATTitle'}}" />
+               <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' title="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}}/>
                <label for="system.acBonusAT">{{localize 'FADE.Mastery.acBonusAT'}}</label>
             </li>
          </ul>         
@@ -49,37 +49,37 @@
    <div>
       <ul class="summary flexrow">
          <li class="flex3">
-            <input type='text' name="system.pDmgFormula" value='{{system.pDmgFormula}}' data-dtype='String' />
+            <input type='text' name="system.pDmgFormula" value='{{system.pDmgFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.pDmgFormula">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
          </li>
          <li class="flex2">
-            <input type='text' name="system.pToHit" value='{{system.pToHit}}' data-dtype='Number' />
+            <input type='text' name="system.pToHit" value='{{system.pToHit}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.pToHit">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</label>
          </li>
          <li class="flex3">
-            <input type='text' name="system.sDmgFormula" value='{{system.sDmgFormula}}' data-dtype='String' />
+            <input type='text' name="system.sDmgFormula" value='{{system.sDmgFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.sDmgFormula">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
          </li>
          <li class="flex2">
-            <input type='text' name="system.sToHit" value='{{system.sToHit}}' data-dtype='Number' />
+            <input type='text' name="system.sToHit" value='{{system.sToHit}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.sToHit">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</label>
          </li>         
       </ul>
       <ul class="summary flexrow">
          <li class="flex2">
-            <input type='text' name="system.special" value='{{system.special}}' data-dtype='String' />
+            <input type='text' name="system.special" value='{{system.special}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.special">Special Effects</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
+            <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
+            <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}}/>
             <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
+            <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number'{{#unless isGM}} readonly{{/unless}} />
             <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
          </li>
       </ul>
