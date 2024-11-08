@@ -38,7 +38,7 @@ export class SpellItem extends fadeItem {
          digest.push(`Manual mod: ${resp.mod}`);
       }
 
-      if (modifier <= 0 && evaluatedRoll.total <= 0) {
+      if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
          hasDamage = false;
       }
 

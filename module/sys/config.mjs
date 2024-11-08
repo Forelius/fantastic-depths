@@ -2985,14 +2985,53 @@ FADE.Conditions = [
 <p>This effect does not block magic missile spells used by magic - users.</p>
 <p>If the spell target attacks an enchanted creature while this effect is active, the barrier's properties change slightly. Enchanted creatures can then touch the spell target, but they still suffer the attack roll penalty.The attack penalty and the spell target's saving throw bonus remain until the effect ends.</p>`,
       changes: [
-         { key: "system.mod.selfToHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against 
-         { key: "system.mod.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
+         { key: "system.mod.combat.selfToHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against 
+         { key: "system.mod.combat.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
          { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to all saving throw rolls
       ],
-      duration: { seconds: 60 * 10 * 6 },  // Duration (120 minutes, 12 turns)
+      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "protected1",
+         }
+      }
+   },
+   {
+      id: "blessed",
+      name: "Blessed",
+      img: `${path}img/ui/blessed.webp`,
+      description: `<p>This effect improves the morale of friendly creatures by +1 and gives the recipients a +1 bonus on all attack and damage rolls. It will only affect creatures in a 20' X 20' area, and only those who are not yet in melee. </p>`,
+      changes: [
+         { key: "system.details.morale", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to morale
+         { key: "system.mod.combat.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to attack rolls
+         { key: "system.mod.combat.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to ranged attack rolls
+         { key: "system.mod.combat.dmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to damage rolls
+         { key: "system.mod.combat.dmgRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to ranged damage rolls
+      ],
+      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "blessed",
+         }
+      }
+   },
+   {
+      id: "blighted",
+      name: "Blighted",
+      img: `${path}img/ui/blessed.webp`,
+      tint: "#ff3000",
+      description: `<p>Blight, places a -1 penalty on enemies' morale, attack rolls, and damage rolls. Each victim may make a saving throw vs. spells to avoid the penalties. It will only affect creatures in a 20' X 20' area.</p>`,
+      changes: [
+         { key: "system.details.morale", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to morale
+         { key: "system.mod.combat.toHit", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls
+         { key: "system.mod.combat.toHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to ranged attack rolls
+         { key: "system.mod.combat.dmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to damage rolls
+         { key: "system.mod.combat.dmgRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to ranged damage rolls
+      ],
+      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "blighted",
          }
       }
    }

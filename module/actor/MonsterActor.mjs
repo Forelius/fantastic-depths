@@ -15,7 +15,6 @@ export class MonsterActor extends fadeActor {
       super.prepareBaseData();
       const systemData = this.system;
 
-      systemData.details = systemData.details || {};
       systemData.details.xpAward = !isNaN(systemData.details.xpAward) ? systemData.details.xpAward : 5;
       systemData.details.abilityCount = !isNaN(systemData.details.abilityCount) ? systemData.details.abilityCount : 0;
       systemData.details.intelligence = systemData.details.intelligence || 6;

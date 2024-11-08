@@ -11,6 +11,12 @@ export class fadeActor extends Actor {
       super(data, context);
    }
 
+   /**
+    * Handler for the updateActor hook.
+    * @param {any} updateData
+    * @param {any} options
+    * @param {any} userId
+    */
    async updateActor(updateData, options, userId) {
       if (game.user.isGM) {
          if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
@@ -98,6 +104,10 @@ export class fadeActor extends Actor {
    /** @override */
    prepareBaseData() {
       const systemData = this.system;
+      systemData.details = systemData.details || {};
+      systemData.details.morale = systemData.details.morale || 9;
+      systemData.ac = systemData.ac || {};
+      systemData.ac.total = systemData.ac.total || null;
 
       this._prepareEffects();
 
@@ -642,11 +652,11 @@ export class fadeActor extends Actor {
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       const masteries = this.items.filter(item => item.type === "mastery");
       const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
+      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
       if (masteryEnabled && masteries?.length > 0 && equippedWeapons?.length > 0) {
          ac.mastery = [];
          for (let weapon of equippedWeapons) {
             const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
-            //console.debug(this.name, weaponMastery?.system, systemData.combat.attacksAgainst);
             if (weaponMastery/* && weaponMastery.system.acBonusAT > systemData.combat.attacksAgainst*/) {
                ac.mastery.push({
                   acBonusType: weaponMastery.system.acBonusType,
@@ -656,7 +666,6 @@ export class fadeActor extends Actor {
                });
             }
          }
-         //console.debug(this.name, ac.mastery);
       }
 
       systemData.ac = ac;

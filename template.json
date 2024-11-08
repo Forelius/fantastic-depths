@@ -3,6 +3,9 @@
       "types": [ "character", "monster", "npc" ],
       "templates": {
          "base": {
+            "details": {
+               "morale": 9
+            },
             "config": {
                "isSpellcaster": false,
                "isRetainer": false
@@ -177,8 +180,7 @@
             "templates": [ "base" ],
             "details": {
                "xpAward": 5,
-               "alignment": "Chaotic",
-               "morale": 9,
+               "alignment": "Chaotic",               
                "abilityCount": 0,
                "attacks": 1,
                "size": "M",
