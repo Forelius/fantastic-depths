@@ -20,7 +20,6 @@ export class fadeDialog {
       dialogData.types = weapon.getAttackTypes();
       dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes(weaponData, caller);
       dialogData.selectedWeaponType = opt.targetToken?.actor.getWeaponType();
-      console.debug("selectedWeaponType", dialogData.selectedWeaponType);
 
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';

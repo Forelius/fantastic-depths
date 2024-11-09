@@ -32,6 +32,7 @@ import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 import { GMMessageSender } from './sys/GMMessageSender.mjs'
+import { fadeCombatant } from './sys/fadeCombatant.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -67,6 +68,7 @@ Hooks.once('init', async function () {
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
    CONFIG.Actor.documentClass = ActorFactory;
    CONFIG.Item.documentClass = ItemFactory;
+   CONFIG.Combatant.documentClass = fadeCombatant;
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item

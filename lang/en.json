@@ -450,8 +450,10 @@
             "name": "Initiative Mode",
             "hint": "Choose between group-based or individual-based initiative.",
             "choices": {
+               "simpleIndividual": "Individual Initiative (simplified)",
                "individual": "Individual Initiative",
-               "group": "Group Initiative"
+               "group": "Group Initiative (combat checklist)",
+               "groupHybrid": "Group Initiative (hybrid individual)"
             }
          },
          "modifier": {
@@ -472,6 +474,10 @@
                "reroll": "Reroll Initiative"
             }
          }
+      },
+      "declaredActions": {
+         "name": "Declared Actions",
+         "hint": "Enable declared actions for encounters."
       },
       "collapseState": {
          "name": "Remember Collapse State",

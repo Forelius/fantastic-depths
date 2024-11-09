@@ -16,13 +16,13 @@ export class fadeSettings {
          config: true,
          default: "expert",
          type: String,
+         requiresReload: true,
          choices: {
             none: "SETTINGS.Encumbrance.None",
             basic: "SETTINGS.Encumbrance.Basic",
             expert: "SETTINGS.Encumbrance.Expert"
          },
-         restricted: true // Only the GM can change this setting
-         , onChange: value => { ui.notifications.warn("A system restart is required for changes to take effect."); }
+         restricted: true // Only the GM can change this setting         
       });
 
       game.settings.register(game.system.id, "theme", {
@@ -50,6 +50,7 @@ export class fadeSettings {
          config: true,       // This makes it appear in the Settings menu
          default: "1d6",  // Default formula, using DEX modifier
          type: String,
+         requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
 
@@ -62,8 +63,11 @@ export class fadeSettings {
          type: String,
          choices: {
             "individual": "SETTINGS.initiative.mode.choices.individual",
-            "group": "SETTINGS.initiative.mode.choices.group"
+            "simpleIndividual": "SETTINGS.initiative.mode.choices.simpleIndividual",
+            "group": "SETTINGS.initiative.mode.choices.group",
+            "groupHybrid": "SETTINGS.initiative.mode.choices.groupHybrid",
          },
+         requiresReload: true,
          onChange: value => this.toggleGroupModifier(value)  // Dynamically toggle based on mode
          , restricted: true // Only the GM can change this setting
       });
@@ -81,6 +85,7 @@ export class fadeSettings {
             "average": "SETTINGS.initiative.modifier.choices.average",
             "highest": "SETTINGS.initiative.modifier.choices.highest"
          },
+         requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
 
@@ -96,8 +101,19 @@ export class fadeSettings {
             "reset": "SETTINGS.initiative.nextRound.choices.reset",
             "reroll": "SETTINGS.initiative.nextRound.choices.reroll"
          },
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting         
+      });
+
+      game.settings.register(game.system.id, "declaredActions", {
+         name: "SETTINGS.declaredActions.name",
+         hint: "SETTINGS.declaredActions.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: true,
+         requiresReload: true,
          restricted: true // Only the GM can change this setting
-         , onChange: value => { ui.notifications.warn("A system restart is required for changes to take effect."); }
       });
 
       // Register party rest frequency
@@ -108,6 +124,7 @@ export class fadeSettings {
          config: true,
          default: 0,  // Default is 0, no rest
          type: Number,
+         requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
 
@@ -146,6 +163,7 @@ export class fadeSettings {
          config: true,
          type: Boolean,
          default: true,
+         requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
    }

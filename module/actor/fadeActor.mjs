@@ -473,6 +473,7 @@ export class fadeActor extends Actor {
       // Modifiers are often applied as a negative value, even though the modifer is a positive value.
       this.system.mod = {
          ac: 0,
+         initiative: 0,
          combat: {
             toHit: 0,
             dmg: 0,
@@ -660,8 +661,8 @@ export class fadeActor extends Actor {
             if (weaponMastery/* && weaponMastery.system.acBonusAT > systemData.combat.attacksAgainst*/) {
                ac.mastery.push({
                   acBonusType: weaponMastery.system.acBonusType,
-                  acBonus: weaponMastery.system.acBonus,
-                  total: ac.total + weaponMastery.system.acBonus,
+                  acBonus: weaponMastery.system.acBonus || 0,
+                  total: ac.total + (weaponMastery.system.acBonus || 0),
                   acBonusAT: weaponMastery.system.acBonusAT
                });
             }

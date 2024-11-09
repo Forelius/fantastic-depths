@@ -197,6 +197,17 @@ h1, h2, h3, h4 {
   transition: height 0.1s ease-in, padding 0.1s ease-in;
 }
 
+.combatant-declarations {
+  margin: -3px 3px 0 0;
+}
+
+.sidebar-select {
+  flex: auto;
+  font-size: 10px;
+  background-color: lightgray;
+  height: 16px;
+}
+
 :root {
   --max-column-width: 200px;
 }

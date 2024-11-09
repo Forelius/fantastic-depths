@@ -12,6 +12,7 @@ export class fadeCombat extends Combat {
    async _initVariables() {
       this.initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
       this.nextRoundMode = await game.settings.get(game.system.id, "nextRound");
+      this.declaredActions = await game.settings.get(game.system.id, "declaredActions");
    }
 
    /**
@@ -25,12 +26,12 @@ export class fadeCombat extends Combat {
       // Check to make sure all combatants still exist.
       combatants = combatants.filter((combatant) => combatant.actor !== null && combatant.actor !== undefined);
 
-      //const initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
-      if (this.initiativeMode === "group") {
-         combatants.sort(this.sortCombatantsGroup);
+      if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+         combatants.sort((a, b) => this.sortCombatantsGroup(a, b));
       } else {
-         combatants.sort(this.sortCombatants);
+         combatants.sort((a, b) => this.sortCombatantsIndividual(a, b));
       }
+
       return this.turns = combatants;
    }
 
@@ -91,7 +92,7 @@ export class fadeCombat extends Combat {
             // Reset initiative for all combatants
             for (let combatant of this.combatants) {
                // Reset initiative to null
-               combatant.update({ initiative: null });  
+               combatant.update({ initiative: null });
             }
 
             // Optionally send a chat message to notify players
@@ -122,19 +123,21 @@ export class fadeCombat extends Combat {
       return null;
    }
 
-   sortCombatants(a, b) {
+   sortCombatantsIndividual(a, b) {
       let result = 0;
       let aActor = a.actor;
       let bActor = b.actor;
 
       if (aActor && bActor) {
-         let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-         let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-         let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
-         let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
-         // Compare slowEquipped, true comes after false
-         if (aSlowEquipped !== bSlowEquipped) {
-            result = aSlowEquipped ? 1 : -1;
+         if (this.initiativeMode !== "simpleIndividual") {
+            let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+            let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+            let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
+            let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
+            // Compare slowEquipped, true comes after false
+            if (aSlowEquipped !== bSlowEquipped) {
+               result = aSlowEquipped ? 1 : -1;
+            }
          }
 
          // Compare initiative, descending order
@@ -167,14 +170,16 @@ export class fadeCombat extends Combat {
       const bActor = b.actor;
       const aGroup = a.token.disposition;
       const bGroup = b.token.disposition;
-
-      // Compare slowEquipped, true comes before false
       const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
       const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-      const aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
-      const bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
-      if (aGroup === bGroup && aSlowEquipped !== bSlowEquipped) {
-         result = aSlowEquipped ? 1 : -1;
+
+      if (this.initiativeMode === "groupHybrid") {
+         // Compare slowEquipped, true comes before false
+         const aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
+         const bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
+         if (aGroup === bGroup && aSlowEquipped !== bSlowEquipped) {
+            result = aSlowEquipped ? 1 : -1;
+         }
       }
 
       // Compare initiative, descending order
@@ -187,27 +192,10 @@ export class fadeCombat extends Combat {
       const bDex = bActor.system.abilities?.dex.value ?? 0;
       if (result === 0) {
          result = bDex - aDex;
+         //console.debug(`Group init. sort by dex: ${aActor.name} ${aDex} vs ${bActor.name} ${bDex}`);
       }
 
       return result;
-   }
-
-   static async renderCombatTracker(app, html, data) {
-      if (data?.combat?.combatants) {
-         // Iterate over each combatant and apply a CSS class based on disposition
-         data.combat.combatants.forEach(combatant => {
-            /* console.debug(combatant);*/
-            const disposition = combatant.token.disposition;
-            const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
-            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-               combatantElement.addClass('disposition-friendly');
-            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-               combatantElement.addClass('disposition-neutral');
-            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-               combatantElement.addClass('disposition-hostile');
-            }
-         });
-      }
    }
 
    // Function to handle group-based initiative
@@ -254,10 +242,10 @@ export class fadeCombat extends Combat {
    #getInitiativeMod(actor) {
       let result = 0;
 
-      if (actor.type === 'monster') {
-         result = actor.system?.initiative?.mod || 0;
-      } else {
-         result = actor.system?.abilities?.dex?.mod || 0;
+      result += actor.system?.initiative?.mod || 0;
+
+      if (actor.type !== 'monster') {
+         result += actor.system?.abilities?.dex?.mod || 0;
       }
 
       return result;
@@ -360,38 +348,108 @@ export class fadeCombat extends Combat {
 
       return groups;
    }
+
+   static async onRenderCombatTracker(app, html, data) {
+      let hasAnyRolls = false;
+      if (data?.combat?.combatants) {
+         // Iterate over each combatant and apply a CSS class based on disposition
+         for (let combatant of data.combat.combatants) {
+            /* console.debug(combatant);*/
+            const disposition = combatant.token.disposition;
+            const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
+            // Set disposition indicator
+            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+               combatantElement.addClass('disposition-friendly');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+               combatantElement.addClass('disposition-neutral');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+               combatantElement.addClass('disposition-hostile');
+            }
+
+            if (data.combat.declaredActions === true) {
+               // Add declaration controls
+               await data.combat.addDeclarationControl(combatantElement, combatant);
+            }
+         }
+      }
+   }
+
+   async addDeclarationControl(combatantElement, combatant) {
+      const combatantControls = combatantElement.find('.combatant-controls');
+      const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
+      const controlsContent = await renderTemplate(template, {
+         combatant,
+         hasInitiative: combatant.initiative !== null,
+         availableActions: [
+            { text: "Melee", value: "melee" },
+            { text: "Spell", value: "spell" },
+            { text: "Ranged", value: "ranged" },
+            { text: "Retreat", value: "retreat" },
+         ]
+      });
+      combatantControls.prepend(controlsContent);
+      // Select all `.combatant-control` elements within `.combatant-declarations` and add any event listeners or logic
+      //combatantElement.find('.combatant-declarations .combatant-control').each((i, control) => {
+      //   $(control).on('click', ev => combatant.onCombatantControl(ev));
+      //});
+      // Add a change event listener to update the actor's data when the dropdown selection changes
+      if (combatant.initiative === null) {
+         combatantElement.find('#combatantDeclaration').on('change', async (event) => {
+            const newAction = event.target.value;
+            await combatant.actor.update({ 'system.combat.declaredAction': newAction });
+         });
+      }
+   }
+
+   static onCreateCombat(combat) {
+      if (game.user.isGM) {
+         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
+         // Send a chat message when combat begins
+         ChatMessage.create({
+            speaker: speaker,
+            content: `Combat encounter created.`,
+         });
+      }
+   }
+
+   static onDeleteCombat(combat) {
+      if (game.user.isGM) {
+         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
+         // Send a chat message when combat ends
+         ChatMessage.create({
+            speaker: speaker,
+            content: `Combat encounter has ended.`,
+         });
+         for (let combatant of combat.combatants) {
+            // Reset initiative to null
+            combatant.actor.update({
+               "system.combat.attacksAgainst": 0,
+               "system.combat.attacks": 0,
+               "system.combat.declaredAction": null
+            });
+         }
+      }
+   }
+
+   static onCreateCombatant(combatant, options, userId) {
+      if (game.user.isGM) {
+         const actorData = combatant.actor.system;
+         combatant.actor.update({ 'system.combat.declaredAction': "melee" });
+      }
+   }
+
+   static onDeleteCombatant(combatant, options, userId) {
+      if (game.user.isGM) {
+         combatant.actor.update({ 'system.combat.declaredAction': null });
+      }
+   }
 }
 
 /** ------------------------------- */
 /** Register combat-related hooks   */
 /** ------------------------------- */
-Hooks.on('renderCombatTracker', fadeCombat.renderCombatTracker);
-
-Hooks.on('createCombat', (combat) => {
-   const user = game.users.get(game.userId);  // Get the user who initiated the roll
-   if (user.isGM) {
-      const speaker = { alias: user.name };  // Use the player's name as the speaker
-
-      // Send a chat message when combat begins
-      ChatMessage.create({
-         speaker: speaker,
-         content: `Combat encounter created.`,
-      });
-   }
-});
-
-Hooks.on('deleteCombat', (combat) => {
-   const user = game.users.get(game.userId);  // Get the user who initiated the roll
-   if (user.isGM) {
-      const speaker = { alias: user.name };  // Use the player's name as the speaker
-      // Send a chat message when combat ends
-      ChatMessage.create({
-         speaker: speaker,
-         content: `Combat encounter has ended.`,
-      });
-      for (let combatant of combat.combatants) {
-         // Reset initiative to null
-         combatant.actor.update({ "system.combat.attacksAgainst": 0 });
-      }
-   }
-});
+Hooks.on('renderCombatTracker', fadeCombat.onRenderCombatTracker);
+Hooks.on('createCombat', fadeCombat.onCreateCombat);
+Hooks.on('deleteCombat', fadeCombat.onDeleteCombat);
+Hooks.on('createCombatant', fadeCombat.onCreateCombatant);
+Hooks.on('deleteCombatant', fadeCombat.onDeleteCombatant);

@@ -1,0 +1,7 @@
+{{#if combatant.actor.isOwner}}
+<div class="combatant-declarations">
+	<select id="combatantDeclaration" class="sidebar-select" {{disabled hasInitiative}}>
+		{{selectOptions availableActions selected=combatant.actor.system.combat.declaredAction valueAttr="value" labelAttr="text"}}
+	</select>
+</div>
+{{/if}}
