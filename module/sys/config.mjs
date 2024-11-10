@@ -3050,3 +3050,25 @@ FADE.Actions = [
       img: "icons/magic/fire/orb-fireball-puzzle.webp",
    }
 ]
+FADE.CombatPhases = {
+   morale: { declared: false },
+   movement: { declared: false },
+   missile: { declared: true },
+   magic: { declared: true },
+   melee: { declared: true },
+};
+FADE.CombatManeuvers = {
+   throw: { phase: "missile", canMove: true },
+   fire: { phase: "missile", canMove: true },
+   spell: { phase: "magic", canMove: false },
+   magicItem: { phase: "magic", canMove: false },
+   attack: { phase: "melee", canMove: true },
+   withdrawal: { phase: "melee", canMove: true },
+   retreat: { phase: "melee", canMove: true },
+   lance: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf"] },
+   multiAttack: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf"] },
+   setSpear: { phase: "melee", canMove: false, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"] },
+   smash: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
+   parry: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
+   disarm: { phase: "melee", canMove: true , classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
+}

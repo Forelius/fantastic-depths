@@ -198,14 +198,18 @@ h1, h2, h3, h4 {
 }
 
 .combatant-declarations {
-  margin: -3px 3px 0 0;
+  margin: -3px 0 0 0;
 }
-
-.sidebar-select {
+.combatant-declarations .sidebar-select {
   flex: auto;
   font-size: 10px;
   background-color: lightgray;
   height: 16px;
+}
+
+.declared-action {
+  font-size: 12px;
+  color: #888888;
 }
 
 :root {

@@ -42,6 +42,16 @@ export class GMMessageSender {
       }
    }
 
+   handleRollGroupInitiative(message) {
+      const { data } = message;
+      const combat = game.combats.get(data.combatid);
+      if (combat) {
+         combat.rollInitiative([], { messageOptions: { group: "friendly" } });
+      } else {
+         console.warn("handleIncAttacksAgainst: combat not found.", data);
+      }
+   }
+
    receiveSocketMessage = (message) => {
       // Handle the message based on type
       switch (message.action) {
@@ -53,6 +63,9 @@ export class GMMessageSender {
             break;
          case "incAttacksAgainst":
             this.handleIncAttacksAgainst(message)
+            break;
+         case "rollGroupInitiative":
+            this.handleRollGroupInitiative(message);
             break;
       }
    }

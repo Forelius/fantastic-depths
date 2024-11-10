@@ -64,6 +64,7 @@ export class fadeSettings {
          choices: {
             "individual": "SETTINGS.initiative.mode.choices.individual",
             "simpleIndividual": "SETTINGS.initiative.mode.choices.simpleIndividual",
+            "individualChecklist": "SETTINGS.initiative.mode.choices.individualChecklist",
             "group": "SETTINGS.initiative.mode.choices.group",
             "groupHybrid": "SETTINGS.initiative.mode.choices.groupHybrid",
          },

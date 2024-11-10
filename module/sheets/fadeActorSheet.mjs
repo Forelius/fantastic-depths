@@ -455,7 +455,7 @@ export class fadeActorSheet extends ActorSheet {
       }
 
       // If remember state is enabled, store the collapsed state
-      const rememberCollapsedState = await game.settings.get(game.system.id, "rememberCollapsedState");
+      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       if (rememberCollapsedState === true) {
          const sectionName = $parent.attr('name'); // Access the `name` attribute from the DOM element
          const actor = game.actors.get(this.actor.id);
@@ -473,7 +473,7 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    async _restoreCollapsedState() {
-      const rememberCollapsedState = await game.settings.get(game.system.id, "rememberCollapsedState");
+      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
 
       if (rememberCollapsedState === true) {
          const actor = game.actors.get(this.actor.id);

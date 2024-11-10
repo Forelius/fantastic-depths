@@ -1,7 +1,9 @@
-{{#if combatant.actor.isOwner}}
+{{#if enableEditAction}}
 <div class="combatant-declarations">
-	<select id="combatantDeclaration" class="sidebar-select" {{disabled hasInitiative}}>
+	<select id="combatantDeclaration" class="sidebar-select" {{disabled disableEditAction}} title={{localize (concat 'FADE.combat.maneuvers.' combatant.actor.system.combat.declaredAction '.description')}}>
 		{{selectOptions availableActions selected=combatant.actor.system.combat.declaredAction valueAttr="value" labelAttr="text"}}
 	</select>
 </div>
+{{else}}
+	<label class="declared-action" title="{{localize (concat 'FADE.combat.maneuvers.' combatant.actor.system.combat.declaredAction '.description')}}">{{localize (concat 'FADE.combat.maneuvers.' combatant.actor.system.combat.declaredAction '.name')}}</label>
 {{/if}}

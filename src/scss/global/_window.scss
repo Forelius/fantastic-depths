@@ -99,12 +99,17 @@
    transition: height 0.1s ease-in, padding 0.1s ease-in;
 }
 
-.combatant-declarations{
-   margin:-3px 3px 0 0;
+.combatant-declarations {
+   margin: -3px 0 0 0;
+
+   .sidebar-select {
+      flex: auto;
+      font-size: 10px;
+      background-color: lightgray;
+      height: 16px;
+   }
 }
-.sidebar-select {
-   flex:auto;
-   font-size:10px;
-   background-color:lightgray;
-   height: 16px;
+.declared-action {
+   font-size: 12px;
+   color: #888888;
 }

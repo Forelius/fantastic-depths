@@ -1,18 +1,31 @@
 // fadeCombat.mjs
 // Import any required modules (if necessary)
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { GMMessageSender } from './GMMessageSender.mjs'
 
 // Custom Combat class
 export class fadeCombat extends Combat {
-   constructor(data, context) {
-      super(data, context);
+   /**@override */
+   prepareBaseData() {
+      super.prepareBaseData();
       this._initVariables();
    }
 
-   async _initVariables() {
-      this.initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
-      this.nextRoundMode = await game.settings.get(game.system.id, "nextRound");
-      this.declaredActions = await game.settings.get(game.system.id, "declaredActions");
+   _initVariables() {
+      this.groupModifier = game.settings.get(game.system.id, "groupInitiativeModifier");
+      this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
+      this.initiativeMode = game.settings.get(game.system.id, "initiativeMode");
+      this.nextRoundMode = game.settings.get(game.system.id, "nextRound");
+      this.declaredActions = game.settings.get(game.system.id, "declaredActions");
+      this.availableActions = Object.entries(CONFIG.FADE.CombatManeuvers)
+         .map(([key, value]) => ({
+            text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
+            value: key,
+            title: game.i18n.localize(`FADE.combat.maneuvers.${key}.description`),
+            phase: value.phase
+         }))
+         .sort((a, b) => a.text.localeCompare(b.text)); // Sort by the `text` property
+      this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases);
    }
 
    /**
@@ -48,7 +61,25 @@ export class fadeCombat extends Combat {
    * @returns {Promise<Combat>}       A promise which resolves to the updated Combat document once updates are complete.
     */
    async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
-      await this.#doInitiativeRoll(ids);  // Use the custom initiative function
+      if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+         if (game.user.isGM) {
+            // Get all combatants and group them by disposition
+            const combatants = this.combatants;
+            let group = messageOptions?.group ?? null;
+            if (group === null && ids.length > 0) {
+               // how to get combatant with ids[0]
+               const combatant = combatants.get(ids[0]);
+               group = this.#getCombatantDisposition(combatant);
+            }
+            await this.#doInitiativeRoll(combatants, group);  // Use the custom initiative function
+         } else {
+            GMMessageSender.sendToGM("rollGroupInitiative", { combatid: this.id });
+         }
+      } else {
+         const combatants = this.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
+         await this.#doInitiativeRoll(combatants);  // Use the custom initiative function
+      }
+      
       return this;
    }
 
@@ -129,7 +160,24 @@ export class fadeCombat extends Combat {
       let bActor = b.actor;
 
       if (aActor && bActor) {
-         if (this.initiativeMode !== "simpleIndividual") {
+         // Use combat phases order
+         if (this.initiativeMode === "individualChecklist" && this.declaredActions === true && result === 0 && a.initiative !== null && b.initiative !== null) {
+            const aPhase = aActor.system.combat?.declaredAction
+               ? CONFIG.FADE.CombatManeuvers[aActor.system.combat.declaredAction].phase
+               : null;
+            const bPhase = bActor.system.combat?.declaredAction
+               ? CONFIG.FADE.CombatManeuvers[bActor.system.combat.declaredAction].phase
+               : null;
+
+            // Only compare if both combatants have a valid phase
+            if (aPhase && bPhase && aPhase !== bPhase) {
+               const aPhaseIndex = this.phaseOrder.indexOf(aPhase);
+               const bPhaseIndex = this.phaseOrder.indexOf(bPhase);
+               result = aPhaseIndex - bPhaseIndex;
+            }
+         }
+
+         if (result === 0 && this.initiativeMode !== "simpleIndividual") {
             let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
             let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
             let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
@@ -170,15 +218,32 @@ export class fadeCombat extends Combat {
       const bActor = b.actor;
       const aGroup = a.token.disposition;
       const bGroup = b.token.disposition;
-      const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-      const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
 
       if (this.initiativeMode === "groupHybrid") {
+         const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+         const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
          // Compare slowEquipped, true comes before false
          const aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
          const bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
          if (aGroup === bGroup && aSlowEquipped !== bSlowEquipped) {
             result = aSlowEquipped ? 1 : -1;
+         }
+      }
+
+      // Use combat phases order
+      if (this.declaredActions === true && result === 0 && aGroup === bGroup && a.initiative !== null && b.initiative !== null) {
+         const aPhase = aActor.system.combat?.declaredAction
+            ? CONFIG.FADE.CombatManeuvers[aActor.system.combat.declaredAction].phase
+            : null;
+         const bPhase = bActor.system.combat?.declaredAction
+            ? CONFIG.FADE.CombatManeuvers[bActor.system.combat.declaredAction].phase
+            : null;
+
+         // Only compare if both combatants have a valid phase
+         if (aPhase && bPhase && aPhase !== bPhase) {            
+            const aPhaseIndex = this.phaseOrder.indexOf(aPhase);
+            const bPhaseIndex = this.phaseOrder.indexOf(bPhase);
+            result = aPhaseIndex - bPhaseIndex;
          }
       }
 
@@ -200,29 +265,27 @@ export class fadeCombat extends Combat {
 
    // Function to handle group-based initiative
    async #rollForGroup(group, groupName) {
-      const groupModifier = await game.settings.get(game.system.id, "groupInitiativeModifier");
-      const initiativeFormula = await game.settings.get(game.system.id, "initiativeFormula");
       let rollData = {};
       let result = null;
       let usedMod = 0; // Track the modifier used for this group
 
       // Apply the group modifier
-      if (groupModifier === "none") {
+      if (this.groupModifier === "none") {
          rollData = { mod: 0 };
          usedMod = 0;
-      } else if (groupModifier === "average") {
+      } else if (this.groupModifier === "average") {
          // Average Dexterity modifier
          const averageMod = group.reduce((sum, c) => sum + this.#getInitiativeMod(c.actor), 0) / group.length;
          usedMod = Math.floor(averageMod);
          rollData = { mod: usedMod };
-      } else if (groupModifier === "highest") {
+      } else if (this.groupModifier === "highest") {
          // Highest Dexterity modifier
          usedMod = Math.max(...group.map(c => this.#getInitiativeMod(c.actor)));
          rollData = { mod: usedMod };
       }
 
       // Perform the roll using the initiative formula
-      const roll = new Roll(initiativeFormula, rollData);
+      const roll = new Roll(this.initiativeFormula, rollData);
       const rolled = await roll.evaluate();
 
       // Apply the same initiative result to all combatants in the group
@@ -252,37 +315,32 @@ export class fadeCombat extends Combat {
    }
 
    /**
- * The custom rollInitiative function
- * @param {any} combat
- */
-   async #doInitiativeRoll(ids) {
-      // Fetch the initiative formula and mode from settings
-      const initiativeFormula = await game.settings.get(game.system.id, "initiativeFormula");
-      const initiativeMode = await game.settings.get(game.system.id, "initiativeMode");
-
-      // Get all combatants and group them by disposition
-      const combatants = this.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
-      this.groups = this.#groupCombatantsByDisposition(combatants);
-
+    * The custom rollInitiative function
+    * @param {any} combat
+    */
+   async #doInitiativeRoll(combatants, group = null) {
       // Array to accumulate roll results for the digest message
       let rollResults = [];
 
       // Handle group-based initiative by disposition
-      if (initiativeMode === "group") {
+      if (this.initiativeMode === "group" || this.initiativeMode ==="groupHybrid") {
+         // Get all combatants and group them by disposition         
+         this.groups = this.#groupCombatantsByDisposition(combatants);
+
          // Friendly group (uses modifiers)
-         if (this.groups.friendly.length > 0) {
+         if ((group === null || group ==='friendly') && this.groups.friendly.length > 0) {
             let rollResult = await this.#rollForGroup(this.groups.friendly, "Friendlies");
             if (rollResult) rollResults.push(rollResult);
          }
 
          // Neutral group (uses modifiers)
-         if (this.groups.neutral.length > 0) {
+         if ((group === null || group === 'neutral') && this.groups.neutral.length > 0) {
             let rollResult = await this.#rollForGroup(this.groups.neutral, "Neutrals");
             if (rollResult) rollResults.push(rollResult);
          }
 
          // Hostile group (monsters may not use modifiers)
-         if (this.groups.hostile.length > 0) {
+         if ((group === null || group === 'hostile') && this.groups.hostile.length > 0) {
             let rollResult = await this.#rollForGroup(this.groups.hostile, "Hostiles");
             if (rollResult) rollResults.push(rollResult);
          }
@@ -294,7 +352,7 @@ export class fadeCombat extends Combat {
             rollData.mod = mod;
 
             // Perform the roll using the initiative formula
-            const roll = new Roll(initiativeFormula, rollData);
+            const roll = new Roll(this.initiativeFormula, rollData);
             const rolled = await roll.evaluate();
 
             // Update the combatant's initiative with the roll result
@@ -309,8 +367,8 @@ export class fadeCombat extends Combat {
       // Create a single chat message for all rolls
       if (rollResults.length > 0) {
          // Store the base formula without the mod for flavor text
-         const baseFormula = initiativeFormula.replace(/\+?\s*@mod/, '').trim();
-         const flavorText = `Initiative Rolls (Base Formula: ${initiativeFormula.replace(/\+?\s*@mod/, '').trim()})`;
+         const baseFormula = this.initiativeFormula.replace(/\+?\s*@mod/, '').trim();
+         const flavorText = `Initiative Rolls (Base Formula: ${this.initiativeFormula.replace(/\+?\s*@mod/, '').trim()})`;
          const user = game.users.get(game.userId);  // Get the user who initiated the roll
          const speaker = { alias: user.name };  // Use the player's name as the speaker
          ChatMessage.create({
@@ -349,6 +407,20 @@ export class fadeCombat extends Combat {
       return groups;
    }
 
+   #getCombatantDisposition(combatant) {
+      const disposition = combatant.token.disposition;
+      let result = null;
+         if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+            result = "friendly";
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+            result = "neutral";
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+            result = "hostile";
+         }
+      return result;
+   }
+
+
    static async onRenderCombatTracker(app, html, data) {
       let hasAnyRolls = false;
       if (data?.combat?.combatants) {
@@ -368,32 +440,25 @@ export class fadeCombat extends Combat {
 
             if (data.combat.declaredActions === true) {
                // Add declaration controls
-               await data.combat.addDeclarationControl(combatantElement, combatant);
+               await data.combat.addDeclarationControl(data.combat, combatantElement, combatant);
             }
          }
       }
    }
 
-   async addDeclarationControl(combatantElement, combatant) {
+   async addDeclarationControl(combat, combatantElement, combatant) {
       const combatantControls = combatantElement.find('.combatant-controls');
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
-      const controlsContent = await renderTemplate(template, {
+      let templateData = {
          combatant,
-         hasInitiative: combatant.initiative !== null,
-         availableActions: [
-            { text: "Melee", value: "melee" },
-            { text: "Spell", value: "spell" },
-            { text: "Ranged", value: "ranged" },
-            { text: "Retreat", value: "retreat" },
-         ]
-      });
+         enableEditAction: game.user.isGM || (combatant.actor.isOwner && (combatant.initiative === null || combat.nextRoundMode === "hold")),
+         availableActions: this.availableActions
+      };
+
+      const controlsContent = await renderTemplate(template, templateData);
       combatantControls.prepend(controlsContent);
-      // Select all `.combatant-control` elements within `.combatant-declarations` and add any event listeners or logic
-      //combatantElement.find('.combatant-declarations .combatant-control').each((i, control) => {
-      //   $(control).on('click', ev => combatant.onCombatantControl(ev));
-      //});
       // Add a change event listener to update the actor's data when the dropdown selection changes
-      if (combatant.initiative === null) {
+      if (combatant.initiative === null || game.user.isGM) {
          combatantElement.find('#combatantDeclaration').on('change', async (event) => {
             const newAction = event.target.value;
             await combatant.actor.update({ 'system.combat.declaredAction': newAction });
@@ -434,7 +499,7 @@ export class fadeCombat extends Combat {
    static onCreateCombatant(combatant, options, userId) {
       if (game.user.isGM) {
          const actorData = combatant.actor.system;
-         combatant.actor.update({ 'system.combat.declaredAction': "melee" });
+         combatant.actor.update({ 'system.combat.declaredAction': "attack" });
       }
    }
 

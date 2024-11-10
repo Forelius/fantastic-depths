@@ -79,7 +79,7 @@ export class EffectManager {
       const effectId = li.dataset.effectId;
 
       // Retrieve global effects from the persistent setting
-      let globalEffects = await game.settings.get(game.system.id, 'globalEffects');
+      let globalEffects = game.settings.get(game.system.id, 'globalEffects');
       let effect = globalEffects.find(e => e.id === effectId);
 
       // Handle the specific action
