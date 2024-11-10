@@ -4,6 +4,15 @@
    <div class="attack-result">{{{toHitResult.message}}}</div>
    {{/if}}
 </div>
+<div class="bordered" style="padding-bottom:2px;">
+   <div class="flexrow collapser">
+      <img class="item-image" src='{{weapon.img}}' title='{{weapon.name}}' />
+      <div class="item-name">{{weapon.name}}</div>
+   </div>
+   <div class="collapsible-content collapsed">
+      {{{weapon.system.description}}}
+   </div>
+</div>
 {{#if rollContent}}
 {{{rollContent}}}
 {{/if}}
