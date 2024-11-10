@@ -658,7 +658,7 @@ export class fadeActor extends Actor {
          ac.mastery = [];
          for (let weapon of equippedWeapons) {
             const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
-            if (weaponMastery/* && weaponMastery.system.acBonusAT > systemData.combat.attacksAgainst*/) {
+            if (weaponMastery) {
                ac.mastery.push({
                   acBonusType: weaponMastery.system.acBonusType,
                   acBonus: weaponMastery.system.acBonus || 0,

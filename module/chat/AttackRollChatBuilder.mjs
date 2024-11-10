@@ -105,17 +105,17 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
             const defenseMasteries = targetActor.system.ac.mastery;
             if (targetWeaponType && defenseMasteries?.length > 0) {
-               //console.debug(`${attackerToken.name} vs ${targetToken.name}:`, defenseMasteries);
                const defenseMastery = defenseMasteries.filter(mastery => mastery.acBonusType === targetWeaponType)
                   .reduce((minMastery, current) =>
                      current.acBonus < minMastery.acBonus ? current : minMastery
                      , { acBonus: Infinity });
 
-               if (defenseMastery) {
+               if (defenseMastery && defenseMastery.acBonus !== Infinity) {
                   // Normal AC/Mastery Def. AC
                   const isApplicable = targetActor.system.combat.attacksAgainst < defenseMastery.acBonusAT;
-                  targetResult.targetac = `<span title='Normal AC' ${isApplicable?"":"style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
+                  targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
 <span ${isApplicable ? "style='color:green'" : ""} title='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
+                  console.debug(`${attackerToken.name} vs ${targetToken.name}:`, isApplicable, defenseMastery, targetResult.targetac);
                   if (isApplicable) {
                      ac = defenseMastery.total;
                   }
