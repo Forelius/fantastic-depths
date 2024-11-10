@@ -15,6 +15,7 @@ export class SkillItem extends fadeItem {
       systemData.ability = systemData.ability !== undefined ? systemData.ability : "str";
       systemData.level = systemData.level !== undefined ? systemData.level : 1;
       systemData.rollMode = systemData.rollMode !== undefined ? systemData.rollMode : "publicroll";
+      systemData.healFormula = systemData.healFormula || null;
    }
 
    /** @override */
@@ -24,6 +25,26 @@ export class SkillItem extends fadeItem {
       if (this.actor) {
          systemData.rollTarget = this.actor.system.abilities[systemData.ability].value;
       }
+   }
+
+   async getDamageRoll() {
+      const isHeal = this.system.healFormula?.length > 0;
+      let formula = null;
+      let digest = [];
+      let hasDamage = false;
+
+      if (isHeal) {
+         let evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
+         formula = evaluatedRoll?.formula;
+         hasDamage = true;
+      }
+
+      return {
+         formula,
+         damageType: isHeal ? "heal" : null,
+         digest,
+         hasDamage
+      };
    }
 
    /**
@@ -36,6 +57,7 @@ export class SkillItem extends fadeItem {
       const item = this;
       const systemData = this.system;
       const ownerData = this.actor.system;
+      const attackerToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
 
       // Retrieve roll data.
       const rollData = this.getRollData();
@@ -66,8 +88,8 @@ export class SkillItem extends fadeItem {
          dataset.desc = `${localizeAbility} (${ownerData.abilities[systemData.ability].value})`
          const chatData = {
             dialogResp: dialogResp,
-            caller: this.actor, // the skill item
-            context: this.actor, // the skill item owner
+            caller: this, // the skill item
+            context: attackerToken, // the skill item owner
             mdata: dataset,
             roll: rolled,
          };

@@ -293,7 +293,8 @@
          "templates": [ "base" ],
          "ability": "str",
          "level": 1,
-         "rollMode": ""
+         "rollMode": "",
+         "healFormula": null
       },
       "mastery": {
          "templates": [ "base" ],
