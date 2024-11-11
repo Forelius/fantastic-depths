@@ -9,10 +9,12 @@ The system comes with two themes, which are a light mode and a dark mode.
 
 Manual install: https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
 
+We are on Discord: https://discord.gg/PneCCNwx
+
 ## Character Sheet
 The character sheet can handle any of the core classes and levels up to 24. Monsters and retainers are also supported. Core classes are recognized when entered into the class field, and this will result in the auto-population of various class-related inputs. All auto-populated class-related values can be overwritten if desired.
-
 ![character](./assets/img/docs/charsheet1.jpg)
+
 ### Character Inventory
 ![inventory](./assets/img/docs/charsheet2.jpg)
 
@@ -24,6 +26,10 @@ The monster sheet allows for custom equippment, spells and possession and use of
 There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
 
 ![weapon](./assets/img/docs/weaponsheet.jpg)
+![armor](./assets/img/docs/armorsheet1.jpg)
+![skill](./assets/img/docs/skillsheet1.jpg)
+![mastery](./assets/img/docs/masterysheet1.jpg)
+![spell](./assets/img/docs/spellsheet1.jpg)
 
 ### Effects
 Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
