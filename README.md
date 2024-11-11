@@ -25,13 +25,21 @@ The monster sheet allows for custom equippment, spells and possession and use of
 ## Item Sheet
 There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
 
+### Weapon Sheet
 ![weapon](./assets/img/docs/weaponsheet.jpg)
+
+### Armor Sheet
 ![armor](./assets/img/docs/armorsheet1.jpg)
+
+### Skill Sheet
 ![skill](./assets/img/docs/skillsheet1.jpg)
+
+### Weapon Mastery Sheet
 ![mastery](./assets/img/docs/mastery1.jpg)
+
+### Spell Sheet
 ![spell](./assets/img/docs/spellsheet1.jpg)
 
 ### Effects
 Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
-
 ![armor](./assets/img/docs/itemeffects1.jpg)
