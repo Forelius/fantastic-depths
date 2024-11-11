@@ -28,7 +28,7 @@ There are item sheets for adventuring gear, armor, weapons, general skills, weap
 ![weapon](./assets/img/docs/weaponsheet.jpg)
 ![armor](./assets/img/docs/armorsheet1.jpg)
 ![skill](./assets/img/docs/skillsheet1.jpg)
-![mastery](./assets/img/docs/masterysheet1.jpg)
+![mastery](./assets/img/docs/mastery1.jpg)
 ![spell](./assets/img/docs/spellsheet1.jpg)
 
 ### Effects
