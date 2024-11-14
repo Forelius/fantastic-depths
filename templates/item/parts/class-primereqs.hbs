@@ -1,0 +1,35 @@
+<!-- Class Prime Requisites Section -->
+<section name="classPrimeReqsSection" class="items-list">
+   <ol name="class-prime-reqs" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header collapsible-header'>
+         <div>{{localize 'FADE.Actor.Abilities.long'}}</div>
+         <div>{{localize 'FADE.Actor.XPBonus'}}5</div>
+         <div>{{localize 'FADE.Actor.XPBonus'}}10</div>
+         <div class='item-controls'>
+            <a class='item-control item-create' title='{{localize "DOCUMENT.Create"}} {{localize 'FADE.Actor.PrimeReq'}}' data-type='primeReq'>
+               <i class='fas fa-plus'></i>               
+            </a>
+         </div>
+      </li>
+      <!-- Prime Requisite Entries -->
+      {{#each system.primeReqs as |primeReqData index|}}
+      <li class='item flexrow' data-item-id='{{primeReqData.ability}}'>
+         <div class="align-left">
+            <input type="text" name="system.primeReqs.[{{index}}].ability" value="{{primeReqData.ability}}" data-dtype="String" />
+         </div>
+         <div class="align-left">
+            <input type="number" name="system.primeReqs.[{{index}}].xpBonus5" value="{{primeReqData.xpBonus5}}" data-dtype="Number" />
+         </div>
+         <div class="align-left">
+            <input type="number" name="system.primeReqs.[{{index}}].xpBonus10" value="{{primeReqData.xpBonus10}}" data-dtype="Number" />
+         </div>
+         <div class='item-controls'>
+            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete"}} {{localize 'FADE.Actor.PrimeReq'}}' data-type='primeReq' data-index='{{index}}'>
+               <i class='fas fa-trash'></i>
+            </a>
+         </div>
+      </li>
+      {{/each}}
+   </ol>
+</section>

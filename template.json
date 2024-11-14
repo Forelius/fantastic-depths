@@ -201,7 +201,7 @@
       }
    },
    "Item": {
-      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility" ],
+      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility", "class" ],
       "templates": {
          "base": {
             "tags": [],

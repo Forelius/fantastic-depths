@@ -7,10 +7,12 @@ import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeItem } from './item/fadeItem.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
+import { ClassItem } from './item/ClassItem.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
 // Import sheet classes.
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
+import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
@@ -47,6 +49,7 @@ Hooks.once('init', async function () {
       fadeItem,
       ArmorItem,
       WeaponItem,
+      ClassItem,
       MacroManager,
       LightManager,
       TurnTrackerForm,
@@ -83,8 +86,14 @@ Hooks.once('init', async function () {
    });
    Items.unregisterSheet('core', ItemSheet);
    Items.registerSheet('fantastic-depths', fadeItemSheet, {
-      makeDefault: true,
       label: 'FADE.SheetLabel.Item',
+      makeDefault: true,
+      types: ['item', 'weapon', 'armor', 'spell', 'skill', 'mastery', 'specialAbility', 'treasure']
+   });
+   Items.registerSheet('fantastic-depths', ClassItemSheet, {
+      label: 'FADE.SheetLabel.ClassItem',
+      types: ['class'],
+      makeDefault: true 
    });
 
    await handleAsyncInit();

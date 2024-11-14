@@ -1,25 +1,87 @@
 {{! This template is a fallback for when items don't have more specific templates. }}
 {{! Generally, you'll want to make more specific templates when possible. }}
 <form class='{{cssClass}}' autocomplete='off'>
-  <header class='sheet-header'>
-    <img class='profile-img' src='{{item.img}}' data-edit='img' title='{{item.name}}'/>
-    <div class='header-fields'>
-      <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name'/></div>
-    </div>
-  </header>
+   <header class='sheet-header'>
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <div class='header-fields'>
+         <ul class="summary flexrow">
+            <li class="flex3">
+               <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
+               <label>{{localize 'FADE.Actor.Name'}}</label>
+            </li>
+            <li class="flex1" style="min-width:40px;">
+               <input type='text' name='system.species' value='{{system.species}}' data-dtype='String' />
+               <label>{{localize 'FADE.Actor.Species'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.alignment' value='{{system.alignment}}' data-dtype='String' />
+               <label for="system.alignment">{{localize 'FADE.Actor.Alignment'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.maxLevel' value='{{system.maxLevel}}' data-dtype='Number' />
+               <label for="system.maxLevel">{{localize 'FADE.Actor.Max'}} {{localize 'FADE.Actor.Level'}}</label>
+            </li>
+         </ul>
+         <ul class="summary flexrow">
+            <li class="flex1">
+               <input type="checkbox" name="system.isSpellcaster" data-dtype="Boolean" {{#if system.isSpellcaster}} checked{{/if}} />
+               <label for="system.isSpellcaster">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.maxSpellLevel' value='{{system.maxSpellLevel}}' data-dtype='Number' />
+               <label for="system.maxSpellLevel">{{localize 'FADE.Actor.Max'}} Spell {{localize 'FADE.Actor.Level'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.minCon' value='{{system.minCon}}' data-dtype='Number' />
+               <label for="system.minCon">{{localize 'FADE.Actor.Min'}} {{localize 'FADE.Actor.Abilities.con.abbr'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.minInt' value='{{system.minInt}}' data-dtype='Number' />
+               <label for="system.minInt">{{localize 'FADE.Actor.Min'}} {{localize 'FADE.Actor.Abilities.int.abbr'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.minDex' value='{{system.minDex}}' data-dtype='Number' />
+               <label for="system.minDex">{{localize 'FADE.Actor.Min'}} {{localize 'FADE.Actor.Abilities.dex.abbr'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name='system.minWis' value='{{system.minWis}}' data-dtype='Number' />
+               <label for="system.minWis">{{localize 'FADE.Actor.Min'}} {{localize 'FADE.Actor.Abilities.wis.abbr'}}</label>
+            </li>
+         </ul>
+      </div>
+   </header>
 
-  {{! Sheet Tab Navigation }}
-  <nav class='sheet-tabs tabs' data-group='primary'>
-    <a class='item' data-tab='description'>Description</a>
-  </nav>
+   {{! Sheet Tab Navigation }}
+   <nav class='sheet-tabs tabs' data-group='primary'>
+      <a class='item' data-tab='levels'>Levels</a>
+      <a class='item' data-tab='saves'>Saving Throws</a>
+      <a class='item' data-tab='primeReqs'>Prime Requisites</a>
+      {{#if system.isSpellcaster}}
+      <a class='item' data-tab='spells'>Spells</a>
+      {{/if}}
+      <a class='item' data-tab='description'>Description</a>
+   </nav>
 
-  {{! Sheet Body }}
-  <section class='sheet-body'>
-
-    {{! Description Tab }}
-    <div class='tab' data-group='primary' data-tab='description'>
-      {{! Editors must receive enriched text data from getData to properly handle rolls }}
-      {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
-    </div>
-  </section>
+   {{! Sheet Body }}
+   <section class='sheet-body'>
+      <div class='tab' data-group='primary' data-tab='levels'>
+         {{> "systems/fantastic-depths/templates/item/parts/class-levels.hbs"}}
+      </div>
+      <div class='tab' data-group='primary' data-tab='saves'>
+         {{> "systems/fantastic-depths/templates/item/parts/class-saves.hbs"}}
+      </div>
+      <div class='tab' data-group='primary' data-tab='primeReqs'>
+         {{> "systems/fantastic-depths/templates/item/parts/class-primereqs.hbs"}}
+      </div>
+      {{#if system.isSpellcaster}}
+      <div class='tab' data-group='primary' data-tab='spells'>
+         {{> "systems/fantastic-depths/templates/item/parts/class-spells.hbs"}}
+      </div>
+      {{/if}}
+      {{! Description Tab }}
+      <div class='tab' data-group='primary' data-tab='description'>
+         {{! Editors must receive enriched text data from getData to properly handle rolls }}
+         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+      </div>
+   </section>
 </form>

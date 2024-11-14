@@ -24,6 +24,7 @@ export class fadeItem extends Item {
          mastery: "icons/svg/combat.svg",
          item: "icons/svg/item-bag.svg",
          container: "icons/svg/chest.svg",
+         class: `${fdPath}/class.webp`,
       };
    }
 
@@ -38,7 +39,7 @@ export class fadeItem extends Item {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      const notEquippable = ["container", "spell", "skill", "specialAbility", "mastery"];
+      const notEquippable = ["class", "container", "spell", "skill", "specialAbility", "mastery"];
       if (notEquippable.includes(this.type) === false) {
          this.system.equipped = this.system.equipped || false;
       }

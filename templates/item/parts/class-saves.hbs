@@ -1,0 +1,45 @@
+<section name="classSavesSection" class="items-list">
+   <ol name="class-saves" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header collapsible-header'>
+         <div>{{localize 'FADE.Actor.Level'}}</div>
+         <div>{{localize 'FADE.Actor.Saves.death.abbr'}}</div>
+         <div>{{localize 'FADE.Actor.Saves.wand.abbr'}}</div>
+         <div>{{localize 'FADE.Actor.Saves.paralysis.abbr'}}</div>
+         <div>{{localize 'FADE.Actor.Saves.breath.abbr'}}</div>
+         <div>{{localize 'FADE.Actor.Saves.spell.abbr'}}</div>
+         <div class='item-controls'>
+            <a class='item-control item-create' title='{{localize "DOCUMENT.Create"}}' data-type='classSave'>
+               <i class='fas fa-plus'></i>
+               {{localize 'FADE.Actor.Saves.short'}}
+            </a>
+         </div>
+      </li>
+      <!-- Save Entries -->
+      {{#each system.saves as |saveData index|}}
+      <li class='item flexrow' data-item-id='{{saveData.level}}'>
+         <div class="align-left"><input type="number" name="system.level" value="{{saveData.level}}" data-dtype="Number" /></div>
+         <div class="align-left">
+            <input type="number" name="system.saves.[{{index}}].death" value="{{saveData.death}}" data-dtype="Number" />
+         </div>
+         <div class="align-left">
+            <input type="number" name="system.saves.[{{index}}].wand" value="{{saveData.wand}}" data-dtype="Number" />
+         </div>
+         <div class="align-left">
+            <input type="number" name="system.saves.[{{index}}].paralysis" value="{{saveData.paralysis}}" data-dtype="Number" />
+         </div>
+         <div class="align-left">
+            <input type="number" name="system.saves.[{{index}}].breath" value="{{saveData.breath}}" data-dtype="Number" />
+         </div>
+         <div class="align-left">
+            <input type="number" name="system.saves.[{{index}}].spell" value="{{saveData.spell}}" data-dtype="Number" />
+         </div>
+         <div class='item-controls'>
+            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete"}}' data-type='classSave' data-index='{{index}}'>
+               <i class='fas fa-trash'></i>
+            </a>
+         </div>
+      </li>
+      {{/each}}
+   </ol>
+</section>

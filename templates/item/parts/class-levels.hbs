@@ -1,0 +1,26 @@
+<section name="classLevelsSection" class="items-list">
+   <ol name="class-levels" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header collapsible-header'>
+         <div>{{localize 'FADE.Actor.Level'}}</div>
+         <div>{{localize 'FADE.Actor.XPShort'}}</div>
+         <div>{{localize 'FADE.Actor.THAC0'}}</div>
+         <div>{{localize 'FADE.Actor.HitDiceShort'}}</div>
+         <div>HD CON</div>
+         <div>Title</div>
+         <div>Attack Rank</div>
+      </li>
+      <!-- Level Entries -->
+      {{#each system.levels as |levelData index|}}
+      <li class='item flexrow' data-item-id='{{levelData.level}}'>
+         <div class="align-left">{{levelData.level}}</div>
+         <div class="align-left"><input type="text" name="levelData.xp" value="{{levelData.xp}}" data-dtype="Number" /></div>
+         <div class="align-left"><input type="text" name="levelData.thac0" value="{{levelData.thac0}}" data-dtype="Number" /></div>
+         <div class="align-left"><input type="text" name="levelData.hd" value="{{levelData.hd}}" data-dtype="String" /></div>
+         <div><input type="checkbox" name="levelData.hdcon" data-dtype="Boolean" {{#if levelData.hdcon}} checked{{/if}} /></div>
+         <div class="align-left"><input type="text" name="levelData.title" value="{{levelData.title}}" data-dtype="String" /></div>
+         <div class="align-left"><input type="text" name="levelData.attackRank" value="{{levelData.attackRank}}" data-dtype="String" /></div>
+      </li>
+      {{/each}}
+   </ol>
+</section>

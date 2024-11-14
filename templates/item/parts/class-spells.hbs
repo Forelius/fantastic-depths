@@ -1,0 +1,23 @@
+<!-- Class Spells Section -->
+<section name="classSpellsSection" class="items-list">
+   <ol name="class-spells" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header'>
+         <div>{{localize 'FADE.Actor.Level'}}</div>
+         {{#each spellLevelHeaders}}
+         <div>{{this}}</div>
+         {{/each}}
+      </li>
+      <!-- Spell Entries -->
+      {{#each system.spells as |spellLevels levelIndex|}}
+      <li class='item flexrow'>
+         <div class="align-left">{{add levelIndex 1}}</div>
+         {{#each spellLevels as |spellCount spellLevelIndex|}}
+         <div class="align-left">
+            <input type="number" name="system.spells.{{levelIndex}}.{{spellLevelIndex}}" value="{{spellCount}}" data-dtype="Number" />
+         </div>
+         {{/each}}
+      </li>
+      {{/each}}
+   </ol>
+</section>

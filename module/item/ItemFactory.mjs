@@ -5,6 +5,7 @@ import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs';
 import { SkillItem } from '../item/SkillItem.mjs';
 import { SpellItem } from '../item/SpellItem.mjs';
 import { MasteryItem } from '../item/MasteryItem.mjs';
+import { ClassItem } from '../item/ClassItem.mjs';
 
 const handler = {
    construct(_item, args) {
@@ -16,6 +17,7 @@ const handler = {
       else if (args[0]?.type === 'mastery') result = new MasteryItem(...args);
       else if (args[0]?.type === 'skill') result = new SkillItem(...args);
       else if (args[0]?.type === 'spell') result = new SpellItem(...args);
+      else if (args[0]?.type === 'class') result = new ClassItem(...args);
       else throw new Error(SYSTEM_ID, { type: args[0]?.type });
       return result;
    }

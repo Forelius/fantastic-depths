@@ -39,10 +39,12 @@ export class fadeHandlebars {
 
          return result;
       });
-
       // Register a Handlebars helper to check if an array includes a value
       Handlebars.registerHelper('includes', function (array, value) {
          return array && array.includes(value);
+      });
+      Handlebars.registerHelper('add', function (a, b) {
+         return Number(a) + Number(b);
       });
    }
  }

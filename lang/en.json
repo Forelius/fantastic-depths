@@ -6,6 +6,7 @@
          "HealthMax": "Max HP.",
          "HealthMaxMonster": "Max HP. Set to zero to autocalculate max HP from hit dice.",
          "Max": "Max",
+         "Min": "Min",
          "HealthShort": "HP",
          "HitDice": "Hit Dice",
          "HitDiceShort": "HD",
@@ -26,8 +27,10 @@
          "Level": "Level",
          "NextLevel": "Next Level",
          "Experience": "Experience",
-         "XPBonus": "Bonus %",
+         "XPShort": "XP",
+         "XPBonus": "XP Bonus %",
          "THAC0": "THAC0",
+         "PrimeReq": "Prime Req.",
          "isSpellcaster": {
             "hint": "Can this actor or item cast spells.",
             "name": "Caster"
@@ -176,7 +179,8 @@
       },
       "SheetLabel": {
          "Actor": "FaDe Actor Sheet",
-         "Item": "FaDe Item Sheet"
+         "Item": "FaDe Item Sheet",
+         "ClassItem": "Class Item Sheet"
       },
       "Spell": {
          "SpellLVL": "Level {level} Spells",
@@ -466,8 +470,7 @@
    "TYPES": {
       "Actor": {
          "character": "Character",
-         "monster": "Monster",
-         "npc": "NPC"
+         "monster": "Monster"
       },
       "Item": {
          "item": "Item",
@@ -477,8 +480,8 @@
          "skill": "General Skill",
          "mastery": "Weapon Mastery",
          "specialAbility": "Special Ability",
-         "feature": "Feature",
-         "treasure": "Treasure"
+         "treasure": "Treasure",
+         "class": "Character Class"
       }
    },
 

@@ -27,5 +27,9 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs',
       'systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs',
       'systems/fantastic-depths/templates/item/parts/item-flags.hbs',
+      'systems/fantastic-depths/templates/item/parts/class-levels.hbs',
+      'systems/fantastic-depths/templates/item/parts/class-saves.hbs',
+      'systems/fantastic-depths/templates/item/parts/class-primereqs.hbs',
+      'systems/fantastic-depths/templates/item/parts/class-spells.hbs',
    ]);
 };
