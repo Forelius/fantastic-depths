@@ -3056,8 +3056,12 @@ FADE.CombatPhases = {
    missile: { declared: true },
    magic: { declared: true },
    melee: { declared: true },
+   special: { declared: true },
 };
 FADE.CombatManeuvers = {
+   nothing: { phase: "special", canMove: false },
+   moveOnly: { phase: "movement", canMove: true },
+   readyWeapon: { phase: "special", canMove: true },
    throw: { phase: "missile", canMove: true },
    fire: { phase: "missile", canMove: true },
    spell: { phase: "magic", canMove: false },
@@ -3070,5 +3074,5 @@ FADE.CombatManeuvers = {
    setSpear: { phase: "melee", canMove: false, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"] },
    smash: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    parry: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
-   disarm: { phase: "melee", canMove: true , classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
+   disarm: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
 }

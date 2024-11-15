@@ -116,7 +116,10 @@ export class fadeCombat extends Combat {
       if (user.isGM) {
          for (let combatant of this.combatants) {
             // Reset initiative to null
-            combatant.actor.update({ "system.combat.attacksAgainst": 0 });
+            combatant.actor.update({
+               "system.combat.attacksAgainst": 0,
+               'system.combat.declaredAction': "nothing"
+            });
          }
          // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
@@ -388,7 +391,8 @@ export class fadeCombat extends Combat {
       const groups = {
          friendly: [],
          neutral: [],
-         hostile: []
+         hostile: [],
+         secret: [],
       };
 
       // Iterate over combatants and group them by their token disposition
@@ -401,6 +405,8 @@ export class fadeCombat extends Combat {
             groups.neutral.push(combatant);
          } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
             groups.hostile.push(combatant);
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+            groups.secret.push(combatant);
          }
       }
 
@@ -416,10 +422,11 @@ export class fadeCombat extends Combat {
             result = "neutral";
          } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
             result = "hostile";
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+            result = "secret";
          }
       return result;
    }
-
 
    static async onRenderCombatTracker(app, html, data) {
       let hasAnyRolls = false;
@@ -436,6 +443,8 @@ export class fadeCombat extends Combat {
                combatantElement.addClass('disposition-neutral');
             } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
                combatantElement.addClass('disposition-hostile');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+               combatantElement.addClass('disposition-secret');
             }
 
             if (data.combat.declaredActions === true) {
@@ -499,7 +508,7 @@ export class fadeCombat extends Combat {
    static onCreateCombatant(combatant, options, userId) {
       if (game.user.isGM) {
          const actorData = combatant.actor.system;
-         combatant.actor.update({ 'system.combat.declaredAction': "attack" });
+         combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
       }
    }
 

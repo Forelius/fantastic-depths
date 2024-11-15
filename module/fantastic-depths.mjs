@@ -149,7 +149,7 @@ Hooks.once('ready', async function () {
             if (data.action === 'showToast') {
                // Call the public method to create the toast
                window.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
-               handled = true;
+               //handled = true;
             }
          });
       }

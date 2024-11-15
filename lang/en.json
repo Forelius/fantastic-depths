@@ -408,15 +408,31 @@
             "melee": {
                "name": "Hand-to-Hand Combat",
                "description": "Characters fighting hand-to-hand make their attacks."
+            },
+            "special": {
+               "name": "Special",
+               "description":  "Special actions are resolved."
             }
          },
          "maneuvers": {
+            "nothing": {
+               "name": "Nothing",
+               "description": "Character does absolutely nothing this round. No move, no attack, no nothing."
+            },
+            "moveOnly": {
+               "name": "Move Only",
+               "description": "Character is moving and not attacking this round. This is not a 'Retreat'."
+            },
+            "readyWeapon": {
+               "name": "Ready Weapon",
+               "description": "Character is readying their weapon this round. They may also move at normal speed."
+            },
             "throw": {
                "name": "Throw",
                "description": "Character throws a suitable weapon, applying Dexterity and magic bonuses to the attack roll and Strength and magic bonuses to damage, provided the target is within range."
             },
             "fire": {
-               "name": "Fire",
+               "name": "Fire/Shoot",
                "description": "Character uses a ranged weapon, applying Dexterity and magic bonuses to the attack roll, provided the target is within the weapon’s range."
             },
             "spell": {
