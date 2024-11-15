@@ -337,6 +337,7 @@
          "fail": "Failed",
          "attackFlavor": "{attacker} {attackType} attacks with {weapon}",
          "spellCast": "{caster} casts {spell}",
+         "useSpecAbility": "{owner} uses {specAbility}",
          "attackAC": "<div class='attack-info'>Attack hits <strong>AC {hitAC}</strong>.</div>",
          "attackSuccess": "<div class='attack-success'>Attack hit!</div>",
          "attackFail": "<div class='attack-fail'>Attack missed!</div>",

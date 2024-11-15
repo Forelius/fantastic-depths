@@ -268,7 +268,7 @@
          "templates": [ "base", "physical", "equippable", "natural" ],
          "ac": 9,
          "isShield": false,
-         "dmgRoll": null
+         "dmgFormula": null
       },
       "spell": {
          "templates": [ "base" ],
@@ -316,7 +316,11 @@
       },
       "specialAbility": {
          "templates": [ "base", "rollable" ],
-         "dmgRoll": null
+         "rollMode": "",
+         "dmgFormula": null,
+         "healFormula": null,
+         "savingThrow": null,
+         "damageType": ""
       }
    }
 }

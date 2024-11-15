@@ -8,6 +8,43 @@ export class SpecialAbilityItem extends fadeItem {
       super(data, context);
    }
 
+   /** @override */
+   prepareBaseData() {
+      super.prepareBaseData();
+      const systemData = this.system;
+      systemData.rollMode = systemData.rollMode !== undefined ? systemData.rollMode : "publicroll";
+      systemData.dmgFormula = systemData.dmgFormula || null;
+      systemData.healFormula = systemData.healFormula || null;
+      systemData.savingThrow = systemData.savingThrow || "";
+      systemData.damageType = systemData.damageType || "";
+   }
+
+   async getDamageRoll(resp) {
+      const isHeal = this.system.healFormula?.length > 0;
+      let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      let formula = evaluatedRoll?.formula;
+      let digest = [];
+      let modifier = 0;
+      let hasDamage = true;
+
+      if (resp?.mod && resp?.mod !== 0) {
+         formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
+         modifier += resp.mod;
+         digest.push(`Manual mod: ${resp.mod}`);
+      }
+
+      if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
+         hasDamage = false;
+      }
+
+      return {
+         formula,
+         damageType: isHeal ? "heal" : "physical",
+         digest,
+         hasDamage
+      };
+   }
+
    /**
    * Handle clickable rolls.
    * @param {Event} event The originating click event
@@ -15,38 +52,44 @@ export class SpecialAbilityItem extends fadeItem {
    */
    async roll(dataset) {
       let result = null;
-      const item = this;
       const systemData = this.system;
+      const ownerToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
+      let canProceed = true;
+      const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
+      const rollData = this.getRollData();
 
-      if (systemData.rollFormula && systemData.target) {
-         // Initialize chat data.
-         const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-         const label = `[${item.type}] ${item.name}`;
+      let rolled = null;
+      let dialogResp = null
+      if (hasRoll === true) {
+         try {
+            // Retrieve roll data.
+            dataset.dialog = "generic";
+            dataset.rollmode = systemData.rollMode;
+            dialogResp = await DialogFactory(dataset, this.actor);
+            rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
 
-         // If there's no roll data, send a chat message.
-         // Retrieve roll data.
-         const rollData = this.getRollData();
-         dataset.dialog = "generic";
-         dataset.pass = systemData.operator;
-         dataset.target = systemData.target;
-         dataset.rollmode = systemData.rollMode;
-         let dialogResp = await DialogFactory(dataset, this.actor);
-         rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
-
-         if (dialogResp?.resp?.rolling === true) {
-            const rollContext = { ...rollData, ...dialogResp?.resp || {} };
-            let rolled = await new Roll(rollData.formula, rollContext).evaluate();
-            const chatData = {
-               dialogResp: dialogResp,
-               context: this.actor,
-               mdata: dataset,
-               roll: rolled,
-            };
-            const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
-            result = builder.createChatMessage();
+            if (dialogResp?.resp?.rolling === true) {
+               const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+               rolled = await new Roll(rollData.formula, rollContext).evaluate();
+            } else {
+               canProceed = false;
+            }
+         } catch (error) {
+            // Close button pressed or other error
+            canProceed = false;
          }
-      } else {
-         result = await super.roll(dataset);
+      }
+
+      if (canProceed === true) {
+         const chatData = {
+            rollData,
+            caller: this,
+            resp: dialogResp?.resp,
+            context: ownerToken,
+            roll: rolled,
+         };
+         const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData);
+         result = builder.createChatMessage();
       }
 
       return result;

@@ -1,0 +1,57 @@
+<div>
+   <div class="attack-desc">{{description}}</div>
+   {{#if rollResult.message}}
+   <div class="attack-result">{{{rollResult.message}}}</div>
+   {{/if}}
+</div>
+<div class="bordered" style="padding-bottom:2px;">
+   <div class="flexrow collapser">
+      <img class="item-image" src='{{specAbility.img}}' title='{{specAbility.name}}' />
+      <div class="item-name">{{specAbility.name}}</div>
+   </div>
+   <div class="collapsible-content collapsed">
+      {{{specAbility.system.description}}}
+   </div>
+</div>
+{{#if resultString}}
+{{{resultString}}}
+{{/if}}
+{{{rollContent}}}
+{{#if specAbility.system.savingThrow}}
+<div style="margin-top:6px;">
+   <button class="saving-roll"
+           data-attackerid="{{descData.attackerid}}"
+           data-type="{{specAbility.system.savingThrow}}"
+           data-weaponid="{{specAbility.id}}">
+      <i class="fa-solid fa-life-ring"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{localize (concat 'FADE.Actor.Saves.' specAbility.system.savingThrow '.abbr')}}</span>
+   </button>
+</div>
+{{/if}}
+{{#if damageRoll.hasDamage}}
+<div style="margin-top:8px;">
+   {{#if isHeal}}
+   <button class="heal-roll"
+           data-damagetype="{{damageRoll.damageType}}"
+           data-attacktype="spell"
+           data-label="Heal"
+           data-type="heal"
+           data-attackerid="{{context.id}}"
+           data-weaponid="{{specAbility.id}}">
+      <i class="fa-solid fa-heart"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
+   </button>
+   {{else}}
+   <button class="damage-roll"
+           data-damagetype="{{damageRoll.damageType}}"
+           data-attacktype="spell"
+           data-label="Damage"
+           data-type="damage"
+           data-attackerid="{{context.id}}"
+           data-weaponid="{{specAbility.id}}">
+      <i class="fa-solid fa-burst"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
+   </button>
+   {{/if}}
+</div>
+{{/if}}

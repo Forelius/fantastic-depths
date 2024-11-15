@@ -31,6 +31,28 @@
                </select>
                <label for="system.operator">{{localize 'FADE.rollMode'}}</label>
             </li>
+            <li class="flex1">
+               <select name="system.savingThrow">
+                  {{selectOptions savingThrows selected=system.savingThrow valueAttr="value" labelAttr="text"}}
+               </select>
+               <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+            </li>
+         </ul>
+         <ul class="summary flexrow">
+            <li>
+               <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+               <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+            </li>
+            <li>
+               <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+               <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
+            </li>
+            <li>
+               <select name="system.damageType">
+                  {{selectOptions damageTypes selected=system.damageType valueAttr="value" labelAttr="text"}}
+               </select>
+               <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+            </li>
          </ul>
       </div>
    </header>
@@ -42,7 +64,6 @@
 
    {{! Sheet Body }}
    <section class='sheet-body'>
-
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}

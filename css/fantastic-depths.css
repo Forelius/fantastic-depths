@@ -505,7 +505,7 @@ h1, h2, h3, h4 {
   border: 1px solid #545140;
 }
 .dark-mode .chat-message a.inline-roll {
-  background: url("../assets/img/grungeblue.jpg");
+  background: url("../assets/img/grunge2.jpg");
 }
 .dark-mode .chat-message .content-link {
   background: url("../assets/img/grungeblue.jpg");
@@ -521,7 +521,7 @@ h1, h2, h3, h4 {
   color: #90b0e0;
 }
 .dark-mode .chat-message .dice-formula, .dark-mode .chat-message .dice-total {
-  background: url("../assets/img/grungeblue.jpg");
+  background: url("../assets/img/grunge2.jpg");
   border: 1px solid #4b4a44;
   box-shadow: none;
 }

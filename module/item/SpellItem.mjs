@@ -88,7 +88,6 @@ export class SpellItem extends fadeItem {
       let result = null;
 
       if (systemData.cast < systemData.memorized) {
-         const itemLink = `@UUID[Actor.${this.actor.id}.Item.${this.id}]{${this.name}}`;
          const rollData = this.getRollData();
          const rollMode = game.settings.get("core", "rollMode");
          let canProceed = true;
@@ -138,18 +137,16 @@ export class SpellItem extends fadeItem {
                rollData,
                caller: this, // the spell
                context: casterToken, // the caster
-               options: {
-                  itemLink
-               },
                roll: rolled,
-               dialogResp: dialogResp?.resp,
+               resp: dialogResp?.resp,
                digest
             };
 
             const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData);
             await builder.createChatMessage();
          }
-      } else {
+      }
+      else {
          const msg = `${this.actor.name} tries to cast ${this.name}, but the spell is not memorized.`;
          ui.notifications.warn(msg);
 

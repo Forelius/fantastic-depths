@@ -35,7 +35,7 @@ export class fadeItemSheet extends ItemSheet {
          options.height = 360;
       } else {
          options.width = 520;
-         options.height = 400;
+         options.height = 360;
       }
 
       // Call the original render method with modified options
@@ -107,7 +107,7 @@ export class fadeItemSheet extends ItemSheet {
          context.attackTypes = types;
       }
 
-      const hasDamageTypes = ["spell"];
+      const hasDamageTypes = ["spell", "specialAbility"];
       if (hasDamageTypes.includes(this.item.type)) {
          const types = []
          types.push({ value: "", text: "None" });
@@ -117,7 +117,7 @@ export class fadeItemSheet extends ItemSheet {
          context.damageTypes = types;
       }
 
-      const hasSave = ["weapon", "spell"];
+      const hasSave = ["weapon", "spell", "specialAbility"];
       if (hasSave.includes(this.item.type)) {
          const saves = [];
          saves.push({ value: "", text: "None" });
