@@ -1,5 +1,4 @@
 import { fadeSettings } from "./fadeSettings.mjs";
-// Import document classes.
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
@@ -9,16 +8,13 @@ import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { ClassItem } from './item/ClassItem.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
-// Import sheet classes.
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
-// Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
 import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './sys/fadeCombat.mjs'
-// Import TurnTrackerForm class
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
 import { MacroManager } from './sys/MacroManager.mjs';
@@ -35,6 +31,7 @@ import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 import { GMMessageSender } from './sys/GMMessageSender.mjs'
 import { fadeCombatant } from './sys/fadeCombatant.mjs'
+import { fadeEffect } from './sys/fadeEffect.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -64,10 +61,8 @@ Hooks.once('init', async function () {
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
 
-    // Replace the default Combat class with the custom fadeCombat class
+   CONFIG.ActiveEffect.documentClass = fadeEffect;
    CONFIG.Combat.documentClass = fadeCombat;
-
-   // Define custom Document classes
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
    CONFIG.Actor.documentClass = ActorFactory;
    CONFIG.Item.documentClass = ItemFactory;
