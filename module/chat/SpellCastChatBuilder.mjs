@@ -30,6 +30,15 @@ export class SpellCastChatBuilder extends ChatBuilder {
       if (roll) {
          rollContent = await roll.render();
          toHitResult = await AttackRollChatBuilder.getToHitResults(casterToken, spellItem, targetTokens, roll, resp?.targetWeaponType);
+      } else {
+         // Add targets for DM chat message
+         toHitResult = { targetResults: [], message: '' };
+         for (let targetToken of targetTokens) {
+            toHitResult.targetResults.push({
+               targetid: targetToken.id,
+               targetname: targetToken.name
+            });
+         }
       }
 
       if (window.toastManager) {
