@@ -20,12 +20,6 @@
                <input type='text' name="system.damageRoll" value='{{system.damageRoll}}' data-dtype='String' />
                <label for="system.damageRoll">{{localize 'FADE.Weapon.damage.long'}}</label>
             </li>
-            {{#if system.multiGrip}}
-            <li class="flex1">
-               <input type='text' name="system.damageRoll2" value='{{system.damageRoll2}}' data-dtype='String' />
-               <label for="system.damageRoll2" title="{{localize 'FADE.Weapon.damage.long2'}}">{{localize 'FADE.Weapon.damage.short2'}}</label>
-            </li>
-            {{/if}}
             <li class="flex2">
                <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.mastery">{{localize 'FADE.Mastery.short'}}</label>

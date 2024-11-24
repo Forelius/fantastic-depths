@@ -2099,7 +2099,7 @@ FADE.WeaponMastery =
          "sToHit": 3
       }
    },
-   "Sword, Bastard (One-Handed)": {
+   "Sword, Bastard (1H)": {
       "basic": {
          "primaryType": "handheld",
          "range": { "short": null, "medium": null, "long": null },
@@ -2161,7 +2161,7 @@ FADE.WeaponMastery =
          "sToHit": 3
       }
    },
-   "Sword, Bastard (Two-Handed)": {
+   "Sword, Bastard (2H)": {
       "basic": {
          "primaryType": "handheld",
          "range": { "short": null, "medium": null, "long": null },
