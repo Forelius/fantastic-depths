@@ -207,6 +207,7 @@
          "equip": "Equip",
          "unequip": "Unequip",
          "isEquippable": "Equippable",
+         "isContainer": "Container",
          "quantity": {
             "long": "Quantity",
             "maxLong": "Max. Quantity",

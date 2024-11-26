@@ -234,17 +234,12 @@
       "item": {
          "templates": [ "base", "physical", "equippable" ],
          "treasure": false,
-         "isContainer": false,
-         "isEquippable": false
-      },
-      "container": {
-         "templates": [ "common", "physical" ],
-         "itemIds": []
-      },
+         "container": false,
+         "equippable": false
+      },      
       "weapon": {
          "templates": [ "base", "physical", "equippable", "natural" ],
          "damageRoll": "1d6",
-         "damageRoll2": null,
          "damageType": "physical",
          "breath": false,
          "canMelee": true,

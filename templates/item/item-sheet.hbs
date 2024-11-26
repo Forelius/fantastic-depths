@@ -51,6 +51,10 @@
          <section class="bordered">
             <ul class="summary flexrow">
                <li class="flex1">
+                  <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} title="{{localize "FADE.Item.isContainer"}}" />
+                  <label for="system.container" title="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+               </li>
+               <li class="flex1">
                   <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} title="{{localize "FADE.Item.isEquippable"}}" />
                   <label for="system.equippable" title="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
                </li>

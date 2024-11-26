@@ -41,6 +41,7 @@
          margin: 0 5px;
       }
    }
+
    // Individual Item
    .item {
       align-items: center;
@@ -51,6 +52,10 @@
          border-bottom: none;
       }
 
+      .contained {
+         padding-left: 16px;
+      }
+
       .item-name {
          .item-image {
             flex: 0 0 30px;
@@ -59,7 +64,7 @@
             background-repeat: no-repeat;
             background-position: center;
             border: none;
-            margin-right: 4px;
+            margin-right: 2px;
             position: relative;
             top: 2px;
          }

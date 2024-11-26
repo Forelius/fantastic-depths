@@ -43,6 +43,9 @@ export class fadeItem extends Item {
       if (notEquippable.includes(this.type) === false) {
          this.system.equipped = this.system.equipped || false;
       }
+      if (this.type === "item") {
+         this.system.isContainer = this.system.isContainer || false;
+      }
    }
 
    /** @override */

@@ -145,13 +145,56 @@ export class fadeActorSheet extends ActorSheet {
          // Rollable abilities.
          html.on('click', '.rollable', this._onRoll.bind(this));
 
-         // Drag events for macros.
+         // Containers collapse/expand
+         html.find(".gear-items .category-caret").click((event) => {
+            this._toggleContainedItems(event);
+         });
+
+         // If this actor is the owner
          if (this.actor.isOwner) {
-            let handler = (event) => this._onDragStart(event);
+            // Drag events for macros.
+            const dragStartHandler = (event) => this._onDragStart(event);
             html.find('li.item').each((i, li) => {
-               if (li.classList.contains('inventory-header')) return;
-               li.setAttribute('draggable', true);
-               li.addEventListener('dragstart', handler, false);
+               // If not an inventory header...
+               if (li.classList.contains('items-header') == false) {
+                  li.setAttribute('draggable', true);
+                  li.addEventListener('dragstart', dragStartHandler, false);
+               }
+            });
+
+            // Toggle equipped state
+            html.find(".item-toggle").click(async (event) => {
+               const item = this._getItemFromActor(event);
+               // Toggle the equipped state and store the new state in isEquipped
+               const isEquipped = !item.system.equipped;
+               await item.update({ "system.equipped": isEquipped });
+            });
+
+            // Consumables
+            html.find(".consumable-counter .full-mark").click((event) => {
+               this._useConsumable(event, true);
+            });
+            html.find(".consumable-counter .empty-mark").click((event) => {
+               this._useConsumable(event, false);
+            });
+
+            // Editable
+            html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
+
+            // Reset spells
+            html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
+
+            // Add/delete tag
+            html.find('input[data-action="add-tag"]')
+               .keypress((ev) => {
+                  if (ev.which === 13) {
+                     const value = $(ev.currentTarget).val();
+                     this.object.tagManager.pushTag(value);
+                  }
+               });
+            html.find(".tag-delete").click((ev) => {
+               const value = ev.currentTarget.parentElement.dataset.tag;
+               this.object.tagManager.popTag(value);
             });
          }
 
@@ -162,41 +205,6 @@ export class fadeActorSheet extends ActorSheet {
                await this._toggleCollapsibleContent(event);
             }
          });
-
-         // Toggle Equipment
-         html.find(".item-toggle").click(async (event) => {
-            const item = this._getItemFromActor(event);
-            // Toggle the equipped state and store the new state in isEquipped
-            const isEquipped = !item.system.equipped;
-            await item.update({ "system.equipped": isEquipped });
-         });
-
-         // Consumables
-         html.find(".consumable-counter .full-mark").click((event) => {
-            this._useConsumable(event, true);
-         });
-         html.find(".consumable-counter .empty-mark").click((event) => {
-            this._useConsumable(event, false);
-         });
-
-         // Editable
-         html.find(".editable input").click((event) => event.target.select())
-            .change(this._onDataChange.bind(this));
-
-         html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
-
-         html.find('input[data-action="add-tag"]')
-            .keypress((ev) => {
-               if (ev.which === 13) {
-                  const value = $(ev.currentTarget).val();
-                  this.object.tagManager.pushTag(value);
-               }
-            });
-
-         html.find(".tag-delete").click((ev) => {
-            const value = ev.currentTarget.parentElement.dataset.tag;
-            this.object.tagManager.popTag(value);
-         });
       }
    }
 
@@ -206,7 +214,7 @@ export class fadeActorSheet extends ActorSheet {
     * @param {object} context The context object to mutate
     */
    _prepareItems(context) {
-      // Initialize containers.
+      // Initialize arrays.
       const gear = [];
       const weapons = [];
       const armor = [];
@@ -220,13 +228,27 @@ export class fadeActorSheet extends ActorSheet {
          spellSlots.push({ spells: [] })
       }
 
-      // Iterate through items, allocating to containers
+      // Prepare containers
+      for (let item of context.items) {
+         if (item.system.container === true) {
+            item.system.contained = [];
+         }
+      }
+
+      // Iterate through items, allocating to arrays
       for (let item of context.items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === 'item') {
+            // If a contained item...
+            if (item.system.containerId?.length > 0) {
+               let containerItem = context.items.find(i => i._id === item.system.containerId);
+               if (containerItem) {
+                  containerItem.system.contained.push(item);
+               }
+            }
             // If treasure...
-            if (item.system.tags.includes("treasure")) {
+            else if (item.system.tags.includes("treasure")) {
                treasure.push(item);
             } else {
                gear.push(item);
@@ -499,6 +521,27 @@ export class fadeActorSheet extends ActorSheet {
                console.warn("Removed invalid flag: collapsed-undefined");
             }
          });
+      }
+   }
+
+   _toggleContainedItems(event) {
+      event.preventDefault();
+      const targetItems = $(event.target.closest(".item"));
+      const parentId = targetItems[0]?.dataset.itemId;
+      if (targetItems?.length > 0) {
+         // Find all children of targetItems that has a 
+         const items = targetItems.siblings(`[data-item-parentid="${parentId}"]`);
+         if (event.target.classList.contains('fa-caret-right')) {
+            const el = targetItems.find(".fas.fa-caret-right");
+            el.removeClass("fa-caret-right");
+            el.addClass("fa-caret-down");
+            items.slideDown(200);
+         } else {
+            const el = targetItems.find(".fas.fa-caret-down");
+            el.removeClass("fa-caret-down");
+            el.addClass("fa-caret-right");
+            items.slideUp(200);
+         }
       }
    }
 }

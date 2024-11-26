@@ -901,6 +901,11 @@ h1, h2, h3, h4 {
   margin-right: -2px;
   font-size: 18px;
 }
+.fantastic-depths .character .category-caret, .fantastic-depths .monster .category-caret {
+  flex: 0 0 6px;
+  margin: 0 5px 0 0;
+  cursor: pointer;
+}
 .fantastic-depths .item-form {
   font-family: "Barlow", sans-serif;
 }
@@ -1076,6 +1081,9 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .item:last-child {
   border-bottom: none;
 }
+.fantastic-depths .items-list .item .contained {
+  padding-left: 16px;
+}
 .fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;
   height: 30px;
@@ -1083,7 +1091,7 @@ h1, h2, h3, h4 {
   background-repeat: no-repeat;
   background-position: center;
   border: none;
-  margin-right: 4px;
+  margin-right: 2px;
   position: relative;
   top: 2px;
 }

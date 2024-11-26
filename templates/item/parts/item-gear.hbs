@@ -1,4 +1,4 @@
-<ol name="gearItems" class='items-list'>
+<ol name="gearItems" class='gear-items items-list'>
    <li class='item flexrow items-header collapsible-header'>
       <div class='item-name'>{{localize 'FADE.Item.plural'}}</div>
       <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
@@ -11,13 +11,16 @@
       </div>
    </li>
    {{#each gear as |item id|}}
-   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
+   <li class='flexrow item collapsible-content {{#if item.system.container}}item-container{{/if}}' data-item-id='{{item._id}}' style="border:none;">
       <div class='item-name'>
          <div class='item-image'>
             <a data-roll-type='item'>
                <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
             </a>
          </div>
+         {{#if item.system.container}}
+         <div class="category-caret"><i class="fas fa-caret-down"></i></div>
+         {{/if}}
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
       </div>
       <div class="item-40px item-prop"><label>{{item.system.quantity}}</label></div>
@@ -48,5 +51,32 @@
       {{/if}}
       {{/if}}
    </li>
+   {{#if item.system.container}}
+   {{#each item.system.contained as |childItem|}}
+   <li class="flexrow item collapsible-content contained-item" data-item-parentid="{{item._id}}" data-item-id='{{childItem._id}}'>
+      <div class='item-name contained'>
+         <div class='item-image'>
+            <a data-roll-type='item'>
+               <img src='{{childItem.img}}' title='{{childItem.name}}' width='24' height='24' />
+            </a>
+         </div>
+         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>{{childItem.name}}</a>
+      </div>
+      <div class="item-40px item-prop"><label>{{childItem.system.quantity}}</label></div>
+      <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{childItem.system.totalWeight}}</label></div>
+      <div class='item-controls'>
+         {{#if childItem.system.equippable}}
+         <a class="item-control item-toggle {{#unless childItem.system.equipped}}item-unequipped{{/unless}}"
+            title="{{#if childItem.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
+            <i class="fas fa-tshirt"></i>
+         </a>
+         {{/if}}
+         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
+            <i class='fas fa-trash'></i>
+         </a>
+      </div>
+   </li>
+   {{/each}}
+   {{/if}}
    {{/each}}
 </ol>
