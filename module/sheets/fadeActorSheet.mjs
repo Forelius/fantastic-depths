@@ -212,19 +212,22 @@ export class fadeActorSheet extends ActorSheet {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
+      const droppedItem = await Item.implementation.fromDropData(data);
       if (targetIsContainer) {
-         const droppedItem = await Item.implementation.fromDropData(data);
-         console.debug(droppedItem);
          const itemData = droppedItem.toObject();
          if (droppedItem.actor == null) {
             const newItem = await this._onDropItemCreate(itemData, event);
             newItem[0].update({ "system.containerId": targetId });
          } else if (droppedItem.actor.id != this.actor.id) {
-            console.debug("Dragged from other actor.", itemData);
+            const newItem = await this._onDropItemCreate(itemData, event);
+            newItem[0].update({ "system.containerId": targetId });
          } else {
-            console.debug("Dragged from this actor.", itemData);
+            droppedItem.update({ "system.containerId": targetId });
          }
       } else {
+         if (droppedItem.actor !== null) {
+            droppedItem.update({ "system.containerId": null });
+         }
          return super._onDropItem(event, data);
       }
    }
