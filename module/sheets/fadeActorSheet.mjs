@@ -208,6 +208,43 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   async _onDropItem(event, data) {
+      const targetId = event.target.closest(".item")?.dataset?.itemId;
+      const targetItem = this.actor.items.get(targetId);
+      const targetIsContainer = targetItem?.system.container;
+      if (targetIsContainer) {
+         const droppedItem = await Item.implementation.fromDropData(data);
+         console.debug(droppedItem);
+         const itemData = droppedItem.toObject();
+         if (droppedItem.actor == null) {
+            const newItem = await this._onDropItemCreate(itemData, event);
+            newItem[0].update({ "system.containerId": targetId });
+         } else if (droppedItem.actor.id != this.actor.id) {
+            console.debug("Dragged from other actor.", itemData);
+         } else {
+            console.debug("Dragged from this actor.", itemData);
+         }
+      } else {
+         return super._onDropItem(event, data);
+      }
+   }
+
+   async _onContainerItemAdd(item, target) {
+      const alreadyExistsInActor = target.parent.items.find((i) => i.id === item.id);
+      let latestItem = item;
+      if (!alreadyExistsInActor) {
+         const newItem = await this._onDropItemCreate([item.toObject()]);
+         latestItem = newItem.pop();
+      }
+
+      const alreadyExistsInContainer = target.system.itemIds.find((i) => i.id === latestItem.id);
+      if (!alreadyExistsInContainer) {
+         const newList = [...target.system.itemIds, latestItem.id];
+         await target.update({ system: { itemIds: newList } });
+         await latestItem.update({ system: { containerId: target.id } });
+      }
+   }
+
    /**
     * Organize and classify Items for Actor sheets.
     *
