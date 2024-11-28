@@ -412,8 +412,7 @@ export class fadeActorSheet extends ActorSheet {
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
          if (item) item.roll(dataset);
-      }
-      else if (dataset.test === 'ability') {
+      } else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          chatType = CHAT_TYPE.ABILITY_CHECK;
          try {

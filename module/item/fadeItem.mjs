@@ -1,5 +1,3 @@
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
 /**
