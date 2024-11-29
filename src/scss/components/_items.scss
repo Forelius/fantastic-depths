@@ -41,7 +41,6 @@
          margin: 0 5px;
       }
    }
-
    // Individual Item
    .item {
       align-items: center;
@@ -86,6 +85,11 @@
    .item-40px {
       width: 40px;
       max-width: 40px;
+   }
+
+   .item-50px {
+      width: 50px;
+      max-width: 50px;
    }
 
    .item-60px {

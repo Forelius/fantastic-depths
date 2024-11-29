@@ -721,7 +721,6 @@ export class fadeActor extends Actor {
    _prepareEncumbrance() {
       const systemData = this.system;
       const encSetting = game.settings.get(game.system.id, "encumbrance");
-      if (!encSetting) console.error("_prepareEncumbrance(): encSetting has no value!");
       let encumbrance = systemData.encumbrance || {};
       let enc = 0;
 

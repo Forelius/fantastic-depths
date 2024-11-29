@@ -1,11 +1,11 @@
 <ol name="weaponItems" class='items-list'>
    <li class='item flexrow items-header collapsible-header'>
-      <div class='item-name'>{{localize 'FADE.Weapon.plural'}}</div>
+      <div class='item-name'>{{localize 'FADE.Weapon.plural'}} {{#if weaponsEnc}}<span class="category-info">({{weaponsEnc}} cns)</span>{{/if}}</div>
       <div class="item-40px">{{localize 'FADE.Weapon.ammo.short'}}</div>
       <div class="item-40px">{{localize 'FADE.Weapon.mod.toHit.short'}}</div>
       <div class="item-60px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
       <div class="item-40px">{{localize 'FADE.Weapon.mod.dmg.short'}}</div>
-      <div class="item-40px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+      <div class="item-50px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       <div class='item-controls'>
          <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.weapon")}}' data-type='weapon'>
             <i class='fas fa-plus'></i>
@@ -25,7 +25,7 @@
       <div class="item-40px item-prop"><label>{{item.system.mod.toHitText}}</label></div>
       <div class="item-60px item-prop"><label>{{item.system.damageRoll}}</label></div>
       <div class="item-40px item-prop"><label>{{item.system.mod.dmgText}}</label></div>
-      <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
+      <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
       <div class='item-controls'>
          <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
             title="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">

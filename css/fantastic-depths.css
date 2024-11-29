@@ -775,7 +775,7 @@ h1, h2, h3, h4 {
   padding: 2px 5px;
 }
 .fantastic-depths .character .ability-scores, .fantastic-depths .monster .ability-scores {
-  max-width: 180px;
+  max-width: 200px;
 }
 .fantastic-depths .character .ability-scores .ability, .fantastic-depths .monster .ability-scores .ability {
   min-height: 34px;
@@ -783,25 +783,25 @@ h1, h2, h3, h4 {
   border-bottom-width: 1px;
 }
 .fantastic-depths .character .ability-scores .ability label, .fantastic-depths .monster .ability-scores .ability label {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 500;
-  min-width: 44px;
-  max-width: 44px;
+  min-width: 80px;
+  max-width: 80px;
   margin: 0 4px;
   text-align: left;
 }
 .fantastic-depths .character .ability-scores .ability input, .fantastic-depths .monster .ability-scores .ability input {
   font-size: 24px;
-  max-width: 42px;
-  border-radius: 20px;
-  margin-right: 6px;
+  max-width: 40px;
+  border-radius: 15px;
+  margin-right: 4px;
   padding-top: 0;
   min-height: 32px;
   text-align: center;
 }
 .fantastic-depths .character .ability-scores .ability .ability-mod, .fantastic-depths .monster .ability-scores .ability .ability-mod {
   max-width: 36px;
-  font-size: 14px;
+  font-size: 18px;
   margin-left: 6px;
 }
 .fantastic-depths .character .ability-scores .ability:last-child, .fantastic-depths .monster .ability-scores .ability:last-child {
@@ -900,6 +900,10 @@ h1, h2, h3, h4 {
   top: 4px;
   margin-right: -2px;
   font-size: 18px;
+}
+.fantastic-depths .character .category-info, .fantastic-depths .monster .category-info {
+  font-weight: normal;
+  margin-left: 10px;
 }
 .fantastic-depths .character .category-caret, .fantastic-depths .monster .category-caret {
   flex: 0 0 6px;
@@ -1107,6 +1111,10 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .item-40px {
   width: 40px;
   max-width: 40px;
+}
+.fantastic-depths .items-list .item-50px {
+  width: 50px;
+  max-width: 50px;
 }
 .fantastic-depths .items-list .item-60px {
   width: 60px;

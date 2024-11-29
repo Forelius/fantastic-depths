@@ -104,10 +104,7 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    getTreasureValue(context) {
-      const total = context.treasure.reduce(
-         (acc, current) => acc + current.system.totalCost,
-         0
-      );
+      const total = context.treasure.reduce((acc, current) => acc + current.system.totalCost, 0);
       return Math.round(total * 100) / 100;
    }
 
@@ -208,6 +205,133 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   /**
+ * Organize and classify Items for Actor sheets.
+ *
+ * @param {object} context The context object to mutate
+ */
+   _prepareItems(context) {
+      // Initialize arrays.
+      const gear = [];
+      const weapons = [];
+      const armor = [];
+      const skills = [];
+      const masteries = [];
+      const spellSlots = [];
+      const treasure = [];
+      const specialAbilities = [];
+
+      for (let i = 0; i < 10; i++) {
+         spellSlots.push({ spells: [] })
+      }
+
+      // Prepare containers
+      for (let item of context.items) {
+         if (item.system.container === true) {
+            item.system.contained = [];
+            item.system.containedEnc = 0;
+         }
+      }
+
+      // Iterate through items, allocating to arrays
+      for (let item of context.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         // Append to gear or treasure.
+         if (item.type === 'item') {
+            // If a contained item...
+            if (item.system.containerId?.length > 0) {
+               let containerItem = context.items.find(i => i._id === item.system.containerId);
+               if (containerItem) {
+                  containerItem.system.contained.push(item);                  
+               }
+            }
+            // If treasure...
+            else {
+               gear.push(item);
+            }
+
+            if (item.system.tags.includes("treasure")) {
+               treasure.push(item);
+            }
+         }
+         // Append to spells.
+         else if (item.type === 'spell') {
+            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
+               spellSlots[item.system.spellLevel].spells.push(item);
+            }
+         }
+         // Append to weapons.
+         else if (item.type === 'weapon') {
+            weapons.push(item);
+         }
+         // Append to armor.
+         else if (item.type === 'armor') {
+            armor.push(item);
+         }
+         // Append to skills.
+         else if (item.type === 'skill') {
+            skills.push(item);
+         }
+         // Append to masteries.
+         else if (item.type === 'mastery') {
+            masteries.push(item);
+         }// Append to specialAbility.
+         else if (item.type === 'specialAbility') {
+            specialAbilities.push(item);
+         }
+      }
+
+      // Assign and return
+      context.gear = gear;
+      context.weapons = weapons;
+      context.armor = armor;
+      context.skills = skills;
+      context.masteries = masteries;
+      context.specialAbilities = specialAbilities;
+      context.treasure = treasure;
+      context.treasureValue = this.getTreasureValue(context);
+      context.spellSlots = spellSlots;
+
+      this._calcCategoryEnc(context);
+   }
+
+   /* -------------------------------------------- */
+
+   _calcCategoryEnc(context) {
+      const encSetting = game.settings.get(game.system.id, "encumbrance");
+      if (encSetting === 'expert') {
+         // Containers
+         for (let container of context.items.filter(item => item.system.container === true)) {
+            container.system.containedEnc = container.system.contained.reduce((sum, item) => {
+               const itemWeight = item.system.weight || 0;
+               const itemQuantity = item.system.quantity || 1;
+               return sum + (itemWeight * itemQuantity);
+            }, 0);
+         }
+         // Gear
+         context.gearEnc = context.items
+            .filter(item => item.type === 'item')
+            .reduce((sum, item) => {
+               const itemWeight = item.system.weight || 0;
+               const itemQuantity = item.system.quantity || 1;
+               //console.debug(`${item.name}: ${itemQuantity}x${itemWeight}=${(itemWeight * itemQuantity)}`);
+               return sum + (itemWeight * itemQuantity);
+            }, 0);
+         // Weapons
+         context.weaponsEnc = context.items
+            .filter(item => item.type === 'weapon')
+            .reduce((sum, item) => {
+               return sum + (item.system.weight || 0);
+            }, 0);
+         // Armor
+         context.armorEnc = context.items
+            .filter(item => item.type === 'armor')
+            .reduce((sum, item) => {
+               return sum + (item.system.weight || 0);
+            }, 0);
+      }
+   }
+
    async _onDropItem(event, data) {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
@@ -248,92 +372,6 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
-   /**
-    * Organize and classify Items for Actor sheets.
-    *
-    * @param {object} context The context object to mutate
-    */
-   _prepareItems(context) {
-      // Initialize arrays.
-      const gear = [];
-      const weapons = [];
-      const armor = [];
-      const skills = [];
-      const masteries = [];
-      const spellSlots = [];
-      const treasure = [];
-      const specialAbilities = [];
-
-      for (let i = 0; i < 10; i++) {
-         spellSlots.push({ spells: [] })
-      }
-
-      // Prepare containers
-      for (let item of context.items) {
-         if (item.system.container === true) {
-            item.system.contained = [];
-         }
-      }
-
-      // Iterate through items, allocating to arrays
-      for (let item of context.items) {
-         item.img = item.img || Item.DEFAULT_ICON;
-         // Append to gear or treasure.
-         if (item.type === 'item') {
-            // If a contained item...
-            if (item.system.containerId?.length > 0) {
-               let containerItem = context.items.find(i => i._id === item.system.containerId);
-               if (containerItem) {
-                  containerItem.system.contained.push(item);
-               }
-            }
-            // If treasure...
-            else if (item.system.tags.includes("treasure")) {
-               treasure.push(item);
-            } else {
-               gear.push(item);
-            }
-         }
-         // Append to spells.
-         else if (item.type === 'spell') {
-            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
-               spellSlots[item.system.spellLevel].spells.push(item);
-            }
-         }
-         // Append to weapons.
-         else if (item.type === 'weapon') {
-            weapons.push(item);
-         }
-         // Append to armor.
-         else if (item.type === 'armor') {
-            armor.push(item);
-         }
-         // Append to skills.
-         else if (item.type === 'skill') {
-            skills.push(item);
-         }
-         // Append to masteries.
-         else if (item.type === 'mastery') {
-            masteries.push(item);
-         }// Append to specialAbility.
-         else if (item.type === 'specialAbility') {
-            specialAbilities.push(item);
-         }
-      }
-
-      // Assign and return
-      context.gear = gear;
-      context.weapons = weapons;
-      context.armor = armor;
-      context.skills = skills;
-      context.masteries = masteries;
-      context.specialAbilities = specialAbilities;
-      context.treasure = treasure;
-      context.treasureValue = this.getTreasureValue(context);
-      context.spellSlots = spellSlots;
-   }
-
-   /* -------------------------------------------- */
    _getItemFromActor(event) {
       const li = $(event.currentTarget).parents('.item');
       return this.actor.items.get(li.data('itemId'));

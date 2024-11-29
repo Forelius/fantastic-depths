@@ -1,8 +1,8 @@
 <ol name="armorItems" class='items-list'>
    <li class='item flexrow items-header collapsible-header'>
-      <div class='item-name'>{{localize 'FADE.Armor.plural'}}</div>
+      <div class='item-name'>{{localize 'FADE.Armor.plural'}} {{#if armorEnc}}<span class="category-info">({{armorEnc}} cns)</span>{{/if}}</div>
       <div class="item-40px">{{localize 'FADE.Armor.abbr'}}</div>
-      <div class="item-40px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+      <div class="item-50px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       <div class='item-controls'>
          <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.armor")}}' data-type='armor'>
             <i class='fas fa-plus'></i>
@@ -19,7 +19,7 @@
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Armor'}}'>{{armor.name}}</a>
       </div>
       <div class="item-40px item-prop"><label>{{armor.system.totalAc}}</label></div>
-      <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{armor.system.weight}}</label></div>
+      <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{armor.system.weight}}</label></div>
       <div class='item-controls item-prop'>
          <a class="item-control item-toggle {{#unless armor.system.equipped}}item-unequipped{{/unless}}"
             title="{{#if armor.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">

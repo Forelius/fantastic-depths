@@ -11,7 +11,7 @@ export const migrateData = async function migrate() {
    const newVer = game.system.version;
 
    // Only proceed if a migration is needed
-   if (true || oldVer < "0.4.7") {
+   if (oldVer < "0.4.7") {
       console.log(`Migrating from version ${oldVer} to ${newVer}`);
 
       // Iterate over all actors in the game
@@ -112,7 +112,7 @@ export const migrateData = async function migrate() {
          }
       }
 
-      const notEquippable = ["container", "spell", "skill", "specialAbility", "mastery"];
+      const notEquippable = ["spell", "skill", "specialAbility", "mastery"];
 
       // Iterate over all actors in the game
       for (let actor of game.actors) {

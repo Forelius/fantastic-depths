@@ -1,14 +1,9 @@
 <ol name="treasureItems" class='items-list'>
    <li class='item flexrow items-header collapsible-header'>
-      <div class='item-name'>{{localize 'TYPES.Item.treasure'}} ({{treasureValue}} gp)</div>
+      <div class='item-name'>{{localize 'TYPES.Item.treasure'}} <span class="category-info">({{treasureValue}} gp)</span></div>
       <div class="item-60px">{{localize 'FADE.Item.cost.abbr'}}</div>
       <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
-      <div class="item-40px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
-      <div class='item-controls'>
-         <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.treasure")}}' data-type='item' data-tags="treasure">
-            <i class='fas fa-plus'></i>
-         </a>
-      </div>
+      <div class="item-40px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>      
    </li>
    {{#each treasure as |item id|}}
    <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
@@ -30,11 +25,6 @@
                 title="{{localize 'FADE.Item.quantity.long'}}" />
       </div>
       <div class="item-40px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
-      <div class='item-controls'>
-         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
-            <i class='fas fa-trash'></i>
-         </a>
-      </div>
    </li>
    {{/each}}
 </ol>
