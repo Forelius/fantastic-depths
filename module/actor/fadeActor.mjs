@@ -724,9 +724,32 @@ export class fadeActor extends Actor {
       let encumbrance = systemData.encumbrance || {};
       let enc = 0;
 
+      // Prepare containers
+      for (let item of this.items) {
+         if (item.system.container === true) {
+            item.system.contained = [];
+            item.system.containedEnc = 0;
+            // If a contained item...
+         }
+         if (item.system.containerId?.length > 0) {
+            let containerItem = this.items.find(i => i._id === item.system.containerId);
+            if (containerItem) {
+               containerItem.system.contained.push(item);
+            }
+         }
+      }
+
       //-- Caclulate how much is being carried/tracked --//
       // If using detailed encumbrance, similar to expert rules...
       if (encSetting === 'expert') {
+         // Containers         
+         for (let container of this.items.filter(item => item.system.container === true)) {
+            container.system.containedEnc = container.system.contained.reduce((sum, item) => {
+               const itemWeight = item.system.weight || 0;
+               const itemQuantity = item.system.quantity || 1;
+               return sum + (itemWeight * itemQuantity);
+            }, 0);
+         }
          enc = this.items.reduce((sum, item) => {
             const itemWeight = item.system.weight || 0;
             const itemQuantity = item.system.quantity || 1;

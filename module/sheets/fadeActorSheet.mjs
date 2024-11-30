@@ -225,14 +225,6 @@ export class fadeActorSheet extends ActorSheet {
          spellSlots.push({ spells: [] })
       }
 
-      // Prepare containers
-      for (let item of context.items) {
-         if (item.system.container === true) {
-            item.system.contained = [];
-            item.system.containedEnc = 0;
-         }
-      }
-
       // Iterate through items, allocating to arrays
       for (let item of context.items) {
          item.img = item.img || Item.DEFAULT_ICON;
@@ -240,13 +232,8 @@ export class fadeActorSheet extends ActorSheet {
          if (item.type === 'item') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
-               let containerItem = context.items.find(i => i._id === item.system.containerId);
-               if (containerItem) {
-                  containerItem.system.contained.push(item);                  
-               }
-            }
-            // If treasure...
-            else {
+              // Skip contained items, already added in fadeCharacter.
+            } else {
                gear.push(item);
             }
 
@@ -297,24 +284,19 @@ export class fadeActorSheet extends ActorSheet {
 
    /* -------------------------------------------- */
 
+   /**
+    * Calculate encumbrance for different categories.
+    * @param {any} context
+    */
    _calcCategoryEnc(context) {
       const encSetting = game.settings.get(game.system.id, "encumbrance");
       if (encSetting === 'expert') {
-         // Containers
-         for (let container of context.items.filter(item => item.system.container === true)) {
-            container.system.containedEnc = container.system.contained.reduce((sum, item) => {
-               const itemWeight = item.system.weight || 0;
-               const itemQuantity = item.system.quantity || 1;
-               return sum + (itemWeight * itemQuantity);
-            }, 0);
-         }
          // Gear
          context.gearEnc = context.items
             .filter(item => item.type === 'item')
             .reduce((sum, item) => {
                const itemWeight = item.system.weight || 0;
                const itemQuantity = item.system.quantity || 1;
-               //console.debug(`${item.name}: ${itemQuantity}x${itemWeight}=${(itemWeight * itemQuantity)}`);
                return sum + (itemWeight * itemQuantity);
             }, 0);
          // Weapons
