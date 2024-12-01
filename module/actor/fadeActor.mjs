@@ -729,8 +729,10 @@ export class fadeActor extends Actor {
          if (item.system.container === true) {
             item.system.contained = [];
             item.system.containedEnc = 0;
-            // If a contained item...
          }
+      }
+      for (let item of this.items) {
+         // If a contained item...
          if (item.system.containerId?.length > 0) {
             let containerItem = this.items.find(i => i._id === item.system.containerId);
             if (containerItem) {
@@ -738,7 +740,6 @@ export class fadeActor extends Actor {
             }
          }
       }
-
       //-- Caclulate how much is being carried/tracked --//
       // If using detailed encumbrance, similar to expert rules...
       if (encSetting === 'expert') {
