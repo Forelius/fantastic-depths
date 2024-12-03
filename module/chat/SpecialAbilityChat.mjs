@@ -11,9 +11,9 @@ export class SpecialAbilityChat extends ChatBuilder {
       const damageRoll = await caller.getDamageRoll(null);
       const descData = { owner: ownerToken.name, specAbility: specAbility.name };
       const description = game.i18n.format('FADE.Chat.useSpecAbility', descData);
-
       let rollContent = null;
       let rollResult = { message: "" };
+
       if (roll) {
          rollContent = await roll.render();
          // Determine the roll result based on the provided data

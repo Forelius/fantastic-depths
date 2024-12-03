@@ -1,14 +1,14 @@
 <form>
    <!-- Dropdown for selecting 'melee' or 'missile' -->
    <div class="form-group">
-      <label for="attackType">Attack Type</label>
+      <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
       <select id="attackType" class="form-control">
          {{selectOptions types selected='melee' valueAttr="value" labelAttr="text"}}
       </select>
    </div>
    {{#if targetWeaponTypes}}
    <div class="form-group">
-      <label for="targetWeaponType">Mastery Target Type</label>
+      <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
       <select id="targetWeaponType" class="form-control">
          {{selectOptions targetWeaponTypes selected=selectedWeaponType valueAttr="value" labelAttr="text"}}
       </select>
@@ -16,7 +16,7 @@
    {{/if}}
    {{#if modes}}
    <div class="form-group">
-      <label for="attackMode">Attack Mode</label>
+      <label for="attackMode">{{localize 'FADE.dialog.attackMode.name'}}</label>
       <select id="attackMode" class="form-control">
          {{selectOptions modes selected='1hand' valueAttr="value" labelAttr="text"}}
       </select>

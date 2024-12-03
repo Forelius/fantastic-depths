@@ -25,8 +25,6 @@ export class WeaponItem extends fadeItem {
       this._prepareEffects();
       this._prepareModText();
       this._prepareDamageRollLabel();
-
-      const modes = this.getAttackModes();
       this.system.multiGrip = false;
    }
 
@@ -43,30 +41,30 @@ export class WeaponItem extends fadeItem {
       if (attackType === 'melee') {
          if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
             modifier += weaponData.mod.dmg;
-            digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.dmg }));
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
             modifier += attackerData.abilities.str.mod;
-            digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));
          }
          if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
             modifier += attackerData.mod.combat.dmg;
-            digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
-         }         
+            digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmg }));
+         }
       } else if (attackType === 'missile') {
          if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
             modifier += weaponData.mod.dmgRanged;
-            digest.push(`Weapon mod: ${weaponData.mod.dmg}`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.dmgRanged }));
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
             modifier += attackerData.abilities.str.mod;
-            digest.push(`Strength mod: ${attackerData.abilities.str.mod}`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));
          }
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
             modifier += attackerData.mod.combat.dmgRanged;
-            digest.push(`Attacker effect mod: ${attackerData.mod.combat.dmg}`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmgRanged }));
          }
       } else if (attackType === "breath") {
 
@@ -74,7 +72,7 @@ export class WeaponItem extends fadeItem {
 
       if (resp?.mod && resp?.mod !== 0) {
          modifier += resp.mod;
-         digest.push(`Manual mod: ${resp.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
       }
 
       if (modifier <= 0 && evaluatedRoll?.total <= 0) {
@@ -96,7 +94,7 @@ export class WeaponItem extends fadeItem {
          } else {
             // Half damage if unskilled use.
             formula = `floor(${formula}/2)`;
-            digest.push(`Unskilled use: /2`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
          }
       }
 
@@ -114,11 +112,11 @@ export class WeaponItem extends fadeItem {
       const natural = this.system.natural === true;
 
       if (natural || breath) {
-         result.push({ text: "Natural", value: "natural" });
+         result.push({ text: game.i18n.format('FADE.dialog.attackMode.natural'), value: "natural" });
       } else if (twoHand) {
-         result.push({ text: "Two-Handed", value: "2hand" });
+         result.push({ text: game.i18n.format('FADE.dialog.attackMode.2hand'), value: "2hand" });
       } else {
-         result.push({ text: "One-Handed", value: "1hand" });
+         result.push({ text: game.i18n.format('FADE.dialog.attackMode.1hand'), value: "1hand" });
       }
 
       return result;
@@ -128,10 +126,10 @@ export class WeaponItem extends fadeItem {
       let result = [];
       const breath = this.system.breath?.length > 0;
       if (breath) {
-         result.push({ text: "Breath", value: "breath" });
+         result.push({ text: game.i18n.format('FADE.dialog.attackType.breath'), value: "breath" });
       } else {
-         if (this.system.canRanged) result.push({ text: "Missile", value: "missile" });
-         if (this.system.canMelee) result.push({ text: "Melee", value: "melee" });
+         if (this.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
+         if (this.system.canMelee) result.push({ text: game.i18n.format('FADE.dialog.attackType.melee'), value: "melee" });
       }
       return result;
    }

@@ -34,19 +34,19 @@
                </select>
                <label for="system.weaponType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
             </li>
-         </ul>         
+         </ul>
       </div>
    </header>
    {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
       {{#if showAttributes}}
-      <a class='item' data-tab='attributes'>Attributes</a>
+      <a class='item' data-tab='attributes'>{{localize 'FADE.Item.tabs.attributes'}}</a>
       {{/if}}
-      <a class='item' data-tab='description'>Description</a>
+      <a class='item' data-tab='description'>{{localize 'FADE.Actor.Tabs.Description'}}</a>
       {{#if isGM}}
-      <a class='item' data-tab='effects'>Effects</a>
-      <a class='item' data-tab='gm-only'>GM Only</a>
+      <a class='item' data-tab='effects'>{{localize 'FADE.Actor.Tabs.Effects'}}</a>
+      <a class='item' data-tab='gm-only'>{{localize 'FADE.Actor.Tabs.gmOnly'}}</a>
       {{/if}}
    </nav>
 

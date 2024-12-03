@@ -30,7 +30,7 @@ export class SpecialAbilityItem extends fadeItem {
       if (resp?.mod && resp?.mod !== 0) {
          formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
-         digest.push(`Manual mod: ${resp.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
       }
 
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {

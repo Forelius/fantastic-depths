@@ -35,7 +35,7 @@ export class SpellItem extends fadeItem {
       if (resp?.mod && resp?.mod !== 0) {
          formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
-         digest.push(`Manual mod: ${resp.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
       }
 
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
@@ -64,10 +64,10 @@ export class SpellItem extends fadeItem {
       if (casterToken) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
-            title: "Cast Spell?",
-            content: "Do you want to cast the spell or view its description?",
-            yesLabel: "Cast Spell",
-            noLabel: "View Description",
+            title: game.i18n.format('FADE.dialog.spellcast.title'),
+            content: game.i18n.format('FADE.dialog.spellcast.content'),
+            yesLabel: game.i18n.format('FADE.dialog.spellcast.yesLabel'),
+            noLabel: game.i18n.format('FADE.dialog.spellcast.noLabel'),
             defaultChoice: "yes"
          }, this.actor);
 
@@ -77,7 +77,7 @@ export class SpellItem extends fadeItem {
             super.roll(dataset);
          }
       } else {
-         ui.notifications.warn("You must have your token selected to cast a spell.");
+         ui.notifications.warn(game.i18n.format('FADE.notification.spellSelectToken'));
       }
 
       return null;
@@ -147,7 +147,7 @@ export class SpellItem extends fadeItem {
          }
       }
       else {
-         const msg = `${this.actor.name} tries to cast ${this.name}, but the spell is not memorized.`;
+         const msg = game.i18n.format('FADE.notification.notMemorized', { actorName: this.actor.name, spellName: this.name });
          ui.notifications.warn(msg);
 
          // Create the chat message

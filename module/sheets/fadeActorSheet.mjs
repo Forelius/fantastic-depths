@@ -232,7 +232,7 @@ export class fadeActorSheet extends ActorSheet {
          if (item.type === 'item') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
-              // Skip contained items, already added in fadeCharacter.
+               // Skip contained items, already added in fadeCharacter.
             } else {
                gear.push(item);
             }
@@ -502,7 +502,7 @@ export class fadeActorSheet extends ActorSheet {
          spell.update({ "system.cast": spell.system.cast });
       });
 
-      const msg = `${this.actor.name} reset memorized spells. Cast counts set to zero.`;
+      const msg = game.i18n.format('FADE.Chat.resetSpells', { actorName: this.actor.name });
       ui.notifications.info(msg);
       // Create the chat message
       await ChatMessage.create({ content: msg });

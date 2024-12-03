@@ -179,7 +179,7 @@ export class fadeActor extends Actor {
       if (options.mod && options.mod !== 0) {
          modifier += options.mod;
          //formula = `${formula}+@mod`; 
-         digest.push(`Manual mod: ${options.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: options.mod }));
       }
 
       if (attackType === "melee") {
@@ -245,14 +245,14 @@ export class fadeActor extends Actor {
 
       if (isHeal) {
          systemData.hp.value = Math.min((systemData.hp.value + dmgAmt), systemData.hp.max);
-         digest.push(`${systemData.hp.value - prevHP} hit points restored to ${tokenName}.`);
+         digest.push(game.i18n.format('FADE.Chat.damageRoll.restored', { hp: (systemData.hp.value - prevHP), tokenName: tokenName }));
       } else {
          if (damageMitigated !== 0) {
             dmgAmt -= damageMitigated;
-            digest.push(`${damageMitigated} points of ${damageType} damage mitigated.`);
+            digest.push(game.i18n.format('FADE.Chat.damageRoll.mitigated', { damage: damageMitigated, type: damageType }));
          }
          systemData.hp.value -= dmgAmt;
-         digest.push(`${dmgAmt} points of ${damageType} damage applied to ${tokenName}.`);
+         digest.push(game.i18n.format('FADE.Chat.damageRoll.applied', { damage: dmgAmt, type: damageType, tokenName: tokenName }));
       }
       this.update({ "system.hp.value": systemData.hp.value });
 
@@ -270,14 +270,14 @@ export class fadeActor extends Actor {
                });
             }
             await this.toggleStatusEffect("dead", { active: true, overlay: true });
-            digest.push(`<span class='attack-fail'>${tokenName} has fallen in battle.</span>`);
+            digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
          }
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
             this.update({ "system.combat.isDead": false });
             await this.toggleStatusEffect("dead", { active: false });
-            digest.push(`<span class='attack-success'>${tokenName} has been restored to life.</span>`);
+            digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
          }
       }
 
@@ -321,7 +321,7 @@ export class fadeActor extends Actor {
 
                   // Notify chat.
                   const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-                  let chatContent = `<div>${effect.name} on ${this.name} ends.</div>`;
+                  let chatContent = game.i18n.format('FADE.Chat.effectEnds', { effectName: effect.name, actorName: this.name });
                   ChatMessage.create({ speaker: speaker, content: chatContent });
                }
             }
@@ -374,7 +374,7 @@ export class fadeActor extends Actor {
       const selected = Array.from(canvas.tokens.controlled);
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
-         ui.notifications.warn("A token must first be selected.")
+         ui.notifications.warn(game.i18n.format('FADE.notification.selectToken1'));
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
@@ -394,12 +394,12 @@ export class fadeActor extends Actor {
          const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
          if (toHitMod > 0) {
             result += toHitMod;
-            digest.push(`Mastery mod: ${toHitMod}`);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { mod: toHitMod }));
          }
       } else if (attackType === "missile") {
          // Unskilled use
          result -= 1;
-         digest.push(`Unskilled ranged weapon use: -1`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
       }
       return result;
    }
@@ -411,29 +411,24 @@ export class fadeActor extends Actor {
       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
 
       if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
-         //formula = `${formula}+${weaponData.mod.toHitRanged}`;
          result += weaponData.mod.toHitRanged;
-         digest.push(`Weapon mod: ${weaponData.mod.toHitRanged}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
       }
       if (systemData.mod.combat?.toHitRanged !== 0) {
          result += systemData.mod.combat.toHitRanged;
-         //formula = `${formula}+${systemData.mod.combat.toHitRanged}`;
-         digest.push(`Attacker effect mod: ${systemData.mod.combat.toHitRanged}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
       }
       // If the attacker has ability scores...
       if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
          result += systemData.abilities.str.mod;
-         //formula = `${formula}+${systemData.abilities.str.mod}`;
-         digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
       } else if (systemData.abilities && systemData.abilities.dex.mod) {
          result += systemData.abilities.dex.mod;
-         //formula = `${formula}+${systemData.abilities.dex.mod}`;
-         digest.push(`Dexterity mod: ${systemData.abilities.dex.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
       }
       if (targetMods && targetMods.selfToHitRanged !== 0) {
          result += targetMods.selfToHitRanged;
-         //formula = `${formula}+${targetMods.selfToHitRanged}`;
-         digest.push(`Target effect mod: ${targetMods.selfToHitRanged}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
       }
       return result;
    }
@@ -445,25 +440,21 @@ export class fadeActor extends Actor {
       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
 
       if (hasWeaponMod && weaponData.mod.toHit !== 0) {
-         //formula = `${formula}+${weaponData.mod.toHit}`;
          result += weaponData.mod.toHit;
-         digest.push(`Weapon mod: ${weaponData.mod.toHit}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
       }
       if (systemData.mod?.combat.toHit !== 0) {
-         //formula = `${formula}+${systemData.mod.combat.toHit}`;
          result += systemData.mod.combat.toHit;
-         digest.push(`Attacker effect mod: ${systemData.mod.combat.toHit}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
       }
       // If the attacker has ability scores...
       if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-         //formula = `${formula}+${systemData.abilities.str.mod}`;
          result += systemData.abilities.str.mod;
-         digest.push(`Strength mod: ${systemData.abilities.str.mod}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
       }
       if (targetMods && targetMods.selfToHit !== 0) {
-         //formula = `${formula}+${targetMods.selfToHit}`;
          result += targetMods.selfToHit;
-         digest.push(`Target effect mod: ${targetMods.selfToHit}`);
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
       }
 
       return result;

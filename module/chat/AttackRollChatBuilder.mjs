@@ -115,7 +115,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                   const isApplicable = targetActor.system.combat.attacksAgainst < defenseMastery.acBonusAT;
                   targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
 <span ${isApplicable ? "style='color:green'" : ""} title='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
-                  console.debug(`${attackerToken.name} vs ${targetToken.name}:`, isApplicable, defenseMastery, targetResult.targetac);
+                  //console.debug(`${attackerToken.name} vs ${targetToken.name}:`, isApplicable, defenseMastery, targetResult.targetac);
                   if (isApplicable) {
                      ac = defenseMastery.total;
                   }
@@ -141,7 +141,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
             }
 
             // Track number of attacks against target. Do it after getting the tohit result;
-            /*await targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });*/
             GMMessageSender.sendToGM("incAttacksAgainst", { tokenid: targetToken.id });
 
             result.targetResults.push(targetResult);

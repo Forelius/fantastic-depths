@@ -54,7 +54,9 @@
             "turn": "Base",
             "round": "Round",
             "day": "Overland",
-            "run": "Run"
+            "run": "Run",
+            "total": "Total",
+            "moveTurn": "Base Movement"
          },
          "Tabs": {
             "Abilities": "Abilities",
@@ -62,7 +64,8 @@
             "Spells": "Spells",
             "Skills": "Skills",
             "Effects": "Effects",
-            "Description": "Description"
+            "Description": "Description",
+            "gmOnly": "GM Only"
          },
          "explore": {
             "long": "Exploration",
@@ -226,6 +229,9 @@
          "cost": {
             "abbr": "gp",
             "long": "Cost (gp)"
+         },
+         "tabs": {
+            "attributes": "Attributes"
          }
       },
       "Weapon": {
@@ -333,7 +339,32 @@
       "Tags": "Tags",
       "Size": "Size",
       "Type": "Type",
+      "notification": {
+         "selectToken1": "A token must first be selected.",
+         "spellSelectToken": "You must have your token selected to cast a spell.",
+         "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized."
+      },
       "Chat": {
+         "rollMods": {
+            "weaponMod": "Weapon mod: {mod}",
+            "effectMod": "Attacker effect mod: {mod}",
+            "strengthMod": "Strength mod: {mod}",
+            "dexterityMod": "Dexterity mod: {mod}",
+            "targetMod": "Target effect mod: {mod}",
+            "masteryMod": "Mastery mod: {mod}",
+            "unskilledUse": "Unskilled weapon use: {mod}",
+            "manual": "Manual mod: {mod}"
+         },
+         "damageRoll": {
+            "name": "Damage",
+            "restored": "{hp} hit points restored to {tokenName}.",
+            "mitigated": "{damage} points of {type} damage mitigated.",
+            "applied": "{damage} points of {type} damage applied to {tokenName}.",
+            "killed": "<span class='attack-fail'>{tokenName} has fallen in battle.</span>",
+            "restoredLife": "<span class='attack-success'>{tokenName} has been restored to life.</span>"
+         },
+         "resetSpells": "{actorName} reset memorized spells. Cast counts set to zero.",
+         "effectEnds": "<div>{effectName} on {actorName} ends.</div>",
          "pass": "Success!",
          "fail": "Failed",
          "attackFlavor": "{attacker} {attackType} attacks with {weapon}",
@@ -342,10 +373,8 @@
          "attackAC": "<div class='attack-info'>Attack hits <strong>AC {hitAC}</strong>.</div>",
          "attackSuccess": "<div class='attack-success'>Attack hit!</div>",
          "attackFail": "<div class='attack-fail'>Attack missed!</div>",
-         "attackRoll": "Attacks",
          "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
          "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
-         "damageRoll": "Damage",
          "healRoll": "Heal"
       },
       "roll": "Roll",
@@ -354,8 +383,28 @@
       "modifier": "Modifier",
       "target": "Target",
       "dialog": {
+         "selectLightSource": "Select Light Source",
+         "selectWeapon": "Select Weapon",
+         "masteryTargetType": "Target Weapon Type",
          "abilityCheck": "Ability Check",
-         "skillCheck": "Skill Check"
+         "skillCheck": "Skill Check",
+         "spellcast": {
+            "title": "Cast Spell?",
+            "content": "Do you want to cast the spell or view its description?",
+            "yesLabel": "Cast Spell",
+            "noLabel": "View Description"
+         },
+         "attackMode": {
+            "name": "Attack Mode",
+            "natural": "Natural",
+            "2hand": "Two-Handed",
+            "1hand": "One-Handed"
+         },
+         "attackType": {
+            "breath": "Breath",
+            "missile": "Missile",
+            "melee": "Melee"
+         }
       },
       "time": {
          "sessionCount": "Session Count",
@@ -413,7 +462,7 @@
             },
             "special": {
                "name": "Special",
-               "description":  "Special actions are resolved."
+               "description": "Special actions are resolved."
             }
          },
          "maneuvers": {
