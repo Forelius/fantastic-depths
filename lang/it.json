@@ -15,12 +15,12 @@
          "Class": "Classe",
          "Species": "Razza",
          "Sex": "Sesso",
-         "Age": "Et‡",
+         "Age": "Et√†",
          "Height": "Altezza",
          "Weight": "Peso",
          "Eyes": "Occhi",
          "Hair": "Capelli",
-         "Deity": "Divinit‡",
+         "Deity": "Divinit√†",
          "Origin": "Origine",
          "Trainer": "Addestrato",
          "Languages": "Linguaggi",
@@ -36,7 +36,7 @@
             "name": "Incantatore"
          },
          "isRetainer": {
-            "hint": "Questo personaggio Ë un servitore, un mercenario o un aiutante?",
+            "hint": "Questo personaggio √® un servitore, un mercenario o un aiutante?",
             "name": "Servitore"
          },
          "Wrestling": {
@@ -51,16 +51,16 @@
          "Movement": {
             "abbr": "MV",
             "long": "Movimento",
-            "turn": "Normale (turni)",
-            "round": "Round (round)",
-            "day": "Viaggio (turni)",
-            "run": "Corsa (round)"
+            "turn": "Normale (m/turno)",
+            "round": "Round (m/round)",
+            "day": "Viaggio (km/gg)",
+            "run": "Corsa (m/round)"
          },
          "Tabs": {
             "Abilities": "Caratteristiche",
             "Items": "Equipaggiamento",
             "Spells": "Incantesimi",
-            "Skills": "Abilit‡",
+            "Skills": "Abilit√†",
             "Effects": "Effetti",
             "Description": "Descrizione"
          },
@@ -89,8 +89,8 @@
          },
          "Saves": {
             "saveAs": {
-               "long": "Salva come",
-               "abbr": "SC"
+               "long": "Tiro Salvezza",
+               "abbr": "TS"
             },
             "long": "Tiri Salvezza",
             "short": "TS",
@@ -170,7 +170,7 @@
          "AbilityCount": {
             "abbr": "AS#",
             "short": "# Speciali",
-            "long": "Abilit‡ Speciali"
+            "long": "Abilit√† Speciali"
          },
          "Treasure": {
             "short": "Tesoro",
@@ -183,13 +183,13 @@
          "ClassItem": "Scheda Classe Oggetto"
       },
       "Spell": {
-         "SpellLVL": "Incantesimi {level}∞ Livello",
+         "SpellLVL": "Incantesimi {level}¬∞ Livello",
          "slots": "Lanci",
-         "resetSlots": "Ripristina gli incantesimi memorizzati a zero lanci. Il conteggio memorizzato non verr‡ modificato.",
+         "resetSlots": "Ripristina gli incantesimi memorizzati a zero lanci. Il conteggio memorizzato non verr√† modificato.",
          "usedSlots": "Lanci usati",
          "availableSlots": "Lanci disponibili",
-         "cast": "L'incantesimo Ë stato lanciato questo numero di volte",
-         "memorized": "L'incantesimo Ë stato memorizzato questo numero di volte",
+         "cast": "L'incantesimo √® stato lanciato questo numero di volte",
+         "memorized": "L'incantesimo √® stato memorizzato questo numero di volte",
          "AddLVL": "LVL {level}",
          "level": "Livello",
          "duration": "Durata",
@@ -209,10 +209,10 @@
          "isEquippable": "Equipaggiabile",
          "isContainer": "Contenitore",
          "quantity": {
-            "long": "Quantit‡",
-            "maxLong": "Quantit‡ Massima",
-            "abbr": "Q.t‡",
-            "maxAbbr": "q.t‡ max",
+            "long": "Quantit√†",
+            "maxLong": "Quantit√† Massima",
+            "abbr": "Q.t√†",
+            "maxAbbr": "q.t√† max",
             "abbr2": "#"
          },
          "weight": {
@@ -221,7 +221,7 @@
             "long": "Ingombro (mon)",
             "long2": "Ingombro",
             "abbr": "mon",
-            "desc": "L'ingombro Ë il peso di un oggetto misurato in peso di monete d'oro."
+            "desc": "L'ingombro √® il peso di un oggetto misurato in peso di monete d'oro."
          },
          "cost": {
             "abbr": "mo",
@@ -260,7 +260,7 @@
             "type": "Tipo di Danno",
             "short2": "Danno a 2-Mani",
             "long": "Dado Danno",
-            "long2": "Tiro per i Danni a 2-Mani solo se l'arma puÚ essere usata con una mano sola, altrimenti usa il campo di tiro per i danni."
+            "long2": "Tiro per i Danni a 2-Mani solo se l'arma pu√≤ essere usata con una mano sola, altrimenti usa il campo di tiro per i danni."
          },
          "ammo": {
             "short": "Ammo",
@@ -282,14 +282,14 @@
          },
          "natural": {
             "short": "Naturale",
-            "desc": "Questa Ë considerata una parte naturale del suo proprietario."
+            "desc": "Questa √® considerata una parte naturale del suo proprietario."
          },
          "mod": "Mod CA"
       },
       "Skill": {
-         "plural": "Abilit‡ Generali",
-         "short": "Abilit‡",
-         "long": "Abilit‡ Generali"
+         "plural": "Abilit√† Generali",
+         "short": "Abilit√†",
+         "long": "Abilit√† Generali"
       },
       "Mastery": {
          "plural": "Maestria nelle Armi",
@@ -318,9 +318,9 @@
          "acBonusATTitle": "Attacchi bonus CA per round"
       },
       "SpecialAbility": {
-         "plural": "Abilit‡ Speciali",
-         "short": "Abilit‡",
-         "long": "Abilit‡ Speciale"
+         "plural": "Abilit√† Speciali",
+         "short": "Abilit√†",
+         "long": "Abilit√† Speciale"
       },
       "Effect": {
          "short": "Effetto",
@@ -349,16 +349,16 @@
          "healRoll": "Cura"
       },
       "roll": "Tiro",
-      "rollMode": "Modalit‡ Tiro",
+      "rollMode": "Modalit√† Tiro",
       "operator": "Operatore",
       "modifier": "Modificatore",
       "target": "Bersaglio",
       "dialog": {
          "abilityCheck": "Prova di Caratteristica",
-         "skillCheck": "Prova di Abilit‡"
+         "skillCheck": "Prova di Abilit√†"
       },
       "time": {
-         "sessionCount": "N∞ Sessione",
+         "sessionCount": "N¬∞ Sessione",
          "totalCount": "Tot Sessioni",
          "sinceRest": "Ultimo Riposo",
          "rest": "Riposa",
@@ -423,11 +423,11 @@
             },
             "moveOnly": {
                "name": "Solo Movimento",
-               "description": "Il personaggio si sta muovendo e non sta attaccando in questo round. Non Ë una ritirata."
+               "description": "Il personaggio si sta muovendo e non sta attaccando in questo round. Non √® una ritirata."
             },
             "readyWeapon": {
                "name": "Prepara Arma",
-               "description": "Il personaggio sta preparando la sua arma in questo round. PuÚ anche muoversi a velocit‡ normale."
+               "description": "Il personaggio sta preparando la sua arma in questo round. Pu√≤ anche muoversi a velocit√† normale."
             },
             "throw": {
                "name": "Lancia Arma",
@@ -443,7 +443,7 @@
             },
             "magicItem": {
                "name": "Oggetto Magico",
-               "description": "Il personaggio attiva un oggetto magico che non sia un'arma, come una pozione, una bacchetta, un anello o l'abilit‡ passiva di un altro oggetto magico."
+               "description": "Il personaggio attiva un oggetto magico che non sia un'arma, come una pozione, una bacchetta, un anello o l'abilit√† passiva di un altro oggetto magico."
             },
             "attack": {
                "name": "Attacco",
@@ -451,19 +451,19 @@
             },
             "withdrawal": {
                "name": "Arretrare",
-               "description": "Il personaggio indietreggia da un nemico da 1,5 metri fino a met‡ del suo normale movimento, attaccando solo se il nemico lo segue e si sposta nel raggio d'azione durante la sua fase di movimento."
+               "description": "Il personaggio indietreggia da un nemico da 1,5 metri fino a met√† del suo normale movimento, attaccando solo se il nemico lo segue e si sposta nel raggio d'azione durante la sua fase di movimento."
             },
             "retreat": {
                "name": "Ritirata",
-               "description": "Il personaggio fugge dalla mischia a pi˘ della met‡ della sua velocit‡, perdendo i bonus alla CA dello scudo e dando ai nemici un bonus di +2 per attaccarli in quel round."
+               "description": "Il personaggio fugge dalla mischia a pi√π della met√† della sua velocit√†, perdendo i bonus alla CA dello scudo e dando ai nemici un bonus di +2 per attaccarli in quel round."
             },
             "lance": {
                "name": "Attacco con Lancia",
-               "description": "Se il cavallo, prima di portare líattacco del guerriero percorre al galoppo almeno 20 m la lancia infligge un numero doppio di danni."
+               "description": "Se il cavallo, prima di portare l‚Äôattacco del guerriero percorre al galoppo almeno 20 m la lancia infligge un numero doppio di danni."
             },
             "multiAttack": {
                "name": "Attacco Multiplo",
-               "description": "Il personaggio effettua pi˘ attacchi per round, che possono includere qualsiasi combinazione di attacchi, movimenti, disarmi o attacchi con la lancia."
+               "description": "Il personaggio effettua pi√π attacchi per round, che possono includere qualsiasi combinazione di attacchi, movimenti, disarmi o attacchi con la lancia."
             },
             "setSpear": {
                "name": "Prepara Lancia",
@@ -471,11 +471,11 @@
             },
             "smash": {
                "name": "Schiantare",
-               "description": "Il personaggio effettua un attacco potente con una penalit‡ di -5 al tiro per colpire perdendo automaticamente l'iniziativa. Se colpisce, aggiunge ai danni tutto il suo punteggio di Forza, e se applicabili, eventuali bonus derivanti dalla magia e dalla Forza stessa."
+               "description": "Il personaggio effettua un attacco potente con una penalit√† di -5 al tiro per colpire perdendo automaticamente l'iniziativa. Se colpisce, aggiunge ai danni tutto il suo punteggio di Forza, e se applicabili, eventuali bonus derivanti dalla magia e dalla Forza stessa."
             },
             "parry": {
                "name": "Parare",
-               "description": "Il personaggio non attacca ma para gli attacchi avversari per un intero round, facendo sÏ che tutti i nemici subiscano una penalit‡ di -4 ai tiri per colpire contro di loro. Proiettili scagliati con meccanismi non possono essere parati."
+               "description": "Il personaggio non attacca ma para gli attacchi avversari per un intero round, facendo s√¨ che tutti i nemici subiscano una penalit√† di -4 ai tiri per colpire contro di loro. Proiettili scagliati con meccanismi non possono essere parati."
             },
             "disarm": {
                "name": "Disarmare",
@@ -495,9 +495,9 @@
          "weapon": "Arma",
          "armor": "Armatura",
          "spell": "Incantesimo",
-         "skill": "Abilit‡ Generale",
+         "skill": "Abilit√† Generale",
          "mastery": "Maestria Arma",
-         "specialAbility": "Abilit‡ Speciale",
+         "specialAbility": "Abilit√† Speciale",
          "treasure": "Tesoro",
          "class": "Classe Personaggio"
       }
@@ -516,24 +516,24 @@
          "name": "Tifo sui Lanci di Dado"
       },
       "EncMax": {
-         "Hint": "La quantit‡ massima che un personaggio puÚ trasportare, in monete, ed essere comunque in grado di muoversi.",
-         "Hint2": "L'importo massimo, in monete, che puÚ essere trasportato mentre si Ë ancora in grado di muoversi.",
+         "Hint": "La quantit√† massima che un personaggio pu√≤ trasportare, in monete, ed essere comunque in grado di muoversi.",
+         "Hint2": "L'importo massimo, in monete, che pu√≤ essere trasportato mentre si √® ancora in grado di muoversi.",
          "Name": "Massimo Ingombro"
       },
       "Theme": {
-         "Hint": "La modalit‡ Dark presenta uno sfondo scuro con testo chiaro, mentre la modalit‡ Light presenta uno sfondo chiaro con testo scuro.",
+         "Hint": "La modalit√† Dark presenta uno sfondo scuro con testo chiaro, mentre la modalit√† Light presenta uno sfondo chiaro con testo scuro.",
          "Name": "Tema",
          "Dark": "Dark",
          "Light": "Light"
       },
       "move": {
          "max": {
-            "name": "Velocit‡ Massima di Movimento",
-            "hint": "La distanza massima che questo essere puÚ percorrere per turno."
+            "name": "Velocit√† Massima di Movimento",
+            "hint": "La distanza massima che questo essere pu√≤ percorrere per turno."
          },
          "maxFlight": {
-            "name": "Velocit‡ Massima di Volo",
-            "hint": "La distanza massima che questo essere puÚ volare per turno."
+            "name": "Velocit√† Massima di Volo",
+            "hint": "La distanza massima che questo essere pu√≤ volare per turno."
          }
       },
       "rest": {
@@ -546,8 +546,8 @@
             "hint": "Definisce la formula utilizzata per calcolare l'iniziativa. "
          },
          "mode": {
-            "name": "Modalit‡ Initiativa",
-            "hint": "Scegli tra iniziativa di gruppo o individuale. L'iniziativa individuale (semplificata) consiste esclusivamente tramite un tiro di iniziativa pi˘ eventuali modificatori. La modalit‡ individuale aggiunge la regola dell'arma a due mani, facendo perdere l'iniziativa a chi utilizza armi a due mani. La modalit‡ individuale (combattimento controllato) combina l'iniziativa individuale con l'ordine della lista di controllo di combattimento quando le azioni dichiarate sono abilitate. La modalit‡ Gruppo (lista di controllo del combattimento) raggruppa i combattenti in base alla disposizione dei token e li ordina anche all'interno di un gruppo in base all'azione dichiarata, se le azioni dichiarate sono abilitate. La modalit‡ Gruppo (individuale ibrido) Ë come la modalit‡ Gruppo, ma aggiunge la regola dell'arma a 2 mani all'interno dell'ordinamento interno di un gruppo.",
+            "name": "Modalit√† Initiativa",
+            "hint": "Scegli tra iniziativa di gruppo o individuale. L'iniziativa individuale (semplificata) consiste esclusivamente tramite un tiro di iniziativa pi√π eventuali modificatori. La modalit√† individuale aggiunge la regola dell'arma a due mani, facendo perdere l'iniziativa a chi utilizza armi a due mani. La modalit√† individuale (combattimento controllato) combina l'iniziativa individuale con l'ordine della lista di controllo di combattimento quando le azioni dichiarate sono abilitate. La modalit√† Gruppo (lista di controllo del combattimento) raggruppa i combattenti in base alla disposizione dei token e li ordina anche all'interno di un gruppo in base all'azione dichiarata, se le azioni dichiarate sono abilitate. La modalit√† Gruppo (individuale ibrido) √® come la modalit√† Gruppo, ma aggiunge la regola dell'arma a 2 mani all'interno dell'ordinamento interno di un gruppo.",
             "choices": {
                "simpleIndividual": "Individuale (simplificata)",
                "individual": "Individuale",
@@ -566,8 +566,8 @@
             }
          },
          "nextRound": {
-            "name": "Modalit‡ Prossimo Turno d'Iniziativa",
-            "hint": "Decidi cosa accadr‡ quando verr‡ attivato il round successivo nel tracker di combattimento.",
+            "name": "Modalit√† Prossimo Turno d'Iniziativa",
+            "hint": "Decidi cosa accadr√† quando verr√† attivato il round successivo nel tracker di combattimento.",
             "choices": {
                "hold": "Mantieni Initiativa",
                "reset": "Azzera Initiativa",
