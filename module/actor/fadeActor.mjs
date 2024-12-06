@@ -207,7 +207,8 @@ export class fadeActor extends Actor {
       if (equippedWeapons && equippedWeapons.length > 0) {
          result = equippedWeapons[0].system.weaponType;
       } else if (weapons && weapons.length > 0) {
-         console.warn(`${this.parent.name} has weapons, but none are equipped.`)
+         result = 'monster';
+         console.warn(`${this.name} has weapons, but none are equipped.`)
       }
       return result;
    }
