@@ -76,11 +76,20 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return result;
    }
 
-   static async getToHitResults(attackerToken, weapon, targetTokens, roll, targetWeaponType = null) {
+   /**
+    * 
+    * @param {any} attacker normally the attacking token, but could also be an actor.
+    * @param {any} weapon the weapon item used for the attack
+    * @param {any} targetTokens an array of target tokens, if any.
+    * @param {any} roll
+    * @param {any} targetWeaponType
+    * @returns
+    */
+   static async getToHitResults(attacker, weapon, targetTokens, roll, targetWeaponType = null) {
       let result = null;
 
       if (roll) {
-         const thac0 = attackerToken.actor.system.thac0.value;
+         const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
          const hitAC = AttackRollChatBuilder.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0);
          result = {
             hitAC,
@@ -171,8 +180,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
     */
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest } = this.data;
-      const attackerToken = context;
-      const attackerName = attackerToken.name;
+      const attacker = context;
+      const attackerName = attacker.name;
       const targetTokens = Array.from(game.user.targets);
       const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
@@ -190,7 +199,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await AttackRollChatBuilder.getToHitResults(attackerToken, caller, targetTokens, roll, resp.targetWeaponType);
+      const toHitResult = await AttackRollChatBuilder.getToHitResults(attacker, caller, targetTokens, roll, resp.targetWeaponType);
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode);
 
       if (window.toastManager) {

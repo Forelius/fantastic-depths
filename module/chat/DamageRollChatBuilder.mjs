@@ -9,7 +9,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
    }
 
    async createChatMessage() {
-      const { context, mdata, resp, roll, options, digest } = this.data;
+      const { context, mdata, roll, options, digest } = this.data;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
 
@@ -59,7 +59,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
    static async clickDamageRoll(ev) {
       const element = ev.currentTarget;
       const dataset = element.dataset;
-      const { attackerid, weaponid, attacktype, damagetype } = dataset;
 
       // Custom behavior for damage rolls      
       if (dataset.type === "damage" || dataset.type==="heal") {
@@ -77,8 +76,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
     */
    static async handleDamageRoll(ev, dataset) {
       const { attackerid, weaponid, attacktype, attackmode, damagetype } = dataset;
-      const attackerToken = canvas.tokens.get(attackerid);
-      let weaponItem = attackerToken.actor.items.find((item) => item.id === weaponid);
+      const attacker = canvas.tokens.get(attackerid) || game.actors.get(attackerid);
+      let weaponItem = attacker.actor?.items.find((item) => item.id === weaponid) || attacker.items.find((item) => item.id === weaponid);
       let canRoll = true;
       let dialogResp = null;
       const isHeal = damagetype === 'heal';
@@ -108,14 +107,14 @@ export class DamageRollChatBuilder extends ChatBuilder {
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
          const descData = {
-            attacker: attackerToken.name,
+            attacker: attacker.name,
             weapon: weaponItem.name,
             damage
          };
          const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
 
          const chatData = {
-            context: attackerToken,
+            context: attacker,
             mdata: dataset,
             roll: roll,
             digest: damageRoll.digest

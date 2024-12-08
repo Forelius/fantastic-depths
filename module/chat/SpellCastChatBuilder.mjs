@@ -4,9 +4,6 @@ import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 export class SpellCastChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/spell-cast.hbs';
 
-   // The currently selected target, if any.
-   #targetTokens;
-
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
    }
@@ -19,17 +16,17 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const damageRoll = await caller.getDamageRoll(null);
       const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
-      const casterToken = context;
+      const caster = context;
       const spellItem = caller;
 
-      const descData = { caster: casterToken.name, spell: spellItem.name };
+      const descData = { caster: caster.name, spell: spellItem.name };
       const description = game.i18n.format('FADE.Chat.spellCast', descData);
 
       let rollContent = null;
       let toHitResult = {message:""};
       if (roll) {
          rollContent = await roll.render();
-         toHitResult = await AttackRollChatBuilder.getToHitResults(casterToken, spellItem, targetTokens, roll, resp?.targetWeaponType);
+         toHitResult = await AttackRollChatBuilder.getToHitResults(caster, spellItem, targetTokens, roll, resp?.targetWeaponType);
       } else {
          // Add targets for DM chat message
          toHitResult = { targetResults: [], message: '' };
@@ -52,7 +49,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          rollContent,
          toHitResult,
          spellItem, // spell item
-         casterToken,
+         caster,
          damageRoll,
          isHeal: damageRoll.damageType === "heal",
          targets: targetTokens,

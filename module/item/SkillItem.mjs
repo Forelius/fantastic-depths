@@ -54,10 +54,9 @@ export class SkillItem extends fadeItem {
    * @private
    */
    async roll(dataset) {
-      const item = this;
       const systemData = this.system;
       const ownerData = this.actor.system;
-      const attackerToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
+      const roller = this.parent.getActiveTokens()?.[0] || this.actor;
 
       // Retrieve roll data.
       const rollData = this.getRollData();
@@ -89,7 +88,7 @@ export class SkillItem extends fadeItem {
          const chatData = {
             dialogResp: dialogResp,
             caller: this, // the skill item
-            context: attackerToken, // the skill item owner
+            context: roller, // the skill item owner
             mdata: dataset,
             roll: rolled,
          };

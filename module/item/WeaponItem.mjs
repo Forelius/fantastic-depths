@@ -30,7 +30,7 @@ export class WeaponItem extends fadeItem {
 
    async getDamageRoll(attackType, attackMode, resp) {
       const weaponData = this.system;
-      const attackerToken = this.parent.getActiveTokens()?.[0];
+      const attacker = this.parent.getActiveTokens()?.[0] || this.parent;
       const attackerData = this.parent.system;
       let evaluatedRoll = await this.getEvaluatedRoll(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
@@ -84,11 +84,10 @@ export class WeaponItem extends fadeItem {
          formula = formula ? `${formula}+${modifier}` : `${modifier}`;
       }
 
-
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-      if (hasDamage && weaponMastery && weaponData.mastery !== "" && attackerToken.type === "character" && attackerData.details.species === "Human") {
-         const attackerMastery = attackerToken.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
+      if (hasDamage && weaponMastery && weaponData.mastery !== "" && attacker.type === "character" && attackerData.details.species === "Human") {
+         const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // do stuff
          } else {
@@ -107,7 +106,6 @@ export class WeaponItem extends fadeItem {
    getAttackModes() {
       let result = [];
       const twoHand = this.system.tags?.includes("2-handed");
-      const oneHand = this.system.tags?.includes("1-handed");
       const breath = this.system.breath?.length > 0;
       const natural = this.system.natural === true;
 
@@ -142,10 +140,7 @@ export class WeaponItem extends fadeItem {
    async roll() {
       const systemData = this.system;
       // The selected token, not the actor
-      const attackerToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
-      const attackerActor = attackerToken?.actor; // Actor associated with the token
-      const speaker = ChatMessage.getSpeaker({ actor: attackerToken });
-      const label = `[${this.type}] ${this.name}`;
+      const attacker = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0] || this.actor;
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;
@@ -153,7 +148,7 @@ export class WeaponItem extends fadeItem {
       let result = null;
       let hasRoll = false;
 
-      if (attackerToken) {
+      if (attacker) {
          try {
             const targetTokens = Array.from(game.user.targets);
             const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
@@ -212,7 +207,7 @@ export class WeaponItem extends fadeItem {
             const chatData = {
                resp: dialogResp.resp, // the dialog response
                caller: this, // the weapon
-               context: attackerToken,
+               context: attacker,
                roll: rolled,
                digest: digest,
             };

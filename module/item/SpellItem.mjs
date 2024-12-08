@@ -56,12 +56,8 @@ export class SpellItem extends fadeItem {
    * @private
    */
    async roll(dataset) {
-      const item = this;
-      const systemData = this.system;
-      const ownerData = this.actor.system;
-      const casterToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
-
-      if (casterToken) {
+      const caster = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0] || this.actor;
+      if (caster) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.format('FADE.dialog.spellcast.title'),
@@ -72,7 +68,7 @@ export class SpellItem extends fadeItem {
          }, this.actor);
 
          if (dialogResp?.resp?.result === true) {
-            await this.doSpellcast(casterToken);
+            await this.doSpellcast();
          } else if (dialogResp?.resp?.result === false) {
             super.roll(dataset);
          }
@@ -83,7 +79,9 @@ export class SpellItem extends fadeItem {
       return null;
    }
 
-   async doSpellcast(casterToken) {
+   async doSpellcast() {
+      const caster = this.parent.getActiveTokens()?.[0] || this.actor;
+      const casterActor = caster.actor || this.actor;
       const systemData = this.system;
       let result = null;
 
@@ -106,7 +104,7 @@ export class SpellItem extends fadeItem {
                   label: "Attack",
                   rollMode
                };
-               dialogResp = await DialogFactory(dataset, this.actor, { targetToken: targetToken });
+               dialogResp = await DialogFactory(dataset, casterActor, { targetToken: targetToken });
                if (dialogResp?.resp) {
                   const rollOptions = {
                      mod: dialogResp.resp.mod,
@@ -115,7 +113,7 @@ export class SpellItem extends fadeItem {
                   if (dialogResp.resp.targetWeaponType) {
                      rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                   }
-                  let attackRoll = casterToken.actor.getAttackRoll(this, systemData.attackType, rollOptions);
+                  let attackRoll = casterActor.getAttackRoll(this, systemData.attackType, rollOptions);
                   rollData.formula = attackRoll.formula;
                   digest = attackRoll.digest;
                   const rollContext = { ...rollData };
@@ -136,7 +134,7 @@ export class SpellItem extends fadeItem {
             const chatData = {
                rollData,
                caller: this, // the spell
-               context: casterToken, // the caster
+               context: (caster || casterActor), // the caster
                roll: rolled,
                resp: dialogResp?.resp,
                digest
