@@ -109,7 +109,7 @@ export class fadeActor extends Actor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareArmorClass();
+      this.system.prepareArmorClass(this.items);
       this.system.prepareEncumbrance(this.items, this.type);
       this.system.prepareDerivedMovement();
       this._prepareSpellsUsed();
@@ -437,76 +437,6 @@ export class fadeActor extends Actor {
             effect.disabled = !parentItem.system.equipped;
          }
       });
-   }
-
-   /**
-    * Prepare derived armor class values.
-    * @protected
-    */
-   _prepareArmorClass() {
-      const systemData = this.system;
-      const dexMod = (systemData.abilities?.dex.mod ?? 0);
-      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod;
-      let ac = {};
-      ac.naked = baseAC;
-      ac.value = baseAC;
-      ac.total = baseAC;
-      ac.mod = 0;
-      ac.shield = 0;
-
-      const naturalArmor = this.items.find(item =>
-         item.type === 'armor' && item.system.natural
-      );
-
-      const equippedArmor = this.items.find(item =>
-         item.type === 'armor' && item.system.equipped && !item.system.isShield
-      );
-
-      const equippedShield = this.items.find(item =>
-         item.type === 'armor' && item.system.equipped && item.system.isShield
-      );
-
-      // If natural armor
-      if (naturalArmor?.system.totalAc !== null && naturalArmor?.system.totalAc !== undefined) {
-         ac.naked = naturalArmor.system.totalAc;
-      }
-
-      // If an equipped armor is found
-      if (equippedArmor) {
-         ac.value = equippedArmor.system.ac;
-         ac.mod = equippedArmor.system.mod ?? 0;
-         ac.total = equippedArmor.system.totalAc;
-      }
-
-      if (equippedShield) {
-         ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
-         ac.total -= ac.shield;
-      }
-
-      // Now other mods.
-      ac.total = ac.total - (systemData.mod.ac ?? 0) - dexMod;
-
-      // Weapon mastery defense bonuses
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      const masteries = this.items.filter(item => item.type === "mastery");
-      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
-      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
-      if (masteryEnabled && masteries?.length > 0 && equippedWeapons?.length > 0) {
-         ac.mastery = [];
-         for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
-            if (weaponMastery) {
-               ac.mastery.push({
-                  acBonusType: weaponMastery.system.acBonusType,
-                  acBonus: weaponMastery.system.acBonus || 0,
-                  total: ac.total + (weaponMastery.system.acBonus || 0),
-                  acBonusAT: weaponMastery.system.acBonusAT
-               });
-            }
-         }
-      }
-
-      systemData.ac = ac;
    }
 
    /**

@@ -118,14 +118,86 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this._prepareMods();
       if (this.config.isSpellcaster === true) {
          this._prepareSpells();
+      } else {
+         this.spellSlots = [];
       }
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+   }
+
+   /**
+    * Prepare derived armor class values.
+    * @protected
+    */
+   prepareArmorClass(items) {
+      const dexMod = (this.abilities?.dex.mod ?? 0);
+      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod;
+      let ac = {};
+      ac.naked = baseAC;
+      ac.value = baseAC;
+      ac.total = baseAC;
+      ac.mod = 0;
+      ac.shield = 0;
+
+      const naturalArmor = items.find(item =>
+         item.type === 'armor' && item.system.natural
+      );
+
+      const equippedArmor = items.find(item =>
+         item.type === 'armor' && item.system.equipped && !item.system.isShield
+      );
+
+      const equippedShield = items.find(item =>
+         item.type === 'armor' && item.system.equipped && item.system.isShield
+      );
+
+      // If natural armor
+      if (naturalArmor?.system.totalAc !== null && naturalArmor?.system.totalAc !== undefined) {
+         ac.naked = naturalArmor.system.totalAc;
+      }
+
+      // If an equipped armor is found
+      if (equippedArmor) {
+         ac.value = equippedArmor.system.ac;
+         ac.mod = equippedArmor.system.mod ?? 0;
+         ac.total = equippedArmor.system.totalAc;
+      }
+
+      if (equippedShield) {
+         ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
+         ac.total -= ac.shield;
+      }
+
+      // Now other mods.
+      ac.total = ac.total - (this.mod.ac ?? 0) - dexMod;
+
+      // Weapon mastery defense bonuses
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      const masteries = items.filter(item => item.type === "mastery");
+      const equippedWeapons = items.filter((item) => item.type === "weapon" && item.system.equipped);
+      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
+      if (masteryEnabled && masteries?.length > 0 && equippedWeapons?.length > 0) {
+         ac.mastery = [];
+         for (let weapon of equippedWeapons) {
+            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
+            if (weaponMastery) {
+               ac.mastery.push({
+                  acBonusType: weaponMastery.system.acBonusType,
+                  acBonus: weaponMastery.system.acBonus || 0,
+                  total: ac.total + (weaponMastery.system.acBonus || 0),
+                  acBonusAT: weaponMastery.system.acBonusAT
+               });
+            }
+         }
+      }
+
+      this.ac = ac;
    }
 
    /**
@@ -208,6 +280,32 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.flight.round = this.flight.turn > 0 ? Math.floor(this.flight.turn / 3) : 0;
       this.flight.day = this.flight.turn > 0 ? Math.floor(this.flight.turn / 5) : 0;
       this.flight.run = this.flight.turn;
+   }
+
+   /**
+    * @protected
+    */
+   _prepareMods() {
+      this.mod.ac = 0;
+      this.mod.initiative = 0;
+      this.mod.combat.toHit = 0;
+      this.mod.combat.dmg = 0;
+      this.mod.combat.toHitRanged = 0;
+      this.mod.combat.dmgRanged = 0;
+      this.mod.combat.selfDmg = 0;
+      this.mod.combat.selfDmgBreath = 0;
+      this.mod.combat.selfDmgBreathScale = 0;
+      this.mod.combat.selfDmgMagic = 0;
+      this.mod.combat.selfDmgFrost = 0;
+      this.mod.combat.selfDmgFire = 0;
+      this.mod.combat.selfToHit = 0;
+      this.mod.combat.selfToHitRanged = 0;
+      this.mod.save.all = 0;
+      this.mod.save.death = 0;
+      this.mod.save.wand = 0;
+      this.mod.save.paralysis = 0;
+      this.mod.save.breath = 0;
+      this.mod.save.spell = 0;
    }
 
    /**
