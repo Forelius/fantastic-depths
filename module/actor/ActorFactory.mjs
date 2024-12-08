@@ -4,10 +4,13 @@ import { MonsterActor } from '../actor/MonsterActor.mjs';
 
 const handler = {
    construct(_actor, args) {
-      let result = new CharacterActor(...args);
-      if (args[0]?.type === 'monster') result = new MonsterActor(...args);
+      let result;
+      if (args[0]?.type === "monster") {
+         result = new MonsterActor(...args);
+      } else {
+         result = new CharacterActor(...args);
+      }
       return result;
-      //throw new Error(SYSTEM_ID, { type: args[0]?.type });
    }
 };
 

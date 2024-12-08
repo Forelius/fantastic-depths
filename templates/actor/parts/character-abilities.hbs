@@ -3,12 +3,16 @@
       {{#each system.abilities as |ability key|}}
       <div class="ability flexrow flex-group-left">
          <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-         <label for="system.abilities.{{key}}.value" class="rollable flex0"
+         <label for="system.abilities.{{key}}.value" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
                 data-ability="{{key}}"
                 data-test="ability"
                 data-pass="lte"
                 title="{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}">
+            {{#if @root.abilityAbbr}}
+            {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
+            {{else}}
             {{localize (concat 'FADE.Actor.Abilities.' key '.long')}}
+            {{/if}}
          </label>
          <span class="ability-mod flex0" title="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
       </div>
@@ -99,13 +103,17 @@
          {{#each system.savingThrows as |savingThrow key|}}
          <div class="flexrow flex-group-center">
             <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-            <label for="system.savingThrows.{{key}}.value" class="rollable" 
-                   data-test="generic" 
-                   data-formula="d20" 
-                   data-pass="gte" 
-                   data-target="{{savingThrow.value}}" 
+            <label for="system.savingThrows.{{key}}.value" class="rollable{{#if @root.saveAbbr}} abbr{{else}} long{{/if}}"
+                   data-test="generic"
+                   data-formula="d20"
+                   data-pass="gte"
+                   data-target="{{savingThrow.value}}"
                    data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
+               {{#if @root.saveAbbr}}
+               {{localize (concat 'FADE.Actor.Saves.' key '.abbr')}}
+               {{else}}
                {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
+               {{/if}}
             </label>
          </div>
          {{/each}}

@@ -70,6 +70,8 @@ export class fadeActorSheet extends ActorSheet {
       context.config = CONFIG.FADE;
 
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+      context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
+      context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
 
       // Prepare shared actor data and items.
       this._prepareItems(context);

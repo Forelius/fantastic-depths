@@ -783,11 +783,19 @@ h1, h2, h3, h4 {
   border-bottom-width: 1px;
 }
 .fantastic-depths .character .ability-scores .ability label, .fantastic-depths .monster .ability-scores .ability label {
-  font-size: 15px;
   font-weight: 500;
+  margin: 0 4px;
+}
+.fantastic-depths .character .ability-scores .ability .abbr, .fantastic-depths .monster .ability-scores .ability .abbr {
+  font-size: 20px;
+  min-width: 60px;
+  max-width: 80px;
+  text-align: center;
+}
+.fantastic-depths .character .ability-scores .ability .long, .fantastic-depths .monster .ability-scores .ability .long {
+  font-size: 15px;
   min-width: 80px;
   max-width: 80px;
-  margin: 0 4px;
   text-align: left;
 }
 .fantastic-depths .character .ability-scores .ability input, .fantastic-depths .monster .ability-scores .ability input {
@@ -832,6 +840,13 @@ h1, h2, h3, h4 {
 .fantastic-depths .character .saving-throws label, .fantastic-depths .monster .saving-throws label {
   align-content: center;
   text-align: left;
+  font-size: 12px;
+}
+.fantastic-depths .character .saving-throws .abbr, .fantastic-depths .monster .saving-throws .abbr {
+  margin-left: 10px;
+  font-size: 20px;
+}
+.fantastic-depths .character .saving-throws .long, .fantastic-depths .monster .saving-throws .long {
   font-size: 12px;
 }
 .fantastic-depths .character .hit-points, .fantastic-depths .monster .hit-points {

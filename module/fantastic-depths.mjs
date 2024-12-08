@@ -1,6 +1,8 @@
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
+import { CharacterDataModel } from './actor/DataModel/CharacterDataModel.mjs';
+import { MonsterDataModel } from './actor/DataModel/MonsterDataModel.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeItem } from './item/fadeItem.mjs';
@@ -13,7 +15,6 @@ import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
-import { ChatFactory, CHAT_TYPE } from './chat/ChatFactory.mjs';
 import { fadeCombat } from './sys/fadeCombat.mjs'
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
@@ -65,6 +66,10 @@ Hooks.once('init', async function () {
    CONFIG.Combat.documentClass = fadeCombat;
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
    CONFIG.Actor.documentClass = ActorFactory;
+   CONFIG.Actor.dataModels = {
+      character: CharacterDataModel,
+      monster: MonsterDataModel,
+   };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Combatant.documentClass = fadeCombatant;
 
@@ -78,7 +83,7 @@ Hooks.once('init', async function () {
    Actors.registerSheet('fantastic-depths', fadeActorSheet, {
       makeDefault: true,
       label: 'FADE.SheetLabel.Actor',
-   });
+   });  
    Items.unregisterSheet('core', ItemSheet);
    Items.registerSheet('fantastic-depths', fadeItemSheet, {
       label: 'FADE.SheetLabel.Item',

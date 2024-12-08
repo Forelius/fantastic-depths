@@ -39,6 +39,7 @@
             "hint": "Is this character a retainer, hireling or other hired hand.",
             "name": "Retainer"
          },
+         "RetainerWage": "Wage",
          "Wrestling": {
             "long": "Wrestling Rating",
             "short": "Wrestling",
@@ -622,6 +623,16 @@
                "reset": "Reset Initiative",
                "reroll": "Reroll Initiative"
             }
+         }
+      },
+      "display": {
+         "abilities": {
+            "name": "Abreviated ability names.",
+            "hint": "Use abbreviations for character sheet abilities score labels."
+         },
+         "saves": {
+            "name": "Short saving throw names.",
+            "hint": "Use short names for saving throws on the character sheet."
          }
       },
       "declaredActions": {

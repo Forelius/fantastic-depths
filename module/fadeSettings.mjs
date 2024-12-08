@@ -38,7 +38,22 @@ export class fadeSettings {
          default: "dark",
          onChange: value => this.applyTheme(value)
       });
-
+      game.settings.register(game.system.id, "abilityAbbr", {
+         name: "SETTINGS.display.abilities.name",
+         hint: "SETTINGS.display.abilities.hint",
+         scope: "client",
+         config: true,
+         type: Boolean,         
+         default: "true"
+      });
+      game.settings.register(game.system.id, "saveAbbr", {
+         name: "SETTINGS.display.saves.name",
+         hint: "SETTINGS.display.saves.hint",
+         scope: "client",
+         config: true,
+         type: Boolean,
+         default: "false"
+      });
       // Apply the current theme when the game is initialized
       const currentTheme = await game.settings.get(game.system.id, "theme");
       this.applyTheme(currentTheme);
