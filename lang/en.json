@@ -53,9 +53,13 @@
             "abbr": "MV",
             "long": "Movement",
             "turn": "Base",
+            "turnHint": "Feet or yards per 10 minute turn. This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.",
             "round": "Round",
+            "roundHint": "Feet or yards per 10 second round. Used during combat encounters.",
             "day": "Overland",
+            "dayHint": "Miles per day. Used for overland travel. Note that terrain effects this rate.",
             "run": "Run",
+            "runHint": "Feet or yards per 10 second round. Used when running or flying at maximum speed during combat encounters. Travel at maximum speed can last for up to 30 rounds (5 minutes) before exhaustion.",
             "total": "Total",
             "moveTurn": "Base Movement"
          },
