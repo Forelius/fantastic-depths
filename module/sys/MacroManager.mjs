@@ -94,7 +94,115 @@ ChatMessage.create({content: results, flavor: 'Ability Score Rolls'});",
          command: "game.fade.fadeDialog.getSelectAttackDialog(true);",
          img: `icons/svg/dice-target.svg`,
          folder: miscFolder.id
-      }, false);    
+      }, false);
+
+//      await MacroManager.createMacro({
+//         name: "Set Token Display Mode",
+//         type: "script",
+//         command: `
+//(async () => {
+//  // Define the resource key for HP
+//  const hpResourceKey = "hp";
+
+//  // Map of display mode options using Foundry's constants
+//  const displayModeOptions = {
+//    [CONST.TOKEN_DISPLAY_MODES.NONE]: "None",
+//    [CONST.TOKEN_DISPLAY_MODES.HOVER]: "Hovered by Anyone",
+//    [CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER]: "Hovered by Owner",
+//    [CONST.TOKEN_DISPLAY_MODES.CONTROL]: "Controlled",
+//    [CONST.TOKEN_DISPLAY_MODES.OWNER]: "Always for Owner",
+//    [CONST.TOKEN_DISPLAY_MODES.ALWAYS]: "Always for Anyone"
+//  };
+
+//  // Map of token selection options
+//  const tokenFilterOptions = {
+//    all: "All Tokens on Canvas",
+//    friendly: "Friendly Tokens",
+//    hostile: "Hostile Tokens",
+//    selected: "Selected Tokens"
+//  };
+
+//  // Create a dialog to let the user select options
+//  const content = \`
+//    <form>
+//      <div class="form-group">
+//        <label for="display-mode">Choose Display Mode:</label>
+//        <select id="display-mode" name="display-mode">
+//          \${Object.entries(displayModeOptions)
+//            .map(([value, label]) => \`<option value="\${value}">\${label}</option>\`)
+//            .join("")}
+//        </select>
+//      </div>
+//      <div class="form-group">
+//        <label for="token-filter">Choose Token Filter:</label>
+//        <select id="token-filter" name="token-filter">
+//          \${Object.entries(tokenFilterOptions)
+//            .map(([value, label]) => \`<option value="\${value}">\${label}</option>\`)
+//            .join("")}
+//        </select>
+//      </div>
+//    </form>
+//  \`;
+
+//  // Display the dialog
+//  new Dialog({
+//    title: "Set Token Display Mode and Filter",
+//    content,
+//    buttons: {
+//      apply: {
+//        label: "Apply",
+//        callback: async (html) => {
+//          const selectedMode = parseInt(html.find("#display-mode").val(), 10);
+//          const tokenFilter = html.find("#token-filter").val();
+
+//          // Filter tokens based on the user's choice
+//          let tokensToUpdate = [];
+//          switch (tokenFilter) {
+//            case "all":
+//              tokensToUpdate = canvas.tokens.placeables;
+//              break;
+//            case "friendly":
+//              tokensToUpdate = canvas.tokens.placeables.filter(t => t.document.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY);
+//              break;
+//            case "hostile":
+//              tokensToUpdate = canvas.tokens.placeables.filter(t => t.document.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE);
+//              break;
+//            case "selected":
+//              tokensToUpdate = canvas.tokens.controlled;
+//              break;
+//          }
+
+//          // Prepare updates for the filtered tokens
+//          const updates = tokensToUpdate.map(token => ({
+//            _id: token.id,
+//            "bar1.attribute": hpResourceKey,
+//            displayBars: selectedMode
+//          }));
+
+//          // Apply the updates
+//          if (updates.length > 0) {
+//            await canvas.scene.updateEmbeddedDocuments("Token", updates);
+//            ui.notifications.info(
+//              \`Updated \${updates.length} token(s) to display HP bars with mode: \${displayModeOptions[selectedMode]}.\`
+//            );
+//          } else {
+//            ui.notifications.warn("No tokens matched the selected filter.");
+//          }
+//        }
+//      },
+//      cancel: {
+//        label: "Cancel",
+//        callback: () => ui.notifications.info("Operation canceled.")
+//      }
+//    },
+//    default: "apply"
+//  }).render(true);
+//})();
+//  `,
+//         img: `icons/svg/dice-target.svg`,
+//         folder: gmFolder.id
+//      }, false);
+
    }
 
    // Helper method to get or create a folder

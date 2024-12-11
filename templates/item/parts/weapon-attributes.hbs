@@ -39,11 +39,11 @@
    <ul class="summary flexrow">
       <li class="flex1">
          <input type="checkbox" name="system.canMelee" data-dtype="Boolean" {{#if system.canMelee}} checked{{/if}} />
-         <label for="system.canMelee">Melee</label>
+         <label for="system.canMelee">{{localize 'FADE.AttackTypes.types.melee'}}</label>
       </li>
       <li class="flex1">
          <input type="checkbox" name="system.canRanged" data-dtype="Boolean" {{#if system.canRanged}} checked{{/if}} />
-         <label for="system.canRanged">Ranged</label>
+         <label for="system.canRanged">{{localize 'FADE.AttackTypes.types.missile'}}</label>
       </li>
       <li class="flex1">
          <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} title="{{localize "FADE.Armor.natural.desc"}}" />
@@ -51,7 +51,7 @@
       </li>
       <li class="flex2">
          <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String"/>
-         <label for="system.breath">Breath</label>
+         <label for="system.breath">{{localize 'FADE.DamageTypes.types.breath'}}</label>
       </li>
       <li class="flex1">
          <select name="system.savingThrow">

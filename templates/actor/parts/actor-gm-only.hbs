@@ -25,24 +25,24 @@
    </ul>
    <ul class="summary flexrow">
       <li>
-         <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' title="Number of attacks this round." />
-         <label for="system.combat.attacks" title="Number of attacks this round.">AT#</label>
+         <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' title="{{localize 'FADE.Actor.AT#.desc'}}" />
+         <label for="system.combat.attacks" title="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
       </li>
       <li>
-         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' title="Number of attacks received this round." />
-         <label for="system.combat.attacksAgainst" title="Number of attacks received this round.">AT# recv.</label>
+         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' title="{{localize 'FADE.Actor.AT#Recv.desc'}}" />
+         <label for="system.combat.attacksAgainst" title="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}</label>
       </li>
       <li>
          <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
-         <label for="system.combat.isDead" title="Does the system think the actor is dead.">Dead?</label>
+         <label for="system.combat.isDead" title="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
       </li>
       <li>
-         <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' title="Total number of times this actor has died." />
-         <label for="system.combat.deathCount" title="Total number of times this actor has died.">Deaths</label>
+         <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' title="{{localize 'FADE.Actor.Deaths.desc'}}" />
+         <label for="system.combat.deathCount" title="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
       </li>
    </ul>
 </section>
 <section class="bordered">
-   <label for="gm-notes">GM Notes:</label>
+   <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
    <textarea id="gm-notes" name="system.gm.notes" rows="8">{{system.gm.notes}}</textarea>
 </section>

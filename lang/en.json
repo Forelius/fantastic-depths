@@ -39,6 +39,7 @@
             "hint": "Is this character a retainer, hireling or other hired hand.",
             "name": "Retainer"
          },
+         "Other": "Other",
          "RetainerWage": "Wage",
          "Wrestling": {
             "long": "Wrestling Rating",
@@ -183,6 +184,22 @@
          "Treasure": {
             "short": "Treasure",
             "long": "Treasure Type"
+         },
+         "Dead": {
+            "name": "Dead",
+            "desc": "Is this actor currently dead?"
+         },
+         "Deaths": {
+            "name": "Deaths",
+            "desc": "Number of times this character has reached 0 HP. In some variants, this is capped at a value equal to their Constitution score."
+         },
+         "AT#": {
+            "name": "AT#",
+            "desc": "Number of attacks this round."
+         },
+         "AT#Recv": {
+            "name": "AT# recv.",
+            "desc": "Number of attacks received this round."
          }
       },
       "SheetLabel": {
@@ -229,6 +246,7 @@
             "long": "Encumbrance (cn)",
             "long2": "Encumbrance",
             "abbr": "cn",
+            "abbrPlural": "cns",
             "desc": "Encumbrance is the weight of an object measured in coin-weight."
          },
          "cost": {
@@ -341,7 +359,10 @@
          "Passive": "Passive Effects",
          "Inactive": "Inactive Effects"
       },
-      "Tags": "Tags",
+      "Tags": {
+         "addTags": "Add tags",
+         "desc": "Some tags are used by the system and others are meant for GM or player usage."
+      },
       "Size": "Size",
       "Type": "Type",
       "notification": {
@@ -536,7 +557,8 @@
                "description": "Character disarms an opponent by hitting without damage; if the target fails a Dexterity check, they drop their weapon."
             }
          }
-      }
+      },
+      "GMNotes": "GM Notes"
    },
 
    "TYPES": {
