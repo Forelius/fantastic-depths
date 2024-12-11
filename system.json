@@ -40,29 +40,7 @@
          "path": "lang/it.json"
       }
    ],
-   "packs": [
-      {
-         "name": "item-compendium",
-         "label": "Item Compendium",
-         "system": "fantastic-depths",
-         "path": "packs/items.db",
-         "type": "Item"
-      },
-      {
-         "name": "actor-compendium",
-         "label": "Actor Compendium",
-         "system": "fantastic-depths",
-         "path": "packs/actors.db",
-         "type": "Actor"
-      },
-      {
-         "name": "roll-table-compendium",
-         "label": "Roll Table Compendium",
-         "system": "fantastic-depths",
-         "path": "packs/rollTables.db",
-         "type": "RollTable"
-      }
-   ],
+   "packs": [],
    "packFolders": [],
    "socket": true,
    "manifest": "https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json",

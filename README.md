@@ -11,6 +11,8 @@ Manual install: https://raw.githubusercontent.com/Forelius/fantastic-depths/refs
 
 We are on Discord: https://discord.gg/PneCCNwx
 
+Compendiums are available as a separate module: https://github.com/Forelius/fade-compendiums
+
 Italiano localization by FR4NC35C0.
 
 ## Character Sheet

@@ -555,6 +555,9 @@ h1, h2, h3, h4 {
 .dark-mode .chat-message .warning {
   color: #deb56a;
 }
+.dark-mode .chat-message .table-description {
+  color: #ebeae4;
+}
 
 /* Light mode styles */
 .light-mode .fantastic-depths .window-content .bordered {
@@ -843,7 +846,7 @@ h1, h2, h3, h4 {
   font-size: 12px;
 }
 .fantastic-depths .character .saving-throws .abbr, .fantastic-depths .monster .saving-throws .abbr {
-  margin-left: 10px;
+  margin-left: 8px;
   font-size: 20px;
 }
 .fantastic-depths .character .saving-throws .long, .fantastic-depths .monster .saving-throws .long {
