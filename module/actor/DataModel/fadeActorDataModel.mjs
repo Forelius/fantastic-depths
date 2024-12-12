@@ -17,8 +17,10 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }),
          ac: new foundry.data.fields.SchemaField({
             naked: new foundry.data.fields.NumberField({ initial: 9 }),
+            nakedAAC: new foundry.data.fields.NumberField({ initial: 10 }),
             value: new foundry.data.fields.NumberField({ initial: 9 }),
             total: new foundry.data.fields.NumberField({ initial: 9 }),
+            totalAAC: new foundry.data.fields.NumberField({ initial: 10 }),
             shield: new foundry.data.fields.NumberField({ initial: 0 }),
             mod: new foundry.data.fields.NumberField({ initial: 0 }),
          }),
@@ -29,6 +31,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                melee: new foundry.data.fields.NumberField({ initial: 0 }),
             }),
          }),
+         thbonus: new foundry.data.fields.NumberField({ initial: 0 }),
          savingThrows: new foundry.data.fields.SchemaField({
             death: new foundry.data.fields.SchemaField({
                value: new foundry.data.fields.NumberField({ initial: 0 }),
@@ -138,6 +141,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       const dexMod = (this.abilities?.dex.mod ?? 0);
       const baseAC = CONFIG.FADE.Armor.acNaked - dexMod;
       let ac = {};
+      ac.nakedAAC = 19 - baseAC;
       ac.naked = baseAC;
       ac.value = baseAC;
       ac.total = baseAC;
@@ -175,7 +179,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
 
       // Now other mods.
       ac.total = ac.total - (this.mod.ac ?? 0) - dexMod;
-
+      ac.totalAAC = 19 - ac.total;
       // Weapon mastery defense bonuses
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       const masteries = items.filter(item => item.type === "mastery");
@@ -190,6 +194,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                   acBonusType: weaponMastery.system.acBonusType,
                   acBonus: weaponMastery.system.acBonus || 0,
                   total: ac.total + (weaponMastery.system.acBonus || 0),
+                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
                   acBonusAT: weaponMastery.system.acBonusAT
                });
             }

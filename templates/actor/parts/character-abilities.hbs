@@ -31,8 +31,20 @@
             </div>
             <!-- Armor Class -->
             <div class="armor-class">
-               <label class="ac-value ac-top" title="{{localize 'FADE.Armor.long'}}">{{system.ac.total}}</label>
-               <div class="ac-value ac-bottom" title="{{localize 'FADE.Armor.naked'}}">{{system.ac.naked}}</div>
+               <label class="ac-value ac-top" title="{{#if isAAC}}{{localize 'FADE.Armor.longAAC'}}{{else}}{{localize 'FADE.Armor.long'}}{{/if}}">
+                  {{#if isAAC}}
+                  {{system.ac.totalAAC}}
+                  {{else}}
+                  {{system.ac.total}}
+                  {{/if}}
+               </label>
+               <div class="ac-value ac-bottom" title="{{localize 'FADE.Armor.naked'}}">
+                  {{#if isAAC}}
+                  {{system.ac.nakedAAC}}
+                  {{else}}
+                  {{system.ac.naked}}
+                  {{/if}}
+               </div>
                {{#if system.ac.shield}}
                <div class="shield" title="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
                {{/if}}

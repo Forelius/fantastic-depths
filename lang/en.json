@@ -304,8 +304,11 @@
          "plural": "Armor",
          "naked": "Without Armor",
          "long": "Base AC",
+         "longAAC": "Base AAC",
          "abbr": "AC",
+         "abbrAAC": "AAC",
          "total": "Total AC",
+         "totalAAC": "Total AAC",
          "shield": {
             "long": "Shield Equipped",
             "short": "Shield"
@@ -677,6 +680,15 @@
       "weaponMastery": {
          "name": "Weapon Mastery",
          "hint": "If enabled, weapon mastery rules will be used."
+      },
+      "toHitSystem": {
+         "name": "To-Hit System",
+         "hint": "The to-hit system determines how attack rolls are handled and also what armor class system is used (AC vs AAC).",
+         "choices": {
+            "classic": "Classic",
+            "darkdungeons": "Dark Dungeons",
+            "aac": "AAC and Attack Bonus"
+         }
       }
    }
 }

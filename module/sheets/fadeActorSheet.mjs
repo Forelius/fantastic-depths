@@ -68,7 +68,7 @@ export class fadeActorSheet extends ActorSheet {
 
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
-
+      context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
