@@ -11,7 +11,7 @@
    <ol name="spellItems" class='items-list'>
       {{#each spellSlots as |slot|}}
       {{#if @index}}
-      <li class='item flexrow items-header collapsible-header'>
+      <li class='item flexrow items-header'>
          <div class='item-name'>
             {{localize 'FADE.Spell.SpellLVL' level=@key}}
          </div>
@@ -39,7 +39,7 @@
          </div>
       </li>
       {{#each slot.spells as |spell id|}}
-      <li class='item flexrow collapsible-content' data-item-id='{{spell._id}}'>
+      <li class='item flexrow' data-item-id='{{spell._id}}'>
          <div class='item-name flexrow'>
             <div class='item-image rollable' data-roll-type='item'>
                <img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' />
