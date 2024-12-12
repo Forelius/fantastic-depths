@@ -111,17 +111,8 @@ export class CharacterDataModel extends fadeActorDataModel {
       // Replace hyphen with underscore for "Magic-User"
       const classNameInput = this.details.class?.toLowerCase();
       const classLevel = this.details.level;
-      const classes = CONFIG.FADE.Classes;
-      let classData = null;
 
-      // Find a match in the FADE.Classes data
-      for (const [key, cdata] of Object.entries(classes)) {
-         if (cdata.name.toLowerCase() === classNameInput) {
-            // Class match found
-            classData = cdata; // Return the matched class data
-            break;
-         }
-      }
+      const classData = this.#getClassData(classNameInput);
 
       if (classData !== null) {
          const currentLevel = classLevel;
@@ -179,5 +170,29 @@ export class CharacterDataModel extends fadeActorDataModel {
       }
 
       return classData; // Return null if no match found
+   }
+
+   #getClassData(className) {
+      let result = null;
+
+      // Try to find class item for this class.
+      let classItem = game.items.find(item=> item.name.toLowerCase() == className.toLowerCase());
+      // If class item is found...
+      if (classItem != null && classItem.type == 'class') {
+         result = classItem.system;
+      } else {
+         const classes = CONFIG.FADE.Classes;
+
+         // Find a match in the FADE.Classes data
+         for (const [key, cdata] of Object.entries(classes)) {
+            if (cdata.name.toLowerCase() === className) {
+               // Class match found
+               result = cdata; // Return the matched class data
+               break;
+            }
+         }
+      }
+
+      return result;
    }
 }

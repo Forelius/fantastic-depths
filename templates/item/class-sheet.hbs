@@ -21,9 +21,13 @@
                <input type='text' name='system.maxLevel' value='{{system.maxLevel}}' data-dtype='Number' />
                <label for="system.maxLevel">{{localize 'FADE.Actor.Max'}} {{localize 'FADE.Actor.Level'}}</label>
             </li>
-         </ul>
-         <ul class="summary flexrow">
             <li class="flex1">
+               <input type='text' name='system.firstLevel' value='{{system.firstLevel}}' data-dtype='Number' />
+               <label for="system.firstLevel" title="The level this class starts at.">First Level</label>
+            </li>
+         </ul>
+         <ul class="summary flexrow">            
+            <li class="flex0">
                <input type="checkbox" name="system.isSpellcaster" data-dtype="Boolean" {{#if system.isSpellcaster}} checked{{/if}} />
                <label for="system.isSpellcaster">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
             </li>

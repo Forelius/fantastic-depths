@@ -7,7 +7,7 @@ export class ClassItemSheet extends ItemSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'item'],
-         width: 600,
+         width: 650,
          height: 480,
          tabs: [
             {

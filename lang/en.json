@@ -36,6 +36,10 @@
             "hint": "Can this actor or item cast spells.",
             "name": "Caster"
          },
+         "hasLevelZero": {
+            "hint": "Does this class have a level zero.",
+            "name": "Lvl 0"
+         },
          "isRetainer": {
             "hint": "Is this character a retainer, hireling or other hired hand.",
             "name": "Retainer"

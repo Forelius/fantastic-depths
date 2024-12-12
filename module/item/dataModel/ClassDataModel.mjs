@@ -4,11 +4,11 @@ class ClassLevelData {
       this.xp = 0;
       this.thac0 = 20;
       this.thbonus = 1;
-     this.hd = '1d8';
+      this.hd = '1d8';
       this.hdcon = true;
       this.title = null;
       this.femaleTitle = null;
-      this.attackRank = null;      
+      this.attackRank = null;
    }
 }
 
@@ -31,10 +31,10 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
          // Required Fields
          name: new fields.StringField({ required: true }),
          species: new fields.StringField({ required: true, initial: "Human" }),
+         firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 14 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          isSpellcaster: new fields.BooleanField({ required: true, initial: false }),
-         hasLevelZero: new fields.BooleanField({ required: false, initial: false }),
 
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
@@ -69,7 +69,7 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
                required: true,
                initial: Array.from({ length: 14 }, (_, index) => {
                   const newLevel = new ClassLevelData();
-                  newLevel.hd = `${(index+1)}d8`;
+                  newLevel.hd = `${(index + 1)}d8`;
                   newLevel.level = index + 1;
                   newLevel.thac0 = 19;
                   return newLevel;
@@ -88,7 +88,7 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
             }),
             {
                required: true,
-               initial: ()=> new SavingThrowsData()
+               initial: () => new SavingThrowsData()
             }
          ),
 
@@ -109,18 +109,19 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
    }
 
    #prepareLevels() {
-      const missingLevels = this.maxLevel - this.levels.length;
-      if (this.maxLevel > this.levels.length) {
+      const missingLevels = (this.maxLevel - (this.firstLevel-1)) - this.levels.length;
+      const totalLevelCount = this.maxLevel - (this.firstLevel-1);
+      if (totalLevelCount > this.levels.length) {
          const newLevels = Array.from({ length: missingLevels }, (_, index) => {
             const newLevel = new ClassLevelData();
-            newLevel.level = index + this.levels.length + 1;
+            newLevel.level = index + this.levels.length + this.firstLevel;
             return newLevel;
          });
          // Combine the original levels with the new items
          this.levels = [...this.levels, ...newLevels];
-      } else if (this.maxLevel < this.levels.length) {
+      } else if (totalLevelCount < this.levels.length) {
          // Remove unwanted levels. Yes, they are unwanted and unloved.
-         this.levels = this.levels.slice(0, this.maxLevel);
+         this.levels = this.levels.slice(0, totalLevelCount);
       } else {
       }
    }
