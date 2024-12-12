@@ -1,6 +1,5 @@
 export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
-      console.debug("fadeActorDataModel.defineSchema", this);
       return {
          config: new foundry.data.fields.SchemaField({
             isSpellcaster: new foundry.data.fields.BooleanField({ initial: false }),
@@ -331,12 +330,14 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
     */
    _prepareSpells() {
       if (this.spellSlots.length == 0) {
-         this.spellSlots = Array.from(9);
+         this.spellSlots = Array.from({ length: 9 }, (_, index) => ({            
+            spellLevel: index + 1
+         }));
       }
-      for (let i = 0; i < 9; i++) {
-         this.spellSlots[i] = this.spellSlots?.[i] || {};
-         this.spellSlots[i].spellLevel = i;
-      }
+      //for (let i = 0; i < 9; i++) {
+      //   this.spellSlots[i] = this.spellSlots?.[i] || {};
+      //   this.spellSlots[i].spellLevel = i;
+      //}
    }
 
    /**

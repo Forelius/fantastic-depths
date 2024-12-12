@@ -1,14 +1,15 @@
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
-import { CharacterDataModel } from './actor/DataModel/CharacterDataModel.mjs';
-import { MonsterDataModel } from './actor/DataModel/MonsterDataModel.mjs';
+import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
+import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeItem } from './item/fadeItem.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { ClassItem } from './item/ClassItem.mjs';
+import { ClassDataModel } from './item/dataModel/ClassDataModel.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
@@ -71,6 +72,9 @@ Hooks.once('init', async function () {
       monster: MonsterDataModel,
    };
    CONFIG.Item.documentClass = ItemFactory;
+   CONFIG.Item.dataModels = {
+      class: ClassDataModel
+   }
    CONFIG.Combatant.documentClass = fadeCombatant;
 
    // Active Effects are never copied to the Actor,

@@ -30,6 +30,7 @@
          "XPShort": "XP",
          "XPBonus": "XP Bonus %",
          "THAC0": "THAC0",
+         "THBonus": "To-Hit Bonus",
          "PrimeReq": "Prime Req.",
          "isSpellcaster": {
             "hint": "Can this actor or item cast spells.",
