@@ -1,8 +1,8 @@
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
-import { CharacterDataModel } from './actor/DataModel/CharacterDataModel.mjs';
-import { MonsterDataModel } from './actor/DataModel/MonsterDataModel.mjs';
+import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
+import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeItem } from './item/fadeItem.mjs';
