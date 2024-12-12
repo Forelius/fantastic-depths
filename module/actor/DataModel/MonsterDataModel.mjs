@@ -10,7 +10,7 @@ export class MonsterDataModel extends fadeActorDataModel {
             alignment: new foundry.data.fields.StringField({ initial: "Chaotic" }),
             xpAward: new foundry.data.fields.NumberField({ initial: 5 }),
             abilityCount: new foundry.data.fields.NumberField({ initial: 0 }),
-            attacks: new foundry.data.fields.StringField({ initial: 1 }),
+            attacks: new foundry.data.fields.StringField({ initial: "1" }),
             size: new foundry.data.fields.StringField({ initial: "M" }),
             intelligence: new foundry.data.fields.StringField({ initial: "7" }),
             monsterType: new foundry.data.fields.StringField({ initial: "Monster (Common)" }),
