@@ -2377,7 +2377,7 @@ FADE.Encumbrance = {
 };
 FADE.Classes = {
    cleric: {
-      name: "Cleric", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36,
+      name: "Cleric", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36, firstLevel:1, maxSpellLevel: 7,
       levels: [
          { level: 1, xp: 0, thac0: 19, hd: "1d6", hdcon: true, title: "Acolyte" },
          { level: 2, xp: 1500, thac0: 19, hd: "2d6", hdcon: true, title: "Adept" },
@@ -2443,7 +2443,7 @@ FADE.Classes = {
       ]
    },
    fighter: {
-      name: "Fighter", species: "Human", primeReqs: [{ ability: "str", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36,
+      name: "Fighter", species: "Human", primeReqs: [{ ability: "str", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36, firstLevel: 0,
       levels: [
          { level: 0, xp: 0, thac0: 20, hd: "1d6", hdcon: true, title: "Normal Man" },
          { level: 1, xp: 0, thac0: 19, hd: "1d8", hdcon: true, title: "Veteran" },
@@ -2500,7 +2500,7 @@ FADE.Classes = {
       ]
    },
    magic_user: {
-      name: "Magic-User", species: "Human", primeReqs: [{ ability: "int", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36,
+      name: "Magic-User", species: "Human", primeReqs: [{ ability: "int", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36, firstLevel: 1, maxSpellLevel: 9,
       levels: [
          { level: 1, xp: 0, thac0: 19, hd: "1d4", hdcon: true, title: "Medium" },
          { level: 2, xp: 2500, thac0: 19, hd: "2d4", hdcon: true, title: "Seer" },
@@ -2580,7 +2580,7 @@ FADE.Classes = {
       ]
    },
    thief: {
-      name: "Thief", species: "Human", primeReqs: [{ ability: "dex", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36,
+      name: "Thief", species: "Human", primeReqs: [{ ability: "dex", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36, firstLevel: 1,
       levels: [
          { level: 1, xp: 0, thac0: 19, hd: "1d4", hdcon: true, title: "Apprentice" },
          { level: 2, xp: 1200, thac0: 19, hd: "2d4", hdcon: true, title: "Footpad" },
@@ -2632,7 +2632,7 @@ FADE.Classes = {
       ]
    },
    dwarf: {
-      name: "Dwarf", species: "Dwarf", primeReqs: [{ ability: "str", xpBonus5: 13, xpBonus10: 16 }], minCon: 9, maxLevel: 12,
+      name: "Dwarf", species: "Dwarf", primeReqs: [{ ability: "str", xpBonus5: 13, xpBonus10: 16 }], minCon: 9, maxLevel: 12, firstLevel: 1,
       levels: [
          { level: 1, xp: 0, thac0: 19, hd: "1d8", hdcon: true, title: "Veteran" },
          { level: 2, xp: 2200, thac0: 19, hd: "2d8", hdcon: true, title: "Warrior" },
@@ -2668,7 +2668,8 @@ FADE.Classes = {
       name: "Elf", species: "Elf", primeReqs: [
          { ability: "str", xpBonus5: 13, xpBonus10: 13 },
          { ability: "int", xpBonus5: 13, xpBonus10: 16 }],
-      minInt: 9, maxLevel: 10,
+      minInt: 9, maxLevel: 10, firstLevel: 1, maxSpellLevel: 5,
+
       levels: [
          { level: 1, xp: 0, thac0: 19, hd: "1d6", hdcon: true, title: "Veteran Medium" },
          { level: 2, xp: 4000, thac0: 19, hd: "2d6", hdcon: true, title: "Warrior Seer" },
@@ -2832,7 +2833,7 @@ FADE.Classes = {
       }
    },
    druid: {
-      name: "Druid", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], alignment: "Neutral", maxLevel: 36,
+      name: "Druid", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], alignment: "Neutral", maxLevel: 36, firstLevel: 9, maxSpellLevel: 7,
       levels: [
          { level: 9, xp: 200000, thac0: 12, hd: "9d8", hdcon: true, title: "Druid" },
          { level: 10, xp: 300000, thac0: 12, hd: "9d8+1" },
