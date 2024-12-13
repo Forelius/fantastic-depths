@@ -39,6 +39,8 @@
             "hint": "Questo personaggio è un servitore, un mercenario o un aiutante?",
             "name": "Servitore"
          },
+         "Other": "Altro",
+         "RetainerWage": "Paga",
          "Wrestling": {
             "long": "Valore di Lotta",
             "short": "Lotta",
@@ -51,10 +53,16 @@
          "Movement": {
             "abbr": "MV",
             "long": "Movimento",
-            "turn": "Normale (m/turno)",
-            "round": "Round (m/round)",
-            "day": "Viaggio (km/gg)",
-            "run": "Corsa (m/round)"
+            "turn": "Normale",
+            "turnHint": "Metri per turno di 10 minuti. Questo lasso di tempo include molte azioni presunte come mappare, sbirciare dietro gli angoli, riposare e così via.",
+            "round": "Round",
+            "roundHint": "Metri per round di 10 secondi. Usato durante i combattimenti.",
+            "day": "Viaggio",
+            "dayHint": "Kilometri al giorno. Utilizzato per i viaggi via terra. Nota che il terreno influisce su questo valore.",
+            "run": "Corsa",
+            "runHint": "Metri per round di 10 secondi. Utilizzato quando si corre o si vola alla massima velocità durante il combattimento. Viaggiare alla massima velocità può durare fino a 30 round (5 minuti)",
+            "total": "Totale",
+            "moveTurn": "Movimento Base"
          },
          "Tabs": {
             "Abilities": "Caratteristiche",
@@ -62,7 +70,8 @@
             "Spells": "Incantesimi",
             "Skills": "Abilità",
             "Effects": "Effetti",
-            "Description": "Descrizione"
+            "Description": "Descrizione",
+            "gmOnly": "Solo DM"
          },
          "explore": {
             "long": "Explorazione",
@@ -78,7 +87,7 @@
             },
             "ListenDoor": {
                "long": "Origliare porte o sentire rumori a distanza.",
-               "short": "Sentire Rumori ",
+               "short": "Sentire Rumori",
                "abbr": "SR"
             },
             "FindTrap": {
@@ -160,13 +169,13 @@
          },
          "NumberAppearing": {
             "abbr": "PA",
-            "short": "# ",
-            "long": "PNG/Creature Apparse",
+            "short": "# Apparsi",
+            "long": "Numero PNG/Creature apparse",
             "abbrLair": "PA Covo",
             "longLair": "Numero di PNG/creature apparse nel covo"
          },
          "Morale": "Morale",
-         "XPAward": "PX",
+         "XPAward": "Valore in PX",
          "AbilityCount": {
             "abbr": "AS#",
             "short": "# Speciali",
@@ -175,15 +184,31 @@
          "Treasure": {
             "short": "Tesoro",
             "long": "Tipo di Tesoro"
+         },
+         "Dead": {
+            "name": "Morto",
+            "desc": "Questo personaggio è attualmente morto"
+         },
+         "Deaths": {
+            "name": "Decessi",
+            "desc": "Numero di volte in cui questo personaggio ha raggiunto 0 PF. In alcune varianti, questo è limitato a un valore pari al punteggio di Costituzione."
+         },
+         "AT#": {
+            "name": "AT#",
+            "desc": "Numero di attacchi effettuati in questo round."
+         },
+         "AT#Recv": {
+            "name": "AT# RCV",
+            "desc": "Numero di attacchi ricevuti in questo round."
          }
       },
       "SheetLabel": {
-         "Actor": "Scheda del Personaggio FaDe",
-         "Item": "Scheda Oggetto FaDe",
+         "Actor": "Scheda del Personaggio Fa.De.",
+         "Item": "Scheda Oggetto Fa.De.",
          "ClassItem": "Scheda Classe Oggetto"
       },
       "Spell": {
-         "SpellLVL": "Incantesimi {level}° Livello",
+         "SpellLVL": "Incantesimi di {level}° Livello",
          "slots": "Lanci",
          "resetSlots": "Ripristina gli incantesimi memorizzati a zero lanci. Il conteggio memorizzato non verrà modificato.",
          "usedSlots": "Lanci usati",
@@ -221,11 +246,15 @@
             "long": "Ingombro (mon)",
             "long2": "Ingombro",
             "abbr": "mon",
-            "desc": "L'ingombro è il peso di un oggetto misurato in peso di monete d'oro."
+            "abbrPlural": "mon",
+            "desc": "L'ingombro è il peso di un oggetto misurato in monete."
          },
          "cost": {
             "abbr": "mo",
             "long": "Costo (mo)"
+         },
+         "tabs": {
+            "attributes": "Caratteristiche"
          }
       },
       "Weapon": {
@@ -275,7 +304,7 @@
          "naked": "Senza Armatura",
          "long": "CA Attuale",
          "abbr": "CA",
-         "total": "CA Totale",
+         "total": "CA Tot",
          "shield": {
             "long": "Scudo Equipaggiato",
             "short": "Scudo"
@@ -330,10 +359,38 @@
          "Passive": "Effetti Passivi",
          "Inactive": "Effetti Inattivi"
       },
-      "Tags": "Etichette",
+      "Tags": {
+         "addTags": "+etichette",
+         "desc": "Alcune etichette (tag) vengono utilizzate dal sistema, altre sono destinate all'utilizzo da parte del DM o del giocatore."
+      },
       "Size": "Taglia",
       "Type": "Tipo",
+      "notification": {
+         "selectToken1": "Il token deve essere prima selezionato.",
+         "spellSelectToken": "Devi selezionare il token per lanciare un incantesimo.",
+         "notMemorized": "{actorName} prova a lanciare {spellName}, ma l'incantesimo non era stato memorizzato."
+      },
       "Chat": {
+         "rollMods": {
+            "weaponMod": "Mod arma: {mod}",
+            "effectMod": "Mod affetto attaccante: {mod}",
+            "strengthMod": "Mod Forza: {mod}",
+            "dexterityMod": "Mod Destrezza: {mod}",
+            "targetMod": "Mod effetto bersaglio: {mod}",
+            "masteryMod": "Mod maestria: {mod}",
+            "unskilledUse": "Uso arma improvvisata: {mod}",
+            "manual": "Mod manuale: {mod}"
+         },
+         "damageRoll": {
+            "name": "Danno",
+            "restored": "{hp} punti ferita curati a {tokenName}.",
+            "mitigated": "{damage} danni da {type} attenuati.",
+            "applied": "{damage} danni da {type} inflitti a {tokenName}.",
+            "killed": "<span class='attack-fail'>{tokenName} è caduto/a in battaglia.</span>",
+            "restoredLife": "<span class='attack-success'>{tokenName} è stato curato/a al massimo.</span>"
+         },
+         "resetSpells": "{actorName} ripristina gli incantesimi memorizzati. Conteggi di lancio azzerati.",
+         "effectEnds": "<div>{effectName} su {actorName} è terminato.</div>",
          "pass": "Successo!",
          "fail": "Fallimento",
          "attackFlavor": "{attacker} {attackType} attacca con {weapon}",
@@ -342,20 +399,38 @@
          "attackAC": "<div class='attack-info'>L'attacco colpisce <strong>CA {hitAC}</strong>.</div>",
          "attackSuccess": "<div class='attack-success'>Colpito!</div>",
          "attackFail": "<div class='attack-fail'>Mancato!</div>",
-         "attackRoll": "Attacchi",
          "damageFlavor2": "<div>{weapon} fa <span class='damage'>{damage}</span> danni.</div>",
          "healFlavor": "<div>{weapon} ripristina <span class='damage'>{damage}</span> punti ferita.</div>",
-         "damageRoll": "Danno",
          "healRoll": "Cura"
       },
       "roll": "Tiro",
       "rollMode": "Modalità Tiro",
-      "operator": "Operatore",
+      "operator": "Fattore",
       "modifier": "Modificatore",
       "target": "Bersaglio",
       "dialog": {
+         "selectLightSource": "Seleziona fonte luminosa",
+         "selectWeapon": "Seleziona arma",
+         "masteryTargetType": "Seleziona il tipo di arma",
          "abilityCheck": "Prova di Caratteristica",
-         "skillCheck": "Prova di Abilità"
+         "skillCheck": "Prova di Abilità",
+         "spellcast": {
+            "title": "Lanci l'incantesimo?",
+            "content": "Vuoi lanciare l'incantesimo o vedere la sua descrizione?",
+            "yesLabel": "Lancia incantesimo",
+            "noLabel": "Vedi descrizione"
+         },
+         "attackMode": {
+            "name": "Tipo Attacco",
+            "natural": "Naturale",
+            "2hand": "2-Mani",
+            "1hand": "1-Mano"
+         },
+         "attackType": {
+            "breath": "Soffio",
+            "missile": "Distanza",
+            "melee": "Mischia"
+         }
       },
       "time": {
          "sessionCount": "N° Sessione",
@@ -482,7 +557,8 @@
                "description": "Il personaggio disarma un avversario colpendolo ma senza infliggere danni; se il bersaglio fallisce una prova di Destrezza, lascia cadere la sua arma."
             }
          }
-      }
+      },
+      "GMNotes": "Note del DM"
    },
 
    "TYPES": {
@@ -508,12 +584,12 @@
          "Hint": "Abilita il tracciamento automatico dell'ingombro e l'applicazione degli effetti di stato per i personaggi che trasportano troppo.",
          "Name": "Tracciatura Ingombro",
          "None": "Nessuna",
-         "Basic": "Basic",
-         "Expert": "Expert"
+         "Basic": "Base",
+         "Expert": "Esperto"
       },
       "toasts": {
-         "hint": "Mostra esulti sui lanci di dado.",
-         "name": "Tifo sui Lanci di Dado"
+         "hint": "Mostra frasi speciali con i lanci di dado.",
+         "name": "Complimenti Tiro Dado"
       },
       "EncMax": {
          "Hint": "La quantità massima che un personaggio può trasportare, in monete, ed essere comunque in grado di muoversi.",
@@ -573,6 +649,16 @@
                "reset": "Azzera Initiativa",
                "reroll": "Ri-Tira Initiativa"
             }
+         }
+      },
+      "display": {
+         "abilities": {
+            "name": "Caratteristiche abbreviate.",
+            "hint": "Usa le abbreviazioni per i nomi dei punteggi delle caratteristiche sulla scheda personaggio."
+         },
+         "saves": {
+            "name": "Tiri Salvezza abbreviati.",
+            "hint": "Usa le abbreviazioni per i tiri salvezza sulla scheda del personaggio."
          }
       },
       "declaredActions": {

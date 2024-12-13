@@ -32,7 +32,7 @@
                    title="{{localize 'FADE.Spell.availableSlots'}}" />
          </div>
          <div class='item-controls'>
-            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type='Spell'}}' data-type='spell' data-spell-level='{{@key}}'>
+            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell' data-spell-level='{{@key}}'>
                <i class='fas fa-plus'></i>
                {{localize 'FADE.Spell.AddLVL' level=@key}}
             </a>
@@ -44,7 +44,7 @@
             <div class='item-image rollable' data-roll-type='item'>
                <img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' />
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type='Spell'}}'>{{spell.name}}</a>
+            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>{{spell.name}}</a>
          </div>
          <div class="item-40px">casts</div>
          <div class="item-80px flexrow editable">
@@ -62,7 +62,7 @@
                    title="{{localize 'FADE.Spell.memorized'}}" />
          </div>
          <div class='item-controls'>
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='spell'}}'>
+            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>

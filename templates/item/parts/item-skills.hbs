@@ -20,7 +20,7 @@
               data-test="skill">
             <img src='{{skill.img}}' title='{{skill.name}}' width='24' height='24' />
          </div>
-         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='skill'}}'>{{skill.name}}</a>
+         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "FADE.Skill.long")}}'>{{skill.name}}</a>
       </div>
       <div class="item-80px item-prop"><label>{{localize (concat 'FADE.Actor.Abilities.' skill.system.ability '.long')}}</label></div>
       <div class="item-40px item-prop"><label>{{skill.system.level}}</label></div>

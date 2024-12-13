@@ -323,6 +323,7 @@
       "Mastery": {
          "plural": "Weapon Masteries",
          "short": "Mastery",
+         "long": "Weapon Mastery",
          "primary": "Primary",
          "secondary": "Secondary",
          "weaponTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
@@ -558,7 +559,7 @@
             }
          }
       },
-      "GMNotes": "GM Notes"
+      "GMNotes": "GM Notes"      
    },
 
    "TYPES": {

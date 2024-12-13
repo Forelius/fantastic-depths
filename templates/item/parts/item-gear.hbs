@@ -19,7 +19,7 @@
          {{#if item.system.container}}
          <div class="category-caret"><i class="fas fa-caret-down"></i></div>
          {{/if}}
-         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>
+         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
             {{item.name}}
             {{#if item.system.containedEnc}}
             <span class="category-info">({{item.system.containedEnc}} cns)</span>
@@ -35,7 +35,7 @@
             <i class="fas fa-tshirt"></i>
          </a>
          {{/if}}
-         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
+         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>
@@ -63,7 +63,7 @@
                <img src='{{childItem.img}}' title='{{childItem.name}}' width='24' height='24' />
             </a>
          </div>
-         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>{{childItem.name}}</a>
+         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>{{childItem.name}}</a>
       </div>
       <div class="item-40px item-prop"><label>{{childItem.system.quantity}}</label></div>
       <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{childItem.system.totalWeight}}</label></div>
@@ -74,7 +74,7 @@
             <i class="fas fa-tshirt"></i>
          </a>
          {{/if}}
-         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type='Item'}}'>
+         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>
