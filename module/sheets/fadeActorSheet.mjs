@@ -65,10 +65,11 @@ export class fadeActorSheet extends ActorSheet {
       // Add the actor's data to context.data for easier access, as well as flags.
       context.system = actorData.system;
       context.flags = actorData.flags;
+      context.isSpellcaster = actorData.system.config.maxSpellLevel > 0;
 
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
-
+      context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");

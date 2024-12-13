@@ -24,6 +24,7 @@ export class ArmorItem extends fadeItem {
       const systemData = this.system;
       //console.log("ArmorItem.prepareDerivedData:", systemData);
       systemData.totalAc = systemData.ac - systemData.mod;
+      systemData.totalAAC = systemData.isShield ? systemData.totalAc : 19 - systemData.totalAc;
    }
 
    /** @override */

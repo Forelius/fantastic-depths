@@ -11,7 +11,7 @@
       {{#if isOwner}}
       <a class="item" data-tab="items">{{localize 'FADE.Actor.Tabs.Items'}}</a>
       <a class="item" data-tab="skills">{{localize 'FADE.Actor.Tabs.Skills'}}</a>
-      {{#if system.config.isSpellcaster}}
+      {{#if isSpellcaster}}
       <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
       {{/if}}
       <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
@@ -37,7 +37,7 @@
       <div class="tab skills" data-group="primary" data-tab="skills">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-skills.hbs"}}
       </div>
-      {{#if system.config.isSpellcaster}}
+      {{#if isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}

@@ -15,15 +15,15 @@
          <label for="system.flight.max" title="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
       </li>
       <li class="flex1">
-         <input type="checkbox" name="system.config.isSpellcaster" data-dtype="Boolean" {{#if system.config.isSpellcaster}} checked{{/if}} title="{{localize 'FADE.Actor.isSpellcaster.hint'}}" />
-         <label for="system.config.isSpellcaster" title="{{localize 'FADE.Actor.isSpellcaster.hint'}}">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
-      </li>
-      <li class="flex1">
          <input type="checkbox" name="system.config.isRetainer" data-dtype="Boolean" {{#if system.config.isRetainer}} checked{{/if}} title="{{localize 'FADE.Actor.isRetainer.hint'}}" />
          <label for="system.config.isRetainer" title="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
       </li>      
    </ul>
    <ul class="summary flexrow">
+      <li>
+         <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
+         <label for="system.config.maxSpellLevel" title="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
+      </li>
       <li>
          <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' title="{{localize 'FADE.Actor.AT#.desc'}}" />
          <label for="system.combat.attacks" title="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>

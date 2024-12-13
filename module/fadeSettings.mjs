@@ -182,6 +182,21 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+      game.settings.register(game.system.id, "toHitSystem", {
+         name: "SETTINGS.toHitSystem.name",
+         hint: "SETTINGS.toHitSystem.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            "classic": "SETTINGS.toHitSystem.choices.classic",
+            "darkdungeons": "SETTINGS.toHitSystem.choices.darkdungeons",
+            "aac": "SETTINGS.toHitSystem.choices.aac"
+         },
+         default: "classic",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
    async #registerNonConfigSettings() {

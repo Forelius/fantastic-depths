@@ -16,13 +16,15 @@
       {{#each system.primeReqs as |primeReqData index|}}
       <li class='item flexrow' data-item-id='{{primeReqData.ability}}'>
          <div class="align-left">
-            <input type="text" name="system.primeReqs.[{{index}}].ability" value="{{primeReqData.ability}}" data-dtype="String" />
+            <select name="system.primeReqs.{{index}}.ability">
+               {{selectOptions @root.config.Abilities selected=primeReqData.ability}}
+            </select>
          </div>
          <div class="align-left">
-            <input type="number" name="system.primeReqs.[{{index}}].xpBonus5" value="{{primeReqData.xpBonus5}}" data-dtype="Number" />
+            <input type="number" name="system.primeReqs.{{index}}.xpBonus5" value="{{primeReqData.xpBonus5}}" data-dtype="Number" />
          </div>
          <div class="align-left">
-            <input type="number" name="system.primeReqs.[{{index}}].xpBonus10" value="{{primeReqData.xpBonus10}}" data-dtype="Number" />
+            <input type="number" name="system.primeReqs.{{index}}.xpBonus10" value="{{primeReqData.xpBonus10}}" data-dtype="Number" />
          </div>
          <div class='item-controls'>
             <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq' data-index='{{index}}'>

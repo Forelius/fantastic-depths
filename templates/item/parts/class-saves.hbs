@@ -18,21 +18,21 @@
       <!-- Save Entries -->
       {{#each system.saves as |saveData index|}}
       <li class='item flexrow' data-item-id='{{saveData.level}}'>
-         <div class="align-left"><input type="number" name="system.level" value="{{saveData.level}}" data-dtype="Number" /></div>
+         <div class="align-left"><input type="number" name="system.saves.{{index}}.level" value="{{saveData.level}}" data-dtype="Number" /></div>
          <div class="align-left">
-            <input type="number" name="system.saves.[{{index}}].death" value="{{saveData.death}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{index}}.death" value="{{saveData.death}}" data-dtype="Number" />
          </div>
          <div class="align-left">
-            <input type="number" name="system.saves.[{{index}}].wand" value="{{saveData.wand}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{index}}.wand" value="{{saveData.wand}}" data-dtype="Number" />
          </div>
          <div class="align-left">
-            <input type="number" name="system.saves.[{{index}}].paralysis" value="{{saveData.paralysis}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{index}}.paralysis" value="{{saveData.paralysis}}" data-dtype="Number" />
          </div>
          <div class="align-left">
-            <input type="number" name="system.saves.[{{index}}].breath" value="{{saveData.breath}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{index}}.breath" value="{{saveData.breath}}" data-dtype="Number" />
          </div>
          <div class="align-left">
-            <input type="number" name="system.saves.[{{index}}].spell" value="{{saveData.spell}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{index}}.spell" value="{{saveData.spell}}" data-dtype="Number" />
          </div>
          <div class='item-controls'>
             <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave' data-index='{{index}}'>

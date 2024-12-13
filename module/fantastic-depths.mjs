@@ -9,6 +9,7 @@ import { fadeItem } from './item/fadeItem.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { ClassItem } from './item/ClassItem.mjs';
+import { ClassDataModel } from './item/dataModel/ClassDataModel.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
@@ -71,6 +72,9 @@ Hooks.once('init', async function () {
       monster: MonsterDataModel,
    };
    CONFIG.Item.documentClass = ItemFactory;
+   CONFIG.Item.dataModels = {
+      class: ClassDataModel
+   }
    CONFIG.Combatant.documentClass = fadeCombatant;
 
    // Active Effects are never copied to the Actor,
