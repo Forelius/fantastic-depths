@@ -695,7 +695,7 @@
          "hint": "If enabled, weapon mastery rules will be used."
       },
       "toHitSystem": {
-         "name": "To-Hit System",
+         "name": "To-Hit System (Work-in-progress)",
          "hint": "The to-hit system determines how attack rolls are handled and also what armor class system is used (AC vs AAC).",
          "choices": {
             "classic": "Classic",
