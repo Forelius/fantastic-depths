@@ -9,7 +9,7 @@
       {{!-- Default tab is specified in fadeActorSheet.mjs --}}
       <a class="item" data-tab="abilities">{{localize 'FADE.Actor.Tabs.Abilities'}}</a>
       <a class="item" data-tab="description">{{localize 'FADE.Actor.Tabs.Description'}}</a>
-      {{#if system.config.isSpellcaster}}
+      {{#if isSpellcaster}}
       <a class="item" data-tab="spells">{{localize 'FADE.Actor.Tabs.Spells'}}</a>
       {{/if}}
       {{#if isGM}}
@@ -27,7 +27,7 @@
       <div class="tab effects flexcol" data-group="primary" data-tab="effects">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
       </div>
-      {{#if system.config.isSpellcaster}}
+      {{#if isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
          {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}

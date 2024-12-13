@@ -1,117 +1,125 @@
 export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
+      const { fields } = foundry.data;
       return {
-         config: new foundry.data.fields.SchemaField({
-            isSpellcaster: new foundry.data.fields.BooleanField({ initial: false }),
-            isRetainer: new foundry.data.fields.BooleanField({ initial: false }),
+         config: new fields.SchemaField({
+            maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
+            isRetainer: new fields.BooleanField({ initial: false }),
          }),
-         biography: new foundry.data.fields.StringField({ initial: "" }),
-         retainer: new foundry.data.fields.SchemaField({
-            loyalty: new foundry.data.fields.NumberField({ initial: 0 }),
-            wage: new foundry.data.fields.StringField({ initial: "" }),
+         biography: new fields.StringField({ initial: "" }),
+         retainer: new fields.SchemaField({
+            loyalty: new fields.NumberField({ initial: 0 }),
+            wage: new fields.StringField({ initial: "" }),
          }),
-         hp: new foundry.data.fields.SchemaField({
-            hd: new foundry.data.fields.StringField({ initial: "1d8" }),
-            value: new foundry.data.fields.NumberField({ initial: 5 }),
-            max: new foundry.data.fields.NumberField({ initial: 5 }),
+         hp: new fields.SchemaField({
+            hd: new fields.StringField({ initial: "1d8" }),
+            value: new fields.NumberField({ initial: 5 }),
+            max: new fields.NumberField({ initial: 5 }),
          }),
-         ac: new foundry.data.fields.SchemaField({
-            naked: new foundry.data.fields.NumberField({ initial: 9 }),
-            nakedAAC: new foundry.data.fields.NumberField({ initial: 10 }),
-            value: new foundry.data.fields.NumberField({ initial: 9 }),
-            total: new foundry.data.fields.NumberField({ initial: 9 }),
-            totalAAC: new foundry.data.fields.NumberField({ initial: 10 }),
-            shield: new foundry.data.fields.NumberField({ initial: 0 }),
-            mod: new foundry.data.fields.NumberField({ initial: 0 }),
+         ac: new fields.SchemaField({
+            naked: new fields.NumberField({ initial: 9 }),
+            nakedAAC: new fields.NumberField({ initial: 10 }),
+            value: new fields.NumberField({ initial: 9 }),
+            total: new fields.NumberField({ initial: 9 }),
+            totalAAC: new fields.NumberField({ initial: 10 }),
+            shield: new fields.NumberField({ initial: 0 }),
+            mod: new fields.NumberField({ initial: 0 }),
          }),
-         thac0: new foundry.data.fields.SchemaField({
-            value: new foundry.data.fields.NumberField({ initial: 19 }),
-            mod: new foundry.data.fields.SchemaField({
-               missile: new foundry.data.fields.NumberField({ initial: 0 }),
-               melee: new foundry.data.fields.NumberField({ initial: 0 }),
+         thac0: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 19 }),
+            mod: new fields.SchemaField({
+               missile: new fields.NumberField({ initial: 0 }),
+               melee: new fields.NumberField({ initial: 0 }),
             }),
          }),
-         thbonus: new foundry.data.fields.NumberField({ initial: 0 }),
-         savingThrows: new foundry.data.fields.SchemaField({
-            death: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 0 }),
+         thbonus: new fields.NumberField({ initial: 0 }),
+         savingThrows: new fields.SchemaField({
+            death: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 0 }),
             }),
-            wand: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 0 }),
+            wand: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 0 }),
             }),
-            paralysis: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 0 }),
+            paralysis: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 0 }),
             }),
-            breath: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 0 }),
+            breath: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 0 }),
             }),
-            spell: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 0 }),
+            spell: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 0 }),
             }),
          }),
-         movement: new foundry.data.fields.SchemaField({
-            turn: new foundry.data.fields.NumberField({ initial: 120 }),
-            max: new foundry.data.fields.NumberField({ initial: 120 }),
-            round: new foundry.data.fields.NumberField({ initial: 0 }),
-            day: new foundry.data.fields.NumberField({ initial: 0 }),
-            run: new foundry.data.fields.NumberField({ initial: 0 }),
+         movement: new fields.SchemaField({
+            turn: new fields.NumberField({ initial: 120 }),
+            max: new fields.NumberField({ initial: 120 }),
+            round: new fields.NumberField({ initial: 0 }),
+            day: new fields.NumberField({ initial: 0 }),
+            run: new fields.NumberField({ initial: 0 }),
          }),
-         flight: new foundry.data.fields.SchemaField({
-            turn: new foundry.data.fields.NumberField({ initial: 0 }),
-            max: new foundry.data.fields.NumberField({ initial: 0 }),
-            round: new foundry.data.fields.NumberField({ initial: 0 }),
-            day: new foundry.data.fields.NumberField({ initial: 0 }),
-            run: new foundry.data.fields.NumberField({ initial: 0 }),
+         flight: new fields.SchemaField({
+            turn: new fields.NumberField({ initial: 0 }),
+            max: new fields.NumberField({ initial: 0 }),
+            round: new fields.NumberField({ initial: 0 }),
+            day: new fields.NumberField({ initial: 0 }),
+            run: new fields.NumberField({ initial: 0 }),
          }),
-         encumbrance: new foundry.data.fields.SchemaField({
-            value: new foundry.data.fields.NumberField({ initial: 0 }),
-            max: new foundry.data.fields.NumberField({ initial: 2400 }),
-            mv: new foundry.data.fields.NumberField({ initial: 0 }),
-            fly: new foundry.data.fields.NumberField({ initial: 0 }),
+         encumbrance: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+            max: new fields.NumberField({ initial: 2400 }),
+            mv: new fields.NumberField({ initial: 0 }),
+            fly: new fields.NumberField({ initial: 0 }),
          }),
-         initiative: new foundry.data.fields.SchemaField({
-            value: new foundry.data.fields.NumberField({ initial: 0 }),
-            mod: new foundry.data.fields.NumberField({ initial: 0 }),
+         initiative: new fields.SchemaField({
+            value: new fields.NumberField({ initial: 0 }),
+            mod: new fields.NumberField({ initial: 0 }),
          }),
-         languages: new foundry.data.fields.StringField({ initial: "" }),
-         combat: new foundry.data.fields.SchemaField({
-            attacks: new foundry.data.fields.NumberField({ initial: 0 }),
-            attacksAgainst: new foundry.data.fields.NumberField({ initial: 0 }),
-            deathCount: new foundry.data.fields.NumberField({ initial: 0 }),
-            isDead: new foundry.data.fields.BooleanField({ initial: false }),
+         languages: new fields.StringField({ initial: "" }),
+         combat: new fields.SchemaField({
+            attacks: new fields.NumberField({ initial: 0 }),
+            attacksAgainst: new fields.NumberField({ initial: 0 }),
+            deathCount: new fields.NumberField({ initial: 0 }),
+            isDead: new fields.BooleanField({ initial: false }),
          }),
-         gm: new foundry.data.fields.SchemaField({
-            notes: new foundry.data.fields.StringField({ initial: "" }),
+         gm: new fields.SchemaField({
+            notes: new fields.StringField({ initial: "" }),
          }),
-         spellSlots: new foundry.data.fields.ArrayField(new foundry.data.fields.SchemaField({
-            spellLevel: new foundry.data.fields.NumberField({ initial: 0 }),
-            used: new foundry.data.fields.NumberField({ initial: 0 }),
-            max: new foundry.data.fields.NumberField({ initial: 0 })
-         })),
-         mod: new foundry.data.fields.SchemaField({
-            ac: new foundry.data.fields.NumberField({ initial: 0 }),
-            initiative: new foundry.data.fields.NumberField({ initial: 0 }),
-            combat: new foundry.data.fields.SchemaField({
-               toHit: new foundry.data.fields.NumberField({ initial: 0 }),
-               dmg: new foundry.data.fields.NumberField({ initial: 0 }),
-               toHitRanged: new foundry.data.fields.NumberField({ initial: 0 }),
-               dmgRanged: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfDmg: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfDmgBreath: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfDmgBreathScale: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfDmgMagic: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfDmgFrost: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfDmgFire: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfToHit: new foundry.data.fields.NumberField({ initial: 0 }),
-               selfToHitRanged: new foundry.data.fields.NumberField({ initial: 0 }),
+         spellSlots: new fields.ArrayField(new fields.SchemaField({
+            spellLevel: new fields.NumberField({ initial: 0 }),
+            used: new fields.NumberField({ initial: 0 }),
+            max: new fields.NumberField({ initial: 0 })
+         }), {
+            required: false,
+            initial: Array.from({ length: this.maxSpellLevel }, (_, index) => {
+               const newLevel = new ClassLevelData();
+               newLevel.spellLevel = index + 1;
+               return newLevel;
+            })
+         }),
+         mod: new fields.SchemaField({
+            ac: new fields.NumberField({ initial: 0 }),
+            initiative: new fields.NumberField({ initial: 0 }),
+            combat: new fields.SchemaField({
+               toHit: new fields.NumberField({ initial: 0 }),
+               dmg: new fields.NumberField({ initial: 0 }),
+               toHitRanged: new fields.NumberField({ initial: 0 }),
+               dmgRanged: new fields.NumberField({ initial: 0 }),
+               selfDmg: new fields.NumberField({ initial: 0 }),
+               selfDmgBreath: new fields.NumberField({ initial: 0 }),
+               selfDmgBreathScale: new fields.NumberField({ initial: 0 }),
+               selfDmgMagic: new fields.NumberField({ initial: 0 }),
+               selfDmgFrost: new fields.NumberField({ initial: 0 }),
+               selfDmgFire: new fields.NumberField({ initial: 0 }),
+               selfToHit: new fields.NumberField({ initial: 0 }),
+               selfToHitRanged: new fields.NumberField({ initial: 0 }),
             }),
-            save: new foundry.data.fields.SchemaField({
-               all: new foundry.data.fields.NumberField({ initial: 0 }),
-               death: new foundry.data.fields.NumberField({ initial: 0 }),
-               wand: new foundry.data.fields.NumberField({ initial: 0 }),
-               paralysis: new foundry.data.fields.NumberField({ initial: 0 }),
-               breath: new foundry.data.fields.NumberField({ initial: 0 }),
-               spell: new foundry.data.fields.NumberField({ initial: 0 }),
+            save: new fields.SchemaField({
+               all: new fields.NumberField({ initial: 0 }),
+               death: new fields.NumberField({ initial: 0 }),
+               wand: new fields.NumberField({ initial: 0 }),
+               paralysis: new fields.NumberField({ initial: 0 }),
+               breath: new fields.NumberField({ initial: 0 }),
+               spell: new fields.NumberField({ initial: 0 }),
             })
          })
       };
@@ -121,11 +129,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
-      if (this.config.isSpellcaster === true) {
-         this._prepareSpells();
-      } else {
-         this.spellSlots = [];
-      }
+      this._prepareSpells();
    }
 
    /** @override */
@@ -334,15 +338,11 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
     * @protected
     */
    _prepareSpells() {
-      if (this.spellSlots.length == 0) {
-         this.spellSlots = Array.from({ length: 9 }, (_, index) => ({            
+      if (this.config.maxSpellLevel > 0) {
+         this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
             spellLevel: index + 1
          }));
       }
-      //for (let i = 0; i < 9; i++) {
-      //   this.spellSlots[i] = this.spellSlots?.[i] || {};
-      //   this.spellSlots[i].spellLevel = i;
-      //}
    }
 
    /**
@@ -382,7 +382,7 @@ export class NpcDataModel extends fadeActorDataModel {
    static defineSchema() {
       return {
          ...super.defineSchema(),
-         cr: new foundry.data.fields.NumberField({ initial: 0 }),
+         cr: new fields.NumberField({ initial: 0 }),
       };
    }
 }

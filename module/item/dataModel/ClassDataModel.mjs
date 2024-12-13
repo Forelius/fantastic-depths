@@ -32,9 +32,8 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
          name: new fields.StringField({ required: true }),
          species: new fields.StringField({ required: true, initial: "Human" }),
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
-         maxLevel: new fields.NumberField({ required: true, initial: 14 }),
+         maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
-         isSpellcaster: new fields.BooleanField({ required: true, initial: false }),
 
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
@@ -49,17 +48,20 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
                xpBonus5: new fields.NumberField({ required: true }),
                xpBonus10: new fields.NumberField({ required: true }),
             }),
-            { required: true }
+            {
+               required: true,
+               initial: []
+            }
          ),
 
          //levels: new fields.ArrayField(new fields.ObjectField(), { required: true }),
          levels: new fields.ArrayField(
             new fields.SchemaField({
                level: new fields.NumberField({ required: true }),
-               xp: new fields.NumberField({ required: true, initial: 0 }),
+               xp: new fields.NumberField({ required: true }),
                thac0: new fields.NumberField({ required: true }),
                thbonus: new fields.NumberField({ required: true }),
-               hd: new fields.StringField({ required: true, initial: '1d8' }),
+               hd: new fields.StringField({ required: true, initial: '' }),
                hdcon: new fields.BooleanField({ required: true, initial: true }),
                title: new fields.StringField({ required: false, nullable: true }),
                femaleTitle: new fields.StringField({ required: false, nullable: true }),
@@ -67,11 +69,9 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
             }),
             {
                required: true,
-               initial: Array.from({ length: 14 }, (_, index) => {
+               initial: Array.from({ length: this.maxLevel }, (_, index) => {
                   const newLevel = new ClassLevelData();
-                  newLevel.hd = `${(index + 1)}d8`;
                   newLevel.level = index + 1;
-                  newLevel.thac0 = 19;
                   return newLevel;
                })
             }
@@ -88,14 +88,20 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
             }),
             {
                required: true,
-               initial: () => new SavingThrowsData()
+               initial: [new SavingThrowsData()]
             }
          ),
 
          // Spells Field Adjusted to Be Optional
          spells: new fields.ArrayField(
-            new fields.ArrayField(new fields.NumberField({ required: true })),
-            { required: false, nullable: true }
+            new fields.ArrayField(
+               new fields.NumberField({ required: true, initial: 0 })
+            ),
+            {
+               required: false,
+               nullable: false,
+               initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: this.maxSpellLevel }))
+            }
          ),
 
          // Add other optional fields as needed, ensuring they are marked as required: false and nullable: true
@@ -106,82 +112,37 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
    prepareBaseData() {
       super.prepareBaseData();
       this.#prepareLevels();
+      this.#prepareSpellLevels();
    }
 
    #prepareLevels() {
-      const missingLevels = (this.maxLevel - (this.firstLevel-1)) - this.levels.length;
-      const totalLevelCount = this.maxLevel - (this.firstLevel-1);
-      if (totalLevelCount > this.levels.length) {
-         const newLevels = Array.from({ length: missingLevels }, (_, index) => {
+      const totalLevelCount = this.maxLevel - (this.firstLevel - 1);
+      if (totalLevelCount !== this.levels.length) {
+         const newLevels = Array.from({ length: totalLevelCount }, (_, index) => {
             const newLevel = new ClassLevelData();
-            newLevel.level = index + this.levels.length + this.firstLevel;
+            newLevel.level = index + this.firstLevel;
             return newLevel;
          });
-         // Combine the original levels with the new items
-         this.levels = [...this.levels, ...newLevels];
-      } else if (totalLevelCount < this.levels.length) {
-         // Remove unwanted levels. Yes, they are unwanted and unloved.
-         this.levels = this.levels.slice(0, totalLevelCount);
-      } else {
+         this.levels = [...newLevels];
       }
    }
 
-   /**
-   * Synchronize `levels` and `spells` with the current maxLevel and maxSpellLevel.
-   * @param {number} maxLevel - The maximum level.
-   * @param {number} maxSpellLevel - The maximum spell level.
-   * @private
-   */
-   async #synchronizeLevelsAndSpells(maxLevel, maxSpellLevel) {
-      // Deep clone the existing levels and spells to work with them safely
-      let levels = foundry.utils.deepClone(this.item.system.levels) || [];
-      let spells = foundry.utils.deepClone(this.item.system.spells) || [];
-
-      // Adjust levels array to match maxLevel
-      if (levels.length < maxLevel) {
-         for (let i = levels.length; i < maxLevel; i++) {
-            levels.push({
-               level: i + 1,
-               xp: 0,
-               thac0: 20,
-               hd: "1d8",
-               hdcon: false,
-               title: "",
-               femaleTitle: "",
-               attackRank: ""
-            });
-         }
-      } else if (levels.length > maxLevel) {
-         levels = levels.slice(0, maxLevel);
-      }
-
-      // Create a new array for spells to ensure reactivity
-      let newSpells = [];
-
-      // Adjust spells array to match maxLevel and maxSpellLevel
-      for (let i = 0; i < maxLevel; i++) {
-         if (i < spells.length) {
-            // Adjust the existing spell level array
-            let spellLevels = spells[i];
-            if (spellLevels.length < maxSpellLevel) {
-               spellLevels = spellLevels.concat(Array(maxSpellLevel - spellLevels.length).fill(0));
-            } else if (spellLevels.length > maxSpellLevel) {
-               spellLevels = spellLevels.slice(0, maxSpellLevel);
+   #prepareSpellLevels() {
+      const totalLevelCount = this.maxLevel;
+      const currentMaxSpellLevel = this.spells.length > 0 ? this.spells[0].length : 0;
+      if (totalLevelCount !== this.spells.length || currentMaxSpellLevel !== this.maxSpellLevel) {
+         const newLevels = Array.from({ length: totalLevelCount }, () => Array.from({ length: this.maxSpellLevel }, () => 0));
+         // Try to preserve existing spells
+         if (this.spells && this.spells.length > 0) {
+            for (let i = 0; i < this.spells.length && i < newLevels.length; i++) {
+               let oldLevel = this.spells[i];
+               let newLevel = newLevels[i];
+               for (let j = 0; j < oldLevel.length && j < newLevel.length; j++) {
+                  newLevels[i][j] = oldLevel[j];
+               }
             }
-            newSpells.push(spellLevels);
-         } else {
-            // Add new spell levels with all zeros if beyond the existing spells length
-            newSpells.push(Array(maxSpellLevel).fill(0));
          }
+         this.spells = [...newLevels];
       }
-
-      // Update the item with new levels and spells
-      await this.item.update({
-         "system.levels": levels,
-         "system.spells": newSpells,
-         "system.maxLevel": maxLevel,
-         "system.maxSpellLevel": maxSpellLevel
-      });
-      await this.render(true);
    }
 }

@@ -43,7 +43,7 @@ export class ClassItemSheet extends ItemSheet {
       // Add the item's data for easier access
       context.system = itemData.system;
       context.flags = itemData.flags;
-
+      context.isSpellcaster = itemData.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {

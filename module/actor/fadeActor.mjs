@@ -104,6 +104,7 @@ export class fadeActor extends Actor {
    /** @override */
    prepareBaseData() {
       this._prepareEffects();
+      this._prepareSpellsUsed();
    }
 
    /** @override */
@@ -112,7 +113,6 @@ export class fadeActor extends Actor {
       this.system.prepareArmorClass(this.items);
       this.system.prepareEncumbrance(this.items, this.type);
       this.system.prepareDerivedMovement();
-      this._prepareSpellsUsed();
    }
 
    getRollData() {
@@ -441,25 +441,28 @@ export class fadeActor extends Actor {
 
    /**
     * Prepares the used spells per level totals
-    * @protected
     */
    _prepareSpellsUsed() {
       const systemData = this.system;
+      const spells = this.items.filter((item) => item.type === 'spell');
+      //const highestSpellLevel = spells.reduce((max, current) => {
+      //   return current.spellLevel > max.spellLevel ? current : max;
+      //})?.spellLevel;
       let spellSlots = systemData.spellSlots || [];
 
       // Reset used spells to zero
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < systemData.config.maxSpellLevel; i++) {
          let slot = spellSlots[i] || {};
          slot.used = 0;
       }
 
-      const spells = this.items.filter((item) => item.type === 'spell');
-      for (let spell of spells) {
-         if (spell.system.memorized > 0) {
-            spellSlots[spell.system.spellLevel].used += spell.system.memorized;
+      if (spellSlots.length > 0) {
+         for (let spell of spells) {
+            if (spell.system.memorized > 0) {
+               spellSlots[spell.system.spellLevel].used += spell.system.memorized;
+            }
          }
       }
-
       systemData.spellSlots = spellSlots;
-   }    
+   }
 }

@@ -143,6 +143,7 @@ export class CharacterDataModel extends fadeActorDataModel {
             this.details.xp.next = nextLevelData.xp;
          }
          this.details.species = classData.species;
+         this.config.maxSpellLevel = classData.maxSpellLevel;
 
          // Spells
          const classSpellsIdx = this.details.level - 1;

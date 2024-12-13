@@ -19,21 +19,17 @@
             </li>
             <li class="flex1">
                <input type='text' name='system.maxLevel' value='{{system.maxLevel}}' data-dtype='Number' />
-               <label for="system.maxLevel">{{localize 'FADE.Actor.Max'}} {{localize 'FADE.Actor.Level'}}</label>
+               <label for="system.maxLevel" title="{{localize 'FADE.Actor.maxLevel.hint'}}">{{localize 'FADE.Actor.maxLevel.name'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name='system.firstLevel' value='{{system.firstLevel}}' data-dtype='Number' />
-               <label for="system.firstLevel" title="The level this class starts at.">First Level</label>
+               <label for="system.firstLevel" title="{{localize 'FADE.Actor.firstLevel.hint'}}">{{localize 'FADE.Actor.firstLevel.name'}}</label>
             </li>
          </ul>
-         <ul class="summary flexrow">            
-            <li class="flex0">
-               <input type="checkbox" name="system.isSpellcaster" data-dtype="Boolean" {{#if system.isSpellcaster}} checked{{/if}} />
-               <label for="system.isSpellcaster">{{localize 'FADE.Actor.isSpellcaster.name'}}</label>
-            </li>
+         <ul class="summary flexrow">           
             <li class="flex1">
                <input type='text' name='system.maxSpellLevel' value='{{system.maxSpellLevel}}' data-dtype='Number' />
-               <label for="system.maxSpellLevel">{{localize 'FADE.Actor.Max'}} Spell {{localize 'FADE.Actor.Level'}}</label>
+               <label for="system.maxSpellLevel" title="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name='system.minCon' value='{{system.minCon}}' data-dtype='Number' />
@@ -60,7 +56,7 @@
       <a class='item' data-tab='levels'>Levels</a>
       <a class='item' data-tab='saves'>Saving Throws</a>
       <a class='item' data-tab='primeReqs'>Prime Requisites</a>
-      {{#if system.isSpellcaster}}
+      {{#if isSpellcaster}}
       <a class='item' data-tab='spells'>Spells</a>
       {{/if}}
       <a class='item' data-tab='description'>Description</a>
@@ -77,7 +73,7 @@
       <div class='tab' data-group='primary' data-tab='primeReqs'>
          {{> "systems/fantastic-depths/templates/item/parts/class-primereqs.hbs"}}
       </div>
-      {{#if system.isSpellcaster}}
+      {{#if isSpellcaster}}
       <div class='tab' data-group='primary' data-tab='spells'>
          {{> "systems/fantastic-depths/templates/item/parts/class-spells.hbs"}}
       </div>
