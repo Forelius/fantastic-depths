@@ -2,7 +2,9 @@
    <li class='item flexrow items-header collapsible-header'>
       <div class='item-name'>{{localize 'FADE.Item.plural'}} {{#if gearEnc}}<span class="category-info">({{gearEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>{{/if}}</div>
       <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
+      {{#if showCoinWeight}}
       <div class="item-50px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+      {{/if}}
       <div class='item-controls'>
          <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.item")}}' data-type='item'>
             <i class='fas fa-plus'></i>
@@ -27,7 +29,9 @@
          </a>
       </div>
       <div class="item-40px item-prop"><label>{{item.system.quantity}}</label></div>
+      {{#if @root.showCoinWeight}}
       <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
+      {{/if}}
       <div class='item-controls'>
          {{#if item.system.equippable}}
          <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
@@ -66,7 +70,9 @@
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>{{childItem.name}}</a>
       </div>
       <div class="item-40px item-prop"><label>{{childItem.system.quantity}}</label></div>
+      {{#if @root.showCoinWeight}}
       <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{childItem.system.totalWeight}}</label></div>
+      {{/if}}
       <div class='item-controls'>
          {{#if childItem.system.equippable}}
          <a class="item-control item-toggle {{#unless childItem.system.equipped}}item-unequipped{{/unless}}"

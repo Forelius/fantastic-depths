@@ -69,6 +69,9 @@ export class fadeActorSheet extends ActorSheet {
 
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
+      const encSetting = game.settings.get(game.system.id, "encumbrance");
+      context.isBasicEnc = encSetting === "basic";
+      context.showCoinWeight = encSetting === "expert" || encSetting === "classic";
       context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
@@ -293,7 +296,7 @@ export class fadeActorSheet extends ActorSheet {
     */
    _calcCategoryEnc(context) {
       const encSetting = game.settings.get(game.system.id, "encumbrance");
-      if (encSetting === 'expert') {
+      if (encSetting === 'expert' || encSetting === 'classic') {
          // Gear
          context.gearEnc = context.items
             .filter(item => item.type === 'item')

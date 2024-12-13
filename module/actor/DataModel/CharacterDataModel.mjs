@@ -82,7 +82,7 @@ export class CharacterDataModel extends fadeActorDataModel {
    _prepareDerivedAbilities() {
       // Initialize abilities if missing
       const abilityTypes = ["str", "int", "wis", "dex", "con", "cha"];
-      const adjustments = CONFIG.FADE.AdjustmentTable;
+      const adjustments = CONFIG.FADE.AdjustmentTableDD;
       for (let [key, ability] of Object.entries(this.abilities)) {
          let adjustment = adjustments.find(item => ability.value <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;

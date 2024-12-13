@@ -69,6 +69,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             max: new fields.NumberField({ initial: 2400 }),
             mv: new fields.NumberField({ initial: 0 }),
             fly: new fields.NumberField({ initial: 0 }),
+            label: new fields.StringField(),
+            desc: new fields.StringField(),
          }),
          initiative: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
@@ -156,7 +158,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          item.type === 'armor' && item.system.natural
       );
 
-      const equippedArmor = items.find(item =>
+      this.equippedArmor = items.find(item =>
          item.type === 'armor' && item.system.equipped && !item.system.isShield
       );
 
@@ -170,10 +172,10 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       }
 
       // If an equipped armor is found
-      if (equippedArmor) {
-         ac.value = equippedArmor.system.ac;
-         ac.mod = equippedArmor.system.mod ?? 0;
-         ac.total = equippedArmor.system.totalAc;
+      if (this.equippedArmor) {
+         ac.value = this.equippedArmor.system.ac;
+         ac.mod = this.equippedArmor.system.mod ?? 0;
+         ac.total = this.equippedArmor.system.totalAc;
       }
 
       if (equippedShield) {
@@ -234,7 +236,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       }
       //-- Caclulate how much is being carried/tracked --//
       // If using detailed encumbrance, similar to expert rules...
-      if (encSetting === 'expert') {
+      if (encSetting === 'expert' || encSetting === 'classic') {
          // Containers         
          for (let container of items.filter(item => item.system.container === true)) {
             container.system.containedEnc = container.system.contained.reduce((sum, item) => {
@@ -252,14 +254,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       }
       // Else if using simple encumbrance, similar to basic rules...
       else if (encSetting === 'basic') {
-         enc = items.filter((item) => {
-            return item.type === "armor";
-         }).reduce((sum, item) => {
-            const itemWeight = item.system.weight || 0;
-            const itemQuantity = item.system.quantity || 1;
-            return sum + (itemWeight * itemQuantity);
-         }, 0);
-         encumbrance.value = enc || 0;
+         encumbrance.value = 0;
       } else {
          encumbrance.value = 0;
       }
@@ -270,7 +265,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          encumbrance.mv = this.movement.max;
          encumbrance.fly = this.flight.max;
       } else {
-         this._calculateEncMovement(actorType, enc, encumbrance);
+         this._calculateEncMovement(actorType, enc, encumbrance, encSetting);
       }
 
       this.encumbrance = encumbrance;
@@ -319,18 +314,46 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /**
     * Calculate movement rate based on encumbrance.
     * @protected
+    * @param {any} actorType The actor.type
     * @param {number} enc The total encumbrance in coins.
     * @param {any} encumbrance The encumbrance object to set.
+    * @param {encSetting} The current encumbrance setting.
     */
-   _calculateEncMovement(actorType, enc, encumbrance) {
+   _calculateEncMovement(actorType, enc, encumbrance, encSetting) {
       let weightPortion = this.encumbrance.max / enc;
-      const table = (actorType === "monster") ? CONFIG.FADE.Encumbrance.monster : CONFIG.FADE.Encumbrance.pc;
-      let encTier = table.find(tier => weightPortion >= tier.wtPortion) || table[table.length - 1];
-      encumbrance.label = encTier.label;
-      encumbrance.desc = encTier.desc;
-      // This is a maximum movement for the current encumbered tier
-      encumbrance.mv = this.movement.max * encTier.mvFactor;
-      encumbrance.fly = this.flight.max * encTier.mvFactor;
+      let table = [];
+      switch (actorType) {
+         case "monster":
+            table = CONFIG.FADE.Encumbrance.monster;
+            break;
+         case "character":
+            if (encSetting === 'classic' || encSetting === 'basic') {
+               table = CONFIG.FADE.Encumbrance.classicPC;
+            } else if (encSetting === 'expert') {
+               table = CONFIG.FADE.Encumbrance.expertPC;
+            }
+            break;
+      }
+
+      if (table.length > 0) {
+         let encTier = table.length > 0 ? table[0] : null;
+         if (encSetting === 'basic') {
+            if (this.equippedArmor?.system.armorWeight === 'light') {
+               encTier = table[1];
+            } else if (this.equippedArmor?.system.armorWeight === 'heavy') {
+               encTier = table[2];
+            }
+         } else {
+            encTier = table.find(tier => weightPortion >= tier.wtPortion) || table[table.length - 1];
+         }
+
+         if (encTier) {
+            encumbrance.label = encTier.label;
+            encumbrance.desc = encTier.desc;
+            encumbrance.mv = Math.floor(this.movement.max * encTier.mvFactor);
+            encumbrance.fly = Math.floor(this.flight.max * encTier.mvFactor);
+         }
+      }
    }
 
    /**

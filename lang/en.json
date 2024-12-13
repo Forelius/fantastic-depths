@@ -329,7 +329,15 @@
             "short": "Natural",
             "desc": "This is considered a natural part of its owner."
          },
-         "mod": "AC Mod"
+         "mod": "AC Mod",
+         "armorWeight": {
+            "short": "Weight",
+            "choices": {
+               "none": "None",
+               "light": "Light",
+               "heavy": "Heavy"
+            }
+         }
       },
       "Skill": {
          "plural": "General Skills",
@@ -598,11 +606,12 @@
 
    "SETTINGS": {
       "Encumbrance": {
-         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much.",
+         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much. Armor Only determines movement based on armor weight. Dark Dungeons assumes a max load of 2400 coins and five movement rates. Classic assumes a max load of 1600 coins and four movement rates.",
          "Name": "Encumbrance Tracking",
          "None": "None",
-         "Basic": "Basic",
-         "Expert": "Expert"
+         "Basic": "Armor Only",
+         "Classic": "Classic",
+         "Expert": "Dark Dungeons"
       },
       "toasts": {
          "hint": "Display toasts on die rolls.",

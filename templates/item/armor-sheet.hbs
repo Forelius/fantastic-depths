@@ -30,8 +30,15 @@
                <label for="system.natural" title="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
             </li>
             <li class="flex2">
+               {{#if isBasicEnc}}
+               <select name="system.armorWeight">
+                  {{selectOptions encOptions selected=system.armorWeight}}
+               </select>
+               <label for="system.armorWeight">{{localize 'FADE.Armor.armorWeight.short'}}</label>
+               {{else}}
                <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.weight">{{localize 'FADE.Item.weight.short'}}</label>
+               {{/if}}
             </li>
             <li class="flex2">
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />

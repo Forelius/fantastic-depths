@@ -4,7 +4,12 @@
 {{> "systems/fantastic-depths/templates/item/parts/item-treasure.hbs"}}
 <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
    <span class="flex3">
+      {{#if showCoinWeight}}
       {{localize 'FADE.Actor.Movement.total'}}: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span title="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
+      {{/if}}
+      {{#if isBasicEnc}}
+      <span title="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
+      {{/if}}
    </span>
    <span class="flex2">
       {{localize 'FADE.Actor.Movement.moveTurn'}}: {{system.encumbrance.mv}}

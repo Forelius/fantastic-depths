@@ -65,7 +65,8 @@
          "templates": [ "base", "physical", "equippable", "natural" ],
          "ac": 9,
          "isShield": false,
-         "dmgFormula": null
+         "dmgFormula": null,
+         "armorWeight":  "light"
       },
       "spell": {
          "templates": [ "base" ],

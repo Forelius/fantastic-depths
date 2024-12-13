@@ -15,6 +15,7 @@ export class ArmorItem extends fadeItem {
       systemData.isShield = systemData.isShield || false;
       systemData.natural = systemData.natural || false;
       systemData.equipped = systemData.natural || systemData.equipped || false;
+      systemData.armorWeight = systemData.armorWeight || "light";
    }
 
    /** @override */

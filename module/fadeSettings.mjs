@@ -20,7 +20,8 @@ export class fadeSettings {
          choices: {
             none: "SETTINGS.Encumbrance.None",
             basic: "SETTINGS.Encumbrance.Basic",
-            expert: "SETTINGS.Encumbrance.Expert"
+            classic: "SETTINGS.Encumbrance.Classic",
+            expert: "SETTINGS.Encumbrance.Expert",
          },
          restricted: true // Only the GM can change this setting         
       });

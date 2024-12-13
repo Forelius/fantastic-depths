@@ -25,7 +25,7 @@ export class fadeItemSheet extends ItemSheet {
    render(force, options = {}) {
       // Adjust options before rendering based on item type
       if (this.item.type === 'armor') {
-         options.width = 520;
+         options.width = 540;
          options.height = 340;
       } else if (this.item.type === "mastery") {
          options.width = 540;
@@ -94,6 +94,17 @@ export class fadeItemSheet extends ItemSheet {
             result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.abbr'), value: 'handheld' });
             result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.abbr'), value: 'all' });
             context.weaponTypes = result;
+         }
+      }
+
+      if (this.item.type === "armor") {
+         context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
+         if (context.isBasicEnc === true) {
+            let encOptions = [];
+            encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.none'), value: "none" });
+            encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.light'), value: "light" });
+            encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });
+            context.encOptions = encOptions;
          }
       }
 

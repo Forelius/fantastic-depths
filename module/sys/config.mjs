@@ -2359,9 +2359,21 @@ FADE.Operators = {
    lte: "<="
 }
 FADE.Encumbrance = {
+   armorChoices: {
+      none: "none",
+      light: "light",
+      heavy: "heavy"
+   },
    maxMove: 120, // The default maximum movement rate per turn for an unencumbered character.
    maxLoad: 2400, // The default maximum load (cn) that a character can carry.
-   pc: [
+   classicPC: [
+      { wtPortion: 6, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
+      { wtPortion: 3, mvFactor: 0.75, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
+      { wtPortion: 2, mvFactor: 0.5, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted." },
+      { wtPortion: 1, mvFactor: 0.25, label: "Encumbered", desc: "Significantly burdened, movement is sluggish." },
+      { wtPortion: 0, mvFactor: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
+   ],
+   expertPC: [
       { wtPortion: 6, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
       { wtPortion: 3, mvFactor: 0.75, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
       { wtPortion: 2, mvFactor: 0.5, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted." },
@@ -2894,8 +2906,8 @@ FADE.Classes = {
          [9, 9, 8, 8, 8, 8, 7], [9, 9, 9, 8, 8, 8, 8], [9, 9, 9, 9, 9, 8, 8], [9, 9, 9, 9, 9, 9, 9]
       ]
    }
-};
-FADE.AdjustmentTable = [
+};2.66666
+FADE.AdjustmentTableDD = [
    { max: 1, value: -4, maxRetainers: 0, retainerMorale: 0 },
    { max: 3, value: -3, maxRetainers: 1, retainerMorale: 4 },
    { max: 5, value: -2, maxRetainers: 2, retainerMorale: 5 },
