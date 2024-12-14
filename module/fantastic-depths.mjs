@@ -1,17 +1,22 @@
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
-import { fadeActor } from './actor/fadeActor.mjs';
+import { ItemFactory } from './item/ItemFactory.mjs';
+
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
+import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
+import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
+
+import { ClassDataModel } from './item/dataModel/ClassDataModel.mjs';
+import { WeaponMasteryDataModel } from "./item/dataModel/WeaponMasteryDataModel.mjs";
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
-import { ClassDataModel } from './item/dataModel/ClassDataModel.mjs';
-import { ItemFactory } from './item/ItemFactory.mjs';
-import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
+import { WeaponMasterySheet } from './sheets/WeaponMasterySheet.mjs';
+
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
 import { fadeCombat } from './sys/fadeCombat.mjs'
@@ -67,7 +72,8 @@ Hooks.once('init', async function () {
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
-      class: ClassDataModel
+      class: ClassDataModel,
+      weaponMastery: WeaponMasteryDataModel
    }
    CONFIG.Combatant.documentClass = fadeCombatant;
 
@@ -92,6 +98,11 @@ Hooks.once('init', async function () {
       label: 'FADE.SheetLabel.ClassItem',
       types: ['class'],
       makeDefault: true 
+   });
+   Items.registerSheet('fantastic-depths', WeaponMasterySheet, {
+      label: 'FADE.SheetLabel.WeaponMasteryItem',
+      types: ['weaponMastery'],
+      makeDefault: true
    });
 
    await handleAsyncInit();

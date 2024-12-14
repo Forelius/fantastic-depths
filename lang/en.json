@@ -240,7 +240,8 @@
       "SheetLabel": {
          "Actor": "FaDe Actor Sheet",
          "Item": "FaDe Item Sheet",
-         "ClassItem": "Class Item Sheet"
+         "ClassItem": "Class Item Sheet",
+         "WeaponMasteryItem": "Weapon Mastery Item Sheet"
       },
       "Spell": {
          "SpellLVL": "Level {level} Spells",
@@ -387,6 +388,13 @@
                "long": "All",
                "abbr": "A"
             }
+         },
+         "levels": {
+            "basic": "Basic",
+            "skilled": "Skilled",
+            "expert": "Expert",
+            "master": "Master",
+            "grandMaster": "Grand Master"
          },
          "acBonus": "AC Bonus",
          "acBonusType": "Type",
@@ -605,7 +613,8 @@
             }
          }
       },
-      "GMNotes": "GM Notes"
+      "GMNotes": "GM Notes",
+      "none": "None"
    },
 
    "TYPES": {
@@ -619,10 +628,11 @@
          "armor": "Armor",
          "spell": "Spell",
          "skill": "General Skill",
-         "mastery": "Weapon Mastery",
+         "mastery": "Actor Weapon Mastery",
          "specialAbility": "Special Ability",
          "treasure": "Treasure",
-         "class": "Character Class"
+         "class": "Character Class",
+         "weaponMastery": "Weapon Mastery"
       }
    },
 

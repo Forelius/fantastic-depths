@@ -111,7 +111,7 @@ export class fadeItemSheet extends ItemSheet {
       const hasAttackTypes = ["spell"];
       if (hasAttackTypes.includes(this.item.type)) {
          const types = []
-         types.push({ value: "", text: "None" });
+         types.push({ value: "", text: game.i18n.localize(`FADE.none`) });
          types.push(...CONFIG.FADE.AttackTypes.map((type) => {
             return { value: type, text: game.i18n.localize(`FADE.AttackTypes.types.${type}`) }
          }));
@@ -121,7 +121,7 @@ export class fadeItemSheet extends ItemSheet {
       const hasDamageTypes = ["spell", "specialAbility"];
       if (hasDamageTypes.includes(this.item.type)) {
          const types = []
-         types.push({ value: "", text: "None" });
+         types.push({ value: "", text: game.i18n.localize(`FADE.none`) });
          types.push(...CONFIG.FADE.DamageTypes.map((type) => {
             return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
          }));
@@ -131,7 +131,7 @@ export class fadeItemSheet extends ItemSheet {
       const hasSave = ["weapon", "spell", "specialAbility"];
       if (hasSave.includes(this.item.type)) {
          const saves = [];
-         saves.push({ value: "", text: "None" });
+         saves.push({ value: "", text: game.i18n.localize(`FADE.none`) });
          saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
             return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
          }));
@@ -167,10 +167,13 @@ export class fadeItemSheet extends ItemSheet {
             return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.abbr`) }
          }));
          context.weaponTypes = types;
-         context.masteryNames = Object.keys(CONFIG.FADE.WeaponMastery).map(name => ({
-            text: name,
-            value: name
-         }));
+         //context.masteryNames = Object.keys(CONFIG.FADE.WeaponMastery).map(name => ({
+         //   text: name,
+         //   value: name
+         //}));
+         context.masteryLevels = [...CONFIG.FADE.MasteryLevels.map((key) => {
+            return { value: key, text: game.i18n.localize(`FADE.Mastery.levels.${key}`) }
+         })];
       }
 
       // Is this user the game master?

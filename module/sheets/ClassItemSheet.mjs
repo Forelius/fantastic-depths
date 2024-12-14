@@ -49,6 +49,9 @@ export class ClassItemSheet extends ItemSheet {
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(`Spell Level ${i}`);
       }
+      context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
+         return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
+      })];
 
       return context;
    }

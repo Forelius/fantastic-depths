@@ -4,14 +4,8 @@
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li>
-               <div class='charname'>
-                  {{#if false}}
-                  <select name="name">
-                     {{selectOptions masteryNames selected=item.name valueAttr="value" labelAttr="text"}}
-                  </select>
-                  {{else}}
+               <div class='charname'>                  
                   <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
-                  {{/if}}
                </div>
                <label for="name">{{localize 'FADE.Actor.Name'}}</label>
             </li>
@@ -19,7 +13,7 @@
          <ul class="summary flexrow">
             <li class="flex2">
                <select name="system.level">
-                  {{selectOptions config.MasteryLevels selected=system.level}}
+                  {{selectOptions masteryLevels selected=system.level valueAttr="value" labelAttr="text"}}
                </select>
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>

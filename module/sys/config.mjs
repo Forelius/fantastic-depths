@@ -43,13 +43,13 @@ FADE.WeaponTypes = [
    "handheld",
    "all"
 ];
-FADE.MasteryLevels = {
-   basic: "Basic",
-   skilled: "Skilled",
-   expert: "Expert",
-   master: "Master",
-   grandMaster: "Grand Master",
-};
+FADE.MasteryLevels = [
+   "basic",
+   "skilled",
+   "expert",
+   "master",
+   "grandMaster",
+];
 FADE.WeaponMastery =
 {
    "Blowgun, to 2'": {

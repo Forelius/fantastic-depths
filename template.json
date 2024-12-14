@@ -3,7 +3,7 @@
       "types": [ "character", "monster", "npc" ]
    },
    "Item": {
-      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility", "class" ],
+      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility", "class", "weaponMastery" ],
       "templates": {
          "base": {
             "tags": [],

@@ -17,7 +17,7 @@
       <li class='item flexrow' data-item-id='{{primeReqData.ability}}'>
          <div class="align-left">
             <select name="system.primeReqs.{{index}}.ability">
-               {{selectOptions @root.config.Abilities selected=primeReqData.ability}}
+               {{selectOptions @root.abilities selected=primeReqData.ability valueAttr="value" labelAttr="text"}}
             </select>
          </div>
          <div class="align-left">

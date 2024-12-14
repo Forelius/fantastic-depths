@@ -1,6 +1,4 @@
 import { fadeItem } from './fadeItem.mjs';
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 export class MasteryItem extends fadeItem {
    /** @override */
