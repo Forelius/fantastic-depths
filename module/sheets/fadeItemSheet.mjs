@@ -155,6 +155,12 @@ export class fadeItemSheet extends ItemSheet {
          }, {});
       }
 
+      if (this.item.type === 'skill') {
+         context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
+            return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
+         })];
+      }
+
       if (this.item.type === "mastery") {
          const types = [];
          types.push(...CONFIG.FADE.WeaponTypes.map((type) => {

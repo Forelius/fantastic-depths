@@ -159,42 +159,6 @@ export class fadeDialog {
       return dialogResp;
    }
 
-   static async getContentImportDialog(dataset, caller) {
-      const dialogData = { config: CONFIG.FADE };
-      const dialogResp = { caller };
-
-      const title = `Import content from text`;
-      const template = 'systems/fantastic-depths/templates/dialog/import-content.hbs';
-
-      dialogResp.resp = await Dialog.wait({
-         title: title,
-         rejectClose: true,
-         content: await renderTemplate(template, dialogData),
-         render: () => focusById('importText'),
-         buttons: {
-            import: {
-               label: "Import",
-               callback: async () => ({
-                  type: document.getElementById('type').value,
-                  spellLevel: document.getElementById('spellLevel').value,
-                  attribute: document.getElementById('attribute').value,
-                  importText: document.getElementById('importText').value,
-               }),
-            },
-            cancel: {
-               icon: "<i class='fas fa-times'></i>",
-               label: "Cancel"
-            }
-         },
-         default: 'import',
-         close: () => { return false; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
-      });
-      dialogResp.context = caller;
-      return dialogResp;
-   }
-
    static async getLightMgrDialog(dataset, caller, opt) {
       const dialogData = {};
       const dialogResp = { caller };

@@ -6,14 +6,14 @@ const path = 'systems/fantastic-depths/assets/';
  * The set of Ability Scores used within the system.
  * @type {Object}
  */
-FADE.Abilities = {
-   str: "Strength",
-   dex: "Dexterity",
-   con: "Constitution",
-   int: "Intelligence",
-   wis: "Wisdom",
-   cha: "Charisma"
-};
+FADE.Abilities = [
+   "str",
+   "dex",
+   "con",
+   "int",
+   "wis",
+   "cha"
+];
 FADE.SavingThrows = [
    "death",
    "wand",
@@ -2933,26 +2933,6 @@ FADE.AdjustmentTableDD = [
    { max: 98, value: 18 },
    { max: 99, value: 19 },
    { max: 100, value: 20 }
-];
-FADE.Languages = [
-   { name: "Common", script: "Common", description: "Common is the universal language spoken by most races/species." },
-   { name: "Dwarvish", script: "Dwarvish", description: "Dwarvish uses a runic script typical for dwarven cultures." },
-   { name: "Elvish", script: "Elvish", description: "Elvish uses a flowing, script-like writing typical of elven cultures." },
-   { name: "Giant", script: "Dwarvish", description: "Giant shares the runic script with Dwarvish due to historical and cultural overlaps." },
-   { name: "Gnomish", script: "Dwarvish", description: "Gnomish shares the script with Dwarvish, reflecting similar cultural roots." },
-   { name: "Goblin", script: "Dwarvish", description: "Goblin uses the same script as Dwarvish, typically adapted for goblin use." },
-   { name: "Halfling", script: "Common", description: "Halfling uses the Common script, reflecting their integration with human societies." },
-   { name: "Orcish", script: "Dwarvish", description: "Orcish uses the Dwarvish script, often due to interactions and conflicts with dwarves." },
-   { name: "Draconic", script: "Draconic", description: "Draconic uses a unique script specific to dragons and ancient reptilian species." },
-   { name: "Abyssal", script: "Infernal", description: "Abyssal uses the Infernal script, reflecting its demonic origins." },
-   { name: "Celestial", script: "Celestial", description: "Celestial uses a script of divine origin, often used by celestial beings." },
-   { name: "Infernal", script: "Infernal", description: "Infernal uses a specific script for devils and infernal entities." },
-   { name: "Primordial", script: "Primordial", description: "Primordial uses a script that predates most other languages, often associated with elemental beings." },
-   { name: "Sylvan", script: "Elvish", description: "Sylvan uses the Elvish script, reflecting the fey and nature-oriented culture." },
-   { name: "Undercommon", script: "Elvish", description: "Undercommon uses the Elvish script, adapted for use in the Underdark." },
-   { name: "Lawful", script: "None", description: "Lawful alignment language is spoken only and has no written script." },
-   { name: "Chaotic", script: "None", description: "Chaotic alignment language is spoken only and has no written script." },
-   { name: "Neutral", script: "None", description: "Neutral alignment language is spoken only and has no written script." }
 ];
 FADE.Conditions = [
    {
