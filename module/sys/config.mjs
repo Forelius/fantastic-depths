@@ -2367,29 +2367,29 @@ FADE.Encumbrance = {
    maxMove: 120, // The default maximum movement rate per turn for an unencumbered character.
    maxLoad: 2400, // The default maximum load (cn) that a character can carry.
    classicPC: [
-      { wtPortion: 6, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
-      { wtPortion: 3, mvFactor: 0.75, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
-      { wtPortion: 2, mvFactor: 0.5, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted." },
-      { wtPortion: 1, mvFactor: 0.25, label: "Encumbered", desc: "Significantly burdened, movement is sluggish." },
-      { wtPortion: 0, mvFactor: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
+      { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
+      { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
+      { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
+      { wtPortion: 1, mvFactor: 0.25, name: "encumbered" },
+      { wtPortion: 0, mvFactor: 0, name: "over" },
    ],
    expertPC: [
-      { wtPortion: 6, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
-      { wtPortion: 3, mvFactor: 0.75, label: "Lightly Encumbered", desc: "Slightly burdened, movement is still easy." },
-      { wtPortion: 2, mvFactor: 0.5, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted." },
-      { wtPortion: 1.5, mvFactor: 0.25, label: "Encumbered", desc: "Significantly burdened, movement is sluggish." },
-      { wtPortion: 1, mvFactor: 0.125, label: "Heavily Encumbered", desc: "Struggling under weight, movement is laborious." },
-      { wtPortion: 0, mvFactor: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
+      { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
+      { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
+      { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
+      { wtPortion: 1.5, mvFactor: 0.25, name: "encumbered" },
+      { wtPortion: 1, mvFactor: 0.125, name: "heavily" },
+      { wtPortion: 0, mvFactor: 0, name: "over" },
    ],
    monster: [
-      { wtPortion: 2, mvFactor: 1.0, label: "Unencumbered", desc: "Free to move without any hindrance." },
-      { wtPortion: 1, mvFactor: 0.5, label: "Moderately Encumbered", desc: "Noticeable weight, movement is somewhat restricted. Half of maximum." },
-      { wtPortion: 0, mvFactor: 0, label: "Over Encumbered", desc: "Severely overloaded, movement is impossible." },
+      { wtPortion: 2, mvFactor: 1.0, name: "unencumbered"},
+      { wtPortion: 1, mvFactor: 0.5, name: "moderately"},
+      { wtPortion: 0, mvFactor: 0, name: "over"},
    ]
 };
 FADE.Classes = {
    cleric: {
-      name: "Cleric", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36, firstLevel:1, maxSpellLevel: 7,
+      name: "Cleric", species: "Human", primeReqs: [{ ability: "wis", xpBonus5: 13, xpBonus10: 16 }], maxLevel: 36, firstLevel: 1, maxSpellLevel: 7,
       levels: [
          { level: 1, xp: 0, thac0: 19, hd: "1d6", hdcon: true, title: "Acolyte" },
          { level: 2, xp: 1500, thac0: 19, hd: "2d6", hdcon: true, title: "Adept" },
@@ -2906,7 +2906,7 @@ FADE.Classes = {
          [9, 9, 8, 8, 8, 8, 7], [9, 9, 9, 8, 8, 8, 8], [9, 9, 9, 9, 9, 8, 8], [9, 9, 9, 9, 9, 9, 9]
       ]
    }
-};2.66666
+};
 FADE.AdjustmentTableDD = [
    { max: 1, value: -4, maxRetainers: 0, retainerMorale: 0 },
    { max: 3, value: -3, maxRetainers: 1, retainerMorale: 4 },

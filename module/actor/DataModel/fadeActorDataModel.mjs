@@ -348,8 +348,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }
 
          if (encTier) {
-            encumbrance.label = encTier.label;
-            encumbrance.desc = encTier.desc;
+            encumbrance.label = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`);
+            encumbrance.desc = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`);
             encumbrance.mv = Math.floor(this.movement.max * encTier.mvFactor);
             encumbrance.fly = Math.floor(this.flight.max * encTier.mvFactor);
          }

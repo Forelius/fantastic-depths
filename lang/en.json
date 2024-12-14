@@ -44,10 +44,6 @@
             "hint": "The lowest level for this class.",
             "name": "First Level"
          },
-         "hasLevelZero": {
-            "hint": "Does this class have a level zero.",
-            "name": "Lvl 0"
-         },
          "isRetainer": {
             "hint": "Is this character a retainer, hireling or other hired hand.",
             "name": "Retainer"
@@ -213,6 +209,32 @@
          "AT#Recv": {
             "name": "AT# recv.",
             "desc": "Number of attacks received this round."
+         },
+         "encumbrance": {
+            "unencumbered": {
+               "label": "Unencumbered",
+               "desc": "Free to move without any hindrance."
+            },
+            "lightly": {
+               "label": "Lightly Encumbered",
+               "desc": "Slightly burdened, movement is still easy."
+            },
+            "moderately": {
+               "label": "Moderately Encumbered",
+               "desc": "Noticeable weight, movement is somewhat restricted. Half movement rate."
+            },
+            "encumbered": {
+               "label": "Encumbered",
+               "desc": "Significantly burdened, movement is sluggish."
+            },
+            "heavily": {
+               "label": "Heavily Encumbered",
+               "desc": "Struggling under weight, movement is laborious."
+            },
+            "over": {
+               "label": "Over Encumbered",
+               "desc": "Severely overloaded, movement is impossible."
+            }
          }
       },
       "SheetLabel": {
@@ -583,7 +605,7 @@
             }
          }
       },
-      "GMNotes": "GM Notes"      
+      "GMNotes": "GM Notes"
    },
 
    "TYPES": {
