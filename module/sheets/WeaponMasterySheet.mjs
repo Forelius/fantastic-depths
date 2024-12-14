@@ -35,18 +35,11 @@ export class WeaponMasterySheet extends ItemSheet {
       context.isGM = game.user.isGM;
 
       const types = [];
+      types.push({ value: null, text: game.i18n.localize(`FADE.none`) });
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
       }));
       context.weaponTypes = types;
-
-      // Localize mastery level labels for display
-      //context.levels = Object.keys(CONFIG.FADE.MasteryLevels).map((key, index) => {
-      //   return {
-      //      ...itemData.system.levels[index],
-      //      label: game.i18n.localize(`FADE.Mastery.levels.${key}`) // Localize each level
-      //   };
-      //});
 
       return context;
    }

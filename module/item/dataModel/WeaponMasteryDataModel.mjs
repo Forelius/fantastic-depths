@@ -6,7 +6,7 @@ export class WeaponMasteryDataModel extends foundry.abstract.TypeDataModel {
       const { fields } = foundry.data;
       return {
          name: new fields.StringField({ required: true }),
-         primaryType: new fields.StringField({ required: true, initial: "" }),
+         primaryType: new fields.StringField({ required: true, initial: "all" }),
          levels: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true }),
@@ -22,7 +22,7 @@ export class WeaponMasteryDataModel extends foundry.abstract.TypeDataModel {
                acBonusAT: new fields.NumberField({ nullable: true, initial: null }),
                pToHit: new fields.NumberField({ required: true, initial: 0 }),
                sToHit: new fields.NumberField({ required: true, initial: 0 }),
-               name: new fields.StringField({ required: false }),
+               special: new fields.StringField({ nullable: true, required: false }),
             }),
             {
                required: true,
@@ -40,5 +40,10 @@ export class WeaponMasteryDataModel extends foundry.abstract.TypeDataModel {
             }
          )
       };
+   }
+
+   /** @override */
+   prepareBaseData() {
+      super.prepareBaseData();    
    }
 }

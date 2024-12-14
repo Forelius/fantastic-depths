@@ -9,7 +9,5 @@ export class WeaponMasteryItem extends fadeItem {
     */
    prepareDerivedData() {
       super.prepareDerivedData();
-
-      // Future derived data logic will go here if needed.
    }
 }

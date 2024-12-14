@@ -22,6 +22,7 @@
    <section class="levels">
       {{#each system.levels as |level index|}}
       <h3>{{localize (concat 'FADE.Mastery.levels.' level.name)}}</h3>
+      <input type="hidden" name="system.levels.{{index}}.name" value="{{level.name}}" />
       <ul class="summary flexrow">
          <li class="flex1">
             <input type='text' name="system.levels.{{index}}.acBonus" value='{{level.acBonus}}' data-dtype='Number' />
@@ -29,7 +30,7 @@
          </li>
          <li class="flex2">
             <select name="system.levels.{{index}}.acBonusType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
-               {{selectOptions @root.weaponTypes selected=level.primaryType valueAttr="value" labelAttr="text"}}
+               {{selectOptions @root.weaponTypes selected=level.acBonusType valueAttr="value" labelAttr="text"}}
             </select>
             <label for="system.levels.{{index}}.acBonusType">{{localize 'FADE.Mastery.acBonusType'}}</label>
          </li>
@@ -58,19 +59,19 @@
       </ul>
       <ul class="summary flexrow">
          <li class="flex2">
-            <input type='text' name="system.levels.{{index}}.special" value='{{level.special}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
+            <input type='text' name="system.levels.{{index}}.special" value='{{level.special}}' data-dtype='String' />
             <label for="system.levels.{{index}}.special">Special Effects</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.levels.{{index}}.range.short" value='{{level.range.short}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+            <input type='text' name="system.levels.{{index}}.range.short" value='{{level.range.short}}' data-dtype='Number' />
             <label for="system.levels.{{index}}.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.levels.{{index}}.range.medium" value='{{level.range.medium}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+            <input type='text' name="system.levels.{{index}}.range.medium" value='{{level.range.medium}}' data-dtype='Number' />
             <label for="system.levels.{{index}}.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.levels.{{index}}.levels.{{index}}.range.long" value='{{level.range.long}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+            <input type='text' name="system.levels.{{index}}.range.long" value='{{level.range.long}}' data-dtype='Number' />
             <label for="system.levels.{{index}}.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
          </li>
       </ul>
