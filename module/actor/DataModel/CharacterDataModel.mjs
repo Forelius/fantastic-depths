@@ -177,13 +177,12 @@ export class CharacterDataModel extends fadeActorDataModel {
       let result = null;
 
       // Try to find class item for this class.
-      let classItem = game.items.find(item=> item.name.toLowerCase() == className.toLowerCase());
+      let classItem = game.items.find(item=> item.name.toLowerCase() == className.toLowerCase() && item.type==='class');
       // If class item is found...
-      if (classItem != null && classItem.type == 'class') {
+      if (classItem != null) {
          result = classItem.system;
       } else {
          const classes = CONFIG.FADE.Classes;
-
          // Find a match in the FADE.Classes data
          for (const [key, cdata] of Object.entries(classes)) {
             if (cdata.name.toLowerCase() === className) {
