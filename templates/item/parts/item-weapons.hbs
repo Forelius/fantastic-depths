@@ -6,7 +6,7 @@
       <div class="item-60px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
       <div class="item-40px">{{localize 'FADE.Weapon.mod.dmg.short'}}</div>
       {{#if showCoinWeight}}
-      <div class="item-50px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+      <div class="item-50px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       {{/if}}
       <div class='item-controls'>
          <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.weapon")}}' data-type='weapon'>
@@ -28,11 +28,11 @@
       <div class="item-60px item-prop"><label>{{item.system.damageRoll}}</label></div>
       <div class="item-40px item-prop"><label>{{item.system.mod.dmgText}}</label></div>
       {{#if @root.showCoinWeight}}
-      <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
+      <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
       {{/if}}
       <div class='item-controls'>
          <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
-            title="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
+            data-tooltip="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
             <i class="fas fa-hand"></i>
          </a>
          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.weapon")}}'>

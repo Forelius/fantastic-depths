@@ -27,6 +27,7 @@ import { LightManager } from './sys/LightManager.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
+import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
 import { migrateData } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
@@ -54,6 +55,7 @@ Hooks.once('init', async function () {
       TurnTrackerForm,
       PartyTrackerForm,
       EffectLibraryForm,
+      AttackRollChatBuilder,
       fadeDialog
    };
 

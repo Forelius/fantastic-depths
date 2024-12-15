@@ -3,42 +3,42 @@
 <section class="bordered">
    <ul class="summary flexrow">
       <li class="flex2">
-         <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' title="{{localize 'SETTINGS.EncMax.Hint2'}}" />
-         <label for="system.encumbrance.max" title="{{localize 'SETTINGS.EncMax.Hint2'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
+         <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}" />
+         <label for="system.encumbrance.max" data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
       </li>
       <li class="flex2">
-         <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' title="{{localize 'SETTINGS.move.max.hint'}}" />
-         <label for="system.movement.max" title="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
+         <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
+         <label for="system.movement.max" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
       </li>
       <li class="flex2">
-         <input type='text' name="system.flight.max" value='{{system.flight.max}}' data-dtype='Number' title="{{localize 'SETTINGS.move.maxFlight.hint'}}" />
-         <label for="system.flight.max" title="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
+         <input type='text' name="system.flight.max" value='{{system.flight.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}" />
+         <label for="system.flight.max" data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
       </li>
       <li class="flex1">
-         <input type="checkbox" name="system.config.isRetainer" data-dtype="Boolean" {{#if system.config.isRetainer}} checked{{/if}} title="{{localize 'FADE.Actor.isRetainer.hint'}}" />
-         <label for="system.config.isRetainer" title="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
+         <input type="checkbox" name="system.config.isRetainer" data-dtype="Boolean" {{#if system.config.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
+         <label for="system.config.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
       </li>      
    </ul>
    <ul class="summary flexrow">
       <li>
          <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
-         <label for="system.config.maxSpellLevel" title="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
+         <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
       </li>
       <li>
-         <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' title="{{localize 'FADE.Actor.AT#.desc'}}" />
-         <label for="system.combat.attacks" title="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
+         <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
+         <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
       </li>
       <li>
-         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' title="{{localize 'FADE.Actor.AT#Recv.desc'}}" />
-         <label for="system.combat.attacksAgainst" title="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}</label>
+         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}" />
+         <label for="system.combat.attacksAgainst" data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}</label>
       </li>
       <li>
          <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
-         <label for="system.combat.isDead" title="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
+         <label for="system.combat.isDead" data-tooltip="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
       </li>
       <li>
-         <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' title="{{localize 'FADE.Actor.Deaths.desc'}}" />
-         <label for="system.combat.deathCount" title="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
+         <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}" />
+         <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
       </li>
    </ul>
 </section>

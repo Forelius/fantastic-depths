@@ -17,17 +17,17 @@
             </li>
             <li class="flex1">
                <input type='text' name='system.maxLevel' value='{{system.maxLevel}}' data-dtype='Number' />
-               <label for="system.maxLevel" title="{{localize 'FADE.Actor.maxLevel.hint'}}">{{localize 'FADE.Actor.maxLevel.name'}}</label>
+               <label for="system.maxLevel" data-tooltip="{{localize 'FADE.Actor.maxLevel.hint'}}">{{localize 'FADE.Actor.maxLevel.name'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name='system.firstLevel' value='{{system.firstLevel}}' data-dtype='Number' />
-               <label for="system.firstLevel" title="{{localize 'FADE.Actor.firstLevel.hint'}}">{{localize 'FADE.Actor.firstLevel.name'}}</label>
+               <label for="system.firstLevel" data-tooltip="{{localize 'FADE.Actor.firstLevel.hint'}}">{{localize 'FADE.Actor.firstLevel.name'}}</label>
             </li>
          </ul>
-         <ul class="summary flexrow">           
+         <ul class="summary flexrow">
             <li class="flex1">
                <input type='text' name='system.maxSpellLevel' value='{{system.maxSpellLevel}}' data-dtype='Number' />
-               <label for="system.maxSpellLevel" title="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
+               <label for="system.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name='system.minCon' value='{{system.minCon}}' data-dtype='Number' />
@@ -51,13 +51,13 @@
 
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
-      <a class='item' data-tab='levels'>Levels</a>
-      <a class='item' data-tab='saves'>Saving Throws</a>
-      <a class='item' data-tab='primeReqs'>Prime Requisites</a>
+      <a class='item' data-tab='levels'>{{localize 'FADE.tabs.levels'}}</a>
+      <a class='item' data-tab='saves'>{{localize 'FADE.Actor.Saves.long'}}</a>
+      <a class='item' data-tab='primeReqs'>{{localize 'FADE.tabs.primeRequisites'}}</a>
       {{#if isSpellcaster}}
-      <a class='item' data-tab='spells'>Spells</a>
+   <a class='item' data-tab='spells'>{{localize 'FADE.tabs.spells'}}</a>
       {{/if}}
-      <a class='item' data-tab='description'>Description</a>
+   <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
    </nav>
 
    {{! Sheet Body }}

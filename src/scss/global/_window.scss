@@ -21,6 +21,10 @@
    text-align: center;
 }
 
+.text-left {
+   text-align: left;
+}
+
 .float-left {
    float: left;
 }
@@ -112,4 +116,10 @@
 .declared-action {
    font-size: 12px;
    color: #888888;
+}
+
+.system-fantastic-depths {
+   #tooltip.text-center {
+      text-align: left !important;
+   }
 }

@@ -46,8 +46,8 @@
          <label for="system.canRanged">{{localize 'FADE.AttackTypes.types.missile'}}</label>
       </li>
       <li class="flex1">
-         <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} title="{{localize "FADE.Armor.natural.desc"}}" />
-         <label for="system.natural" title="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
+         <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} data-tooltip="{{localize "FADE.Armor.natural.desc"}}" />
+         <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
       </li>
       <li class="flex2">
          <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String"/>

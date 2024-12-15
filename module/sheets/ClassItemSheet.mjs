@@ -47,7 +47,7 @@ export class ClassItemSheet extends ItemSheet {
       // Generate spell level headers
       context.spellLevelHeaders = [];
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
-         context.spellLevelHeaders.push(`Spell Level ${i}`);
+         context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }

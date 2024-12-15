@@ -91,15 +91,16 @@ export class AttackRollChatBuilder extends ChatBuilder {
       if (roll) {
          const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
          const hitAC = AttackRollChatBuilder.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0);
-         result = {
-            hitAC,
-            message: (hitAC !== null) ? game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC }) : '',
+            result = {
+               hitAC,
+               message: (hitAC !== null && hitAC !== Infinity)
+                  ? game.i18n.format('FADE.Chat.attackAC', { hitAC: hitACText })
+                  : game.i18n.format('FADE.Chat.attackACNone'),
             targetResults: []
          };
 
          // Target results for each individual target.
-         // Warning: This is not correctly handling weapon mastery-based mods to attack roll, since
-         //    attack rolls assume a single target weapon type.
+         // Warning: This is not correctly handling weapon mastery-based mods to attack roll, since attack rolls assume a single target weapon type.
          for (let targetToken of targetTokens) {
             let targetActor = targetToken.actor;
             let targetResult = {
@@ -122,9 +123,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
                if (defenseMastery && defenseMastery.acBonus !== Infinity) {
                   // Normal AC/Mastery Def. AC
                   const isApplicable = targetActor.system.combat.attacksAgainst < defenseMastery.acBonusAT;
-                  targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
-<span ${isApplicable ? "style='color:green'" : ""} title='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
-                  //console.debug(`${attackerToken.name} vs ${targetToken.name}:`, isApplicable, defenseMastery, targetResult.targetac);
+                  targetResult.targetac = game.i18n.format('FADE.Chat.targetACDefMastery', {
+                     cssClass: (isApplicable ? "" : "style='color:green'"),
+                     acTotal: targetToken.actor.system.ac?.total,
+                     attacksAgainst: targetActor.system.combat.attacksAgainst,
+                     maxAttacksAgainst: defenseMastery.acBonusAT,
+                     defenseMasteryTotal: defenseMastery.total
+                  });
+//                  targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
+//<span ${isApplicable ? "style='color:green'" : ""} data-tooltip='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
                   if (isApplicable) {
                      ac = defenseMastery.total;
                   }

@@ -42,11 +42,14 @@ export class ActorMasteryItem extends fadeItem {
       let masteryItem = game.items.find(item => item.name.toLowerCase() == masteryName.toLowerCase() && item.type === 'weaponMastery');
       // If class item is found...
       if (masteryItem != null) {
-         let masteryData = masteryItem.system;
-         result = masteryData.levels.find(md => md.name === level)
+         result = masteryItem.system.levels.find(md => md.name === level)
       } else {
          let masteryData = CONFIG.FADE.WeaponMastery[masteryName];
-         result = masteryData[level];
+         if (!masteryData) {
+            console.warn(`Mastery data not found for ${masteryName}. Owner: ${this.parent?.name}.`);
+         } else {
+            result = masteryData[level];
+         }
       }
 
       return result;

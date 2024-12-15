@@ -33,10 +33,10 @@ export class fadeChatMessage extends ChatMessage {
    <div class="collapsible-content">`;
       if (mdata.type === 'heal') {
          innerHTML += `
-         <button class="apply-heal" type="button" title="Apply healing." `;
+         <button class="apply-heal" type="button" data-tooltip="Apply healing." `;
       } else {
          innerHTML += `
-         <button class="apply-damage" type="button" title="Apply damage." `;
+         <button class="apply-damage" type="button" data-tooltip="Apply damage." `;
       }
       innerHTML += `
               data-attacktype="${mdata.attacktype}"

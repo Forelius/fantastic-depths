@@ -15,7 +15,7 @@
          <ul class="summary flexrow">
             <li class="flex2">
                <input type='text' name='system.ac' value='{{system.ac}}' data-dtype='Number' />
-               <label for="system.ac">{{localize 'FADE.Armor.long'}}</label>
+               <label for="system.ac" data-tooltip="{{localize 'FADE.Armor.hintBase'}}">{{localize 'FADE.Armor.long'}}</label>
             </li>
             <li class="flex1">
                <div class="item-info">{{system.mod}}</div>
@@ -26,8 +26,8 @@
                <label for="system.isShield">{{localize "FADE.Armor.shield.short"}}</label>
             </li>
             <li class="flex1">
-               <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} title="{{localize "FADE.Armor.natural.desc"}}" />
-               <label for="system.natural" title="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
+               <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} data-tooltip="{{localize "FADE.Armor.natural.desc"}}" />
+               <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
             </li>
             <li class="flex2">
                {{#if isBasicEnc}}
@@ -50,10 +50,10 @@
 
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
-      <a class='item' data-tab='description'>{{localize 'FADE.Actor.Tabs.Description'}}</a>
+      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
       {{#if isGM}}
-      <a class='item' data-tab='effects'>{{localize 'FADE.Actor.Tabs.Effects'}}</a>
-      <a class='item' data-tab='gm-only'>{{localize 'FADE.Actor.Tabs.gmOnly'}}</a>
+      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
+      <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
       {{/if}}
    </nav>
 

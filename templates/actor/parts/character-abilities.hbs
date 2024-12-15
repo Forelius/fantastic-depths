@@ -7,14 +7,14 @@
                 data-ability="{{key}}"
                 data-test="ability"
                 data-pass="lte"
-                title="{{localize (concat 'FADE.Actor.Abilities.' key '.long')}}">
+                data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
             {{#if @root.abilityAbbr}}
             {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
             {{else}}
             {{localize (concat 'FADE.Actor.Abilities.' key '.long')}}
             {{/if}}
          </label>
-         <span class="ability-mod flex0" title="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+         <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
       </div>
       {{/each}}
    </section>
@@ -23,22 +23,22 @@
          <div class="flexrow">
             <!-- Hit Points -->
             <div class="hit-points">
-               <input name="system.hp.value" class="hp-value hp-top" type="text" value="{{system.hp.value}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthShort'}}" />
-               <input name="system.hp.max" class="hp-value hp-bottom" type="text" value="{{system.hp.max}}" data-dtype="Number" title="{{localize 'FADE.Actor.HealthMax'}}" />
+               <input name="system.hp.value" class="hp-value hp-top" type="text" value="{{system.hp.value}}" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.HealthShort'}}" />
+               <input name="system.hp.max" class="hp-value hp-bottom" type="text" value="{{system.hp.max}}" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.HealthMax'}}" />
                <!--<label>{{localize 'FADE.Actor.HealthShort'}}</label>-->
                <div class="hp-empty" style="height:{{counter false system.hp.value system.hp.max}}%"></div>
                <div class="hp-full" style="height:{{counter true system.hp.value system.hp.max}}%"></div>
             </div>
             <!-- Armor Class -->
             <div class="armor-class">
-               <label class="ac-value ac-top" title="{{#if isAAC}}{{localize 'FADE.Armor.longAAC'}}{{else}}{{localize 'FADE.Armor.long'}}{{/if}}">
+               <label class="ac-value ac-top" data-tooltip="{{#if isAAC}}{{localize 'FADE.Armor.totalAAC'}}{{else}}{{localize 'FADE.Armor.total'}}{{/if}}">
                   {{#if isAAC}}
                   {{system.ac.totalAAC}}
                   {{else}}
                   {{system.ac.total}}
                   {{/if}}
                </label>
-               <div class="ac-value ac-bottom" title="{{localize 'FADE.Armor.naked'}}">
+               <div class="ac-value ac-bottom" data-tooltip="{{localize 'FADE.Armor.naked'}}">
                   {{#if isAAC}}
                   {{system.ac.nakedAAC}}
                   {{else}}
@@ -46,7 +46,7 @@
                   {{/if}}
                </div>
                {{#if system.ac.shield}}
-               <div class="shield" title="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
+               <div class="shield" data-tooltip="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
                {{/if}}
             </div>
          </div>
@@ -62,9 +62,9 @@
                       data-pass="gte"
                       data-target="{{system.exploration.openDoor}}"
                       data-label="{{localize 'FADE.Actor.explore.OpenDoor.short'}}"
-                      title="{{localize 'FADE.Actor.explore.OpenDoor.long'}}">{{localize 'FADE.Actor.explore.OpenDoor.short'}}</label>
+                      data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}">{{localize 'FADE.Actor.explore.OpenDoor.short'}}</label>
                <br />
-               <input name="system.exploration.openDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.explore.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" />
+               <input name="system.exploration.openDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" />
             </span>
             <span>
                <label class="rollable" for="system.exploration.secretDoor"
@@ -74,9 +74,9 @@
                       data-rollmode="blindroll"
                       data-target="{{system.exploration.secretDoor}}"
                       data-label="{{localize 'FADE.Actor.explore.SecretDoor.short'}}"
-                      title="{{localize 'FADE.Actor.explore.SecretDoor.long'}}">{{localize 'FADE.Actor.explore.SecretDoor.short'}}</label>
+                      data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}">{{localize 'FADE.Actor.explore.SecretDoor.short'}}</label>
                <br />
-               <input name="system.exploration.secretDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.explore.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" />
+               <input name="system.exploration.secretDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" />
             </span>
          </div>
          <div class="clear-fix"></div>
@@ -89,9 +89,9 @@
                       data-rollmode="blindroll"
                       data-target="{{system.exploration.listenDoor}}"
                       data-label="{{localize 'FADE.Actor.explore.ListenDoor.short'}}"
-                      title="{{localize 'FADE.Actor.explore.ListenDoor.long'}}">{{localize 'FADE.Actor.explore.ListenDoor.short'}}</label>
+                      data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}">{{localize 'FADE.Actor.explore.ListenDoor.short'}}</label>
                <br />
-               <input name="system.exploration.listenDoor" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.explore.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" />
+               <input name="system.exploration.listenDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" />
             </span>
             <span>
                <label class="rollable" for="system.exploration.findTrap" data-test="generic"
@@ -100,9 +100,9 @@
                       data-rollmode="blindroll"
                       data-target="{{system.exploration.findTrap}}"
                       data-label="{{localize 'FADE.Actor.explore.FindTrap.short'}}"
-                      title="{{localize 'FADE.Actor.explore.FindTrap.long'}}">{{localize 'FADE.Actor.explore.FindTrap.short'}}</label>
+                      data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}">{{localize 'FADE.Actor.explore.FindTrap.short'}}</label>
                <br />
-               <input name="system.exploration.findTrap" type="text" data-dtype="Number" title="{{localize 'FADE.Actor.explore.FindTrap.long'}}" value="{{system.exploration.findTrap}}" />
+               <input name="system.exploration.findTrap" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}" value="{{system.exploration.findTrap}}" />
             </span>
          </div>
          <div class="clear-fix"></div>
@@ -138,20 +138,20 @@
       <h4>{{localize 'FADE.Actor.Movement.long'}}</h4>
       <div class="grid grid-4col label-12px">
          <div>
-            <label for="system.movement.turn" title="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
-            <input name="system.movement.turn" type="text" data-dtype="Number" value="{{system.movement.turn}}" title="{{localize 'FADE.Actor.Movement.turnHint'}}" />
+            <label for="system.movement.turn" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
+            <input name="system.movement.turn" type="text" data-dtype="Number" value="{{system.movement.turn}}" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
          </div>
          <div>
-            <label for="system.movement.round" title="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
-            <input name="system.movement.round" type="text" data-dtype="Number" readonly value="{{system.movement.round}}" title="{{localize 'FADE.Actor.Movement.roundHint'}}" />
+            <label for="system.movement.round" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
+            <input name="system.movement.round" type="text" data-dtype="Number" readonly value="{{system.movement.round}}" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
          </div>
          <div>
-            <label for="system.movement.day" title="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
-            <input name="system.movement.day" type="text" data-dtype="Number" readonly value="{{system.movement.day}}" title="{{localize 'FADE.Actor.Movement.dayHint'}}" />
+            <label for="system.movement.day" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
+            <input name="system.movement.day" type="text" data-dtype="Number" readonly value="{{system.movement.day}}" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
          </div>
          <div>
-            <label for="system.movement.run" title="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
-            <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" title="{{localize 'FADE.Actor.Movement.runHint'}}"/>
+            <label for="system.movement.run" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
+            <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}"/>
          </div>
       </div>
    </section>
@@ -164,7 +164,7 @@
                <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
             </div>
             <div>
-               <label for="system.wrestling" title="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+               <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
                <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
             </div>
             <div>

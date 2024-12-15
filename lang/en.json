@@ -63,24 +63,15 @@
             "abbr": "MV",
             "long": "Movement",
             "turn": "Base",
-            "turnHint": "Feet or yards per 10 minute turn. This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.",
+            "turnHint": "<b>Feet or yards per 10 minute turn.</b><p>This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.</p>",
             "round": "Round",
-            "roundHint": "Feet or yards per 10 second round. Used during combat encounters.",
+            "roundHint": "<b>Feet or yards per 10 second round.</b><p>Used during combat encounters.</p>",
             "day": "Overland",
-            "dayHint": "Miles per day. Used for overland travel. Note that terrain effects this rate.",
+            "dayHint": "<b>Miles per day. Overland travel.</b><p>Note that terrain effects this rate.</p>",
             "run": "Run",
-            "runHint": "Feet or yards per 10 second round. Used when running or flying at maximum speed during combat encounters. Travel at maximum speed can last for up to 30 rounds (5 minutes) before exhaustion.",
+            "runHint": "<b>Feet or yards per 10 second round.</b><p>Used when running or flying at maximum speed during combat encounters. Travel at maximum speed can last for up to 30 rounds (5 minutes) before exhaustion.</p>",
             "total": "Total",
             "moveTurn": "Base Movement"
-         },
-         "Tabs": {
-            "Abilities": "Abilities",
-            "Items": "Equipment",
-            "Spells": "Spells",
-            "Skills": "Skills",
-            "Effects": "Effects",
-            "Description": "Description",
-            "gmOnly": "GM Only"
          },
          "explore": {
             "long": "Exploration",
@@ -141,34 +132,40 @@
             "str": {
                "long": "Strength",
                "abbr": "STR",
-               "mod": "To-Hit, Damage, Open Doors"
+               "mod": "To-Hit, Damage, Open Doors",
+               "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p</div>"
             },
             "dex": {
                "long": "Dexterity",
                "abbr": "DEX",
-               "mod": "Missile To-Hit, AC, Initiative"
+               "mod": "Missile To-Hit, AC, Initiative",
+               "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p>"
             },
             "int": {
                "long": "Intelligence",
                "abbr": "INT",
-               "mod": "Language(s)"
+               "mod": "Language(s)",
+               "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p>"
             },
             "wis": {
                "long": "Wisdom",
                "abbr": "WIS",
-               "mod": "Saving Throws vs Spells"
+               "mod": "Saving Throws vs Spells",
+               "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p>"
             },
             "con": {
                "long": "Constitution",
                "abbr": "CON",
-               "mod": "Hit Points/Level"
+               "mod": "Hit Points/Level",
+               "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p>"
             },
             "cha": {
                "long": "Charisma",
                "abbr": "CHA",
                "mod": "Reactions",
                "retainer": "Retainers",
-               "morale": "Morale"
+               "morale": "Morale",
+               "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p>"
             }
          },
          "Attacks": {
@@ -200,7 +197,7 @@
          },
          "Deaths": {
             "name": "Deaths",
-            "desc": "Number of times this character has reached 0 HP. In some variants, this is capped at a value equal to their Constitution score."
+            "desc": "<p>Number of times this character has dropped to zero or less hit points.</p><p>In some variants, this is capped at a value equal to the character's <b>constitution</b> score.</p>"
          },
          "AT#": {
             "name": "AT#",
@@ -244,7 +241,7 @@
          "WeaponMasteryItem": "Weapon Mastery Item Sheet"
       },
       "Spell": {
-         "SpellLVL": "Level {level} Spells",
+         "SpellLVL": "Spell Level {level}",
          "slots": "Slots",
          "resetSlots": "Reset memorized spells to zero casts. Memorized count will not be changed.",
          "usedSlots": "Used slots",
@@ -288,9 +285,6 @@
          "cost": {
             "abbr": "gp",
             "long": "Cost (gp)"
-         },
-         "tabs": {
-            "attributes": "Attributes"
          }
       },
       "Weapon": {
@@ -339,11 +333,13 @@
          "plural": "Armor",
          "naked": "Without Armor",
          "long": "Base AC",
+         "hintBase": "<b>Base Armor Class</b><p>This is the base armor class and it doesn't' include modifiers from effects.</p>",
          "longAAC": "Base AAC",
          "abbr": "AC",
          "abbrAAC": "AAC",
          "total": "Total AC",
          "totalAAC": "Total AAC",
+         "hintTotal": "<b>Total Armor Class</b><p>This is the total armor class and it includes modifiers from effects.</p>",
          "shield": {
             "long": "Shield Equipped",
             "short": "Shield"
@@ -452,11 +448,13 @@
          "spellCast": "{caster} casts {spell}",
          "useSpecAbility": "{owner} uses {specAbility}",
          "attackAC": "<div class='attack-info'>Attack hits <strong>AC {hitAC}</strong>.</div>",
+         "attackACNone": "<div class='attack-info'>Attack doesn't hit any AC.</div>",
          "attackSuccess": "<div class='attack-success'>Attack hit!</div>",
          "attackFail": "<div class='attack-fail'>Attack missed!</div>",
          "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
          "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
-         "healRoll": "Heal"
+         "healRoll": "Heal",
+         "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='Adjusted AC with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.'>({defenseMasteryTotal})</span>"
       },
       "roll": "Roll",
       "rollMode": "Roll Mode",
@@ -498,6 +496,18 @@
          "prevDesc": "Revert Turn",
          "resetSession": "Reset Session",
          "resetTotal": "Reset Total"
+      },
+      "tabs": {
+         "abilities": "Abilities",
+         "items": "Equipment",
+         "spells": "Spells",
+         "skills": "Skills",
+         "effects": "Effects",
+         "description": "Description",
+         "gmOnly": "GM Only",
+         "levels": "Levels",
+         "primeRequisites": "Prime Requisites",
+         "attributes": "Attributes"
       },
       "AttackTypes": {
          "name": "Attack Type",
@@ -663,11 +673,11 @@
       "move": {
          "max": {
             "name": "Max. Move Speed",
-            "hint": "The maximum distance this being can move per turn."
+            "hint": "<b>Max ground speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          },
          "maxFlight": {
             "name": "Max. Flight Speed",
-            "hint": "The maximum distance this being can fly per turn."
+            "hint": "<b>Max flying speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          }
       },
       "rest": {

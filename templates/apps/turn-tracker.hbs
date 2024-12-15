@@ -16,14 +16,14 @@
       {{/if}}
    </section>
    <section class="flexrow" style="margin-top: 10px;">
-      <button id="revert-turn" type="button" title="{{localize 'FADE.time.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.time.prev'}}</button>
-      <button id="advance-turn" type="button" title="{{localize 'FADE.time.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.time.next'}}</button>
+      <button id="revert-turn" type="button" data-tooltip="{{localize 'FADE.time.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.time.prev'}}</button>
+      <button id="advance-turn" type="button" data-tooltip="{{localize 'FADE.time.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.time.next'}}</button>
       {{#if restFrequency}}
-      <button id="rest" type="button" title="{{localize 'FADE.time.rest'}}"><i class="fa-solid fa-campground"></i> {{localize 'FADE.time.rest'}}</button>
+      <button id="rest" type="button" data-tooltip="{{localize 'FADE.time.rest'}}"><i class="fa-solid fa-campground"></i> {{localize 'FADE.time.rest'}}</button>
       {{/if}}
    </section>
    <section class="flexrow" style="margin-top: 2px;">
-      <button id="reset-session" type="button" title="{{localize 'FADE.time.resetSession'}}"><i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.time.resetSession'}}</button>
-      <button id="reset-total" type="button" title="{{localize 'FADE.time.resetTotal'}}"><i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.time.resetTotal'}}</button>
+      <button id="reset-session" type="button" data-tooltip="{{localize 'FADE.time.resetSession'}}"><i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.time.resetSession'}}</button>
+      <button id="reset-total" type="button" data-tooltip="{{localize 'FADE.time.resetTotal'}}"><i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.time.resetTotal'}}</button>
    </section>
 </div>

@@ -23,13 +23,13 @@
                    data-dtype="Number"
                    placeholder="0"
                    readonly
-                   title="{{localize 'FADE.Spell.usedSlots'}}" />/
+                   data-tooltip="{{localize 'FADE.Spell.usedSlots'}}" />/
             <input type="text"
                    value="{{lookup (lookup @root.system.spellSlots @key) 'max'}}"
                    name="system.spellSlots[{{@key}}].max"
                    data-dtype="Number"
                    placeholder="0"
-                   title="{{localize 'FADE.Spell.availableSlots'}}" />
+                   data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
          </div>
          <div class='item-controls'>
             <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell' data-spell-level='{{@key}}'>
@@ -53,13 +53,13 @@
                    data-dtype="Number"
                    placeholder="0"
                    data-field="cast"
-                   title="{{localize 'FADE.Spell.cast'}}" />/
+                   data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
             <input type="text"
                    value="{{spell.system.memorized}}"
                    data-field="memorize"
                    data-dtype="Number"
                    placeholder="0"
-                   title="{{localize 'FADE.Spell.memorized'}}" />
+                   data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
          </div>
          <div class='item-controls'>
             <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>

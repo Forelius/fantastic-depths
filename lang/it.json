@@ -3,11 +3,11 @@
       "Actor": {
          "Name": "Nome",
          "Health": "Punti Ferita",
-         "HealthMax": "Max PF.",
-         "HealthMaxMonster": "Impostalo su zero per calcolare automaticamente gli PF massimi dai DV",
+         "HealthMax": "PF Massimi",
+         "HealthMaxMonster": "Impostalo su zero per calcolare automaticamente i PF massimi dai DV",
          "Max": "Max",
          "Min": "Min",
-         "HealthShort": "PF",
+         "HealthShort": "PF Attuali",
          "HitDice": "Dadi Vita",
          "HitDiceShort": "DV",
          "Title": "Titolo",
@@ -30,13 +30,22 @@
          "XPShort": "PX",
          "XPBonus": "PX Bonus %",
          "THAC0": "THAC0",
+         "THBonus": "Bonus TPC",
          "PrimeReq": "Req. Primario",
-         "isSpellcaster": {
-            "hint": "Questo Personaggio o Oggetto lancia incantesimi?",
-            "name": "Incantatore"
+         "maxLevel": {
+            "hint": "Il livello più alto che questa classe può raggiungere.",
+            "name": "Livello Massimo"
+         },
+         "maxSpellLevel": {
+            "hint": "Il livello di incantesimi più alto per questa classe.",
+            "name": "Max Lvl Incantesimi"
+         },
+         "firstLevel": {
+            "hint": "Il livello più basso per questa classe.",
+            "name": "Livello Iniziale"
          },
          "isRetainer": {
-            "hint": "Questo personaggio è un servitore, un mercenario o un aiutante?",
+            "hint": "Questo personaggio è un servitore, un mercenario o un aiutante.",
             "name": "Servitore"
          },
          "Other": "Altro",
@@ -54,7 +63,7 @@
             "abbr": "MV",
             "long": "Movimento",
             "turn": "Normale",
-            "turnHint": "Metri per turno di 10 minuti. Questo lasso di tempo include molte azioni presunte come mappare, sbirciare dietro gli angoli, riposare e così via.",
+            "turnHint": "Metri per turno di 10 minuti.\nQuesto lasso di tempo include\nmolte azioni presunte come\nmappare, sbirciare dietro gli\nangoli, riposare e così via.",
             "round": "Round",
             "roundHint": "Metri per round di 10 secondi. Usato durante i combattimenti.",
             "day": "Viaggio",
@@ -200,12 +209,39 @@
          "AT#Recv": {
             "name": "AT# RCV",
             "desc": "Numero di attacchi ricevuti in questo round."
+         },
+         "encumbrance": {
+            "unencumbered": {
+               "label": "Non Ingombrato",
+               "desc": "Liberi di muoversi senza alcun impedimento."
+            },
+            "lightly": {
+               "label": "Leggermente Ingombrato",
+               "desc": "Leggermente appesantito, il movimento è comunque agevole."
+            },
+            "moderately": {
+               "label": "Moderatamente Ingombrato",
+               "desc": "Peso notevole, movimento un po' limitato. Velocità di movimento dimezzata."
+            },
+            "encumbered": {
+               "label": "Ingombrato",
+               "desc": "Notevolmente appesantito, il movimento è lento."
+            },
+            "heavily": {
+               "label": "Pesantemente Ingombrato",
+               "desc": "Lotti per il peso, il movimento è faticoso."
+            },
+            "over": {
+               "label": "Troppo Ingombrato",
+               "desc": "Gravemente sovraccarico, il movimento è impossibile."
+            }
          }
       },
       "SheetLabel": {
          "Actor": "Scheda del Personaggio Fa.De.",
          "Item": "Scheda Oggetto Fa.De.",
-         "ClassItem": "Scheda Classe Oggetto"
+         "ClassItem": "Scheda Classe Oggetto",
+         "WeaponMasteryItem": "Scheda Maestria Armi"
       },
       "Spell": {
          "SpellLVL": "Incantesimi di {level}° Livello",
@@ -303,17 +339,28 @@
          "plural": "Armatura",
          "naked": "Senza Armatura",
          "long": "CA Attuale",
+         "longAAC": "CAA Base",
          "abbr": "CA",
+         "abbrAAC": "CAA",
          "total": "CA Tot",
+         "totalAAC": "CAA Totale",
          "shield": {
             "long": "Scudo Equipaggiato",
             "short": "Scudo"
          },
          "natural": {
             "short": "Naturale",
-            "desc": "Questa è considerata una parte naturale del suo proprietario."
+            "desc": "Questa è considerata una parte naturale del suo corpo."
          },
-         "mod": "Mod CA"
+         "mod": "Mod CA",
+         "armorWeight": {
+            "short": "Peso",
+            "choices": {
+               "none": "Nullo",
+               "light": "Leggero",
+               "heavy": "Pesante"
+            }
+         }
       },
       "Skill": {
          "plural": "Abilità Generali",
@@ -323,6 +370,7 @@
       "Mastery": {
          "plural": "Maestria nelle Armi",
          "short": "Maestria",
+         "long": "Maestria Arma",
          "primary": "Primaria",
          "secondary": "Secondaria",
          "weaponTypeTitle": "M=Mostro/Munizione, I=In Mano, T=Tutte",
@@ -340,6 +388,13 @@
                "long": "Tutte",
                "abbr": "T"
             }
+         },
+         "levels": {
+            "basic": "Base",
+            "skilled": "Abile",
+            "expert": "Esperto",
+            "master": "Avanzato",
+            "grandMaster": "Master"
          },
          "acBonus": "Bonus CA",
          "acBonusType": "Tipo",
@@ -415,7 +470,7 @@
          "abilityCheck": "Prova di Caratteristica",
          "skillCheck": "Prova di Abilità",
          "spellcast": {
-            "title": "Lanci l'incantesimo?",
+            "title": "Lanciare l'incantesimo?",
             "content": "Vuoi lanciare l'incantesimo o vedere la sua descrizione?",
             "yesLabel": "Lancia incantesimo",
             "noLabel": "Vedi descrizione"
@@ -493,7 +548,7 @@
          },
          "maneuvers": {
             "nothing": {
-               "name": "Nulla",
+               "name": "Niente",
                "description": "Il personaggio non fa assolutamente nulla in questo round. Nessuna mossa, nessun attacco, niente di niente."
             },
             "moveOnly": {
@@ -558,7 +613,8 @@
             }
          }
       },
-      "GMNotes": "Note del DM"
+      "GMNotes": "Note del DM",
+      "none": "Niente"
    },
 
    "TYPES": {
@@ -575,17 +631,19 @@
          "mastery": "Maestria Arma",
          "specialAbility": "Abilità Speciale",
          "treasure": "Tesoro",
-         "class": "Classe Personaggio"
+         "class": "Classe Personaggio",
+         "weaponMastery": "Definizione Maestria Arma"
       }
    },
 
    "SETTINGS": {
       "Encumbrance": {
-         "Hint": "Abilita il tracciamento automatico dell'ingombro e l'applicazione degli effetti di stato per i personaggi che trasportano troppo.",
+         "Hint": "Abilita il tracciamento automatico dell'ingombro e l'applicazione degli effetti di stato per i personaggi che trasportano troppo. -Solo Armatura- determina il movimento in base al peso dell'armatura stessa. Dark Dungeons presuppone un carico massimo di 2400 monete e cinque velocità di movimento. Classic presuppone un carico massimo di 1600 monete e quattro velocità di movimento.",
          "Name": "Tracciatura Ingombro",
          "None": "Nessuna",
-         "Basic": "Base",
-         "Expert": "Esperto"
+         "Basic": "Solo Armatura",
+         "Classic": "Classic",
+         "Expert": "Dark Dungeons"
       },
       "toasts": {
          "hint": "Mostra frasi speciali con i lanci di dado.",
@@ -604,7 +662,7 @@
       },
       "move": {
          "max": {
-            "name": "Velocità Massima di Movimento",
+            "name": "Velocità Max di Mov.",
             "hint": "La distanza massima che questo essere può percorrere per turno."
          },
          "maxFlight": {
@@ -625,7 +683,7 @@
             "name": "Modalità Initiativa",
             "hint": "Scegli tra iniziativa di gruppo o individuale. L'iniziativa individuale (semplificata) consiste esclusivamente tramite un tiro di iniziativa più eventuali modificatori. La modalità individuale aggiunge la regola dell'arma a due mani, facendo perdere l'iniziativa a chi utilizza armi a due mani. La modalità individuale (combattimento controllato) combina l'iniziativa individuale con l'ordine della lista di controllo di combattimento quando le azioni dichiarate sono abilitate. La modalità Gruppo (lista di controllo del combattimento) raggruppa i combattenti in base alla disposizione dei token e li ordina anche all'interno di un gruppo in base all'azione dichiarata, se le azioni dichiarate sono abilitate. La modalità Gruppo (individuale ibrido) è come la modalità Gruppo, ma aggiunge la regola dell'arma a 2 mani all'interno dell'ordinamento interno di un gruppo.",
             "choices": {
-               "simpleIndividual": "Individuale (simplificata)",
+               "simpleIndividual": "Individuale (semplificata)",
                "individual": "Individuale",
                "individualChecklist": "Individuale (combattimento controllato)",
                "group": "Gruppo (combattimento controllato)",
@@ -653,29 +711,38 @@
       },
       "display": {
          "abilities": {
-            "name": "Caratteristiche abbreviate.",
-            "hint": "Usa le abbreviazioni per i nomi dei punteggi delle caratteristiche sulla scheda personaggio."
+            "name": "Caratteristiche abbreviate",
+            "hint": "Usa le abbreviazioni per i nomi dei punteggi delle caratteristiche sulla scheda personaggio"
          },
          "saves": {
-            "name": "Tiri Salvezza abbreviati.",
-            "hint": "Usa le abbreviazioni per i tiri salvezza sulla scheda del personaggio."
+            "name": "Tiri Salvezza abbreviati",
+            "hint": "Usa le abbreviazioni per i tiri salvezza sulla scheda del personaggio"
          }
       },
       "declaredActions": {
          "name": "Azioni Dichiarate",
-         "hint": "Abilita le azioni dichiarate per gli incontri."
+         "hint": "Abilita le azioni dichiarate per gli incontri"
       },
       "collapseState": {
          "name": "Memorizza Compressione",
-         "hint": "Se abilitato, gli elenchi di oggetti manterranno il loro stato di compressione individualmente per ciascun personaggio."
+         "hint": "Se abilitato, gli elenchi di oggetti manterranno il loro stato di compressione individualmente per ciascun personaggio"
       },
       "logChanges": {
          "name": "Monitora Modifiche Scheda PG",
-         "hint": "Se abilitato, notifica e registra le modifiche alla scheda del personaggio al GM in chat."
+         "hint": "Se abilitato, notifica e registra le modifiche alla scheda del personaggio al GM in chat"
       },
       "weaponMastery": {
          "name": "Maestria Armi",
-         "hint": "Se abilitato, verranno utilizzate le regole di maestria delle armi."
+         "hint": "Se abilitato, verranno utilizzate le regole di maestria delle armi"
+      },
+      "toHitSystem": {
+         "name": "Sistema TPC (Work-in-progress)",
+         "hint": "Questo sistema determina come vengono gestiti i Tiri Per Colpire e anche quale tipo di classe di armatura viene utilizzato (CA vs CAA)",
+         "choices": {
+            "classic": "Classic",
+            "darkdungeons": "Dark Dungeons",
+            "aac": "CAA e Attacco Bonus"
+         }
       }
    }
 }

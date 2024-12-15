@@ -18,7 +18,7 @@
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.primaryType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
+               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.primaryType valueAttr="value" labelAttr="text"}}
                </select>
                <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>
@@ -28,13 +28,13 @@
                <label for="system.acBonus">{{localize 'FADE.Mastery.acBonus'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.acBonusType" title="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
+               <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType valueAttr="value" labelAttr="text"}}
                </select>
                <label for="system.acBonusType">{{localize 'FADE.Mastery.acBonusType'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' title="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}} />
+               <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}} />
                <label for="system.acBonusAT">{{localize 'FADE.Mastery.acBonusAT'}}</label>
             </li>
          </ul>
@@ -81,9 +81,9 @@
    {{#if false}}
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
-      <a class='item' data-tab='description'>{{localize 'FADE.Actor.Tabs.Description'}}</a>
+      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
       {{#if isGM}}
-      <a class='item' data-tab='effects'>{{localize 'FADE.Actor.Tabs.Effects'}}</a>
+      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
       {{/if}}
    </nav>
 

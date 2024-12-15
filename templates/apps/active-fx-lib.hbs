@@ -4,7 +4,7 @@
          <h3 class="item-name effect-name flexrow">{{localize "EFFECT.Name"}}</h3>
          <div class="effect-source">{{localize "EFFECT.TabDuration"}}</div>
          <div class="item-controls effect-controls flexrow">
-            <a class="effect-control" data-action="create" title="{{localize 'DOCUMENT.Create' type=(localize "FADE.Effect.short")}}">
+            <a class="effect-control" data-action="create" data-tooltip="{{localize 'DOCUMENT.Create' type=(localize "FADE.Effect.short")}}">
                <i class="fas fa-plus"></i> {{localize 'FADE.Effect.short'}}
             </a>
          </div>
@@ -20,7 +20,7 @@
          </div>
          <div class="effect-duration">{{effect.duration.label}}</div>
          <div class="item-controls effect-controls flexrow">
-            <a class="effect-control" data-action="delete" title="{{localize 'DOCUMENT.Delete' type=(localize "FADE.Effect.short")}}">
+            <a class="effect-control" data-action="delete" data-tooltip="{{localize 'DOCUMENT.Delete' type=(localize "FADE.Effect.short")}}">
                <i class="fas fa-trash"></i>
             </a>
          </div>

@@ -9,7 +9,7 @@
          {{/if}}
       </div>
       {{#if showCoinWeight}}
-      <div class="item-60px" title="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+      <div class="item-60px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       {{/if}}
       {{#if isBasicEnc}}
       <div class="item-60px item-prop">{{localize 'FADE.Armor.armorWeight.short'}}</div>
@@ -39,7 +39,7 @@
       </label>
    </div>
    {{#if @root.showCoinWeight}}
-   <div class="item-50px item-prop" title="{{localize 'FADE.Item.weight.desc'}}"><label>{{armor.system.weight}}</label></div>
+   <div class="item-60px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{armor.system.weight}}</label></div>
    {{/if}}
    {{#if @root.isBasicEnc}}
    <div class="item-60px item-prop"><label>{{armor.system.armorWeight}}</label></div>
@@ -47,7 +47,7 @@
 
    <div class='item-controls item-prop'>
       <a class="item-control item-toggle {{#unless armor.system.equipped}}item-unequipped{{/unless}}"
-         title="{{#if armor.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
+         data-tooltip="{{#if armor.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
          <i class="fas fa-tshirt"></i>
       </a>
       <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.armor")}}'>

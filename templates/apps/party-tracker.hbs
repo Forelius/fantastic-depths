@@ -3,7 +3,7 @@
       {{#each trackedActors}}
       <div class="party-member bordered {{ifThen system.combat.isDead "is-dead" "alive"}}" data-actor-id="{{id}}">
          <!-- Delete button positioned in the top-right corner -->
-         <span class="delete-actor" title="Remove Actor">
+         <span class="delete-actor" data-tooltip="Remove Actor">
             <i class="fas fa-trash"></i> <!-- Trash icon -->
          </span>
          <!-- Actor details -->
