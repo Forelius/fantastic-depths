@@ -88,13 +88,11 @@ export class fadeItemSheet extends ItemSheet {
          const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
          let result = null;
          // if optional weapon mastery is being used and the weapon has a mastery specified...
-         if (weaponMastery) {
-            result = [];
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.abbr'), value: 'monster' });
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.abbr'), value: 'handheld' });
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.abbr'), value: 'all' });
-            context.weaponTypes = result;
-         }
+         result = [];
+         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.abbr'), value: 'monster' });
+         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.abbr'), value: 'handheld' });
+         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.abbr'), value: 'all' });
+         context.weaponTypes = result;
       }
 
       if (this.item.type === "armor") {

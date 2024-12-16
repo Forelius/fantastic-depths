@@ -1,3 +1,5 @@
+import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
+
 /**
  * Data model for a spell item extending fadeItemDataModel.
  */
@@ -13,7 +15,7 @@ export class SpellItemDataModel extends fadeItemDataModel {
 
          // Fields specific to the "spell" template
          spellLevel: new fields.NumberField({ required: true, initial: 1 }),
-         range: new fields.NumberField({ required: false, initial: 0 }),
+         range: new fields.StringField({ required: false, initial: ""}),
          duration: new fields.StringField({ required: false, initial: "Instant" }),
          effect: new fields.StringField({ required: false, initial: "" }),
          memorized: new fields.NumberField({ required: true, initial: 0 }),

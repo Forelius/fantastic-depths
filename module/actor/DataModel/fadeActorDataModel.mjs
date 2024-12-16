@@ -167,15 +167,15 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       );
 
       // If natural armor
-      if (naturalArmor?.system.totalAc !== null && naturalArmor?.system.totalAc !== undefined) {
-         ac.naked = naturalArmor.system.totalAc;
+      if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
+         ac.naked = naturalArmor.system.totalAC;
       }
 
       // If an equipped armor is found
       if (this.equippedArmor) {
          ac.value = this.equippedArmor.system.ac;
          ac.mod = this.equippedArmor.system.mod ?? 0;
-         ac.total = this.equippedArmor.system.totalAc;
+         ac.total = this.equippedArmor.system.totalAC;
       }
 
       if (equippedShield) {

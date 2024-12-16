@@ -9,41 +9,26 @@ export class ArmorItem extends fadeItem {
    /** @override */
    prepareBaseData() {     
       super.prepareBaseData();
-      const systemData = this.system;
-      systemData.ac = systemData.ac !== undefined ? systemData.ac : 9;
-      systemData.mod = systemData.mod !== undefined ? systemData.mod : 0;
-      systemData.isShield = systemData.isShield || false;
-      systemData.natural = systemData.natural || false;
-      systemData.equipped = systemData.natural || systemData.equipped || false;
-      systemData.armorWeight = systemData.armorWeight || "light";
+      //const systemData = this.system;
+      //systemData.ac = systemData.ac !== undefined ? systemData.ac : 9;
+      //systemData.mod = systemData.mod !== undefined ? systemData.mod : 0;
+      //systemData.isShield = systemData.isShield || false;
+      //systemData.natural = systemData.natural || false;
+      //systemData.equipped = systemData.natural || systemData.equipped || false;
+      //systemData.armorWeight = systemData.armorWeight || "light";
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareEffects();
-      const systemData = this.system;
-      //console.log("ArmorItem.prepareDerivedData:", systemData);
-      systemData.totalAc = systemData.ac - systemData.mod;
-      systemData.totalAAC = systemData.isShield ? systemData.totalAc : 19 - systemData.totalAc;
-   }
-
-   /** @override */
-   prepareData() {
-      super.prepareData();
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
    }
 
    _prepareEffects() {
       const systemData = this.system;
       systemData.mod = 0;
       // Apply any effects that modify system.mod
-      const modEffects = this.effects.filter(effect => effect.changes.some(change => change.key === 'system.mod'));
+      const modEffects = this.effects.filter(effect => effect.changes.some(change => change.key === 'system.mod' ) && effect.transfer === false);
       modEffects.forEach(effect => {
          effect.changes.forEach(change => {
             if (change.key === 'system.mod') {
@@ -52,5 +37,7 @@ export class ArmorItem extends fadeItem {
             }
          });
       });
+      systemData.totalAC = systemData.ac - systemData.mod;
+      systemData.totalAAC = systemData.isShield ? systemData.totalAC : 19 - systemData.totalAc;
    }
 }

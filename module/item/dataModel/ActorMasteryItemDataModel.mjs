@@ -1,3 +1,5 @@
+import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
+
 /**
  * Data model for an actor mastery item extending fadeItemDataModel.
  */

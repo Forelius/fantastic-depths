@@ -11,6 +11,12 @@ import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 
 import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
 import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
+import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
+import { fadeItemDataModel } from './item/dataModel/fadeItemDataModel.mjs';
+import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
+import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
+import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
+import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
@@ -74,6 +80,12 @@ Hooks.once('init', async function () {
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
+      item: fadeItemDataModel,
+      armor: ArmorItemDataModel,
+      skill: SkillItemDataModel,
+      spell: SpellItemDataModel,
+      weapon: WeaponItemDataModel,
+      mastery: ActorMasteryItemDataModel,
       class: ClassItemDataModel,
       weaponMastery: MasteryDefinitionItemDataModel
    }

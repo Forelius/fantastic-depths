@@ -1,3 +1,5 @@
+import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
+
 /**
  * Data model for a weapon item extending fadeItemDataModel.
  */
@@ -30,7 +32,8 @@ export class WeaponItemDataModel extends fadeItemDataModel {
             type: new fields.StringField({ nullable: true, initial: null }),
             load: new fields.NumberField({ nullable: true, initial: null }),
             maxLoad: new fields.NumberField({ nullable: true, initial: null })
-         })
+         }),
+         natural: new fields.BooleanField({ required: false, initial: false })
       };
    }
 
