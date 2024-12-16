@@ -94,7 +94,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             result = {
                hitAC,
                message: (hitAC !== null && hitAC !== Infinity)
-                  ? game.i18n.format('FADE.Chat.attackAC', { hitAC: hitACText })
+                  ? game.i18n.format('FADE.Chat.attackAC', { hitAC })
                   : game.i18n.format('FADE.Chat.attackACNone'),
             targetResults: []
          };
