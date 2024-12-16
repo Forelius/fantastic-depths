@@ -16,24 +16,24 @@ export class ActorMasteryItem extends fadeItem {
    /** Update item properties based on FADE.WeaponMastery */
    _updatePropertiesFromMastery() {
 
-      const levelData = this.#getMastery(this.name, this.system.level);
-      if (!levelData) return; // Exit if no mastery data is found for the given name
+      const { masteryItem, masteryLevel } = this.#getMastery(this.name, this.system.level);
+      if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 
       // Update the mastery fields with data from the specified level in FADE.WeaponMastery
-      this.system.primaryType = levelData.primaryType;
+      this.system.primaryType = masteryItem.system.primaryType;
       this.system.range = {
-         short: levelData.range.short,
-         medium: levelData.range.medium,
-         long: levelData.range.long
+         short: masteryLevel.range.short,
+         medium: masteryLevel.range.medium,
+         long: masteryLevel.range.long
       };
-      this.system.pDmgFormula = levelData.pDmgFormula;
-      this.system.sDmgFormula = levelData.sDmgFormula;
-      this.system.acBonusType = levelData.acBonusType;
-      this.system.acBonus = levelData.acBonus;
-      this.system.acBonusAT = levelData.acBonusAT;
-      this.system.special = levelData.special;
-      this.system.pToHit = levelData.pToHit;
-      this.system.sToHit = levelData.sToHit;
+      this.system.pDmgFormula = masteryLevel.pDmgFormula;
+      this.system.sDmgFormula = masteryLevel.sDmgFormula;
+      this.system.acBonusType = masteryLevel.acBonusType;
+      this.system.acBonus = masteryLevel.acBonus;
+      this.system.acBonusAT = masteryLevel.acBonusAT;
+      this.system.special = masteryLevel.special;
+      this.system.pToHit = masteryLevel.pToHit;
+      this.system.sToHit = masteryLevel.sToHit;
    }
 
    #getMastery(masteryName, level) {
@@ -52,6 +52,6 @@ export class ActorMasteryItem extends fadeItem {
          }
       }
 
-      return result;
+      return { masteryItem, masteryLevel: result };
    }
 }

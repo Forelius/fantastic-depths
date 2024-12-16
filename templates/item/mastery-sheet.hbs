@@ -4,7 +4,7 @@
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li>
-               <div class='charname'>                  
+               <div class='charname'>
                   <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
                </div>
                <label for="name">{{localize 'FADE.Actor.Name'}}</label>
@@ -18,7 +18,7 @@
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
+               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}"  {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.primaryType valueAttr="value" labelAttr="text"}}
                </select>
                <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>

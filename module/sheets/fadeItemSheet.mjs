@@ -163,13 +163,11 @@ export class fadeItemSheet extends ItemSheet {
 
       if (this.item.type === "mastery") {
          const types = [];
+         types.push({ value: null, text: game.i18n.localize(`FADE.none`) });
          types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
-            return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.abbr`) }
+            return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
          }));
          context.weaponTypes = types;
-         //context.masteryNames = Object.keys(CONFIG.FADE.WeaponMastery).map(name => ({
-         //   text: name,
-         //   value: name
          //}));
          context.masteryLevels = [...CONFIG.FADE.MasteryLevels.map((key) => {
             return { value: key, text: game.i18n.localize(`FADE.Mastery.levels.${key}`) }
