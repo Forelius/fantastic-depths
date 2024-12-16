@@ -31,7 +31,7 @@ export class fadeItemSheet extends ItemSheet {
          options.width = 540;
          options.height = 240;
       } else if (this.item.type === "weapon") {
-         options.width = 520;
+         options.width = 540;
          options.height = 360;
       } else {
          options.width = 520;
@@ -88,9 +88,9 @@ export class fadeItemSheet extends ItemSheet {
          let result = null;
          // if optional weapon mastery is being used and the weapon has a mastery specified...
          result = [];
-         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.abbr'), value: 'monster' });
-         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.abbr'), value: 'handheld' });
-         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.abbr'), value: 'all' });
+         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });
+         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
+         result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.long'), value: 'all' });
          context.weaponTypes = result;
       }
 
