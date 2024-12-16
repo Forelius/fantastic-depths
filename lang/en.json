@@ -430,6 +430,8 @@
             "targetMod": "Target effect mod: {mod}",
             "masteryMod": "Mastery mod: {mod}",
             "unskilledUse": "Unskilled weapon use: {mod}",
+            "masteryPrimDmg": "Weapon mastery primary damage.",
+            "masterySecDmg": "Weapon mastery secondary damage.",
             "manual": "Manual mod: {mod}"
          },
          "damageRoll": {

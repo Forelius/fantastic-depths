@@ -30,7 +30,7 @@ export class WeaponItem extends fadeItem {
 
    async getDamageRoll(attackType, attackMode, resp, targetWeaponType) {
       const weaponData = this.system;
-      const attacker = this.parent.getActiveTokens()?.[0] || this.parent;
+      const attacker = this.parent;
       const attackerData = this.parent.system;
       let evaluatedRoll = await this.getEvaluatedRoll(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
@@ -78,25 +78,29 @@ export class WeaponItem extends fadeItem {
       if (modifier <= 0 && evaluatedRoll?.total <= 0) {
          hasDamage = false;
       }
-
-      // This is where the modifiers are applied to the formula. It only supports addition mode.
-      if (modifier !== 0) {
-         formula = formula ? `${formula}+${modifier}` : `${modifier}`;
-      }
-
+            
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       if (hasDamage && weaponMastery && weaponData.mastery !== "" && attacker.type === "character" && attackerData.details.species === "Human") {
          const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // do stuff
-            if (targetWeaponType) {
-
+            if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
+               formula = attackerMastery.system.pDmgFormula;
+               digest.push(game.i18n.format('FADE.Chat.rollMods.masteryPrimDmg'));
+            } else if (attackerMastery.sDmgFormula) {
+               formula = attackerMastery.system.sDmgFormula;
+               digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
             }
          } else {
             // Half damage if unskilled use.
             formula = `floor(${formula}/2)`;
             digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
+         }
+
+         // This is where the modifiers are applied to the formula. It only supports addition mode.
+         if (modifier !== 0) {
+            formula = formula ? `${formula}+${modifier}` : `${modifier}`;
          }
       }
 
