@@ -28,15 +28,15 @@ export class fadeChatMessage extends ChatMessage {
       <i class="fa-solid fa-heart-crack" inert></i>`;
       }
       innerHTML += `
-      <span>Apply</span>
+      <span>${game.i18n.localize("FADE.Chat.apply")}</span>
    </label>
    <div class="collapsible-content">`;
       if (mdata.type === 'heal') {
          innerHTML += `
-         <button class="apply-heal" type="button" data-tooltip="Apply healing." `;
+         <button class="apply-heal" type="button" data-tooltip="${game.i18n.localize("FADE.Chat.applyHealingDesc")}" `;
       } else {
          innerHTML += `
-         <button class="apply-damage" type="button" data-tooltip="Apply damage." `;
+         <button class="apply-damage" type="button" data-tooltip="${game.i18n.localize("FADE.Chat.applyDamageDesc")}" `;
       }
       innerHTML += `
               data-attacktype="${mdata.attacktype}"
@@ -65,11 +65,11 @@ export class fadeChatMessage extends ChatMessage {
       const targets = this.getFlag(game.system.id, "targets");
       if (!game.user.isGM || !targets?.length) return;
 
-      const tray = document.createElement("div");      
+      const tray = document.createElement("div");
       tray.innerHTML = `<div id="targetsTray" class="card-tray">
    <label class="collapser">
       <i class="fas fa-bullseye" inert></i>
-      <span>Targets</span>
+      <span>${game.i18n.localize("FADE.Chat.targets")}</span>
    </label>
    <div id="targetsList" class="collapsible-content">      
    </div>

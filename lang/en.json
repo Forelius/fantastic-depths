@@ -442,6 +442,10 @@
             "killed": "<span class='attack-fail'>{tokenName} has fallen in battle.</span>",
             "restoredLife": "<span class='attack-success'>{tokenName} has been restored to life.</span>"
          },
+         "targets": "Targets",
+         "apply": "Apply",
+         "applyDamageDesc": "Apply damage to selected token or target.",
+         "applyHealingDesc": "Apply healing to selected token or target.",
          "resetSpells": "{actorName} reset memorized spells. Cast counts set to zero.",
          "effectEnds": "<div>{effectName} on {actorName} ends.</div>",
          "pass": "Success!",
