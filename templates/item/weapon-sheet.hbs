@@ -16,7 +16,7 @@
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li class="flex1">
+            <li class="flex2">
                <input type='text' name="system.damageRoll" value='{{system.damageRoll}}' data-dtype='String' />
                <label for="system.damageRoll">{{localize 'FADE.Weapon.damage.long'}}</label>
             </li>
@@ -28,7 +28,7 @@
                <input type='text' name="system.damageType" value='{{system.damageType}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.damageType">{{localize 'FADE.Weapon.damage.type'}}</label>
             </li>
-            <li class="flex1">
+            <li class="flex2">
                <select name="system.weaponType" {{#unless isGM}} readonly{{/unless}} data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
                   {{selectOptions weaponTypes selected=system.weaponType valueAttr="value" labelAttr="text"}}
                </select>
