@@ -9,13 +9,13 @@ import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 
-import { ClassDataModel } from './item/dataModel/ClassDataModel.mjs';
-import { WeaponMasteryDataModel } from "./item/dataModel/WeaponMasteryDataModel.mjs";
+import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
+import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
 import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
-import { WeaponMasterySheet } from './sheets/WeaponMasterySheet.mjs';
+import { MasteryDefinitionSheet } from './sheets/MasteryDefinitionSheet.mjs';
 
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
@@ -74,8 +74,8 @@ Hooks.once('init', async function () {
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
-      class: ClassDataModel,
-      weaponMastery: WeaponMasteryDataModel
+      class: ClassItemDataModel,
+      weaponMastery: MasteryDefinitionItemDataModel
    }
    CONFIG.Combatant.documentClass = fadeCombatant;
 
@@ -101,8 +101,8 @@ Hooks.once('init', async function () {
       types: ['class'],
       makeDefault: true 
    });
-   Items.registerSheet('fantastic-depths', WeaponMasterySheet, {
-      label: 'FADE.SheetLabel.WeaponMasteryItem',
+   Items.registerSheet('fantastic-depths', MasteryDefinitionSheet, {
+      label: 'FADE.SheetLabel.MasteryDefinitionItem',
       types: ['weaponMastery'],
       makeDefault: true
    });

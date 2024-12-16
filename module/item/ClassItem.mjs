@@ -1,4 +1,4 @@
-import { SavingThrowsData } from './dataModel/ClassDataModel.mjs';
+import { SavingThrowsData } from './dataModel/ClassItemDataModel.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
 export class ClassItem extends fadeItem {

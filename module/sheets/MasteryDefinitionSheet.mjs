@@ -1,11 +1,11 @@
 import { fadeItemSheet } from "./fadeItemSheet.mjs";
 
 /**
- * Sheet class for WeaponMasteryItem.
+ * Sheet class for MasteryDefinitionItem.
  */
-export class WeaponMasterySheet extends ItemSheet {
+export class MasteryDefinitionSheet extends ItemSheet {
    /**
-    * Get the default options for the WeaponMasteryItem sheet.
+    * Get the default options for the MasteryDefinitionItem sheet.
     */
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
@@ -16,12 +16,6 @@ export class WeaponMasterySheet extends ItemSheet {
          resizable: true
       });
    }
-
-   ///** @override */
-   //get template() {
-   //   const path = 'systems/fantastic-depths/templates/item';
-   //   return `${path}/weapon-mastery-sheet.hbs`;
-   //}
 
    /**
     * Prepare data to be used in the Handlebars template.

@@ -238,7 +238,7 @@
          "Actor": "FaDe Actor Sheet",
          "Item": "FaDe Item Sheet",
          "ClassItem": "Class Item Sheet",
-         "WeaponMasteryItem": "Weapon Mastery Item Sheet"
+         "MasteryDefinitionItem": "Weapon Mastery Definition Item Sheet"
       },
       "Spell": {
          "SpellLVL": "Spell Level {level}",

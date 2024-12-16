@@ -1,9 +1,9 @@
 import { fadeItem } from "./fadeItem.mjs";
 
 /**
- * WeaponMasteryItem class that extends the base fadeItem class.
+ * MasteryDefinitionItem class that extends the base fadeItem class.
  */
-export class WeaponMasteryItem extends fadeItem {
+export class MasteryDefinitionItem extends fadeItem {
    /**
     * Prepare derived data for WeaponMasteryItem.
     */
