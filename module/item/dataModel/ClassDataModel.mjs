@@ -123,6 +123,13 @@ export class ClassDataModel extends foundry.abstract.TypeDataModel {
             newLevel.level = index + this.firstLevel;
             return newLevel;
          });
+
+         // Try to preserve existing levels
+         if (this.levels && this.levels.length > 0) {
+            for (let i = 0; i < this.levels.length && i < newLevels.length; i++) {
+               newLevels[i] = this.levels[i];
+            }
+         }
          this.levels = [...newLevels];
       }
    }

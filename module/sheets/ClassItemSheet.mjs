@@ -94,15 +94,15 @@ export class ClassItemSheet extends ItemSheet {
       const index = parseInt(event.currentTarget.dataset.index);
 
       if (type === 'classSave') {
+         const saves = this.item.system.saves;
          // Handle deletion of a class save
-         this.item.system.saves.splice(index, 1);
+         saves.splice(index, 1);
          await this.item.update({ "system.saves": saves });
       } else if (type === 'primeReq') {
          const primeReqs = this.item.system.primeReqs;
          if (primeReqs.length > index) {
             primeReqs.splice(index, 1);
             await this.item.update({ "system.primeReqs": primeReqs });
-            this.render();
          }
       }
       this.render();
