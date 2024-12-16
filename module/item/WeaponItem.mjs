@@ -28,7 +28,7 @@ export class WeaponItem extends fadeItem {
       this.system.multiGrip = false;
    }
 
-   async getDamageRoll(attackType, attackMode, resp) {
+   async getDamageRoll(attackType, attackMode, resp, targetWeaponType) {
       const weaponData = this.system;
       const attacker = this.parent.getActiveTokens()?.[0] || this.parent;
       const attackerData = this.parent.system;
@@ -90,6 +90,9 @@ export class WeaponItem extends fadeItem {
          const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // do stuff
+            if (targetWeaponType) {
+
+            }
          } else {
             // Half damage if unskilled use.
             formula = `floor(${formula}/2)`;
@@ -140,7 +143,7 @@ export class WeaponItem extends fadeItem {
    async roll() {
       const systemData = this.system;
       // The selected token, not the actor
-      const attacker = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0] || this.actor;
+      const attacker = canvas.tokens.controlled?.[0] || this.actor;
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;

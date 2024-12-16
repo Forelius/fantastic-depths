@@ -53,7 +53,7 @@ export class SpecialAbilityItem extends fadeItem {
    async roll(dataset) {
       let result = null;
       const systemData = this.system;
-      const ownerToken = canvas.tokens.controlled?.[0] || this.actor.getDependentTokens()?.[0];
+      const ownerTokenOrActor = canvas.tokens.controlled?.[0] || this.actor;
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
@@ -85,7 +85,7 @@ export class SpecialAbilityItem extends fadeItem {
             rollData,
             caller: this,
             resp: dialogResp?.resp,
-            context: ownerToken,
+            context: ownerTokenOrActor,
             roll: rolled,
          };
          const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData);

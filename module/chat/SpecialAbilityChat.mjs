@@ -6,10 +6,9 @@ export class SpecialAbilityChat extends ChatBuilder {
    async createChatMessage() {
       const { context, caller, roll, resp } = this.data;
       const targetTokens = Array.from(game.user.targets);
-      const ownerToken = context;
       const specAbility = caller;
       const damageRoll = await caller.getDamageRoll(null);
-      const descData = { owner: ownerToken.name, specAbility: specAbility.name };
+      const descData = { owner: context.name, specAbility: specAbility.name };
       const description = game.i18n.format('FADE.Chat.useSpecAbility', descData);
       let rollContent = null;
       let rollResult = { message: "" };
@@ -31,7 +30,6 @@ export class SpecialAbilityChat extends ChatBuilder {
          rollContent,
          rollResult,
          specAbility,
-         ownerToken,
          description,
          isHeal: damageRoll.damageType === "heal",
          damageRoll,

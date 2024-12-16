@@ -194,7 +194,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
 
       let descData = {
-         attackerid: context.id,
+         attackerid: attacker.id,
          attacker: attackerName,
          attackType: resp.attackType,
          weapon: caller.name
@@ -206,8 +206,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await AttackRollChatBuilder.getToHitResults(attacker, caller, targetTokens, roll, resp.targetWeaponType);
-      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode);
+      const toHitResult = await AttackRollChatBuilder.getToHitResults(attacker, caller, targetTokens, roll);
+      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
 
       if (window.toastManager) {
          const toast = `${description}${toHitResult.message}`;
@@ -223,6 +223,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          digest: digest,
          weapon: caller,
          resp,
+         targetWeaponType: resp.targetWeaponType,
       };
 
       let content = await renderTemplate(this.template, chatData);
@@ -231,7 +232,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       const rolls = roll ? [roll] : null;
       const chatMessageData = await this.getChatMessageData({
-         content, rolls, rollMode,
+         content,
+         rolls,
+         rollMode,         
          flags: {
             [game.system.id]: {
                targets: toHitResult.targetResults
