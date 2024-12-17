@@ -17,6 +17,7 @@ import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
 import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
 import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
+import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
@@ -87,7 +88,8 @@ Hooks.once('init', async function () {
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDataModel,
       class: ClassItemDataModel,
-      weaponMastery: MasteryDefinitionItemDataModel
+      weaponMastery: MasteryDefinitionItemDataModel,
+      specialAbility: SpecialAbilityDataModel
    }
    CONFIG.Combatant.documentClass = fadeCombatant;
 

@@ -2,22 +2,6 @@ import { SavingThrowsData } from './dataModel/ClassItemDataModel.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
 export class ClassItem extends fadeItem {
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-   }
-
-   /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-   }
-
-   /** @override */
-   getRollData() {
-      const data = super.getRollData();
-      return data;
-   }
-
    async createClassSave() {
       // Retrieve the saves array from the item's data
       const saves = this.system.saves || [];

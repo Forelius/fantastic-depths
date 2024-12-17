@@ -8,17 +8,6 @@ export class SpecialAbilityItem extends fadeItem {
       super(data, context);
    }
 
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-      const systemData = this.system;
-      systemData.rollMode = systemData.rollMode !== undefined ? systemData.rollMode : "publicroll";
-      systemData.dmgFormula = systemData.dmgFormula || null;
-      systemData.healFormula = systemData.healFormula || null;
-      systemData.savingThrow = systemData.savingThrow || "";
-      systemData.damageType = systemData.damageType || "";
-   }
-
    async getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
       let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
