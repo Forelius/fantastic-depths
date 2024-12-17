@@ -23,8 +23,8 @@
          {{/if}}
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
             {{item.name}}
-            {{#if item.system.containedEnc}}
-            <span class="category-info">({{item.system.containedEnc}} cns)</span>
+            {{#if item.containedEnc}}
+            <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
             {{/if}}
          </a>
       </div>
@@ -59,7 +59,7 @@
       {{/if}}
    </li>
    {{#if item.system.container}}
-   {{#each item.system.contained as |childItem|}}
+   {{#each item.contained as |childItem|}}
    <li class="flexrow item collapsible-content contained-item" data-item-parentid="{{item._id}}" data-item-id='{{childItem._id}}'>
       <div class='item-name contained'>
          <div class='item-image'>

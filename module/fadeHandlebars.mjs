@@ -3,7 +3,6 @@
 /* -------------------------------------------- */
 export class fadeHandlebars {
    static registerHelpers() {
-      // If you need to add Handlebars helpers, here is a useful example:
       Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
       Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
       Handlebars.registerHelper("counter", (status, value, max) =>

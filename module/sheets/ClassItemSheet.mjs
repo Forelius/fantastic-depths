@@ -79,7 +79,6 @@ export class ClassItemSheet extends ItemSheet {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type;
-      console.debug(`ClasItemSheet._onCreateChild: ${type}`);
       if (type === 'classSave') {
          this.item.createClassSave();
       } else if (type === 'primeReq') {

@@ -35,26 +35,12 @@ export class fadeItem extends Item {
       return super.create(data, context);
    }
 
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-      //const notEquippable = ["class", "spell", "skill", "specialAbility", "mastery"];
-      //if (notEquippable.includes(this.type) === false) {
-      //   this.system.equipped = this.system.equipped || false;
-      //}
-      //if (this.type === "item") {
-      //   this.system.container = this.system.container || false;
-      //   this.system.equippable = this.system.equippable || false;
-      //}
-   }
-
-   /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-      if (this.type === "item") {
-         this.system.totalWeight = Math.round((this.system.weight * this.system.quantity) * 100) / 100;
-         this.system.totalCost = Math.round((this.system.cost * this.system.quantity) * 100) / 100;
-      }
+   /**
+   * A getter for dynamically calculating the contained items.
+   * This data is not stored in the database.
+   */
+   get contained() {
+      return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
 
    /**

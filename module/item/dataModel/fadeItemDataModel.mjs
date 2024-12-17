@@ -17,6 +17,8 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          quantityMax: new fields.NumberField({ required: false, initial: 0 }),
          weight: new fields.NumberField({ required: false, initial: 0 }),
          cost: new fields.NumberField({ required: false, initial: 0 }),
+         totalWeight: new fields.NumberField({ required: false, initial: 0 }),
+         totalCost: new fields.NumberField({ required: false, initial: 0 }),
          containerId: new fields.StringField({ required: false, initial: "" }),
 
          // Fields from the "equippable" template
@@ -32,5 +34,12 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+   }
+
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      this.totalWeight = Math.round((this.weight * this.quantity) * 100) / 100;
+      this.totalCost = Math.round((this.cost * this.quantity) * 100) / 100;
    }
 }

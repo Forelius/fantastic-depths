@@ -218,7 +218,7 @@ export class fadeActorSheet extends ActorSheet {
  */
    _prepareItems(context) {
       // Initialize arrays.
-      const gear = [];
+      let gear = [];
       const weapons = [];
       const armor = [];
       const skills = [];
@@ -238,7 +238,7 @@ export class fadeActorSheet extends ActorSheet {
          if (item.type === 'item') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
-               // Skip contained items, already added in fadeCharacter.
+               // Skip contained items
             } else {
                gear.push(item);
             }
@@ -273,6 +273,21 @@ export class fadeActorSheet extends ActorSheet {
             specialAbilities.push(item);
          }
       }
+
+      // Add derived data to each item
+      gear = gear.map(item => {
+         // Attach derived data manually            
+         if (item.system.container === true) {
+            const citem = context.document.items.get(item._id);
+            item.contained = citem?.contained || [];
+            item.containedEnc = item.contained?.reduce((sum, item) => {
+               const weight = item.system.weight || 0;
+               const quantity = item.system.quantity || 1;
+               return sum + (weight * quantity);
+            }, 0) || 0;
+         }
+         return item;
+      });
 
       // Assign and return
       context.gear = gear;

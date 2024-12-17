@@ -218,33 +218,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       let encumbrance = this.encumbrance || {};
       let enc = 0;
 
-      // Prepare containers
-      for (let item of items) {
-         if (item.system.container === true) {
-            item.system.contained = [];
-            item.system.containedEnc = 0;
-         }
-      }
-      for (let item of items) {
-         // If a contained item...
-         if (item.system.containerId?.length > 0) {
-            let containerItem = items.find(i => i._id === item.system.containerId);
-            if (containerItem) {
-               containerItem.system.contained.push(item);
-            }
-         }
-      }
-      //-- Caclulate how much is being carried/tracked --//
+         //-- Caclulate how much is being carried/tracked --//
       // If using detailed encumbrance, similar to expert rules...
-      if (encSetting === 'expert' || encSetting === 'classic') {
-         // Containers         
-         for (let container of items.filter(item => item.system.container === true)) {
-            container.system.containedEnc = container.system.contained.reduce((sum, item) => {
-               const itemWeight = item.system.weight || 0;
-               const itemQuantity = item.system.quantity || 1;
-               return sum + (itemWeight * itemQuantity);
-            }, 0);
-         }
+      if (encSetting === 'expert' || encSetting === 'classic') {        
          enc = items.reduce((sum, item) => {
             const itemWeight = item.system.weight || 0;
             const itemQuantity = item.system.quantity || 1;
