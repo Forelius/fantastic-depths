@@ -9,7 +9,7 @@ The system comes with two themes, which are a light mode and a dark mode.
 
 Manual install: https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
 
-We are on Discord: https://discord.gg/PneCCNwx
+We are on Discord: https://discord.gg/6nCTfKun9d
 
 Compendiums are available as a separate module: https://github.com/Forelius/fade-compendiums
 
