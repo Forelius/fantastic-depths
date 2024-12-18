@@ -3,9 +3,15 @@
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
       <div class='header-fields'>
          <ul class="summary flexrow">
-            <li>
+            <li class="flex3">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
                <label>{{localize 'FADE.Actor.Name'}}</label>
+            </li>
+            <li class="flex1">
+               <select name="system.rollMode">
+                  {{selectOptions rollModes selected=system.rollMode}}
+               </select>
+               <label for="system.operator">{{localize 'FADE.rollMode'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
@@ -23,11 +29,11 @@
                <input type='text' name="system.target" value='{{system.target}}' data-dtype='Number' />
                <label for="system.target">{{localize 'FADE.target'}}</label>
             </li>
-            <li class="flex2">
-               <select name="system.rollMode">
-                  {{selectOptions rollModes selected=system.rollMode}}
+            <li class="flex1">
+               <select name="system.abilityMod">
+                  {{selectOptions abilities selected=system.abilityMod valueAttr="value" labelAttr="text"}}
                </select>
-               <label for="system.operator">{{localize 'FADE.rollMode'}}</label>
+               <label for="system.abilityMod">{{localize 'FADE.SpecialAbility.abilityMod'}}</label>
             </li>
             <li class="flex1">
                <select name="system.savingThrow">
@@ -37,6 +43,14 @@
             </li>
          </ul>
          <ul class="summary flexrow">
+            <li class="flex1">
+               <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}"/>
+               <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name="system.autoFail" value='{{system.autoFail}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}" />
+               <label for="system.autoFail" data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}">{{localize 'FADE.SpecialAbility.autoFail'}}</label>
+            </li>
             <li>
                <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
                <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>

@@ -13,6 +13,7 @@
                <select name="system.ability">
                   {{selectOptions abilities selected=system.ability valueAttr="value" labelAttr="text"}}
                </select>
+               <label for="system.ability">{{localize 'FADE.Actor.Abilities.long'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name="system.level" value='{{system.level}}' data-dtype='Number' />

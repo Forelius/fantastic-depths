@@ -55,9 +55,13 @@ export class SpecialAbilityItem extends fadeItem {
             dataset.dialog = "generic";
             dataset.rollmode = systemData.rollMode;
             dialogResp = await DialogFactory(dataset, this.actor);
-            rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
-
             if (dialogResp?.resp?.rolling === true) {
+               if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
+                  dialogResp.resp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
+               } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
+                  dialogResp.resp.mod += systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
+               }
+               rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
                const rollContext = { ...rollData, ...dialogResp?.resp || {} };
                rolled = await new Roll(rollData.formula, rollContext).evaluate();
             } else {

@@ -11,7 +11,11 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       mdata.score = context.system.abilities[mdata.ability].value;
 
       // Determine if the roll is successful based on the roll type and target number      
-      let testResult = this.getBoolRollResultType(roll.total, mdata.score, mdata.pass);
+      const testResult = this.getBoolRollResultType({
+         roll,
+         target: mdata.score,
+         operator: mdata.pass
+      });
       const resultString = this.getBoolResult(testResult);
 
       // Get the actor and user names

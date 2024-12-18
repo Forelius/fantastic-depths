@@ -152,15 +152,20 @@ export class fadeItemSheet extends ItemSheet {
          }, {});
       }
 
-      if (this.item.type === 'skill') {
-         context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
+      const hasAbilities = ["skill", "specialAbility"]
+      if (hasAbilities.includes(this.item.type)) {
+         context.abilities = [];
+         if (this.item.type === "specialAbility") {
+            context.abilities.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+         }
+         context.abilities.push(...CONFIG.FADE.Abilities.map((key) => {
             return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
-         })];
+         }));
       }
 
       if (this.item.type === "mastery") {
          const types = [];
-         types.push({ value: null, text: game.i18n.localize(`FADE.none`) });
+         types.push({ value: "", text: game.i18n.localize(`FADE.none`) });
          types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
             return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
          }));

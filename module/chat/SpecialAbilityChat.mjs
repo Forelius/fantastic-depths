@@ -54,7 +54,13 @@ export class SpecialAbilityChat extends ChatBuilder {
       let result = { };
       const systemData = specAbility.system;
       if (systemData.operator?.length > 0) {
-         const testResult = this.getBoolRollResultType(roll.total, systemData.target, systemData.operator);
+         const testResult = this.getBoolRollResultType({
+            roll,
+            target: systemData.target,
+            operator: systemData.operator,
+            autoFail: systemData.autoFail,
+            autoSuccess: systemData.autoSuccess
+         });
          result.message = this.getBoolResult(testResult);
       }
       return result;

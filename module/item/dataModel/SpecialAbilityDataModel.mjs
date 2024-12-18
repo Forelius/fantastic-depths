@@ -18,6 +18,9 @@ export class SpecialAbilityDataModel extends fadeItemDataModel {
          target: new fields.NumberField({ required: false, initial: 0 }),
          rollMode: new fields.StringField({ required: false, initial: "publicroll" }),
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
+         autoSuccess: new fields.NumberField({ required: false, initial: null, nullable: true }),
+         autoFail: new fields.NumberField({ required: false, initial: null, nullable: true }),
+         abilityMod: new fields.StringField({ required: false, initial: "" }),
 
          // Fields specific to the "specialAbility" template
          dmgFormula: new fields.StringField({ nullable: true, initial: null }),

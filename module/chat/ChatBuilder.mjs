@@ -90,37 +90,41 @@ export class ChatBuilder {
 
    /**
     * Determines success or fail and returns result as html.
-    * @param {any} rollTotal
-    * @param {any} target
-    * @param {any} operator
     * @returns
     */
-   getBoolRollResultType(rollTotal, target, operator) {
-      let success = false;
+   getBoolRollResultType(options) {
+      const { roll, target, operator, autoFail, autoSuccess } = options;
+      const rollTotal = roll.total;
+      const naturalTotal = ChatBuilder.getDiceSum(roll);
+      let result = false;
 
       switch (operator) {
          case 'lt':
          case "<":
-            success = rollTotal < target;
+            result = (rollTotal < target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
+               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
             break;
          case 'lte':
          case "<=":
-            success = rollTotal <= target;
+            result = (rollTotal <= target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
+               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
             break;
          case 'gt':
          case ">":
-            success = rollTotal > target;
+            result = (rollTotal > target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
+               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
             break;
          case 'gte':
          case ">=":
-            success = rollTotal >= target;
+            result = (rollTotal >= target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
+               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
             break;
          default:
-            success = false; // If no valid roll type is provided, default to failure
+            result = false; // If no valid roll type is provided, default to failure
             break;
       }
 
-      return success ? this.RESULT_TYPE.PASSED : this.RESULT_TYPE.FAILED;
+      return result ? this.RESULT_TYPE.PASSED : this.RESULT_TYPE.FAILED;
    }
 
    /**

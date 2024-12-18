@@ -400,7 +400,12 @@
       "SpecialAbility": {
          "plural": "Special Abilities",
          "short": "Ability",
-         "long": "Special Ability"
+         "long": "Special Ability",
+         "abilityMod": "Ability Mod",
+         "autoSuccess": "Auto-Success",
+         "autoSuccessHint": "Automatically succeeds on a natural/unmodified roll of this value.",
+         "autoFail": "Auto-Fail",
+         "autoFailHint": "Automatically fails on a natural/unmodified roll of this value."
       },
       "Effect": {
          "short": "Effect",
