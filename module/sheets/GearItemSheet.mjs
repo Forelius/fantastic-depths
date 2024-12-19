@@ -44,6 +44,9 @@ export class GearItemSheet extends ItemSheet {
          }
       );
 
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+
       // Add the item's data to context.data for easier access, as well as flags.
       context.system = itemData.system;
       context.flags = itemData.flags;
