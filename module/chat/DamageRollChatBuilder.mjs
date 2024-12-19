@@ -93,7 +93,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       let damageRoll = null;
-      const damageTypes = ["physical", "breath"];
+      const damageTypes = ["physical", "breath", "fire", "frost", "poison"];
       const spellType = ["magic", "heal"];
       if (damageTypes.includes(dataset.damagetype)) {
          damageRoll = await weaponItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp, targetweapontype);

@@ -59,14 +59,26 @@ export class WeaponItemSheet extends ItemSheet {
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       context.showAttributes = this.item.system.canRanged || game.user.isGM;
-      let result = null;
-      // if optional weapon mastery is being used and the weapon has a mastery specified...
-      result = [];
-      result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });
-      result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
-      result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.long'), value: 'all' });
-      context.weaponTypes = result;
 
+      // Weapon types
+      let weaponTypes = null;
+      weaponTypes = [];
+      weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });
+      weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
+      weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.long'), value: 'all' });
+      context.weaponTypes = weaponTypes;
+
+      context.damageTypes = [];
+      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.physical'), value: 'physical' });
+      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.breath'), value: 'breath' });
+      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.fire'), value: 'fire' });
+      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.frost'), value: 'frost' });
+      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.poison'), value: 'poison' });
+      // TODO: Magic damage type  indicates that a different set of parameters is passed to getDamageRoll.
+      // This is not a good design, but not addressing it at the moment, so remove this option.
+      //context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.magic'), value: 'magic' });
+
+      // Saving throws
       const saves = [];
       saves.push({ value: "", text: game.i18n.localize(`FADE.none`) });
       saves.push(...CONFIG.FADE.SavingThrows.map((save) => {

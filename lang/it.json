@@ -63,44 +63,35 @@
             "abbr": "MV",
             "long": "Movimento",
             "turn": "Normale",
-            "turnHint": "Metri per turno di 10 minuti.\nQuesto lasso di tempo include\nmolte azioni presunte come\nmappare, sbirciare dietro gli\nangoli, riposare e così via.",
+            "turnHint": "<b>Metri per turno di 10 minuti.</b><p>Questo lasso di tempo include molte azioni presunte come mappare,</b><p> sbirciare dietro gli angoli, riposare e così via</p>",
             "round": "Round",
-            "roundHint": "Metri per round di 10 secondi. Usato durante i combattimenti.",
+            "roundHint": "<b>Metri per round di 10 secondi.</b><p>Usato durante i combattimenti</p>",
             "day": "Viaggio",
-            "dayHint": "Kilometri al giorno. Utilizzato per i viaggi via terra. Nota che il terreno influisce su questo valore.",
+            "dayHint": "<b>Kilometri al giorno. Utilizzato per i viaggi via terra.</b><p>Nota che il terreno influisce su questo valore</p>",
             "run": "Corsa",
-            "runHint": "Metri per round di 10 secondi. Utilizzato quando si corre o si vola alla massima velocità durante il combattimento. Viaggiare alla massima velocità può durare fino a 30 round (5 minuti)",
+            "runHint": "<b>Metri per round di 10 secondi.</b><p>Utilizzato quando si corre o si vola alla massima velocità durante il combattimento. Viaggiare alla massima velocità può durare fino a 30 round (5 minuti)</p>",
             "total": "Totale",
             "moveTurn": "Movimento Base"
-         },
-         "Tabs": {
-            "Abilities": "Caratteristiche",
-            "Items": "Equipaggiamento",
-            "Spells": "Incantesimi",
-            "Skills": "Abilità",
-            "Effects": "Effetti",
-            "Description": "Descrizione",
-            "gmOnly": "Solo DM"
          },
          "explore": {
             "long": "Explorazione",
             "OpenDoor": {
-               "long": "Forzare porte o sollevare oggetti pesanti.",
+               "long": "Forzare porte o sollevare oggetti pesanti",
                "short": "Aprire Porte",
                "abbr": "AP"
             },
             "SecretDoor": {
-               "long": "Individua porte o passaggi segreti.",
+               "long": "Individua porte o passaggi segreti",
                "short": "Passaggi Segreti",
                "abbr": "PS"
             },
             "ListenDoor": {
-               "long": "Origliare porte o sentire rumori a distanza.",
+               "long": "Origliare porte o sentire rumori a distanza",
                "short": "Sentire Rumori",
                "abbr": "SR"
             },
             "FindTrap": {
-               "long": "Trova una trappola o un pericolo nascosto di dimensioni medio-grandi.",
+               "long": "Trova una trappola o un pericolo nascosto di dimensioni medio-grandi",
                "short": "Scoprire Trappole",
                "abbr": "ST"
             }
@@ -141,34 +132,40 @@
             "str": {
                "long": "Forza",
                "abbr": "FOR",
-               "mod": "TPC, Danno, Aprire Porte"
+               "mod": "TPC, Danno, Aprire Porte",
+               "hint": "<b>La Forza (For) rappresenta la potenza fisica di un personaggio.</b><p>Influisce sul danno inflitto con armi da mischia come spade e mazze, nonché con armi da lancio come lance e coltelli. Inoltre influisce sulla precisione del personaggio quando usa armi corpo a corpo e determina la sua capacità di svolgere compiti come forzare porte chiuse.</p</div>"
             },
             "dex": {
                "long": "Destrezza",
                "abbr": "DES",
-               "mod": "TPC a Distanza, CA, Iniziativa"
+               "mod": "TPC a Distanza, CA, Iniziativa",
+               "hint": "<b>La destrezza (Des) è l'agilità e la grazia del personaggio.</b><p>Influisce sulla capacità di brandire armi da lancio (come archi e coltelli) e può rendere più difficile ai nemici colpire la propria CA.</p>"
             },
             "int": {
                "long": "Intelligenza",
                "abbr": "INT",
-               "mod": "Linguaggio (i)"
+               "mod": "Linguaggio (i)",
+               "hint": "<b>L'intelligenza (Int) è la potenza mentale del personaggio.</b><p>Influisce sul numero di lingue che il personaggio può imparare.</p>"
             },
             "wis": {
                "long": "Saggezza",
                "abbr": "SAG",
-               "mod": "Tiri Salvezza contro Incantesimi"
+               "mod": "Tiri Salvezza contro Incantesimi",
+               "hint": "<b>La saggezza (Sag) è la comprensione del personaggio.</b><p>Influisce sulla forza del personaggio nel comprendere il mondo, il modo in cui funzionano le cose, le forze della natura e così via, compresa la loro capacità naturale di resistere agli incantesimi magici.</p>"
             },
             "con": {
                "long": "Costituzione",
                "abbr": "COS",
-               "mod": "Punti Ferita/Livello"
+               "mod": "Punti Ferita/Livello",
+               "hint": "<b>La Costituzione (Cos) è la salute fisica e il vigore del personaggio.</b><p>Influisce sul punteggio dei punti ferita (ovvero, sulla sua capacità di sopravvivere alle ferite).</p>"
             },
             "cha": {
                "long": "Carisma",
                "abbr": "CAR",
                "mod": "Reazioni",
                "retainer": "Seguaci",
-               "morale": "Morale"
+               "morale": "Morale",
+               "hint": "<b>Il carisma (Car) è la forza della personalità e dell'influenza del personaggio.</b><p>Influisce sul modo in cui gli altri personaggi e anche i PNG reagiscono al personaggio.</ p>"
             }
          },
          "Attacks": {
@@ -200,40 +197,40 @@
          },
          "Deaths": {
             "name": "Decessi",
-            "desc": "Numero di volte in cui questo personaggio ha raggiunto 0 PF. In alcune varianti, questo è limitato a un valore pari al punteggio di Costituzione."
+            "desc": "<p>Numero di volte in cui questo personaggio ha raggiunto 0 PF.</p><p>In alcune varianti, questo è limitato a un valore pari al punteggio di <b>Costituzione</b>.</p>"
          },
          "AT#": {
             "name": "AT#",
-            "desc": "Numero di attacchi effettuati in questo round."
+            "desc": "Numero di attacchi effettuati in questo round"
          },
          "AT#Recv": {
             "name": "AT# RCV",
-            "desc": "Numero di attacchi ricevuti in questo round."
+            "desc": "Numero di attacchi ricevuti in questo round"
          },
          "encumbrance": {
             "unencumbered": {
                "label": "Non Ingombrato",
-               "desc": "Liberi di muoversi senza alcun impedimento."
+               "desc": "Liberi di muoversi senza alcun impedimento"
             },
             "lightly": {
                "label": "Leggermente Ingombrato",
-               "desc": "Leggermente appesantito, il movimento è comunque agevole."
+               "desc": "Leggermente appesantito, il movimento è comunque agevole"
             },
             "moderately": {
                "label": "Moderatamente Ingombrato",
-               "desc": "Peso notevole, movimento un po' limitato. Velocità di movimento dimezzata."
+               "desc": "Peso notevole, movimento un po' limitato. Velocità di movimento dimezzata"
             },
             "encumbered": {
                "label": "Ingombrato",
-               "desc": "Notevolmente appesantito, il movimento è lento."
+               "desc": "Notevolmente appesantito, il movimento è lento"
             },
             "heavily": {
                "label": "Pesantemente Ingombrato",
-               "desc": "Lotti per il peso, il movimento è faticoso."
+               "desc": "Lotti per il peso, il movimento è faticoso"
             },
             "over": {
                "label": "Troppo Ingombrato",
-               "desc": "Gravemente sovraccarico, il movimento è impossibile."
+               "desc": "Gravemente sovraccarico, il movimento è impossibile"
             }
          }
       },
@@ -288,9 +285,6 @@
          "cost": {
             "abbr": "mo",
             "long": "Costo (mo)"
-         },
-         "tabs": {
-            "attributes": "Caratteristiche"
          }
       },
       "Weapon": {
@@ -339,11 +333,13 @@
          "plural": "Armatura",
          "naked": "Senza Armatura",
          "long": "CA Attuale",
+         "hintBase": "<b>Classe armatura base</b><p>Questa è la classe armatura base e non include modificatori derivanti dagli effetti.</p>",
          "longAAC": "CAA Base",
          "abbr": "CA",
          "abbrAAC": "CAA",
          "total": "CA Tot",
          "totalAAC": "CAA Totale",
+         "hintTotal": "<b>Classe Armatura Totale</b><p>Questa è la classe armatura totale e include i modificatori derivanti dagli effetti.</p>",
          "shield": {
             "long": "Scudo Equipaggiato",
             "short": "Scudo"
@@ -434,6 +430,8 @@
             "targetMod": "Mod effetto bersaglio: {mod}",
             "masteryMod": "Mod maestria: {mod}",
             "unskilledUse": "Uso arma improvvisata: {mod}",
+            "masteryPrimDmg": "Maestria Arma - Danno Primario",
+            "masterySecDmg": "Maestria Arma - Danno Secondario",
             "manual": "Mod manuale: {mod}"
          },
          "damageRoll": {
@@ -444,19 +442,25 @@
             "killed": "<span class='attack-fail'>{tokenName} è caduto/a in battaglia.</span>",
             "restoredLife": "<span class='attack-success'>{tokenName} è stato curato/a al massimo.</span>"
          },
-         "resetSpells": "{actorName} ripristina gli incantesimi memorizzati. Conteggi di lancio azzerati.",
+         "targets": "Bersagli",
+         "apply": "Applica",
+         "applyDamageDesc": "Applica il danno al token o a bersaglio selezionato",
+         "applyHealingDesc": "Applica la cura al token o a bersaglio selezionato",
+         "resetSpells": "{actorName} azzera gli incantesimi memorizzati e i loro lanci",
          "effectEnds": "<div>{effectName} su {actorName} è terminato.</div>",
          "pass": "Successo!",
-         "fail": "Fallimento",
+         "fail": "Fallimento...",
          "attackFlavor": "{attacker} {attackType} attacca con {weapon}",
          "spellCast": "{caster} lancia {spell}",
          "useSpecAbility": "{owner} usa {specAbility}",
          "attackAC": "<div class='attack-info'>L'attacco colpisce <strong>CA {hitAC}</strong>.</div>",
+         "attackACNone": "<div class='attack-info'>L'attacco non colpisce nessuna CA.</div>",
          "attackSuccess": "<div class='attack-success'>Colpito!</div>",
          "attackFail": "<div class='attack-fail'>Mancato!</div>",
          "damageFlavor2": "<div>{weapon} fa <span class='damage'>{damage}</span> danni.</div>",
          "healFlavor": "<div>{weapon} ripristina <span class='damage'>{damage}</span> punti ferita.</div>",
-         "healRoll": "Cura"
+         "healRoll": "Cura",
+         "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='CA modificata con bonus di maestria nell'arma. Ha attaccato {attacksAgainst}/{maxAttacksAgainst} volte.'>({defenseMasteryTotal})</span>"
       },
       "roll": "Tiro",
       "rollMode": "Modalità Tiro",
@@ -499,6 +503,18 @@
          "resetSession": "Ricomincia Sessione",
          "resetTotal": "Azzera Totale"
       },
+      "tabs": {
+         "abilities": "Caratteristiche",
+         "items": "Equipaggiamento",
+         "spells": "Incantesimi",
+         "skills": "Abilità",
+         "effects": "Effetti",
+         "description": "Descrizione",
+         "gmOnly": "Solo DM",
+         "levels": "Livelli",
+         "primeRequisites": "Requisiti Primari",
+         "attributes": "Attributi"
+      },
       "AttackTypes": {
          "name": "Tipo di attacco",
          "types": {
@@ -523,93 +539,93 @@
          "phases": {
             "morale": {
                "name": "Test Morale",
-               "description": "I mostri e i PNG effettuano i test sul morale. Chiunque abbia bisogno di effettuare un tiro salvezza contro un effetto in corso lo faccia adesso."
+               "description": "I mostri e i PNG effettuano i test sul morale. Chiunque abbia bisogno di effettuare un tiro salvezza contro un effetto in corso lo faccia adesso"
             },
             "movement": {
                "name": "Movimento",
-               "description": "I personaggi che scelgono di muoversi lo fanno adesso."
+               "description": "I personaggi che scelgono di muoversi lo fanno adesso"
             },
             "missile": {
                "name": "Combattimento a Distanza",
-               "description": "I personaggi che utilizzano armi da lancio e a gittata, effettuano i loro attacchi."
+               "description": "I personaggi che utilizzano armi da lancio e a gittata, effettuano i loro attacchi"
             },
             "magic": {
                "name": "Magia",
-               "description": "I personaggi che lanciano incantesimi o usano oggetti magici lo fanno ora."
+               "description": "I personaggi che lanciano incantesimi o usano oggetti magici lo fanno ora"
             },
             "melee": {
                "name": "Combattimento Corpo-a-Corpo",
-               "description": "I personaggi che combattono corpo a corpo effettuano i loro attacchi."
+               "description": "I personaggi che combattono corpo a corpo effettuano i loro attacchi"
             },
             "special": {
                "name": "Speciale",
-               "description": "Le azioni speciali vengono risolte."
+               "description": "Le azioni speciali vengono risolte"
             }
          },
          "maneuvers": {
             "nothing": {
                "name": "Niente",
-               "description": "Il personaggio non fa assolutamente nulla in questo round. Nessuna mossa, nessun attacco, niente di niente."
+               "description": "Il personaggio non fa assolutamente nulla in questo round. Nessuna mossa, nessun attacco, niente di niente"
             },
             "moveOnly": {
                "name": "Solo Movimento",
-               "description": "Il personaggio si sta muovendo e non sta attaccando in questo round. Non è una ritirata."
+               "description": "Il personaggio si sta muovendo e non sta attaccando in questo round. Non è una ritirata"
             },
             "readyWeapon": {
                "name": "Prepara Arma",
-               "description": "Il personaggio sta preparando la sua arma in questo round. Può anche muoversi a velocità normale."
+               "description": "Il personaggio sta preparando la sua arma in questo round. Può anche muoversi a velocità normale"
             },
             "throw": {
                "name": "Lancia Arma",
-               "description": "Il personaggio lancia un'arma adatta, applicando Destrezza e bonus magici al tiro per colpire e Forza e bonus magici al danno, a condizione che il bersaglio sia nel raggio d'azione."
+               "description": "Il personaggio lancia un'arma adatta, applicando Destrezza e bonus magici al tiro per colpire e Forza e bonus magici al danno, a condizione che il bersaglio sia nel raggio d'azione"
             },
             "fire": {
                "name": "Tira",
-               "description": "Il personaggio usa un'arma a distanza, applicando Destrezza e bonus magici al tiro per colpire, a condizione che il bersaglio si trovi entro la portata dell'arma."
+               "description": "Il personaggio usa un'arma a distanza, applicando Destrezza e bonus magici al tiro per colpire, a condizione che il bersaglio si trovi entro la portata dell'arma"
             },
             "spell": {
                "name": "Lancia Incantesimo",
-               "description": "Il personaggio lancia un incantesimo memorizzato. I mostri usano questa azione per attacchi magici che non sono a distanza o in mischia."
+               "description": "Il personaggio lancia un incantesimo memorizzato. I mostri usano questa azione per attacchi magici che non sono a distanza o in mischia"
             },
             "magicItem": {
                "name": "Oggetto Magico",
-               "description": "Il personaggio attiva un oggetto magico che non sia un'arma, come una pozione, una bacchetta, un anello o l'abilità passiva di un altro oggetto magico."
+               "description": "Il personaggio attiva un oggetto magico che non sia un'arma, come una pozione, una bacchetta, un anello o l'abilità passiva di un altro oggetto magico"
             },
             "attack": {
                "name": "Attacco",
-               "description": "Il personaggio effettua un attacco in mischia, aggiungendo Forza e bonus magici sia al tiro per colpire che al danno."
+               "description": "Il personaggio effettua un attacco in mischia, aggiungendo Forza e bonus magici sia al tiro per colpire che al danno"
             },
             "withdrawal": {
                "name": "Arretrare",
-               "description": "Il personaggio indietreggia da un nemico da 1,5 metri fino a metà del suo normale movimento, attaccando solo se il nemico lo segue e si sposta nel raggio d'azione durante la sua fase di movimento."
+               "description": "Il personaggio indietreggia da un nemico da 1,5 metri fino a metà del suo normale movimento, attaccando solo se il nemico lo segue e si sposta nel raggio d'azione durante la sua fase di movimento"
             },
             "retreat": {
                "name": "Ritirata",
-               "description": "Il personaggio fugge dalla mischia a più della metà della sua velocità, perdendo i bonus alla CA dello scudo e dando ai nemici un bonus di +2 per attaccarli in quel round."
+               "description": "Il personaggio fugge dalla mischia a più della metà della sua velocità, perdendo i bonus alla CA dello scudo e dando ai nemici un bonus di +2 per attaccarli in quel round"
             },
             "lance": {
                "name": "Attacco con Lancia",
-               "description": "Se il cavallo, prima di portare l’attacco del guerriero percorre al galoppo almeno 20 m la lancia infligge un numero doppio di danni."
+               "description": "Se il cavallo, prima di portare l’attacco del guerriero percorre al galoppo almeno 20 m la lancia infligge un numero doppio di danni"
             },
             "multiAttack": {
                "name": "Attacco Multiplo",
-               "description": "Il personaggio effettua più attacchi per round, che possono includere qualsiasi combinazione di attacchi, movimenti, disarmi o attacchi con la lancia."
+               "description": "Il personaggio effettua più attacchi per round, che possono includere qualsiasi combinazione di attacchi, movimenti, disarmi o attacchi con la lancia"
             },
             "setSpear": {
                "name": "Prepara Lancia",
-               "description": "Il personaggio impugna una lancia, una picca o un'arma simile e la blocca contro il terreno per un nemico in carica, ottenendo Forza e bonus magici e infliggendo danni doppi in caso di colpo andato a segno."
+               "description": "Il personaggio impugna una lancia, una picca o un'arma simile e la blocca contro il terreno per un nemico in carica, ottenendo Forza e bonus magici e infliggendo danni doppi in caso di colpo andato a segno"
             },
             "smash": {
                "name": "Schiantare",
-               "description": "Il personaggio effettua un attacco potente con una penalità di -5 al tiro per colpire perdendo automaticamente l'iniziativa. Se colpisce, aggiunge ai danni tutto il suo punteggio di Forza, e se applicabili, eventuali bonus derivanti dalla magia e dalla Forza stessa."
+               "description": "Il personaggio effettua un attacco potente con una penalità di -5 al tiro per colpire perdendo automaticamente l'iniziativa. Se colpisce, aggiunge ai danni tutto il suo punteggio di Forza, e se applicabili, eventuali bonus derivanti dalla magia e dalla Forza stessa"
             },
             "parry": {
                "name": "Parare",
-               "description": "Il personaggio non attacca ma para gli attacchi avversari per un intero round, facendo sì che tutti i nemici subiscano una penalità di -4 ai tiri per colpire contro di loro. Proiettili scagliati con meccanismi non possono essere parati."
+               "description": "Il personaggio non attacca ma para gli attacchi avversari per un intero round, facendo sì che tutti i nemici subiscano una penalità di -4 ai tiri per colpire contro di loro. Proiettili scagliati con meccanismi non possono essere parati"
             },
             "disarm": {
                "name": "Disarmare",
-               "description": "Il personaggio disarma un avversario colpendolo ma senza infliggere danni; se il bersaglio fallisce una prova di Destrezza, lascia cadere la sua arma."
+               "description": "Il personaggio disarma un avversario colpendolo ma senza infliggere danni; se il bersaglio fallisce una prova di Destrezza, lascia cadere la sua arma"
             }
          }
       },
@@ -646,16 +662,16 @@
          "Expert": "Dark Dungeons"
       },
       "toasts": {
-         "hint": "Mostra frasi speciali con i lanci di dado.",
+         "hint": "Mostra frasi speciali con i lanci di dado",
          "name": "Complimenti Tiro Dado"
       },
       "EncMax": {
-         "Hint": "La quantità massima che un personaggio può trasportare, in monete, ed essere comunque in grado di muoversi.",
-         "Hint2": "L'importo massimo, in monete, che può essere trasportato mentre si è ancora in grado di muoversi.",
+         "Hint": "La quantità massima che un personaggio può trasportare, in monete, ed essere comunque in grado di muoversi",
+         "Hint2": "L'importo massimo, in monete, che può essere trasportato mentre si è ancora in grado di muoversi",
          "Name": "Massimo Ingombro"
       },
       "Theme": {
-         "Hint": "La modalità Dark presenta uno sfondo scuro con testo chiaro, mentre la modalità Light presenta uno sfondo chiaro con testo scuro.",
+         "Hint": "La modalità Dark presenta uno sfondo scuro con testo chiaro, mentre la modalità Light presenta uno sfondo chiaro con testo scuro",
          "Name": "Tema",
          "Dark": "Dark",
          "Light": "Light"
@@ -663,16 +679,16 @@
       "move": {
          "max": {
             "name": "Velocità Max di Mov.",
-            "hint": "La distanza massima che questo essere può percorrere per turno."
+            "hint": "La distanza massima che questo essere può percorrere per turno"
          },
          "maxFlight": {
             "name": "Velocità Massima di Volo",
-            "hint": "La distanza massima che questo essere può volare per turno."
+            "hint": "La distanza massima che questo essere può volare per turno"
          }
       },
       "rest": {
          "name": "Turni di Riposo",
-         "hint": "Configura la frequenza con cui un gruppo deve riposarsi durante l'esplorazione. Un valore pari a 6 significherebbe che il gruppo deve riposare una volta ogni sei turni. Impostato su 0 per non richiedere riposo."
+         "hint": "Configura la frequenza con cui un gruppo deve riposarsi durante l'esplorazione. Un valore pari a 6 significherebbe che il gruppo deve riposare una volta ogni sei turni. Impostato su 0 per non richiedere riposo"
       },
       "initiative": {
          "formula": {
@@ -692,7 +708,7 @@
          },
          "modifier": {
             "name": "Modificatore Iniziativa di Gruppo",
-            "hint": "Scegli come calcolare il modificatore dell'iniziativa di gruppo.",
+            "hint": "Scegli come calcolare il modificatore dell'iniziativa di gruppo",
             "choices": {
                "none": "Nessun Modificatore",
                "average": "Destrezza Media",
@@ -701,7 +717,7 @@
          },
          "nextRound": {
             "name": "Modalità Prossimo Turno d'Iniziativa",
-            "hint": "Decidi cosa accadrà quando verrà attivato il round successivo nel tracker di combattimento.",
+            "hint": "Decidi cosa accadrà quando verrà attivato il round successivo nel tracker di combattimento",
             "choices": {
                "hold": "Mantieni Initiativa",
                "reset": "Azzera Initiativa",
