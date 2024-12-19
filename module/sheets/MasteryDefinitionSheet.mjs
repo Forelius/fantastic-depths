@@ -1,5 +1,3 @@
-import { fadeItemSheet } from "./fadeItemSheet.mjs";
-
 /**
  * Sheet class for MasteryDefinitionItem.
  */
@@ -10,11 +8,17 @@ export class MasteryDefinitionSheet extends ItemSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ["fantastic-depths", "item", "weapon-mastery-item"],
-         template: "systems/fantastic-depths/templates/item/weapon-mastery-sheet.hbs",
+         template: "systems/fantastic-depths/templates/item/MasteryDefinitionSheet.hbs",
          width: 400,
          height: 400,
          resizable: true
       });
+   }
+
+   /** @override */
+   get isEditable() {
+      // Allow editing only for GM users
+      return game.user.isGM;
    }
 
    /**

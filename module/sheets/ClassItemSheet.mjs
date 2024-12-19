@@ -28,7 +28,7 @@ export class ClassItemSheet extends ItemSheet {
    /** @override */
    get template() {
       const path = 'systems/fantastic-depths/templates/item';
-      return `${path}/class-sheet.hbs`;
+      return `${path}/ClassItemSheet.hbs`;
    }
 
    /** @override */

@@ -19,10 +19,16 @@ import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
+import { GearItemSheet } from './sheets/GearItemSheet.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
-import { fadeItemSheet } from './sheets/fadeItemSheet.mjs';
+import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
+import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
 import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
 import { MasteryDefinitionSheet } from './sheets/MasteryDefinitionSheet.mjs';
+import { SkillItemSheet } from './sheets/SkillItemSheet.mjs';
+import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
+import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
+import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
@@ -105,10 +111,20 @@ Hooks.once('init', async function () {
       label: 'FADE.SheetLabel.Actor',
    });  
    Items.unregisterSheet('core', ItemSheet);
-   Items.registerSheet('fantastic-depths', fadeItemSheet, {
+   Items.registerSheet('fantastic-depths', GearItemSheet, {
       label: 'FADE.SheetLabel.Item',
       makeDefault: true,
-      types: ['item', 'weapon', 'armor', 'spell', 'skill', 'mastery', 'specialAbility', 'treasure']
+      types: ['item', 'treasure']
+   });
+   Items.registerSheet('fantastic-depths', ActorMasterySheet, {
+      label: 'FADE.SheetLabel.ActorMasteryItem',
+      types: ['mastery'],
+      makeDefault: true
+   });
+   Items.registerSheet('fantastic-depths', ArmorItemSheet, {
+      label: 'FADE.SheetLabel.ArmorItem',
+      types: ['armor'],
+      makeDefault: true
    });
    Items.registerSheet('fantastic-depths', ClassItemSheet, {
       label: 'FADE.SheetLabel.ClassItem',
@@ -118,6 +134,26 @@ Hooks.once('init', async function () {
    Items.registerSheet('fantastic-depths', MasteryDefinitionSheet, {
       label: 'FADE.SheetLabel.MasteryDefinitionItem',
       types: ['weaponMastery'],
+      makeDefault: true
+   });
+   Items.registerSheet('fantastic-depths', SkillItemSheet, {
+      label: 'FADE.SheetLabel.SkillItem',
+      types: ['skill'],
+      makeDefault: true
+   });
+   Items.registerSheet('fantastic-depths', SpecialAbilitySheet, {
+      label: 'FADE.SheetLabel.SpecialAbility',
+      types: ['specialAbility'],
+      makeDefault: true
+   });
+   Items.registerSheet('fantastic-depths', SpellItemSheet, {
+      label: 'FADE.SheetLabel.SpellItem',
+      types: ['spell'],
+      makeDefault: true
+   });
+   Items.registerSheet('fantastic-depths', WeaponItemSheet, {
+      label: 'FADE.SheetLabel.WeaponItem',
+      types: ['weapon'],
       makeDefault: true
    });
 
