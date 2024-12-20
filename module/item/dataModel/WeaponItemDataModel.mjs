@@ -16,7 +16,7 @@ export class WeaponItemDataModel extends fadeItemDataModel {
          // Fields specific to the "weapon" template
          damageRoll: new fields.StringField({ required: true, initial: "1d6" }),
          damageType: new fields.StringField({ required: true, initial: "physical" }),
-         breath: new fields.BooleanField({ required: false, initial: false }),
+         breath: new fields.StringField({ nullable: true, initial: null }),
          canMelee: new fields.BooleanField({ required: false, initial: true }),
          canRanged: new fields.BooleanField({ required: false, initial: false }),
          savingThrow: new fields.StringField({ nullable: true, initial: null }),

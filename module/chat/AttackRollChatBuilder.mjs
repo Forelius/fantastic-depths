@@ -91,11 +91,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
       if (roll) {
          const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
          const hitAC = AttackRollChatBuilder.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0);
-            result = {
-               hitAC,
-               message: (hitAC !== null && hitAC !== Infinity)
-                  ? game.i18n.format('FADE.Chat.attackAC', { hitAC })
-                  : game.i18n.format('FADE.Chat.attackACNone'),
+         result = {
+            hitAC,
+            message: (hitAC !== null && hitAC !== Infinity)
+               ? game.i18n.format('FADE.Chat.attackAC', { hitAC })
+               : game.i18n.format('FADE.Chat.attackACNone'),
             targetResults: []
          };
 
@@ -130,8 +130,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
                      maxAttacksAgainst: defenseMastery.acBonusAT,
                      defenseMasteryTotal: defenseMastery.total
                   });
-//                  targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
-//<span ${isApplicable ? "style='color:green'" : ""} data-tooltip='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
+                  //                  targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
+                  //<span ${isApplicable ? "style='color:green'" : ""} data-tooltip='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
                   if (isApplicable) {
                      ac = defenseMastery.total;
                   }
@@ -161,11 +161,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
             result.targetResults.push(targetResult);
          }
-      } else if (weapon.system.breath?.length > 0) {
+      } else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === 'breath') {
          // Always hits, but saving throw
          result = {
             savingThrow: weapon.system.savingThrow,
-            message: 'Saving throw required.',
+            //message: 'Saving throw required.',
             targetResults: []
          };
          for (let targetToken of targetTokens) {
@@ -190,7 +190,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const attacker = context;
       const attackerName = attacker.name;
       const targetTokens = Array.from(game.user.targets);
-      const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
 
       let descData = {
@@ -210,7 +209,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
 
       if (window.toastManager) {
-         const toast = `${description}${toHitResult.message}`;
+         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
          window.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
@@ -234,7 +233,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const chatMessageData = await this.getChatMessageData({
          content,
          rolls,
-         rollMode,         
+         rollMode,
          flags: {
             [game.system.id]: {
                targets: toHitResult.targetResults

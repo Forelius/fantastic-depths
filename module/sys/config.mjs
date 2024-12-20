@@ -24,6 +24,7 @@ FADE.SavingThrows = [
 FADE.AttackTypes = [
    "melee",
    "missile",
+   "breath",
    "save"
 ];
 FADE.DamageTypes = [

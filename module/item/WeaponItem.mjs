@@ -11,12 +11,6 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      this.system.damageType = this.system.damageType || "physical";
-      this.system.mastery = this.system.mastery || "";
-      this.system.mastery2 = this.system.mastery2 || "";
-      this.system.natural = this.system.natural || false;
-      this.system.breath = this.system.breath || "";
-      this.system.weaponType = this.system.weaponType || "";
    }
 
    /** @override */
@@ -129,8 +123,8 @@ export class WeaponItem extends fadeItem {
 
    getAttackTypes() {
       let result = [];
-      const breath = this.system.breath?.length > 0;
-      if (breath) {
+      const isBreath = this.system.breath?.length > 0 && this.system.savingThrow === "breath";
+      if (isBreath) {
          result.push({ text: game.i18n.format('FADE.dialog.attackType.breath'), value: "breath" });
       } else {
          if (this.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
@@ -162,7 +156,7 @@ export class WeaponItem extends fadeItem {
 
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
             if (dialogResp?.resp) {
-               if (dialogResp.resp.attackType !== "breath") {
+               if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
                   let rollOptions = {
                      mod: dialogResp.resp.mod,
                      target: targetToken?.actor
