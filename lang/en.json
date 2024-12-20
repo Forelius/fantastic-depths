@@ -528,6 +528,7 @@
       },
       "AttackTypes": {
          "name": "Attack Type",
+         "hint": "If specified, the spell cast will either trigger a to-hit roll or a saving throw roll prompt.",
          "types": {
             "melee": "Melee",
             "missile": "Missile",

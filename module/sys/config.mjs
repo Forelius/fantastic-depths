@@ -31,7 +31,7 @@ FADE.DamageTypes = [
    "breath",
    "fire",
    "frost",
-   "spell",
+   "magic",
    "poison",
    "heal"
 ]

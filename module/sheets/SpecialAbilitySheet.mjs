@@ -55,6 +55,9 @@ export class SpecialAbilitySheet extends ItemSheet {
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
 
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+
       // Damage types
       const dmgTypes = []
       dmgTypes.push({ value: "", text: game.i18n.localize(`FADE.none`) });

@@ -1,7 +1,7 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
       <div class='header-fields'>
+         <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
          <ul class="summary flexrow">
             <li class="flex3">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
@@ -42,9 +42,9 @@
                <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
             </li>
          </ul>
-         <ul class="summary flexrow">
+         <ul class="summary flexrow" style="min-height:26px;">
             <li class="flex1">
-               <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}"/>
+               <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
                <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
             </li>
             <li class="flex1">
@@ -68,7 +68,7 @@
          </ul>
       </div>
    </header>
-
+   {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>

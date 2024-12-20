@@ -1,7 +1,7 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
       <div class='header-fields'>
+         <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
          <ul class="summary flexrow">
             <li class="flex3">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='{{localize 'FADE.Actor.Name'}}' /></div>
@@ -11,22 +11,23 @@
                <input type='text' name='system.spellLevel' value='{{system.spellLevel}}' data-dtype='Number' />
                <label for="system.spellLevel">{{localize 'FADE.Spell.level'}}</label>
             </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex2">
+            <li class="flex1">
                <input type='text' name='system.range' value='{{system.range}}' data-dtype='String' />
                <label for="system.range">{{localize 'FADE.Spell.range'}}</label>
             </li>
+         </ul>
+         <ul class="summary flexrow">
             <li class="flex3">
                <input type='text' name='system.duration' value='{{system.duration}}' data-dtype='String' />
                <label>{{localize 'FADE.Spell.duration'}}</label>
             </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex3">
-               {{! Not the same as ActiveEffects }}
-               <input type='text' name='system.effect' value='{{system.effect}}' data-dtype='String' />
-               <label for="system.effect">{{localize 'FADE.Spell.effect'}}</label>
+            <li class="flex1">
+               <input type="checkbox" name="system.targetSelf" data-dtype="Boolean" {{#if system.targetSelf}} checked{{/if}} />
+               <label for="system.targetSelf">{{localize "FADE.Spell.targetSelf"}}</label>
+            </li>
+            <li class="flex1">
+               <input type="checkbox" name="system.targetOther" data-dtype="Boolean" {{#if system.targetOther}} checked{{/if}} />
+               <label for="system.targetOther">{{localize "FADE.Spell.targetOther"}}</label>
             </li>
             <li class="flex1">
                <select name="system.savingThrow">
@@ -34,7 +35,7 @@
                </select>
                <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
             </li>
-         </ul>
+         </ul>        
       </div>
    </header>
    {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
@@ -57,37 +58,35 @@
       <div class='tab' data-group='primary' data-tab='attributes'>
          <section class="bordered">
             <ul class="summary flexrow">
-               <li class="flex2">
-                  <input type="checkbox" name="system.targetSelf" data-dtype="Boolean" {{#if system.targetSelf}} checked{{/if}} />
-                  <label for="system.targetSelf">{{localize "FADE.Spell.targetSelf"}}</label>
+               <li class="flex3">
+                  {{! Not the same as ActiveEffects }}
+                  <input type='text' name='system.effect' value='{{system.effect}}' data-dtype='String' data-tooltip="{{system.effect}}" />
+                  <label for="system.effect">{{localize 'FADE.Spell.effect'}}</label>
                </li>
-               <li class="flex2">
-                  <input type="checkbox" name="system.targetOther" data-dtype="Boolean" {{#if system.targetOther}} checked{{/if}} />
-                  <label for="system.targetOther">{{localize "FADE.Spell.targetOther"}}</label>
-               </li>
-               <li class="flex2">
-                  <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
-                  <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
-               </li>
-               <li class="flex2">
+               <li class="flex1">
                   <input type='text' name='system.maxTargetFormula' value='{{system.maxTargetFormula}}' data-dtype='String' />
                   <label for="system.maxTargetFormula">{{localize 'FADE.Spell.maxTargetFormula'}}</label>
                </li>
-               <li class="flex2">
+               <li class="flex1">
                   <input type='text' name='system.durationFormula' value='{{system.durationFormula}}' data-dtype='String' />
                   <label for="system.durationFormula">{{localize 'FADE.Spell.durationFormula'}}</label>
                </li>
+
             </ul>
             <ul class="summary flexrow">
+               <li class="flex1">
+                  <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+                  <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+               </li>
                <li>
-                  <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+                  <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' data-tooltip="{{system.dmgFormula}}"/>
                   <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
                </li>
                <li>
                   <select name="system.attackType">
                      {{selectOptions attackTypes selected=system.attackType valueAttr="value" labelAttr="text"}}
                   </select>
-                  <label for="system.attackType">{{localize 'FADE.AttackTypes.name'}}</label>
+                  <label for="system.attackType" data-tooltip="{{localize 'FADE.AttackTypes.hint'}}">{{localize 'FADE.AttackTypes.name'}}</label>
                </li>
                <li>
                   <select name="system.damageType">

@@ -23,12 +23,13 @@
       .damage-roll, .saving-Roll, .heal-roll {
          font-size: 15px;
          padding: 5px 4px;
+      }
 
-         .small-text {
-            margin-left: 4px;
-            font-size: 10px;
-            color: #808080;
-         }
+      .small-text {
+         margin-left: 4px;
+         font-size: 10px;
+         color: #808080;
+         line-height: 12px;
       }
 
       .attack-fail, .roll-fail {

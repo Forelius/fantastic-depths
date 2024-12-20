@@ -42,9 +42,10 @@
            data-type="damage"
            data-attackerid="{{descData.attackerid}}"
            data-targetweapontype="{{targetWeaponType}}"
-           data-weaponid="{{weapon.id}}">
+           data-weaponid="{{weapon.id}}"
+           data-tooltip="<b>{{localize 'FADE.Weapon.damage.long'}}:</b> {{damageRoll.formula}}">
       <i class="fa-solid fa-burst"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
-   </button>
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}}</span> <span class="small-text">{{damageRoll.type}}</span>
+   </button>   
 </div>
 {{/if}}

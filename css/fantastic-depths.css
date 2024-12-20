@@ -672,10 +672,11 @@ h1, h2, h3, h4 {
   font-size: 15px;
   padding: 5px 4px;
 }
-.chat-message .message-content .damage-roll .small-text, .chat-message .message-content .saving-Roll .small-text, .chat-message .message-content .heal-roll .small-text {
+.chat-message .message-content .small-text {
   margin-left: 4px;
   font-size: 10px;
   color: #808080;
+  line-height: 12px;
 }
 .chat-message .message-content .attack-fail, .chat-message .message-content .roll-fail {
   font-size: 20px;
@@ -963,9 +964,10 @@ h1, h2, h3, h4 {
   margin-right: 10px;
 }
 .fantastic-depths .sheet-header .profile-img-sm {
+  float: left;
   flex: 0 0 10px;
-  height: 90px;
-  width: 90px;
+  height: 80px;
+  width: 80px;
   margin-right: 10px;
 }
 .fantastic-depths .sheet-header .profile-img-xsm {
@@ -1039,7 +1041,7 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .summary {
   flex: 0 0 100%;
-  height: 44px;
+  height: 46px;
   margin: 0;
   padding: 0;
   list-style: none;
