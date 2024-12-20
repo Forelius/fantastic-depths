@@ -37,9 +37,10 @@
            data-label="Heal"
            data-type="heal"
            data-attackerid="{{context.id}}"
-           data-weaponid="{{specAbility.id}}">
+           data-weaponid="{{specAbility.id}}"
+           data-tooltip="<b>{{localize 'FADE.Spell.healFormula'}}:</b> {{damageRoll.formula}}">
       <i class="fa-solid fa-heart"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}} {{damageRoll.formula}}</span> <span class="small-text">{{damageRoll.type}}</span>
+      <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}} </span> <span class="small-text">{{damageRoll.type}}</span>
    </button>
    {{else}}
    <button class="damage-roll"
