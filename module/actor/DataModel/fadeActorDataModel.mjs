@@ -376,12 +376,3 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.savingThrows.spell.value -= mods.spell + mods.all;
    }
 }
-
-export class NpcDataModel extends fadeActorDataModel {
-   static defineSchema() {
-      return {
-         ...super.defineSchema(),
-         cr: new fields.NumberField({ initial: 0 }),
-      };
-   }
-}

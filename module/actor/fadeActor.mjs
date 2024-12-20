@@ -71,18 +71,6 @@ export class fadeActor extends Actor {
             assignIfUndefined(data, changeData, "prototypeToken.scale", 0.9);
             assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
             break;
-         case "npc":
-            Object.assign(changeData, {
-               "prototypeToken.sight.enabled": true,
-               "prototypeToken.sight.visionMode": "basic"
-            });
-            assignIfUndefined(data, changeData, "img", `${fdPath}/hero1.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.texture.src", `${fdPath}/hero1a.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.NEUTRAL);
-            assignIfUndefined(data, changeData, "prototypeToken.actorLink", true);
-            assignIfUndefined(data, changeData, "prototypeToken.scale", 0.9);
-            assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
-            break;
          case "monster":
             assignIfUndefined(data, changeData, "img", `${fdPath}/monster1.webp`);
             assignIfUndefined(data, changeData, "prototypeToken.texture.src", `${fdPath}/monster1a.webp`);
