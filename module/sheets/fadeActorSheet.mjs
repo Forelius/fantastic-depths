@@ -32,9 +32,6 @@ export class fadeActorSheet extends ActorSheet {
       } else if (this.actor.type === "monster") {
          options.width = 650;
          options.height = 540;
-      } else {
-         options.width = 600;
-         options.height = 540;
       }
 
       // Call the original render method with modified options
@@ -153,53 +150,50 @@ export class fadeActorSheet extends ActorSheet {
             this._toggleContainedItems(event);
          });
 
-         // If this actor is the owner
-         if (this.actor.isOwner) {
-            // Drag events for macros.
-            const dragStartHandler = (event) => this._onDragStart(event);
-            html.find('li.item').each((i, li) => {
-               // If not an inventory header...
-               if (li.classList.contains('items-header') == false) {
-                  li.setAttribute('draggable', true);
-                  li.addEventListener('dragstart', dragStartHandler, false);
+         // Drag events for macros.
+         const dragStartHandler = (event) => this._onDragStart(event);
+         html.find('li.item').each((i, li) => {
+            // If not an inventory header...
+            if (li.classList.contains('items-header') == false) {
+               li.setAttribute('draggable', true);
+               li.addEventListener('dragstart', dragStartHandler, false);
+            }
+         });
+
+         // Toggle equipped state
+         html.find(".item-toggle").click(async (event) => {
+            const item = this._getItemFromActor(event);
+            // Toggle the equipped state and store the new state in isEquipped
+            const isEquipped = !item.system.equipped;
+            await item.update({ "system.equipped": isEquipped });
+         });
+
+         // Consumables
+         html.find(".consumable-counter .full-mark").click((event) => {
+            this._useConsumable(event, true);
+         });
+         html.find(".consumable-counter .empty-mark").click((event) => {
+            this._useConsumable(event, false);
+         });
+
+         // Editable
+         html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
+
+         // Reset spells
+         html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
+
+         // Add/delete tag
+         html.find('input[data-action="add-tag"]')
+            .keypress((ev) => {
+               if (ev.which === 13) {
+                  const value = $(ev.currentTarget).val();
+                  this.object.tagManager.pushTag(value);
                }
             });
-
-            // Toggle equipped state
-            html.find(".item-toggle").click(async (event) => {
-               const item = this._getItemFromActor(event);
-               // Toggle the equipped state and store the new state in isEquipped
-               const isEquipped = !item.system.equipped;
-               await item.update({ "system.equipped": isEquipped });
-            });
-
-            // Consumables
-            html.find(".consumable-counter .full-mark").click((event) => {
-               this._useConsumable(event, true);
-            });
-            html.find(".consumable-counter .empty-mark").click((event) => {
-               this._useConsumable(event, false);
-            });
-
-            // Editable
-            html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
-
-            // Reset spells
-            html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
-
-            // Add/delete tag
-            html.find('input[data-action="add-tag"]')
-               .keypress((ev) => {
-                  if (ev.which === 13) {
-                     const value = $(ev.currentTarget).val();
-                     this.object.tagManager.pushTag(value);
-                  }
-               });
-            html.find(".tag-delete").click((ev) => {
-               const value = ev.currentTarget.parentElement.dataset.tag;
-               this.object.tagManager.popTag(value);
-            });
-         }
+         html.find(".tag-delete").click((ev) => {
+            const value = ev.currentTarget.parentElement.dataset.tag;
+            this.object.tagManager.popTag(value);
+         });
 
          // Bind the collapsible functionality to the header click event
          html.find('.collapsible-header').on('click', async (event) => {
@@ -335,12 +329,25 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   /**
+    * @override
+    * @param {any} event
+    * @param {any} data
+    * @returns
+    */
    async _onDropItem(event, data) {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
       const droppedItem = await Item.implementation.fromDropData(data);
-      if (targetIsContainer) {
+
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'weaponMastery') {
+         //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
+         const actorMastery = droppedItem.createActorWeaponMastery(this.actor);
+      }
+      // If the drop target is a container...
+      else if (targetIsContainer) {
          const itemData = droppedItem.toObject();
          if (droppedItem.actor == null) {
             const newItem = await this._onDropItemCreate(itemData, event);
@@ -351,8 +358,12 @@ export class fadeActorSheet extends ActorSheet {
          } else {
             droppedItem.update({ "system.containerId": targetId });
          }
-      } else {
+      }
+      // The drop target is not a container
+      else {
+         // If the dropped item is owned by an actor already...
          if (droppedItem.actor !== null) {
+            // Remove the item from any container
             droppedItem.update({ "system.containerId": null });
          }
          return super._onDropItem(event, data);

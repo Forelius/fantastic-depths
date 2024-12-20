@@ -551,7 +551,7 @@
          "phases": {
             "morale": {
                "name": "Morale Check",
-               "description": "Monsters and NPCs roll Morale Checks. Anyone needing to make a saving throw vs. an ongoing effect does so now."
+               "description": "Monsters, Retainers, Hirelings and NPCs roll Morale Checks. Anyone needing to make a saving throw vs. an ongoing effect does so now."
             },
             "movement": {
                "name": "Movement",

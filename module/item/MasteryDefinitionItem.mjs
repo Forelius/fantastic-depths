@@ -1,3 +1,4 @@
+import { ActorMasteryItem } from "./ActorMasteryItem.mjs";
 import { fadeItem } from "./fadeItem.mjs";
 
 /**
@@ -9,5 +10,13 @@ export class MasteryDefinitionItem extends fadeItem {
     */
    prepareDerivedData() {
       super.prepareDerivedData();
+   }
+
+   async createActorWeaponMastery(owner) {
+      const result = await fadeItem.create({
+         name: this.name,
+         type: "mastery",
+      }, { parent: owner });
+      return result;
    }
 }
