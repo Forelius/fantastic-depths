@@ -143,30 +143,35 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let applyTo = [];
       let hasTarget = targeted.length > 0;
       let hasSelected = selected.length > 0;
+      let isCanceled = false;
 
       if (hasTarget && hasSelected) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
-            title: "Select Targeted or Selected",
-            content: "Apply to targeted or selected?",
-            yesLabel: "Targeted",
-            noLabel: "Selected",
+            title: game.i18n.localize('FADE.dialog.applyToPrompt'),
+            content: game.i18n.localize('FADE.dialog.applyToPrompt'),
+            yesLabel: game.i18n.localize('FADE.dialog.targeted'),
+            noLabel: game.i18n.localize('FADE.dialog.selected'),
             defaultChoice: "yes"
          }, attackerToken);
 
-         if (dialogResp?.resp?.result === true) {
+         if (dialogResp?.resp?.result == undefined) {
+            isCanceled = true;
+         } else if (dialogResp?.resp?.result === true) {
             hasSelected = false;
          } else if (dialogResp?.resp?.result === false) {
             hasTarget = false;
          }
       }
 
-      if (hasTarget) {
+      if (isCanceled === true) {
+         // do nothing.
+      } else if (hasTarget) {
          applyTo = targeted;
       } else if (hasSelected) {
          applyTo = selected;
       } else {
-         ui.notifications.warn("Select or target the token(s).");
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
       }
 
       // Ensure we have a target ID

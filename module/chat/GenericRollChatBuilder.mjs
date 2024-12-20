@@ -4,7 +4,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/generic-roll.hbs';
 
    async getRollContent(roll, mdata) {
-      if (mdata.flavor) {
+      if (mdata?.flavor) {
          return roll.render({ flavor: mdata.flavor });
       } else {
          return roll.render();
@@ -12,25 +12,33 @@ export class GenericRollChatBuilder extends ChatBuilder {
    }
 
    async createChatMessage() {
-      const { context, mdata, resp, roll } = this.data;
-      const rolls = [roll];
-      const rollContent = await this.getRollContent(roll, mdata);
-      let targetNumber = Number(mdata.target); // Ensure the target number is a number
+      const { context, mdata, resp, roll, caller } = this.data;
+      let resultString = null;
+      const rolls = roll ? [roll] : [];
+      let rollContent = null;
 
-      // Determine the roll result based on the provided data
-      let resultString = this.getResultString(mdata, roll, targetNumber);
+      if (roll) {
+         rollContent = await this.getRollContent(roll, mdata);
+         let targetNumber = Number(mdata.target); // Ensure the target number is a number
+
+         // Determine the roll result based on the provided data
+         resultString = this.getResultString(mdata, roll, targetNumber);
+      }
 
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
-
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
-      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
+      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
 
-      this.handleToast(actorName, mdata, roll, resultString, rollMode);
+      if (roll) {
+         this.handleToast(actorName, mdata, roll, resultString, rollMode);
+      }
 
       // Prepare data for the chat template
       const chatData = {
+         // Only specify caller if an item.
+         caller: caller.type === "character" || caller.type === "monster" ? null : caller,
          rollContent,
          mdata,
          resultString,
@@ -53,7 +61,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
 
    handleToast(actorName, mdata, roll, resultString, rollMode) {
       if (window.toastManager) {
-         let toast = `${actorName}: ${mdata.label ?? ''}${mdata.desc ?? ''}`;
+         let toast = `${actorName}: ${mdata?.label ?? ''}${mdata?.desc ?? ''}`;
          toast += `<div>Roll: ${roll.total}</div>`;
          if (resultString) toast += `<div>${resultString}</div>`;
          window.toastManager.showHtmlToast(toast, "info", rollMode);

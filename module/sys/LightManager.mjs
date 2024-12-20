@@ -7,13 +7,13 @@ export class LightManager {
    }
 
    static async showLightDialog() {
-      if (!LightManager.hasSelectedTokens()) {
-         ui.notifications.error("No token selected. Please select a token to set lighting.");
+      if (!LightManager.hasSelectedToken()) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning2'));
       } else {
          const dataset = { dialog: 'lightmgr' };
          const caller = game.user;
 
-         let token = canvas.tokens.controlled[0];
+         let token = LightManager.getToken();
          let items = token.actor.items;
          // Filter items to get those with a "light" tag and map them to options
          let lightItems = [];
@@ -24,7 +24,7 @@ export class LightManager {
          });
 
          if (lightItems.length === 0) {
-            ui.notifications.warn("No light source items found on this actor.");
+            ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }));
          } else {
             // Render the dialog with the necessary data
             const dialogResponse = await DialogFactory(dataset, caller, { lightItems });
@@ -50,13 +50,18 @@ export class LightManager {
       }
    }
 
-   static hasSelectedTokens() {
-      return canvas.tokens.controlled.length > 0;
+   static getToken() {
+      return canvas.tokens.controlled?.[0];
+   }
+
+   static hasSelectedToken() {
+      const token = LightManager.getToken();
+      return token !== null && token !== undefined;
    }
 
    static updateTokenLight(token, type, lightSource = null) {
-      if (!LightManager.hasSelectedTokens()) {
-         ui.notifications.error("No token selected. Please select a token to set lighting.");
+      if (!LightManager.hasSelectedToken()) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning2'));
       } else {
          let canUpdate = true;
          lightSource = lightSource || LightManager.getLightSource(token.actor, type);
@@ -167,6 +172,10 @@ export class LightManager {
       item.update({ "system.light.usage": lightData.usage });
    }
 
+   /**
+    * This will only update tokens on the current canvas.
+    * @param {any} turnData
+    */
    static updateLightUsage(turnData) {
       const turnDelta = Number(turnData.dungeon.session) - Number(turnData.dungeon.prevTurn);
 

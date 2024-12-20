@@ -74,7 +74,7 @@ export class fadeDialog {
             }
          },
          default: 'roll',
-         close: () => { return false; }
+         close: () => { return null; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -119,14 +119,14 @@ export class fadeDialog {
             }
          },
          default: 'roll',
-         close: () => { return false; }
+         close: () => { return null; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       dialogResp.context = caller;
       return dialogResp;
    }
-      
+
    static async getAbilityDialog(dataset, caller) {
       const dialogData = {};
       const dialogResp = { caller };
@@ -151,7 +151,7 @@ export class fadeDialog {
             },
          },
          default: 'check',
-         close: () => { return false; }
+         close: () => { return null; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -173,24 +173,24 @@ export class fadeDialog {
          content: await renderTemplate(template, dialogData),
          buttons: {
             ignite: {
-               label: "Ignite",
+               label: game.i18n.localize('FADE.dialog.ignite'),
                callback: (html) => ({
                   action: "ignite",
                   itemId: document.getElementById('lightItem').value,
                })
             },
             extinguish: {
-               label: "Extinguish",
+               label: game.i18n.localize('FADE.dialog.extinguish'),
                callback: () => ({
                   action: "extinguish"
                })
             },
             close: {
-               label: "Close"
+               label: game.i18n.localize('FADE.dialog.close')
             }
          },
          default: "close",
-         close: () => { return false; }
+         close: () => { return null; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -201,17 +201,16 @@ export class fadeDialog {
    static async getSelectAttackDialog(equippedOnly = false) {
       // The selected token, not the actor
       const result = {};
-      const attackerToken = canvas.tokens.controlled?.[0] || this.actor?.getDependentTokens()?.[0] || game.user.character?.getDependentTokens()?.[0];
-      if (attackerToken) {
-         const dialogData = { label: "Select with What to Attack" };
+      const attackerActor = canvas.tokens.controlled?.[0]?.actor || game.user.character;
+      if (attackerActor) {
+         const dialogData = { label: game.i18n.localize('FADE.dialog.selectAttack') };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
-         const attackerActor = attackerToken?.actor; // Actor associated with the token
          const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped));
 
-         if (attackItems === 0) {
-            ui.notifications.warn("The selected actor does not have anything to attack with.");
+         if (!attackItems || attackItems.length == 0) {
+            ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.weapon') }));
          } else if (equippedOnly && attackItems.length === 0) {
-            ui.notifications.warn("The selected actor does not have any weapons equipped.");
+            ui.notifications.warn(game.i18n.localize('FADE.dialog.noEquippedWeapons'));
          } else {
             dialogData.attackItems = attackItems;
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
@@ -220,7 +219,7 @@ export class fadeDialog {
                content: await renderTemplate(template, dialogData),
                buttons: {
                   attack: {
-                     label: "Attack",
+                     label: game.i18n.localize('FADE.combat.maneuvers.attack.name'),
                      callback: function (html) {
                         const itemId = document.getElementById('weaponItem').value;
                         const item = attackerActor.items.get(itemId);
@@ -230,7 +229,7 @@ export class fadeDialog {
                      }
                   },
                   close: {
-                     label: "Close",
+                     label: game.i18n.localize('FADE.dialog.close'),
                      callback: function (html) { return null; }
                   }
                },
@@ -239,18 +238,65 @@ export class fadeDialog {
             }, {
                classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
             });
-            result.context = attackerToken;
+            result.context = attackerActor;
          }
       } else {
          // Show a warning notification if no token is selected
-         ui.notifications.warn("You must select a token or assign a default character to perform this action.");
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
       }
 
       return result;
    }
 
+   static async getSelectSpellDialog(memorizedOnly = false) {
+      const casterActor = canvas.tokens.controlled?.[0]?.actor || game.user.character;
+      if (casterActor) {
+         const dialogData = { label: game.i18n.localize('FADE.dialog.selectSpell') };
+         const template = 'systems/fantastic-depths/templates/dialog/select-spell.hbs';
+         const spellItems = casterActor.items.filter((item) => item.type === "spell");
+
+         if (!spellItems || spellItems.length == 0) {
+            ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.spell') }));
+         } else {
+            dialogData.spellItems = spellItems;
+            await Dialog.wait({
+               title: dialogData.label,
+               content: await renderTemplate(template, dialogData),
+               buttons: {
+                  attack: {
+                     label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
+                     callback: function (html) {
+                        const itemId = document.getElementById('spellItem').value;
+                        const item = casterActor.items.get(itemId);
+                        // Call item's roll method.
+                        item.roll();
+                        return { item };
+                     }
+                  },
+                  close: {
+                     label: game.i18n.localize('FADE.dialog.close'),
+                     callback: function (html) { return null; }
+                  }
+               },
+               default: "close",
+               close: () => { return null; }
+            }, {
+               classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+            });
+         }
+      } else {
+         // Show a warning notification if no token is selected
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
+      }
+   }
+
    static async getYesNoDialog(dataset) {
-      const { title = "Confirm", content = "Are you sure?", yesLabel = "Yes", noLabel = "No", defaultChoice = "no" } = dataset;
+      const {
+         title = game.i18n.localize('FADE.dialog.confirm'),
+         content = game.i18n.localize('FADE.dialog.confirm'),
+         yesLabel = game.i18n.localize('FADE.yes'),
+         noLabel = game.i18n.localize('FADE.no'),
+         defaultChoice = "no" } = dataset;
       const dialogResp = {};
 
       dialogResp.resp = await Dialog.wait({
@@ -273,7 +319,7 @@ export class fadeDialog {
             }
          },
          default: defaultChoice,
-         close: () => { return false; }
+         close: () => { return null; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });

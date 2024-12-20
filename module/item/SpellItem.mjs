@@ -60,10 +60,10 @@ export class SpellItem extends fadeItem {
       if (caster) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
-            title: game.i18n.format('FADE.dialog.spellcast.title'),
-            content: game.i18n.format('FADE.dialog.spellcast.content'),
-            yesLabel: game.i18n.format('FADE.dialog.spellcast.yesLabel'),
-            noLabel: game.i18n.format('FADE.dialog.spellcast.noLabel'),
+            title: game.i18n.localize('FADE.dialog.spellcast.title'),
+            content: game.i18n.localize('FADE.dialog.spellcast.content'),
+            yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
+            noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
             defaultChoice: "yes"
          }, this.actor);
 
@@ -73,7 +73,7 @@ export class SpellItem extends fadeItem {
             super.roll(dataset);
          }
       } else {
-         ui.notifications.warn(game.i18n.format('FADE.notification.spellSelectToken'));
+         ui.notifications.warn(game.i18n.localize('FADE.notification.spellSelectToken'));
       }
 
       return null;

@@ -56,7 +56,7 @@ export class GMMessageSender {
       // Handle the message based on type
       switch (message.action) {
          case "alert":
-            ui.notifications.info(`Player ${message.playerName} says: ${message.data.text}`);
+            ui.notifications.info(`${message.playerName}: ${message.data.text}`);
             break;
          case "log":
             console.log(`Log from ${message.playerName}:`, message.data);

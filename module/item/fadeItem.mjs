@@ -1,3 +1,4 @@
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
 /**
@@ -67,21 +68,26 @@ export class fadeItem extends Item {
     * @private
     */
    async roll(dataset) {
-      const item = this;
-
       // Initialize chat data.
-      const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = await game.settings.get('core', 'rollMode');
+      const chatData = {         
+         caller: this,
+         context: this.actor,
+         rollMode 
+      };
+      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+      return await builder.createChatMessage();
 
-      // If there's no roll data, send a chat message with the item description.
-      if (dataset.test === null || dataset.test === undefined) {
-         ChatMessage.create({
-            speaker: speaker,
-            rollMode: rollMode,
-            flavor: `${item.name}`,
-            content: item.system.description ?? '',
-         });
-      }
+   //   // If there's no roll data, send a chat message with the item description.
+   //   if (dataset?.test === null || dataset?.test === undefined) {
+   //      ChatMessage.create({
+   //         speaker: speaker,
+   //         rollMode: rollMode,
+   //         flavor: `${item.name}`,
+   //         content: item.system.description ?? '',
+   //      });
+   //   }
    }
 
    async getEvaluatedRoll(formula, options = { minimize: true }) {
