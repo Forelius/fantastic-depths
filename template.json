@@ -1,6 +1,6 @@
 {
    "Actor": {
-      "types": [ "character", "monster", "npc" ]
+      "types": [ "character", "monster" ]
    },
    "Item": {
       "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility", "class", "weaponMastery" ] 

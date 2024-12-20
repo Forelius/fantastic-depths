@@ -104,12 +104,21 @@ Hooks.once('init', async function () {
    // if the transfer property on the Active Effect is true.
    CONFIG.ActiveEffect.legacyTransferral = false;
 
+   registerSheets();
+
+   await handleAsyncInit();
+
+   // Preload Handlebars templates.
+   return preloadHandlebarsTemplates();
+});
+
+function registerSheets() {
    // Register sheet application classes
    Actors.unregisterSheet('core', ActorSheet);
    Actors.registerSheet('fantastic-depths', fadeActorSheet, {
       makeDefault: true,
       label: 'FADE.SheetLabel.Actor',
-   });  
+   });
    Items.unregisterSheet('core', ItemSheet);
    Items.registerSheet('fantastic-depths', GearItemSheet, {
       label: 'FADE.SheetLabel.Item',
@@ -129,7 +138,7 @@ Hooks.once('init', async function () {
    Items.registerSheet('fantastic-depths', ClassItemSheet, {
       label: 'FADE.SheetLabel.ClassItem',
       types: ['class'],
-      makeDefault: true 
+      makeDefault: true
    });
    Items.registerSheet('fantastic-depths', MasteryDefinitionSheet, {
       label: 'FADE.SheetLabel.MasteryDefinitionItem',
@@ -156,12 +165,8 @@ Hooks.once('init', async function () {
       types: ['weapon'],
       makeDefault: true
    });
+}
 
-   await handleAsyncInit();
-
-   // Preload Handlebars templates.
-   return preloadHandlebarsTemplates();
-});
 
 async function handleAsyncInit() {
    // Register System Settings

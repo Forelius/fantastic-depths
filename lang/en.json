@@ -45,7 +45,7 @@
             "name": "First Level"
          },
          "isRetainer": {
-            "hint": "Is this character a retainer, hireling or other hired hand.",
+            "hint": "Is this character a retainer, NPC, hireling or other hired hand.",
             "name": "Retainer"
          },
          "Other": "Other",
