@@ -72,18 +72,25 @@ export class WeaponItem extends fadeItem {
       if (modifier <= 0 && evaluatedRoll?.total <= 0) {
          hasDamage = false;
       }
-            
+
       // Check weapon mastery
       const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       if (hasDamage && weaponMastery && weaponData.mastery !== "" && attacker.type === "character" && attackerData.details.species === "Human") {
          const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
-            // do stuff
+            // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
             if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
                formula = attackerMastery.system.pDmgFormula;
                digest.push(game.i18n.format('FADE.Chat.rollMods.masteryPrimDmg'));
-            } else if (attackerMastery.sDmgFormula) {
+            }
+            // Else if the secondary damage is specified...
+            else if (attackerMastery.sDmgFormula) {
                formula = attackerMastery.system.sDmgFormula;
+               digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
+            }
+            else {
+               // Else use primary damage type.
+               formula = attackerMastery.system.pDmgFormula;
                digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
             }
          } else {
