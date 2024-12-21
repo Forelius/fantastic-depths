@@ -18,7 +18,9 @@ export class fadeDialog {
       dialogData.label = weapon.name;
       dialogData.modes = weapon.getAttackModes();
       dialogData.types = weapon.getAttackTypes();
+      // Get the available target types.
       dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes(weaponData, caller);
+      // Determines which target weapon type to pick by default.
       dialogData.selectedWeaponType = opt.targetToken?.actor.getWeaponType();
 
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
@@ -87,7 +89,9 @@ export class fadeDialog {
       let result = null;
       // if optional weapon mastery is being used and the weapon has a mastery specified...
       if (weaponMastery) {
+         // Get the attacking actor weapon mastery data.
          const attackerMastery = caller.items.find((item) => item.type === 'mastery' && item.name === weaponData?.mastery);
+         // If the attacker is a monster, weaponData indicates a spell is being cast or the attacker has a mastery for the weapon being used...
          if (caller.type === "monster" || weaponData === "spell" || attackerMastery) {
             result = [];
             result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });

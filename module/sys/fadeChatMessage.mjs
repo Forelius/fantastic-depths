@@ -48,7 +48,7 @@ export class fadeChatMessage extends ChatMessage {
               data-label="${mdata.label}"
               data-desc="${mdata.desc}">
          <i class="fa-solid fa-reply-all fa-flip-horizontal"></i>
-         <span style="margin-left:2px;">Apply</span>
+         <span style="margin-left:2px;">${game.i18n.localize("FADE.Chat.apply")}</span>
       </button>
    </div>
 </div>`;

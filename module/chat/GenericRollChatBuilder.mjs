@@ -74,7 +74,9 @@ export class GenericRollChatBuilder extends ChatBuilder {
          const testResult = this.getBoolRollResultType({
             roll,
             target: targetNumber,
-            operator: mdata.pass
+            operator: mdata.pass,
+            autofail: mdata.autofail,
+            autosuccess: mdata.autosuccess
          });
          resultString = this.getBoolResult(testResult);
       } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {

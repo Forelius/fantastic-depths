@@ -32,6 +32,15 @@
          "THAC0": "THAC0",
          "THBonus": "To-Hit Bonus",
          "PrimeReq": "Prime Req.",
+         "Other": "Other",
+         "RetainerWage": "Wage",
+         "Morale": "Morale",
+         "XPAward": "XP Award",
+         "attackRank": "Attack Rank",
+         "hdConBonus": {
+            "name": "HD Con.",
+            "hint": "Character's Constitution modifier is added to the hit die roll."
+         },
          "maxLevel": {
             "hint": "The highest level this class can attain.",
             "name": "Max Level"
@@ -48,8 +57,6 @@
             "hint": "Is this character a retainer, NPC, hireling or other hired hand.",
             "name": "Retainer"
          },
-         "Other": "Other",
-         "RetainerWage": "Wage",
          "Wrestling": {
             "long": "Wrestling Rating",
             "short": "Wrestling",
@@ -180,8 +187,6 @@
             "abbrLair": "NA lair",
             "longLair": "Number Appearing in Lair"
          },
-         "Morale": "Morale",
-         "XPAward": "XP Award",
          "AbilityCount": {
             "abbr": "SP#",
             "short": "# Specials",
@@ -401,7 +406,8 @@
          "acBonus": "AC Bonus",
          "acBonusType": "Type",
          "acBonusAT": "AT#",
-         "acBonusATTitle": "AC bonus attacks per round"
+         "acBonusATTitle": "AC bonus attacks per round",
+         "specialEffects": "Special Effects"
       },
       "SpecialAbility": {
          "plural": "Special Abilities",
@@ -425,8 +431,6 @@
          "addTags": "Add tags",
          "desc": "Some tags are used by the system and others are meant for GM or player usage."
       },
-      "Size": "Size",
-      "Type": "Type",
       "notification": {
          "selectToken1": "A token must first be selected.",
          "spellSelectToken": "You must have your token selected to cast a spell.",
@@ -476,11 +480,6 @@
          "healRoll": "Heal",
          "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='Adjusted AC with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.'>({defenseMasteryTotal})</span>"
       },
-      "roll": "Roll",
-      "rollMode": "Roll Mode",
-      "operator": "Operator",
-      "modifier": "Modifier",
-      "target": "Target",
       "dialog": {
          "lightSource": "Light Source",
          "selectLightSource": "Select Light Source",
@@ -655,6 +654,13 @@
             }
          }
       },
+      "Size": "Size",
+      "Type": "Type",
+      "roll": "Roll",
+      "rollMode": "Roll Mode",
+      "operator": "Operator",
+      "modifier": "Modifier",
+      "target": "Target",
       "GMNotes": "GM Notes",
       "none": "None",
       "yes": "Yes",

@@ -151,6 +151,10 @@ export class fadeActor extends Actor {
       return { formula, digest };
    }
 
+   /**
+    * Attemtps to determine the weapon type of this actor.
+    * @returns The weapon type of this actor or 'monster' if it can't be determined.
+    */
    getWeaponType() {
       let result = 'monster';
       const weapons = this.items.filter(item => item.type === 'weapon');

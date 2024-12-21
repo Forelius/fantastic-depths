@@ -58,8 +58,8 @@ export class SpecialAbilityChat extends ChatBuilder {
             roll,
             target: systemData.target,
             operator: systemData.operator,
-            autoFail: systemData.autoFail,
-            autoSuccess: systemData.autoSuccess
+            autofail: systemData.autoFail,
+            autosuccess: systemData.autoSuccess
          });
          result.message = this.getBoolResult(testResult);
       }

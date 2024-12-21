@@ -93,7 +93,7 @@ export class ChatBuilder {
     * @returns
     */
    getBoolRollResultType(options) {
-      const { roll, target, operator, autoFail, autoSuccess } = options;
+      const { roll, target, operator, autofail, autosuccess } = options;
       const rollTotal = roll.total;
       const naturalTotal = ChatBuilder.getDiceSum(roll);
       let result = false;
@@ -101,23 +101,23 @@ export class ChatBuilder {
       switch (operator) {
          case 'lt':
          case "<":
-            result = (rollTotal < target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
-               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
+            result = (rollTotal < target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
+               && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
          case 'lte':
          case "<=":
-            result = (rollTotal <= target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
-               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
+            result = (rollTotal <= target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
+               && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
          case 'gt':
          case ">":
-            result = (rollTotal > target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
-               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
+            result = (rollTotal > target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
+               && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
          case 'gte':
          case ">=":
-            result = (rollTotal >= target || (autoSuccess === null || autoSuccess === undefined || naturalTotal == autoSuccess))
-               && (autoFail === null || autoFail === undefined || naturalTotal != autoFail);
+            result = (rollTotal >= target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
+               && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
          default:
             result = false; // If no valid roll type is provided, default to failure

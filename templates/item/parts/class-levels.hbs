@@ -7,9 +7,9 @@
          <div>{{localize 'FADE.Actor.THAC0'}}</div>
          <div>{{localize 'FADE.Actor.THBonus'}}</div>
          <div>{{localize 'FADE.Actor.HitDiceShort'}}</div>
-         <div>HD CON</div>
-         <div>Title</div>
-         <div>Attack Rank</div>
+         <div data-tooltip="{{localize 'FADE.Actor.hdConBonus.hint'}}">{{localize 'FADE.Actor.hdConBonus.name'}}</div>
+         <div>{{localize 'FADE.Actor.Title'}}</div>
+         <div>{{localize 'FADE.Actor.attackRank'}}</div>
       </li>
       <!-- Level Entries -->
       {{#each system.levels as |levelData index|}}
@@ -18,8 +18,8 @@
          <div class="align-left"><input type="text" name="system.levels.{{index}}.xp" value="{{levelData.xp}}" data-dtype="Number" /></div>
          <div class="align-left"><input type="text" name="system.levels.{{index}}.thac0" value="{{levelData.thac0}}" data-dtype="Number" /></div>
          <div class="align-left"><input type="text" name="system.levels.{{index}}.thbonus" value="{{levelData.thbonus}}" data-dtype="Number" /></div>
-         <div class="align-left"><input type="text" name="system.levels.{{index}}.hd" value="{{levelData.hd}}" data-dtype="String" /></div>
-         <div><input type="checkbox" name="system.levels.{{index}}.hdcon" data-dtype="Boolean" {{#if levelData.hdcon}} checked{{/if}} /></div>
+         <div class="align-left" ><input type="text" name="system.levels.{{index}}.hd" value="{{levelData.hd}}" data-dtype="String" /></div>
+         <div data-tooltip="{{localize 'FADE.Actor.hdConBonus.hint'}}"><input type="checkbox" name="system.levels.{{index}}.hdcon" data-dtype="Boolean" {{#if levelData.hdcon}} checked{{/if}} /></div>
          <div class="align-left"><input type="text" name="system.levels.{{index}}.title" value="{{levelData.title}}" data-dtype="String" /></div>
          <div class="align-left"><input type="text" name="system.levels.{{index}}.attackRank" value="{{levelData.attackRank}}" data-dtype="String" /></div>
       </li>

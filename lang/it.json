@@ -33,19 +33,19 @@
          "THBonus": "Bonus TPC",
          "PrimeReq": "Req. Primario",
          "maxLevel": {
-            "hint": "Il livello più alto che questa classe può raggiungere.",
+            "hint": "Il livello più alto che questa classe può raggiungere",
             "name": "Livello Massimo"
          },
          "maxSpellLevel": {
-            "hint": "Il livello di incantesimi più alto per questa classe.",
+            "hint": "Il livello di incantesimi più alto per questa classe",
             "name": "Max Lvl Incantesimi"
          },
          "firstLevel": {
-            "hint": "Il livello più basso per questa classe.",
+            "hint": "Il livello più basso per questa classe",
             "name": "Livello Iniziale"
          },
          "isRetainer": {
-            "hint": "Questo personaggio è un servitore, un mercenario o un aiutante.",
+            "hint": "Questo personaggio è un servitore, un mercenario o un aiutante",
             "name": "Servitore"
          },
          "Other": "Altro",
@@ -67,7 +67,7 @@
             "round": "Round",
             "roundHint": "<b>Metri per round di 10 secondi.</b><p>Usato durante i combattimenti</p>",
             "day": "Viaggio",
-            "dayHint": "<b>Kilometri al giorno. Utilizzato per i viaggi via terra.</b><p>Nota che il terreno influisce su questo valore</p>",
+            "dayHint": "<b>Miglia al giorno (1 miglio=1,6km). Utilizzato per i viaggi via terra.</b><p>Nota che il terreno influisce su questo valore</p>",
             "run": "Corsa",
             "runHint": "<b>Metri per round di 10 secondi.</b><p>Utilizzato quando si corre o si vola alla massima velocità durante il combattimento. Viaggiare alla massima velocità può durare fino a 30 round (5 minuti)</p>",
             "total": "Totale",
@@ -77,8 +77,8 @@
             "long": "Explorazione",
             "OpenDoor": {
                "long": "Forzare porte o sollevare oggetti pesanti",
-               "short": "Aprire Porte",
-               "abbr": "AP"
+               "short": "Forzare Porte",
+               "abbr": "FP"
             },
             "SecretDoor": {
                "long": "Individua porte o passaggi segreti",
@@ -165,7 +165,7 @@
                "mod": "Reazioni",
                "retainer": "Seguaci",
                "morale": "Morale",
-               "hint": "<b>Il carisma (Car) è la forza della personalità e dell'influenza del personaggio.</b><p>Influisce sul modo in cui gli altri personaggi e anche i PNG reagiscono al personaggio.</ p>"
+               "hint": "<b>Il carisma (Car) è la forza della personalità e dell'influenza del personaggio.</b><p>Influisce sul modo in cui gli altri personaggi e anche i PNG reagiscono al personaggio.</p>"
             }
          },
          "Attacks": {
@@ -201,7 +201,7 @@
          },
          "AT#": {
             "name": "AT#",
-            "desc": "Numero di attacchi effettuati in questo round"
+            "desc": "Numero di attacchi fatti in questo round"
          },
          "AT#Recv": {
             "name": "AT# RCV",
@@ -236,14 +236,20 @@
       },
       "SheetLabel": {
          "Actor": "Scheda del Personaggio Fa.De.",
-         "Item": "Scheda Oggetto Fa.De.",
-         "ClassItem": "Scheda Classe Oggetto",
-         "WeaponMasteryItem": "Scheda Maestria Armi"
+         "ActorMasteryItem": "Scheda Maestria",
+         "ArmorItem": "Scheda Armatura",
+         "ClassItem": "Scheda Classe",
+         "Item": "Scheda Equipaggiamento",
+         "MasteryDefinitionItem": "Scheda Definizione Maestria Armi",
+         "SpellItem": "Scheda Incantesimo",
+         "SkillItem": "Scheda Abilità",
+         "SpecialAbilityItem": "Scheda Abilità Speciale",
+         "WeaponItem": "Scheda Arma"
       },
       "Spell": {
          "SpellLVL": "Incantesimi di {level}° Livello",
          "slots": "Lanci",
-         "resetSlots": "Ripristina gli incantesimi memorizzati a zero lanci. Il conteggio memorizzato non verrà modificato.",
+         "resetSlots": "Ripristina gli incantesimi memorizzati a zero lanci. Il conteggio memorizzato non verrà modificato",
          "usedSlots": "Lanci usati",
          "availableSlots": "Lanci disponibili",
          "cast": "L'incantesimo è stato lanciato questo numero di volte",
@@ -280,7 +286,7 @@
             "long2": "Ingombro",
             "abbr": "mon",
             "abbrPlural": "mon",
-            "desc": "L'ingombro è il peso di un oggetto misurato in monete."
+            "desc": "L'ingombro è il peso di un oggetto misurato in monete"
          },
          "cost": {
             "abbr": "mo",
@@ -299,7 +305,7 @@
                "short": "Dnn+ Dist"
             },
             "toHit": {
-               "long": "Modificatore al TPC in Mischia",
+               "long": "Modificatore TPC in Mischia",
                "short": "TPC+"
             },
             "toHitRanged": {
@@ -319,7 +325,7 @@
             "type": "Tipo di Danno",
             "short2": "Danno a 2-Mani",
             "long": "Dado Danno",
-            "long2": "Tiro per i Danni a 2-Mani solo se l'arma può essere usata con una mano sola, altrimenti usa il campo di tiro per i danni."
+            "long2": "Tiro per i Danni a 2-Mani solo se l'arma può essere usata con una mano sola, altrimenti usa il campo di tiro per i danni"
          },
          "ammo": {
             "short": "Ammo",
@@ -333,20 +339,20 @@
          "plural": "Armatura",
          "naked": "Senza Armatura",
          "long": "CA Attuale",
-         "hintBase": "<b>Classe armatura base</b><p>Questa è la classe armatura base e non include modificatori derivanti dagli effetti.</p>",
+         "hintBase": "<b>Classe armatura base</b><p>Questa è la classe armatura base e non include modificatori derivanti dagli effetti</p>",
          "longAAC": "CAA Base",
          "abbr": "CA",
          "abbrAAC": "CAA",
          "total": "CA Tot",
          "totalAAC": "CAA Totale",
-         "hintTotal": "<b>Classe Armatura Totale</b><p>Questa è la classe armatura totale e include i modificatori derivanti dagli effetti.</p>",
+         "hintTotal": "<b>Classe Armatura Totale</b><p>Questa è la classe armatura totale e include i modificatori derivanti dagli effetti</p>",
          "shield": {
             "long": "Scudo Equipaggiato",
             "short": "Scudo"
          },
          "natural": {
             "short": "Naturale",
-            "desc": "Questa è considerata una parte naturale del suo corpo."
+            "desc": "Questa è considerata una parte naturale del suo corpo"
          },
          "mod": "Mod CA",
          "armorWeight": {
@@ -364,16 +370,16 @@
          "long": "Abilità Generali"
       },
       "Mastery": {
-         "plural": "Maestria nelle Armi",
+         "plural": "Maestrie Armi",
          "short": "Maestria",
          "long": "Maestria Arma",
          "primary": "Primaria",
          "secondary": "Secondaria",
-         "weaponTypeTitle": "M=Mostro/Munizione, I=In Mano, T=Tutte",
+         "weaponTypeTitle": "M=Mostro/Distanza, I=In Mano, T=Tutte",
          "weaponType": "Tipo Arma",
          "weaponTypes": {
             "monster": {
-               "long": "Mostro/Munizione",
+               "long": "Mostro/Distanza",
                "abbr": "M"
             },
             "handheld": {
@@ -400,7 +406,12 @@
       "SpecialAbility": {
          "plural": "Abilità Speciali",
          "short": "Abilità",
-         "long": "Abilità Speciale"
+         "long": "Abilità Speciale",
+         "abilityMod": "Mod Abilità",
+         "autoSuccess": "Auto-Successo",
+         "autoSuccessHint": "Ha successo automaticamente con un tiro naturale/non modificato di questo valore",
+         "autoFail": "Auto-Fallimento",
+         "autoFailHint": "Fallisce automaticamente con un tiro naturale/non modificato di questo valore"
       },
       "Effect": {
          "short": "Effetto",
@@ -412,14 +423,17 @@
       },
       "Tags": {
          "addTags": "+etichette",
-         "desc": "Alcune etichette (tag) vengono utilizzate dal sistema, altre sono destinate all'utilizzo da parte del DM o del giocatore."
+         "desc": "Alcune etichette (tag) vengono utilizzate dal sistema, altre sono destinate all'utilizzo da parte del DM o del giocatore"
       },
       "Size": "Taglia",
       "Type": "Tipo",
       "notification": {
-         "selectToken1": "Il token deve essere prima selezionato.",
-         "spellSelectToken": "Devi selezionare il token per lanciare un incantesimo.",
-         "notMemorized": "{actorName} prova a lanciare {spellName}, ma l'incantesimo non era stato memorizzato."
+         "selectToken1": "Il token deve essere prima selezionato",
+         "spellSelectToken": "Devi selezionare il token per lanciare un incantesimo",
+         "notMemorized": "{actorName} prova a lanciare {spellName}, ma l'incantesimo non era stato memorizzato",
+         "noTokenWarning": "È necessario selezionare un token o assegnare un personaggio predefinito per eseguire questa azione",
+         "noTokenWarning2": "È necessario selezionare un token per eseguire questa azione",
+         "missingItem": "Il tipo di elemento richiesto ({type}) non è stato trovato"
       },
       "Chat": {
          "rollMods": {
@@ -436,31 +450,31 @@
          },
          "damageRoll": {
             "name": "Danno",
-            "restored": "{hp} punti ferita curati a {tokenName}.",
-            "mitigated": "{damage} danni da {type} attenuati.",
-            "applied": "{damage} danni da {type} inflitti a {tokenName}.",
-            "killed": "<span class='attack-fail'>{tokenName} è caduto/a in battaglia.</span>",
-            "restoredLife": "<span class='attack-success'>{tokenName} è stato curato/a al massimo.</span>"
+            "restored": "{hp} punti ferita curati a {tokenName}",
+            "mitigated": "{damage} danni da {type} attenuati",
+            "applied": "{damage} danni da {type} inflitti a {tokenName}",
+            "killed": "<span class='attack-fail'>{tokenName} è caduto/a in battaglia</span>",
+            "restoredLife": "<span class='attack-success'>{tokenName} è stato curato/a al massimo</span>"
          },
          "targets": "Bersagli",
          "apply": "Applica",
          "applyDamageDesc": "Applica il danno al token o a bersaglio selezionato",
          "applyHealingDesc": "Applica la cura al token o a bersaglio selezionato",
          "resetSpells": "{actorName} azzera gli incantesimi memorizzati e i loro lanci",
-         "effectEnds": "<div>{effectName} su {actorName} è terminato.</div>",
+         "effectEnds": "<div>{effectName} su {actorName} è terminato</div>",
          "pass": "Successo!",
          "fail": "Fallimento...",
          "attackFlavor": "{attacker} {attackType} attacca con {weapon}",
          "spellCast": "{caster} lancia {spell}",
          "useSpecAbility": "{owner} usa {specAbility}",
-         "attackAC": "<div class='attack-info'>L'attacco colpisce <strong>CA {hitAC}</strong>.</div>",
-         "attackACNone": "<div class='attack-info'>L'attacco non colpisce nessuna CA.</div>",
+         "attackAC": "<div class='attack-info'>L'attacco colpisce <strong>CA {hitAC}</strong></div>",
+         "attackACNone": "<div class='attack-info'>L'attacco non colpisce nessuna CA</div>",
          "attackSuccess": "<div class='attack-success'>Colpito!</div>",
          "attackFail": "<div class='attack-fail'>Mancato!</div>",
-         "damageFlavor2": "<div>{weapon} fa <span class='damage'>{damage}</span> danni.</div>",
-         "healFlavor": "<div>{weapon} ripristina <span class='damage'>{damage}</span> punti ferita.</div>",
+         "damageFlavor2": "<div>{weapon} fa <span class='damage'>{damage}</span> danni</div>",
+         "healFlavor": "<div>{weapon} ripristina <span class='damage'>{damage}</span> punti ferita</div>",
          "healRoll": "Cura",
-         "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='CA modificata con bonus di maestria nell'arma. Ha attaccato {attacksAgainst}/{maxAttacksAgainst} volte.'>({defenseMasteryTotal})</span>"
+         "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='CA modificata con bonus di maestria nell'arma. Ha attaccato {attacksAgainst}/{maxAttacksAgainst} volte'>({defenseMasteryTotal})</span>"
       },
       "roll": "Tiro",
       "rollMode": "Modalità Tiro",
@@ -468,7 +482,10 @@
       "modifier": "Modificatore",
       "target": "Bersaglio",
       "dialog": {
+         "lightSource": "Light Source",
          "selectLightSource": "Seleziona fonte luminosa",
+         "ignite": "Accendi",
+         "extinguish": "Spegni",
          "selectWeapon": "Seleziona arma",
          "masteryTargetType": "Seleziona il tipo di arma",
          "abilityCheck": "Prova di Caratteristica",
@@ -489,7 +506,15 @@
             "breath": "Soffio",
             "missile": "Distanza",
             "melee": "Mischia"
-         }
+         },
+         "close": "Chiudere",
+         "selectAttack": "Seleziona con cosa vuoi attaccare",
+         "selectSpell": "Seleziona Incantesimo da lanciare",
+         "confirm": "Sei sicuro/a?",
+         "applyToPrompt": "Applicare al bersagliato o al selezionato?",
+         "targeted": "Bersagliato",
+         "selected": "Selezionato",
+         "noEquippedWeapons": "Il personaggio selezionato non ha armi equipaggiate"
       },
       "time": {
          "sessionCount": "N° Sessione",
@@ -517,6 +542,7 @@
       },
       "AttackTypes": {
          "name": "Tipo di attacco",
+         "hint": "Se specificato, l'incantesimo lanciato attiverà un tiro per colpire o un tiro salvezza",
          "types": {
             "melee": "Mischia",
             "missile": "Distanza",
@@ -530,7 +556,7 @@
             "breath": "Soffio",
             "fire": "Fuoco",
             "frost": "Ghiaccio",
-            "spell": "Incantesimo",
+            "magic": "Magico",
             "poison": "Veleno",
             "heal": "Cura"
          }
@@ -630,7 +656,9 @@
          }
       },
       "GMNotes": "Note del DM",
-      "none": "Niente"
+      "none": "Nessuno",
+      "yes": "Si",
+      "non": "No"
    },
 
    "TYPES": {
@@ -654,7 +682,7 @@
 
    "SETTINGS": {
       "Encumbrance": {
-         "Hint": "Abilita il tracciamento automatico dell'ingombro e l'applicazione degli effetti di stato per i personaggi che trasportano troppo. -Solo Armatura- determina il movimento in base al peso dell'armatura stessa. Dark Dungeons presuppone un carico massimo di 2400 monete e cinque velocità di movimento. Classic presuppone un carico massimo di 1600 monete e quattro velocità di movimento.",
+         "Hint": "Abilita il tracciamento automatico dell'ingombro e l'applicazione degli effetti di stato per i personaggi che trasportano troppo. -Solo Armatura- determina il movimento in base al peso dell'armatura stessa. Dark Dungeons presuppone un carico massimo di 2400 monete e cinque velocità di movimento. Classic presuppone un carico massimo di 1600 monete e quattro velocità di movimento",
          "Name": "Tracciatura Ingombro",
          "None": "Nessuna",
          "Basic": "Solo Armatura",
@@ -679,30 +707,30 @@
       "move": {
          "max": {
             "name": "Velocità Max di Mov.",
-            "hint": "La distanza massima che questo essere può percorrere per turno"
+            "hint": "<b>Velocità massima al suolo per turno.</b><p>Le distanze di movimento sono misurate in metri</p>"
          },
          "maxFlight": {
             "name": "Velocità Massima di Volo",
-            "hint": "La distanza massima che questo essere può volare per turno"
+            "hint": "<b>Velocità di volo massima per turno.</b><p>Le distanze di movimento sono misurate in metri</p>"
          }
       },
       "rest": {
          "name": "Turni di Riposo",
-         "hint": "Configura la frequenza con cui un gruppo deve riposarsi durante l'esplorazione. Un valore pari a 6 significherebbe che il gruppo deve riposare una volta ogni sei turni. Impostato su 0 per non richiedere riposo"
+         "hint": "Configura la frequenza con cui un gruppo deve riposarsi durante l'esplorazione. Un valore pari a 6 significherebbe che il gruppo deve riposare una volta ogni sei turni. Impostalo su 0 per non richiedere riposo"
       },
       "initiative": {
          "formula": {
             "name": "Formula per l'Iniziativa",
-            "hint": "Definisce la formula utilizzata per calcolare l'iniziativa. "
+            "hint": "Definisce la formula utilizzata per calcolare l'iniziativa"
          },
          "mode": {
             "name": "Modalità Initiativa",
-            "hint": "Scegli tra iniziativa di gruppo o individuale. L'iniziativa individuale (semplificata) consiste esclusivamente tramite un tiro di iniziativa più eventuali modificatori. La modalità individuale aggiunge la regola dell'arma a due mani, facendo perdere l'iniziativa a chi utilizza armi a due mani. La modalità individuale (combattimento controllato) combina l'iniziativa individuale con l'ordine della lista di controllo di combattimento quando le azioni dichiarate sono abilitate. La modalità Gruppo (lista di controllo del combattimento) raggruppa i combattenti in base alla disposizione dei token e li ordina anche all'interno di un gruppo in base all'azione dichiarata, se le azioni dichiarate sono abilitate. La modalità Gruppo (individuale ibrido) è come la modalità Gruppo, ma aggiunge la regola dell'arma a 2 mani all'interno dell'ordinamento interno di un gruppo.",
+            "hint": "Scegli tra iniziativa di gruppo o individuale. L'iniziativa INDIVIDUALE (SEMPLIFICATA) consiste esclusivamente tramite un tiro di iniziativa più eventuali modificatori. La modalità INDIVIDUALE aggiunge la regola dell'arma a due mani, facendo perdere l'iniziativa a chi utilizza armi a due mani. La modalità INDIVIDUALE (COMBAT CONTROLLATO) combina l'iniziativa individuale con l'ordine della lista di controllo di combattimento quando le azioni dichiarate sono abilitate. La modalità GRUPPO (COMBAT CONTROLLATO) raggruppa i combattenti in base alla disposizione dei token e li ordina anche all'interno di un gruppo in base all'azione dichiarata, se le azioni dichiarate sono abilitate. La modalità GRUPPO (INDIVIDUALE IBRIDO) è come la modalità Gruppo, ma aggiunge la regola dell'arma a 2 mani all'interno dell'ordinamento interno di un gruppo.",
             "choices": {
                "simpleIndividual": "Individuale (semplificata)",
                "individual": "Individuale",
                "individualChecklist": "Individuale (combattimento controllato)",
-               "group": "Gruppo (combattimento controllato)",
+               "group": "Gruppo (combat controllato)",
                "groupHybrid": "Gruppo (individuale ibrido)"
             }
          },
@@ -753,7 +781,7 @@
       },
       "toHitSystem": {
          "name": "Sistema TPC (Work-in-progress)",
-         "hint": "Questo sistema determina come vengono gestiti i Tiri Per Colpire e anche quale tipo di classe di armatura viene utilizzato (CA vs CAA)",
+         "hint": "Questo sistema determina come vengono gestiti i Tiri Per Colpire e anche quale tipo di classe di armatura viene utilizzato (CA vs CAA).                                 Traduzione di FaDe: FR4NC35C0 (20diGuerra)",
          "choices": {
             "classic": "Classic",
             "darkdungeons": "Dark Dungeons",
