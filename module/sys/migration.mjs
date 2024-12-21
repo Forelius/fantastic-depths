@@ -6,145 +6,88 @@ import { SYSTEM_ID } from './config.mjs';
  * The function currently sets the game version to the system's version, preparing for future checks
  * and potential migrations.
  */
-export const migrateData = async function migrate() {
-   const oldVer = game.settings.get(SYSTEM_ID, 'gameVer');
-   const newVer = game.system.version;
+class MySystemVersion {
+   constructor(version) {
+      this.version = version;
+      let split = version?.split('.');
+      this.major = parseInt(split[0]) ?? 0;
+      this.minor = parseInt(split[1]) ?? 0;
+      this.build = parseInt(split[2]) ?? 0;
+   }
 
-   // Only proceed if a migration is needed
-   //if (oldVer < "0.4.7") {
-   //   console.log(`Migrating from version ${oldVer} to ${newVer}`);
+   /**
+    * Is this version greater than the specified version
+    * @param {any} version
+    */
+   gt(version) {
+      if (!(version instanceof MySystemVersion)) {
+         version = new MySystemVersion(version); // Normalize input
+      }
+      return (
+         this.major > version.major ||
+         (this.major === version.major && this.minor > version.minor) ||
+         (this.major === version.major && this.minor === version.minor && this.build > version.build)
+      );
+   }
 
-   //   // Iterate over all actors in the game
-   //   for (let actor of game.actors.contents) {
-   //      try {
-   //         let updateData = {};
+   lt(version) {
+      if (!(version instanceof MySystemVersion)) {
+         version = new MySystemVersion(version); // Normalize input
+      }
+      return (
+         this.major < version.major ||
+         (this.major === version.major && this.minor < version.minor) ||
+         (this.major === version.major && this.minor === version.minor && this.build < version.build)
+      );
+   }
+}
 
-   //         // Remove unused properties
-   //         if (actor.system["retainer "]) {  // Double-check the space after "retainer"
-   //            updateData["system.-=retainer "] = null;  // Use -= to remove key in Foundry updates
-   //         }
+export class DataMigrator {
+   constructor() {
+      this.oldVersion = new MySystemVersion(game.settings.get(SYSTEM_ID, 'gameVer'));
+      this.newVersion = new MySystemVersion(game.system.version);
+   }
 
-   //         // If the actor has spells, ensure they are configured as a spellcaster
-   //         const spells = actor.items.filter((item) => item.type === 'spell');
-   //         if (spells?.length > 0) {
-   //            actor.system.config.isSpellcaster = true;
-   //            updateData["system.config.isSpellcaster"] = true;
-   //         }
+   async migrate() {
+      console.debug("FADE Migrate", this.oldVersion, this.newVersion);
 
-   //         // Convert spellSlots to an array if it is not already an array
-   //         if (actor.system?.spellSlots && !Array.isArray(actor.system?.spellSlots)) {
-   //            let newSlots = Object.entries(actor.system?.spellSlots).map((slot) => slot[1]);
-   //            updateData["system.spellSlots"] = newSlots;
-   //         }
+      if (this.oldVersion.lt(new MySystemVersion("0.6.14"))) {
+         await this.fixBreathWeapons();
+      }
 
-   //         // Migrate actor items
-   //         for (let item of actor.items) {
-   //            if (item.system["equippable"]) {
-   //               await item.update({ "system.-=equippable": null });  // Remove equippable
-   //            }
-   //            if (item.system["isEquippable"]) {
-   //               await item.update({ "system.-=isEquippable": null });  // Remove isEquippable
-   //            }
-   //         }
+      // Set the new version after migration is complete
+      await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+   }
 
-   //         // Perform batch update for actor system properties
-   //         if (Object.keys(updateData).length > 0) {
-   //            await actor.update(updateData);
-   //         }
+   async fixBreathWeapons() {
+      console.log("-----------------------------------------------");
+      console.log("Fixing Breath Weapons");
+      console.log("-----------------------------------------------");
+      // Helper function to process a collection of items
+      const processItems = async (items, contextName) => {
+         for (const item of items) {
+            if (item.type === 'weapon') {
+               const savingThrow = item.system.savingThrow;
+               const newBreathValue = savingThrow === "breath" ? item.name.split(" ")[0] : null;
 
-   //      } catch (error) {
-   //         console.error(`Failed to migrate Actor ${actor.name}:`, error);
-   //      }
-   //   }
+               // Update the item if necessary
+               if (item.system.breath === "false" || item.system.breath !== newBreathValue) {
+                  console.log(`[${contextName}] Updating ${item.name}: setting breath to ${newBreathValue}`);
+                  await item.update({ "system.breath": newBreathValue });
+               }
+            }
+         }
+      };
 
-   //   // Migrate world items
-   //   for (let item of game.items.contents) {
-   //      try {
-   //         let itemUpdateData = {};
+      // Process all actor items
+      for (const actor of game.actors) {
+         const actorItems = actor.items;
+         await processItems(actorItems, `Actor: ${actor.name}`);
+      }
 
-   //         if (item.system["equippable"]) {
-   //            itemUpdateData["system.-=equippable"] = null;  // Remove equippable
-   //         }
-   //         if (item.system["isEquippable"]) {
-   //            itemUpdateData["system.-=isEquippable"] = null;  // Remove isEquippable
-   //         }
-
-   //         // Perform batch update for item system properties
-   //         if (Object.keys(itemUpdateData).length > 0) {
-   //            await item.update(itemUpdateData);
-   //         }
-
-   //      } catch (error) {
-   //         console.error(`Failed to migrate item ${item.name}:`, error);
-   //      }
-   //   }
-   //}
-
-   //if (oldVer < "0.5.2") {
-   //   console.log(`Migrating from version ${oldVer} to ${newVer}`);
-
-   //   async function fixRollFormula(specialAbility, actorName = "World Item") {
-   //      try {
-   //         if (specialAbility.system.roll !== undefined) {
-   //            // Set rollFormula to roll value and remove the old roll key in a single update call
-   //            const updatedData = {
-   //               "system.rollFormula": specialAbility.system.roll,
-   //               "system.-=roll": null  // Remove roll key
-   //            };
-   //            await specialAbility.update(updatedData);
-   //         }
-   //      } catch (error) {
-   //         console.error(`Failed to migrate special ability: ${specialAbility.name} (${actorName})`, error);
-   //      }
-   //   }
-
-   //   async function removeField(item, removeField, actorName = "World Item") {
-   //      try {
-   //         if (item.system[removeField] !== undefined) {
-   //            // Set up the update object using dynamic key with square brackets
-   //            const updatedData = {
-   //               [`system.-=${removeField}`]: null  // Remove the specified key
-   //            };
-   //            await item.update(updatedData);
-   //         }
-   //      } catch (error) {
-   //         console.error(`Failed to remove ${removeField} during migration of item: ${item.name} (${actorName})`, error);
-   //      }
-   //   }
-
-   //   const notEquippable = ["spell", "skill", "specialAbility", "mastery"];
-
-   //   // Iterate over all actors in the game
-   //   for (let actor of game.actors) {
-   //      // If the actor has spells then make sure they are configured to be a spellcaster
-   //      const specialAbilities = actor.items.filter((item) => item.type === 'specialAbility');
-   //      for (let specialAbility of specialAbilities) {
-   //         await fixRollFormula(specialAbility, actor.name);
-   //      }
-         
-   //      for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
-   //         await removeField(item, "equipped", actor.name);
-   //      }
-   //      for (let item of actor.items.filter((item) => notEquippable.includes(item.type))) {
-   //         await removeField(item, "formula", actor.name);
-   //      }
-   //   }
-
-   //   // Fix world items
-   //   const specialAbilities = game.items.filter((item) => item.type === 'specialAbility');
-   //   for (let specialAbility of specialAbilities) {
-   //      await fixRollFormula(specialAbility);
-   //   }
-   //   for (let item of game.items.filter((item) => notEquippable.includes(item.type))) {
-   //      await removeField(item, "equipped");
-   //   }
-   //   for (let item of game.items.filter((item) => notEquippable.includes(item.type))) {
-   //      await removeField(item, "formula");
-   //   }
-   //}
-
-   // Set the new version after migration is complete
-   await game.settings.set(SYSTEM_ID, 'gameVer', newVer);
-   //console.debug("FaDe migration complete.");
-};
+      // Process all world items
+      const worldItems = game.items;
+      await processItems(worldItems, "World Items");
+   }
+}
 

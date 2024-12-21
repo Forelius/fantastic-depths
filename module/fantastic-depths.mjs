@@ -41,7 +41,7 @@ import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
-import { migrateData } from './sys/migration.mjs';
+import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
@@ -183,7 +183,8 @@ async function handleAsyncInit() {
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 Hooks.once('ready', async function () {
-   migrateData();
+   const migrator = new DataMigrator();
+   await migrator.migrate();
 
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => {
