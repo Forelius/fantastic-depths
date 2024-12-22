@@ -1,4 +1,5 @@
 import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
+import { ClassItem } from "../../item/ClassItem.mjs";
 import Formatter from '../../utils/Formatter.mjs';
 
 export class CharacterDataModel extends fadeActorDataModel {
@@ -112,9 +113,10 @@ export class CharacterDataModel extends fadeActorDataModel {
       const classNameInput = this.details.class?.toLowerCase();
       const classLevel = this.details.level;
 
-      const classData = this.#getClassData(classNameInput);
+      const classItem = ClassItem.getClassItem(classNameInput);
+      const classData = classItem?.system;
 
-      if (classData !== null) {
+      if (classData) {
          const currentLevel = classLevel;
          const levelData = classData.levels.find(level => level.level === currentLevel);
          const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
@@ -165,34 +167,14 @@ export class CharacterDataModel extends fadeActorDataModel {
          }
 
          // Saving throws
-         super._prepareSavingThrows(classNameInput, currentLevel);
+         const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
+         if (savesData) {
+            super._prepareSavingThrows(savesData);
+         }
          // Apply modifier for wisdom, if needed
          this.savingThrows.spell.value -= this.abilities.wis.mod;
       }
 
       return classData; // Return null if no match found
-   }
-
-   #getClassData(className) {
-      let result = null;
-
-      // Try to find class item for this class.
-      let classItem = game.items.find(item=> item.name.toLowerCase() == className.toLowerCase() && item.type==='class');
-      // If class item is found...
-      if (classItem != null) {
-         result = classItem.system;
-      } else {
-         const classes = CONFIG.FADE.Classes;
-         // Find a match in the FADE.Classes data
-         for (const [key, cdata] of Object.entries(classes)) {
-            if (cdata.name.toLowerCase() === className) {
-               // Class match found
-               result = cdata; // Return the matched class data
-               break;
-            }
-         }
-      }
-
-      return result;
    }
 }

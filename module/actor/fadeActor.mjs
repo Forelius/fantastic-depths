@@ -350,7 +350,8 @@ export class fadeActor extends Actor {
          const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
          if (toHitMod > 0) {
             result += toHitMod;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { mod: toHitMod }));
+            const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
+            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
          }
       } else if (attackType === "missile") {
          // Unskilled use

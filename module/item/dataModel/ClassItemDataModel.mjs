@@ -29,7 +29,7 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
 
       return {
          // Required Fields
-         name: new fields.StringField({ required: true }),
+         key: new fields.StringField({ required: true }),
          species: new fields.StringField({ required: true, initial: "Human" }),
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),

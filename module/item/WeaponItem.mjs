@@ -19,7 +19,6 @@ export class WeaponItem extends fadeItem {
       this._prepareEffects();
       this._prepareModText();
       this._prepareDamageRollLabel();
-      this.system.multiGrip = false;
    }
 
    async getDamageRoll(attackType, attackMode, resp, targetWeaponType) {
@@ -74,8 +73,8 @@ export class WeaponItem extends fadeItem {
       }
 
       // Check weapon mastery
-      const weaponMastery = game.settings.get(game.system.id, "weaponMastery");
-      if (hasDamage && weaponMastery && weaponData.mastery !== "" && attacker.type === "character" && attackerData.details.species === "Human") {
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      if (hasDamage && masteryEnabled && weaponData.mastery !== "" && attacker.type === "character" && attackerData.details.species === "Human") {
          const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
@@ -128,14 +127,32 @@ export class WeaponItem extends fadeItem {
       return result;
    }
 
+   /**
+    * Retrieves an array of attack types. Attack types include breath, missile and melee.
+    * @returns An array of valid attack types for this weapon.
+    */
    getAttackTypes() {
       let result = [];
       const isBreath = this.system.breath?.length > 0 && this.system.savingThrow === "breath";
       if (isBreath) {
          result.push({ text: game.i18n.format('FADE.dialog.attackType.breath'), value: "breath" });
       } else {
-         if (this.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
-         if (this.system.canMelee) result.push({ text: game.i18n.format('FADE.dialog.attackType.melee'), value: "melee" });
+         const owner = this.actor ?? null;
+         const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+         if (owner && masteryEnabled) {
+            // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
+            const ownerMastery = owner.items.find((item) => item.type === 'mastery' && item.name === this.system.mastery);
+            if (ownerMastery) {
+               if (ownerMastery.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
+               if (this.system.canMelee) result.push({ text: game.i18n.format('FADE.dialog.attackType.melee'), value: "melee" });
+            }
+         }
+
+         if (result.length === 0) {
+            // Simple mode. Either the weapon can melee, missile or both, or not.
+            if (this.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
+            if (this.system.canMelee) result.push({ text: game.i18n.format('FADE.dialog.attackType.melee'), value: "melee" });
+         }
       }
       return result;
    }

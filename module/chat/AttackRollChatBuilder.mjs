@@ -130,7 +130,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                      maxAttacksAgainst: defenseMastery.acBonusAT,
                      defenseMasteryTotal: defenseMastery.total
                   });
-                  //                  targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
+                  //targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
                   //<span ${isApplicable ? "style='color:green'" : ""} data-tooltip='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
                   if (isApplicable) {
                      ac = defenseMastery.total;

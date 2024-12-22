@@ -1,3 +1,4 @@
+import { ClassItem } from "../../item/ClassItem.mjs";
 import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
 
 export class MonsterDataModel extends fadeActorDataModel {
@@ -52,15 +53,9 @@ export class MonsterDataModel extends fadeActorDataModel {
    _prepareSavingThrows() {
       const saveAs = this.details.saveAs ?? null;
       if (saveAs) {
-         // Extract class identifier and level from the input
-         const classId = saveAs[0].toLowerCase(); // First character as class identifier
-         const level = parseInt(saveAs.slice(1)); // Remaining part as level
-
-         // Find the class whose key starts with the classId
-         const classKey = Object.keys(CONFIG.FADE.Classes).find(key => key[0].toLowerCase() === classId);
-
-         if (classKey !== undefined && isNaN(level) == false) {
-            super._prepareSavingThrows(classKey, level);
+         const savesData = ClassItem.getClassSavesByCode(saveAs);
+         if (savesData) {
+            super._prepareSavingThrows(savesData);
          }
       }
    }

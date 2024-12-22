@@ -419,6 +419,12 @@
          "autoFail": "Auto-Fail",
          "autoFailHint": "Automatically fails on a natural/unmodified roll of this value."
       },
+      "class": {
+         "key": {
+            "name": "Key",
+            "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
+         }
+      },
       "Effect": {
          "short": "Effect",
          "Source": "Source",
@@ -446,7 +452,7 @@
             "strengthMod": "Strength mod: {mod}",
             "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",
-            "masteryMod": "Mastery mod: {mod}",
+            "masteryMod": "Mastery {primsec} mod: {mod}",
             "unskilledUse": "Unskilled weapon use: {mod}",
             "masteryPrimDmg": "Weapon mastery primary damage.",
             "masterySecDmg": "Weapon mastery secondary damage.",

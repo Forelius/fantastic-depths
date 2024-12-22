@@ -36,4 +36,10 @@ export class ActorMasteryItemDataModel extends fadeItemDataModel {
    prepareBaseData() {
       super.prepareBaseData();
    }
+
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      this.canRanged = this.range.short > 0 || this.range.medium > 0 || this.range.long > 0;
+   }
 }

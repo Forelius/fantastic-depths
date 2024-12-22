@@ -218,9 +218,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       let encumbrance = this.encumbrance || {};
       let enc = 0;
 
-         //-- Caclulate how much is being carried/tracked --//
+      //-- Caclulate how much is being carried/tracked --//
       // If using detailed encumbrance, similar to expert rules...
-      if (encSetting === 'expert' || encSetting === 'classic') {        
+      if (encSetting === 'expert' || encSetting === 'classic') {
          enc = items.reduce((sum, item) => {
             const itemWeight = item.system.weight || 0;
             const itemQuantity = item.system.quantity || 1;
@@ -347,23 +347,13 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /**
     * Prepares derived saving throw values based on class name and class level.
     * @protected
-    * @param {any} className The class name (Fighter, Cleric, etc.)
-    * @param {number} classLevel The level of the class.
+    * @param {any} savesData The class saving throw data
     */
-   _prepareSavingThrows(className, classLevel) {
-      // Replace hyphen with underscore for "Magic-User"
-      const classNameInput = className.toLowerCase().replace('_', '-');
-      const classes = CONFIG.FADE.Classes;
-      // Find a match in the FADE.Classes data
-      const classData = Object.values(classes).find(cdata => cdata.name.toLowerCase() === classNameInput);
-      // If matching class data was found...
-      if (classData !== undefined) {
-         // Apply the class data
-         const savesData = classData.saves.find(save => classLevel <= save.level);
-         for (let saveType in savesData) {
-            if (this.savingThrows.hasOwnProperty(saveType)) {
-               this.savingThrows[saveType].value = savesData[saveType];
-            }
+   _prepareSavingThrows(savesData) {
+      // Apply the class data
+      for (let saveType in savesData) {
+         if (this.savingThrows.hasOwnProperty(saveType)) {
+            this.savingThrows[saveType].value = savesData[saveType];
          }
       }
 
