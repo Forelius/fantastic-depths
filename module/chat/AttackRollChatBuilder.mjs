@@ -8,6 +8,55 @@ export class AttackRollChatBuilder extends ChatBuilder {
       super(dataset, options);  // Call the parent class constructor
    }
 
+   static getToHitTable(thac0, repeater = 0) {
+      const toHitTable = [];
+      // Loop through AC values from 19 down to -20
+      repeater = Math.max(repeater, 0);
+      let repeatOn = [-10, 2, 30];
+      let toHit = thac0;
+      for (let ac = 0; ac < 20; ac++) {
+         if (repeatOn.includes(toHit)) {
+            if (repeater < 5) {
+               repeater++;
+               toHitTable.push({ ac, toHit });
+            } else {
+               repeater = 0;
+               toHit -= 1;
+               toHitTable.push({ ac, toHit });
+               toHit -= 1;
+            }
+         } else {
+            repeater = 0;
+            toHitTable.push({ ac, toHit });
+            toHit -= 1;
+         }
+      }
+
+      repeatOn = [-10, 2, 20, 30];
+      repeater = thac0 == 20 ? 1 : 0;
+      toHit = thac0 == 20 ? 20 : thac0 + 1;
+
+      for (let ac = -1; ac >= -20; ac--) {
+         if (repeatOn.includes(toHit)) {
+            if (repeater < 5) {
+               repeater++;
+               toHitTable.push({ ac, toHit });
+            } else {
+               repeater = 0;
+               toHit += 1;
+               toHitTable.push({ ac, toHit });
+               toHit += 1;
+            }
+         } else {
+            repeater = 0;
+            toHitTable.push({ ac, toHit });
+            toHit += 1;
+         }
+      }
+
+      return toHitTable;
+   }
+
    /**
     * Get the lowest AC that can be hit by the specified roll and THAC0
     * @param {any} rollTotal The attack roll total
@@ -24,46 +73,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          //} else if (roll === 20) {
          // result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
       } else {
-         // Loop through AC values from 19 down to -20
-         let repeater = 0;
-         let repeatOn = [-10, 2, 20, 30, 40, 50];
-         let toHit = thac0;
-         for (let ac = 0; ac < 20; ac++) {
-            if (repeatOn.includes(toHit)) {
-               if (repeater < 5) {
-                  repeater++;
-                  toHitTable.push({ ac, toHit });
-               } else {
-                  repeater = 0;
-                  toHit -= 1;
-                  toHitTable.push({ ac, toHit });
-                  toHit -= 1;
-               }
-            } else {
-               repeater = 0;
-               toHitTable.push({ ac, toHit });
-               toHit -= 1;
-            }
-         }
-         repeater = 0;
-         toHit = thac0 + 1;
-         for (let ac = -1; ac >= -20; ac--) {
-            if (repeatOn.includes(toHit)) {
-               if (repeater < 5) {
-                  repeater++;
-                  toHitTable.push({ ac, toHit });
-               } else {
-                  repeater = 0;
-                  toHit += 1;
-                  toHitTable.push({ ac, toHit });
-                  toHit += 1;
-               }
-            } else {
-               repeater = 0;
-               toHitTable.push({ ac, toHit });
-               toHit += 1;
-            }
-         }
+         toHitTable = this.getToHitTable(thac0);
 
          // Filter all entries that the rollTotal can hit
          const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
