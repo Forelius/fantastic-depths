@@ -72,7 +72,7 @@ export class ClassItem extends fadeItem {
     * @param {any} key Format is a character/word followed by a number, no spaces. F1, C2, BA4
     * @returns The saving throw data for the specified class and level, otherwise undefined.
     */
-   static getClassSavesByCode(key) {
+   static getClassSavesByCode(key, owner) {
       // Extract class identifier and level from the input
       let match = key.match(/^([a-zA-Z]+)(\d+)$/);
       const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
@@ -85,7 +85,7 @@ export class ClassItem extends fadeItem {
             result = classItem.system.saves.find(save => parsed.classLevel <= save.level);
          }
       } else {
-         console.warn(`Invalid class key specified ${key}.`);
+         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
       }
       return result;
    }

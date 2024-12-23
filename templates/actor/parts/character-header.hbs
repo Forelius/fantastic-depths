@@ -57,5 +57,13 @@
          <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
          <label>{{localize "FADE.Actor.XPBonus"}}</label>
       </li>
+      <li style="max-width: 40px;">
+         <label>{{localize "FADE.Actor.THAC0"}}</label>
+         <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+      </li>
+      <li style="max-width: 40px;">
+         <label>{{localize "FADE.Actor.THBonus"}}</label>
+         <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}"/>
+      </li>
    </ul>
 </div>

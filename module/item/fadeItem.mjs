@@ -11,6 +11,11 @@ export class fadeItem extends Item {
       this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
+   /** @protected */
+   prepareBaseData() {
+      super.prepareBaseData();
+   }
+
    // Define default icons for various item types using core data paths
    static get defaultIcons() {
       const fdPath = `systems/fantastic-depths/assets/img/item`;
@@ -59,6 +64,56 @@ export class fadeItem extends Item {
       }
 
       return rollData;
+   }
+
+   /**
+    * Process all item active effects that are not set to transfer to the owning actor.
+    * @protected
+    */
+   _processNonTransferActiveEffects() {
+      const data = this.system;
+
+      // Apply Active Effects only if transfer is false
+      const changes = this.effects
+         .filter(effect => !effect.disabled && effect.transfer === false) // Only local effects
+         .flatMap(effect => effect.changes);
+
+      // Process changes
+      for (const change of changes) {
+         if (change.key.startsWith("system.")) {
+            const path = change.key.slice(7); // Strip "system." prefix
+            const currentValue = foundry.utils.getProperty(data, path);
+            const newValue = this.#applyEffectChange(change.mode, currentValue, change.value);
+            foundry.utils.setProperty(data, path, newValue);
+         }
+      }
+   }
+
+   /**
+    * Helper method to process Active Effect changes.
+    * @private
+    * @param {any} mode A valid CONST.ACTIVE_EFFECT_MODES value.
+    * @param {any} currentValue The property's current value/
+    * @param {any} changeValue The value specified in the effect change data.
+    * @returns
+    */
+   #applyEffectChange(mode, currentValue, changeValue) {
+      const value = Number(changeValue) || 0;
+      switch (mode) {
+         case CONST.ACTIVE_EFFECT_MODES.ADD:
+            return (currentValue || 0) + value;
+         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+            return (currentValue || 1) * value;
+         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+            return value;
+         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+            return Math.min(currentValue || Infinity, value); // Set to the lower value
+         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+            return Math.max(currentValue || -Infinity, value); // Set to the higher value
+         default:
+            console.warn(`Unsupported Active Effect mode: ${mode}`);
+            return currentValue;
+      }
    }
 
    /**

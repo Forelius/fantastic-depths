@@ -41,5 +41,5 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
       super.prepareDerivedData();
       this.totalWeight = Math.round((this.weight * this.quantity) * 100) / 100;
       this.totalCost = Math.round((this.cost * this.quantity) * 100) / 100;
-   }
+   }   
 }

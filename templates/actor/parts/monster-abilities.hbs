@@ -18,7 +18,13 @@
                   {{system.ac.total}}
                   {{/if}}
                </label>
-               <div class="ac-value ac-bottom" data-tooltip="{{localize 'FADE.Armor.naked'}}">{{system.ac.naked}}</div>
+               <div class="ac-value ac-bottom" data-tooltip="{{localize 'FADE.Armor.naked'}}">
+                  {{#if isAAC}}
+                  {{system.ac.nakedAAC}}
+                  {{else}}
+                  {{system.ac.naked}}
+                  {{/if}}
+               </div>
                {{#if system.ac.shield}}
                <div class="shield" data-tooltip="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
                {{/if}}

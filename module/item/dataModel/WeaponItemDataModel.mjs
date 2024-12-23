@@ -33,7 +33,13 @@ export class WeaponItemDataModel extends fadeItemDataModel {
             load: new fields.NumberField({ nullable: true, initial: null }),
             maxLoad: new fields.NumberField({ nullable: true, initial: null })
          }),
-         natural: new fields.BooleanField({ required: false, initial: false })
+         natural: new fields.BooleanField({ required: false, initial: false }),
+         mod: new fields.SchemaField({
+            dmg: new fields.NumberField({ initial: 0 }),
+            toHit: new fields.NumberField({ initial: 0 }),
+            dmgRanged: new fields.NumberField({ initial: 0 }),
+            toHitRanged: new fields.NumberField({ initial: 0 }),
+         }),
       };
    }
 

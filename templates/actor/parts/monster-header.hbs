@@ -73,12 +73,16 @@
          <label>{{localize "FADE.Actor.THAC0"}}</label>
          <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
       </li>
+      <li class="flex1" style="max-width:35px">
+         <label>{{localize "FADE.Actor.THBonus"}}</label>
+         <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly/>
+      </li>
       <li class="flex1" style="max-width:40px">
          <input type="text" name="system.details.intelligence" value="{{system.details.intelligence}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Abilities.int.long'}}" />
          <label data-tooltip="{{localize 'FADE.Actor.Abilities.int.long'}}">Int.</label>
       </li>
       <li class="flex2">
-         <input type="text" name="system.details.monsterType" value="{{system.details.monsterType}}" data-dtype="String" />
+         <input type="text" name="system.details.monsterType" value="{{system.details.monsterType}}" data-dtype="String" data-tooltip="{{system.details.monsterType}}" />
          <label>{{localize 'FADE.Type'}}</label>
       </li>
    </ul>

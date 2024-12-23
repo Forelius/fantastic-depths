@@ -7,25 +7,20 @@ export class ArmorItem extends fadeItem {
    }
 
    /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-      this._prepareEffects();
+   prepareBaseData() {
+      super.prepareBaseData();
+      this.prepareEffects();
    }
 
-   _prepareEffects() {
-      const systemData = this.system;
-      systemData.mod = 0;
-      // Apply any effects that modify system.mod
-      const modEffects = this.effects.filter(effect => effect.changes.some(change => change.key === 'system.mod' ) && effect.transfer === false);
-      modEffects.forEach(effect => {
-         effect.changes.forEach(change => {
-            if (change.key === 'system.mod') {
-               const changeValue = parseInt(change.value, 10);
-               systemData.mod += changeValue;
-            }
-         });
-      });
-      systemData.totalAC = systemData.ac - systemData.mod;
-      systemData.totalAAC = systemData.isShield ? systemData.totalAC : 19 - systemData.totalAc;
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+   }
+
+   prepareEffects() {
+      this._processNonTransferActiveEffects();
+      const data = this.system;
+      data.totalAC = data.ac - data.mod;
+      data.totalAAC = data.isShield ? data.totalAC : 19 - data.totalAC;
    }
 }

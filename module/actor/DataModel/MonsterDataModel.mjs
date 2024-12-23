@@ -1,4 +1,3 @@
-import { ClassItem } from "../../item/ClassItem.mjs";
 import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
 
 export class MonsterDataModel extends fadeActorDataModel {
@@ -21,8 +20,7 @@ export class MonsterDataModel extends fadeActorDataModel {
             wandering: new foundry.data.fields.StringField({ initial: "1d6" }),
             lair: new foundry.data.fields.StringField({ initial: "" }),
          }),
-         treasure: new foundry.data.fields.StringField({ initial: "" }),
-         wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
+         treasure: new foundry.data.fields.StringField({ initial: "" })
       };
    }
 
@@ -31,14 +29,14 @@ export class MonsterDataModel extends fadeActorDataModel {
       super.prepareBaseData();
       this.details.alignment = this.details.alignment || "Chaotic";
       this.encumbrance.max = this.encumbrance.max || 0;
-      this._prepareHitPoints();
+      this.thbonus = 19 - this.thac0.value;
+      this._prepareHitPoints();      
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareWrestling();
-      this._prepareSavingThrows();
    }
 
    _prepareWrestling() {
@@ -50,15 +48,6 @@ export class MonsterDataModel extends fadeActorDataModel {
       }
    }
 
-   _prepareSavingThrows() {
-      const saveAs = this.details.saveAs ?? null;
-      if (saveAs) {
-         const savesData = ClassItem.getClassSavesByCode(saveAs);
-         if (savesData) {
-            super._prepareSavingThrows(savesData);
-         }
-      }
-   }
 
    /**
     * @override
@@ -82,7 +71,7 @@ export class MonsterDataModel extends fadeActorDataModel {
          // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
          let base = this.hp.hd.replace(modifierRegex, ''); // Extract base number
          let modifier = this.hp.hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
-         base = parseInt(base);
+         base = parseFloat(base);
          modifier = parseInt(modifier, 10);
 
          this.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);

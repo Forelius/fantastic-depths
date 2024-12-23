@@ -1,4 +1,5 @@
 // actor-character.mjs
+import { ClassItem } from "../item/ClassItem.mjs";
 import { fadeActor } from './fadeActor.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
@@ -13,10 +14,21 @@ export class MonsterActor extends fadeActor {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this._prepareSavingThrows();
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+   }
+
+   _prepareSavingThrows() {
+      const saveAs = this.system.details.saveAs ?? null;
+      if (saveAs) {
+         const savesData = ClassItem.getClassSavesByCode(saveAs, this);
+         if (savesData) {
+            this.system._prepareSavingThrows(savesData);
+         }
+      }
    }
 }

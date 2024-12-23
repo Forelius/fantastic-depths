@@ -58,9 +58,9 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          levels: new fields.ArrayField(
             new fields.SchemaField({
                level: new fields.NumberField({ required: true }),
-               xp: new fields.NumberField({ required: true }),
-               thac0: new fields.NumberField({ required: true }),
-               thbonus: new fields.NumberField({ required: true }),
+               xp: new fields.NumberField({ required: true, initial: 5 }),
+               thac0: new fields.NumberField({ required: true, initial: 19 }),
+               thbonus: new fields.NumberField({ required: true, initial: 0 }),
                hd: new fields.StringField({ required: true, initial: '' }),
                hdcon: new fields.BooleanField({ required: true, initial: true }),
                title: new fields.StringField({ required: false, nullable: true }),

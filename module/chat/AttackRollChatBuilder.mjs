@@ -7,6 +7,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+      this.acAbbr = this.toHitSystem === 'aac' ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
    }
 
    getHeroicToHitTable(thac0, repeater = 0) {
@@ -75,7 +76,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * @param {any} thac0 The attacker's effective THAC0
     * @returns The lowest AC that this roll can hit.
     */
-   getLowestACHitProcedurally(roll, rollTotal, thac0) {
+   getLowestACHitProcedurally(roll, rollTotal, thac0, thbonus) {
       let result = null;
       let toHitTable = [];
 
@@ -85,9 +86,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
             result = thac0 - rollTotal;
             break;
          case "aac":
-            result = rollTotal;
+            result = rollTotal + thbonus;
             break;
-         case "classic":
+         case "classic": {
             toHitTable = this.getClassicToHitTable(thac0);
             // Filter all entries that the rollTotal can hit
             const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
@@ -96,7 +97,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
                return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
             }, { ac: Infinity }).ac;
             break;
-         case "darkdungeons":
+         }
+         case "darkdungeons": {
             if (roll === 1) {
                result = null;  // Natural 1 always misses
             } else {
@@ -109,8 +111,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
                }, { ac: Infinity }).ac;
             }
             break;
+         }
          case "heroic":
-         default:
+         default: {
             toHitTable = this.getHeroicToHitTable(thac0);
             // Filter all entries that the rollTotal can hit
             const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
@@ -119,6 +122,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
             }, { ac: Infinity }).ac;
             break;
+         }
       }
 
       return result;
@@ -138,11 +142,12 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       if (roll) {
          const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
-         const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0);
+         const thbonus = attacker.actor?.system.thbonus ?? attacker.system.thbonus;
+         const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0, thbonus);
          result = {
             hitAC,
             message: (hitAC !== null && hitAC !== Infinity)
-               ? game.i18n.format('FADE.Chat.attackAC', { hitAC })
+               ? game.i18n.format('FADE.Chat.attackAC', { acAbbr: this.acAbbr, hitAC })
                : game.i18n.format('FADE.Chat.attackACNone'),
             targetResults: []
          };
@@ -178,8 +183,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
                      maxAttacksAgainst: defenseMastery.acBonusAT,
                      defenseMasteryTotal: defenseMastery.total
                   });
-                  //targetResult.targetac = `<span title='Normal AC' ${isApplicable ? "" : "style='color:green'"}>${targetToken.actor.system.ac?.total}</span>/
-                  //<span ${isApplicable ? "style='color:green'" : ""} data-tooltip='Best weapon mastery AC. Attacked ${targetActor.system.combat.attacksAgainst} times.'>${defenseMastery.total}</span>`;
                   if (isApplicable) {
                      ac = defenseMastery.total;
                   }
@@ -196,7 +199,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                      targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
                   }
                } else {
-                  targetResult.message = game.i18n.format('FADE.Chat.attackAC', { hitAC: hitAC });
+                  targetResult.message = game.i18n.format('FADE.Chat.attackAC', { acAbbr: this.acAbbr, hitAC });
                   targetResult.success = true;
                }
             } else {

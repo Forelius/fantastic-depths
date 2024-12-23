@@ -23,6 +23,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             total: new fields.NumberField({ initial: 9 }),
             totalAAC: new fields.NumberField({ initial: 10 }),
             shield: new fields.NumberField({ initial: 0 }),
+            // mod is an accumulator for armor AC mods only. All other items that modify armor must do so via actor's system.mod.ac.
             mod: new fields.NumberField({ initial: 0 }),
          }),
          thac0: new fields.SchemaField({
@@ -99,6 +100,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             })
          }),
          mod: new fields.SchemaField({
+            // mod is for items that modify AC (add/subtract only) but are not armor items.
             ac: new fields.NumberField({ initial: 0 }),
             initiative: new fields.NumberField({ initial: 0 }),
             combat: new fields.SchemaField({
@@ -123,7 +125,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                breath: new fields.NumberField({ initial: 0 }),
                spell: new fields.NumberField({ initial: 0 }),
             })
-         })
+         }),
+         wrestling: new foundry.data.fields.NumberField({ initial: 0 })
       };
    }
 
@@ -168,24 +171,29 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
 
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
+         naturalArmor.prepareEffects();
          ac.naked = naturalArmor.system.totalAC;
       }
 
       // If an equipped armor is found
       if (this.equippedArmor) {
+         this.equippedArmor.prepareEffects();
          ac.value = this.equippedArmor.system.ac;
-         ac.mod = this.equippedArmor.system.mod ?? 0;
+         ac.mod += this.equippedArmor.system.mod ?? 0;
          ac.total = this.equippedArmor.system.totalAC;
       }
 
       if (equippedShield) {
+         equippedShield.prepareEffects();
          ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
          ac.total -= ac.shield;
       }
 
       // Now other mods.
-      ac.total = ac.total - (this.mod.ac ?? 0) - dexMod;
+      ac.total = ac.total - dexMod;
       ac.totalAAC = 19 - ac.total;
+      ac.nakedAAC = 19 - ac.naked;
+
       // Weapon mastery defense bonuses
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       const masteries = items.filter(item => item.type === "mastery");
@@ -206,7 +214,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             }
          }
       }
-
       this.ac = ac;
    }
 

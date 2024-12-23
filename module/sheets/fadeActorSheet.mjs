@@ -30,7 +30,7 @@ export class fadeActorSheet extends ActorSheet {
          options.width = 600;
          options.height = 540;
       } else if (this.actor.type === "monster") {
-         options.width = 650;
+         options.width = 670;
          options.height = 540;
       }
 

@@ -61,8 +61,7 @@ export class CharacterDataModel extends fadeActorDataModel {
          retainer: new foundry.data.fields.SchemaField({
             max: new foundry.data.fields.NumberField({ initial: 0 }),
             morale: new foundry.data.fields.NumberField({ initial: 0 }),
-         }),
-         wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
+         })
       };
    }
 
@@ -135,7 +134,7 @@ export class CharacterDataModel extends fadeActorDataModel {
          if (levelData) {
             this.hp.hd = levelData.hd;
             this.thac0.value = levelData.thac0;
-
+            this.thbonus = levelData.thbonus;
             if (this.details.title == "" || this.details.title == null) {
                let ordinalized = Formatter.formatOrdinal(currentLevel);
                this.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;

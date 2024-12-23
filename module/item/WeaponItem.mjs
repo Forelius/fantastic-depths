@@ -11,12 +11,12 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this._processNonTransferActiveEffects();
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareEffects();
       this._prepareModText();
       this._prepareDamageRollLabel();
    }
@@ -267,37 +267,7 @@ export class WeaponItem extends fadeItem {
       systemData.mod.dmgText = dmgText;
    }
 
-   _prepareEffects() {
-      const systemData = this.system;
-      systemData.mod = {
-         dmg: 0,
-         toHit: 0,
-         dmgRanged: 0,
-         toHitRanged: 0
-      };
-
-      // Filter effects that target any part of system.mod
-      const modEffects = this.effects.filter(effect => effect.disabled === false &&
-         effect.changes.some(change => change.key.startsWith('system.mod.'))
-      );
-
-      // Apply the modifications
-      modEffects.forEach(effect => {
-         effect.changes.forEach(change => {
-            const key = change.key.split('.').pop(); // Extract the last part of the key (e.g., 'dmg')
-            const changeValue = parseInt(change.value, 10); // Convert the value to an integer
-
-            // Apply the change if the key exists in systemData.mod
-            if (systemData.mod.hasOwnProperty(key)) {
-               systemData.mod[key] += changeValue;
-            } else {
-               console.warn(`Key ${key} not found in systemData.mod`);
-            }
-         });
-      });
-   }
-
-   async _prepareDamageRollLabel() {
+    async _prepareDamageRollLabel() {
       this.system.damageRollLabel = await this.getEvaluatedRollFormula(this.system.damageRoll);
    }
 }

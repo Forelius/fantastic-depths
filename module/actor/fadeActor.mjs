@@ -91,16 +91,17 @@ export class fadeActor extends Actor {
 
    /** @override */
    prepareBaseData() {
+      super.prepareBaseData();
       this._prepareEffects();
       this._prepareSpellsUsed();
+      this.system.prepareArmorClass(this.items);
+      this.system.prepareEncumbrance(this.items, this.type);
+      this.system.prepareDerivedMovement();
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this.system.prepareArmorClass(this.items);
-      this.system.prepareEncumbrance(this.items, this.type);
-      this.system.prepareDerivedMovement();
    }
 
    getRollData() {
@@ -126,11 +127,17 @@ export class fadeActor extends Actor {
       let digest = [];
       let modifier = 0;
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
 
       if (options.mod && options.mod !== 0) {
          modifier += options.mod;
          //formula = `${formula}+@mod`; 
          digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: options.mod }));
+      }
+
+      if (toHitSystem === 'aac' && this.system.thbonus !== 0) {
+         modifier += this.system.thbonus;
+         digest.push(`${game.i18n.localize('FADE.Actor.THBonus')}: ${this.system.thbonus}`);
       }
 
       if (attackType === "melee") {
