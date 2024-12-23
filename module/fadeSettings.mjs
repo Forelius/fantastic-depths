@@ -190,11 +190,13 @@ export class fadeSettings {
          config: true,
          type: String,
          choices: {
+            "thac0": "SETTINGS.toHitSystem.choices.thac0",
             "classic": "SETTINGS.toHitSystem.choices.classic",
+            "heroic": "SETTINGS.toHitSystem.choices.heroic",
             "darkdungeons": "SETTINGS.toHitSystem.choices.darkdungeons",
             "aac": "SETTINGS.toHitSystem.choices.aac"
          },
-         default: "classic",
+         default: "heroic",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });

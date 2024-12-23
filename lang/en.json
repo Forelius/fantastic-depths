@@ -793,9 +793,11 @@
       },
       "toHitSystem": {
          "name": "To-Hit System (Work-in-progress)",
-         "hint": "The to-hit system determines how attack rolls are handled and also what armor class system is used (AC vs AAC).",
+         "hint": "The to-hit system determines how attack rolls are handled and also what armor class system is used (AC vs AAC). THAC0 Only system does not use an attack matrix, but instead a simple calculation of the THAC0 value minus the target's AC. Classic system makes use of an attack matrix and THAC0 that support up to level 25 and AC ranged from -3 to 9. Heroic Combat Matrix harkens back to RPGS of the 90s and scales up to level 36 and AC ranged from -20 to 19. Dark Dungeons uses the system from the Dark Dungeons game. AAC and Attack Bonus is similar to THAC0, but features ascending armor class where the higher the AC value, the greater the defensive capability.",
          "choices": {
+            "thac0": "THAC0 Only (no attack matrix)",
             "classic": "Classic",
+            "heroic": "Heroic Combat Matrix",
             "darkdungeons": "Dark Dungeons",
             "aac": "AAC and Attack Bonus"
          }

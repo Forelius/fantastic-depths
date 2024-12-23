@@ -6,9 +6,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
+      this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
    }
 
-   static getToHitTable(thac0, repeater = 0) {
+   getHeroicToHitTable(thac0, repeater = 0) {
       const toHitTable = [];
       // Loop through AC values from 19 down to -20
       repeater = Math.max(repeater, 0);
@@ -57,30 +58,67 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return toHitTable;
    }
 
+   getClassicToHitTable(thac0) {
+      const tableRow = [];
+      for (let ac = -3; ac <= 9; ac++) {
+         let toHit = thac0 - ac; // Calculate the roll needed to hit
+         if (toHit < 2) toHit = 2; // Minimum roll of 2
+         if (toHit > 20) toHit = 20; // Maximum roll of 20
+         tableRow.push({ ac, toHit });
+      }
+      return tableRow;
+   }
+
    /**
     * Get the lowest AC that can be hit by the specified roll and THAC0
     * @param {any} rollTotal The attack roll total
     * @param {any} thac0 The attacker's effective THAC0
     * @returns The lowest AC that this roll can hit.
     */
-   static getLowestACHitProcedurally(roll, rollTotal, thac0) {
+   getLowestACHitProcedurally(roll, rollTotal, thac0) {
       let result = null;
       let toHitTable = [];
 
       // Check for automatic hit or miss
-      if (roll === 1) {
-         result = null;  // Natural 1 always misses
-         //} else if (roll === 20) {
-         // result = -100;  // Natural 20 always hits the lowest possible AC (assuming -50 is the extreme)
-      } else {
-         toHitTable = this.getToHitTable(thac0);
-
-         // Filter all entries that the rollTotal can hit
-         const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
-         // Find the lowest AC from valid entries
-         result = validEntries.reduce((minEntry, currentEntry) => {
-            return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
-         }, { ac: Infinity }).ac;
+      switch (this.toHitSystem) {
+         case "thac0":
+            result = thac0 - rollTotal;
+            break;
+         case "aac":
+            result = rollTotal;
+            break;
+         case "classic":
+            toHitTable = this.getClassicToHitTable(thac0);
+            // Filter all entries that the rollTotal can hit
+            const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
+            // Find the lowest AC from valid entries
+            result = validEntries.reduce((minEntry, currentEntry) => {
+               return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
+            }, { ac: Infinity }).ac;
+            break;
+         case "darkdungeons":
+            if (roll === 1) {
+               result = null;  // Natural 1 always misses
+            } else {
+               toHitTable = this.getHeroicToHitTable(thac0);
+               // Filter all entries that the rollTotal can hit
+               const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
+               // Find the lowest AC from valid entries
+               result = validEntries.reduce((minEntry, currentEntry) => {
+                  return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
+               }, { ac: Infinity }).ac;
+            }
+            break;
+         case "heroic":
+         default:
+            toHitTable = this.getHeroicToHitTable(thac0);
+            // Filter all entries that the rollTotal can hit
+            const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
+            // Find the lowest AC from valid entries
+            result = validEntries.reduce((minEntry, currentEntry) => {
+               return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
+            }, { ac: Infinity }).ac;
+            break;
       }
 
       return result;
@@ -95,12 +133,12 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * @param {any} targetWeaponType
     * @returns
     */
-   static async getToHitResults(attacker, weapon, targetTokens, roll, targetWeaponType = null) {
+   async getToHitResults(attacker, weapon, targetTokens, roll, targetWeaponType = null) {
       let result = null;
 
       if (roll) {
          const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
-         const hitAC = AttackRollChatBuilder.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0);
+         const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0);
          result = {
             hitAC,
             message: (hitAC !== null && hitAC !== Infinity)
@@ -215,7 +253,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await AttackRollChatBuilder.getToHitResults(attacker, caller, targetTokens, roll);
+      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll);
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
 
       if (window.toastManager) {

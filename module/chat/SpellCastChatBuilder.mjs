@@ -23,10 +23,11 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const description = game.i18n.format('FADE.Chat.spellCast', descData);
 
       let rollContent = null;
-      let toHitResult = {message:""};
+      let toHitResult = { message: "" };
       if (roll) {
          rollContent = await roll.render();
-         toHitResult = await AttackRollChatBuilder.getToHitResults(caster, spellItem, targetTokens, roll, resp?.targetWeaponType);
+         const attackRollChatBuilder = new AttackRollChatBuilder({}, {});
+         toHitResult = await attackRollChatBuilder.getToHitResults(caster, spellItem, targetTokens, roll, resp?.targetWeaponType);
       } else {
          // Add targets for DM chat message
          toHitResult = { targetResults: [], message: '' };
