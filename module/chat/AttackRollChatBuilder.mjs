@@ -61,7 +61,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    getClassicToHitTable(thac0) {
       const tableRow = [];
-      for (let ac = -3; ac <= 9; ac++) {
+      for (let ac = -19; ac <= 19; ac++) {
          let toHit = thac0 - ac; // Calculate the roll needed to hit
          if (toHit < 2) toHit = 2; // Minimum roll of 2
          if (toHit > 20) toHit = 20; // Maximum roll of 20
@@ -86,16 +86,22 @@ export class AttackRollChatBuilder extends ChatBuilder {
             result = thac0 - rollTotal;
             break;
          case "aac":
-            result = rollTotal + thbonus;
+            result = rollTotal;
             break;
          case "classic": {
             toHitTable = this.getClassicToHitTable(thac0);
             // Filter all entries that the rollTotal can hit
             const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
             // Find the lowest AC from valid entries
-            result = validEntries.reduce((minEntry, currentEntry) => {
-               return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
-            }, { ac: Infinity }).ac;
+            if (roll === 1) {
+               result = null;
+            } else if (roll === 20) {
+               result = -999;
+            } else {
+               result = validEntries.reduce((minEntry, currentEntry) => {
+                  return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
+               }, { ac: Infinity }).ac;
+            }
             break;
          }
          case "darkdungeons": {
@@ -144,11 +150,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
          const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
          const thbonus = attacker.actor?.system.thbonus ?? attacker.system.thbonus;
          const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0, thbonus);
+         let hitACMessage = game.i18n.localize('FADE.Chat.attackACNone');
+         if (hitAC === -999) {
+            hitACMessage = game.i18n.localize('FADE.Chat.attackACAny');
+         } else if (hitAC !== null && hitAC !== Infinity) {
+            hitACMessage = game.i18n.format('FADE.Chat.attackAC', { acAbbr: this.acAbbr, hitAC });
+         }
          result = {
             hitAC,
-            message: (hitAC !== null && hitAC !== Infinity)
-               ? game.i18n.format('FADE.Chat.attackAC', { acAbbr: this.acAbbr, hitAC })
-               : game.i18n.format('FADE.Chat.attackACNone'),
+            message: hitACMessage,
             targetResults: []
          };
 
@@ -165,6 +175,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             };
 
             let ac = targetActor.system.ac?.total;
+            let aac = targetActor.system.ac?.totalAAC;
 
             const defenseMasteries = targetActor.system.ac.mastery;
             if (targetWeaponType && defenseMasteries?.length > 0) {
@@ -191,7 +202,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
             if (hitAC !== null) { // null if rolled a natural 1
                if (ac !== null && ac !== undefined) {
-                  if (ac >= hitAC) {
+                  if (this.toHitSystem === 'aac' ? aac <= hitAC : ac >= hitAC) {
                      targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
                      targetResult.success = true;
                   } else {

@@ -83,7 +83,7 @@ export class WeaponItem extends fadeItem {
                digest.push(game.i18n.format('FADE.Chat.rollMods.masteryPrimDmg'));
             }
             // Else if the secondary damage is specified...
-            else if (attackerMastery.sDmgFormula) {
+            else if (attackerMastery.system.sDmgFormula) {
                formula = attackerMastery.system.sDmgFormula;
                digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
             }
