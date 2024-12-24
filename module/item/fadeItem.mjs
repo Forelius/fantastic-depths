@@ -83,7 +83,7 @@ export class fadeItem extends Item {
          if (change.key.startsWith("system.")) {
             const path = change.key.slice(7); // Strip "system." prefix
             const currentValue = foundry.utils.getProperty(data, path);
-            const newValue = this.#applyEffectChange(change.mode, currentValue, change.value);
+            const newValue = this._applyEffectChange(change.mode, currentValue, change.value);
             foundry.utils.setProperty(data, path, newValue);
          }
       }
@@ -97,7 +97,7 @@ export class fadeItem extends Item {
     * @param {any} changeValue The value specified in the effect change data.
     * @returns
     */
-   #applyEffectChange(mode, currentValue, changeValue) {
+   _applyEffectChange(mode, currentValue, changeValue) {
       const value = Number(changeValue) || 0;
       switch (mode) {
          case CONST.ACTIVE_EFFECT_MODES.ADD:
