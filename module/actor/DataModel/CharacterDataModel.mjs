@@ -68,20 +68,19 @@ export class CharacterDataModel extends fadeActorDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this._prepareDerivedAbilities();
       this.encumbrance.max = this.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareDerivedAbilities();
       this._prepareWrestling();
       this._prepareClassInfo();
    }
 
    _prepareDerivedAbilities() {
       // Initialize abilities if missing
-      const abilityTypes = ["str", "int", "wis", "dex", "con", "cha"];
       const adjustments = CONFIG.FADE.AdjustmentTableDD;
       for (let [key, ability] of Object.entries(this.abilities)) {
          let adjustment = adjustments.find(item => ability.value <= item.max);

@@ -36,19 +36,8 @@ export class MonsterDataModel extends fadeActorDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareWrestling();
    }
-
-   _prepareWrestling() {
-      // Wrestling skill
-      const hitDice = this.hp.hd?.match(/^\d+/)[0];
-      this.wrestling = this.ac.value;
-      if (hitDice) {
-         this.wrestling = Math.ceil(hitDice * 2) + this.ac.value;
-      }
-   }
-
-
+   
    /**
     * @override
     * Calculate average hitpoints based on hitdice.

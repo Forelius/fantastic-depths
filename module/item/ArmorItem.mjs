@@ -8,6 +8,7 @@ export class ArmorItem extends fadeItem {
 
    /** @override */
    prepareBaseData() {
+      this.system.totalAC = 0;
       super.prepareBaseData();
       this.prepareEffects();
    }
@@ -20,7 +21,14 @@ export class ArmorItem extends fadeItem {
    prepareEffects() {
       this._processNonTransferActiveEffects();
       const data = this.system;
-      data.totalAC = data.ac - data.mod;
-      data.totalAAC = data.isShield ? data.totalAC : 19 - data.totalAC;
+      // If this is a shield item...
+      if (data.isShield) {
+         // Add the modifier to the ac value of the shield. 
+         data.totalAC = data.ac + data.mod;
+         data.totalAAC = data.totalAC;
+      } else {
+         data.totalAC = data.ac - data.mod;
+         data.totalAAC = data.isShield ? data.totalAC : 19 - data.totalAC;
+      }
    }
 }

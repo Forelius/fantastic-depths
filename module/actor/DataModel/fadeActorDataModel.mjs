@@ -147,50 +147,54 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
     * @protected
     */
    prepareArmorClass(items) {
+      const acDigest = [];
       const dexMod = (this.abilities?.dex.mod ?? 0);
       const baseAC = CONFIG.FADE.Armor.acNaked - dexMod;
       let ac = {};
       ac.nakedAAC = 19 - baseAC;
       ac.naked = baseAC;
-      ac.value = baseAC;
+      // AC value is used for wrestling rating and should not include Dexterity bonus.
+      ac.value = CONFIG.FADE.Armor.acNaked; 
       ac.total = baseAC;
       ac.mod = 0;
       ac.shield = 0;
 
-      const naturalArmor = items.find(item =>
-         item.type === 'armor' && item.system.natural
-      );
+      const naturalArmor = items.find(item => item.type === 'armor' && item.system.natural);
+      this.equippedArmor = items.find(item => item.type === 'armor' && item.system.equipped && !item.system.isShield);
+      const equippedShield = items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
 
-      this.equippedArmor = items.find(item =>
-         item.type === 'armor' && item.system.equipped && !item.system.isShield
-      );
-
-      const equippedShield = items.find(item =>
-         item.type === 'armor' && item.system.equipped && item.system.isShield
-      );
+      if (dexMod !== 0) {
+         acDigest.push(`Dexterity bonus: ${dexMod}`);
+      }
 
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
          naturalArmor.prepareEffects();
-         ac.naked = naturalArmor.system.totalAC;
+         ac.naked = naturalArmor.system.totalAC - dexMod;
+         acDigest.push(`Natural armor ${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
       }
 
-      // If an equipped armor is found
+      // If an equipped armor is found...
       if (this.equippedArmor) {
          this.equippedArmor.prepareEffects();
          ac.value = this.equippedArmor.system.ac;
          ac.mod += this.equippedArmor.system.mod ?? 0;
          ac.total = this.equippedArmor.system.totalAC;
+         // Reapply dexterity mod, since overwriting ac.total here.
+         ac.total -= dexMod; 
+         acDigest.push(`Equipped armor ${this.equippedArmor.name}: ${this.equippedArmor.system.totalAC}`);
       }
 
+      // If a shield is equipped...
       if (equippedShield) {
          equippedShield.prepareEffects();
-         ac.shield = equippedShield.system.ac + (equippedShield.system.ac.mod ?? 0);
-         ac.total -= ac.shield;
+         ac.value -= equippedShield.system.ac;
+         ac.shield = equippedShield.system.totalAC;
+         ac.total -= equippedShield.system.totalAC;
+         acDigest.push(`Equipped shield ${equippedShield.name}: ${equippedShield.system.totalAC}`);
       }
 
-      // Now other mods.
-      ac.total = ac.total - dexMod;
+      // Now other mods. Dexterity bonus already applied above.
       ac.totalAAC = 19 - ac.total;
       ac.nakedAAC = 19 - ac.naked;
 
@@ -215,6 +219,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }
       }
       this.ac = ac;
+      this.acDigest = acDigest;
    }
 
    /**
