@@ -2,13 +2,17 @@
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
 export class fadeHandlebars {
+   static clamp (value, min, max) {
+      return Math.max(min, Math.min(max, value));
+   }
+
    static registerHelpers() {
       Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
       Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
       Handlebars.registerHelper("counter", (status, value, max) =>
          status
-            ? Math.clamp((100 * value) / max, 0, 100)
-            : Math.clamp(100 - (100 * value) / max, 0, 100)
+            ? fadeHandlebars.clamp((100 * value) / max, 0, 100)
+            : fadeHandlebars.clamp(100 - (100 * value) / max, 0, 100)
       );
       Handlebars.registerHelper("times", (n, block) => {
          let accum = "";
