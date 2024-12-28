@@ -1,7 +1,6 @@
 {
    "FADE": {
       "Actor": {
-         "Name": "Name",
          "Health": "Hit Points",
          "HealthMax": "Max HP.",
          "HealthMaxMonster": "Max HP. Set to zero to autocalculate max HP from hit dice.",
@@ -297,6 +296,17 @@
          "cost": {
             "abbr": "gp",
             "long": "Cost (gp)"
+         },
+         "light": {
+            "typeLabel": "Light Type",
+            "fuelType": "Fuel Type",
+            "durationHint": "How long the light source lasts before expiring.",
+            "lightTypes": {
+               "torch": "Torch",
+               "lantern": "Lantern",
+               "magic": "Magic",
+               "custom": "Custom"
+            }
          }
       },
       "Weapon": {
@@ -336,7 +346,6 @@
          "ammo": {
             "short": "Ammo",
             "long": "Ammunition",
-            "type": "Type",
             "load": "Load",
             "maxLoad": "Max Load"
          }
@@ -405,7 +414,6 @@
             "grandMaster": "Grand Master"
          },
          "acBonus": "AC Bonus",
-         "acBonusType": "Type",
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
          "specialEffects": "Special Effects"
@@ -663,16 +671,12 @@
          }
       },
       "Size": "Size",
-      "Type": "Type",
       "roll": "Roll",
       "rollMode": "Roll Mode",
       "operator": "Operator",
       "modifier": "Modifier",
       "target": "Target",
-      "GMNotes": "GM Notes",
-      "none": "None",
-      "yes": "Yes",
-      "non": "No"
+      "GMNotes": "GM Notes"
    },
 
    "TYPES": {

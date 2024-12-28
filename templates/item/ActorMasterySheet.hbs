@@ -7,7 +7,7 @@
                <div class='charname'>
                   <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
                </div>
-               <label for="name">{{localize 'FADE.Actor.Name'}}</label>
+               <label for="name">{{localize 'Name'}}</label>
             </li>
             <li class="flex1">
                <select name="system.level">
@@ -31,7 +31,7 @@
                <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType valueAttr="value" labelAttr="text"}}
                </select>
-               <label for="system.acBonusType">{{localize 'FADE.Mastery.acBonusType'}}</label>
+               <label for="system.acBonusType">{{localize 'Type'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}} />

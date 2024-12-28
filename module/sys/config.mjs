@@ -51,6 +51,12 @@ FADE.MasteryLevels = [
    "master",
    "grandMaster",
 ];
+FADE.LightTypes = [
+   "torch",
+   "lantern",
+   "magic",
+   "custom"
+];
 FADE.Armor = {
    acNaked: 9
 }

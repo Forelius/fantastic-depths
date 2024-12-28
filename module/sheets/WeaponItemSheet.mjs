@@ -80,7 +80,7 @@ export class WeaponItemSheet extends ItemSheet {
 
       // Saving throws
       const saves = [];
-      saves.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      saves.push({ value: "", text: game.i18n.localize('None') });
       saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
          return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
       }));

@@ -5,7 +5,7 @@
          <ul class="summary flexrow">
             <li class="flex3">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
-               <label>{{localize 'FADE.Actor.Name'}}</label>
+               <label>{{localize 'Name'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
@@ -31,7 +31,7 @@
             <select name="system.levels.{{index}}.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
                {{selectOptions @root.weaponTypes selected=level.acBonusType valueAttr="value" labelAttr="text"}}
             </select>
-            <label for="system.levels.{{index}}.acBonusType">{{localize 'FADE.Mastery.acBonusType'}}</label>
+            <label for="system.levels.{{index}}.acBonusType">{{localize 'Type'}}</label>
          </li>
          <li class="flex1">
             <input type='text' name="system.levels.{{index}}.acBonusAT" value='{{level.acBonusAT}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Mastery.acBonusATTitle'}}" />

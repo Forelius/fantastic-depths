@@ -63,19 +63,21 @@
                {{#if (includes system.tags 'light')}}
                <li class="flex1">
                   <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" />
-                  <label for="system.light.duration">Duration</label>
+                  <label for="system.light.duration" data-tooltip="{{localize "FADE.Item.light.durationHint"}}">{{localize "FADE.Spell.duration"}}</label>
                </li>
                <li class="flex1">
                   <input name="system.light.radius" type="text" data-dtype="Number" value="{{system.light.radius}}" />
-                  <label for="system.light.radius">Radius</label>
+                  <label for="system.light.radius">{{localize "AMBIENT_LIGHT.LABELS.radius"}}</label>
                </li>
                <li class="flex2">
-                  <input name="system.light.type" type="text" data-dtype="String" value="{{system.light.type}}" />
-                  <label for="system.light.type">Light Type</label>
+                  <select name="system.light.type">
+                     {{selectOptions lightTypes selected=system.light.type valueAttr="value" labelAttr="text"}}
+                  </select>
+                  <label for="system.light.type">{{localize "FADE.Item.light.typeLabel"}}</label>
                </li>
                <li class="flex2">
                   <input name="system.light.fuel" type="text" data-dtype="String" value="{{system.light.fuel}}" />
-                  <label for="system.light.fuel">Fuel Type</label>
+                  <label for="system.light.fuel">{{localize "FADE.Item.light.fuelType"}}</label>
                </li>
                {{/if}}
             </ul>

@@ -60,21 +60,21 @@ export class SpellItemSheet extends ItemSheet {
 
       // Attack types
       const attackTypes = []
-      attackTypes.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      attackTypes.push({ value: "", text: game.i18n.localize('None') });
       attackTypes.push(...CONFIG.FADE.AttackTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.AttackTypes.types.${type}`) }
       }));
       context.attackTypes = attackTypes;
       // Damage types
       const dmgTypes = []
-      dmgTypes.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      dmgTypes.push({ value: "", text: game.i18n.localize('None') });
       dmgTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
       }));
       context.damageTypes = dmgTypes;
       //Saving throws
       const saves = [];
-      saves.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      saves.push({ value: "", text: game.i18n.localize('None') });
       saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
          return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
       }));

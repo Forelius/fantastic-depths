@@ -60,14 +60,14 @@ export class SpecialAbilitySheet extends ItemSheet {
 
       // Damage types
       const dmgTypes = []
-      dmgTypes.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      dmgTypes.push({ value: "", text: game.i18n.localize('None') });
       dmgTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
       }));
       context.damageTypes = dmgTypes;
       // Saving throws
       const saves = [];
-      saves.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      saves.push({ value: "", text: game.i18n.localize('None') });
       saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
          return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
       }));
@@ -84,7 +84,7 @@ export class SpecialAbilitySheet extends ItemSheet {
       }, {});
       // Ability score types
       context.abilities = [];
-      context.abilities.push({ value: "", text: game.i18n.localize(`FADE.none`) });
+      context.abilities.push({ value: "", text: game.i18n.localize('None') });
       context.abilities.push(...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       }));
