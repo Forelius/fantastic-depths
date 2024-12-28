@@ -491,8 +491,8 @@
       "dialog": {
          "lightSource": "Light Source",
          "selectLightSource": "Select Light Source",
-         "ignite": "Ignite or Turn On",
-         "extinguish": "Extinguish or Turn Off",
+         "ignite": "Enable",
+         "extinguish": "Disable",
          "selectWeapon": "Select Weapon",
          "masteryTargetType": "Target Weapon Type",
          "abilityCheck": "Ability Check",

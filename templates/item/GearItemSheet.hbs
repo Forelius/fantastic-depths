@@ -60,11 +60,7 @@
                   <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
                   <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
                </li>
-            </ul>
-         </section>
-         {{#if (includes system.tags 'light')}}
-         <section class="bordered">
-            <ul class="summary flexrow">
+               {{#if (includes system.tags 'light')}}
                <li class="flex1">
                   <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" />
                   <label for="system.light.duration">Duration</label>
@@ -81,9 +77,9 @@
                   <input name="system.light.fuel" type="text" data-dtype="String" value="{{system.light.fuel}}" />
                   <label for="system.light.fuel">Fuel Type</label>
                </li>
+               {{/if}}
             </ul>
          </section>
-         {{/if}}
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>

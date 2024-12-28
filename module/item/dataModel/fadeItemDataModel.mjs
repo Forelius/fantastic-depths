@@ -11,7 +11,6 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          gm: new fields.SchemaField({
             notes: new fields.StringField({ required: false, initial: "" })
          }),
-
          // Fields from the "physical" template
          quantity: new fields.NumberField({ required: false, initial: 1 }),
          quantityMax: new fields.NumberField({ required: false, initial: 0 }),
@@ -20,14 +19,19 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          totalWeight: new fields.NumberField({ required: false, initial: 0 }),
          totalCost: new fields.NumberField({ required: false, initial: 0 }),
          containerId: new fields.StringField({ required: false, initial: "" }),
-
          // Fields from the "equippable" template
          equipped: new fields.BooleanField({ required: false, initial: false }),
-
          // Additional properties specific to the "item" type
          treasure: new fields.BooleanField({ required: false, initial: false }),
          container: new fields.BooleanField({ required: false, initial: false }),
-         equippable: new fields.BooleanField({ required: false, initial: false })
+         equippable: new fields.BooleanField({ required: false, initial: false }),
+         light: new fields.ObjectField({ required: false, initial: undefined, readonly: false }),
+         //light: new fields.SchemaField({
+         //   duration: new fields.NumberField({ required: false, initial: 6 }),
+         //   radius: new fields.NumberField({ required: false, initial: 30 }),
+         //   type: new fields.StringField({ required: false, initial: "" }),
+         //   fuel: new fields.StringField({ required: false, initial: "" }),
+         //}),
       };
    }
 
