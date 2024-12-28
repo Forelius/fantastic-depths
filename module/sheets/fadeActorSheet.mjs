@@ -94,10 +94,10 @@ export class fadeActorSheet extends ActorSheet {
       );
 
       // Prepare active effects
+      // A generator that returns all effects stored on the actor as well as any items
       context.effects = EffectManager.prepareActiveEffectCategories(
-         // A generator that returns all effects stored on the actor
-         // as well as any items
-         this.actor.allApplicableEffects()
+         //this.actor.allApplicableEffects()
+         this.actor.effects
       );
 
       context.isGM = game.user.isGM;
