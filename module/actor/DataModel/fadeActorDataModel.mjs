@@ -127,7 +127,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                spell: new fields.NumberField({ initial: 0 }),
             })
          }),
-         wrestling: new foundry.data.fields.NumberField({ initial: 0 })
+         wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
+         acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] })
       };
    }
 
