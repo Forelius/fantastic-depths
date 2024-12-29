@@ -66,14 +66,15 @@ export class WeaponItemSheet extends ItemSheet {
       weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });
       weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
       weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.long'), value: 'all' });
-      context.weaponTypes = weaponTypes;
+      context.weaponTypes = weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
-      context.damageTypes = [];
-      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.physical'), value: 'physical' });
-      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.breath'), value: 'breath' });
-      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.fire'), value: 'fire' });
-      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.frost'), value: 'frost' });
-      context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.poison'), value: 'poison' });
+      let damageTypes = [];
+      damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.physical'), value: 'physical' });
+      damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.breath'), value: 'breath' });
+      damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.fire'), value: 'fire' });
+      damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.frost'), value: 'frost' });
+      damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.poison'), value: 'poison' });
+      context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // TODO: Magic damage type  indicates that a different set of parameters is passed to getDamageRoll.
       // This is not a good design, but not addressing it at the moment, so remove this option.
       //context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.magic'), value: 'magic' });
@@ -84,7 +85,7 @@ export class WeaponItemSheet extends ItemSheet {
       saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
          return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
       }));
-      context.savingThrows = saves;
+      context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }

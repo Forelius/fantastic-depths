@@ -37,7 +37,7 @@ export class MasteryDefinitionSheet extends ItemSheet {
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
       }));
-      context.weaponTypes = types;
+      context.weaponTypes = types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }

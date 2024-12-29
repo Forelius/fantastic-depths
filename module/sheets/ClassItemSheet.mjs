@@ -51,7 +51,7 @@ export class ClassItemSheet extends ItemSheet {
       }
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
-      })];
+      })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }

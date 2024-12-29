@@ -67,11 +67,11 @@
                </li>
                <li class="flex1">
                   <input name="system.light.radius" type="text" data-dtype="Number" value="{{system.light.radius}}" />
-                  <label for="system.light.radius">{{localize "AMBIENT_LIGHT.LABELS.radius"}}</label>
+                  <label for="system.light.radius">{{localize "FADE.Item.light.radius"}}</label>
                </li>
                <li class="flex2">
                   <select name="system.light.type">
-                     {{selectOptions lightTypes selected=system.light.type valueAttr="value" labelAttr="text"}}
+                     {{selectOptions lightTypes selected=system.light.type}}
                   </select>
                   <label for="system.light.type">{{localize "FADE.Item.light.typeLabel"}}</label>
                </li>

@@ -1,7 +1,7 @@
 {{#if enableEditAction}}
 <div class="combatant-declarations">
 	<select id="combatantDeclaration" class="sidebar-select" {{disabled disableEditAction}} title={{localize (concat 'FADE.combat.maneuvers.' combatant.actor.system.combat.declaredAction '.description')}}>
-		{{selectOptions availableActions selected=combatant.actor.system.combat.declaredAction valueAttr="value" labelAttr="text"}}
+		{{selectOptions availableActions selected=combatant.actor.system.combat.declaredAction nameAttr="value" labelAttr="text"}}
 	</select>
 </div>
 {{else}}

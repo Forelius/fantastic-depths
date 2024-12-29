@@ -137,7 +137,7 @@ export class ChatBuilder {
       const chatMessageData = {
          ...obj,
          author: game.user.id,
-         type: obj.type ?? CONST.CHAT_MESSAGE_STYLES.OTHER,
+         type: obj.type ?? (CONST.CHAT_MESSAGE_STYLES?.OTHER ?? CONST.CHAT_MESSAGE_TYPES.OTHER),
       };
 
       const { roll } = this.data;

@@ -52,10 +52,10 @@ export class ActorMasterySheet extends ItemSheet {
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
       }));
-      context.weaponTypes = types;
+      context.weaponTypes = types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       context.masteryLevels = [...CONFIG.FADE.MasteryLevels.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Mastery.levels.${key}`) }
-      })];
+      })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }

@@ -16,8 +16,14 @@ export class fadeDialog {
 
       dialogData.weapon = weaponData;
       dialogData.label = weapon.name;
-      dialogData.modes = weapon.getAttackModes();
-      dialogData.types = weapon.getAttackTypes();
+      dialogData.modes = weapon.getAttackModes().reduce((acc, item) => {
+         acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
+         return acc;
+      }, {});
+      dialogData.types = weapon.getAttackTypes().reduce((acc, item) => {
+         acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
+         return acc;
+      }, {});
       // Get the available target types.
       dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes(weaponData, caller);
       // Determines which target weapon type to pick by default.
@@ -93,9 +99,10 @@ export class fadeDialog {
          const attackerMastery = caller.items.find((item) => item.type === 'mastery' && item.name === weaponData?.mastery);
          // If the attacker is a monster, weaponData indicates a spell is being cast or the attacker has a mastery for the weapon being used...
          if (caller.type === "monster" || weaponData === "spell" || attackerMastery) {
-            result = [];
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'), value: 'monster' });
-            result.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
+            result = {
+               monster: game.i18n.localize('FADE.Mastery.weaponTypes.monster.long'),
+               handheld: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long')
+            };
          }
       }
       return result;
@@ -170,7 +177,10 @@ export class fadeDialog {
       const template = 'systems/fantastic-depths/templates/dialog/lightmgr.hbs';
 
       dialogData.label = dataset.label;
-      dialogData.lightItems = opt.lightItems;
+      dialogData.lightItems = opt.lightItems.reduce((acc, item) => {
+         acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
+         return acc;
+      }, {});;
 
       dialogResp.resp = await Dialog.wait({
          title: "Light Manager",
@@ -211,12 +221,16 @@ export class fadeDialog {
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
          const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped));
 
+
          if (!attackItems || attackItems.length == 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.weapon') }));
          } else if (equippedOnly && attackItems.length === 0) {
             ui.notifications.warn(game.i18n.localize('FADE.dialog.noEquippedWeapons'));
          } else {
-            dialogData.attackItems = attackItems;
+            dialogData.attackItems = attackItems.reduce((acc, item) => {
+               acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
+               return acc;
+            }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
             result.resp = await Dialog.wait({
                title: dialogData.label,
@@ -262,7 +276,10 @@ export class fadeDialog {
          if (!spellItems || spellItems.length == 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.spell') }));
          } else {
-            dialogData.spellItems = spellItems;
+            dialogData.spellItems = spellItems.reduce((acc, item) => {
+               acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
+               return acc;
+            }, {});;
             await Dialog.wait({
                title: dialogData.label,
                content: await renderTemplate(template, dialogData),

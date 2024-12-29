@@ -11,7 +11,7 @@
             </li>
             <li class="flex1">
                <select name="system.level">
-                  {{selectOptions masteryLevels selected=system.level valueAttr="value" labelAttr="text"}}
+                  {{selectOptions masteryLevels selected=system.level}}
                </select>
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>
@@ -19,7 +19,7 @@
          <ul class="summary flexrow">
             <li class="flex2">
                <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}"  {{#unless isGM}} readonly{{/unless}}>
-                  {{selectOptions weaponTypes selected=system.primaryType valueAttr="value" labelAttr="text"}}
+                  {{selectOptions weaponTypes selected=system.primaryType}}
                </select>
                <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>
             </li>
@@ -29,7 +29,7 @@
             </li>
             <li class="flex2">
                <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
-                  {{selectOptions weaponTypes selected=system.acBonusType valueAttr="value" labelAttr="text"}}
+                  {{selectOptions weaponTypes selected=system.acBonusType}}
                </select>
                <label for="system.acBonusType">{{localize 'Type'}}</label>
             </li>

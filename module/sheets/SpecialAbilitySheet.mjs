@@ -59,19 +59,19 @@ export class SpecialAbilitySheet extends ItemSheet {
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       // Damage types
-      const dmgTypes = []
-      dmgTypes.push({ value: "", text: game.i18n.localize('None') });
-      dmgTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
+      const damageTypes = []
+      damageTypes.push({ value: "", text: game.i18n.localize('None') });
+      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
       }));
-      context.damageTypes = dmgTypes;
+      context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Saving throws
       const saves = [];
       saves.push({ value: "", text: game.i18n.localize('None') });
       saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
          return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
       }));
-      context.savingThrows = saves;
+      context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
          acc[key] = game.i18n.localize(value);
@@ -83,11 +83,12 @@ export class SpecialAbilitySheet extends ItemSheet {
          return acc;
       }, {});
       // Ability score types
-      context.abilities = [];
-      context.abilities.push({ value: "", text: game.i18n.localize('None') });
-      context.abilities.push(...CONFIG.FADE.Abilities.map((key) => {
+      let abilities = [];
+      abilities.push({ value: "", text: game.i18n.localize('None') });
+      abilities.push(...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       }));
+      context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }

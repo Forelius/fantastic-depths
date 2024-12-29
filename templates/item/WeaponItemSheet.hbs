@@ -26,13 +26,13 @@
             </li>
             <li class="flex2">
                <select name="system.damageType">
-                  {{selectOptions damageTypes selected=system.damageType valueAttr="value" labelAttr="text"}}
+                  {{selectOptions damageTypes selected=system.damageType}}
                </select>
                <label for="system.damageType">{{localize 'FADE.Weapon.damage.type'}}</label>
             </li>
             <li class="flex2">
                <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
-                  {{selectOptions weaponTypes selected=system.weaponType valueAttr="value" labelAttr="text"}}
+                  {{selectOptions weaponTypes selected=system.weaponType}}
                </select>
                <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
             </li>

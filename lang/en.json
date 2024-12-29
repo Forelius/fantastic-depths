@@ -298,6 +298,7 @@
             "long": "Cost (gp)"
          },
          "light": {
+            "radius":  "Radius",
             "typeLabel": "Light Type",
             "fuelType": "Fuel Type",
             "durationHint": "How long the light source lasts before expiring.",
@@ -561,6 +562,7 @@
          "types": {
             "melee": "Melee",
             "missile": "Missile",
+            "breath": "Breath",
             "save": "Saving Throw"
          }
       },

@@ -3,14 +3,14 @@
    <div class="form-group">
       <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
       <select id="attackType" class="form-control">
-         {{selectOptions types selected='melee' valueAttr="value" labelAttr="text"}}
+         {{selectOptions types selected='melee'}}
       </select>
    </div>
    {{#if targetWeaponTypes}}
    <div class="form-group">
       <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
       <select id="targetWeaponType" class="form-control">
-         {{selectOptions targetWeaponTypes selected=selectedWeaponType valueAttr="value" labelAttr="text"}}
+         {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
       </select>
    </div>
    {{/if}}
@@ -18,7 +18,7 @@
    <div class="form-group">
       <label for="attackMode">{{localize 'FADE.dialog.attackMode.name'}}</label>
       <select id="attackMode" class="form-control">
-         {{selectOptions modes selected='1hand' valueAttr="value" labelAttr="text"}}
+         {{selectOptions modes selected='1hand'}}
       </select>
    </div>
    {{/if}}

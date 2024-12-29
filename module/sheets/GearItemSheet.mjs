@@ -62,7 +62,7 @@ export class GearItemSheet extends ItemSheet {
       lightTypes.push(...CONFIG.FADE.LightTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Item.light.lightTypes.${type}`) }
       }));
-      context.lightTypes = lightTypes;
+      context.lightTypes = lightTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }
