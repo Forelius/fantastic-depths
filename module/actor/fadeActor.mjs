@@ -21,10 +21,10 @@ export class fadeActor extends Actor {
       if (game.user.isGM) {
          if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
             this.update({ "system.combat.isDead": true });
-            this.toggleStatusEffect("dead", { active: true, overlay: true });
+            this.toggleStatusEffect && this.toggleStatusEffect("dead", { active: true, overlay: true });
          } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
             this.update({ "system.combat.isDead": false });
-            this.toggleStatusEffect("dead", { active: false });
+            this.toggleStatusEffect && this.toggleStatusEffect("dead", { active: false });
          }
       }
    }
@@ -232,14 +232,14 @@ export class fadeActor extends Actor {
                   "system.combat.isDead": true
                });
             }
-            await this.toggleStatusEffect("dead", { active: true, overlay: true });
+            this.toggleStatusEffect && await this.toggleStatusEffect("dead", { active: true, overlay: true });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
          }
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
             this.update({ "system.combat.isDead": false });
-            await this.toggleStatusEffect("dead", { active: false });
+            this.toggleStatusEffect && await this.toggleStatusEffect("dead", { active: false });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
          }
       }
