@@ -340,33 +340,41 @@ export class fadeActorSheet extends ActorSheet {
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
       const droppedItem = await Item.implementation.fromDropData(data);
-
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'weaponMastery') {
          //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
          const actorMastery = droppedItem.createActorWeaponMastery(this.actor);
       }
       // If the drop target is a container...
-      else if (targetIsContainer) {
-         const itemData = droppedItem.toObject();
-         if (droppedItem.actor == null) {
-            const newItem = await this._onDropItemCreate(itemData, event);
-            newItem[0].update({ "system.containerId": targetId });
-         } else if (droppedItem.actor.id != this.actor.id) {
-            const newItem = await this._onDropItemCreate(itemData, event);
-            newItem[0].update({ "system.containerId": targetId });
-         } else {
-            droppedItem.update({ "system.containerId": targetId });
+      else if (droppedItem.type === "item") {
+         if (targetIsContainer) {
+            const itemData = droppedItem.toObject();
+            if (droppedItem.actor == null) {
+               const newItem = await this._onDropItemCreate(itemData, event);
+               newItem[0].update({ "system.containerId": targetId });
+            } else if (droppedItem.actor.id != this.actor.id) {
+               const newItem = await this._onDropItemCreate(itemData, event);
+               newItem[0].update({ "system.containerId": targetId });
+            } else {
+               droppedItem.update({ "system.containerId": targetId });
+            }
          }
-      }
-      // The drop target is not a container
-      else {
-         // If the dropped item is owned by an actor already...
-         if (droppedItem.actor !== null) {
-            // Remove the item from any container
-            droppedItem.update({ "system.containerId": null });
+         // The drop target is not a container
+         else {
+            // If the dropped item is owned by an actor already...
+            if (droppedItem.actor !== null) {
+               // Remove the item from any container
+               droppedItem.update({ "system.containerId": null });
+            }
+            super._onDropItem(event, data);
          }
-         return super._onDropItem(event, data);
+      } else if (droppedItem.type !== "class") {
+         super._onDropItem(event, data);
+      } else {
+         this.actor.update({ "system.details.class": droppedItem.name });
+         if (this.actor.system.details.level === 0) {
+            this.actor.update({ "system.details.level": 1 });            
+         }
       }
    }
 
