@@ -83,6 +83,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             attacksAgainst: new fields.NumberField({ initial: 0 }),
             deathCount: new fields.NumberField({ initial: 0 }),
             isDead: new fields.BooleanField({ initial: false }),
+            declaredAction: new fields.StringField({ initial: "attack" }),
          }),
          gm: new fields.SchemaField({
             notes: new fields.StringField({ initial: "" }),
@@ -154,7 +155,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       ac.nakedAAC = 19 - baseAC;
       ac.naked = baseAC;
       // AC value is used for wrestling rating and should not include Dexterity bonus.
-      ac.value = CONFIG.FADE.Armor.acNaked; 
+      ac.value = CONFIG.FADE.Armor.acNaked;
       ac.total = baseAC;
       ac.mod = 0;
       ac.shield = 0;
@@ -181,7 +182,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          ac.mod += this.equippedArmor.system.mod ?? 0;
          ac.total = this.equippedArmor.system.totalAC;
          // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total -= dexMod; 
+         ac.total -= dexMod;
          acDigest.push(`Equipped armor ${this.equippedArmor.name}: ${this.equippedArmor.system.totalAC}`);
       }
 

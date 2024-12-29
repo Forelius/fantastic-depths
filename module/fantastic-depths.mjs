@@ -97,7 +97,7 @@ Hooks.once('init', async function () {
       weaponMastery: MasteryDefinitionItemDataModel,
       specialAbility: SpecialAbilityDataModel
    }
-   CONFIG.Combatant.documentClass = fadeCombatant;
+   //CONFIG.Combatant.documentClass = fadeCombatant;
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item

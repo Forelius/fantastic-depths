@@ -21,10 +21,11 @@ export class fadeCombat extends Combat {
          .map(([key, value]) => ({
             text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
             value: key,
-            title: game.i18n.localize(`FADE.combat.maneuvers.${key}.description`),
-            phase: value.phase
+            //   title: game.i18n.localize(`FADE.combat.maneuvers.${key}.description`),
+            //   phase: value.phase
          }))
-         .sort((a, b) => a.text.localeCompare(b.text)); // Sort by the `text` property
+         .sort((a, b) => a.text.localeCompare(b.text))
+         .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {}); // Sort by the `text` property
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases);
    }
 
