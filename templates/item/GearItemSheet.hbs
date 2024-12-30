@@ -23,15 +23,14 @@
          </ul>
       </div>
    </header>
-   <div>
-      {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
-   </div>
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
+      {{#if isGM}}
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+      {{/if}}
       <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
       {{#if isGM}}
       <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
-      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
       <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
       {{/if}}
    </nav>
@@ -50,6 +49,9 @@
       </div>
       {{! Attributes Tab }}
       <div class='tab' data-group='primary' data-tab='attributes'>
+         <div>
+            {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+         </div>
          <section class="bordered">
             <ul class="summary flexrow">
                <li class="flex1">

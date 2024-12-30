@@ -38,28 +38,24 @@
             </li>
          </ul>
       </div>
-   </header>
-   {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+   </header>   
    {{! Sheet Tab Navigation }}
-   <nav class='sheet-tabs tabs' data-group='primary'>
-      {{#if showAttributes}}
-      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
-      {{/if}}
-      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
-      {{#if isGM}}
-      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
-      <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
-      {{/if}}
-   </nav>
+<nav class='sheet-tabs tabs' data-group='primary'>
+   <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+   <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
+   {{#if isGM}}
+   <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
+   <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
+   {{/if}}
+</nav>
 
    {{! Sheet Body }}
    <section class='sheet-body'>
       {{! attributes Tab }}
-      {{#if showAttributes}}
       <div class='tab' data-group='primary' data-tab='attributes'>
+         {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
          {{> "systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs"}}
       </div>
-      {{/if}}
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}

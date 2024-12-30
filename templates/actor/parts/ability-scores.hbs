@@ -1,0 +1,19 @@
+<section class="bordered ability-scores">
+   {{#each system.abilities as |ability key|}}
+   <div class="ability flexrow flex-group-left">
+      <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+      <label for="system.abilities.{{key}}.value" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
+             data-ability="{{key}}"
+             data-test="ability"
+             data-pass="lte"
+             data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
+         {{#if @root.abilityAbbr}}
+         {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
+         {{else}}
+         {{localize (concat 'FADE.Actor.Abilities.' key '.long')}}
+         {{/if}}
+      </label>
+      <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+   </div>
+   {{/each}}
+</section>

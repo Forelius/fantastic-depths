@@ -1,0 +1,22 @@
+<div class="bordered text-center">
+   <!-- Movement -->
+   <h4>{{localize 'FADE.Actor.Movement.long'}}</h4>
+   <div class="grid grid-4col label-12px">
+      <div>
+         <label for="system.movement.turn" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
+         <input name="system.movement.turn" type="text" data-dtype="Number" value="{{system.movement.turn}}" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
+      </div>
+      <div>
+         <label for="system.movement.round" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
+         <input name="system.movement.round" type="text" data-dtype="Number" readonly value="{{system.movement.round}}" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
+      </div>
+      <div>
+         <label for="system.movement.day" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
+         <input name="system.movement.day" type="text" data-dtype="Number" readonly value="{{system.movement.day}}" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
+      </div>
+      <div>
+         <label for="system.movement.run" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
+         <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}" />
+      </div>
+   </div>
+</div>

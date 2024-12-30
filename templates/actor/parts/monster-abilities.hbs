@@ -1,60 +1,8 @@
 <section class="flexrow">
    <section class="flex1" style="max-width: 180px;">
-      <div class="bordered resources">
-         <div class="flexrow">
-            <!-- Hit Points -->
-            <div class="hit-points">
-               <input name="system.hp.value" class="hp-value hp-top" type="text" value="{{system.hp.value}}" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.HealthShort'}}" />
-               <input name="system.hp.max" class="hp-value hp-bottom" type="text" value="{{system.hp.max}}" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.HealthMaxMonster'}}" />
-               <div class="hp-empty" style="height:{{counter false system.hp.value system.hp.max}}%"></div>
-               <div class="hp-full" style="height:{{counter true system.hp.value system.hp.max}}%"></div>
-            </div>
-            <!-- Armor Class -->
-            <div class="armor-class">
-               <label class="ac-value ac-top" data-tooltip="{{#if isAAC}}{{localize 'FADE.Armor.longAAC'}}{{else}}{{localize 'FADE.Armor.long'}}{{/if}}">
-                  {{#if isAAC}}
-                  {{system.ac.totalAAC}}
-                  {{else}}
-                  {{system.ac.total}}
-                  {{/if}}
-               </label>
-               <div class="ac-value ac-bottom" data-tooltip="{{localize 'FADE.Armor.naked'}}">
-                  {{#if isAAC}}
-                  {{system.ac.nakedAAC}}
-                  {{else}}
-                  {{system.ac.naked}}
-                  {{/if}}
-               </div>
-               {{#if system.ac.shield}}
-               <div class="shield" data-tooltip="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
-               {{/if}}
-            </div>
-         </div>
-      </div>
+      {{> "systems/fantastic-depths/templates/actor/parts/hp-ac.hbs"}}
       <section class="flexrow">
-         <div class="bordered">
-            <!-- Saving Throws -->
-            <div class="saving-throws">
-               <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
-               {{#each system.savingThrows as |savingThrow key|}}
-               <div class="flexrow flex-group-center">
-                  <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-                  <label for="system.savingThrows.{{key}}.value" class="rollable{{#if @root.saveAbbr}} abbr{{else}} long{{/if}}"
-                         data-test="generic"
-                         data-formula="d20"
-                         data-pass="gte"
-                         data-target="{{savingThrow.value}}"
-                         data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
-                     {{#if @root.saveAbbr}}
-                     {{localize (concat 'FADE.Actor.Saves.' key '.abbr')}}
-                     {{else}}
-                     {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
-                     {{/if}}
-                  </label>
-               </div>
-               {{/each}}
-            </div>
-         </div>
+         {{> "systems/fantastic-depths/templates/actor/parts/saving-throws.hbs"}}
       </section>
       <section class="flexrow">
          <div class="bordered text-center flex1">
@@ -74,50 +22,8 @@
    </section>
    <section class="flex2">
       <div class="flexrow">
-         <div class="bordered text-center">
-            <!-- Movement -->
-            <h4>{{localize 'FADE.Actor.Movement.long'}}</h4>
-            <div class="grid grid-4col label-12px">
-               <div>
-                  <label for="system.movement.turn" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
-                  <input name="system.movement.turn" type="text" data-dtype="Number" value="{{system.movement.turn}}" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
-               </div>
-               <div>
-                  <label for="system.movement.round" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
-                  <input name="system.movement.round" type="text" data-dtype="Number" readonly value="{{system.movement.round}}" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
-               </div>
-               <div>
-                  <label for="system.movement.day" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
-                  <input name="system.movement.day" type="text" data-dtype="Number" readonly value="{{system.movement.day}}" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
-               </div>
-               <div>
-                  <label for="system.movement.run" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
-                  <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}" />
-               </div>
-            </div>
-         </div>
-         <div class="bordered text-center">
-            <!--Flight-->
-            <h4>{{localize 'FADE.Actor.Flight.long'}}</h4>
-            <div class="grid grid-4col label-12px">
-               <div>
-                  <label for="system.flight.turn" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
-                  <input name="system.flight.turn" type="text" data-dtype="Number" value="{{system.flight.turn}}" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
-               </div>
-               <div>
-                  <label for="system.flight.round" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
-                  <input name="system.flight.round" type="text" data-dtype="Number" readonly value="{{system.flight.round}}" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
-               </div>
-               <div>
-                  <label for="system.flight.day" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
-                  <input name="system.flight.day" type="text" data-dtype="Number" readonly value="{{system.flight.day}}" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
-               </div>
-               <div>
-                  <label for="system.flight.run" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
-                  <input name="system.flight.run" type="text" data-dtype="Number" readonly value="{{system.flight.run}}" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}" />
-               </div>
-            </div>
-         </div>
+         {{> "systems/fantastic-depths/templates/actor/parts/movement.hbs"}}
+         {{> "systems/fantastic-depths/templates/actor/parts/flight.hbs"}}
       </div>
       <div class="bordered">
          {{> "systems/fantastic-depths/templates/item/parts/item-weapons.hbs"}}

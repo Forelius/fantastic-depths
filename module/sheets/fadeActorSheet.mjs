@@ -9,8 +9,10 @@ import { fadeItem } from '../item/fadeItem.mjs';
 export class fadeActorSheet extends ActorSheet {
    /** @override */
    static get defaultOptions() {
+      const path = 'systems/fantastic-depths/templates/actor';
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'actor'],
+         template: `${path}/CharacterSheet.hbs`,
          width: 650,
          height: 540,
          tabs: [
@@ -26,24 +28,14 @@ export class fadeActorSheet extends ActorSheet {
    /** @override */
    async render(force, options = {}) {
       // Adjust options before rendering based on item type
-      if (this.actor.type === 'character') {
-         options.width = 600;
-         options.height = 540;
-      } else if (this.actor.type === "monster") {
-         options.width = 670;
-         options.height = 540;
-      }
+      options.width = 600;
+      options.height = 540;
 
       // Call the original render method with modified options
       await super.render(force, options);
 
       // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
       setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
-   }
-
-   /** @override */
-   get template() {
-      return `systems/fantastic-depths/templates/actor/${this.actor.type}-sheet.hbs`;
    }
 
    /* -------------------------------------------- */
@@ -373,7 +365,7 @@ export class fadeActorSheet extends ActorSheet {
       } else {
          this.actor.update({ "system.details.class": droppedItem.name });
          if (this.actor.system.details.level === 0) {
-            this.actor.update({ "system.details.level": 1 });            
+            this.actor.update({ "system.details.level": 1 });
          }
       }
    }

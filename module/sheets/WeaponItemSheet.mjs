@@ -58,7 +58,7 @@ export class WeaponItemSheet extends ItemSheet {
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
-      context.showAttributes = this.item.system.canRanged || game.user.isGM;
+      //context.showAttributes = this.item.system.canRanged || game.user.isGM;
 
       // Weapon types
       let weaponTypes = null;

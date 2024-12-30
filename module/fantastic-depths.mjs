@@ -8,6 +8,8 @@ import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
 import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
+import { CharacterSheet } from './sheets/CharacterSheet.mjs';
+import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
 import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
@@ -115,9 +117,15 @@ Hooks.once('init', async function () {
 function registerSheets() {
    // Register sheet application classes
    Actors.unregisterSheet('core', ActorSheet);
-   Actors.registerSheet('fantastic-depths', fadeActorSheet, {
-      makeDefault: true,
-      label: 'FADE.SheetLabel.Actor',
+   Actors.registerSheet('fantastic-depths', CharacterSheet, {
+      label: 'FADE.SheetLabel.Character',
+      types: ['character'],
+      makeDefault: true
+   });
+   Actors.registerSheet('fantastic-depths', MonsterSheet, {
+      label: 'FADE.SheetLabel.Monster',
+      types: ['monster'],
+      makeDefault: true
    });
    Items.unregisterSheet('core', ItemSheet);
    Items.registerSheet('fantastic-depths', GearItemSheet, {

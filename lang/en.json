@@ -240,7 +240,9 @@
          }
       },
       "SheetLabel": {
-         "Actor": "FaDe Actor Sheet",
+         "Character": "Character Sheet (DD)",
+         "Character2": "Character Sheet (Alternate)",
+         "Monster": "Monster Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
          "ClassItem": "Class Item Sheet",

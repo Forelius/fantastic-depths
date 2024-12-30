@@ -1,0 +1,32 @@
+<div class="bordered resources">
+   <div class="flexrow">
+      <!-- Hit Points -->
+      <div class="hit-points">
+         <input name="system.hp.value" class="hp-value hp-top" type="text" value="{{system.hp.value}}" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.HealthShort'}}" />
+         <input name="system.hp.max" class="hp-value hp-bottom" type="text" value="{{system.hp.max}}" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.HealthMax'}}" />
+         <!--<label>{{localize 'FADE.Actor.HealthShort'}}</label>-->
+         <div class="hp-empty" style="height:{{counter false system.hp.value system.hp.max}}%"></div>
+         <div class="hp-full" style="height:{{counter true system.hp.value system.hp.max}}%"></div>
+      </div>
+      <!-- Armor Class -->
+      <div class="armor-class">
+         <label class="ac-value ac-top" data-tooltip="{{#if isAAC}}{{localize 'FADE.Armor.totalAAC'}}{{else}}{{localize 'FADE.Armor.total'}}{{/if}}">
+            {{#if isAAC}}
+            {{system.ac.totalAAC}}
+            {{else}}
+            {{system.ac.total}}
+            {{/if}}
+         </label>
+         <div class="ac-value ac-bottom" data-tooltip="{{localize 'FADE.Armor.naked'}}">
+            {{#if isAAC}}
+            {{system.ac.nakedAAC}}
+            {{else}}
+            {{system.ac.naked}}
+            {{/if}}
+         </div>
+         {{#if system.ac.shield}}
+         <div class="shield" data-tooltip="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
+         {{/if}}
+      </div>
+   </div>
+</div>

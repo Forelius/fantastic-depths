@@ -142,7 +142,7 @@ export class CharacterDataModel extends fadeActorDataModel {
          if (nextLevelData) {
             this.details.xp.next = nextLevelData.xp;
          }
-         this.details.species = classData.species;
+         this.details.species = this.details.species == "" || this.details.species == null ? classData.species : this.details.species;
          this.config.maxSpellLevel = classData.maxSpellLevel;
 
          // Spells

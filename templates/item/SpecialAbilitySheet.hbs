@@ -42,6 +42,26 @@
                <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
             </li>
          </ul>
+
+      </div>
+   </header>
+   {{! Sheet Tab Navigation }}
+   <nav class='sheet-tabs tabs' data-group='primary'>
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
+   </nav>
+
+   {{! Sheet Body }}
+   <section class='sheet-body'>
+      {{! Description Tab }}
+      <div class='tab' data-group='primary' data-tab='description'>
+         {{! Editors must receive enriched text data from getData to properly handle rolls }}
+         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+      </div>
+      {{! Attributes Tab }}
+   <div class='tab' data-group='primary' data-tab='attributes'>
+      {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+      <section class="bordered">
          <ul class="summary flexrow" style="min-height:26px;">
             <li class="flex1">
                <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
@@ -66,20 +86,8 @@
                <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
             </li>
          </ul>
-      </div>
-   </header>
-   {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
-   {{! Sheet Tab Navigation }}
-   <nav class='sheet-tabs tabs' data-group='primary'>
-      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
-   </nav>
+      </section>
+   </div>
 
-   {{! Sheet Body }}
-   <section class='sheet-body'>
-      {{! Description Tab }}
-      <div class='tab' data-group='primary' data-tab='description'>
-         {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
-      </div>
    </section>
 </form>
