@@ -41,6 +41,7 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          minInt: new fields.NumberField({ required: false, nullable: true }),
          minDex: new fields.NumberField({ required: false, nullable: true }),
          minWis: new fields.NumberField({ required: false, nullable: true }),
+         description: new fields.StringField({ required: false, initial: "" }),
 
          primeReqs: new fields.ArrayField(
             new fields.SchemaField({
@@ -54,7 +55,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             }
          ),
 
-         //levels: new fields.ArrayField(new fields.ObjectField(), { required: true }),
          levels: new fields.ArrayField(
             new fields.SchemaField({
                level: new fields.NumberField({ required: true }),

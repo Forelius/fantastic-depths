@@ -32,7 +32,7 @@ export class ClassItemSheet extends ItemSheet {
    }
 
    /** @override */
-   getData() {
+   async getData() {
       // Retrieve base data structure
       const context = super.getData();
       const itemData = context.data;
@@ -52,6 +52,22 @@ export class ClassItemSheet extends ItemSheet {
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      // Enrich description info for display
+      // Enrichment turns text like `[[/r 1d20]]` into buttons
+      context.enrichedDescription = await TextEditor.enrichHTML(
+         this.item.system.description,
+         {
+            // Whether to show secret blocks in the finished html
+            secrets: this.document.isOwner,
+            // Necessary in v11, can be removed in v12
+            async: true,
+            // Data to fill in for inline rolls
+            rollData: this.item.getRollData(),
+            // Relative UUID resolution
+            relativeTo: this.item,
+         }
+      );
 
       return context;
    }
