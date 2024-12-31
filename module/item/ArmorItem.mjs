@@ -8,7 +8,6 @@ export class ArmorItem extends fadeItem {
 
    /** @override */
    prepareBaseData() {
-      this.system.totalAC = 0;
       super.prepareBaseData();
       this.prepareEffects();
    }
@@ -19,6 +18,7 @@ export class ArmorItem extends fadeItem {
    }
 
    prepareEffects() {
+      this.system.totalAC = 0;
       this._processNonTransferActiveEffects();
       const data = this.system;
       // If this is a shield item...

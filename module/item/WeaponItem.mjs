@@ -11,7 +11,7 @@ export class WeaponItem extends fadeItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      this._processNonTransferActiveEffects();
+      this._prepareEffects();
    }
 
    /** @override */
@@ -265,6 +265,15 @@ export class WeaponItem extends fadeItem {
       }
       systemData.mod.toHitText = toHitText;
       systemData.mod.dmgText = dmgText;
+   }
+
+   _prepareEffects() {
+      // Reset mod values.
+      this.system.mod.dmg = 0;
+      this.system.mod.toHit = 0;
+      this.system.mod.dmgRanged = 0;
+      this.system.mod.toHitRanged = 0;
+      this._processNonTransferActiveEffects();
    }
 
     async _prepareDamageRollLabel() {

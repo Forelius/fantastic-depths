@@ -26,12 +26,6 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          container: new fields.BooleanField({ required: false, initial: false }),
          equippable: new fields.BooleanField({ required: false, initial: false }),
          light: new fields.ObjectField({ required: false, initial: undefined, readonly: false }),
-         //light: new fields.SchemaField({
-         //   duration: new fields.NumberField({ required: false, initial: 6 }),
-         //   radius: new fields.NumberField({ required: false, initial: 30 }),
-         //   type: new fields.StringField({ required: false, initial: "" }),
-         //   fuel: new fields.StringField({ required: false, initial: "" }),
-         //}),
       };
    }
 
