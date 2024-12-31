@@ -15,6 +15,10 @@ Compendiums are available as a separate module: https://github.com/Forelius/fade
 
 Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 
+**Thanks to the testers:** Hal²O, Darvus Maximus, brealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).
+
+---
+
 ## Character Sheet
 The character sheet can handle any of the core classes and levels up to 24. Monsters and retainers are also supported. Core classes are recognized when entered into the class field, and this will result in the auto-population of various class-related inputs. All auto-populated class-related values can be overwritten if desired.
 ![character](./assets/img/docs/charsheet1.jpg)
