@@ -15,7 +15,7 @@ Compendiums are available as a separate module: https://github.com/Forelius/fade
 
 Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 
-**Thanks to the testers:** Hal²O, Darvus Maximus, brealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).
+**Thanks to the testers:** Hal²O, Darvus Maximus, borealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).
 
 ---
 
