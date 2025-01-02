@@ -3,7 +3,7 @@
    <div class="saving-throws">
       <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
       {{#each system.savingThrows as |savingThrow key|}}
-      <div class="flexrow flex-group-center">
+      <div class="flexrow tall-row flex-group-center">
          <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
          <label for="system.savingThrows.{{key}}.value" class="rollable{{#if @root.saveAbbr}} abbr{{else}} long{{/if}}"
                 data-test="generic"

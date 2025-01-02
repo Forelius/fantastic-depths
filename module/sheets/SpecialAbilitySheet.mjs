@@ -89,6 +89,13 @@ export class SpecialAbilitySheet extends ItemSheet {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       }));
       context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      // Categories
+      const categories = []
+      categories.push({ value: "", text: game.i18n.localize('None') });
+      categories.push(...CONFIG.FADE.SpecialAbilityCategories.map((type) => {
+         return { value: type, text: game.i18n.localize(`FADE.SpecialAbility.categories.${type}`) }
+      }));
+      context.categories = categories.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});;
 
       return context;
    }

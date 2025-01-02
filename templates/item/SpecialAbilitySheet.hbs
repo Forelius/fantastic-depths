@@ -42,7 +42,6 @@
                <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
             </li>
          </ul>
-
       </div>
    </header>
    {{! Sheet Tab Navigation }}
@@ -84,6 +83,14 @@
                   {{selectOptions damageTypes selected=system.damageType}}
                </select>
                <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+            </li>
+         </ul>
+         <ul class="summary flexrow">
+            <li>
+               <select name="system.category">
+                  {{selectOptions categories selected=system.category}}
+               </select>
+               <label for="system.category">{{localize 'FADE.category'}}</label>
             </li>
          </ul>
       </section>

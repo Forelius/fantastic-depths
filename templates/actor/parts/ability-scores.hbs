@@ -1,8 +1,8 @@
 <section class="bordered ability-scores">
    {{#each system.abilities as |ability key|}}
-   <div class="ability flexrow flex-group-left">
+   <div class="ability ability-vert flexrow flex-group-left">
       <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-      <label for="system.abilities.{{key}}.value" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
+      <label for="system.abilities.{{key}}.value" style="margin: 0 4px;" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
              data-ability="{{key}}"
              data-test="ability"
              data-pass="lte"

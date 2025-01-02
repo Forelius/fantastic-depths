@@ -6,50 +6,71 @@
 
    .ability-scores {
       max-width: 200px;
+   }
 
-      .ability {
-         min-height: 34px;
-         border-bottom-style: solid;
-         border-bottom-width: 1px;
+   .ability-vert {
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
 
-         label {
-            font-weight: 500;
-            margin: 0 4px;
-         }
-
-         .abbr {
-            font-size: 20px;
-            min-width: 60px;
-            max-width: 80px;
-            text-align: center;
-         }
-
-         .long {
-            font-size: 15px;
-            min-width: 80px;
-            max-width: 80px;
-            text-align: left;
-         }
-
-         input {
-            font-size: 24px;
-            max-width: 40px;
-            border-radius: 15px;
-            margin-right: 4px;
-            padding-top: 0;
-            min-height: 32px;
-            text-align: center;
-         }
-
-         .ability-mod {
-            max-width: 36px;
-            font-size: 18px;
-            margin-left: 6px;
-         }
+      input {
+         margin-right: 4px;
       }
 
-      .ability:last-child {
-         border-bottom: none;
+      .ability-mod {
+         margin-left: 6px;
+      }
+   }
+
+   .ability-vert:last-child {
+      border-bottom: none;
+   }
+
+   .ability-horz {
+      border-right-style: solid;
+      border-right-width: 1px;
+
+      input {
+         margin-right: 4px;
+      }
+   }
+
+   .ability-horz:last-child {
+      border-right: none;
+   }
+
+   .ability {
+      min-height: 34px;
+
+      label {
+         font-weight: 500;
+      }
+
+      .abbr {
+         font-size: 20px;
+         min-width: 60px;
+         max-width: 80px;
+         text-align: center;
+      }
+
+      .long {
+         font-size: 15px;
+         min-width: 80px;
+         max-width: 80px;
+         text-align: left;
+      }
+
+      input {
+         font-size: 24px;
+         max-width: 40px;
+         border-radius: 15px;
+         padding-top: 0;
+         min-height: 32px;
+         text-align: center;
+      }
+
+      .ability-mod {
+         max-width: 36px;
+         font-size: 18px;
       }
    }
 
@@ -69,8 +90,12 @@
    }
 
    .saving-throws {
-      .flexrow {
+      .tall-row {
          min-height: 36px;
+      }
+
+      .small-row {
+         min-height: 30px;
       }
 
       input {
@@ -88,7 +113,7 @@
       }
 
       .abbr {
-         margin-left:8px;
+         margin-left: 8px;
          font-size: 20px;
       }
 

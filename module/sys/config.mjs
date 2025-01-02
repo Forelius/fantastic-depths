@@ -57,6 +57,10 @@ FADE.LightTypes = [
    "magic",
    "custom"
 ];
+FADE.SpecialAbilityCategories = [
+   "explore",
+   "class"
+];
 FADE.Armor = {
    acNaked: 9
 }

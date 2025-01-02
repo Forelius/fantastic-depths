@@ -25,7 +25,8 @@ export class SpecialAbilityDataModel extends fadeItemDataModel {
          // Fields specific to the "specialAbility" template
          dmgFormula: new fields.StringField({ nullable: true, initial: null }),
          healFormula: new fields.StringField({ nullable: true, initial: null }),
-         damageType: new fields.StringField({ required: false, initial: "" })
+         damageType: new fields.StringField({ required: false, initial: "" }),
+         category: new fields.StringField({ required: false, initial: "" }),
       };
    }
 

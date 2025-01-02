@@ -37,5 +37,6 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/item/parts/class-saves.hbs',
       'systems/fantastic-depths/templates/item/parts/class-primereqs.hbs',
       'systems/fantastic-depths/templates/item/parts/class-spells.hbs',
+      'systems/fantastic-depths/templates/item/parts/item-exploration.hbs'
    ]);
 };

@@ -7,8 +7,8 @@ import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
-import { fadeActorSheet } from './sheets/fadeActorSheet.mjs';
 import { CharacterSheet } from './sheets/CharacterSheet.mjs';
+import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
@@ -122,6 +122,11 @@ function registerSheets() {
       types: ['character'],
       makeDefault: true
    });
+   Actors.registerSheet('fantastic-depths', CharacterSheet2, {
+      label: 'FADE.SheetLabel.Character2',
+      types: ['character'],
+      makeDefault: false
+   });
    Actors.registerSheet('fantastic-depths', MonsterSheet, {
       label: 'FADE.SheetLabel.Monster',
       types: ['monster'],
@@ -159,7 +164,7 @@ function registerSheets() {
       makeDefault: true
    });
    Items.registerSheet('fantastic-depths', SpecialAbilitySheet, {
-      label: 'FADE.SheetLabel.SpecialAbility',
+      label: 'FADE.SheetLabel.SpecialAbilityItem',
       types: ['specialAbility'],
       makeDefault: true
    });

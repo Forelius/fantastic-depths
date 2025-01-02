@@ -1,7 +1,92 @@
 <form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
 
    <header class="sheet-header">
-      {{> "systems/fantastic-depths/templates/actor/parts/character-header.hbs"}}
+      {{!-- Sheet Header --}}
+      <img class="profile-img" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}" height="100" width="100" />
+      <div class="header-fields">
+         <ul class="summary flexrow">
+            <li class="flex2">
+               <div class="charname">
+                  <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+                  <label>{{localize 'Name'}}</label>
+               </div>
+            </li>
+            {{#if system.config.isRetainer}}
+            <li>
+               <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
+            </li>
+            {{else}}
+            <li>
+               <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.Title'}}</label>
+            </li>
+            {{/if}}
+            <li class="flex1">
+               <input type="text" name="system.details.species" value="{{system.details.species}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.Species'}}</label>
+            </li>
+         </ul>
+         <ul class="summary flexrow">
+            <li class="flex2">
+               <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.Class'}}</label>
+            </li>
+            <li class="flex2">
+               <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.Alignment'}}</label>
+            </li>
+            <li style="min-width:70px;">
+               <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" />
+               <label class="hitdie rollable"
+                      data-formula="{{system.hp.hd}}"
+                      data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
+            </li>
+            <li>
+               <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+               <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
+            </li>
+            <li>
+               <label for="system.retainer.max">{{localize 'FADE.Actor.Abilities.cha.retainer'}}</label>
+               <input name="system.retainer.max" type="text" data-dtype="Number" value="{{system.retainer.max}}" />
+            </li>
+            <li>
+               <label class="rollable" for="system.retainer.morale"
+                      data-test="generic"
+                      data-formula="1d20"
+                      data-pass="lte"
+                      data-target="{{system.retainer.morale}}"
+                      data-label="{{localize 'FADE.Actor.Abilities.cha.morale'}}">{{localize 'FADE.Actor.Abilities.cha.morale'}}</label>
+               <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
+            </li>
+         </ul>
+         <ul class="summary flexrow">
+            <li class="{{#if (gte system.details.xp.value system.details.xp.next)}}notify{{/if}}">
+               <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="Number" />
+               <label>{{localize 'FADE.Actor.Level'}}</label>
+            </li>
+            <li class="flex2">
+               <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
+               <label>{{localize 'FADE.Actor.Experience'}}</label>
+            </li>
+            <li class="flex2">
+               <input type="text" name="system.details.xp.next" value="{{system.details.xp.next}}" data-dtype="Number" />
+               <label>{{localize 'FADE.Actor.NextLevel'}}</label>
+            </li>
+            <li class="flex1">
+               <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
+               <label>{{localize "FADE.Actor.XPBonus"}}</label>
+            </li>
+            <li style="max-width: 40px;">
+               <label>{{localize "FADE.Actor.THAC0"}}</label>
+               <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+            </li>
+            <li style="max-width: 40px;">
+               <label>{{localize "FADE.Actor.THBonus"}}</label>
+               <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}" />
+            </li>
+         </ul>
+      </div>
    </header>
 
    {{!-- Sheet Tab Navigation --}}
@@ -26,7 +111,153 @@
    <section class="sheet-body">
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
-         {{> "systems/fantastic-depths/templates/actor/parts/character-abilities.hbs"}}
+         <!--ABILITY SCORES-->
+         <div class="bordered flexrow">
+            {{#each system.abilities as |ability key|}}
+            <div class="ability ability-horz">
+               <div class="flex-group-center">
+                  <label for="system.abilities.{{key}}.value" style="text-align:center;" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
+                         data-ability="{{key}}"
+                         data-test="ability"
+                         data-pass="lte"
+                         data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
+                     {{#if @root.abilityAbbr}}
+                     {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
+                     {{else}}
+                     {{localize (concat 'FADE.Actor.Abilities.' key '.long')}}
+                     {{/if}}
+                  </label>
+               </div>
+               <div class="flex-group-center">
+                  <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+                  <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+               </div>
+            </div>
+            {{/each}}
+         </div>
+         <div class="flexrow">
+            <!-- SAVING THROWS -->
+            <div class="bordered">
+               <!-- Saving Throws -->
+               <div class="saving-throws">
+                  <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
+                  {{#each system.savingThrows as |savingThrow key|}}
+                  <div class="flexrow small-row flex-group-center">
+                     <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
+                     <label for="system.savingThrows.{{key}}.value" class="rollable{{#if @root.saveAbbr}} abbr{{else}} long{{/if}}"
+                            data-test="generic"
+                            data-formula="d20"
+                            data-pass="gte"
+                            data-target="{{savingThrow.value}}"
+                            data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
+                        {{#if @root.saveAbbr}}
+                        {{localize (concat 'FADE.Actor.Saves.' key '.abbr')}}
+                        {{else}}
+                        {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
+                        {{/if}}
+                     </label>
+                  </div>
+                  {{/each}}
+               </div>
+            </div>
+            <div>
+               <!--HIT POINTS & ARMOR CLASS-->
+               {{> "systems/fantastic-depths/templates/actor/parts/hp-ac.hbs"}}
+               <!-- MOVEMENT -->
+               <div class="bordered text-center" style="height:48%;">
+                  <h4 style="margin:0 0 2px 0;padding:0;">{{localize 'FADE.Actor.Movement.long'}}</h4>
+                  <div class="grid grid-4col label-12px">
+                     <div>
+                        <label for="system.movement.turn" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
+                        <input name="system.movement.turn" type="text" data-dtype="Number" value="{{system.movement.turn}}" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
+                     </div>
+                     <div>
+                        <label for="system.movement.round" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
+                        <input name="system.movement.round" type="text" data-dtype="Number" readonly value="{{system.movement.round}}" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
+                     </div>
+                     <div>
+                        <label for="system.movement.day" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
+                        <input name="system.movement.day" type="text" data-dtype="Number" readonly value="{{system.movement.day}}" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
+                     </div>
+                     <div>
+                        <label for="system.movement.run" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
+                        <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}" />
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div>
+               <!-- EXPLORATION -->
+               <div class="bordered" style="height:97%;">
+                  <h4>{{localize 'FADE.Actor.explore.long'}}</h4>
+                  <ol name="specialAbilityItems" class='items-list'>
+                     {{#each exploration as |item id|}}
+                     <li class='item flexrow collapsible-content' data-item-id='{{item._id}}'>
+                        <div class='item-name'>
+                           <div class="item-image rollable"
+                                {{#if item.roll}}
+                                data-test="specialAbility"
+                                {{/if}}
+                                data-roll-type='item'
+                                data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
+                              <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+                           </div>
+                           <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
+                        </div>
+                     </li>
+                     {{/each}}
+                  </ol>
+               </div>
+            </div>
+         </div>
+         <!-- Equipped Weapons -->
+         <div class="flexrow">
+            <ol name="weaponItems" class='items-list'>
+               <li class='item flexrow items-header collapsible-header'>
+                  <div class='item-name'>
+                     {{localize 'FADE.Item.equipped'}} {{localize 'FADE.Weapon.plural'}}
+                  </div>
+                  <div class="item-40px">{{localize 'FADE.Weapon.ammo.short'}}</div>
+                  <div class="item-40px">{{localize 'FADE.Weapon.mod.toHit.short'}}</div>
+                  <div class="item-60px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
+                  <div class="item-40px">{{localize 'FADE.Weapon.mod.dmg.short'}}</div>
+                  {{#if showCoinWeight}}
+                  <div class="item-50px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+                  {{/if}}
+               </li>
+               {{#each equippedWeapons as |item id|}}
+               <li class='flexrow item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
+                  <div class='item-name'>
+                     <div class='item-image rollable' data-test="attack" data-roll-type='item'>
+                        <img src='{{item.img}}' title='{{item.name}}' width='26' height='26' />
+                     </div>
+                     <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>{{item.name}}</a>
+                  </div>
+                  <div class="item-40px item-prop"><label>{{item.system.ammo.load}}</label></div>
+                  <div class="item-40px item-prop"><label>{{item.system.mod.toHitText}}</label></div>
+                  <div class="item-60px item-prop"><label>{{item.system.damageRoll}}</label></div>
+                  <div class="item-40px item-prop"><label>{{item.system.mod.dmgText}}</label></div>
+                  {{#if @root.showCoinWeight}}
+                  <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
+                  {{/if}}
+               </li>
+               <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
+                  {{#if item.system.ammo.maxLoad}}
+                  {{#if (lte item.system.ammo.maxLoad 30)}}
+                  <div class="consumable-counter">
+                     <label style="margin-right:4px;">{{item.system.ammo.type}}</label>
+                     {{#times item.system.ammo.load}}
+                     <div class="full-mark"></div>
+                     {{/times}} {{#times (subtract item.system.ammo.maxLoad item.system.ammo.load)}}
+                     <div class="empty-mark"></div>
+                     {{/times}}
+                  </div>
+                  {{/if}}
+                  {{/if}}
+               </li>
+               {{/each}}
+            </ol>
+         </div>
       </div>
       {{#if isOwner}}
       {{!-- Owned Items Tab --}}

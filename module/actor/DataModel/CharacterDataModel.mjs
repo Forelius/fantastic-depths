@@ -117,6 +117,7 @@ export class CharacterDataModel extends fadeActorDataModel {
       if (classData) {
          const currentLevel = classLevel;
          const levelData = classData.levels.find(level => level.level === currentLevel);
+         const prevLevelData = classData.levels.find(level => level.level === currentLevel - 1);
          const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
          const nameLevel = classData.levels.find(level => level.level === 9);
 
@@ -134,7 +135,7 @@ export class CharacterDataModel extends fadeActorDataModel {
             this.hp.hd = levelData.hd;
             this.thac0.value = levelData.thac0;
             this.thbonus = levelData.thbonus;
-            if (this.details.title == "" || this.details.title == null) {
+            if (this.details.title == "" || this.details.title == null || this.details.title == prevLevelData?.title) {
                let ordinalized = Formatter.formatOrdinal(currentLevel);
                this.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
             }

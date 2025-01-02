@@ -276,6 +276,7 @@
          "plural": "Gear",
          "uses": "Uses",
          "equip": "Equip",
+         "equipped": "Equipped",
          "unequip": "Unequip",
          "isEquippable": "Equippable",
          "isContainer": "Container",
@@ -300,7 +301,7 @@
             "long": "Cost (gp)"
          },
          "light": {
-            "radius":  "Radius",
+            "radius": "Radius",
             "typeLabel": "Light Type",
             "fuelType": "Fuel Type",
             "durationHint": "How long the light source lasts before expiring.",
@@ -429,7 +430,11 @@
          "autoSuccess": "Auto-Success",
          "autoSuccessHint": "Automatically succeeds on a natural/unmodified roll of this value.",
          "autoFail": "Auto-Fail",
-         "autoFailHint": "Automatically fails on a natural/unmodified roll of this value."
+         "autoFailHint": "Automatically fails on a natural/unmodified roll of this value.",
+         "categories": {
+            "explore": "Exploration",
+            "class": "Class Special Abilities"
+         }
       },
       "class": {
          "key": {
@@ -680,7 +685,8 @@
       "operator": "Operator",
       "modifier": "Modifier",
       "target": "Target",
-      "GMNotes": "GM Notes"
+      "GMNotes": "GM Notes",
+      "category": "Category"
    },
 
    "TYPES": {
