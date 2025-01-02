@@ -213,6 +213,7 @@ export class fadeActorSheet extends ActorSheet {
       const treasure = [];
       const specialAbilities = [];
       const exploration = [];
+      const classAbilities = [];
 
       for (let i = 0; i < 10; i++) {
          spellSlots.push({ spells: [] })
@@ -259,6 +260,8 @@ export class fadeActorSheet extends ActorSheet {
          else if (item.type === 'specialAbility') {
             if (item.system.category === "explore") {
                exploration.push(item);
+            } else if (item.system.category === "class") {
+               classAbilities.push(item);
             } else {
                specialAbilities.push(item);
             }
@@ -286,10 +289,11 @@ export class fadeActorSheet extends ActorSheet {
       context.armor = armor;
       context.skills = skills;
       context.masteries = masteries;
-      context.specialAbilities = specialAbilities;
       context.treasure = treasure;
       context.treasureValue = this.getTreasureValue(context);
       context.spellSlots = spellSlots;
+      context.specialAbilities = specialAbilities;
+      context.classAbilities = classAbilities;
       context.exploration = exploration;
 
       this._calcCategoryEnc(context);

@@ -433,7 +433,7 @@
          "autoFailHint": "Automatically fails on a natural/unmodified roll of this value.",
          "categories": {
             "explore": "Exploration",
-            "class": "Class Special Abilities"
+            "class": "Class Abilities"
          }
       },
       "class": {
