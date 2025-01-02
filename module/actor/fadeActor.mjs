@@ -93,14 +93,14 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareEffects();
-      this._prepareSpellsUsed();
-      this.system.prepareArmorClass(this.items);
+      this._prepareSpellsUsed();      
       this.system.prepareEncumbrance(this.items, this.type);
       this.system.prepareDerivedMovement();
    }
 
    /** @override */
    prepareDerivedData() {
+      this.system.prepareArmorClass(this.items);
       super.prepareDerivedData();
    }
 

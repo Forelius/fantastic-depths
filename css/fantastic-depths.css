@@ -501,7 +501,7 @@ h1, h2, h3, h4 {
   background-repeat: no-repeat;
 }
 .dark-mode .fantastic-depths .character .armor-class, .dark-mode .fantastic-depths .monster .armor-class {
-  background-image: url("../assets/img/shield2.png");
+  background-image: url("../assets/img/armor1.png");
   background-repeat: no-repeat;
 }
 .dark-mode .fantastic-depths .character .armor-class .ac-value, .dark-mode .fantastic-depths .monster .armor-class .ac-value {
@@ -613,7 +613,7 @@ h1, h2, h3, h4 {
   background-repeat: no-repeat;
 }
 .light-mode .fantastic-depths .character .armor-class, .light-mode .fantastic-depths .monster .armor-class {
-  background-image: url("../assets/img/shield.png");
+  background-image: url("../assets/img/armor1.png");
   background-repeat: no-repeat;
 }
 .light-mode .fantastic-depths .character .armor-class .ac-value, .light-mode .fantastic-depths .monster .armor-class .ac-value {
@@ -941,8 +941,8 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .character .armor-class .shield, .fantastic-depths .monster .armor-class .shield {
   position: relative;
-  left: 68px;
-  top: 4px;
+  left: 58px;
+  top: 30px;
   margin-right: -2px;
   font-size: 18px;
 }

@@ -147,7 +147,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
 
    /**
     * Prepare derived armor class values.
-    * @protected
     */
    prepareArmorClass(items) {
       const acDigest = [];
@@ -173,7 +172,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
          naturalArmor.prepareEffects();
-         ac.naked = naturalArmor.system.totalAC - dexMod;
+         ac.naked = naturalArmor.system.totalAC - dexMod ;
          acDigest.push(`Natural armor ${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
       }
 
@@ -195,6 +194,11 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          ac.shield = equippedShield.system.totalAC;
          ac.total -= equippedShield.system.totalAC;
          acDigest.push(`Equipped shield ${equippedShield.name}: ${equippedShield.system.totalAC}`);
+      }
+
+      if (this.mod.baseAc != 0) {
+         ac.total -= this.mod.baseAc;
+         acDigest.push(`Base AC mod: ${this.mod.baseAc}`);
       }
 
       // Now other mods. Dexterity bonus already applied above.
@@ -281,6 +285,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
     */
    _prepareMods() {
       this.mod.ac = 0;
+      this.mod.baseAc = 0;
       this.mod.initiative = 0;
       this.mod.combat.toHit = 0;
       this.mod.combat.dmg = 0;
