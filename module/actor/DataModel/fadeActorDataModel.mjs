@@ -103,6 +103,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          mod: new fields.SchemaField({
             // mod is for items that modify AC (add/subtract only) but are not armor items.
             ac: new fields.NumberField({ initial: 0 }),
+            baseAc: new fields.NumberField({ initial: 0 }),
             initiative: new fields.NumberField({ initial: 0 }),
             combat: new fields.SchemaField({
                toHit: new fields.NumberField({ initial: 0 }),
@@ -151,7 +152,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    prepareArmorClass(items) {
       const acDigest = [];
       const dexMod = (this.abilities?.dex.mod ?? 0);
-      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod;
+      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.mod.baseAc;
       let ac = {};
       ac.nakedAAC = 19 - baseAC;
       ac.naked = baseAC;
