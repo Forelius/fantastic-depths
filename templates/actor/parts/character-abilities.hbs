@@ -23,10 +23,12 @@
             <div>
                <label class="rollable" for="system.retainer.morale"
                       data-test="generic"
-                      data-formula="1d20"
+                      data-formula="2d6"
                       data-pass="lte"
                       data-target="{{system.retainer.morale}}"
-                      data-label="{{localize 'FADE.Actor.Abilities.cha.morale'}}">{{localize 'FADE.Actor.Abilities.cha.morale'}}</label>
+                      data-label="{{localize 'FADE.Actor.morale'}}"
+                      data-tooltip="{{localize 'FADE.Actor.retainerMoraleHint'}}">
+               {{localize 'FADE.Actor.morale'}}</label>
                <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
             </div>
          </div>

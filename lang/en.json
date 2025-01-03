@@ -34,7 +34,9 @@
          "PrimeReq": "Prime Req.",
          "Other": "Other",
          "RetainerWage": "Wage",
-         "Morale": "Morale",
+         "morale": "Morale",
+         "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
+         "moraleHint": "The morale score indicates a character's or monster's loyalty and courage.",
          "XPAward": "XP Award",
          "attackRank": "Attack Rank",
          "hdConBonus": {
@@ -171,7 +173,6 @@
                "abbr": "CHA",
                "mod": "Reactions",
                "retainer": "Retainers",
-               "morale": "Morale",
                "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p>"
             }
          },
