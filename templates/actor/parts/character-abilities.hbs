@@ -25,7 +25,13 @@
             </div>
             <div>
                <input type="text" name="system.retainer.loyalty" value="{{system.retainer.loyalty}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.moraleHint'}}" />
-               <label>{{localize 'FADE.Actor.morale'}}</label>
+               <label class="rollable" for="system.retainer.loyalty"
+                      data-test="generic"
+                      data-formula="2d6"
+                      data-pass="lte"
+                      data-target="{{system.retainer.loyalty}}"
+                      data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                      data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">{{localize 'FADE.Actor.morale'}}</label>
             </div>
             {{else}}
             <div>
