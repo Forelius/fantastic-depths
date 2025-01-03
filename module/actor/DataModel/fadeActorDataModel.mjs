@@ -167,7 +167,10 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
          naturalArmor.prepareEffects();
-         ac.naked = naturalArmor.system.totalAC - dexMod ;
+         ac.naked = naturalArmor.system.totalAC - dexMod;
+         ac.value = ac.naked;
+         ac.total = ac.naked;
+         naturalArmor.system.equipped = true;
          acDigest.push(`Natural armor ${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
       }
 
