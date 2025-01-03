@@ -8,17 +8,10 @@
             <label>{{localize 'Name'}}</label>
          </div>
       </li>
-      {{#if system.config.isRetainer}}
-      <li>
-         <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
-         <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
-      </li>
-      {{else}}
       <li>
          <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
          <label>{{localize 'FADE.Actor.Title'}}</label>
       </li>
-      {{/if}}
    </ul>
    <ul class="summary flexrow">
       <li class="flex2">
@@ -58,12 +51,12 @@
          <label>{{localize "FADE.Actor.XPBonus"}}</label>
       </li>
       <li style="max-width: 40px;">
-         <label>{{localize "FADE.Actor.THAC0"}}</label>
          <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+         <label>{{localize "FADE.Actor.THAC0"}}</label>
       </li>
       <li style="max-width: 40px;">
+         <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}" />
          <label>{{localize "FADE.Actor.THBonus"}}</label>
-         <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}"/>
       </li>
    </ul>
 </div>

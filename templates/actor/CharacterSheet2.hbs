@@ -11,17 +11,10 @@
                   <label>{{localize 'Name'}}</label>
                </div>
             </li>
-            {{#if system.config.isRetainer}}
-            <li>
-               <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
-               <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
-            </li>
-            {{else}}
             <li>
                <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" />
                <label>{{localize 'FADE.Actor.Title'}}</label>
             </li>
-            {{/if}}
             <li style="max-width:70px;">
                <input type="text" name="system.details.species" value="{{system.details.species}}" data-dtype="String" />
                <label>{{localize 'FADE.Actor.Species'}}</label>
@@ -43,12 +36,29 @@
                       data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
             </li>
             <li>
-               <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
                <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
+               <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+            </li>
+            {{#if system.isRetainer}}
+            <li>
+               <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
+               <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
             </li>
             <li>
-               <label for="system.retainer.max">{{localize 'FADE.Actor.Abilities.cha.retainer'}}</label>
+               <input type="text" name="system.retainer.loyalty" value="{{system.retainer.loyalty}}" data-dtype="String" />
+               <label class="rollable" for="system.retainer.loyalty"
+                      data-test="generic"
+                      data-formula="2d6"
+                      data-pass="lte"
+                      data-target="{{system.retainer.loyalty}}"
+                      data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                      data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">{{localize 'FADE.Actor.morale'}}</label>
+            </li>
+            {{else}}
+            <li>
                <input name="system.retainer.max" type="text" data-dtype="Number" value="{{system.retainer.max}}" />
+               <label for="system.retainer.max">{{localize 'FADE.Actor.Abilities.cha.retainer'}}</label>
+
             </li>
             <li>
                <label class="rollable" for="system.retainer.morale"
@@ -56,11 +66,13 @@
                       data-formula="2d6"
                       data-pass="lte"
                       data-target="{{system.retainer.morale}}"
-                      data-label="{{localize 'FADE.Actor.morale'}}"
+                      data-label="{{localize 'FADE.Actor.retainerMorale'}}"
                       data-tooltip="{{localize 'FADE.Actor.retainerMoraleHint'}}">
-               {{localize 'FADE.Actor.morale'}}</label>
+                  {{localize 'FADE.Actor.retainerMorale'}}
+               </label>
                <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
             </li>
+            {{/if}}
          </ul>
          <ul class="summary flexrow">
             <li class="{{#if (gte system.details.xp.value system.details.xp.next)}}notify{{/if}}">
@@ -80,12 +92,12 @@
                <label>{{localize "FADE.Actor.XPBonus"}}</label>
             </li>
             <li style="max-width: 40px;">
-               <label>{{localize "FADE.Actor.THAC0"}}</label>
                <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+               <label>{{localize "FADE.Actor.THAC0"}}</label>
             </li>
             <li style="max-width: 40px;">
-               <label>{{localize "FADE.Actor.THBonus"}}</label>
                <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}" />
+               <label>{{localize "FADE.Actor.THBonus"}}</label>
             </li>
          </ul>
       </div>
@@ -167,25 +179,7 @@
                {{> "systems/fantastic-depths/templates/actor/parts/hp-ac.hbs"}}
                <!-- MOVEMENT -->
                <div class="bordered text-center" style="height:48%;">
-                  <h4 style="margin:0 0 2px 0;padding:0;">{{localize 'FADE.Actor.Movement.long'}}</h4>
-                  <div class="grid grid-4col label-12px">
-                     <div>
-                        <label for="system.movement.turn" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
-                        <input name="system.movement.turn" type="text" data-dtype="Number" value="{{system.movement.turn}}" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
-                     </div>
-                     <div>
-                        <label for="system.movement.round" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
-                        <input name="system.movement.round" type="text" data-dtype="Number" readonly value="{{system.movement.round}}" data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
-                     </div>
-                     <div>
-                        <label for="system.movement.day" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
-                        <input name="system.movement.day" type="text" data-dtype="Number" readonly value="{{system.movement.day}}" data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
-                     </div>
-                     <div>
-                        <label for="system.movement.run" data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
-                        <input name="system.movement.run" type="text" data-dtype="Number" readonly value="{{system.movement.run}}" data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}" />
-                     </div>
-                  </div>
+                  {{> "systems/fantastic-depths/templates/actor/parts/movement.hbs"}}
                </div>
             </div>
             <div>

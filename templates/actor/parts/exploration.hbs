@@ -1,8 +1,9 @@
-<div class="bordered text-center" style="margin-top:4px;">
+<div class="bordered text-center small-input" style="margin-top:4px;">
    <!-- Exploration -->
    <h4>{{localize 'FADE.Actor.explore.long'}}</h4>
-   <div class="flexrow flex-group-center saving-throws">
-      <span>
+   <div class="flexrow flex-group-center summary">
+      <div>
+         <input name="system.exploration.openDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" /><br/>
          <label class="rollable" for="system.exploration.openDoor"
                 data-test="generic"
                 data-formula="d6"
@@ -12,10 +13,9 @@
                 data-target="{{system.exploration.openDoor}}"
                 data-label="{{localize 'FADE.Actor.explore.OpenDoor.short'}}"
                 data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}">{{localize 'FADE.Actor.explore.OpenDoor.short'}}</label>
-         <br />
-         <input name="system.exploration.openDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" />
-      </span>
-      <span>
+      </div>
+      <div>
+         <input name="system.exploration.secretDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" /><br />
          <label class="rollable" for="system.exploration.secretDoor"
                 data-test="generic"
                 data-formula="d6"
@@ -26,13 +26,11 @@
                 data-target="{{system.exploration.secretDoor}}"
                 data-label="{{localize 'FADE.Actor.explore.SecretDoor.short'}}"
                 data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}">{{localize 'FADE.Actor.explore.SecretDoor.short'}}</label>
-         <br />
-         <input name="system.exploration.secretDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" />
-      </span>
+      </div>
    </div>
-   <div class="clear-fix"></div>
-   <div class="flexrow flex-group-center saving-throws" style="margin-top:3px;">
-      <span>
+   <div class="flexrow flex-group-center summary" style="margin-top:3px;">
+      <div>
+         <input name="system.exploration.listenDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" /><br />
          <label class="rollable" for="system.exploration.listenDoor"
                 data-test="generic"
                 data-formula="d6"
@@ -43,10 +41,9 @@
                 data-target="{{system.exploration.listenDoor}}"
                 data-label="{{localize 'FADE.Actor.explore.ListenDoor.short'}}"
                 data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}">{{localize 'FADE.Actor.explore.ListenDoor.short'}}</label>
-         <br />
-         <input name="system.exploration.listenDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" />
-      </span>
-      <span>
+      </div>
+      <div>
+         <input name="system.exploration.findTrap" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}" value="{{system.exploration.findTrap}}" /><br />
          <label class="rollable" for="system.exploration.findTrap" data-test="generic"
                 data-formula="d6"
                 data-pass="lte"
@@ -56,9 +53,6 @@
                 data-target="{{system.exploration.findTrap}}"
                 data-label="{{localize 'FADE.Actor.explore.FindTrap.short'}}"
                 data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}">{{localize 'FADE.Actor.explore.FindTrap.short'}}</label>
-         <br />
-         <input name="system.exploration.findTrap" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}" value="{{system.exploration.findTrap}}" />
-      </span>
+      </div>
    </div>
-   <div class="clear-fix"></div>
 </div>

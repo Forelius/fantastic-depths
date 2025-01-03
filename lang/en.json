@@ -35,8 +35,9 @@
          "Other": "Other",
          "RetainerWage": "Wage",
          "morale": "Morale",
-         "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
          "moraleHint": "The morale score indicates a character's or monster's loyalty and courage.",
+         "retainerMorale": "Retainer Morale",
+         "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
          "XPAward": "XP Award",
          "attackRank": "Attack Rank",
          "hdConBonus": {

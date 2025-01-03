@@ -854,6 +854,12 @@ h1, h2, h3, h4 {
 .fantastic-depths .character .xsmall-col label, .fantastic-depths .monster .xsmall-col label {
   font-size: 13px;
 }
+.fantastic-depths .character .small-input input, .fantastic-depths .monster .small-input input {
+  align-content: center;
+  max-width: 34px;
+  min-width: 34px;
+  font-size: 16px;
+}
 .fantastic-depths .character .saving-throws .tall-row, .fantastic-depths .monster .saving-throws .tall-row {
   min-height: 36px;
 }

@@ -4,64 +4,68 @@ import Formatter from '../../utils/Formatter.mjs';
 
 export class CharacterDataModel extends fadeActorDataModel {
    static defineSchema() {
+      const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
       return {
          ...baseSchema,
-         details: new foundry.data.fields.SchemaField({
-            morale: new foundry.data.fields.NumberField({ initial: 9 }),
-            alignment: new foundry.data.fields.StringField({ initial: "Neutral" }),
-            level: new foundry.data.fields.NumberField({ initial: 0 }),
-            xp: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 0 }),
-               bonus: new foundry.data.fields.NumberField({ initial: 0 }),
-               next: new foundry.data.fields.NumberField({ initial: 0 }),
+         isRetainer: new fields.BooleanField({ initial: false }),
+         details: new fields.SchemaField({
+            morale: new fields.NumberField({ initial: 9 }),
+            alignment: new fields.StringField({ initial: "Neutral" }),
+            level: new fields.NumberField({ initial: 0 }),
+            xp: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 0 }),
+               bonus: new fields.NumberField({ initial: 0 }),
+               next: new fields.NumberField({ initial: 0 }),
             }),
-            class: new foundry.data.fields.StringField({ initial: "Fighter" }),
-            species: new foundry.data.fields.StringField({ initial: "Human" }),
-            title: new foundry.data.fields.StringField({ initial: "" }),
-            age: new foundry.data.fields.NumberField({ initial: 20 }),
-            sex: new foundry.data.fields.StringField({ initial: "Male" }),
-            height: new foundry.data.fields.StringField({ initial: "6" }),
-            weight: new foundry.data.fields.StringField({ initial: "170 lbs." }),
-            eyes: new foundry.data.fields.StringField({ initial: "Blue" }),
-            hair: new foundry.data.fields.StringField({ initial: "Brown" }),
+            class: new fields.StringField({ initial: "Fighter" }),
+            species: new fields.StringField({ initial: "Human" }),
+            title: new fields.StringField({ initial: "" }),
+            age: new fields.NumberField({ initial: 20 }),
+            sex: new fields.StringField({ initial: "Male" }),
+            height: new fields.StringField({ initial: "6" }),
+            weight: new fields.StringField({ initial: "170 lbs." }),
+            eyes: new fields.StringField({ initial: "Blue" }),
+            hair: new fields.StringField({ initial: "Brown" }),
          }),
-         abilities: new foundry.data.fields.SchemaField({
-            str: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 10 }),
-               mod: new foundry.data.fields.NumberField({ initial: 0 }),
+         abilities: new fields.SchemaField({
+            str: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
             }),
-            int: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 10 }),
-               mod: new foundry.data.fields.NumberField({ initial: 0 }),
+            int: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
             }),
-            wis: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 10 }),
-               mod: new foundry.data.fields.NumberField({ initial: 0 }),
+            wis: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
             }),
-            dex: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 10 }),
-               mod: new foundry.data.fields.NumberField({ initial: 0 }),
+            dex: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
             }),
-            con: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 10 }),
-               mod: new foundry.data.fields.NumberField({ initial: 0 }),
+            con: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
             }),
-            cha: new foundry.data.fields.SchemaField({
-               value: new foundry.data.fields.NumberField({ initial: 10 }),
-               mod: new foundry.data.fields.NumberField({ initial: 0 }),
+            cha: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
             }),
          }),
-         exploration: new foundry.data.fields.SchemaField({
-            openDoor: new foundry.data.fields.NumberField({ initial: 2 }),
-            secretDoor: new foundry.data.fields.NumberField({ initial: 1 }),
-            listenDoor: new foundry.data.fields.NumberField({ initial: 2 }),
-            findTrap: new foundry.data.fields.NumberField({ initial: 1 }),
+         exploration: new fields.SchemaField({
+            openDoor: new fields.NumberField({ initial: 2 }),
+            secretDoor: new fields.NumberField({ initial: 1 }),
+            listenDoor: new fields.NumberField({ initial: 2 }),
+            findTrap: new fields.NumberField({ initial: 1 }),
          }),
-         retainer: new foundry.data.fields.SchemaField({
-            max: new foundry.data.fields.NumberField({ initial: 0 }),
-            morale: new foundry.data.fields.NumberField({ initial: 0 }),
-         })
+         retainer: new fields.SchemaField({
+            max: new fields.NumberField({ initial: 0 }),
+            morale: new fields.NumberField({ initial: 0 }),
+            loyalty: new fields.NumberField({ initial: 0 }),
+            wage: new fields.StringField({ initial: "" }),
+         }),
       };
    }
 

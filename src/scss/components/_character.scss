@@ -89,6 +89,15 @@
       }
    }
 
+   .small-input {
+      input {
+         align-content: center;
+         max-width: 34px;
+         min-width: 34px;
+         font-size: 16px;
+      }
+   }
+
    .saving-throws {
       .tall-row {
          min-height: 36px;
