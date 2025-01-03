@@ -20,12 +20,6 @@ export class ClassItemSheet extends ItemSheet {
    }
 
    /** @override */
-   get isEditable() {
-      // Allow editing only for GM users
-      return game.user.isGM;
-   }
-
-   /** @override */
    get template() {
       const path = 'systems/fantastic-depths/templates/item';
       return `${path}/ClassItemSheet.hbs`;

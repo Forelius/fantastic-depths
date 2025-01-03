@@ -22,12 +22,6 @@ export class SkillItemSheet extends ItemSheet {
       });
    }
 
-   /** @override */
-   get isEditable() {
-      // Allow editing only for GM users
-      return game.user.isGM;
-   }
-
    /**
     * Prepare data to be used in the Handlebars template.
     */

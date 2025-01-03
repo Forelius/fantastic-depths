@@ -24,11 +24,11 @@ export class ArmorItemSheet extends ItemSheet {
       });
    }
 
-   /** @override */
-   get isEditable() {
-      // Allow editing only for GM users
-      return game.user.isGM;
-   }
+   ///** @override */
+   //get isEditable() {
+   //   // Allow editing only for GM users
+   //   return this.item.isOwner;
+   //}
 
    /**
     * Prepare data to be used in the Handlebars template.

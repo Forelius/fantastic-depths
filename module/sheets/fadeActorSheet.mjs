@@ -226,7 +226,12 @@ export class fadeActorSheet extends ActorSheet {
          if (item.type === 'item') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
-               // Skip contained items
+               // Check to see if container still exists.
+               if (this.actor.items.get(item.system.containerId) === undefined) {
+                  // The container does not exist, set containerId to null and add to gear items array
+                  item.system.containerId = null;
+                  gear.push(item);
+               }
             } else {
                gear.push(item);
             }
