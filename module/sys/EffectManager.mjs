@@ -166,16 +166,16 @@ export class EffectManager {
       };
 
       // Iterate over active effects, classifying them into categories
-      for (let e of effects) {
+      for (const effect of effects) {
          // Fix for unknown source
-         e.sourceNameFix = e.sourceName;
-         if (e.sourceName === "Unknown" && e.parent) {
-            e.sourceNameFix = e.parent.name ?? e.sourceName;
+         effect.sourceNameFix = effect.sourceName;
+         if (effect.sourceName === "Unknown" && effect.parent) {
+            effect.sourceNameFix = effect.parent.name ?? effect.sourceName;
          }
 
-         if (e.disabled) categories.inactive.effects.push(e);
-         else if (e.isTemporary) categories.temporary.effects.push(e);
-         else categories.passive.effects.push(e);
+         if (effect.disabled) categories.inactive.effects.push(effect);
+         else if (effect.isTemporary) categories.temporary.effects.push(effect);
+         else categories.passive.effects.push(effect);
       }
       return categories;
    }

@@ -429,15 +429,15 @@ export class fadeActor extends Actor {
     */
    _prepareEffects() {
       // Iterate over all applicable effects
-      this.allApplicableEffects().forEach((effect) => {
-      //this.effects.forEach((effect) => {
+      for (const effect of this.allApplicableEffects()) {
+         //this.effects.forEach((effect) => {
          const parentItem = effect.parent;
          // If the effect has a parent and the parent is an equippable item...
          if (parentItem && parentItem.type === 'item' && parentItem.system.equippable === true) {
             // Set disabled state of effect based on item equipped state
             effect.disabled = !parentItem.system.equipped;
          }
-      });
+      }
    }
 
    /**
