@@ -37,9 +37,27 @@ jobs:
           -x "package.json" \
           -x "package-lock.json"
 
-      # Create a new GitHub release and attach the zip file
+      # Generate the release notes
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD^)
+          NEW_TAG=${GITHUB_REF#refs/tags/}
+          echo "LAST_TAG=${LAST_TAG}" >> $GITHUB_ENV
+          echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
+
+          # Generate commit messages since the last tag, filtering for lines starting with '-'          
+          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%B" | grep '^-' || true)
+          echo "COMMITS=${COMMITS}" >> $GITHUB_ENV
+
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: fantastic-depths.zip
+          tag: ${{ env.NEW_TAG }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ env.NEW_TAG }}
+          body: |
+            **Full Changelog**: https://github.com/Forelius/fantastic-depths/compare/${{ env.LAST_TAG }}...${{ env.NEW_TAG }}
+
+            **Changes:**
+            ${{ env.COMMITS }}
