@@ -20,7 +20,7 @@
       "thumbnail": "systems/fantastic-depths/assets/cover.webp"
     }
   ],
-  "version": "0.7.14",
+  "version": "0.7.15",
   "compatibility": {
     "minimum": 11,
     "verified": 12,
@@ -47,8 +47,8 @@
   "packs": [],
   "packFolders": [],
   "socket": true,
-  "manifest": "https://raw.githubusercontent.com/Forelius/fantastic-depths/0.7.14/system.json",
-  "download": "https://github.com/Forelius/fantastic-depths/releases/download/0.7.14/fantastic-depths.zip",
+  "manifest": "https://raw.githubusercontent.com/Forelius/fantastic-depths/0.7.15/system.json",
+  "download": "https://github.com/Forelius/fantastic-depths/releases/download/0.7.15/fantastic-depths.zip",
   "background": "systems/fantastic-depths/assets/cover.webp",
   "grid": {
     "distance": 5,
