@@ -131,6 +131,13 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             }
          }
          this.levels = [...newLevels];
+      } else {
+         // Make sure level numbers are correct.
+         for (let i = 0; i < totalLevelCount; i++) {
+            if (this.levels[i].level === null) {
+               this.levels[i].level = i + this.firstLevel;
+            }
+         }
       }
    }
 
