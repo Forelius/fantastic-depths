@@ -1,7 +1,4 @@
-# EXAMPLE:
-# git tag 0.7.12
-# git push origin 0.7.12
-name: Build and Release Fantastic Depths
+name: Pre-Release Update
 
 on:
   push:
@@ -12,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,19 +28,10 @@ jobs:
               .download = \"https://github.com/Forelius/fantastic-depths/releases/download/$VERSION/fantastic-depths.zip\"" system.json > temp.json
           mv temp.json system.json
 
-      - name: Prepare release zip
+      - name: Commit and push updated system.json
         run: |
-          zip -r fantastic-depths.zip ./* \
-          -x ".git*" \
-          -x ".github/*" \
-          -x "node_modules/*" \
-          -x ".vs/*" \
-          -x "src/*" \
-          -x "package.json" \
-          -x "package-lock.json"
-
-      - name: Create GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: fantastic-depths.zip
-          token: ${{ secrets.GITHUB_TOKEN }}
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add system.json
+          git commit -m "Update system.json to version ${{ env.VERSION }}"
+          git push origin main
