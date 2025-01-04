@@ -312,7 +312,7 @@ export class fadeActor extends Actor {
       dataset.target = savingThrow.value;
       dataset.rollmode = game.settings.get("core", "rollMode");
       dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
-
+     
       let dialogResp = await DialogFactory(dataset, this);
       rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
 
@@ -322,6 +322,7 @@ export class fadeActor extends Actor {
          const chatData = {
             dialogResp: dialogResp,
             context: this,
+            caller: this,
             mdata: dataset,
             roll: rolled,
          };
@@ -330,6 +331,10 @@ export class fadeActor extends Actor {
       }
    }
 
+   /**
+    * Static event handler for click on the saving throw button in chat.
+    * @param {any} event
+    */
    static async handleSavingThrowRequest(event) {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
