@@ -1,0 +1,44 @@
+name: Build and Release Fantastic Depths
+
+on:
+  push:
+    tags:
+      - "[0-9]+\\.[0-9]+\\.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Update system.json
+        run: |
+          VERSION=${{ env.VERSION }}
+          jq ".version = \"$VERSION\" |
+              .manifest = \"https://raw.githubusercontent.com/Forelius/fantastic-depths/$VERSION/system.json\" |
+              .download = \"https://github.com/Forelius/fantastic-depths/releases/download/$VERSION/fantastic-depths.zip\"" system.json > temp.json
+          mv temp.json system.json
+
+      - name: Prepare release zip
+        run: |
+          zip -r fantastic-depths.zip ./* \
+          -x ".git*" \
+          -x ".github/*" \
+          -x "node_modules/*" \
+          -x ".vs/*" \
+          -x "src/*"
+
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: fantastic-depths.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
