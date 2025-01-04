@@ -1,6 +1,7 @@
 # EXAMPLE:
 # git tag 0.7.12
-# git push origin main --follow-tags
+# git push origin main
+# git push origin 0.7.12
 name: Build and Release Fantastic Depths
 
 on:
