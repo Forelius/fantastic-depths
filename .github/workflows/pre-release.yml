@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history to ensure we have all branches
+          ref: main        # Ensure the main branch is checked out
 
       - name: Extract version from tag
         id: get_version
