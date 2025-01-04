@@ -9,7 +9,7 @@ on:
       - "[0-9]+\\.[0-9]+\\.[0-9]+"
 
 permissions:
-  contents: write
+  contents: write  # Required to create the release and upload artifacts
 
 jobs:
   build:
@@ -19,18 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Extract version from the Git tag
       - name: Extract version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Update system.json
-        run: |
-          VERSION=${{ env.VERSION }}
-          jq ".version = \"$VERSION\" |
-              .manifest = \"https://raw.githubusercontent.com/Forelius/fantastic-depths/$VERSION/system.json\" |
-              .download = \"https://github.com/Forelius/fantastic-depths/releases/download/$VERSION/fantastic-depths.zip\"" system.json > temp.json
-          mv temp.json system.json
-
+      # Create the release zip
       - name: Prepare release zip
         run: |
           zip -r fantastic-depths.zip ./* \
@@ -42,6 +36,7 @@ jobs:
           -x "package.json" \
           -x "package-lock.json"
 
+      # Create a new GitHub release and attach the zip file
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
