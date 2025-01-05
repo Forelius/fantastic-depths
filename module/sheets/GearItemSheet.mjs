@@ -57,12 +57,16 @@ export class GearItemSheet extends ItemSheet {
       // Is this user the game master?
       context.isGM = game.user.isGM;
 
-      const lightTypes = [];
-      lightTypes.push({ value: null, text: game.i18n.localize('None') });
-      lightTypes.push(...CONFIG.FADE.LightTypes.map((type) => {
-         return { value: type, text: game.i18n.localize(`FADE.Item.light.lightTypes.${type}`) }
-      }));
-      context.lightTypes = lightTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      if (this.item.type === 'light') {
+         const lightTypes = [];
+         lightTypes.push({ value: null, text: game.i18n.localize('None') });
+         lightTypes.push(...CONFIG.FADE.LightTypes.map((type) => {
+            return { value: type, text: game.i18n.localize(`FADE.Item.light.lightTypes.${type}`) }
+         }));
+         context.lightTypes = lightTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.animationTypes = CONFIG.Canvas.lightAnimations;
+         context.isCustom = this.item.system.light.type === 'custom';
+      }
 
       return context;
    }

@@ -17,6 +17,16 @@ export class LightItemDataModel extends fadeItemDataModel {
             radius: new fields.NumberField({ required: false, initial: 30 }),
             fuelType: new fields.StringField({ required: false, initial: "" }),
             turnsActive: new fields.NumberField({ required: false, initial: 0 }),
+            bright: new fields.NumberField({ required: false, initial: 6 }),
+            color: new fields.StringField({ required: false, initial: "#d0a750" }),
+            attenuation: new fields.NumberField({ required: false, initial: 0.7 }),
+            luminosity: new fields.NumberField({ required: false, initial: 0.5 }),
+            angle: new fields.NumberField({ required: false, initial: 360 }),
+            animation: new fields.SchemaField({
+               type: new fields.StringField({ required: false, initial: "torch" }),
+               speed: new fields.NumberField({ required: false, initial: 2 }),
+               intensity: new fields.NumberField({ required: false, initial: 3 })
+            })
          })
       };
    }

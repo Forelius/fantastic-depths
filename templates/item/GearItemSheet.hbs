@@ -2,7 +2,9 @@
    <header class='sheet-header'>
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
       <div class='header-fields'>
-         <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
+         <ul class="summary flexrow">
+            <li><div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div></li>
+         </ul>
          <ul class="summary flexrow">
             <li class="flex1">
                <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' />
@@ -61,7 +63,11 @@
                </li>
                <li class="flex1">
                   <input name="system.light.radius" type="text" data-dtype="Number" value="{{system.light.radius}}" />
-                  <label for="system.light.radius">{{localize "FADE.Item.light.radius"}}</label>
+                  <label for="system.light.radius" data-tooltip="{{localize 'FADE.Item.light.radiusHint'}}">{{localize "FADE.Item.light.radius"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.light.bright" type="text" data-dtype="Number" value="{{system.light.bright}}" {{#unless isCustom}}readonly{{/unless}}/>
+                  <label for="system.light.bright" data-tooltip="{{localize 'FADE.Item.light.brightHint'}}">{{localize "FADE.Item.light.bright"}}</label>
                </li>
                <li class="flex2">
                   <select name="system.light.type">
@@ -74,10 +80,50 @@
                   <label for="system.light.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
                </li>
                <li class="flex1">
-                  <input name="system.light.turnsActive" type="text" data-dtype="Number" value="{{system.light.turnsActive}}" readonly/>
-                  <label for="system.light.turnsActive" data-tooltip="{{localize 'turnsActiveHint'}}">{{localize "FADE.Item.light.turnsActive"}}</label>
+                  <input name="system.light.turnsActive" type="text" data-dtype="Number" value="{{system.light.turnsActive}}" readonly />
+                  <label for="system.light.turnsActive" data-tooltip="{{localize 'FADE.Item.light.turnsActiveHint'}}">{{localize "FADE.Item.light.turnsActive"}}</label>
                </li>
             </ul>
+            {{#if isCustom}}
+            <ul class="summary flexrow">
+               <li class="flex2">
+                  <div style="margin-top:0;">
+                     {{colorPicker name="light.color" value=system.light.color}}
+                  </div>
+                  <label data-tooltip="{{localize 'FADE.Item.light.colorHint'}}">{{localize "FADE.Item.light.color"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.light.attenuation" type="text" data-dtype="Number" value="{{system.light.attenuation}}"  />
+                  <label for="system.light.attenuation">{{localize "FADE.Item.light.attenuation"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.light.luminosity" type="text" data-dtype="Number" value="{{system.light.luminosity}}"  />
+                  <label for="system.light.luminosity">{{localize "FADE.Item.light.luminosity"}}</label>
+               </li>
+               <li class="flex1">
+                  <label for="system.light.angle">{{localize "FADE.Item.light.angle" }} <span class="units">({{localize "Degrees"}})</span></label>
+                  <div class="form-fields">
+                     <input type="number" name="system.light.angle" value="{{system.light.angle}}" placeholder="{{localize "Degrees"}}" />
+                  </div>
+               </li>
+            </ul>
+            <ul class="summary flexrow">
+               <li class="flex2">
+                  <select name="system.light.animation.type">
+                     {{selectOptions animationTypes selected=system.light.animation.type localize=true}}
+                  </select>
+                  <label for="system.light.animation.type">{{localize "FADE.Item.light.animationType"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.light.animation.speed" type="text" data-dtype="Number" value="{{system.light.animation.speed}}"  />
+                  <label for="system.light.animation.speed">{{localize "FADE.Item.light.animationSpeed"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.light.animation.intensity" type="text" data-dtype="Number" value="{{system.light.animation.intensity}}"  />
+                  <label for="system.light.animation.intensity">{{localize "FADE.Item.light.animationIntensity"}}</label>
+               </li>
+            </ul>
+            {{/if}}
             {{else}}
             <ul class="summary flexrow">
                <li class="flex1">

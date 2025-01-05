@@ -171,12 +171,14 @@ export class LightManager {
                color: lightData.color ?? "#d0a750",
                attenuation: lightData.attenuation ?? 0.7,
                luminosity: lightData.luminosity ?? 0.5,
+               angle: lightData.angle ?? 360,
                animation: lightData.animation ?? {
                   type: "pulse",
                   speed: 2,
                   intensity: 3
                }
             };
+            break;
          case "none":
             lightSettings = { dim: 0, bright: 0 }; // Turn off light
             break;

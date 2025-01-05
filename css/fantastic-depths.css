@@ -219,6 +219,13 @@ h1, h2, h3, h4 {
 .system-fantastic-depths #tooltip.text-center {
   text-align: left !important;
 }
+.system-fantastic-depths color-picker {
+  gap: 0;
+}
+.system-fantastic-depths color-picker > input:nth-child(2) {
+  height: 32px;
+  max-width: 32px;
+}
 
 :root {
   --max-column-width: 200px;
