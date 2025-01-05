@@ -15,13 +15,8 @@ export class LightManager {
 
          let token = LightManager.getToken();
          let items = token.actor.items;
-         // Filter items to get those with a "light" tag and map them to options
-         let lightItems = [];
-         items.forEach(item => {
-            if (item.system.tags?.includes("light")) {
-               lightItems.push(item);
-            }
-         });
+         // Filter items to get those with system.isLight==true and map them to options
+         let lightItems = items.filter(item => item.system.isLight);
 
          if (lightItems.length === 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }));
@@ -38,7 +33,7 @@ export class LightManager {
                   if (selectedItem) {
                      LightManager.updateTokenLight(token, selectedItem.system.light?.type, selectedItem);
                   } else {
-                     ui.notifications.warn("Selected light source item not found.");
+                     ui.notifications.warn(game.i18n.format('FADE.notifcation.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }));
                   }
                } else if (dialogResponse.resp.action === 'extinguish') {
                   LightManager.toggleLight(token, false);
@@ -75,8 +70,8 @@ export class LightManager {
                canUpdate = false;
             } else {
                // Check for fuel source if applicable
-               const fuel = lightSource.system.light.fuel;
-               const fuelSource = (!fuel || fuel === "" || fuel === "none")
+               const fuelType = lightSource.system.light.fuelType;
+               const fuelSource = (!fuelType || fuelType === "" || fuelType === "none")
                   ? lightSource
                   : LightManager.getFuelItem(token.actor, lightSource);
 
@@ -113,7 +108,7 @@ export class LightManager {
                attenuation: 0.8,
                luminosity: 0.5,
                animation: {
-                  type: "flame",
+                  type: "torch",
                   speed: 4,
                   intensity: 2
                }
@@ -147,6 +142,19 @@ export class LightManager {
                }
             };
             break;
+         case "custom":
+            lightSettings = {
+               dim: lightData.radius,
+               bright: lightData.bright ?? 6,
+               color: lightData.color ?? "#d0a750",
+               attenuation: lightData.attenuation ?? 0.7,
+               luminosity: lightData.luminosity ?? 0.5,
+               animation: lightData.animation ?? {
+                  type: "pulse",
+                  speed: 2,
+                  intensity: 3
+               }
+            };
          case "none":
             lightSettings = { dim: 0, bright: 0 }; // Turn off light
             break;
@@ -160,7 +168,7 @@ export class LightManager {
 
    static getLightSource(actor, type) {
       return actor.items.find(item =>
-         item.system.tags?.includes("light") &&
+         item.system.isLight &&
          item.system.light?.type === type &&
          item.system.quantity > 0
       );
@@ -168,8 +176,8 @@ export class LightManager {
 
    static initializeLightUsage(item) {
       const lightData = item.system.light;
-      lightData.usage = lightData.usage || { turnsActive: 0 };
-      item.update({ "system.light.usage": lightData.usage });
+      lightData.turnsActive = lightData.turnsActive || 0;
+      item.update({ "system.light.turnsActive": lightData.turnsActive });
    }
 
    /**
@@ -184,9 +192,8 @@ export class LightManager {
          const type = token.document.getFlag('world', 'lightType');
          const lightSource = lightActive ? LightManager.getLightSource(token.actor, type) : null;
          if (lightActive && lightSource && !isNaN(turnDelta)) {
-            let { turnsActive } = lightSource.system.light.usage;
+            let turnsActive = lightSource.system.light.turnsActive;
             let duration = lightSource.system.light.duration;
-            let fuel = lightSource.system.light.fuel;
 
             turnsActive = Math.max(0, turnsActive + turnDelta);
 
@@ -202,8 +209,8 @@ export class LightManager {
                   turnsActive = 0; // Reset turnsActive after consuming fuel
                }
 
-               lightSource.system.light.usage.turnsActive = turnsActive;
-               lightSource.update({ "system.light.usage.turnsActive": turnsActive });
+               lightSource.system.light.turnsActive = turnsActive;
+               lightSource.update({ "system.light.turnsActive": turnsActive });
             }
          }
       }
@@ -226,15 +233,15 @@ export class LightManager {
    static getFuelItem(actor, lightSource) {
       let fuelItem = null;
 
-      // Extract the fuel tag from the lightSource
-      const fuelTag = lightSource.system.light.fuel;
+      // Extract the fuel type from the lightSource
+      const fuelType = lightSource.system.light.fuelType;
 
       // If there's no external fuel source needed, use the lightSource itself
-      if (!fuelTag || fuelTag === "" || fuelTag === "none") {
+      if (!fuelType || fuelType === "" || fuelType === "none") {
          fuelItem = lightSource;
       } else {
-         // Find an item in the actor's inventory that matches the fuelTag and has a quantity > 0
-         fuelItem = actor.items.find(item => item.system.tags?.includes(fuelTag) && item.system.quantity > 0);
+         // Find an item in the actor's inventory that matches the fuelType and has a quantity > 0
+         fuelItem = actor.items.find(item => item.type === "item" && item.system.fuelType == fuelType && item.system.quantity > 0);
       }
 
       return fuelItem;

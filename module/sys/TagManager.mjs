@@ -14,15 +14,6 @@ export class TagManager {
 
       let updates = { "system.tags": systemData.tags };
 
-      if (trimmedValue === "light" && !systemData.light) {
-         updates["system.light"] = {
-            duration: 6,
-            radius: 30,
-            fuel: "none",
-            type: "torch"
-         };
-      }
-
       // Call update on the parent document
       return this.parentDocument.update(updates);
    }
@@ -35,12 +26,7 @@ export class TagManager {
       if (index > -1) {
          systemData.tags.splice(index, 1);
       }
-
       let updates = { "system.tags": systemData.tags };
-
-      if (value === "light") {
-         updates["system.light"] = null;
-      }
 
       // Call update on the parent document
       return this.parentDocument.update(updates);

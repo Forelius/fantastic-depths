@@ -3,6 +3,7 @@ import { ArmorItem } from '../item/ArmorItem.mjs';
 import { WeaponItem } from '../item/WeaponItem.mjs';
 import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs';
 import { SkillItem } from '../item/SkillItem.mjs';
+import { LightItem } from '../item/LightItem.mjs';
 import { SpellItem } from '../item/SpellItem.mjs';
 import { ActorMasteryItem } from '../item/ActorMasteryItem.mjs';
 import { ClassItem } from '../item/ClassItem.mjs';
@@ -17,6 +18,7 @@ const handler = {
       else if (args[0]?.type === 'specialAbility') result = new SpecialAbilityItem(...args);
       else if (args[0]?.type === 'mastery') result = new ActorMasteryItem(...args);
       else if (args[0]?.type === 'skill') result = new SkillItem(...args);
+      else if (args[0]?.type === 'light') result = new LightItem(...args);
       else if (args[0]?.type === 'spell') result = new SpellItem(...args);
       else if (args[0]?.type === 'class') result = new ClassItem(...args);
       else if (args[0]?.type === 'weaponMastery') result = new MasteryDefinitionItem(...args);

@@ -17,6 +17,7 @@ import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemData
 import { fadeItemDataModel } from './item/dataModel/fadeItemDataModel.mjs';
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
 import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
+import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
 import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
@@ -92,6 +93,7 @@ Hooks.once('init', async function () {
       item: fadeItemDataModel,
       armor: ArmorItemDataModel,
       skill: SkillItemDataModel,
+      light: LightItemDataModel,
       spell: SpellItemDataModel,
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDataModel,
@@ -136,7 +138,7 @@ function registerSheets() {
    Items.registerSheet('fantastic-depths', GearItemSheet, {
       label: 'FADE.SheetLabel.Item',
       makeDefault: true,
-      types: ['item', 'treasure']
+      types: ['item', 'treasure', 'light']
    });
    Items.registerSheet('fantastic-depths', ActorMasterySheet, {
       label: 'FADE.SheetLabel.ActorMasteryItem',

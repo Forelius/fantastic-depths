@@ -223,7 +223,7 @@ export class fadeActorSheet extends ActorSheet {
       for (let item of context.items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
-         if (item.type === 'item') {
+         if (item.type === 'item' || item.type === 'light') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
                // Check to see if container still exists.

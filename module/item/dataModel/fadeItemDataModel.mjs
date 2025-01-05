@@ -1,3 +1,23 @@
+class LightData {
+   constructor() {
+      this.duration = null;
+      this.type = null;
+      this.radius = 30;
+      this.fuelType = null;
+      this.bright = null;
+      this.color = null;
+      this.attenuation = null;
+      this.luminosity = null;
+      this.animation = {
+         type: null,
+         speed: null,
+         intensity: null
+      };
+      this.usage = {
+         turnsActive:0
+      }
+   }
+}
 /**
  * Data model for a generic item inheriting from multiple templates.
  */
@@ -25,13 +45,13 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          treasure: new fields.BooleanField({ required: false, initial: false }),
          container: new fields.BooleanField({ required: false, initial: false }),
          equippable: new fields.BooleanField({ required: false, initial: false }),
-         light: new fields.ObjectField({ required: false, initial: undefined, readonly: false }),
+         fuelType: new fields.StringField({ required: false, initial: "" }),
       };
    }
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();
+      super.prepareBaseData();     
    }
 
    /** @override */

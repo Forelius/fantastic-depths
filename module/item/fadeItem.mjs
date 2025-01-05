@@ -30,6 +30,7 @@ export class fadeItem extends Item {
          container: "icons/svg/chest.svg",
          class: `${fdPath}/class.webp`,
          weaponMastery: "icons/svg/combat.svg",
+         light: "icons/sundries/lights/lantern-iron-lit-yellow.webp"
       };
    }
 

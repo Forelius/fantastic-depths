@@ -53,16 +53,8 @@
             {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
          </div>
          <section class="bordered">
+            {{#if system.isLight}}
             <ul class="summary flexrow">
-               <li class="flex1">
-                  <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
-                  <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
-               </li>
-               <li class="flex1">
-                  <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
-                  <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
-               </li>
-               {{#if (includes system.tags 'light')}}
                <li class="flex1">
                   <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" />
                   <label for="system.light.duration" data-tooltip="{{localize "FADE.Item.light.durationHint"}}">{{localize "FADE.Spell.duration"}}</label>
@@ -78,11 +70,30 @@
                   <label for="system.light.type">{{localize "FADE.Item.light.typeLabel"}}</label>
                </li>
                <li class="flex2">
-                  <input name="system.light.fuel" type="text" data-dtype="String" value="{{system.light.fuel}}" />
-                  <label for="system.light.fuel">{{localize "FADE.Item.light.fuelType"}}</label>
+                  <input name="system.light.fuelType" type="text" data-dtype="String" value="{{system.light.fuelType}}" />
+                  <label for="system.light.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
                </li>
-               {{/if}}
+               <li class="flex1">
+                  <input name="system.light.turnsActive" type="text" data-dtype="Number" value="{{system.light.turnsActive}}" readonly/>
+                  <label for="system.light.turnsActive" data-tooltip="{{localize 'turnsActiveHint'}}">{{localize "FADE.Item.light.turnsActive"}}</label>
+               </li>
             </ul>
+            {{else}}
+            <ul class="summary flexrow">
+               <li class="flex1">
+                  <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
+                  <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+               </li>
+               <li class="flex1">
+                  <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
+                  <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.fuelType" type="text" data-dtype="String" value="{{system.fuelType}}" />
+                  <label for="system.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
+               </li>
+            </ul>
+            {{/if}}
          </section>
       </div>
       {{! GM-Only Tab }}

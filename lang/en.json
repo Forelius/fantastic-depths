@@ -252,6 +252,7 @@
          "MasteryDefinitionItem": "Weapon Mastery Definition Item Sheet",
          "SpellItem": "Spell Item Sheet",
          "SkillItem": "Skill Item Sheet",
+         "LightItem": "Light Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
          "WeaponItem": "Weapon Item Sheet"
       },
@@ -303,10 +304,14 @@
             "long": "Cost (gp)"
          },
          "light": {
+            "isLight": "Light",
+            "isFuel": "Fuel",
             "radius": "Radius",
             "typeLabel": "Light Type",
             "fuelType": "Fuel Type",
             "durationHint": "How long the light source lasts before expiring.",
+            "turnsActive": "Turns Active",
+            "turnsActiveHint": "How many turns the light has been active.",
             "lightTypes": {
                "torch": "Torch",
                "lantern": "Lantern",
@@ -702,6 +707,7 @@
          "armor": "Armor",
          "spell": "Spell",
          "skill": "General Skill",
+         "light": "Light",
          "mastery": "Actor Weapon Mastery",
          "specialAbility": "Special Ability",
          "treasure": "Treasure",
