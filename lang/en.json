@@ -312,6 +312,10 @@
             "durationHint": "How long the light source lasts before expiring.",
             "turnsActive": "Turns Active",
             "turnsActiveHint": "How many turns the light has been active.",
+            "noMoreItem": "{actor} has no more {item} to light.",
+            "noFuel": "{actor} has no fuel for the {item}.",
+            "disabled": "{actor}'s light source has been extinguished.",
+            "enabled": "{actor} has lit their {item}.",
             "lightTypes": {
                "torch": "Torch",
                "lantern": "Lantern",
@@ -467,7 +471,8 @@
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
          "noTokenWarning": "You must select a token or assign a default character to perform this action.",
          "noTokenWarning2": "You must select a token to perform this action.",
-         "missingItem": "The required item type ({type}) was not found."
+         "missingItem": "The required item type ({type}) was not found.",
+         "missingItem2": "{actor} does not have a {type}."
       },
       "Chat": {
          "rollMods": {

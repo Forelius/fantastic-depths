@@ -8,7 +8,7 @@ export class LightManager {
 
    static async showLightDialog() {
       if (!LightManager.hasSelectedToken()) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning2'));
+         LightManager.notify(game.i18n.localize('FADE.notification.noTokenWarning2'), 'warn');
       } else {
          const dataset = { dialog: 'lightmgr' };
          const caller = game.user;
@@ -19,7 +19,7 @@ export class LightManager {
          let lightItems = items.filter(item => item.system.isLight);
 
          if (lightItems.length === 0) {
-            ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }));
+            LightManager.notify(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
          } else {
             // Render the dialog with the necessary data
             const dialogResponse = await DialogFactory(dataset, caller, { lightItems });
@@ -33,7 +33,7 @@ export class LightManager {
                   if (selectedItem) {
                      LightManager.updateTokenLight(token, selectedItem.system.light?.type, selectedItem);
                   } else {
-                     ui.notifications.warn(game.i18n.format('FADE.notifcation.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }));
+                     LightManager.notify(game.i18n.format('FADE.notifcation.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
                   }
                } else if (dialogResponse.resp.action === 'extinguish') {
                   LightManager.toggleLight(token, false);
@@ -54,19 +54,31 @@ export class LightManager {
       return token !== null && token !== undefined;
    }
 
+   /**
+    * Configures the token's light properties
+    * @param {any} token The token to configure.
+    * @param {any} type The type of light this is (torch, lantern, magic, custom).
+    * @param {any} lightSource (optional) Light source item.
+    */
    static updateTokenLight(token, type, lightSource = null) {
       if (!LightManager.hasSelectedToken()) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning2'));
+         LightManager.notify(game.i18n.localize('FADE.notification.noTokenWarning2'), 'warn');
       } else {
          let canUpdate = true;
          lightSource = lightSource || LightManager.getLightSource(token.actor, type);
 
          if (type !== "none") {
             if (!lightSource) {
-               ui.notifications.warn(`The character ${token.name} does not have a ${type} light item.`);
+               LightManager.notify(game.i18n.format('FADE.notifcation.missingItem2', {
+                  actor: token.name,
+                  type: game.i18n.format(`FADE.Item.light.lightTypes.${type}`)
+               }), 'warn');
                canUpdate = false;
             } else if (lightSource.system.quantity <= 0) {
-               ui.notifications.error(`${token.name} has no more ${lightSource.name} to light.`);
+               LightManager.notify(game.i18n.format('FADE.Item.light.noMoreItem', {
+                  actor: token.name,
+                  item: lightSource.name
+               }), 'error');
                canUpdate = false;
             } else {
                // Check for fuel source if applicable
@@ -76,7 +88,10 @@ export class LightManager {
                   : LightManager.getFuelItem(token.actor, lightSource);
 
                if (fuelSource == null || fuelSource.system.quantity <= 0) {
-                  ui.notifications.error(`${token.name} has no fuel for the ${lightSource.name}.`);
+                  LightManager.notify(game.i18n.format('FADE.Item.light.noFuel', {
+                     actor: token.name,
+                     item: lightSource.name
+                  }), 'error');
                   canUpdate = false;
                } else {
                   LightManager.initializeLightUsage(lightSource);
@@ -90,7 +105,14 @@ export class LightManager {
                token.document.update({ light: lightSettings });
                token.document.setFlag('world', 'lightActive', type !== "none");
                token.document.setFlag('world', 'lightType', type);
-               ui.notifications.info(`${token.name} has ${type === "none" ? 'extinguished the light' : `lit a ${lightSource.name}`}.`);
+               if (type === 'none') {
+                  LightManager.notify(game.i18n.format('FADE.Item.light.disabled', { actor: token.name }), 'info');
+               } else {
+                  LightManager.notify(game.i18n.format('FADE.Item.light.enabled', {
+                     actor: token.name,
+                     item: lightSource.name
+                  }), 'info');
+               }
             }
          }
       }
@@ -159,7 +181,7 @@ export class LightManager {
             lightSettings = { dim: 0, bright: 0 }; // Turn off light
             break;
          default:
-            ui.notifications.warn(`No settings defined for ${type}.`);
+            console.warn(`No settings defined for ${type}.`);
             lightSettings = null;
       }
 
@@ -220,7 +242,7 @@ export class LightManager {
       token.document.setFlag('world', 'lightActive', state); // Toggle active state
       if (!state) {
          token.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
-         ui.notifications.info(`${token.name}'s light source has been extinguished.`);
+         LightManager.notify(game.i18n.format('FADE.Item.light.disabled', { actor: token.name }), 'info');
       } else {
          const type = token.document.getFlag('world', 'lightType');
          const lightSource = LightManager.getLightSource(token.actor, type);
@@ -252,11 +274,27 @@ export class LightManager {
       item.update({ "system.quantity": newQuantity });
 
       if (newQuantity <= 0) {
-         ui.notifications.info(`${item.name} has been used up.`);
+         LightManager.notify(game.i18n.format('FADE.Item.light.noFuel', {
+            actor: token?.name ?? game.i18n.localize('TYPES.Actor.character'),
+            item: item.name
+         }), 'info');
          if (token) {
             token.document.update({ light: { dim: 0, bright: 0 } });
             token.document.setFlag('world', 'lightActive', false);
          }
+      }
+   }
+
+   static notify(message, type = null) {
+      const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
+      ChatMessage.create({ speaker: speaker, content: message });
+      if (type === 'warn') {
+         ui.notifications.warn(message);
+      } else if (type === 'error') {
+         ui.notifications.error(message);
+      }
+      else {
+         ui.notifications.info(message);
       }
    }
 }
