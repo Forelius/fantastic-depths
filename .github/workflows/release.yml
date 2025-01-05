@@ -2,7 +2,7 @@
 # git tag 0.7.12
 # git push origin main
 # git push origin 0.7.12
-name: Build and Release Fantastic Depths
+name: Build and Release Foundry VTT Module
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - "[0-9]+\\.[0-9]+\\.[0-9]+"
 
 permissions:
-  contents: write  # Required to create the release and upload artifacts
+  contents: write
 
 jobs:
   build:
@@ -19,25 +19,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch the full history
+          ref: main       # Ensure the main branch is checked out
 
-      # Extract version from the Git tag
-      - name: Extract version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      # Create the release zip
-      - name: Prepare release zip
-        run: |
-          zip -r fantastic-depths.zip ./* \
-          -x ".git*" \
-          -x ".github/*" \
-          -x "node_modules/*" \
-          -x ".vs/*" \
-          -x "src/*" \
-          -x "package.json" \
-          -x "package-lock.json"
-
-      # Generate the release notes
       - name: Generate release notes
         id: release_notes
         run: |
@@ -46,18 +31,23 @@ jobs:
           echo "LAST_TAG=${LAST_TAG}" >> $GITHUB_ENV
           echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
 
-          # Generate commit messages since the last tag, filtering for lines starting with '-'          
-          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%B" | grep '^-' || true)
+          # Generate commit messages from the main branch since the last tag, filtering for lines starting with '-'
+          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%B" --first-parent | grep '^-' || true)
           echo "COMMITS=${COMMITS}" >> $GITHUB_ENV
+
+      - name: Prepare release zip
+        run: |
+          zip -r fade-compendiums.zip ./* -x '.git*' -x '.github/*'
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ env.NEW_TAG }}
+          artifacts: fade-compendiums.zip
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.NEW_TAG }}
           name: Release ${{ env.NEW_TAG }}
           body: |
-            **Full Changelog**: https://github.com/Forelius/fantastic-depths/compare/${{ env.LAST_TAG }}...${{ env.NEW_TAG }}
+            **Full Changelog**: https://github.com/Forelius/fade-compendiums/compare/${{ env.LAST_TAG }}...${{ env.NEW_TAG }}
 
             **Changes:**
             ${{ env.COMMITS }}
