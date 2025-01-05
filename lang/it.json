@@ -1,7 +1,6 @@
 {
    "FADE": {
       "Actor": {
-         "Name": "Nome",
          "Health": "Punti Ferita",
          "HealthMax": "PF Massimi",
          "HealthMaxMonster": "Impostalo su zero per calcolare automaticamente i PF massimi dai DV",
@@ -25,39 +24,50 @@
          "Trainer": "Addestrato",
          "Languages": "Linguaggi",
          "Level": "Livello",
-         "NextLevel": "PX Prossimo Livello",
-         "Experience": "PX Attuali",
+         "NextLevel": "PX Livello Successivo",
+         "Experience": "Esperienza Accumulata",
          "XPShort": "PX",
          "XPBonus": "PX Bonus %",
          "THAC0": "THAC0",
-         "THBonus": "Bonus TPC",
+         "THBonus": "TPC+",
+         "THBonusHint": "Utilizzato con il sistema di classe armatura ascendente (CAA), questo valore viene aggiunto ai tiri per colpire. Chiamato anche bonus d'attacco. Il bonus per colpire è calcolato automaticamente in base al valore di THAC0.",
          "PrimeReq": "Req. Primario",
+         "Other": "Altro",
+         "RetainerWage": "Ricompensa",
+         "Morale": "Morale",
+         "moraleHint": "Il punteggio di morale indica la lealtà e il coraggio di un PG o di un mostro.",
+         "retainerMorale": "Morale S.",
+         "retainerMoraleHint": "Il punteggio di morale dei seguaci di questo personaggio. Il punteggio di morale di un seguace indica la sua lealtà e il suo coraggio sotto la guida di questo personaggio.",
+         "XPAward": "Valore in PX",
+         "attackRank": "Grado Attacco",
+         "hdConBonus": {
+            "name": "DV Cos.",
+            "hint": "Il modificatore di Costituzione del personaggio viene aggiunto al dado vita"
+         },
          "maxLevel": {
             "hint": "Il livello più alto che questa classe può raggiungere",
             "name": "Livello Massimo"
          },
          "maxSpellLevel": {
             "hint": "Il livello di incantesimi più alto per questa classe",
-            "name": "Max Lvl Incantesimi"
+            "name": "Max Lvl Incant."
          },
          "firstLevel": {
             "hint": "Il livello più basso per questa classe",
             "name": "Livello Iniziale"
          },
          "isRetainer": {
-            "hint": "Questo personaggio è un servitore, un mercenario o un aiutante",
-            "name": "Servitore"
+            "hint": "Questo personaggio è un seguace, un mercenario o un aiutante",
+            "name": "Seguace"
          },
-         "Other": "Altro",
-         "RetainerWage": "Paga",
          "Wrestling": {
             "long": "Valore di Lotta",
             "short": "Lotta",
             "abbr": "VL"
          },
          "Flight": {
-            "abbr": "VOLARE",
-            "long": "Volo"
+            "abbr": "VOLO",
+            "long": "Volare"
          },
          "Movement": {
             "abbr": "MV",
@@ -164,7 +174,6 @@
                "abbr": "CAR",
                "mod": "Reazioni",
                "retainer": "Seguaci",
-               "morale": "Morale",
                "hint": "<b>Il carisma (Car) è la forza della personalità e dell'influenza del personaggio.</b><p>Influisce sul modo in cui gli altri personaggi e anche i PNG reagiscono al personaggio.</p>"
             }
          },
@@ -180,8 +189,6 @@
             "abbrLair": "PA Covo",
             "longLair": "Numero di PNG/creature apparse nel covo"
          },
-         "Morale": "Morale",
-         "XPAward": "Valore in PX",
          "AbilityCount": {
             "abbr": "AS#",
             "short": "# Speciali",
@@ -235,11 +242,13 @@
          }
       },
       "SheetLabel": {
-         "Actor": "Scheda del Personaggio Fa.De.",
+         "Character": "Scheda-PG Fa.De.",
+         "Character2": "Scheda-PG FaDe 2.0",
+         "Monster": "Scheda PNG/Mostro",
          "ActorMasteryItem": "Scheda Maestria",
          "ArmorItem": "Scheda Armatura",
          "ClassItem": "Scheda Classe",
-         "Item": "Scheda Equipaggiamento",
+         "Item": "Scheda Oggetto Equipaggiamento",
          "MasteryDefinitionItem": "Scheda Definizione Maestria Armi",
          "SpellItem": "Scheda Incantesimo",
          "SkillItem": "Scheda Abilità",
@@ -269,6 +278,7 @@
          "plural": "Equipaggiamento",
          "uses": "Utilizzi",
          "equip": "Equipaggia",
+         "equipped": "Equipaggiato",
          "unequip": "Riponi",
          "isEquippable": "Equipaggiabile",
          "isContainer": "Contenitore",
@@ -286,11 +296,23 @@
             "long2": "Ingombro",
             "abbr": "mon",
             "abbrPlural": "mon",
-            "desc": "L'ingombro è il peso di un oggetto misurato in monete"
+            "desc": "L'ingombro comprende il volume e il peso di un oggetto misurato in monete d'oro (1mo = 50g)"
          },
          "cost": {
             "abbr": "mo",
             "long": "Costo (mo)"
+         },
+         "light": {
+            "radius": "Raggio",
+            "typeLabel": "Luce",
+            "fuelType": "Combustibile",
+            "durationHint": "La durata della fonte di luce prima che si esaurisca.",
+            "lightTypes": {
+               "torch": "Torcia",
+               "lantern": "Lanterna",
+               "magic": "Magia",
+               "custom": "Personalizza"
+            }
          }
       },
       "Weapon": {
@@ -330,7 +352,6 @@
          "ammo": {
             "short": "Ammo",
             "long": "Proiettili",
-            "type": "Tipo",
             "load": "Attuali",
             "maxLoad": "Totali"
          }
@@ -399,9 +420,9 @@
             "grandMaster": "Master"
          },
          "acBonus": "Bonus CA",
-         "acBonusType": "Tipo",
          "acBonusAT": "AT#",
-         "acBonusATTitle": "Attacchi bonus CA per round"
+         "acBonusATTitle": "Attacchi bonus CA per round",
+         "specialEffects": "Effetti Speciali"
       },
       "SpecialAbility": {
          "plural": "Abilità Speciali",
@@ -411,7 +432,17 @@
          "autoSuccess": "Auto-Successo",
          "autoSuccessHint": "Ha successo automaticamente con un tiro naturale/non modificato di questo valore",
          "autoFail": "Auto-Fallimento",
-         "autoFailHint": "Fallisce automaticamente con un tiro naturale/non modificato di questo valore"
+         "autoFailHint": "Fallisce automaticamente con un tiro naturale/non modificato di questo valore",
+         "categories": {
+            "explore": "Esplorazione",
+            "class": "Abilità di Classe"
+         }
+      },
+      "class": {
+         "key": {
+            "name": "Chiave",
+            "hint": "La chiave utilizzata per i riferimenti a una singola lettera di una classe. Ad esempio, per un Guerriero sarebbe 'G'."
+         }
       },
       "Effect": {
          "short": "Effetto",
@@ -425,8 +456,6 @@
          "addTags": "+etichette",
          "desc": "Alcune etichette (tag) vengono utilizzate dal sistema, altre sono destinate all'utilizzo da parte del DM o del giocatore"
       },
-      "Size": "Taglia",
-      "Type": "Tipo",
       "notification": {
          "selectToken1": "Il token deve essere prima selezionato",
          "spellSelectToken": "Devi selezionare il token per lanciare un incantesimo",
@@ -468,26 +497,22 @@
          "spellCast": "{caster} lancia {spell}",
          "useSpecAbility": "{owner} usa {specAbility}",
          "attackAC": "<div class='attack-info'>L'attacco colpisce <strong>CA {hitAC}</strong></div>",
+         "attackACAny": "<div class='attack-info'>20 Naturale! L'attacco colpisce qualsiasi CA!</strong>.</div>",
          "attackACNone": "<div class='attack-info'>L'attacco non colpisce nessuna CA</div>",
          "attackSuccess": "<div class='attack-success'>Colpito!</div>",
          "attackFail": "<div class='attack-fail'>Mancato!</div>",
          "damageFlavor2": "<div>{weapon} fa <span class='damage'>{damage}</span> danni</div>",
          "healFlavor": "<div>{weapon} ripristina <span class='damage'>{damage}</span> punti ferita</div>",
          "healRoll": "Cura",
-         "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='CA modificata con bonus di maestria nell'arma. Ha attaccato {attacksAgainst}/{maxAttacksAgainst} volte'>({defenseMasteryTotal})</span>"
+         "targetACDefMastery": "<span data-tooltip='CA' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='CA modificata con bonus di maestria nell'arma. Ha attaccato {attacksAgainst}/{maxAttacksAgainst} volte'>({defenseMasteryTotal})</span>"
       },
-      "roll": "Tiro",
-      "rollMode": "Modalità Tiro",
-      "operator": "Fattore",
-      "modifier": "Modificatore",
-      "target": "Bersaglio",
       "dialog": {
          "lightSource": "Light Source",
          "selectLightSource": "Seleziona fonte luminosa",
          "ignite": "Accendi",
          "extinguish": "Spegni",
          "selectWeapon": "Seleziona arma",
-         "masteryTargetType": "Seleziona il tipo di arma",
+         "masteryTargetType": "Tipo Arma Bersaglio",
          "abilityCheck": "Prova di Caratteristica",
          "skillCheck": "Prova di Abilità",
          "spellcast": {
@@ -546,6 +571,7 @@
          "types": {
             "melee": "Mischia",
             "missile": "Distanza",
+            "breath": "Soffio",
             "save": "Tiro Salvezza"
          }
       },
@@ -606,7 +632,7 @@
                "description": "Il personaggio lancia un'arma adatta, applicando Destrezza e bonus magici al tiro per colpire e Forza e bonus magici al danno, a condizione che il bersaglio sia nel raggio d'azione"
             },
             "fire": {
-               "name": "Tira",
+               "name": "Tira/Spara",
                "description": "Il personaggio usa un'arma a distanza, applicando Destrezza e bonus magici al tiro per colpire, a condizione che il bersaglio si trovi entro la portata dell'arma"
             },
             "spell": {
@@ -638,7 +664,7 @@
                "description": "Il personaggio effettua più attacchi per round, che possono includere qualsiasi combinazione di attacchi, movimenti, disarmi o attacchi con la lancia"
             },
             "setSpear": {
-               "name": "Prepara Lancia",
+               "name": "Prepara vs Carica",
                "description": "Il personaggio impugna una lancia, una picca o un'arma simile e la blocca contro il terreno per un nemico in carica, ottenendo Forza e bonus magici e infliggendo danni doppi in caso di colpo andato a segno"
             },
             "smash": {
@@ -655,10 +681,14 @@
             }
          }
       },
+      "Size": "Taglia",
+      "roll": "Tiro",
+      "rollMode": "Modalità Tiro",
+      "operator": "Condizione",
+      "modifier": "Modificatore",
+      "target": "Bersaglio",
       "GMNotes": "Note del DM",
-      "none": "Nessuno",
-      "yes": "Si",
-      "non": "No"
+      "category": "Categoria"
    },
 
    "TYPES": {
@@ -686,7 +716,7 @@
          "Name": "Tracciatura Ingombro",
          "None": "Nessuna",
          "Basic": "Solo Armatura",
-         "Classic": "Classic",
+         "Classic": "Classico",
          "Expert": "Dark Dungeons"
       },
       "toasts": {
@@ -781,9 +811,11 @@
       },
       "toHitSystem": {
          "name": "Sistema TPC (Work-in-progress)",
-         "hint": "Questo sistema determina come vengono gestiti i Tiri Per Colpire e anche quale tipo di classe di armatura viene utilizzato (CA vs CAA).                                 Traduzione di FaDe: FR4NC35C0 (20diGuerra)",
+         "hint": "Il sistema per colpire determina come vengono gestiti i tiri per colpire e anche quale sistema di classe armatura viene utilizzato (CA vs CAA). Il sistema Solo THAC0 non utilizza una matrice d'attacco, ma invece un semplice calcolo del valore THAC0 meno la CA del bersaglio. Il sistema Classico utilizza una matrice d'attacco e THAC0 supportando fino al livello 25 e CA che varia da -19 a 19. Il sistema Classico tratta i 1 naturali come fallimenti e i 20 come colpi riusciti, indipendentemente dai modificatori di CA. L'Eroica Matrice di Combattimento richiama i GDR degli anni '90 e si scala fino al livello 36 e CA che varia da -20 a 19. Dark Dungeons utilizza il sistema del gioco Dark Dungeons. La CAA e Bonus d'Attacco è simile a THAC0, ma presenta una classe armatura crescente dove più alto è il valore di CA, maggiore è la capacità difensiva.                                 Traduzione di FaDe: FR4NC35C0, WinfFireBlade, N1xx1 (Discord: 20diGuerra)",
          "choices": {
-            "classic": "Classic",
+            "thac0": "Solo THAC0 (Senza matrice attacco)",
+            "classic": "Classico",
+            "heroic": "BECMI DnD 1e",
             "darkdungeons": "Dark Dungeons",
             "aac": "CAA e Attacco Bonus"
          }

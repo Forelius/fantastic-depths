@@ -3,7 +3,7 @@
    <h4>{{localize 'FADE.Actor.explore.long'}}</h4>
    <div class="flexrow flex-group-center summary">
       <div>
-         <input name="system.exploration.openDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" /><br/>
+         <input name="system.exploration.openDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}" value="{{system.exploration.openDoor}}" /><br />
          <label class="rollable" for="system.exploration.openDoor"
                 data-test="generic"
                 data-formula="d6"
@@ -12,7 +12,13 @@
                 data-autosuccess="6"
                 data-target="{{system.exploration.openDoor}}"
                 data-label="{{localize 'FADE.Actor.explore.OpenDoor.short'}}"
-                data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}">{{localize 'FADE.Actor.explore.OpenDoor.short'}}</label>
+                data-tooltip="{{localize 'FADE.Actor.explore.OpenDoor.long'}}">
+            {{#if @root.saveAbbr}}
+            {{localize 'FADE.Actor.explore.OpenDoor.abbr'}}
+            {{else}}
+            {{localize 'FADE.Actor.explore.OpenDoor.short'}}
+            {{/if}}
+         </label>
       </div>
       <div>
          <input name="system.exploration.secretDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}" value="{{system.exploration.secretDoor}}" /><br />
@@ -25,26 +31,36 @@
                 data-autosuccess="1"
                 data-target="{{system.exploration.secretDoor}}"
                 data-label="{{localize 'FADE.Actor.explore.SecretDoor.short'}}"
-                data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}">{{localize 'FADE.Actor.explore.SecretDoor.short'}}</label>
+                data-tooltip="{{localize 'FADE.Actor.explore.SecretDoor.long'}}">
+            {{#if @root.saveAbbr}}
+            {{localize 'FADE.Actor.explore.SecretDoor.abbr'}}
+            {{else}}
+            {{localize 'FADE.Actor.explore.SecretDoor.short'}}
+            {{/if}}
+         </label>
       </div>
    </div>
    <div class="flexrow flex-group-center summary" style="margin-top:3px;">
       <div>
          <input name="system.exploration.listenDoor" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}" value="{{system.exploration.listenDoor}}" /><br />
          <label class="rollable" for="system.exploration.listenDoor"
-                data-test="generic"
-                data-formula="d6"
-                data-pass="lte"
-                data-rollmode="blindroll"
-                data-autofail="6"
-                data-autosuccess="1"
+                data-test="generic" data-formula="d6"
+                data-pass="lte" data-rollmode="blindroll"
+                data-autofail="6" data-autosuccess="1"
                 data-target="{{system.exploration.listenDoor}}"
                 data-label="{{localize 'FADE.Actor.explore.ListenDoor.short'}}"
-                data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}">{{localize 'FADE.Actor.explore.ListenDoor.short'}}</label>
+                data-tooltip="{{localize 'FADE.Actor.explore.ListenDoor.long'}}">
+            {{#if @root.saveAbbr}}
+            {{localize 'FADE.Actor.explore.ListenDoor.abbr'}}
+            {{else}}
+            {{localize 'FADE.Actor.explore.ListenDoor.short'}}
+            {{/if}}
+         </label>
       </div>
       <div>
          <input name="system.exploration.findTrap" type="text" data-dtype="Number" data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}" value="{{system.exploration.findTrap}}" /><br />
-         <label class="rollable" for="system.exploration.findTrap" data-test="generic"
+         <label class="rollable" for="system.exploration.findTrap"
+                data-test="generic"
                 data-formula="d6"
                 data-pass="lte"
                 data-rollmode="blindroll"
@@ -52,7 +68,13 @@
                 data-autosuccess="1"
                 data-target="{{system.exploration.findTrap}}"
                 data-label="{{localize 'FADE.Actor.explore.FindTrap.short'}}"
-                data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}">{{localize 'FADE.Actor.explore.FindTrap.short'}}</label>
+                data-tooltip="{{localize 'FADE.Actor.explore.FindTrap.long'}}">
+            {{#if @root.saveAbbr}}
+            {{localize 'FADE.Actor.explore.FindTrap.abbr'}}
+            {{else}}
+            {{localize 'FADE.Actor.explore.FindTrap.short'}}
+            {{/if}}
+         </label>
       </div>
    </div>
 </div>
