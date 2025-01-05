@@ -2,7 +2,7 @@
 # git tag 0.7.12
 # git push origin main
 # git push origin 0.7.12
-name: Build and Release Foundry VTT Module
+name: Build and Release Fantastic Depths
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - "[0-9]+\\.[0-9]+\\.[0-9]+"
 
 permissions:
-  contents: write
+  contents: write  # Required to create the release and upload artifacts
 
 jobs:
   build:
@@ -19,31 +19,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: main
 
-      - name: Generate release notes
-        id: release_notes
-        run: |
-          LAST_TAG=$(git describe --tags --abbrev=0 HEAD^)
-          NEW_TAG=${GITHUB_REF#refs/tags/}
+      # Extract version from the Git tag
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-          echo "**Full Changelog**: https://github.com/Forelius/fade-compendiums/compare/${LAST_TAG}...${NEW_TAG}" > release_notes.md
-          echo "" >> release_notes.md
-          echo "**Changes:**" >> release_notes.md
-          
-          git log ${LAST_TAG}..HEAD --pretty=format:"%B" --first-parent | grep '^-' >> release_notes.md
-
+      # Create the release zip
       - name: Prepare release zip
         run: |
-          zip -r fade-compendiums.zip ./* -x '.git*' -x '.github/*'
+          zip -r fantastic-depths.zip ./* \
+          -x ".git*" \
+          -x ".github/*" \
+          -x "node_modules/*" \
+          -x ".vs/*" \
+          -x "src/*" \
+          -x "package.json" \
+          -x "package-lock.json"
 
+      # Create a new GitHub release and attach the zip file
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: fade-compendiums.zip
+          artifacts: fantastic-depths.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body_path: release_notes.md
