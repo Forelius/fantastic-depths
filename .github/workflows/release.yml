@@ -20,20 +20,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch the full history
-          ref: main       # Ensure the main branch is checked out
+          fetch-depth: 0
+          ref: main
 
       - name: Generate release notes
         id: release_notes
         run: |
           LAST_TAG=$(git describe --tags --abbrev=0 HEAD^)
           NEW_TAG=${GITHUB_REF#refs/tags/}
-          echo "LAST_TAG=${LAST_TAG}" >> $GITHUB_ENV
-          echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
 
-          # Generate commit messages from the main branch since the last tag, filtering for lines starting with '-'
-          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%B" --first-parent | grep '^-' || true)
-          echo "COMMITS=${COMMITS}" >> $GITHUB_ENV
+          echo "**Full Changelog**: https://github.com/Forelius/fade-compendiums/compare/${LAST_TAG}...${NEW_TAG}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "**Changes:**" >> release_notes.md
+          
+          git log ${LAST_TAG}..HEAD --pretty=format:"%B" --first-parent | grep '^-' >> release_notes.md
 
       - name: Prepare release zip
         run: |
@@ -44,10 +44,6 @@ jobs:
         with:
           artifacts: fade-compendiums.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.NEW_TAG }}
-          name: Release ${{ env.NEW_TAG }}
-          body: |
-            **Full Changelog**: https://github.com/Forelius/fade-compendiums/compare/${{ env.LAST_TAG }}...${{ env.NEW_TAG }}
-
-            **Changes:**
-            ${{ env.COMMITS }}
+          tag: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body_path: release_notes.md
