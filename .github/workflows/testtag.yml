@@ -1,0 +1,20 @@
+name: Test Tag and Branch Detection
+
+on:
+  workflow_dispatch:  # Allows you to trigger the workflow manually from GitHub
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch full history to ensure we have all branches and tags
+
+      - name: Fetch all branches and tags
+        run: git fetch --all --tags
+
+      - name: Print current HEAD
+        run: git r
