@@ -20,6 +20,9 @@ jobs:
         with:
           fetch-depth: 0  # Ensure full history is fetched
 
+      - name: Fetch all branches and tags
+        run: git fetch --all --tags
+
       - name: Extract version from tag
         id: get_version
         run: |
@@ -28,8 +31,6 @@ jobs:
       - name: Get branch associated with the tag
         id: get_branch
         run: |
-          git fetch --all --tags  # Ensure all branches and tags are fetched
-
           TAG_COMMIT=$(git rev-parse ${{ env.VERSION }})
           BRANCH=$(git branch -r --contains $TAG_COMMIT | grep 'origin/main' || echo "")
 
@@ -37,7 +38,7 @@ jobs:
             echo "The tag is on the main branch."
             echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "The tag is not on the main branch. Skipping release."
+            echo "The tag is NOT on the main branch. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
           fi
 
