@@ -1,24 +1,24 @@
+# EXAMPLE:
+# git tag 0.7.12
+# git push origin main
+# git push origin 0.7.12
+# .github/workflows/pre-release.yml
 name: Build and Release Fantastic Depths (Pre-Release)
-
-on:
+'on':
   push:
     tags:
-      - "[0-9]+\\.[0-9]+\\.[0-9]+"
-
+      - '[0-9]+\.[0-9]+\.[0-9]+'
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensure all history is fetched
-
+          fetch-depth: 0
       - name: Extract version from tag
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
+        run: 'echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV'
       - name: Get branch associated with the tag
         id: get_branch
         run: |
@@ -36,7 +36,7 @@ jobs:
           else
             echo "The tag is not on the main or stable branch. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
-
+          fi
       - name: Prepare release zip
         if: env.is_valid == 'true'
         run: |
@@ -48,13 +48,12 @@ jobs:
           -x "src/*" \
           -x "package.json" \
           -x "package-lock.json"
-
       - name: Create GitHub pre-release
         if: env.is_valid == 'true'
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ env.VERSION }}
-          name: "Pre-Release ${{ env.VERSION }}"
+          tag: '${{ env.VERSION }}'
+          name: 'Pre-Release ${{ env.VERSION }}'
           prerelease: true
           artifacts: fantastic-depths.zip
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: '${{ secrets.GITHUB_TOKEN }}'
