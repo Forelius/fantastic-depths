@@ -8,7 +8,7 @@ name: Build and Release Fantastic Depths (Pre-Release)
 on:
   push:
     tags:
-      - "[0-9]+\\.[0-9]+\\.[0-9]+"  # Trigger on version tags
+      - '[0-9]+\.[0-9]+\.[0-9]+'
 
 jobs:
   build:
@@ -17,28 +17,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # Extract version from the Git tag
+      - name: Fetch all branches and tags
+        run: git fetch --all --tags
+
       - name: Extract version from tag
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
-      # Check if the tag is from the main branch
-      - name: Check if tag is on main branch
-        id: check_branch
         run: |
-          TAG_COMMIT=$(git rev-list -n 1 ${{ env.VERSION }})
-          if git merge-base --is-ancestor main $TAG_COMMIT; then
-            echo "The tag is on the main branch."
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Check if the tag commit is in the main branch
+        id: check_main
+        run: |
+          TAG_COMMIT=$(git rev-parse ${{ env.VERSION }})
+          if git merge-base --is-ancestor $TAG_COMMIT origin/main; then
+            echo "The tag is in the main branch history."
             echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "This tag is not on the main branch. Skipping release."
+            echo "The tag is NOT in the main branch history. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
           fi
 
-      # Create the release zip only if the tag is valid
       - name: Prepare release zip
-        if: env.is_valid == 'true'  # Only run if the tag is valid
+        if: env.is_valid == 'true'
         run: |
           zip -r fantastic-depths.zip ./* \
           -x ".git*" \
@@ -49,9 +52,8 @@ jobs:
           -x "package.json" \
           -x "package-lock.json"
 
-      # Create a new GitHub pre-release and attach the zip file
       - name: Create GitHub pre-release
-        if: env.is_valid == 'true'  # Only run if the tag is valid
+        if: env.is_valid == 'true'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.VERSION }}
