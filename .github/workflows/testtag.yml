@@ -17,4 +17,27 @@ jobs:
         run: git fetch --all --tags
 
       - name: Print current HEAD
-        run: git r
+        run: git rev-parse HEAD
+
+      - name: List all remote branches
+        run: git branch -r
+
+      - name: Get the branch associated with the tag
+        run: |
+          TAG_NAME="0.7.19"  # Replace with your tag
+          TAG_COMMIT=$(git rev-parse $TAG_NAME)
+          BRANCH=$(git branch -r --contains $TAG_COMMIT)
+          
+          echo "Tag Commit: $TAG_COMMIT"
+          echo "Branch Associated with Tag:"
+          echo "$BRANCH"
+
+      - name: Verify if tag is on main
+        run: |
+          TAG_NAME="0.7.19"  # Replace with your tag
+          TAG_COMMIT=$(git rev-parse $TAG_NAME)
+          if git merge-base --is-ancestor $TAG_COMMIT origin/main; then
+            echo "✅ The tag is on the main branch."
+          else
+            echo "❌ The tag is NOT on the main branch."
+          fi
