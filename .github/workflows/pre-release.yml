@@ -23,11 +23,13 @@ jobs:
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      # Check which branch the tag is associated with
+      # Get branch for the tag
       - name: Get branch for the tag
         id: get_branch
         run: |
+          git fetch --all  # Ensure all branches are fetched
           TAG_COMMIT=$(git rev-list -n 1 ${{ env.VERSION }})
+          echo "TAG_COMMIT=${TAG_COMMIT}"  # Debug: Print the tag commit
           BRANCH_NAME=$(git branch --contains $TAG_COMMIT | grep -v 'HEAD' | sed 's/^[ *]*//;s/ .*//')
           echo "The tag is associated with the following branch: $BRANCH_NAME"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
