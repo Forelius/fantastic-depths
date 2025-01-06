@@ -4,39 +4,41 @@
 # git push origin 0.7.12
 # .github/workflows/pre-release.yml
 name: Build and Release Fantastic Depths (Pre-Release)
-'on':
+
+on:
   push:
     tags:
       - '[0-9]+\.[0-9]+\.[0-9]+'
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Ensure full history is fetched
+
       - name: Extract version from tag
         id: get_version
-        run: 'echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV'
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Get branch associated with the tag
         id: get_branch
         run: |
           TAG_COMMIT=$(git rev-parse ${{ env.VERSION }})
-          echo "TAG_COMMIT=${TAG_COMMIT}"  # Debug: Print the tag commit
-          MAIN_COMMIT=$(git show-ref refs/heads/main | awk '{print $1}')
-          STABLE_COMMIT=$(git show-ref refs/heads/stable | awk '{print $1}')
+          BRANCH=$(git branch -r --contains $TAG_COMMIT | grep 'origin/main' || echo "")
 
-          if git merge-base --is-ancestor ${TAG_COMMIT} ${MAIN_COMMIT}; then
+          if [ "$BRANCH" == "origin/main" ]; then
             echo "The tag is on the main branch."
             echo "is_valid=true" >> $GITHUB_ENV
-          elif git merge-base --is-ancestor ${TAG_COMMIT} ${STABLE_COMMIT}; then
-            echo "The tag is on the stable branch."
-            echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "The tag is not on the main or stable branch. Skipping release."
+            echo "The tag is not on the main branch. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
           fi
+
       - name: Prepare release zip
         if: env.is_valid == 'true'
         run: |
@@ -48,12 +50,13 @@ jobs:
           -x "src/*" \
           -x "package.json" \
           -x "package-lock.json"
+
       - name: Create GitHub pre-release
         if: env.is_valid == 'true'
         uses: ncipollo/release-action@v1
         with:
-          tag: '${{ env.VERSION }}'
-          name: 'Pre-Release ${{ env.VERSION }}'
+          tag: ${{ env.VERSION }}
+          name: "Pre-Release ${{ env.VERSION }}"
           prerelease: true
           artifacts: fantastic-depths.zip
-          token: '${{ secrets.GITHUB_TOKEN }}'
+          token: ${{ secrets.GITHUB_TOKEN }}
