@@ -71,13 +71,13 @@ export class CharacterDataModel extends fadeActorDataModel {
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();
-      this._prepareDerivedAbilities();
+      super.prepareBaseData();      
       this.encumbrance.max = this.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
    }
 
    /** @override */
    prepareDerivedData() {
+      this._prepareDerivedAbilities();
       super.prepareDerivedData();
       this._prepareWrestling();
       this._prepareClassInfo();
