@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensure full history is fetched
+          fetch-depth: 0
 
       - name: Fetch all branches and tags
         run: git fetch --all --tags
@@ -28,17 +28,15 @@ jobs:
         run: |
           echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Get branch associated with the tag
-        id: get_branch
+      - name: Check if the tag commit is in the main branch
+        id: check_main
         run: |
           TAG_COMMIT=$(git rev-parse ${{ env.VERSION }})
-          BRANCH=$(git branch -r --contains $TAG_COMMIT | grep 'origin/main' || echo "")
-
-          if [ "$BRANCH" == "origin/main" ]; then
-            echo "The tag is on the main branch."
+          if git merge-base --is-ancestor $TAG_COMMIT origin/main; then
+            echo "The tag is in the main branch history."
             echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "The tag is NOT on the main branch. Skipping release."
+            echo "The tag is NOT in the main branch history. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
           fi
 
