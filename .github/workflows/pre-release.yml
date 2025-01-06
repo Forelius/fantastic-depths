@@ -1,14 +1,15 @@
 # EXAMPLE:
-# git tag 0.7.12
+# git tag 0.7.12-rc.1
 # git push origin main
-# git push origin 0.7.12
+# git push origin 0.7.12-rc.1
+# .github/workflows/pre-release.yml
 # .github/workflows/pre-release.yml
 name: Build and Release Fantastic Depths (Pre-Release)
 
 on:
   push:
     tags:
-      - '[0-9]+\.[0-9]+\.[0-9]+'
+      - '[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+'  # Pre-release tags
 
 jobs:
   build:
@@ -52,6 +53,16 @@ jobs:
           -x "package.json" \
           -x "package-lock.json"
 
+      - name: Prepare release notes
+        if: env.is_valid == 'true'
+        id: prepare_notes
+        run: |
+          echo "## Fantastic Depths Pre-Release" > release_notes.txt
+          echo "" >> release_notes.txt
+          echo "This is a pre-release version of Fantastic Depths." >> release_notes.txt
+          echo "To install manually, use this URL:" >> release_notes.txt
+          echo "https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json" >> release_notes.txt
+
       - name: Create GitHub pre-release
         if: env.is_valid == 'true'
         uses: ncipollo/release-action@v1
@@ -60,4 +71,5 @@ jobs:
           name: "Pre-Release ${{ env.VERSION }}"
           prerelease: true
           artifacts: fantastic-depths.zip
+          body_path: release_notes.txt
           token: ${{ secrets.GITHUB_TOKEN }}
