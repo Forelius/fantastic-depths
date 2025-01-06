@@ -30,13 +30,15 @@ jobs:
           TAG_COMMIT=$(git rev-list -n 1 ${{ env.VERSION }})
           if git merge-base --is-ancestor main $TAG_COMMIT; then
             echo "The tag is on the main branch."
+            echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "This tag is not on the main branch. Exiting."
-            exit 1
+            echo "This tag is not on the main branch. Skipping release."
+            echo "is_valid=false" >> $GITHUB_ENV
           fi
 
-      # Create the release zip
+      # Create the release zip only if the tag is valid
       - name: Prepare release zip
+        if: env.is_valid == 'true'  # Only run if the tag is valid
         run: |
           zip -r fantastic-depths.zip ./* \
           -x ".git*" \
@@ -49,6 +51,7 @@ jobs:
 
       # Create a new GitHub pre-release and attach the zip file
       - name: Create GitHub pre-release
+        if: env.is_valid == 'true'  # Only run if the tag is valid
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.VERSION }}
