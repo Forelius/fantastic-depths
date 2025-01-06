@@ -28,6 +28,8 @@ jobs:
       - name: Get branch associated with the tag
         id: get_branch
         run: |
+          git fetch --all --tags  # Ensure all branches and tags are fetched
+
           TAG_COMMIT=$(git rev-parse ${{ env.VERSION }})
           BRANCH=$(git branch -r --contains $TAG_COMMIT | grep 'origin/main' || echo "")
 
