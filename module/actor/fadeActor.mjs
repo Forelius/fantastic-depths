@@ -147,7 +147,7 @@ export class fadeActor extends Actor {
          modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData);
       }
 
-      if (masteryEnabled && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
+      if (masteryEnabled && weaponData.mastery !== "") {
          modifier += this.#getMasteryAttackRollMods(weaponData, options, digest, attackType);
       }
 
@@ -353,8 +353,6 @@ export class fadeActor extends Actor {
 
    #getMasteryAttackRollMods(weaponData, options, digest, attackType) {
       let result = 0;
-      const target = options.target;
-      const targetData = options.target?.system;
       const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
       if (attackerMastery) {
          const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
@@ -365,8 +363,8 @@ export class fadeActor extends Actor {
             const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
             digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
          }
-      } else if (attackType === "missile") {
-         // Unskilled use
+      } else if (attackType === "missile" && this.type === "character" && systemData.details.species === "Human") {
+         // Unskilled use for humans
          result -= 1;
          digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
       }
