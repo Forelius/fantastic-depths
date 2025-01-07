@@ -37,7 +37,7 @@ jobs:
             echo "The tag is in the main branch history."
             echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "The tag is NOT in the main branch history. Skipping release."
+            echo "The tag (${{ env.VERSION }}) is NOT in the main branch history. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
           fi
 
