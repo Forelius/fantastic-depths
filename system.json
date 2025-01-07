@@ -48,7 +48,7 @@
    "packFolders": [],
    "socket": true,
    "manifest": "https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json",
-   "download": "https://github.com/Forelius/fantastic-depths/releases/download/0.7.19-rc.1/fantastic-depths.zip",
+   "download": "https://github.com/Forelius/fantastic-depths/releases/download/0.7.20-rc.1/fantastic-depths.zip",
    "background": "systems/fantastic-depths/assets/cover.webp",
    "grid": {
       "distance": 5,

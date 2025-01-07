@@ -3,7 +3,6 @@
 # git push origin main
 # git push origin 0.7.12-rc.1
 # .github/workflows/pre-release.yml
-# .github/workflows/pre-release.yml
 name: Build and Release Fantastic Depths (Pre-Release)
 
 on:
