@@ -203,23 +203,7 @@ export class WeaponItem extends fadeItem {
          }
 
          // Check if the attack type is a missile/ranged attack
-         if (canAttack && dialogResp.resp.attackType === 'missile' && systemData.ammo.type) {
-            // Handle ammo usage
-            const currentAmmo = systemData.ammo.load; // Current ammo
-            const ammoType = systemData.ammo.type;   // Ammo type (if relevant)
-
-            // If there's no ammo, show a UI notification
-            if (currentAmmo <= 0) {
-               ui.notifications.warn(`No ${ammoType ? ammoType : 'ammo'} remaining!`);
-               canAttack = false;
-            } else {
-               // Deduct 1 ammo
-               systemData.ammo.load -= 1;
-
-               // Update the weapon/item's data to reflect the new ammo count
-               await this.update({ 'system.ammo.load': systemData.ammo.load });
-            }
-         }
+         canAttack = await this.#tryUseAmmo(canAttack, dialogResp, systemData);
 
          // Perform the roll if there's ammo or if it's a melee attack
          if (canAttack && dialogResp) {
@@ -245,6 +229,28 @@ export class WeaponItem extends fadeItem {
       }
 
       return result;
+   }
+
+   async #tryUseAmmo(canAttack, dialogResp, systemData) {
+      if (canAttack && dialogResp.resp.attackType === 'missile' && systemData.ammo.type) {
+         // Handle ammo usage
+         const currentAmmo = systemData.ammo.load; // Current ammo
+         const ammoType = systemData.ammo.type; // Ammo type (if relevant)
+
+
+         // If there's no ammo, show a UI notification
+         if (currentAmmo <= 0) {
+            ui.notifications.warn(`No ${ammoType ? ammoType : 'ammo'} remaining!`);
+            canAttack = false;
+         } else {
+            // Deduct 1 ammo
+            systemData.ammo.load -= 1;
+
+            // Update the weapon/item's data to reflect the new ammo count
+            await this.update({ 'system.ammo.load': systemData.ammo.load });
+         }
+      }
+      return canAttack;
    }
 
    _prepareModText() {
@@ -276,7 +282,7 @@ export class WeaponItem extends fadeItem {
       this._processNonTransferActiveEffects();
    }
 
-    async _prepareDamageRollLabel() {
+   async _prepareDamageRollLabel() {
       this.system.damageRollLabel = await this.getEvaluatedRollFormula(this.system.damageRoll);
    }
 }
