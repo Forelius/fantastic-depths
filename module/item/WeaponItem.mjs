@@ -74,7 +74,7 @@ export class WeaponItem extends fadeItem {
 
       // Check weapon mastery
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (hasDamage && masteryEnabled && weaponData.mastery !== "" && attacker.type === "character" && attackerData.details.species === "Human") {
+      if (hasDamage && masteryEnabled && weaponData.mastery !== "") {
          const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
          if (attackerMastery) {
             // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
@@ -92,7 +92,7 @@ export class WeaponItem extends fadeItem {
                formula = attackerMastery.system.pDmgFormula;
                digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
             }
-         } else {
+         } else if (attacker.type === "character" && attackerData.details.species === "Human") {
             // Half damage if unskilled use.
             formula = `floor(${formula}/2)`;
             digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
