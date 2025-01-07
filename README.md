@@ -6,8 +6,14 @@ This Foundry VTT system is inspired by Dark Dungeons, an OGL retro-clone of the 
 
 The system comes with two themes, which are a light mode and a dark mode.
 
-- Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json
-- Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
+---
+Manual install (Stable): 
+https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json
+
+Manual install (Pre-Release): 
+https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
+
+---
 
 We are on Discord: https://discord.gg/6nCTfKun9d
 
