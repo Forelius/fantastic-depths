@@ -371,6 +371,8 @@
          },
          "ammo": {
             "short": "Ammo",
+            "type": "Ammo Type",
+            "typeHint": "The type of ammunition this item is. Leave blank is if this is not ammunition.",
             "long": "Ammunition",
             "load": "Load",
             "maxLoad": "Max Load"

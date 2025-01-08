@@ -125,20 +125,24 @@
             </ul>
             {{/if}}
             {{else}}
-            <ul class="summary flexrow">
-               <li class="flex1">
-                  <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
-                  <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
-               </li>
-               <li class="flex1">
-                  <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
-                  <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
-               </li>
-               <li class="flex1">
-                  <input name="system.fuelType" type="text" data-dtype="String" value="{{system.fuelType}}" />
-                  <label for="system.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
-               </li>
-            </ul>
+         <ul class="summary flexrow">
+            <li class="flex1">
+               <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
+               <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+            </li>
+            <li class="flex1">
+               <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
+               <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
+            </li>
+            <li class="flex1">
+               <input name="system.fuelType" type="text" data-dtype="String" value="{{system.fuelType}}" />
+               <label for="system.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
+            </li>
+            <li class="flex1">
+               <input name="system.ammoType" type="text" data-dtype="String" value="{{system.ammoType}}" />
+               <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+            </li>
+         </ul>
             {{/if}}
          </section>
       </div>

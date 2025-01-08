@@ -28,11 +28,12 @@ export class WeaponItemDataModel extends fadeItemDataModel {
             medium: new fields.NumberField({ nullable: true, initial: null }),
             long: new fields.NumberField({ nullable: true, initial: null })
          }),
-         ammo: new fields.SchemaField({
-            type: new fields.StringField({ nullable: true, initial: null }),
-            load: new fields.NumberField({ nullable: true, initial: null }),
-            maxLoad: new fields.NumberField({ nullable: true, initial: null })
-         }),
+         ammoType: new fields.StringField({ nullable: true, initial: null }),
+         //ammo: new fields.SchemaField({
+         //   type: new fields.StringField({ nullable: true, initial: null }),
+         //   load: new fields.NumberField({ nullable: true, initial: null }),
+         //   maxLoad: new fields.NumberField({ nullable: true, initial: null })
+         //}),
          natural: new fields.BooleanField({ required: false, initial: false }),
          mod: new fields.SchemaField({
             dmg: new fields.NumberField({ initial: 0 }),

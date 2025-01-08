@@ -1,5 +1,5 @@
-<section class="grid max-width-300px grid-2col">
-   <section class="bordered">
+<section class="flexrow">
+   <div class="bordered">
       <h4>{{localize 'FADE.Weapon.range.section'}}</h4>
       <ul class="summary flexrow">
          <li class="flex1" style="margin-left:3px;">
@@ -14,9 +14,13 @@
             <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
             <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
          </li>
+         <li class="flex1" style="margin-left:3px;">
+            <input type='text' name="system.ammoType" value='{{system.ammoType}}' data-dtype='String' />
+            <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+         </li>
       </ul>
-   </section>
-   <section class="bordered">
+   </div>
+   <!--<section class="bordered">
       <h4>{{localize 'FADE.Weapon.ammo.long'}}</h4>
       <ul class="summary flexrow">
          <li class="flex1" style="margin-left:3px;">
@@ -32,7 +36,7 @@
             <label for="system.ammo.maxLoad">{{localize 'FADE.Weapon.ammo.maxLoad'}}</label>
          </li>
       </ul>
-   </section>
+   </section>-->
 </section>
 {{#if isGM}}
 <section class="bordered">
