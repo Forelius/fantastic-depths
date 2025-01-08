@@ -51,7 +51,6 @@ import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 import { GMMessageSender } from './sys/GMMessageSender.mjs'
-import { fadeCombatant } from './sys/fadeCombatant.mjs'
 import { fadeEffect } from './sys/fadeEffect.mjs'
 
 /* -------------------------------------------- */
