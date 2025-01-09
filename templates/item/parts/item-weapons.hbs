@@ -40,19 +40,21 @@
          </a>
       </div>
    </li>
-   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
-      {{#if item.system.ammo.maxLoad}}
-      {{#if (lte item.system.ammo.maxLoad 30)}}
+   {{#unless item.system.container}}
+   {{#if item.system.quantityMax }}
+   {{#if (lte item.system.quantityMax 38)}}
+   <li class='flexrow item collapsible-content bottom-border' data-item-id='{{item._id}}'>
       <div class="consumable-counter">
-         <label style="margin-right:4px;">{{item.system.ammo.type}}</label>
-         {{#times item.system.ammo.load}}
+         <label>{{localize 'FADE.Item.uses'}}</label>
+         {{#times item.system.quantity}}
          <div class="full-mark"></div>
-         {{/times}} {{#times (subtract item.system.ammo.maxLoad item.system.ammo.load)}}
+         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
          <div class="empty-mark"></div>
          {{/times}}
       </div>
-      {{/if}}
-      {{/if}}
    </li>
+   {{/if}}
+   {{/if}}
+   {{/unless}}
    {{/each}}
 </ol>

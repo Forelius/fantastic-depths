@@ -1,7 +1,17 @@
 <section class="flexrow">
    <div class="bordered">
-      <h4>{{localize 'FADE.Weapon.range.section'}}</h4>
+      <!--<h4>{{localize 'FADE.Weapon.range.section'}}</h4>-->
       <ul class="summary flexrow">
+         <li class="flex2">
+            <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' />
+            <label for="system.mastery">{{localize 'FADE.Mastery.short'}}</label>
+         </li>
+         <li class="flex2">
+            <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+               {{selectOptions weaponTypes selected=system.weaponType}}
+            </select>
+            <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
+         </li>
          <li class="flex1" style="margin-left:3px;">
             <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
             <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
@@ -14,29 +24,12 @@
             <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
             <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
          </li>
-         <li class="flex1" style="margin-left:3px;">
+         <li class="flex2" style="margin-left:3px;">
             <input type='text' name="system.ammoType" value='{{system.ammoType}}' data-dtype='String' />
             <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
          </li>
       </ul>
    </div>
-   <!--<section class="bordered">
-      <h4>{{localize 'FADE.Weapon.ammo.long'}}</h4>
-      <ul class="summary flexrow">
-         <li class="flex1" style="margin-left:3px;">
-            <input type='text' name="system.ammo.type" value='{{system.ammo.type}}' data-dtype='String' />
-            <label for="system.ammo.type">{{localize 'Type'}}</label>
-         </li>
-         <li class="flex1">
-            <input type='text' name="system.ammo.load" value='{{system.ammo.load}}' data-dtype='Number' />
-            <label for="system.ammo.load">{{localize 'FADE.Weapon.ammo.load'}}</label>
-         </li>
-         <li class="flex1">
-            <input type='text' name="system.ammo.maxLoad" value='{{system.ammo.maxLoad}}' data-dtype='Number' />
-            <label for="system.ammo.maxLoad">{{localize 'FADE.Weapon.ammo.maxLoad'}}</label>
-         </li>
-      </ul>
-   </section>-->
 </section>
 {{#if isGM}}
 <section class="bordered">

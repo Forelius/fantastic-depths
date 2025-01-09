@@ -219,8 +219,7 @@ export class fadeDialog {
       if (attackerActor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectAttack') };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
-         const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped));
-
+         const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped) && item.system.quantity > 0);
 
          if (!attackItems || attackItems.length == 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.weapon') }));

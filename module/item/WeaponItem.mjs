@@ -135,7 +135,7 @@ export class WeaponItem extends fadeItem {
       let result = [];
       const isBreath = this.system.breath?.length > 0 && this.system.savingThrow === "breath";
       if (isBreath) {
-         result.push({ text: game.i18n.format('FADE.dialog.attackType.breath'), value: "breath" });
+         result.push({ text: game.i18n.localize('FADE.dialog.attackType.breath'), value: "breath" });
       } else {
          const owner = this.actor ?? null;
          const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
@@ -143,15 +143,15 @@ export class WeaponItem extends fadeItem {
             // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
             const ownerMastery = owner.items.find((item) => item.type === 'mastery' && item.name === this.system.mastery);
             if (ownerMastery) {
-               if (ownerMastery.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
-               if (this.system.canMelee) result.push({ text: game.i18n.format('FADE.dialog.attackType.melee'), value: "melee" });
+               if (ownerMastery.system.canRanged) result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
+               if (this.system.canMelee) result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
             }
          }
 
          if (result.length === 0) {
             // Simple mode. Either the weapon can melee, missile or both, or not.
-            if (this.system.canRanged) result.push({ text: game.i18n.format('FADE.dialog.attackType.missile'), value: "missile" });
-            if (this.system.canMelee) result.push({ text: game.i18n.format('FADE.dialog.attackType.melee'), value: "melee" });
+            if (this.system.canRanged) result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
+            if (this.system.canMelee) result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
          }
       }
       return result;
@@ -173,7 +173,10 @@ export class WeaponItem extends fadeItem {
       let result = null;
       let hasRoll = false;
 
-      if (attacker) {
+      if (this.system.quantity < 1) {
+         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
+      }
+      else if (attacker) {
          try {
             const targetTokens = Array.from(game.user.targets);
             const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
@@ -203,7 +206,11 @@ export class WeaponItem extends fadeItem {
          }
 
          // Check if the attack type is a missile/ranged attack
-         canAttack = await this.#tryUseAmmo(canAttack, dialogResp, systemData);
+         let ammoItem = null;
+         if (canAttack && dialogResp.resp.attackType === 'missile') {
+            ammoItem = await this.#tryUseAmmo();
+            canAttack = ammoItem !== null && ammoItem !== undefined;
+         }
 
          // Perform the roll if there's ammo or if it's a melee attack
          if (canAttack && dialogResp) {
@@ -219,38 +226,30 @@ export class WeaponItem extends fadeItem {
                context: attacker,
                roll: rolled,
                digest: digest,
+               options: { ammoItem }
             };
 
             const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
             await builder.createChatMessage();
          }
       } else {
-         ui.notifications.warn("You must have your token selected to attack");
+         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
       }
 
       return result;
    }
 
-   async #tryUseAmmo(canAttack, dialogResp, systemData) {
-      if (canAttack && dialogResp.resp.attackType === 'missile' && systemData.ammo.type) {
-         // Handle ammo usage
-         const currentAmmo = systemData.ammo.load; // Current ammo
-         const ammoType = systemData.ammo.type; // Ammo type (if relevant)
-
-
-         // If there's no ammo, show a UI notification
-         if (currentAmmo <= 0) {
-            ui.notifications.warn(`No ${ammoType ? ammoType : 'ammo'} remaining!`);
-            canAttack = false;
-         } else {
-            // Deduct 1 ammo
-            systemData.ammo.load -= 1;
-
-            // Update the weapon/item's data to reflect the new ammo count
-            await this.update({ 'system.ammo.load': systemData.ammo.load });
-         }
+   async #tryUseAmmo() {
+      const ammoItem = this.actor?.getAmmoItem(this);
+      // If there's no ammo, show a UI notification
+      if (ammoItem === undefined || ammoItem === null) {
+         ui.notifications.warn(game.i18n.format('FADE.notification.noAmmo', { actorName: this.actor?.name, weaponName: this.name }));
+      } else {
+         // Deduct 1 ammo         
+         let newQuantity = ammoItem.system.quantity - 1;
+         await ammoItem.update({ "system.quantity": newQuantity });
       }
-      return canAttack;
+      return ammoItem;
    }
 
    _prepareModText() {

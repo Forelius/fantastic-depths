@@ -484,8 +484,10 @@
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
          "noTokenWarning": "You must select a token or assign a default character to perform this action.",
          "noTokenWarning2": "You must select a token to perform this action.",
-         "missingItem": "The required item type ({type}) was not found.",
-         "missingItem2": "{actor} does not have a {type}."
+         "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
+         "missingItem2": "{actor} does not have a {type}.",
+         "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
+         "noAmmo": "{actorName} does not have {weaponName} ammunition."
       },
       "Chat": {
          "rollMods": {

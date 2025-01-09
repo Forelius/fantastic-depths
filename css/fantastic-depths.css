@@ -1041,7 +1041,7 @@ h1, h2, h3, h4 {
   flex-wrap: wrap;
 }
 .fantastic-depths .tag-section .tag-list .tag {
-  background: #4b4a44;
+  background: #4b6044;
   border-radius: 5px;
   color: whitesmoke;
   padding: 0 5px;
@@ -1260,7 +1260,7 @@ h1, h2, h3, h4 {
   background: #7a7971;
 }
 .fantastic-depths .items-list .consumable-counter .full-mark {
-  background: #4b4a44;
+  background: #4b6044;
   border: 1px inset #7a7971;
 }
 .fantastic-depths .item-formula {

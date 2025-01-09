@@ -165,12 +165,12 @@ export class fadeActor extends Actor {
    getWeaponType() {
       let result = 'monster';
       const weapons = this.items.filter(item => item.type === 'weapon');
-      const equippedWeapons = weapons?.filter(item => item.system.equipped === true);
+      const equippedWeapons = weapons?.filter(item => item.system.equipped === true && item.system.quantity > 0);
       if (equippedWeapons && equippedWeapons.length > 0) {
          result = equippedWeapons[0].system.weaponType;
       } else if (weapons && weapons.length > 0) {
          result = 'monster';
-         console.warn(`${this.name} has weapons, but none are equipped.`)
+         console.warn(`${this.name} has weapons, but none are equipped or the quantity is zero.`)
       }
       return result;
    }
@@ -342,13 +342,35 @@ export class fadeActor extends Actor {
       const selected = Array.from(canvas.tokens.controlled);
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
-         ui.notifications.warn(game.i18n.format('FADE.notification.selectToken1'));
+         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
             target.actor.rollSavingThrow(dataset.type);
          }
       }
+   }
+
+   /**
+    * Finds and returns the appropriate ammo for the specified weapon.
+    * The ammo item must be equipped for it to be recognized.
+    * @param {any} weapon
+    * @returns
+    */
+   getAmmoItem(weapon) {
+      let ammoItem = null;
+      const ammoType = weapon.system.ammoType;
+
+      // If there's no ammo needed use the weapon itself
+      if (!ammoType || ammoType === "" || ammoType === "none" && weapon.system.quantity > 0) {
+         ammoItem = weapon;
+      } else {
+         // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
+         ammoItem = this.items.find(item => item.type === "item" && item.system.equipped === true
+            && item.system.ammoType == ammoType && item.system.quantity > 0);
+      }
+
+      return ammoItem;
    }
 
    #getMasteryAttackRollMods(weaponData, options, digest, attackType) {

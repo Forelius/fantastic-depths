@@ -41,9 +41,9 @@
    {{/if}}
 </li>
 {{#unless item.system.container}}
+{{#if item.system.quantityMax }}
+{{#if (lte item.system.quantityMax 38)}}
 <li class='flexrow item collapsible-content bottom-border' data-item-id='{{item._id}}'>
-   {{#if item.system.quantityMax }}
-   {{#if (lte item.system.quantityMax 38)}}
    <div class="consumable-counter">
       <label>{{localize 'FADE.Item.uses'}}</label>
       {{#times item.system.quantity}}
@@ -52,7 +52,7 @@
       <div class="empty-mark"></div>
       {{/times}}
    </div>
-   {{/if}}
-   {{/if}}
 </li>
+{{/if}}
+{{/if}}
 {{/unless}}
