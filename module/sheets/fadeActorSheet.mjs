@@ -629,13 +629,17 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   /**
+    * Handler for clicking on a container item's collapse/expand icon.
+    * @param {any} event
+    */
    _toggleContainedItems(event) {
       event.preventDefault();
       const targetItems = $(event.target.closest(".item"));
       const parentId = targetItems[0]?.dataset.itemId;
       if (targetItems?.length > 0) {
          // Find all children of targetItems that has a 
-         const items = $(targetItems).find(`[data-item-parentid="${parentId}"]`);
+         const items = $(targetItems).siblings(`[data-item-parentid="${parentId}"]`);
          if (event.target.classList.contains('fa-caret-right')) {
             const el = targetItems.find(".fas.fa-caret-right")?.first();
             el.removeClass("fa-caret-right");
