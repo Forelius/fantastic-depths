@@ -630,27 +630,61 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
-    * Handler for clicking on a container item's collapse/expand icon.
-    * @param {any} event
-    */
+ * Handler for clicking on a container item's collapse/expand icon.
+ * @param {MouseEvent} event
+ */
    _toggleContainedItems(event) {
       event.preventDefault();
-      const targetItems = $(event.target.closest(".item"));
-      const parentId = targetItems[0]?.dataset.itemId;
-      if (targetItems?.length > 0) {
-         // Find all children of targetItems that has a 
-         const items = $(targetItems).siblings(`[data-item-parentid="${parentId}"]`);
-         if (event.target.classList.contains('fa-caret-right')) {
-            const el = targetItems.find(".fas.fa-caret-right")?.first();
-            el.removeClass("fa-caret-right");
-            el.addClass("fa-caret-down");
-            items.slideDown(200);
+
+      // The stack of jQuery elements we need to process
+      const containers = [$(event.target).closest(".item")];
+      const isExpanding = event.target.classList.contains("fa-caret-right");
+      const handledIds = [];
+
+      while (containers.length > 0) {
+         // Pop the top jQuery element
+         const toggledItem = containers.pop();
+         const parentId = toggledItem.data("itemId");
+
+         // Get all immediate sibling items that are contained by this parent
+         const containedItems = toggledItem
+            .siblings(`[data-item-parentid="${parentId}"]`);
+
+         // Toggle the icon on the parent container
+         if (isExpanding) {
+            toggledItem
+               .find(".fas.fa-caret-right")
+               .first()
+               .removeClass("fa-caret-right")
+               .addClass("fa-caret-down");
+            containedItems.slideDown(200);
          } else {
-            const el = targetItems.find(".fas.fa-caret-down")?.first();
-            el.removeClass("fa-caret-down");
-            el.addClass("fa-caret-right");
-            items.slideUp(200);
+            toggledItem
+               .find(".fas.fa-caret-down")
+               .first()
+               .removeClass("fa-caret-down")
+               .addClass("fa-caret-right");
+            containedItems.slideUp(200);
+         }
+
+         // Avoid reprocessing the same container
+         handledIds.push(parentId);
+
+         // If we are collapsing, we want to recursively collapse any sub-containers
+         if (!isExpanding) {
+            // Find each sibling container under these items (the next nesting level)
+            const subContainers = containedItems.filter(".item-container");
+
+            // For each container, push the jQuery-wrapped element to the stack
+            subContainers.each((i, el) => {
+               const $subContainer = $(el);
+               const nextParentId = $subContainer.data("itemId");
+               if (!handledIds.includes(nextParentId)) {
+                  containers.push($subContainer);
+               }
+            });
          }
       }
    }
+
 }

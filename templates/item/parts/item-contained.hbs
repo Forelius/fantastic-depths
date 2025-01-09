@@ -1,5 +1,5 @@
 <li class="item collapsible-content contained-item {{#if item.system.container}}item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   <div {{#if item.system.container}} class="bottom-border{{#unless item.system.quantityMax }} bottom-border{{/unless}}" {{/if}}>
+   <div {{#if item.system.container}}{{#unless item.system.quantityMax }}class="bottom-border"{{/unless}}{{/if}}>
       <div class="flexrow">
          <div class='item-name contained'>
             <div class='item-image'>
