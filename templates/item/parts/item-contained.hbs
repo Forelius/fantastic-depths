@@ -1,5 +1,5 @@
 <li class="item collapsible-content contained-item {{#if item.system.container}}item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   <div {{#if item.system.container}} class="bottom-border{{#unless item.system.quantityMax }} bottom-border{{/unless}}"{{/if}}>
+   <div {{#if item.system.container}} class="bottom-border{{#unless item.system.quantityMax }} bottom-border{{/unless}}" {{/if}}>
       <div class="flexrow">
          <div class='item-name contained'>
             <div class='item-image'>
@@ -36,14 +36,14 @@
          </div>
       </div>
    </div>
-   {{#if item.system.container}}
-   <ol class="bottom-border contained">
-      {{#each item.contained as |childItem|}}
-      {{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
-      {{/each}}
-   </ol>
-   {{/if}}
 </li>
+{{#if item.system.container}}
+<!--<ol class="bottom-border contained">-->
+   {{#each item.contained as |childItem|}}
+   {{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
+   {{/each}}
+<!--</ol>-->
+{{/if}}
 {{#unless item.system.container}}
 <li class='flexrow item collapsible-content contained-item bottom-border' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
    {{#if item.system.quantityMax }}

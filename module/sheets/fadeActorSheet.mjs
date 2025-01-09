@@ -347,6 +347,7 @@ export class fadeActorSheet extends ActorSheet {
     */
    async _onDropItem(event, data) {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
+      const itemParentid = event.target.closest(".item")?.dataset?.itemParentid;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
       const droppedItem = await Item.implementation.fromDropData(data);
@@ -356,8 +357,8 @@ export class fadeActorSheet extends ActorSheet {
          const actorMastery = droppedItem.createActorWeaponMastery(this.actor);
       }
       // If the drop target is a container...
-      else if (droppedItem.type === "item") {
-         if (targetIsContainer) {
+      else if (droppedItem.type === "item" || droppedItem.type === "light") {
+         if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
             const itemData = droppedItem.toObject();
             if (droppedItem.actor == null) {
                const newItem = await this._onDropItemCreate(itemData, event);
@@ -378,13 +379,13 @@ export class fadeActorSheet extends ActorSheet {
             }
             super._onDropItem(event, data);
          }
-      } else if (droppedItem.type !== "class") {
-         super._onDropItem(event, data);
-      } else {
+      } else if (droppedItem.type == "class") {
          this.actor.update({ "system.details.class": droppedItem.name });
          if (this.actor.system.details.level === 0) {
             this.actor.update({ "system.details.level": 1 });
          }
+      } else {
+         super._onDropItem(event, data);
       }
    }
 
@@ -634,7 +635,7 @@ export class fadeActorSheet extends ActorSheet {
       const parentId = targetItems[0]?.dataset.itemId;
       if (targetItems?.length > 0) {
          // Find all children of targetItems that has a 
-         const items = $(targetItems).children('ol');// `[data-item-parentid="${parentId}"]`);
+         const items = $(targetItems).find(`[data-item-parentid="${parentId}"]`);
          if (event.target.classList.contains('fa-caret-right')) {
             const el = targetItems.find(".fas.fa-caret-right")?.first();
             el.removeClass("fa-caret-right");
