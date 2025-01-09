@@ -48,6 +48,14 @@
             border-bottom: 1px solid $darkColor;
          }
 
+         .top-border {
+            border-top: 1px solid $darkColor;
+         }
+
+         .bottom-border {
+            border-bottom: 1px solid $darkColor;
+         }
+
          .items-list {
             color: $lightColor;
 
@@ -73,8 +81,6 @@
             }
 
             .item {
-               border-bottom: 1px solid $darkColor;
-
                .item-name {
                   color: $lighterColor;
                }
@@ -219,6 +225,14 @@
       .window-content {
          .bordered {
             border-color: $lightColor;
+         }
+
+         .top-border {
+            border-top: 1px solid $c-faint;
+         }
+
+         .bottom-border {
+            border-bottom: 1px solid $c-faint;
          }
 
          .items-list {

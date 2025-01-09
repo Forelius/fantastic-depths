@@ -221,6 +221,7 @@ export class fadeActorSheet extends ActorSheet {
 
       // Iterate through items, allocating to arrays
       for (let item of context.items) {
+         const docItem = context.document.items.get(item._id);
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === 'item' || item.type === 'light') {
@@ -235,7 +236,7 @@ export class fadeActorSheet extends ActorSheet {
             } else {
                gear.push(item);
             }
-
+            // TODO: Remove tag, not localizable.
             if (item.system.tags.includes("treasure")) {
                treasure.push(item);
             }
@@ -273,20 +274,20 @@ export class fadeActorSheet extends ActorSheet {
          }
       }
 
-      // Add derived data to each item
-      gear = gear.map(item => {
+      function mapContainer(item) {
          // Attach derived data manually            
          if (item.system.container === true) {
-            const citem = context.document.items.get(item._id);
-            item.contained = citem?.contained || [];
-            item.containedEnc = item.contained?.reduce((sum, item) => {
-               const weight = item.system.weight || 0;
-               const quantity = item.system.quantity || 1;
-               return sum + (weight * quantity);
-            }, 0) || 0;
+            const docItem = context.document.items.get(item._id);
+            for (let innerItem of docItem?.containedItems) {
+               mapContainer(innerItem);
+            }
+            item.contained = docItem?.containedItems || [];
+            item.containedEnc = docItem?.totalEnc || 0;
          }
          return item;
-      });
+      }
+      // Add derived data to each item
+      gear = gear.map(mapContainer);
 
       // Assign and return
       context.gear = gear;
@@ -315,10 +316,12 @@ export class fadeActorSheet extends ActorSheet {
       if (encSetting === 'expert' || encSetting === 'classic') {
          // Gear
          context.gearEnc = context.items
-            .filter(item => item.type === 'item')
+            .filter(item => item.type === 'item' || item.type === 'light')
             .reduce((sum, item) => {
                const itemWeight = item.system.weight || 0;
                const itemQuantity = item.system.quantity || 1;
+               //const citem = context.document.items.get(item._id);
+               //console.debug(item.name, citem.totalEnc);
                return sum + (itemWeight * itemQuantity);
             }, 0);
          // Weapons
@@ -636,14 +639,14 @@ export class fadeActorSheet extends ActorSheet {
       const parentId = targetItems[0]?.dataset.itemId;
       if (targetItems?.length > 0) {
          // Find all children of targetItems that has a 
-         const items = targetItems.siblings(`[data-item-parentid="${parentId}"]`);
+         const items = $(targetItems).children('ol');// `[data-item-parentid="${parentId}"]`);
          if (event.target.classList.contains('fa-caret-right')) {
-            const el = targetItems.find(".fas.fa-caret-right");
+            const el = targetItems.find(".fas.fa-caret-right")?.first();
             el.removeClass("fa-caret-right");
             el.addClass("fa-caret-down");
             items.slideDown(200);
          } else {
-            const el = targetItems.find(".fas.fa-caret-down");
+            const el = targetItems.find(".fas.fa-caret-down")?.first();
             el.removeClass("fa-caret-down");
             el.addClass("fa-caret-right");
             items.slideUp(200);
