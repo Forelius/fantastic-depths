@@ -489,6 +489,8 @@ export class fadeActorSheet extends ActorSheet {
          catch (error) {
             chatType = null;
          }
+      } else if (dataset.test === 'save') {
+         this.actor.rollSavingThrow(dataset.type);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
          let title = elem.getAttribute("title");

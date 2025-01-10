@@ -16,7 +16,7 @@
       </div>
    </li>
    {{#each weapons as |item id|}}
-   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
+   <li class='flexrow item collapsible-content{{#if (lte item.system.quantity 0)}} warning-bkgd{{/if}}{{#unless item.system.quantityMax }} bottom-border{{/unless}}' data-item-id='{{item._id}}'>
       <div class='item-name'>
          <div class='item-image rollable' data-test="attack" data-roll-type='item'>
             <img src='{{item.img}}' title='{{item.name}}' width='26' height='26' />
@@ -42,8 +42,8 @@
    </li>
    {{#unless item.system.container}}
    {{#if item.system.quantityMax }}
-   {{#if (lte item.system.quantityMax 38)}}
-   <li class='flexrow item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+   <!--{{#if (lte item.system.quantityMax 38)}}-->
+   <li class='flexrow item collapsible-content bottom-border{{#if (lte item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="consumable-counter">
          <label>{{localize 'FADE.Item.uses'}}</label>
          {{#times item.system.quantity}}
@@ -53,7 +53,7 @@
          {{/times}}
       </div>
    </li>
-   {{/if}}
+   <!--{{/if}}-->
    {{/if}}
    {{/unless}}
    {{/each}}

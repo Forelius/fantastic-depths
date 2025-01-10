@@ -1116,6 +1116,9 @@ h1, h2, h3, h4 {
   overflow-y: auto;
   scrollbar-width: thin;
 }
+.fantastic-depths .items-list .warning-bkgd {
+  background: rgba(150, 20, 20, 0.15);
+}
 .fantastic-depths .items-list .item-list {
   list-style: none;
   margin: 0;
@@ -1158,6 +1161,12 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .items-list .item .contained {
   padding-left: 10px;
+}
+.fantastic-depths .items-list .item .contained2 {
+  padding-left: 20px;
+}
+.fantastic-depths .items-list .item .contained3 {
+  padding-left: 30px;
 }
 .fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;

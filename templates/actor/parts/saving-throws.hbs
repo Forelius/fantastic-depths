@@ -6,7 +6,8 @@
       <div class="flexrow tall-row flex-group-center">
          <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
          <label for="system.savingThrows.{{key}}.value" class="rollable{{#if @root.saveAbbr}} abbr{{else}} long{{/if}}"
-                data-test="generic"
+                data-type="{{key}}"
+                data-test="save"
                 data-formula="d20"
                 data-pass="gte"
                 data-target="{{savingThrow.value}}"

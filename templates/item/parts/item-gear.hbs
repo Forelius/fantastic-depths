@@ -1,4 +1,4 @@
-<li class='item collapsible-content{{#if item.system.container}} item-container{{/if}}' data-item-id='{{item._id}}'>
+<li class='item collapsible-content{{#if (lte item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}' data-item-id='{{item._id}}'>
    <div class="flexrow{{#unless item.system.quantityMax }} bottom-border{{/unless}}">
       <div class='item-name'>
          <div class='item-image rollable' data-roll-type='item'>
@@ -42,8 +42,7 @@
 {{/if}}
 {{#unless item.system.container}}
 {{#if item.system.quantityMax }}
-{{#if (lte item.system.quantityMax 38)}}
-<li class='flexrow item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+<li class='flexrow item collapsible-content bottom-border{{#if (lte item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
    <div class="consumable-counter">
       <label>{{localize 'FADE.Item.uses'}}</label>
       {{#times item.system.quantity}}
@@ -53,6 +52,5 @@
       {{/times}}
    </div>
 </li>
-{{/if}}
 {{/if}}
 {{/unless}}

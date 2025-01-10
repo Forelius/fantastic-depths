@@ -93,7 +93,7 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareEffects();
-      this._prepareSpellsUsed();      
+      this._prepareSpellsUsed();
       this.system.prepareEncumbrance(this.items, this.type);
       this.system.prepareDerivedMovement();
    }
@@ -307,16 +307,23 @@ export class fadeActor extends Actor {
       const savingThrow = systemData.savingThrows[type];
       const rollData = this.getRollData();
       let dataset = {};
-      dataset.dialog = "generic";
+      dataset.dialog = "save";
       dataset.pass = "gte";
       dataset.target = savingThrow.value;
       dataset.rollmode = game.settings.get("core", "rollMode");
       dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
-     
+      if (this.type === 'character') {
+         dataset.type = type;
+      }
+
       let dialogResp = await DialogFactory(dataset, this);
-      rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
 
       if (dialogResp?.resp?.rolling === true) {
+         rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
+         const wisMod = this.system.abilities.wis.mod;
+         if (dialogResp.resp.vsmagic === true && wisMod !== 0) {
+            rollData.formula = `${rollData.formula}${wisMod > 0 ? '+' : ''}${wisMod}`;
+         }
          const rollContext = { ...rollData, ...dialogResp?.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
@@ -362,7 +369,7 @@ export class fadeActor extends Actor {
       const ammoType = weapon.system.ammoType;
 
       // If there's no ammo needed use the weapon itself
-      if (!ammoType || ammoType === "" || ammoType === "none" && weapon.system.quantity > 0) {
+      if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity > 0) {
          ammoItem = weapon;
       } else {
          // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
@@ -450,6 +457,8 @@ export class fadeActor extends Actor {
    }
 
    /** 
+    * Performs base classe prep of actor's active effects.
+    * Disables effects from items that are equippable and not equipped. 
     * @protected 
     */
    _prepareEffects() {
@@ -467,6 +476,7 @@ export class fadeActor extends Actor {
 
    /**
     * Prepares the used spells per level totals
+    * @protected 
     */
    _prepareSpellsUsed() {
       const systemData = this.system;

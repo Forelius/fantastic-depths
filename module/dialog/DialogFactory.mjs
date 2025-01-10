@@ -7,7 +7,7 @@ import { fadeDialog } from './fadeDialog.mjs';
  * @param {any} opt
  * @returns
  */
-export const DialogFactory = (dataset=null, caller = null, opt = {}) => {
+export const DialogFactory = (dataset = null, caller = null, opt = {}) => {
    let result;
    if (dataset.dialog === 'ability') {
       result = fadeDialog.getAbilityDialog(dataset, caller);
@@ -21,6 +21,8 @@ export const DialogFactory = (dataset=null, caller = null, opt = {}) => {
       result = fadeDialog.getLightMgrDialog(dataset, caller, opt);
    } else if (dataset.dialog === 'yesno') {
       result = fadeDialog.getYesNoDialog(dataset);
+   } else if (dataset.dialog === 'save') {
+      result = fadeDialog.getSavingThrowDialog(dataset, caller);
    }
    return result;
 };

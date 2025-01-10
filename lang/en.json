@@ -708,6 +708,7 @@
       },
       "Size": "Size",
       "roll": "Roll",
+      "vsMagic": "vs Magic",
       "rollMode": "Roll Mode",
       "operator": "Operator",
       "modifier": "Modifier",
