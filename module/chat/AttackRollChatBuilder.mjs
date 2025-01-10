@@ -12,7 +12,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    getHeroicToHitTable(thac0, repeater = 0) {
       const toHitTable = [];
-      // Loop through AC values from 19 down to -20
+      // Loop through AC values from 0 down to 20
       repeater = Math.max(repeater, 0);
       let repeatOn = [-10, 2, 30];
       let toHit = thac0;
@@ -34,11 +34,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
          }
       }
 
-      repeatOn = [-10, 2, 20, 30];
+      repeatOn = [-10, 2, 20, 30, 40, 50, 60, 70, 80];
       repeater = thac0 == 20 ? 1 : 0;
       toHit = thac0 == 20 ? 20 : thac0 + 1;
-
-      for (let ac = -1; ac >= -20; ac--) {
+      // Loop through AC values from -1 down to -99
+      for (let ac = -1; ac >= -99; ac--) {
          if (repeatOn.includes(toHit)) {
             if (repeater < 5) {
                repeater++;
