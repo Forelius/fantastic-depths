@@ -1,0 +1,61 @@
+<div class="award-xp">
+   <form>
+      <div>
+         <label >{{localize 'FADE.dialog.awardXP.xpAmountTotal'}}:</label>
+         <input class="width-60"
+                type="number"
+                name="globalXP"
+                value="{{globalXP}}" />
+      </div>
+      <hr />
+      <table class="party-table">
+         <thead>
+            <tr>
+               <th>{{localize 'FADE.name'}}</th>
+               <th>{{localize 'FADE.dialog.awardXP.share'}}</th>
+               <th>{{localize 'FADE.dialog.awardXP.xpAmount'}}</th>
+               <th>{{localize 'FADE.Actor.XPBonus'}}</th>
+            </tr>
+         </thead>
+         <tbody>
+            {{#each actors}}
+            <tr class="party-member" data-actor-id="{{this.id}}">
+               <!-- NAME column -->
+               <td>{{this.name}}</td>
+
+               <!-- SHARE FACTOR column (e.g., 1, 0.5, 2, etc.) -->
+               <td>
+                  <input class="share-factor"
+                         type="number"
+                         name="actorShareFactor_{{this.id}}"
+                         value="{{this.shareFactor}}"
+                         step="0.1"
+                         style="width: 60px;" />
+               </td>
+
+               <!-- XP AMOUNT column (auto-filled, can be overridden) -->
+               <td>
+                  <input class="actor-xp"
+                         type="number"
+                         name="actorXP_{{this.id}}"
+                         value="{{this.defaultXP}}"
+                         style="width: 60px;" />
+               </td>
+
+               <!-- BONUS column (just displays the actor’s xp.bonus%) -->
+               <td data-tooltip="{{localize 'FADE.Actor.XPBonus'}}">
+                  {{this.system.details.xp.bonus}}%
+               </td>
+            </tr>
+            {{/each}}
+         </tbody>
+      </table>
+
+      <div class="form-group" style="margin-top:1em;">
+         <!-- If you use type="button", remember to call this.submit() in activateListeners -->
+         <button type="button" class="dialog-button">
+            {{localize 'FADE.dialog.awardXP.short'}}
+         </button>
+      </div>
+   </form>
+</div>

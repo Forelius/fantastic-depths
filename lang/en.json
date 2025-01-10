@@ -538,6 +538,14 @@
          "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='Adjusted AC with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.'>({defenseMasteryTotal})</span>"
       },
       "dialog": {
+         "awardXP": {
+            "short": "Award XP",
+            "long": "Award Experience Points",
+            "awarded": "XP awarded successfully!",
+            "xpAmountTotal": "Total XP Amount",
+            "xpAmount": "XP Amount",
+            "share": "Share"
+         },
          "lightSource": "Light Source",
          "selectLightSource": "Select Light Source",
          "ignite": "Enable",
@@ -720,7 +728,8 @@
       "modifier": "Modifier",
       "target": "Target",
       "GMNotes": "GM Notes",
-      "category": "Category"
+      "category": "Category",
+      "name": "Name"
    },
 
    "TYPES": {

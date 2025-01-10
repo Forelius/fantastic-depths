@@ -188,6 +188,10 @@ h1, h2, h3, h4 {
   color: #888888; /* Darken color on hover */
 }
 
+.party-table th {
+  text-align: left;
+}
+
 .collapsible-content {
   overflow: hidden;
   height: auto;
@@ -414,6 +418,26 @@ h1, h2, h3, h4 {
 .align-center {
   justify-content: center;
   text-align: center;
+}
+
+.width-60 {
+  max-width: 60px;
+}
+
+.width-80 {
+  max-width: 80px;
+}
+
+.width-100 {
+  max-width: 100px;
+}
+
+.width-130 {
+  max-width: 130px;
+}
+
+.width-180 {
+  max-width: 180px;
 }
 
 /* Dark mode styles */
