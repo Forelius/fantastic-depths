@@ -62,12 +62,12 @@ export class TurnTrackerForm extends FormApplication {
          await game.settings.set(game.system.id, 'turnData', this.turnData);
 
          const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-         let chatContent = turns > 0 ? `<div>Time advances ${turns} turn.</div>` : `<div>Time reverses ${turns} turn.</div>`;
+         let chatContent = turns > 0 ? game.i18n.format("FADE.notification.advancedTime",{ turns }) : game.i18n.format("FADE.notification.reversedTime",{ turns: -turns });
 
          // Rest message
          const restFrequency = await game.settings.get(game.system.id, "restFrequency");
          if (restFrequency > 0 && this.turnData.dungeon.rest > restFrequency - 1) {
-            chatContent += "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>";
+            chatContent += game.i18n.localize("FADE.notification.needRest");
          }
 
          ChatMessage.create({ speaker: speaker, content: chatContent });
@@ -102,7 +102,7 @@ export class TurnTrackerForm extends FormApplication {
          const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker         
          ChatMessage.create({
             speaker: speaker,
-            content: "Resetting session turn count to zero."
+            content: game.i18n.localize("FADE.notification.timeReset1")
          });
       });
       html.find("#reset-total")[0].addEventListener('click', async (e) => {
@@ -114,7 +114,7 @@ export class TurnTrackerForm extends FormApplication {
          const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker         
          ChatMessage.create({
             speaker: speaker,
-            content: "Resetting global turn count to zero."
+            content: game.i18n.localize("FADE.notification.timeReset2")
          });
          this.render(true);  // Re-render the form to update the UI
       });
@@ -127,7 +127,7 @@ export class TurnTrackerForm extends FormApplication {
             const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker         
             ChatMessage.create({
                speaker: speaker,
-               content: "The party rests."
+               content: game.i18n.localize("FADE.notification.partyRests")
             });
             this.render(true);  // Re-render the form to update the UI
          });
