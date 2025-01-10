@@ -38,6 +38,7 @@ The character sheet can handle any of the core classes and levels up to 24. Mons
 
 ## Monster Sheet
 The monster sheet allows for custom equippment, spells and possession and use of magic items.
+
 ![monster](./assets/img/docs/monstersheet1.jpg)
 
 ## Item Sheet
@@ -59,7 +60,7 @@ There are item sheets for adventuring gear, armor, weapons, general skills, weap
 ![skill](./assets/img/docs/skillsheet1.jpg)
 
 ### Weapon Mastery Definition Sheet
-![weaponmastery](./assets/img/docs/masterydef.jpg)
+![weaponmastery](./assets/img/docs/masterydef1.jpg)
 
 ### Actor Weapon Mastery Sheet
 ![mastery](./assets/img/docs/mastery1.jpg)
@@ -69,4 +70,5 @@ There are item sheets for adventuring gear, armor, weapons, general skills, weap
 
 ### Effects
 Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
+
 ![effects](./assets/img/docs/itemeffects1.jpg)
