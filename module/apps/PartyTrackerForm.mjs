@@ -62,6 +62,15 @@ export class PartyTrackerForm extends FormApplication {
             this.render();  // Re-render to reflect updated actor data
          }
       });
+
+       // **New**: Double-click on a party member to open their actor sheet
+      html.find(".party-member").on("dblclick", (event) => {
+         const actorId = $(event.currentTarget).data("actor-id");
+         const actor = game.actors.get(actorId);
+         if (!actor) return;
+         actor.sheet.render(true);
+      });
+
    }
 
    /** 
