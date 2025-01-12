@@ -47,6 +47,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          equippable: new fields.BooleanField({ required: false, initial: false }),
          fuelType: new fields.StringField({ required: false, initial: "" }),
          ammoType: new fields.StringField({ required: false, initial: "" }),
+         isAmmo: new fields.BooleanField({ required: false, initial: false }),
       };
    }
 
@@ -63,5 +64,6 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
       }
       this.totalWeight = Math.round((this.weight * this.quantity) * 100) / 100;
       this.totalCost = Math.round((this.cost * this.quantity) * 100) / 100;
+      this.isAmmo = this.ammoType?.length > 0;
    }   
 }
