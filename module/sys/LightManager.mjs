@@ -124,11 +124,12 @@ export class LightManager {
       switch (lightData.type) {
          case "torch":
             lightSettings = {
-               dim: lightData.radius,
+               dim: 30,
                bright: 6,
                color: "#d0A540",
                attenuation: 0.8,
                luminosity: 0.5,
+               angle: 360,
                animation: {
                   type: "torch",
                   speed: 4,
@@ -138,11 +139,42 @@ export class LightManager {
             break;
          case "lantern":
             lightSettings = {
-               dim: lightData.radius,
+               dim: 30,
                bright: 6,
                color: "#d0a750",
                attenuation: 0.7,
                luminosity: 0.5,
+               angle: 360,
+               animation: {
+                  type: "torch",
+                  speed: 2,
+                  intensity: 2
+               }
+            };
+            break;
+         case "bullseye":
+            lightSettings = {
+               dim: 50,
+               bright: 6,
+               color: "#d0a750",
+               attenuation: 0.7,
+               luminosity: 0.5,
+               angle: 30,
+               animation: {
+                  type: "torch",
+                  speed: 2,
+                  intensity: 2
+               }
+            };
+            break;
+         case "candle":
+            lightSettings = {
+               dim: 15,
+               bright: 3,
+               color: "#d0a750",
+               attenuation: 0.7,
+               luminosity: 0.35,
+               angle: 360,
                animation: {
                   type: "torch",
                   speed: 2,
@@ -157,6 +189,7 @@ export class LightManager {
                color: "#2376a7",
                attenuation: 0.7,
                luminosity: 0.5,
+               angle: 360,
                animation: {
                   type: "pulse",
                   speed: 2,

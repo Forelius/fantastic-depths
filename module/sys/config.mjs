@@ -54,6 +54,8 @@ FADE.MasteryLevels = [
 FADE.LightTypes = [
    "torch",
    "lantern",
+   "candle",
+   "bullseye",
    "magic",
    "custom"
 ];

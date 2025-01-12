@@ -1,4 +1,5 @@
 import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
+import { LightManager } from '../../sys/LightManager.mjs';
 
 /**
  * Data model for a skill item extending fadeItemDataModel.
@@ -34,5 +35,18 @@ export class LightItemDataModel extends fadeItemDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.isLight = true;
+   }
+
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      const lightSettings = LightManager.getLightSettings(this.light);
+      if (lightSettings && this.light.type !== 'custom') {
+         this.light.radius = lightSettings.dim;
+         this.light.bright = lightSettings.bright;
+         this.light.attenuation = lightSettings.attenuation;
+         this.light.luminosity = lightSettings.luminosity;
+      }
    }
 }

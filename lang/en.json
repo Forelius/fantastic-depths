@@ -331,6 +331,8 @@
                "torch": "Torch",
                "lantern": "Lantern",
                "magic": "Magic",
+               "candle": "Candle",
+               "bullseye": "Bullseye",
                "custom": "Custom"
             }
          }

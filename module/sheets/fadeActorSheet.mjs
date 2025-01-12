@@ -595,7 +595,7 @@ export class fadeActorSheet extends ActorSheet {
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       if (rememberCollapsedState === true) {
          const sectionName = target.parent().attr('name'); // Access the `name` attribute from the DOM element
-         console.debug(`Remembering expanded state for ${sectionName}.`, target);
+         //console.debug(`Remembering expanded state for ${sectionName}.`, target);
          if (sectionName !== undefined) {
             const actor = game.actors.get(this.actor.id);            
             await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
@@ -628,7 +628,7 @@ export class fadeActorSheet extends ActorSheet {
                      await this._toggleContent($(target).children('.items-header'), true);
                   } else {
                      // Not found.
-                     console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
+                     //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
                      await actor.unsetFlag(game.system.id, key);
                   }
                }

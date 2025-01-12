@@ -1,4 +1,5 @@
 import { fadeItem } from './fadeItem.mjs';
+import { LightManager } from '../sys/LightManager.mjs';
 
 export class LightItem extends fadeItem {
    constructor(data, context) {
@@ -14,5 +15,16 @@ export class LightItem extends fadeItem {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      if (this.actor) {
+         const tokens = canvas.tokens?.placeables?.filter(t => t.document.actorId === this.actor.id) ?? [];
+         for (let token of tokens) {
+            const lightSettings = LightManager.getLightSettings(this.system.light);
+            if (lightSettings) {
+               this.system.light.radius = lightSettings.dim;
+               console.debug(`Updating light settings for ${token.name}`);
+               token.document.update({ light: lightSettings });
+            }
+         }
+      }
    }
 }
