@@ -206,7 +206,7 @@ export class LightManager {
                luminosity: lightData.luminosity ?? 0.5,
                angle: lightData.angle ?? 360,
                animation: lightData.animation ?? {
-                  type: "pulse",
+                  type: "torch",
                   speed: 2,
                   intensity: 3
                }

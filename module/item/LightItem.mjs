@@ -20,7 +20,6 @@ export class LightItem extends fadeItem {
          for (let token of tokens) {
             const lightSettings = LightManager.getLightSettings(this.system.light);
             if (lightSettings) {
-               this.system.light.radius = lightSettings.dim;
                console.debug(`Updating light settings for ${token.name}`);
                token.document.update({ light: lightSettings });
             }
