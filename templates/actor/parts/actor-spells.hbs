@@ -8,10 +8,11 @@
          </a>
       </div>
    </div>
-   <ol name="spellItems" class='items-list'>
-      {{#each spellSlots as |slot|}}
-      {{#if @index}}
-      <li class='item flexrow items-header'>
+   {{#each spellSlots as |slot|}}
+   {{#if @index}}
+   <ol name="spellLevel{{@index}}" class='items-list'>
+      {{! Spell Level Header}}
+      <li class='item flexrow items-header collapsible-header'>
          <div class='item-name'>
             {{localize 'FADE.Spell.SpellLVL' level=@key}}
          </div>
@@ -32,14 +33,15 @@
                    data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
          </div>
          <div class='item-controls'>
-            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell' data-spell-level='{{@key}}'>
+            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell'>
                <i class='fas fa-plus'></i>
                {{localize 'FADE.Spell.AddLVL' level=@key}}
             </a>
          </div>
       </li>
       {{#each slot.spells as |spell id|}}
-      <li class='item flexrow' data-item-id='{{spell._id}}'>
+      {{! Spell Item }}
+      <li class='item flexrow collapsible-content bottom-border' data-item-id='{{spell._id}}'>
          <div class='item-name flexrow'>
             <div class='item-image rollable' data-roll-type='item'>
                <img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' />
@@ -68,7 +70,7 @@
          </div>
       </li>
       {{/each}}
-      {{/if}}
-      {{/each}}
    </ol>
+   {{/if}}
+   {{/each}}
 </section>
