@@ -9,7 +9,7 @@ export class LightItem extends fadeItem {
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();          
+      super.prepareBaseData();
    }
 
    /** @override */
@@ -17,10 +17,10 @@ export class LightItem extends fadeItem {
       super.prepareDerivedData();
       if (this.actor) {
          const tokens = canvas.tokens?.placeables?.filter(t => t.document.actorId === this.actor.id) ?? [];
-         for (let token of tokens) {
+         for (let token of tokens.filter(token => token.actor?.system.activeLight === this.id)) {
             const lightSettings = LightManager.getLightSettings(this.system.light);
             if (lightSettings && token.document.light.dim > 0) {
-               console.debug(`Updating light settings for ${token.name}`);
+               //console.debug(`Updating ${this.name} for ${token.name}:`, this.system.light, lightSettings);
                token.document.update({ light: lightSettings });
             }
          }

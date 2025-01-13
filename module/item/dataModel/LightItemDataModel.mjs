@@ -36,8 +36,14 @@ export class LightItemDataModel extends fadeItemDataModel {
    prepareBaseData() {
       super.prepareBaseData();
       this.isLight = true;
+   }
+
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
       const lightSettings = LightManager.getLightSettings(this.light);
       if (lightSettings && this.light.type !== 'custom') {
+         //console.debug(`LightItemDataModel.prepareDerivedData ${this.light.type}:`, lightSettings.dim);
          this.light.radius = lightSettings.dim;
          this.light.bright = lightSettings.bright;
          this.light.attenuation = lightSettings.attenuation;
@@ -49,11 +55,5 @@ export class LightItemDataModel extends fadeItemDataModel {
          this.light.animation.intensity = lightSettings.animation.intensity;
          this.updateSource({ light: this.light });
       }
-   }
-
-   /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-      
    }
 }
