@@ -121,7 +121,6 @@ export class fadeActor extends Actor {
     */
    getAttackRoll(weapon, attackType, options = {}) {
       const weaponData = weapon.system;
-      const systemData = this.system;
       const targetData = options.target?.system;
       let formula = '1d20';
       let digest = [];
@@ -362,7 +361,7 @@ export class fadeActor extends Actor {
     * Finds and returns the appropriate ammo for the specified weapon.
     * The ammo item must be equipped for it to be recognized.
     * @param {any} weapon
-    * @returns
+    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
     */
    getAmmoItem(weapon) {
       let ammoItem = null;

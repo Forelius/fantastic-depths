@@ -180,13 +180,15 @@ export class WeaponItem extends fadeItem {
          try {
             const targetTokens = Array.from(game.user.targets);
             const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
+            const ammoItem = this.actor?.getAmmoItem(this);
 
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
             if (dialogResp?.resp) {
                if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
                   let rollOptions = {
                      mod: dialogResp.resp.mod,
-                     target: targetToken?.actor
+                     target: targetToken?.actor,
+                     ammo: ammoItem
                   };
                   if (dialogResp.resp.targetWeaponType) {
                      rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
@@ -206,9 +208,8 @@ export class WeaponItem extends fadeItem {
          }
 
          // Check if the attack type is a missile/ranged attack
-         let ammoItem = null;
          if (canAttack && dialogResp.resp.attackType === 'missile') {
-            ammoItem = await this.#tryUseAmmo();
+            await this.#tryUseAmmo();
             canAttack = ammoItem !== null && ammoItem !== undefined;
          }
 
@@ -239,12 +240,18 @@ export class WeaponItem extends fadeItem {
       return result;
    }
 
-   async #tryUseAmmo() {
+   /**
+    * Gets the equipped ammo item and optionally uses it.
+    * @private
+    * @param {any} getOnly If true, does not use, just gets.
+    * @returns The ammo item, if one exists.
+    */
+   async #tryUseAmmo(getOnly = false) {
       const ammoItem = this.actor?.getAmmoItem(this);
       // If there's no ammo, show a UI notification
       if (ammoItem === undefined || ammoItem === null) {
          ui.notifications.warn(game.i18n.format('FADE.notification.noAmmo', { actorName: this.actor?.name, weaponName: this.name }));
-      } else {
+      } else if (getOnly !== true) {
          // Deduct 1 ammo         
          let newQuantity = ammoItem.system.quantity - 1;
          await ammoItem.update({ "system.quantity": newQuantity });

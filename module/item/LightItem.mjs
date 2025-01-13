@@ -19,7 +19,7 @@ export class LightItem extends fadeItem {
          const tokens = canvas.tokens?.placeables?.filter(t => t.document.actorId === this.actor.id) ?? [];
          for (let token of tokens) {
             const lightSettings = LightManager.getLightSettings(this.system.light);
-            if (lightSettings) {
+            if (lightSettings && token.document.light.dim > 0) {
                console.debug(`Updating light settings for ${token.name}`);
                token.document.update({ light: lightSettings });
             }
