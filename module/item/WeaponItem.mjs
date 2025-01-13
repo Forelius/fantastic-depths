@@ -177,10 +177,10 @@ export class WeaponItem extends fadeItem {
          ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
       }
       else if (attacker) {
+         const ammoItem = this.actor?.getAmmoItem(this);
          try {
             const targetTokens = Array.from(game.user.targets);
             const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
-            const ammoItem = this.actor?.getAmmoItem(this);
 
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
             if (dialogResp?.resp) {
