@@ -126,6 +126,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
+         activeFuel: new fields.StringField({ nullable: true, required: false, initial: null }),
       };
    }
 

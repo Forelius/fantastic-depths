@@ -264,13 +264,14 @@ export class fadeActor extends Actor {
    * Handler for updateWorldTime event.
    * @returns
    */
-   onUpdateWorldTime() {
+   onUpdateWorldTime(worldTime, dt, options, userId) {
       // Only the GM should handle updating effects
       if (!game.user.isGM) return;
 
       // Ensure there's an active scene and tokens on the canvas
       if (!canvas?.scene) return;
 
+      // Active effects
       if (this.effects.size > 0) {
          // Ensure the actor has active effects to update
          for (let effect of this.effects) {
@@ -355,6 +356,18 @@ export class fadeActor extends Actor {
             target.actor.rollSavingThrow(dataset.type);
          }
       }
+   }
+
+   /**
+    * A helper method for setting the actor's current active light and active fuel.
+    * @param {any} lightItemId An owned light item's id.
+    * @param {any} fuelItemId An owned light or fuel item's id.
+    */
+   setActiveLight(lightItemId, fuelItemId) {
+      this.update({
+         "system.activeLight": lightItemId,
+         "system.activeFuel": fuelItemId
+      });
    }
 
    /**

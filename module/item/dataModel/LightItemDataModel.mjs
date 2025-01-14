@@ -17,7 +17,7 @@ export class LightItemDataModel extends fadeItemDataModel {
             duration: new fields.NumberField({ required: false, initial: 6 }),
             radius: new fields.NumberField({ required: false, initial: 30 }),
             fuelType: new fields.StringField({ required: false, initial: "" }),
-            turnsActive: new fields.NumberField({ required: false, initial: 0 }),
+            secondsActive: new fields.NumberField({ required: false, initial: 0 }),
             bright: new fields.NumberField({ required: false, initial: 6 }),
             color: new fields.StringField({ required: false, initial: "#d0a750" }),
             attenuation: new fields.NumberField({ required: false, initial: 0.7 }),

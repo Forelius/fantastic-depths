@@ -71,9 +71,6 @@ export class TurnTrackerForm extends FormApplication {
          }
 
          ChatMessage.create({ speaker: speaker, content: chatContent });
-
-         // Emit custom event
-         Hooks.call('turnTrackerUpdate', this.turnData);
       }
       game.time.advance(seconds);
 

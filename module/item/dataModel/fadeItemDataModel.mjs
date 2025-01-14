@@ -1,23 +1,3 @@
-class LightData {
-   constructor() {
-      this.duration = null;
-      this.type = null;
-      this.radius = 30;
-      this.fuelType = null;
-      this.bright = null;
-      this.color = null;
-      this.attenuation = null;
-      this.luminosity = null;
-      this.animation = {
-         type: null,
-         speed: null,
-         intensity: null
-      };
-      this.usage = {
-         turnsActive:0
-      }
-   }
-}
 /**
  * Data model for a generic item inheriting from multiple templates.
  */
@@ -53,7 +33,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();     
+      super.prepareBaseData();
    }
 
    /** @override */
@@ -65,5 +45,5 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
       this.totalWeight = Math.round((this.weight * this.quantity) * 100) / 100;
       this.totalCost = Math.round((this.cost * this.quantity) * 100) / 100;
       this.isAmmo = this.ammoType?.length > 0;
-   }   
+   }
 }
