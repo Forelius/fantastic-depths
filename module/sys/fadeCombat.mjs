@@ -33,9 +33,9 @@ export class fadeCombat extends Combat {
     * @override
     * @returns Combatant[]
     */
-   async setupTurns() {
+   setupTurns() {
       // console.debug("setupTurns sorting...");
-      let combatants = await super.setupTurns();
+      let combatants = super.setupTurns();
 
       // Check to make sure all combatants still exist.
       combatants = combatants.filter((combatant) => combatant.actor !== null && combatant.actor !== undefined);
@@ -65,14 +65,14 @@ export class fadeCombat extends Combat {
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
          if (game.user.isGM) {
             // Get all combatants and group them by disposition
-            const combatants = this.combatants;
-            let group = messageOptions?.group ?? null;
-            if (group === null && ids.length > 0) {
-               // how to get combatant with ids[0]
-               const combatant = combatants.get(ids[0]);
-               group = this.#getCombatantDisposition(combatant);
+            let groups = messageOptions?.group ? [messageOptions?.group] : [];            
+            if (groups.length === 0 && ids.length > 0) {
+               const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
+               groups = [...new Set(rollingCombatants.map(combatant => this.#getCombatantDisposition(combatant)))];
             }
-            await this.#doInitiativeRoll(combatants, group);  // Use the custom initiative function
+            for (const group of groups) {
+               await this.#doInitiativeRoll(this.combatants, group);  // Use the custom initiative function
+            }
          } else {
             GMMessageSender.sendToGM("rollGroupInitiative", { combatid: this.id });
          }
@@ -110,7 +110,7 @@ export class fadeCombat extends Combat {
     * */
    async nextRound() {
       let nextRound = this.round + 1;
-      let result = await super.nextRound();
+      let result = super.nextRound();
       const user = game.users.get(game.userId);  // Get the user who initiated the roll
       const speaker = { alias: user.name };  // Use the player's name as the speaker
 
@@ -155,7 +155,7 @@ export class fadeCombat extends Combat {
          }
       }
 
-      return null;
+      return result;
    }
 
    sortCombatantsIndividual(a, b) {
