@@ -986,18 +986,32 @@ h1, h2, h3, h4 {
   right: calc(50% - 25px);
 }
 .fantastic-depths .character .armor-class .shield, .fantastic-depths .monster .armor-class .shield {
-  position: relative;
-  left: 58px;
+  position: absolute;
+  left: 71%;
   top: 30px;
-  margin-right: -2px;
-  font-size: 18px;
+  font-size: 24px;
+  color: #707070;
+  text-shadow: 0 0 3px #ebeae4;
+}
+.fantastic-depths .character .armor-class .shield .shield-ac-val, .fantastic-depths .monster .armor-class .shield .shield-ac-val {
+  width: 40px;
+  color: #222222;
+  font-weight: bolder;
+  text-align: center;
+  text-shadow: 0 0 2px #ebeae4, 0 1px 1px #ebeae4, 1px 0 1px #ebeae4, 1px 1px 1px #ebeae4;
+  position: relative;
+  left: 12px;
+  top: -15px;
+  transform: translate(-50%, -50%); /* Adjust position to truly center */
+  font-size: 14px;
 }
 .fantastic-depths .character .armor-class .ranged-ac, .fantastic-depths .monster .armor-class .ranged-ac {
-  position: relative;
+  position: absolute;
   left: 1px;
-  top: 32px;
+  top: 30px;
   font-size: 24px;
-  color: #888888;
+  color: #808080;
+  text-shadow: 0 0 3px #ebeae4;
 }
 .fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
   width: 40px;
@@ -1009,7 +1023,7 @@ h1, h2, h3, h4 {
   left: 12px;
   top: -15px;
   transform: translate(-50%, -50%); /* Adjust position to truly center */
-  font-size: 12px;
+  font-size: 14px;
 }
 .fantastic-depths .character .category-info, .fantastic-depths .monster .category-info {
   font-weight: normal;
@@ -1333,3 +1347,5 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

@@ -149,8 +149,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       super.prepareDerivedData();
    }
 
-   
-
    /**
    * Prepares the actor's encumbrance values. Supports optional settings for different encumbrance systems.
    */

@@ -563,7 +563,7 @@ export class fadeActor extends Actor {
 
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
-         naturalArmor.prepareEffects();
+         //naturalArmor.prepareEffects();
          ac.naked = naturalArmor.system.totalAC - dexMod;
          ac.value = ac.naked;
          ac.total = ac.naked;
@@ -573,7 +573,7 @@ export class fadeActor extends Actor {
 
       // If an equipped armor is found...
       if (this.system.equippedArmor) {
-         this.system.equippedArmor.prepareEffects();
+         //this.system.equippedArmor.prepareEffects();
          ac.value = this.system.equippedArmor.system.ac;
          ac.mod += this.system.equippedArmor.system.mod ?? 0;
          ac.total = this.system.equippedArmor.system.totalAC;
@@ -584,7 +584,7 @@ export class fadeActor extends Actor {
 
       // If a shield is equipped...
       if (equippedShield) {
-         equippedShield.prepareEffects();
+         //equippedShield.prepareEffects();
          ac.value -= equippedShield.system.ac;
          ac.shield = equippedShield.system.totalAC;
          ac.total -= equippedShield.system.totalAC;

@@ -230,8 +230,8 @@ FADE.Conditions = [
       tint: "#bbffcc",
       description: `<h2>Shield</h2><p>A magical barrier envelops the affected individual, forming less than an inch from their body and moving with them. While this status is active, the individual's Armor Class is set to <strong>2</strong> against missile attacks and <strong>4</strong> against all other attacks.</p><p>If the individual is targeted by a <em>magic missile</em>, they may make a <strong>saving throw vs. spells</strong> for each missile. On a successful save, the magic missile is absorbed by the barrier and evaporates without causing harm.</p>`,
       changes: [
-         { key: "system.mod.upgradeAc", mode: CONST.ACTIVE_EFFECT_MODES.DOWNGRADE, value: 4 },  // AC 4 for attack rolls
-         { key: "system.mod.upgradeRangedAc", mode: CONST.ACTIVE_EFFECT_MODES.DOWNGRADE, value: 2 },  // AC 2 for ranged attack rolls
+         { key: "system.mod.upgradeAc", mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, value: 4 },  // AC 4 for attack rolls
+         { key: "system.mod.upgradeRangedAc", mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, value: 2 },  // AC 2 for ranged attack rolls
       ],
       duration: { seconds: 20 * 60 },  // Duration (20 minutes, 2 turns)
       flags: {

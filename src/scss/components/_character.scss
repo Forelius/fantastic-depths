@@ -201,19 +201,37 @@
       }
 
       .shield {
-         position: relative;
-         left: 58px;
+         position: absolute;
+         //left: 58px;
+         left: 71%;
          top: 30px;
-         margin-right: -2px;
-         font-size: 18px;
+         font-size: 24px;
+         color: #707070;
+         text-shadow: 0 0 3px $lighterColor;
+
+         .shield-ac-val {
+            width: 40px;
+            color: #222222;
+            font-weight: bolder;
+            text-align: center;
+            text-shadow: 0 0 2px $lighterColor, 0 1px 1px $lighterColor, 1px 0 1px $lighterColor, 1px 1px 1px $lighterColor;
+            position: relative;
+            //left: 50%; /* Center horizontally */
+            //top: 50%; /* Center vertically */
+            left: 12px;
+            top: -15px;
+            transform: translate(-50%, -50%); /* Adjust position to truly center */
+            font-size: 14px;
+         }
       }
 
       .ranged-ac {
-         position: relative;
+         position: absolute;
          left: 1px;
-         top: 32px;
+         top: 30px;
          font-size: 24px;
-         color: #888888;
+         color: #808080;
+         text-shadow: 0 0 3px $lighterColor;
 
          .ranged-ac-val {
             width: 40px;
@@ -227,7 +245,7 @@
             left: 12px;
             top: -15px;
             transform: translate(-50%, -50%); /* Adjust position to truly center */
-            font-size: 12px;
+            font-size: 14px;
          }
       }
    }
