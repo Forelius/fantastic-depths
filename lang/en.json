@@ -539,7 +539,9 @@
          "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
          "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
          "healRoll": "Heal",
-         "targetACDefMastery": "<span data-tooltip='AC' {cssClass}>{acTotal}</span><span {cssClass} data-tooltip='Adjusted AC with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.'>({defenseMasteryTotal})</span>"
+         "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
+         "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
+         "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
       "dialog": {
          "awardXP": {

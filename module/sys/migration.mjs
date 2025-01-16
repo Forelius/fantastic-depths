@@ -64,6 +64,11 @@ export class DataMigrator {
       await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
    }
 
+   static fixBreathWeapons2() {
+      const migration = new DataMigrator();
+      migration.fixBreathWeapons();
+   }
+
    async fixBreathWeapons() {
       console.log("-----------------------------------------------");
       console.log("Fixing Breath Weapons");

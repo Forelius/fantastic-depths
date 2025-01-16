@@ -7,6 +7,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+      this.masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       this.acAbbr = this.toHitSystem === 'aac' ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
    }
 
@@ -140,13 +141,14 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * @param {any} weapon the weapon item used for the attack
     * @param {any} targetTokens an array of target tokens, if any.
     * @param {any} roll
-    * @param {any} targetWeaponType
+    * @param {any} attackerWeaponType
     * @returns
     */
-   async getToHitResults(attacker, weapon, targetTokens, roll, targetWeaponType = null) {
+   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') {
       let result = null;
 
       if (roll) {
+         const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
          const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
          const thbonus = attacker.actor?.system.thbonus ?? attacker.system.thbonus;
          const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0, thbonus);
@@ -169,7 +171,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             let targetResult = {
                targetid: targetToken.id,
                targetname: targetToken.name,
-               targetac: `${targetToken.actor.system.ac?.total}`, // regular ac
+               targetac: this.#getNormalTargetAC(targetToken, attackType),
                success: null,
                message: null
             };
@@ -177,27 +179,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
             let ac = targetActor.system.ac?.total;
             let aac = targetActor.system.ac?.totalAAC;
 
-            const defenseMasteries = targetActor.system.ac.mastery;
-            if (targetWeaponType && defenseMasteries?.length > 0) {
-               const defenseMastery = defenseMasteries.filter(mastery => mastery.acBonusType === targetWeaponType)
-                  .reduce((minMastery, current) =>
-                     current.acBonus < minMastery.acBonus ? current : minMastery
-                     , { acBonus: Infinity });
-
-               if (defenseMastery && defenseMastery.acBonus !== Infinity) {
-                  // Normal AC/Mastery Def. AC
-                  const isApplicable = targetActor.system.combat.attacksAgainst < defenseMastery.acBonusAT;
-                  targetResult.targetac = game.i18n.format('FADE.Chat.targetACDefMastery', {
-                     cssClass: (isApplicable ? "" : "style='color:green'"),
-                     acTotal: targetToken.actor.system.ac?.total,
-                     attacksAgainst: targetActor.system.combat.attacksAgainst,
-                     maxAttacksAgainst: defenseMastery.acBonusAT,
-                     defenseMasteryTotal: defenseMastery.total
-                  });
-                  if (isApplicable) {
-                     ac = defenseMastery.total;
-                  }
-               }
+            // If weapon mastery system is enabled...
+            if (this.masteryEnabled === true) {
+               ac = this.#calcMasteryDefenseAC(attackerWeaponType, targetResult, targetToken, ac, attackType);
             }
 
             if (hitAC !== null) { // null if rolled a natural 1
@@ -245,6 +229,72 @@ export class AttackRollChatBuilder extends ChatBuilder {
    }
 
    /**
+    * Calculate the AC based on weapon mastery rules.
+    * @private
+    * @param {any} attackerWeaponType
+    * @param {any} targetResult
+    * @param {any} targetToken
+    * @param {any} ac The effective AC for this attack.
+    * @returns
+    */
+   #calcMasteryDefenseAC(attackerWeaponType, targetResult, targetToken, ac, attackType) {
+      const defenseMastery = targetToken.actor.getBestDefenseMastery(attackerWeaponType);
+      if (defenseMastery && defenseMastery.acBonus !== Infinity) {
+         // Normal AC/Mastery Def. AC
+         const useMasteryAC = targetToken.actor.system.combat.attacksAgainst < defenseMastery.acBonusAT
+            && targetToken.actor.system.ac?.totalRanged > defenseMastery.total;
+         targetResult.targetac = this.#getMasteryDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType);
+         if (useMasteryAC) {
+            ac = defenseMastery.total;
+         }
+      }
+      return ac;
+   }
+
+   /**
+    * Creates the DM's view of an attack result for the specified target.
+    * @param {any} targetToken
+    * @param {any} attackType
+    * @returns
+    */
+   #getNormalTargetAC(targetToken, attackType) {
+      return game.i18n.format('FADE.Chat.targetAC', {
+         cssClass: attackType === 'melee' ? "style='color:green'" : "",
+         acTotal: targetToken.actor.system.ac?.total,
+         targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
+            ? game.i18n.format('FADE.Chat.targetRangedAC', {
+               acTotal: targetToken.actor.system.ac?.totalRanged,
+               cssClass: attackType === 'missile' ? "style='color:green'" : ""
+            })
+            : ""
+      });
+   }
+
+   /**
+    * Creates the DM's view of an attack result for the specified target. Also indicates how weapon mastery factored into AC calculation.
+    * @param {any} useMasteryAC Whether the system determined the weapon mastery defense bonus applied to this attack or not.
+    * @param {any} targetToken The token being attacked.
+    * @param {any} defenseMastery The token actor's most applicable defense mastery.
+    * @returns Localized html message;
+    */
+   #getMasteryDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType) {
+      return game.i18n.format('FADE.Chat.targetACDefMastery', {
+         cssClass: (useMasteryAC === false && attackType === 'melee' ? "style='color:green'" : ""),
+         cssClassMastery: (useMasteryAC ? "style='color:green'" : ""),
+         acTotal: targetToken.actor.system.ac?.total,
+         targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
+            ? game.i18n.format('FADE.Chat.targetRangedAC', {
+               acTotal: targetToken.actor.system.ac?.totalRanged,
+               cssClass: (!useMasteryAC && attackType === 'missile' ? "style='color:green'" : "")
+            })
+            : "",
+         attacksAgainst: targetToken.actor.system.combat.attacksAgainst,
+         maxAttacksAgainst: defenseMastery.acBonusAT,
+         defenseMasteryTotal: defenseMastery.total
+      });
+   }
+
+   /**
     * Called by the various Actor and Item derived classes to create a chat message.
     */
    async createChatMessage() {
@@ -267,7 +317,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll);
+      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
 
       if (window.toastManager) {

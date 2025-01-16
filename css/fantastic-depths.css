@@ -981,7 +981,7 @@ h1, h2, h3, h4 {
 .fantastic-depths .character .armor-class .ac-bottom, .fantastic-depths .monster .armor-class .ac-bottom {
   position: absolute;
   font-size: 12px;
-  bottom: 12px;
+  bottom: 15px;
   width: 50px;
   right: calc(50% - 25px);
 }
@@ -991,6 +991,25 @@ h1, h2, h3, h4 {
   top: 30px;
   margin-right: -2px;
   font-size: 18px;
+}
+.fantastic-depths .character .armor-class .ranged-ac, .fantastic-depths .monster .armor-class .ranged-ac {
+  position: relative;
+  left: 1px;
+  top: 32px;
+  font-size: 24px;
+  color: #888888;
+}
+.fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
+  width: 40px;
+  color: #222222;
+  font-weight: bolder;
+  text-align: center;
+  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
+  position: relative;
+  left: 12px;
+  top: -15px;
+  transform: translate(-50%, -50%); /* Adjust position to truly center */
+  font-size: 12px;
 }
 .fantastic-depths .character .category-info, .fantastic-depths .monster .category-info {
   font-weight: normal;

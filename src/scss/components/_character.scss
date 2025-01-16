@@ -195,7 +195,7 @@
       .ac-bottom {
          position: absolute;
          font-size: 12px;
-         bottom: 12px;
+         bottom: 15px;
          width: 50px;
          right: calc(50% + -25px);
       }
@@ -206,6 +206,29 @@
          top: 30px;
          margin-right: -2px;
          font-size: 18px;
+      }
+
+      .ranged-ac {
+         position: relative;
+         left: 1px;
+         top: 32px;
+         font-size: 24px;
+         color: #888888;
+
+         .ranged-ac-val {
+            width: 40px;
+            color: #222222;
+            font-weight: bolder;
+            text-align: center;
+            text-shadow: 0 0 2px $lighterColor, 0 1px 2px $lighterColor, 1px 0 2px $lighterColor, 1px 1px 2px $lighterColor;
+            position: relative;
+            //left: 50%; /* Center horizontally */
+            //top: 50%; /* Center vertically */
+            left: 12px;
+            top: -15px;
+            transform: translate(-50%, -50%); /* Adjust position to truly center */
+            font-size: 12px;
+         }
       }
    }
 

@@ -97,9 +97,9 @@ FADE.Encumbrance = {
       { wtPortion: 0, mvFactor: 0, name: "over" },
    ],
    monster: [
-      { wtPortion: 2, mvFactor: 1.0, name: "unencumbered"},
-      { wtPortion: 1, mvFactor: 0.5, name: "moderately"},
-      { wtPortion: 0, mvFactor: 0, name: "over"},
+      { wtPortion: 2, mvFactor: 1.0, name: "unencumbered" },
+      { wtPortion: 1, mvFactor: 0.5, name: "moderately" },
+      { wtPortion: 0, mvFactor: 0, name: "over" },
    ]
 };
 FADE.AdjustmentTableDD = [
@@ -157,7 +157,7 @@ FADE.Conditions = [
          { key: "system.mod.combat.dmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to damage rolls
          { key: "system.mod.combat.dmgRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -2 },  // -2 to ranged damage rolls
       ],
-      duration: { seconds: 60 * 10 * 3 },  // Duration (30 minutes. 3 turns)
+      duration: { seconds: 60 * 30 },  // Duration (30 minutes. 3 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "exhausted",
@@ -177,7 +177,7 @@ FADE.Conditions = [
          { key: "system.mod.combat.selfToHitRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to attack rolls against
          { key: "system.mod.save.all", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to all saving throw rolls
       ],
-      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
+      duration: { seconds: 60 * 60 },  // Duration (60 minutes, 6 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "protected1",
@@ -196,7 +196,7 @@ FADE.Conditions = [
          { key: "system.mod.combat.dmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to damage rolls
          { key: "system.mod.combat.dmgRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 1 },  // +1 to ranged damage rolls
       ],
-      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
+      duration: { seconds: 60 * 60 },  // Duration (60 minutes, 6 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "blessed",
@@ -216,10 +216,27 @@ FADE.Conditions = [
          { key: "system.mod.combat.dmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to damage rolls
          { key: "system.mod.combat.dmgRanged", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: -1 },  // -1 to ranged damage rolls
       ],
-      duration: { seconds: 60 * 10 * 6 },  // Duration (60 minutes, 6 turns)
+      duration: { seconds: 60 * 60 },  // Duration (60 minutes, 6 turns)
       flags: {
          [SYSTEM_ID]: {
             "statusId": "blighted",
+         }
+      }
+   },
+   {
+      id: "shield",
+      name: "Shield",
+      img: `icons/svg/shield.svg`,
+      tint: "#bbffcc",
+      description: `<h2>Shield</h2><p>A magical barrier envelops the affected individual, forming less than an inch from their body and moving with them. While this status is active, the individual's Armor Class is set to <strong>2</strong> against missile attacks and <strong>4</strong> against all other attacks.</p><p>If the individual is targeted by a <em>magic missile</em>, they may make a <strong>saving throw vs. spells</strong> for each missile. On a successful save, the magic missile is absorbed by the barrier and evaporates without causing harm.</p>`,
+      changes: [
+         { key: "system.mod.upgradeAc", mode: CONST.ACTIVE_EFFECT_MODES.DOWNGRADE, value: 4 },  // AC 4 for attack rolls
+         { key: "system.mod.upgradeRangedAc", mode: CONST.ACTIVE_EFFECT_MODES.DOWNGRADE, value: 2 },  // AC 2 for ranged attack rolls
+      ],
+      duration: { seconds: 20 * 60 },  // Duration (20 minutes, 2 turns)
+      flags: {
+         [SYSTEM_ID]: {
+            "statusId": "shield",
          }
       }
    }

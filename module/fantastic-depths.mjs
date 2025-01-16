@@ -71,7 +71,8 @@ Hooks.once('init', async function () {
       PartyTrackerForm,
       EffectLibraryForm,
       AttackRollChatBuilder,
-      fadeDialog
+      fadeDialog,
+      DataMigrator
    };
 
    CONFIG.time.roundTime = 10;

@@ -1,6 +1,5 @@
 // fadeCombat.mjs
 // Import any required modules (if necessary)
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { GMMessageSender } from './GMMessageSender.mjs'
 
 // Custom Combat class
@@ -38,7 +37,7 @@ export class fadeCombat extends Combat {
       let combatants = super.setupTurns();
 
       // Check to make sure all combatants still exist.
-      combatants = combatants.filter((combatant) => combatant.actor !== null && combatant.actor !== undefined);
+      combatants = combatants.filter((combatant) => combatant.actor && combatant.token);
 
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
          combatants.sort((a, b) => this.sortCombatantsGroup(a, b));
@@ -94,6 +93,7 @@ export class fadeCombat extends Combat {
       const user = game.users.get(game.userId);  // Get the user who initiated the roll
       const speaker = { alias: user.name };  // Use the player's name as the speaker
       if (user.isGM) {
+         this.resetCombatants();
          // Send a chat message when combat officially begins (round 1)
          ChatMessage.create({
             speaker: speaker,
@@ -115,13 +115,8 @@ export class fadeCombat extends Combat {
       const speaker = { alias: user.name };  // Use the player's name as the speaker
 
       if (user.isGM) {
-         for (let combatant of this.combatants) {
-            // Reset initiative to null
-            combatant.actor.update({
-               "system.combat.attacksAgainst": 0,
-               'system.combat.declaredAction': "nothing"
-            });
-         }
+         this.resetCombatants();
+
          // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
             // Reset initiative for all combatants
@@ -157,6 +152,16 @@ export class fadeCombat extends Combat {
 
       return result;
    }
+
+   resetCombatants() {
+        for (let combatant of this.combatants) {
+            // Reset initiative to null
+            combatant.actor.update({
+                "system.combat.attacksAgainst": 0,
+                'system.combat.declaredAction': "nothing"
+            });
+        }
+    }
 
    sortCombatantsIndividual(a, b) {
       let result = 0;

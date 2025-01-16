@@ -9,6 +9,13 @@ export class fadeActor extends Actor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
+      if (!this.toggleStatusEffect) {
+         // If v11 add toggleStatusEffect method.
+         this.toggleStatusEffect = async (status, options) => {
+            const token = this.getActiveTokens()[0];
+            await token.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
+         };
+      }
    }
 
    /**
@@ -21,10 +28,10 @@ export class fadeActor extends Actor {
       if (game.user.isGM) {
          if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
             this.update({ "system.combat.isDead": true });
-            this.toggleStatusEffect && this.toggleStatusEffect("dead", { active: true, overlay: true });
+            this.toggleStatusEffect("dead", { active: true, overlay: true });
          } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
             this.update({ "system.combat.isDead": false });
-            this.toggleStatusEffect && this.toggleStatusEffect("dead", { active: false });
+            this.toggleStatusEffect("dead", { active: false });
          }
       }
    }
@@ -100,8 +107,8 @@ export class fadeActor extends Actor {
 
    /** @override */
    prepareDerivedData() {
-      this.system.prepareArmorClass(this.items);
       super.prepareDerivedData();
+      this.prepareArmorClass();
    }
 
    getRollData() {
@@ -112,7 +119,7 @@ export class fadeActor extends Actor {
    /**
     * Get the attack roll formula for the specified weapon, attack type, mod and target.
     * @param {any} weapon The weapon being used to attack with.
-    * @param {any} attackType The type of attack. Values are melee or missile
+    * @param {any} attackType The type of attack. Values are melee, missile, breath and save.
     * @param {any} options An object containing one or more of the following:
     *    mod - A manual modifier entered by the user.
     *    target - This doesn't work when there are multiple targets.
@@ -231,14 +238,14 @@ export class fadeActor extends Actor {
                   "system.combat.isDead": true
                });
             }
-            this.toggleStatusEffect && await this.toggleStatusEffect("dead", { active: true, overlay: true });
+            await this.toggleStatusEffect("dead", { active: true, overlay: true });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
          }
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
             this.update({ "system.combat.isDead": false });
-            this.toggleStatusEffect && await this.toggleStatusEffect("dead", { active: false });
+            await this.toggleStatusEffect("dead", { active: false });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
          }
       }
@@ -468,6 +475,22 @@ export class fadeActor extends Actor {
       return result;
    }
 
+   /**
+    * Finds the best defense mastery for the specified attacker's weapon type.
+    * @param {any} attackerWeaponType
+    * @returns
+    */
+   getBestDefenseMastery(attackerWeaponType) {
+      let result = null;
+      const defenseMasteries = this.system.ac.mastery;
+      if (defenseMasteries?.length > 0) {
+         result = defenseMasteries.filter(mastery => mastery.acBonusType === attackerWeaponType)
+            .reduce((minMastery, current) => current.acBonus < minMastery.acBonus ? current : minMastery,
+               { acBonus: Infinity });
+      }
+      return result;
+   }
+
    /** 
     * Performs base classe prep of actor's active effects.
     * Disables effects from items that are equippable and not equipped. 
@@ -512,5 +535,115 @@ export class fadeActor extends Actor {
          }
       }
       systemData.spellSlots = spellSlots;
+   }
+
+   /**
+    * Prepare derived armor class values.
+    */
+   prepareArmorClass() {
+      const acDigest = [];
+      const dexMod = (this.system.abilities?.dex.mod ?? 0);
+      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.system.mod.baseAc;
+      let ac = {};
+      ac.nakedAAC = 19 - baseAC;
+      ac.naked = baseAC;
+      // AC value is used for wrestling rating and should not include Dexterity bonus.
+      ac.value = CONFIG.FADE.Armor.acNaked;
+      ac.total = baseAC;
+      ac.mod = 0;
+      ac.shield = 0;
+
+      const naturalArmor = this.items.find(item => item.type === 'armor' && item.system.natural);
+      this.system.equippedArmor = this.items.find(item => item.type === 'armor' && item.system.equipped && !item.system.isShield);
+      const equippedShield = this.items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
+
+      if (dexMod !== 0) {
+         acDigest.push(`Dexterity bonus: ${dexMod}`);
+      }
+
+      // If natural armor
+      if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
+         naturalArmor.prepareEffects();
+         ac.naked = naturalArmor.system.totalAC - dexMod;
+         ac.value = ac.naked;
+         ac.total = ac.naked;
+         naturalArmor.system.equipped = true;
+         acDigest.push(`Natural armor ${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
+      }
+
+      // If an equipped armor is found...
+      if (this.system.equippedArmor) {
+         this.system.equippedArmor.prepareEffects();
+         ac.value = this.system.equippedArmor.system.ac;
+         ac.mod += this.system.equippedArmor.system.mod ?? 0;
+         ac.total = this.system.equippedArmor.system.totalAC;
+         // Reapply dexterity mod, since overwriting ac.total here.
+         ac.total -= dexMod;
+         acDigest.push(`Equipped armor ${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
+      }
+
+      // If a shield is equipped...
+      if (equippedShield) {
+         equippedShield.prepareEffects();
+         ac.value -= equippedShield.system.ac;
+         ac.shield = equippedShield.system.totalAC;
+         ac.total -= equippedShield.system.totalAC;
+         acDigest.push(`Equipped shield ${equippedShield.name}: ${equippedShield.system.totalAC}`);
+      }
+
+      if (this.system.mod.baseAc != 0) {
+         ac.total -= this.system.mod.baseAc;
+         acDigest.push(`Base AC mod: ${this.system.mod.baseAc}`);
+      }
+
+      ac.nakedRanged = ac.total;
+      ac.totalRanged = ac.total;
+      // Normal Calcs done at this point --------------------------------
+
+      if (this.system.mod.upgradeAc && this.system.mod.upgradeAc < ac.total) {
+         ac.total = this.system.mod.upgradeAc;
+         acDigest.push(`AC upgraded to ${this.system.mod.upgradeAc}`);
+      }
+      if (this.system.mod.upgradeRangedAc && this.system.mod.upgradeRangedAc < ac.totalRanged) {
+         ac.totalRanged = this.system.mod.upgradeRangedAc;
+         acDigest.push(`Ranged AC upgraded to ${this.system.mod.upgradeRangedAc}`);
+      }
+
+      // Now other mods. Dexterity bonus already applied above.
+      ac.nakedAAC = 19 - ac.naked;
+      ac.totalAAC = 19 - ac.total;
+      ac.nakedRangedAAC = ac.nakedAAC;
+      ac.totalRangedAAC = ac.totalAAC;
+
+      // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      if (masteryEnabled) {
+         ac.mastery = this.getDefenseMasteries(ac);
+      }
+
+      this.system.ac = ac;
+      this.system.acDigest = acDigest;
+   }
+
+   getDefenseMasteries(ac) {
+      const results = [];
+      const masteries = this.items.filter(item => item.type === "mastery");
+      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
+      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
+      if (masteries?.length > 0 && equippedWeapons?.length > 0) {
+         for (let weapon of equippedWeapons) {
+            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
+            if (weaponMastery) {
+               results.push({
+                  acBonusType: weaponMastery.system.acBonusType,
+                  acBonus: weaponMastery.system.acBonus || 0,
+                  total: ac.total + (weaponMastery.system.acBonus || 0),
+                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
+                  acBonusAT: weaponMastery.system.acBonusAT
+               });
+            }
+         }
+      }
+      return results;
    }
 }
