@@ -60,6 +60,9 @@ export class DataMigrator {
       if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.1"))) {
          //await this.fixAmmoItems();
       }
+      if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
+         await this.fixBreathWeapons();
+      }
       // Set the new version after migration is complete
       await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
    }
