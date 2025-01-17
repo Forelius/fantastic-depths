@@ -280,6 +280,6 @@ FADE.CombatManeuvers = {
    smash: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    parry: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    disarm: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
-   shove: { phase: "melee", canMove: true },
+   shove: { phase: "movement", canMove: true },
    guard: { phase: "melee", canMove: true },
 }

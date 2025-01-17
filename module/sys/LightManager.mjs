@@ -15,22 +15,23 @@ export class LightManager {
     */
    static onUpdateWorldTime(worldTime, dt, options, userId) {
       console.debug('updateLightUsage:', worldTime, dt, options, userId);
-
-      // Iterate over all canvas tokens
-      for (let token of canvas.tokens.placeables) {
-         // Get the token actor's active light.
-         const lightItem = token.actor.items.get(token.actor.system.activeLight);
-         const fuelItem = token.actor.items.get(token.actor.system.activeFuel);
-         if (fuelItem && lightItem && lightItem.duration !== null) {
-            // Convert the item's turn-based duration to seconds
-            const durationSeconds = lightItem.system.light.duration * 60 * 10;
-            // Get the current length of time that the item has been active.
-            let secondsActive = Math.max(0, lightItem.system.light.secondsActive + dt);
-            if (secondsActive >= durationSeconds) {
-               LightManager.consumeItem(fuelItem, lightItem, token); // Pass the token for extinguishing the light
-               secondsActive = 0; // Reset secondsActive after consuming fuel
+      if (dt !== 0) {
+         // Iterate over all canvas tokens
+         for (let token of canvas.tokens.placeables) {
+            // Get the token actor's active light.
+            const lightItem = token.actor.items.get(token.actor.system.activeLight);
+            const fuelItem = token.actor.items.get(token.actor.system.activeFuel);
+            if (fuelItem && lightItem && lightItem.system.light.duration !== null) {
+               // Convert the item's turn-based duration to seconds
+               const durationSeconds = lightItem.system.light.duration * 60 * 10;
+               // Get the current length of time that the item has been active.
+               let secondsActive = Math.max(0, lightItem.system.light.secondsActive + dt);
+               if (secondsActive >= durationSeconds) {
+                  LightManager.consumeItem(fuelItem, token); // Pass the token for extinguishing the light
+                  secondsActive = 0; // Reset secondsActive after consuming fuel
+               }
+               lightItem.update({ "system.light.secondsActive": secondsActive });
             }
-            lightItem.update({ "system.light.secondsActive": secondsActive });
          }
       }
    }
@@ -279,7 +280,7 @@ export class LightManager {
       return fuelItem;
    }
 
-   static consumeItem(fuelItem, lightItem, token) {
+   static consumeItem(fuelItem, token) {
       let newQuantity = Math.max(0, fuelItem.system.quantity - 1);
       fuelItem.update({ "system.quantity": newQuantity });
       const message = game.i18n.format('FADE.Item.light.noFuel', {
@@ -287,7 +288,7 @@ export class LightManager {
          item: fuelItem.name
       });
       LightManager.notify(message, 'info');
-      ChatMessage.create({ content: message, speaker: { alias: this.token.name, } });
+      ChatMessage.create({ content: message, speaker: { alias: token.name, } });
 
       token.document.update({ light: { dim: 0, bright: 0 } });
       token.document.setFlag('world', 'lightActive', false);
