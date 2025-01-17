@@ -23,6 +23,8 @@ export const DialogFactory = (dataset = null, caller = null, opt = {}) => {
       result = fadeDialog.getYesNoDialog(dataset);
    } else if (dataset.dialog === 'save') {
       result = fadeDialog.getSavingThrowDialog(dataset, caller);
+   } else if (dataset.dialog === 'wrestle') {
+      result = fadeDialog.getWrestleDialog(dataset, caller, opt);
    }
    return result;
 };

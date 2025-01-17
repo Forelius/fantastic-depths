@@ -1,3 +1,5 @@
+import { Wrestling } from "../sys/Wrestling.mjs";
+
 function focusById(id) {
    return setTimeout(() => { document.getElementById(id).focus(); }, 50);
 }
@@ -386,5 +388,48 @@ export class fadeDialog {
       });
       dialogResp.context = caller;
       return dialogResp;
+   }
+
+   static async getWrestleDialog(dataset, caller, opt) {
+      const template = 'systems/fantastic-depths/templates/dialog/wrestling.hbs';
+      const content = await renderTemplate(template);
+
+      let wrestlingData = await new Promise((resolve) => {
+         new Dialog({
+            title: game.i18n.localize("Wrestling Contest"),
+            content,
+            buttons: {
+               ok: {
+                  label: game.i18n.localize("Roll"),
+                  callback: (html) => {
+                     resolve({
+                        attackerWR: parseInt(html.find("#attackerWR").val()) || 0,
+                        defenderWR: parseInt(html.find("#defenderWR").val()) || 0,
+                        defenderStatus: parseInt(html.find("#defenderStatus").val()) || 0,
+                        wrestlingState: html.find("#wrestlingState").val(),
+                     });
+                  },
+               },
+               cancel: {
+                  label: game.i18n.localize("Cancel"),
+                  callback: () => resolve(null),
+               },
+            },
+            default: "ok",
+         }).render(true);
+      });
+
+      // Exit if canceled
+      if (!wrestlingData) {
+         ui.notifications.warn(game.i18n.localize("Wrestling contest was canceled."));
+         return;
+      }
+
+      // Calculate the outcome
+      const wrestling = new Wrestling();
+      const result = wrestling.calculateWrestlingOutcome(wrestlingData.attackerWR, wrestlingData.defenderWR, wrestlingData.defenderStatus, wrestlingData.wrestlingState);
+
+      // Output result
+      ChatMessage.create({ content: result.message });
    }
 }

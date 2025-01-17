@@ -108,7 +108,7 @@ export class fadeActor extends Actor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this.prepareArmorClass();
+      this._prepareArmorClass();
    }
 
    getRollData() {
@@ -538,9 +538,10 @@ export class fadeActor extends Actor {
    }
 
    /**
+    * @protected
     * Prepare derived armor class values.
     */
-   prepareArmorClass() {
+   _prepareArmorClass() {
       const acDigest = [];
       const dexMod = (this.system.abilities?.dex.mod ?? 0);
       const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.system.mod.baseAc;
