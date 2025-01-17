@@ -411,7 +411,7 @@ export class fadeActor extends Actor {
             const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
             digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
          }
-      } else if (attackType === "missile" && this.type === "character" && systemData.details.species === "Human") {
+      } else if (attackType === "missile" && this.type === "character" && this.system.details.species === "Human") {
          // Unskilled use for humans
          result -= 1;
          digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
