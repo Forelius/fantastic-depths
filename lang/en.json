@@ -393,6 +393,9 @@
          "total": "Total AC",
          "totalAAC": "Total AAC",
          "hintTotal": "<b>Total Armor Class</b><p>This is the total armor class and it includes modifiers from effects.</p>",
+         "rangedAC": "Ranged AC",
+         "rangedAAC": "Ranged AAC",
+         "hintRangedAC": "<b>Ranged Armor Class</b><p>The effective armor class versus missile attacks.</p>",
          "shield": {
             "long": "Shield Equipped",
             "short": "Shield"

@@ -522,25 +522,6 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .character .ability-scores .ability, .dark-mode .fantastic-depths .monster .ability-scores .ability {
   border-color: #4b4a44;
 }
-.dark-mode .fantastic-depths .character .hit-points .hp-value, .dark-mode .fantastic-depths .monster .hit-points .hp-value {
-  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
-  background: none;
-}
-.dark-mode .fantastic-depths .character .hit-points .hp-empty, .dark-mode .fantastic-depths .monster .hit-points .hp-empty {
-  background-image: url("../assets/img/heart_empty2.png");
-  background-repeat: no-repeat;
-}
-.dark-mode .fantastic-depths .character .hit-points .hp-full, .dark-mode .fantastic-depths .monster .hit-points .hp-full {
-  background-image: url("../assets/img/heart_full2.png");
-  background-repeat: no-repeat;
-}
-.dark-mode .fantastic-depths .character .armor-class, .dark-mode .fantastic-depths .monster .armor-class {
-  background-image: url("../assets/img/armor1.png");
-  background-repeat: no-repeat;
-}
-.dark-mode .fantastic-depths .character .armor-class .ac-value, .dark-mode .fantastic-depths .monster .armor-class .ac-value {
-  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
-}
 .dark-mode .chat-message {
   background: url("../assets/img/grungeyellow.jpg");
   color: #ebeae4;
@@ -640,24 +621,6 @@ h1, h2, h3, h4 {
 }
 .light-mode .fantastic-depths .character .ability-scores .ability, .light-mode .fantastic-depths .monster .ability-scores .ability {
   border-color: #bbbab4;
-}
-.light-mode .fantastic-depths .character .hit-points .hp-value, .light-mode .fantastic-depths .monster .hit-points .hp-value {
-  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
-}
-.light-mode .fantastic-depths .character .hit-points .hp-empty, .light-mode .fantastic-depths .monster .hit-points .hp-empty {
-  background-image: url("../assets/img/heart_empty.png");
-  background-repeat: no-repeat;
-}
-.light-mode .fantastic-depths .character .hit-points .hp-full, .light-mode .fantastic-depths .monster .hit-points .hp-full {
-  background-image: url("../assets/img/heart_full.png");
-  background-repeat: no-repeat;
-}
-.light-mode .fantastic-depths .character .armor-class, .light-mode .fantastic-depths .monster .armor-class {
-  background-image: url("../assets/img/armor1.png");
-  background-repeat: no-repeat;
-}
-.light-mode .fantastic-depths .character .armor-class .ac-value, .light-mode .fantastic-depths .monster .armor-class .ac-value {
-  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
 }
 .light-mode .chat-message .attack-fail, .light-mode .chat-message .roll-fail {
   color: #602010;
@@ -930,10 +893,13 @@ h1, h2, h3, h4 {
   position: relative;
 }
 .fantastic-depths .character .hit-points .hp-value, .fantastic-depths .monster .hit-points .hp-value {
+  color: #ebeae4;
   background: none;
   border: 0 none;
   text-align: center;
   font-weight: bolder;
+  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
+  background: none;
 }
 .fantastic-depths .character .hit-points .hp-top, .fantastic-depths .monster .hit-points .hp-top {
   position: absolute;
@@ -953,23 +919,31 @@ h1, h2, h3, h4 {
   background-size: 74px;
   background-position: top;
   background-clip: content-box;
+  background-image: url("../assets/img/heart_empty2.png");
+  background-repeat: no-repeat;
 }
 .fantastic-depths .character .hit-points .hp-full, .fantastic-depths .monster .hit-points .hp-full {
   background-size: 74px;
   background-position: bottom;
   background-clip: content-box;
+  background-image: url("../assets/img/heart_full2.png");
+  background-repeat: no-repeat;
 }
 .fantastic-depths .character .armor-class, .fantastic-depths .monster .armor-class {
   height: 74px;
   position: relative;
   background-size: 70px;
   background-position: center;
+  background-image: url("../assets/img/armor1.png");
+  background-repeat: no-repeat;
 }
 .fantastic-depths .character .armor-class .ac-value, .fantastic-depths .monster .armor-class .ac-value {
+  color: #ebeae4;
   background: none;
   border: 0 none;
   text-align: center;
   font-weight: bolder;
+  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
 }
 .fantastic-depths .character .armor-class .ac-top, .fantastic-depths .monster .armor-class .ac-top {
   position: absolute;
@@ -991,14 +965,13 @@ h1, h2, h3, h4 {
   top: 30px;
   font-size: 24px;
   color: #707070;
-  text-shadow: 0 0 3px #ebeae4;
 }
 .fantastic-depths .character .armor-class .shield .shield-ac-val, .fantastic-depths .monster .armor-class .shield .shield-ac-val {
   width: 40px;
-  color: #222222;
+  color: #ebeae4;
   font-weight: bolder;
   text-align: center;
-  text-shadow: 0 0 2px #ebeae4, 0 1px 1px #ebeae4, 1px 0 1px #ebeae4, 1px 1px 1px #ebeae4;
+  text-shadow: 0 0 3px #191813, 0 1px 2px #191813, 1px 0 2px #191813, 1px 1px 2px #191813;
   position: relative;
   left: 12px;
   top: -15px;
@@ -1011,14 +984,13 @@ h1, h2, h3, h4 {
   top: 30px;
   font-size: 24px;
   color: #808080;
-  text-shadow: 0 0 3px #ebeae4;
 }
 .fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
   width: 40px;
-  color: #222222;
+  color: #ebeae4;
   font-weight: bolder;
   text-align: center;
-  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
+  text-shadow: 0 0 3px #191813, 0 1px 2px #191813, 1px 0 2px #191813, 1px 1px 2px #191813;
   position: relative;
   left: 12px;
   top: -15px;

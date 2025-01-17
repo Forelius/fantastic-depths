@@ -568,7 +568,7 @@ export class fadeActor extends Actor {
          ac.value = ac.naked;
          ac.total = ac.naked;
          naturalArmor.system.equipped = true;
-         acDigest.push(`Natural armor ${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
+         acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
       }
 
       // If an equipped armor is found...
@@ -579,7 +579,7 @@ export class fadeActor extends Actor {
          ac.total = this.system.equippedArmor.system.totalAC;
          // Reapply dexterity mod, since overwriting ac.total here.
          ac.total -= dexMod;
-         acDigest.push(`Equipped armor ${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
+         acDigest.push(`${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
       }
 
       // If a shield is equipped...
@@ -588,12 +588,12 @@ export class fadeActor extends Actor {
          ac.value -= equippedShield.system.ac;
          ac.shield = equippedShield.system.totalAC;
          ac.total -= equippedShield.system.totalAC;
-         acDigest.push(`Equipped shield ${equippedShield.name}: ${equippedShield.system.totalAC}`);
+         acDigest.push(`${equippedShield.name}: ${equippedShield.system.totalAC}`);
       }
 
       if (this.system.mod.baseAc != 0) {
          ac.total -= this.system.mod.baseAc;
-         acDigest.push(`Base AC mod: ${this.system.mod.baseAc}`);
+         acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.baseAc}`);
       }
 
       ac.nakedRanged = ac.total;
@@ -602,18 +602,20 @@ export class fadeActor extends Actor {
 
       if (this.system.mod.upgradeAc && this.system.mod.upgradeAc < ac.total) {
          ac.total = this.system.mod.upgradeAc;
+         ac.naked = this.system.mod.upgradeAc;
          acDigest.push(`AC upgraded to ${this.system.mod.upgradeAc}`);
       }
       if (this.system.mod.upgradeRangedAc && this.system.mod.upgradeRangedAc < ac.totalRanged) {
          ac.totalRanged = this.system.mod.upgradeRangedAc;
+         ac.nakedRanged = this.system.mod.upgradeRangedAc;
          acDigest.push(`Ranged AC upgraded to ${this.system.mod.upgradeRangedAc}`);
       }
 
       // Now other mods. Dexterity bonus already applied above.
       ac.nakedAAC = 19 - ac.naked;
       ac.totalAAC = 19 - ac.total;
-      ac.nakedRangedAAC = ac.nakedAAC;
-      ac.totalRangedAAC = ac.totalAAC;
+      ac.totalRangedAAC = 19 - ac.totalRanged;
+      ac.nakedRangedAAC = 19 - ac.nakedRanged;
 
       // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");

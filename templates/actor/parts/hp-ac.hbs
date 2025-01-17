@@ -31,7 +31,7 @@
          </div>
          {{/if}}
          {{#if (ne system.ac.total system.ac.totalRanged)}}
-         <div class="ranged-ac">
+         <div class="ranged-ac" data-tooltip="{{localize 'FADE.Armor.hintRangedAC'}}">
             <i class="fas fa-bullseye"></i>
             {{#if isAAC}}
             <div class="ranged-ac-val">{{system.ac.totalRangedAAC}}</div>

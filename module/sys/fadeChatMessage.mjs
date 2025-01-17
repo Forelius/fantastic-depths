@@ -83,8 +83,7 @@ export class fadeChatMessage extends ChatMessage {
          }
          targetInfo += `<div class="flex3" style="margin-left:5px;">${target.targetname}</div>`;
          if (target.targetac !== undefined && target.targetac !== null) {
-            let targetac = this.toHitSystem === 'aac' ? 19 - target.targetac : target.targetac;
-            targetInfo += `<div class="ac flex1"><i class="fas fa-shield-halved"></i> <span>${targetac}</span></div>`;
+            targetInfo += `<div class="ac flex1"><i class="fas fa-shield-halved"></i> <span>${target.targetac}</span></div>`;
          } else if (target.message) {
             targetInfo += `<div class="flex2">${target.message}</div>`;
          }
