@@ -583,6 +583,9 @@ h1, h2, h3, h4 {
 }
 
 /* Light mode styles */
+.light-mode .fantastic-depths .window-content {
+  background: url("../assets/img/lightgrunge1.jpg");
+}
 .light-mode .fantastic-depths .window-content .bordered {
   border-color: #bbbab4;
 }
