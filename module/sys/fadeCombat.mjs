@@ -434,6 +434,12 @@ export class fadeCombat extends Combat {
       return result;
    }
 
+   /**
+    * Add custom elements to the combat tracker UI.
+    * @param {any} app
+    * @param {any} html
+    * @param {any} data
+    */
    static async onRenderCombatTracker(app, html, data) {
       let hasAnyRolls = false;
       if (data?.combat?.combatants) {
@@ -461,6 +467,12 @@ export class fadeCombat extends Combat {
       }
    }
 
+   /**
+    * Adds the combat manuever declaration control to the combat tracker.
+    * @param {any} combat
+    * @param {any} combatantElement
+    * @param {any} combatant
+    */
    async addDeclarationControl(combat, combatantElement, combatant) {
       const combatantControls = combatantElement.find('.combatant-controls');
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';

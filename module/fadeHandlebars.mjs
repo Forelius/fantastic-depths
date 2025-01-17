@@ -1,4 +1,4 @@
-/* -------------------------------------------- */
+﻿/* -------------------------------------------- */
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
 export class fadeHandlebars {
@@ -7,6 +7,7 @@ export class fadeHandlebars {
    }
 
    static registerHelpers() {
+      Handlebars.registerHelper("infinity", function (value) { return value ?? "∞"; });
       Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
       Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
       Handlebars.registerHelper("counter", (status, value, max) =>

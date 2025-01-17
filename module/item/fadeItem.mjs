@@ -53,18 +53,11 @@ export class fadeItem extends Item {
    get totalEnc() {
       let result = 0;
       if (this.system.container === true) {
-         result = this.containedItems?.reduce((sum, ritem) => {
-            const weight = ritem.system.weight || 0;
-            const quantity = ritem.system.quantity || 1;
-            //return sum + (weight * quantity);
-            return sum + ritem.totalEnc;
-         }, 0) || 0;
+         result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
       }
-
       const weight = this.system.weight || 0;
-      const quantity = this.system.quantity || 1;
+      const quantity = this.system.quantity !== null ? this.system.quantity : 1;
       result += weight * quantity;
-
       return result;
    }
 
@@ -152,16 +145,6 @@ export class fadeItem extends Item {
       };
       const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
       return await builder.createChatMessage();
-
-      //   // If there's no roll data, send a chat message with the item description.
-      //   if (dataset?.test === null || dataset?.test === undefined) {
-      //      ChatMessage.create({
-      //         speaker: speaker,
-      //         rollMode: rollMode,
-      //         flavor: `${item.name}`,
-      //         content: item.system.description ?? '',
-      //      });
-      //   }
    }
 
    async getEvaluatedRoll(formula, options = { minimize: true }) {

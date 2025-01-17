@@ -7,8 +7,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+      this.isAAC = this.toHitSystem === 'aac';
+      this.acAbbr = this.isAAC ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
       this.masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      this.acAbbr = this.toHitSystem === 'aac' ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
    }
 
    getHeroicToHitTable(thac0, repeater = 0) {
@@ -186,7 +187,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
             if (hitAC !== null) { // null if rolled a natural 1
                if (ac !== null && ac !== undefined) {
-                  if (this.toHitSystem === 'aac' ? aac <= hitAC : ac >= hitAC) {
+                  if (this.isAAC === true ? aac <= hitAC : ac >= hitAC) {
                      targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
                      targetResult.success = true;
                   } else {
@@ -260,10 +261,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
    #getNormalTargetAC(targetToken, attackType) {
       return game.i18n.format('FADE.Chat.targetAC', {
          cssClass: attackType === 'melee' ? "style='color:green'" : "",
-         acTotal: targetToken.actor.system.ac?.total,
+         acTotal: this.isAAC ? targetToken.actor.system.ac?.totalAAC : targetToken.actor.system.ac?.total,
          targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
             ? game.i18n.format('FADE.Chat.targetRangedAC', {
-               acTotal: targetToken.actor.system.ac?.totalRanged,
+               acTotal: this.isAAC ? targetToken.actor.system.ac?.totalRangedAAC : targetToken.actor.system.ac?.totalRanged,
                cssClass: attackType === 'missile' ? "style='color:green'" : ""
             })
             : ""
@@ -281,16 +282,16 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return game.i18n.format('FADE.Chat.targetACDefMastery', {
          cssClass: (useMasteryAC === false && attackType === 'melee' ? "style='color:green'" : ""),
          cssClassMastery: (useMasteryAC ? "style='color:green'" : ""),
-         acTotal: targetToken.actor.system.ac?.total,
+         acTotal: this.isAAC ? targetToken.actor.system.ac?.totalAAC : targetToken.actor.system.ac?.total,
          targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
             ? game.i18n.format('FADE.Chat.targetRangedAC', {
-               acTotal: targetToken.actor.system.ac?.totalRanged,
+               acTotal: this.isAAC ? targetToken.actor.system.ac?.totalRangedAAC : targetToken.actor.system.ac?.totalRanged,
                cssClass: (!useMasteryAC && attackType === 'missile' ? "style='color:green'" : "")
             })
             : "",
          attacksAgainst: targetToken.actor.system.combat.attacksAgainst,
          maxAttacksAgainst: defenseMastery.acBonusAT,
-         defenseMasteryTotal: defenseMastery.total
+         defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total
       });
    }
 

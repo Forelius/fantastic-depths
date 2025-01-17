@@ -14,7 +14,7 @@ export class LightItemDataModel extends fadeItemDataModel {
          isLight: new fields.BooleanField({ required: false, initial: true }),
          light: new fields.SchemaField({
             type: new fields.StringField({ required: false, initial: "" }),
-            duration: new fields.NumberField({ required: false, initial: 6 }),
+            duration: new fields.NumberField({ required: false, initial: 6, nullable: true }),
             radius: new fields.NumberField({ required: false, initial: 30 }),
             fuelType: new fields.StringField({ required: false, initial: "" }),
             secondsActive: new fields.NumberField({ required: false, initial: 0 }),

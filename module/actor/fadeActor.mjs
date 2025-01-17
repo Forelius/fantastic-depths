@@ -388,12 +388,12 @@ export class fadeActor extends Actor {
       const ammoType = weapon.system.ammoType;
 
       // If there's no ammo needed use the weapon itself
-      if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity > 0) {
+      if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
          ammoItem = weapon;
       } else {
          // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
          ammoItem = this.items.find(item => item.type === "item" && item.system.equipped === true
-            && item.system.ammoType == ammoType && item.system.quantity > 0);
+            && item.system.ammoType == ammoType && item.system.quantity !== 0);
       }
 
       return ammoItem;

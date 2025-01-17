@@ -33,7 +33,11 @@
          {{#if (ne system.ac.total system.ac.totalRanged)}}
          <div class="ranged-ac">
             <i class="fas fa-bullseye"></i>
+            {{#if isAAC}}
+            <div class="ranged-ac-val">{{system.ac.totalRangedAAC}}</div>
+            {{else}}
             <div class="ranged-ac-val">{{system.ac.totalRanged}}</div>
+            {{/if}}
          </div>
          {{/if}}
       </div>

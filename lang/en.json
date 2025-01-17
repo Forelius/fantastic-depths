@@ -662,67 +662,75 @@
          "maneuvers": {
             "nothing": {
                "name": "Nothing",
-               "description": "Character does absolutely nothing this round. No move, no attack, no nothing."
+               "description": "Combatant does absolutely nothing this round. No move, no attack, no nothing."
             },
             "moveOnly": {
                "name": "Move Only",
-               "description": "Character is moving and not attacking this round. This is not a 'Retreat'."
+               "description": "Combatant is moving and not attacking this round. This is not a 'Retreat'."
             },
             "readyWeapon": {
                "name": "Ready Weapon",
-               "description": "Character is readying their weapon this round. They may also move at normal speed."
+               "description": "Combatant is readying their weapon this round. They may also move at normal speed."
             },
             "throw": {
                "name": "Throw",
-               "description": "Character throws a suitable weapon, applying Dexterity and magic bonuses to the attack roll and Strength and magic bonuses to damage, provided the target is within range."
+               "description": "Combatant throws a suitable weapon, applying Dexterity and magic bonuses to the attack roll and Strength and magic bonuses to damage, provided the target is within range."
             },
             "fire": {
                "name": "Fire/Shoot",
-               "description": "Character uses a ranged weapon, applying Dexterity and magic bonuses to the attack roll, provided the target is within the weapon’s range."
+               "description": "Combatant uses a ranged weapon, applying Dexterity and magic bonuses to the attack roll, provided the target is within the weapon’s range."
             },
             "spell": {
                "name": "Cast Spell",
-               "description": "Character casts a memorized spell. Monsters use this action for magical attacks that aren't ranged or melee."
+               "description": "Combatant casts a memorized spell. Monsters use this action for magical attacks that aren't ranged or melee."
             },
             "magicItem": {
                "name": "Magic Item",
-               "description": "Character activates a non-weapon magical item, such as a potion, wand, ring, or the passive ability of another magical item."
+               "description": "Combatant activates a non-weapon magical item, such as a potion, wand, ring, or the passive ability of another magical item."
             },
             "attack": {
                "name": "Attack",
-               "description": "Character makes a melee attack, adding Strength and magic bonuses to both the attack roll and damage."
+               "description": "Combatant makes a melee attack, adding Strength and magic bonuses to both the attack roll and damage."
             },
             "withdrawal": {
                "name": "Withdrawal",
-               "description": "Character backs away from an enemy at 5 feet per round, attacking only if the enemy follows and moves into range during its movement phase."
+               "description": "Combatant backs away from an enemy at 5 feet per round, attacking only if the enemy follows and moves into range during its movement phase."
             },
             "retreat": {
                "name": "Retreat",
-               "description": "Character flees from melee at more than half their speed, losing shield AC bonuses and giving enemies a +2 bonus to attack them in that round."
+               "description": "Combatant flees from melee at more than half their speed, losing shield AC bonuses and giving enemies a +2 bonus to attack them in that round."
             },
             "lance": {
                "name": "Lance Attack",
-               "description": "Character on charging mount performs a lance attack, gaining Strength and magic bonuses and dealing double damage if the mount charges at least 20 yards."
+               "description": "Combatant on charging mount performs a lance attack, gaining Strength and magic bonuses and dealing double damage if the mount charges at least 20 yards."
             },
             "multiAttack": {
                "name": "Multi-Attack",
-               "description": "Character makes multiple attacks per round, which can include any combination of attacks, throws, disarms, or lance attacks."
+               "description": "Combatant makes multiple attacks per round, which can include any combination of attacks, throws, disarms, or lance attacks."
             },
             "setSpear": {
                "name": "Set vs Charge",
-               "description": "Character braces a spear, pike, or similar weapon against a charging enemy, gaining Strength and magic bonuses and dealing double damage on a successful hit."
+               "description": "Combatant braces a spear, pike, or similar weapon against a charging enemy, gaining Strength and magic bonuses and dealing double damage on a successful hit."
             },
             "smash": {
                "name": "Smash",
-               "description": "Character makes a powerful attack with a -5 penalty to the attack roll; if it hits, they add their full Strength score, along with Strength and magic bonuses, to the weapon's normal damage."
+               "description": "Combatant makes a powerful attack with a -5 penalty to the attack roll; if it hits, they add their full Strength score, along with Strength and magic bonuses, to the weapon's normal damage."
             },
             "parry": {
                "name": "Parry",
-               "description": "Character blocks incoming melee and thrown attacks for an entire round, causing all enemies to take a -4 penalty on their attack rolls against them."
+               "description": "Combatant blocks incoming melee and thrown attacks for an entire round, causing all enemies to take a -4 penalty on their attack rolls against them."
             },
             "disarm": {
                "name": "Disarm",
-               "description": "Character disarms an opponent by hitting without damage; if the target fails a Dexterity check, they drop their weapon."
+               "description": "Combatant disarms an opponent by hitting without damage; if the target fails a Dexterity check, they drop their weapon."
+            },
+            "shove": {
+               "name": "Shove",
+               "description": "The Shove Maneuver allows a combatant to replace its attack to push a target back or aside, using size, strength, and momentum to determine success."
+            },
+            "guard": {
+               "name": "Guard",
+               "description": "TThe Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
             }
          }
       },

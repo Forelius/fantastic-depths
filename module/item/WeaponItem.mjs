@@ -173,7 +173,7 @@ export class WeaponItem extends fadeItem {
       let result = null;
       let hasRoll = false;
 
-      if (this.system.quantity < 1) {
+      if (this.system.quantity === 0) {
          ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
       }
       else if (attacker) {
@@ -250,11 +250,15 @@ export class WeaponItem extends fadeItem {
       const ammoItem = this.actor?.getAmmoItem(this);
       // If there's no ammo, show a UI notification
       if (ammoItem === undefined || ammoItem === null) {
-         ui.notifications.warn(game.i18n.format('FADE.notification.noAmmo', { actorName: this.actor?.name, weaponName: this.name }));
+         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: this.actor?.name, weaponName: this.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
       } else if (getOnly !== true) {
-         // Deduct 1 ammo         
-         let newQuantity = ammoItem.system.quantity - 1;
-         await ammoItem.update({ "system.quantity": newQuantity });
+         // Deduct 1 ammo if not infinite
+         if (ammoItem.system.quantity !== null) {
+            let newQuantity = Math.max(0, ammoItem.system.quantity - 1);
+            await ammoItem.update({ "system.quantity": newQuantity });
+         }
       }
       return ammoItem;
    }

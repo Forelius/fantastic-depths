@@ -1,4 +1,4 @@
-<li class="item collapsible-content contained-item{{#if (lte item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+<li class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
    <div {{#if item.system.container}}{{#unless item.system.quantityMax }}class="bottom-border"{{/unless}}{{/if}}>
       <div class="flexrow">
          <div class='item-name contained'>
@@ -19,7 +19,7 @@
                {{/if}}
             </a>
          </div>
-         <div class="item-40px item-prop"><label>{{item.system.quantity}}</label></div>
+         <div class="item-40px item-prop"><label>{{infinity item.system.quantity}}</label></div>
          {{#if rootobj.showCoinWeight}}
          <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
          {{/if}}
@@ -45,7 +45,7 @@
 <!--</ol>-->
 {{/if}}
 {{#unless item.system.container}}
-<li class='flexrow item collapsible-content contained-item bottom-border{{#if (lte item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+<li class='flexrow item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
    {{#if item.system.quantityMax }}
    <div class="consumable-counter contained">
       <label>{{localize 'FADE.Item.uses'}}</label>

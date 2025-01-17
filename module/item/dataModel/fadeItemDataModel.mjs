@@ -12,8 +12,8 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
             notes: new fields.StringField({ required: false, initial: "" })
          }),
          // Fields from the "physical" template
-         quantity: new fields.NumberField({ required: false, initial: 1 }),
-         quantityMax: new fields.NumberField({ required: false, initial: 0 }),
+         quantity: new fields.NumberField({ required: false, initial: 1, nullable: true }),
+         quantityMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
          weight: new fields.NumberField({ required: false, initial: 0 }),
          cost: new fields.NumberField({ required: false, initial: 0 }),
          totalWeight: new fields.NumberField({ required: false, initial: 0 }),
@@ -39,11 +39,12 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      if (this.quantity <= 0) {
+      if (this.quantity === 0) {
          this.equipped = false;
       }
-      this.totalWeight = Math.round((this.weight * this.quantity) * 100) / 100;
-      this.totalCost = Math.round((this.cost * this.quantity) * 100) / 100;
+      const qty = this.quantity > 0 ? this.quantity : 1;
+      this.totalWeight = Math.round((this.weight * qty) * 100) / 100;
+      this.totalCost = Math.round((this.cost * qty) * 100) / 100;
       this.isAmmo = this.ammoType?.length > 0;
    }
 }

@@ -21,13 +21,12 @@ export class LightManager {
          // Get the token actor's active light.
          const lightItem = token.actor.items.get(token.actor.system.activeLight);
          const fuelItem = token.actor.items.get(token.actor.system.activeFuel);
-         if (fuelItem && lightItem) {
+         if (fuelItem && lightItem && lightItem.duration !== null) {
             // Convert the item's turn-based duration to seconds
             const durationSeconds = lightItem.system.light.duration * 60 * 10;
             // Get the current length of time that the item has been active.
             let secondsActive = Math.max(0, lightItem.system.light.secondsActive + dt);
-            // If duration is not -1 and light has been active longer than the duration...
-            if (dt !== -1 && secondsActive >= durationSeconds) {
+            if (secondsActive >= durationSeconds) {
                LightManager.consumeItem(fuelItem, lightItem, token); // Pass the token for extinguishing the light
                secondsActive = 0; // Reset secondsActive after consuming fuel
             }
@@ -114,8 +113,8 @@ export class LightManager {
             canUpdate = false;
             token.actor.setActiveLight(null, null);
          }
-         // Else if the light item was found, but its quantity is less than or equal to zero...
-         else if (lightItem.system.quantity <= 0) {
+         // Else if the light item was found, but its quantity is zero...
+         else if (lightItem.system.quantity === 0) {
             LightManager.notify(game.i18n.format('FADE.Item.light.noMoreItem', {
                actor: token.name,
                item: lightItem.name
@@ -130,7 +129,7 @@ export class LightManager {
             const fuelItem = (!fuelType || fuelType === "" || fuelType === "none") ? lightItem : LightManager.getFuelItem(token.actor, lightItem);
 
             // If the fuel source does not exist...
-            if (fuelItem == null || fuelItem.system.quantity <= 0) {
+            if (fuelItem == null || fuelItem.system.quantity === 0) {
                LightManager.notify(game.i18n.format('FADE.Item.light.noFuel', {
                   actor: token.name,
                   item: lightItem.name
@@ -273,21 +272,23 @@ export class LightManager {
       if (!fuelType || fuelType === "" || fuelType === "none") {
          fuelItem = lightSource;
       } else {
-         // Find an item in the actor's inventory that matches the fuelType and has a quantity > 0
-         fuelItem = actor.items.find(item => item.type === "item" && item.system.fuelType == fuelType && item.system.quantity > 0);
+         // Find an item in the actor's inventory that matches the fuelType and has a quantity not equal to zero
+         fuelItem = actor.items.find(item => item.type === "item" && item.system.fuelType == fuelType && item.system.quantity !== 0);
       }
 
       return fuelItem;
    }
 
    static consumeItem(fuelItem, lightItem, token) {
-      let newQuantity = fuelItem.system.quantity - 1;
+      let newQuantity = Math.max(0, fuelItem.system.quantity - 1);
       fuelItem.update({ "system.quantity": newQuantity });
-
-      LightManager.notify(game.i18n.format('FADE.Item.light.noFuel', {
+      const message = game.i18n.format('FADE.Item.light.noFuel', {
          actor: token?.name ?? game.i18n.localize('TYPES.Actor.character'),
          item: fuelItem.name
-      }), 'info');
+      });
+      LightManager.notify(message, 'info');
+      ChatMessage.create({ content: message, speaker: { alias: this.token.name, } });
+
       token.document.update({ light: { dim: 0, bright: 0 } });
       token.document.setFlag('world', 'lightActive', false);
       token.actor.setActiveLight(null, null);

@@ -1,6 +1,6 @@
 {{#if enableEditAction}}
 <div class="combatant-declarations">
-	<select id="combatantDeclaration" class="sidebar-select" {{disabled disableEditAction}} data-tooltip={{localize (concat 'FADE.combat.maneuvers.' combatant.actor.system.combat.declaredAction '.description')}}>
+	<select id="combatantDeclaration" class="sidebar-select" {{disabled disableEditAction}} data-tooltip="{{localize (concat 'FADE.combat.maneuvers.' combatant.actor.system.combat.declaredAction '.description')}}">
 		{{selectOptions availableActions selected=combatant.actor.system.combat.declaredAction}}
 	</select>
 </div>
