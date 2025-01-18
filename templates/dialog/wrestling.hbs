@@ -1,34 +1,29 @@
 <form>
    <table>
-      <tr>
-         <td><label for="attackerWR">{{localize "Attacker Wrestle Rating"}}</label></td>
-         <td><input type="number" id="attackerWR" name="attackerWR" min="0" value="5" /></td>
-      </tr>
-      <tr>
-         <td><label for="defenderWR">{{localize "Defender Wrestle Rating"}}</label></td>
-         <td><input type="number" id="defenderWR" name="defenderWR" min="0" value="5" /></td>
-      </tr>
-      <tr>
-         <td><label for="defenderStatus">{{localize "Defender Status"}}</label></td>
-         <td>
-            <select id="defenderStatus" name="defenderStatus">
-               <option value="0">{{localize "Normal"}}</option>
-               <option value="-4">{{localize "Distracted (-4 WR)"}}</option>
-               <option value="-4">{{localize "Stunned (-4 WR)"}}</option>
-               <option value="-3">{{localize "Pinned (-3 WR)"}}</option>
-            </select>
-         </td>
-      </tr>
-      <tr>
-         <td><label for="wrestlingState">{{localize "Current Wrestling State"}}</label></td>
-         <td>
-            <select id="wrestlingState" name="wrestlingState">
-               <option value="Free">{{localize "Free"}}</option>
-               <option value="Grab">{{localize "Grab"}}</option>
-               <option value="Takedown">{{localize "Takedown"}}</option>
-               <option value="Pin">{{localize "Pin"}}</option>
-            </select>
-         </td>
-      </tr>
+      <tbody>         
+         <tr>
+            <td><label for="wrestlingState">{{localize "FADE.dialog.wrestling.stateLabel"}}</label></td>
+            <td>
+               <select id="wrestlingState" name="wrestlingState">
+                  {{selectOptions wrestlingStates selected=wrestlingState}}
+               </select>
+            </td>
+         </tr>
+         {{#each attackers as |attacker id|}}
+         <tr>
+            <td><label for="attackerWR-{{attacker.id}}">{{localize 'FADE.Actor.Wrestling.abbr'}}: {{attacker.name}}{{#if this.isPrimary}} <i class="fas fa-crown"></i>{{/if}}</label></td>
+            <td>
+               <input class="width-120" type="number" id="attackerWR-{{attacker.id}}" name="attackerWR-{{attacker.id}}" min="0" value="{{attacker.wrestling}}" />
+            </td>
+         </tr>
+         {{/each}}
+         <tr>
+         <tr>
+            <td><label for="defenderWR">{{localize 'FADE.Actor.Wrestling.abbr'}}: {{defender.name}}</label></td>
+            <td>
+               <input class="width-120" type="number" id="defenderWR" name="defenderWR" min="0" value="{{defender.actor.system.wrestling}}" />
+            </td>
+         </tr>
+      </tbody>
    </table>
 </form>

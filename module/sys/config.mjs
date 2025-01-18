@@ -283,3 +283,5 @@ FADE.CombatManeuvers = {
    shove: { phase: "movement", canMove: true },
    guard: { phase: "melee", canMove: true },
 }
+FADE.WrestlingStates = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
+FADE.WrestlingPositions = ["neutral", "attacker", "defender"];

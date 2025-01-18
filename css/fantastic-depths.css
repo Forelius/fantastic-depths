@@ -230,6 +230,10 @@ h1, h2, h3, h4 {
   height: 32px;
   max-width: 32px;
 }
+.system-fantastic-depths .width-120 {
+  width: 120px;
+  max-width: 120px;
+}
 
 :root {
   --max-column-width: 200px;

@@ -483,6 +483,7 @@
          "desc": "Some tags are used by the system and others are meant for GM or player usage."
       },
       "notification": {
+         "selectTarget": "A targetted must first be selected.",
          "selectToken1": "A token must first be selected.",
          "spellSelectToken": "You must have your token selected to cast a spell.",
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
@@ -544,6 +545,24 @@
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
       "dialog": {
+         "wrestling": {
+            "attacker": "Attacker(s)",
+            "defender": "Defender",
+            "groupWR": "Total Wrestling Rating",
+            "wrestlingContest": "Wrestling Contest",
+            "stateLabel": "Current State",
+            "statusLabel": "Wrestler Status",
+            "winsRound": "{winner} wins this round.",
+            "states": {
+               "free": "Free",
+               "attgrab": "Attacker Grabs",
+               "atttakedown": "Attacker Takedown",
+               "attpin": "Attacker Pin",
+               "defgrab": "Defender Grabs",
+               "deftakedown": "Defender Takedown",
+               "defpin": "Defender Pin"
+            }
+         },
          "awardXP": {
             "short": "Award XP",
             "long": "Award Experience Points",
@@ -743,7 +762,8 @@
       "target": "Target",
       "GMNotes": "GM Notes",
       "category": "Category",
-      "name": "Name"
+      "name": "Name",
+      "bonus": "Bonus"
    },
 
    "TYPES": {
