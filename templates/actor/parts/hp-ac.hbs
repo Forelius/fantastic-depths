@@ -25,7 +25,20 @@
             {{/if}}
          </div>
          {{#if system.ac.shield}}
-         <div class="shield" data-tooltip="{{localize 'FADE.Armor.shield.long'}} ({{system.ac.shield}})"><i class="fas fa-shield-alt"></i></div>
+         <div class="shield" data-tooltip="{{localize 'FADE.Armor.shield.long'}}">
+            <i class="fas fa-shield"></i>
+            <div class="shield-ac-val">{{system.ac.shield}}</div>
+         </div>
+         {{/if}}
+         {{#if (ne system.ac.total system.ac.totalRanged)}}
+         <div class="ranged-ac" data-tooltip="{{localize 'FADE.Armor.hintRangedAC'}}">
+            <i class="fas fa-bullseye"></i>
+            {{#if isAAC}}
+            <div class="ranged-ac-val">{{system.ac.totalRangedAAC}}</div>
+            {{else}}
+            <div class="ranged-ac-val">{{system.ac.totalRanged}}</div>
+            {{/if}}
+         </div>
          {{/if}}
       </div>
    </div>

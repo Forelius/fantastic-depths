@@ -13,13 +13,18 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }),
          ac: new fields.SchemaField({
             naked: new fields.NumberField({ initial: 9 }),
+            nakedRanged: new fields.NumberField({ initial: 9 }),
             nakedAAC: new fields.NumberField({ initial: 10 }),
+            nakedRangedAAC: new fields.NumberField({ initial: 10 }),
             value: new fields.NumberField({ initial: 9 }),
+            // This is the raw AC based on armor and no modifiers applied. Used for wrestling.
             total: new fields.NumberField({ initial: 9 }),
+            totalRanged: new fields.NumberField({ initial: 9 }),
             totalAAC: new fields.NumberField({ initial: 10 }),
+            totalRangedAAC: new fields.NumberField({ initial: 10 }),
             shield: new fields.NumberField({ initial: 0 }),
             // mod is an accumulator for armor AC mods only. All other items that modify armor must do so via actor's system.mod.ac.
-            mod: new fields.NumberField({ initial: 0 }),
+            mod: new fields.NumberField({ initial: 0 })
          }),
          thac0: new fields.SchemaField({
             value: new fields.NumberField({ initial: 19 }),
@@ -99,6 +104,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             // mod is for items that modify AC (add/subtract only) but are not armor items.
             ac: new fields.NumberField({ initial: 0 }),
             baseAc: new fields.NumberField({ initial: 0 }),
+            upgradeAc: new fields.NumberField({ nullable: true, initial: null }),
+            upgradeRangedAc: new fields.NumberField({ nullable: true, initial: null }),
             initiative: new fields.NumberField({ initial: 0 }),
             combat: new fields.SchemaField({
                toHit: new fields.NumberField({ initial: 0 }),
@@ -124,107 +131,22 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             })
          }),
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
-         acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] })
+         acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
+         activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
+         activeFuel: new fields.StringField({ nullable: true, required: false, initial: null }),
       };
    }
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();
       this._prepareMods();
+      super.prepareBaseData();
       this._prepareSpells();
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-   }
-
-   /**
-    * Prepare derived armor class values.
-    */
-   prepareArmorClass(items) {
-      const acDigest = [];
-      const dexMod = (this.abilities?.dex.mod ?? 0);
-      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.mod.baseAc;
-      let ac = {};
-      ac.nakedAAC = 19 - baseAC;
-      ac.naked = baseAC;
-      // AC value is used for wrestling rating and should not include Dexterity bonus.
-      ac.value = CONFIG.FADE.Armor.acNaked;
-      ac.total = baseAC;
-      ac.mod = 0;
-      ac.shield = 0;
-
-      const naturalArmor = items.find(item => item.type === 'armor' && item.system.natural);
-      this.equippedArmor = items.find(item => item.type === 'armor' && item.system.equipped && !item.system.isShield);
-      const equippedShield = items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
-
-      if (dexMod !== 0) {
-         acDigest.push(`Dexterity bonus: ${dexMod}`);
-      }
-
-      // If natural armor
-      if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
-         naturalArmor.prepareEffects();
-         ac.naked = naturalArmor.system.totalAC - dexMod;
-         ac.value = ac.naked;
-         ac.total = ac.naked;
-         naturalArmor.system.equipped = true;
-         acDigest.push(`Natural armor ${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
-      }
-
-      // If an equipped armor is found...
-      if (this.equippedArmor) {
-         this.equippedArmor.prepareEffects();
-         ac.value = this.equippedArmor.system.ac;
-         ac.mod += this.equippedArmor.system.mod ?? 0;
-         ac.total = this.equippedArmor.system.totalAC;
-         // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total -= dexMod;
-         acDigest.push(`Equipped armor ${this.equippedArmor.name}: ${this.equippedArmor.system.totalAC}`);
-      }
-
-      // If a shield is equipped...
-      if (equippedShield) {
-         equippedShield.prepareEffects();
-         ac.value -= equippedShield.system.ac;
-         ac.shield = equippedShield.system.totalAC;
-         ac.total -= equippedShield.system.totalAC;
-         acDigest.push(`Equipped shield ${equippedShield.name}: ${equippedShield.system.totalAC}`);
-      }
-
-      if (this.mod.baseAc != 0) {
-         ac.total -= this.mod.baseAc;
-         acDigest.push(`Base AC mod: ${this.mod.baseAc}`);
-      }
-
-      // Now other mods. Dexterity bonus already applied above.
-      ac.totalAAC = 19 - ac.total;
-      ac.nakedAAC = 19 - ac.naked;
-
-      // Weapon mastery defense bonuses
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      const masteries = items.filter(item => item.type === "mastery");
-      const equippedWeapons = items.filter((item) => item.type === "weapon" && item.system.equipped);
-      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
-      if (masteryEnabled && masteries?.length > 0 && equippedWeapons?.length > 0) {
-         ac.mastery = [];
-         for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
-            if (weaponMastery) {
-               ac.mastery.push({
-                  acBonusType: weaponMastery.system.acBonusType,
-                  acBonus: weaponMastery.system.acBonus || 0,
-                  total: ac.total + (weaponMastery.system.acBonus || 0),
-                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
-                  acBonusAT: weaponMastery.system.acBonusAT
-               });
-            }
-         }
-      }
-      this.ac = ac;
-      this.acDigest = acDigest;
    }
 
    /**
@@ -284,6 +206,10 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    _prepareMods() {
       this.mod.ac = 0;
       this.mod.baseAc = 0;
+      this.mod.ac = 0;
+      this.mod.baseAc = 0;
+      this.mod.upgradeAc = null;
+      this.mod.upgradeRangedAc = null;
       this.mod.initiative = 0;
       this.mod.combat.toHit = 0;
       this.mod.combat.dmg = 0;

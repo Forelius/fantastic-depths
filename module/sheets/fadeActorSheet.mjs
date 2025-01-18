@@ -221,6 +221,7 @@ export class fadeActorSheet extends ActorSheet {
 
       // Iterate through items, allocating to arrays
       for (let item of context.items) {
+         const docItem = context.document.items.get(item._id);
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === 'item' || item.type === 'light') {
@@ -235,7 +236,7 @@ export class fadeActorSheet extends ActorSheet {
             } else {
                gear.push(item);
             }
-
+            // TODO: Remove tag, not localizable.
             if (item.system.tags.includes("treasure")) {
                treasure.push(item);
             }
@@ -273,20 +274,20 @@ export class fadeActorSheet extends ActorSheet {
          }
       }
 
-      // Add derived data to each item
-      gear = gear.map(item => {
+      function mapContainer(item) {
          // Attach derived data manually            
          if (item.system.container === true) {
-            const citem = context.document.items.get(item._id);
-            item.contained = citem?.contained || [];
-            item.containedEnc = item.contained?.reduce((sum, item) => {
-               const weight = item.system.weight || 0;
-               const quantity = item.system.quantity || 1;
-               return sum + (weight * quantity);
-            }, 0) || 0;
+            const docItem = context.document.items.get(item._id);
+            for (let innerItem of docItem?.containedItems) {
+               mapContainer(innerItem);
+            }
+            item.contained = docItem?.containedItems || [];
+            item.containedEnc = docItem?.totalEnc || 0;
          }
          return item;
-      });
+      }
+      // Add derived data to each item
+      gear = gear.map(mapContainer);
 
       // Assign and return
       context.gear = gear;
@@ -315,10 +316,12 @@ export class fadeActorSheet extends ActorSheet {
       if (encSetting === 'expert' || encSetting === 'classic') {
          // Gear
          context.gearEnc = context.items
-            .filter(item => item.type === 'item')
+            .filter(item => item.type === 'item' || item.type === 'light')
             .reduce((sum, item) => {
                const itemWeight = item.system.weight || 0;
                const itemQuantity = item.system.quantity || 1;
+               //const citem = context.document.items.get(item._id);
+               //console.debug(item.name, citem.totalEnc);
                return sum + (itemWeight * itemQuantity);
             }, 0);
          // Weapons
@@ -344,6 +347,7 @@ export class fadeActorSheet extends ActorSheet {
     */
    async _onDropItem(event, data) {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
+      const itemParentid = event.target.closest(".item")?.dataset?.itemParentid;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
       const droppedItem = await Item.implementation.fromDropData(data);
@@ -353,8 +357,8 @@ export class fadeActorSheet extends ActorSheet {
          const actorMastery = droppedItem.createActorWeaponMastery(this.actor);
       }
       // If the drop target is a container...
-      else if (droppedItem.type === "item") {
-         if (targetIsContainer) {
+      else if (droppedItem.type === "item" || droppedItem.type === "light") {
+         if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
             const itemData = droppedItem.toObject();
             if (droppedItem.actor == null) {
                const newItem = await this._onDropItemCreate(itemData, event);
@@ -375,13 +379,13 @@ export class fadeActorSheet extends ActorSheet {
             }
             super._onDropItem(event, data);
          }
-      } else if (droppedItem.type !== "class") {
-         super._onDropItem(event, data);
-      } else {
+      } else if (droppedItem.type == "class") {
          this.actor.update({ "system.details.class": droppedItem.name });
          if (this.actor.system.details.level === 0) {
             this.actor.update({ "system.details.level": 1 });
          }
+      } else {
+         super._onDropItem(event, data);
       }
    }
 
@@ -412,13 +416,8 @@ export class fadeActorSheet extends ActorSheet {
   */
    _useConsumable(event, decrement) {
       const item = this._getItemFromActor(event);
-      if (item.type === "weapon") {
-         let quantity = item.system.ammo.load;
-         item.update({ "system.ammo.load": decrement ? --quantity : ++quantity, });
-      } else {
-         let quantity = item.system.quantity;
-         item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
-      }
+      let quantity = item.system.quantity;
+      item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
    }
 
    /**
@@ -490,6 +489,8 @@ export class fadeActorSheet extends ActorSheet {
          catch (error) {
             chatType = null;
          }
+      } else if (dataset.test === 'save') {
+         this.actor.rollSavingThrow(dataset.type);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
          let title = elem.getAttribute("title");
@@ -556,17 +557,25 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
-    * Toggles the collapsible content based on the isCollapsed state
-    * @param {jQuery} $content - The collapsible content to toggle
-    * @param {Boolean} isCollapsed - If true, collapse the content; if false, expand the content
+ * Handles the click event for toggling collapsible sections.
+ * @param {Event} event - The click event on the collapsible header
+ */
+   async _toggleCollapsibleContent(event) {
+      await this._toggleContent($(event.currentTarget));
+   }
+
+   /**
+    * Toggles the collapsible content based on the isCollapsed state.
+    * This method is separate from the event handler because it is also called to restore expanded state when opening the sheet.
+    * @param {any} target The clicked element as a jquery object.
     */
-   async _toggleContent($parent, skipAnim = false) {
-      const children = $parent.find('.collapsible-content');
-      const isCollapsed = $(children[0]).hasClass('collapsed');
+   async _toggleContent(target) {
+      const collapsibleItems = target.siblings('.collapsible-content');
+      const isCollapsed = $(collapsibleItems[0]).hasClass('collapsed');
 
       if (isCollapsed === true) {
          // Expand the content
-         children.each(async function (index, content) {
+         collapsibleItems.each(async (index, content) => {
             let $content = $(content);
             $content.removeClass('collapsed');
             $content.css('height', $content.prop('scrollHeight') + 'px');
@@ -574,7 +583,7 @@ export class fadeActorSheet extends ActorSheet {
          });
       } else {
          // Collapse the content
-         children.each(async function (index, content) {
+         collapsibleItems.each(async (index, content) => {
             let $content = $(content);
             $content.css('height', $content.height() + 'px');
             $content.addClass('collapsed');
@@ -585,21 +594,19 @@ export class fadeActorSheet extends ActorSheet {
       // If remember state is enabled, store the collapsed state
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       if (rememberCollapsedState === true) {
-         const sectionName = $parent.attr('name'); // Access the `name` attribute from the DOM element
-         const actor = game.actors.get(this.actor.id);
-         await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+         const sectionName = target.parent().attr('name'); // Access the `name` attribute from the DOM element
+         //console.debug(`Remembering expanded state for ${sectionName}.`, target);
+         if (sectionName !== undefined) {
+            const actor = game.actors.get(this.actor.id);            
+            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+         }
       }
    }
 
    /**
-    * Handles the click event for toggling collapsible sections.
-    * @param {Event} event - The click event on the collapsible header
+    * Restore the expanded state of all collapsible headers.
+    * @protected
     */
-   async _toggleCollapsibleContent(event) {
-      const $parent = $(event.currentTarget.parentNode); // Get the parent container
-      await this._toggleContent($parent);
-   }
-
    async _restoreCollapsedState() {
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
 
@@ -616,9 +623,13 @@ export class fadeActorSheet extends ActorSheet {
                const isCollapsed = flags[key];
                if (isCollapsed === true) {
                   // Find the collapsible section by the 'name' attribute
-                  const parent = document.querySelector(`[name="${sectionName}"]`);
-                  if (parent) {
-                     await this._toggleContent($(parent), true);
+                  const target = document.querySelector(`[name="${sectionName}"]`);
+                  if (target) {
+                     await this._toggleContent($(target).children('.items-header'), true);
+                  } else {
+                     // Not found.
+                     //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
+                     await actor.unsetFlag(game.system.id, key);
                   }
                }
             } else if (key === 'collapsed-undefined') {
@@ -630,23 +641,60 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   /**
+ * Handler for clicking on a container item's collapse/expand icon.
+ * @param {MouseEvent} event
+ */
    _toggleContainedItems(event) {
       event.preventDefault();
-      const targetItems = $(event.target.closest(".item"));
-      const parentId = targetItems[0]?.dataset.itemId;
-      if (targetItems?.length > 0) {
-         // Find all children of targetItems that has a 
-         const items = targetItems.siblings(`[data-item-parentid="${parentId}"]`);
-         if (event.target.classList.contains('fa-caret-right')) {
-            const el = targetItems.find(".fas.fa-caret-right");
-            el.removeClass("fa-caret-right");
-            el.addClass("fa-caret-down");
-            items.slideDown(200);
+
+      // The stack of jQuery elements we need to process
+      const containers = [$(event.target).closest(".item")];
+      const isExpanding = event.target.classList.contains("fa-caret-right");
+      const handledIds = [];
+
+      while (containers.length > 0) {
+         // Pop the top jQuery element
+         const toggledItem = containers.pop();
+         const parentId = toggledItem.data("itemId");
+
+         // Get all immediate sibling items that are contained by this parent
+         const containedItems = toggledItem
+            .siblings(`[data-item-parentid="${parentId}"]`);
+
+         // Toggle the icon on the parent container
+         if (isExpanding) {
+            toggledItem
+               .find(".fas.fa-caret-right")
+               .first()
+               .removeClass("fa-caret-right")
+               .addClass("fa-caret-down");
+            containedItems.slideDown(200);
          } else {
-            const el = targetItems.find(".fas.fa-caret-down");
-            el.removeClass("fa-caret-down");
-            el.addClass("fa-caret-right");
-            items.slideUp(200);
+            toggledItem
+               .find(".fas.fa-caret-down")
+               .first()
+               .removeClass("fa-caret-down")
+               .addClass("fa-caret-right");
+            containedItems.slideUp(200);
+         }
+
+         // Avoid reprocessing the same container
+         handledIds.push(parentId);
+
+         // If we are collapsing, we want to recursively collapse any sub-containers
+         if (!isExpanding) {
+            // Find each sibling container under these items (the next nesting level)
+            const subContainers = containedItems.filter(".item-container");
+
+            // For each container, push the jQuery-wrapped element to the stack
+            subContainers.each((i, el) => {
+               const $subContainer = $(el);
+               const nextParentId = $subContainer.data("itemId");
+               if (!handledIds.includes(nextParentId)) {
+                  containers.push($subContainer);
+               }
+            });
          }
       }
    }

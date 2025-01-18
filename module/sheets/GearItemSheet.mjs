@@ -46,23 +46,24 @@ export class GearItemSheet extends ItemSheet {
 
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
-
       // Add the item's data to context.data for easier access, as well as flags.
       context.system = itemData.system;
       context.flags = itemData.flags;
-
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
-           
       // Is this user the game master?
       context.isGM = game.user.isGM;
 
-      const lightTypes = [];
-      lightTypes.push({ value: null, text: game.i18n.localize('None') });
-      lightTypes.push(...CONFIG.FADE.LightTypes.map((type) => {
-         return { value: type, text: game.i18n.localize(`FADE.Item.light.lightTypes.${type}`) }
-      }));
-      context.lightTypes = lightTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      if (this.item.type === 'light') {
+         const lightTypes = [];
+         //lightTypes.push({ value: null, text: game.i18n.localize('None') });
+         lightTypes.push(...CONFIG.FADE.LightTypes.map((type) => {
+            return { value: type, text: game.i18n.localize(`FADE.Item.light.lightTypes.${type}`) }
+         }));
+         context.lightTypes = lightTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.animationTypes = CONFIG.Canvas.lightAnimations;
+         context.isCustom = this.item.system.light.type === 'custom';
+      }
 
       return context;
    }

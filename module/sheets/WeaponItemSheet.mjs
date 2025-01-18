@@ -48,7 +48,7 @@ export class WeaponItemSheet extends ItemSheet {
       context.system = itemData.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
-
+      context.usesAmmo = itemData.system.ammoType?.length > 0;
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 

@@ -1,6 +1,5 @@
 // fadeCombat.mjs
 // Import any required modules (if necessary)
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { GMMessageSender } from './GMMessageSender.mjs'
 
 // Custom Combat class
@@ -33,12 +32,12 @@ export class fadeCombat extends Combat {
     * @override
     * @returns Combatant[]
     */
-   async setupTurns() {
+   setupTurns() {
       // console.debug("setupTurns sorting...");
-      let combatants = await super.setupTurns();
+      let combatants = super.setupTurns();
 
       // Check to make sure all combatants still exist.
-      combatants = combatants.filter((combatant) => combatant.actor !== null && combatant.actor !== undefined);
+      combatants = combatants.filter((combatant) => combatant.actor && combatant.token);
 
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
          combatants.sort((a, b) => this.sortCombatantsGroup(a, b));
@@ -65,14 +64,14 @@ export class fadeCombat extends Combat {
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
          if (game.user.isGM) {
             // Get all combatants and group them by disposition
-            const combatants = this.combatants;
-            let group = messageOptions?.group ?? null;
-            if (group === null && ids.length > 0) {
-               // how to get combatant with ids[0]
-               const combatant = combatants.get(ids[0]);
-               group = this.#getCombatantDisposition(combatant);
+            let groups = messageOptions?.group ? [messageOptions?.group] : [];            
+            if (groups.length === 0 && ids.length > 0) {
+               const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
+               groups = [...new Set(rollingCombatants.map(combatant => this.#getCombatantDisposition(combatant)))];
             }
-            await this.#doInitiativeRoll(combatants, group);  // Use the custom initiative function
+            for (const group of groups) {
+               await this.#doInitiativeRoll(this.combatants, group);  // Use the custom initiative function
+            }
          } else {
             GMMessageSender.sendToGM("rollGroupInitiative", { combatid: this.id });
          }
@@ -94,6 +93,7 @@ export class fadeCombat extends Combat {
       const user = game.users.get(game.userId);  // Get the user who initiated the roll
       const speaker = { alias: user.name };  // Use the player's name as the speaker
       if (user.isGM) {
+         this.resetCombatants();
          // Send a chat message when combat officially begins (round 1)
          ChatMessage.create({
             speaker: speaker,
@@ -110,18 +110,13 @@ export class fadeCombat extends Combat {
     * */
    async nextRound() {
       let nextRound = this.round + 1;
-      let result = await super.nextRound();
+      let result = super.nextRound();
       const user = game.users.get(game.userId);  // Get the user who initiated the roll
       const speaker = { alias: user.name };  // Use the player's name as the speaker
 
       if (user.isGM) {
-         for (let combatant of this.combatants) {
-            // Reset initiative to null
-            combatant.actor.update({
-               "system.combat.attacksAgainst": 0,
-               'system.combat.declaredAction': "nothing"
-            });
-         }
+         this.resetCombatants();
+
          // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
             // Reset initiative for all combatants
@@ -155,8 +150,18 @@ export class fadeCombat extends Combat {
          }
       }
 
-      return null;
+      return result;
    }
+
+   resetCombatants() {
+        for (let combatant of this.combatants) {
+            // Reset initiative to null
+            combatant.actor.update({
+                "system.combat.attacksAgainst": 0,
+                'system.combat.declaredAction': "nothing"
+            });
+        }
+    }
 
    sortCombatantsIndividual(a, b) {
       let result = 0;
@@ -429,6 +434,12 @@ export class fadeCombat extends Combat {
       return result;
    }
 
+   /**
+    * Add custom elements to the combat tracker UI.
+    * @param {any} app
+    * @param {any} html
+    * @param {any} data
+    */
    static async onRenderCombatTracker(app, html, data) {
       let hasAnyRolls = false;
       if (data?.combat?.combatants) {
@@ -456,6 +467,12 @@ export class fadeCombat extends Combat {
       }
    }
 
+   /**
+    * Adds the combat manuever declaration control to the combat tracker.
+    * @param {any} combat
+    * @param {any} combatantElement
+    * @param {any} combatant
+    */
    async addDeclarationControl(combat, combatantElement, combatant) {
       const combatantControls = combatantElement.find('.combatant-controls');
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';

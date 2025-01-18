@@ -11,8 +11,8 @@
 
 .bordered {
    margin: 2px 2px 4px 2px;
-   border-width:2px;
-   border-style:solid;
+   border-width: 2px;
+   border-style: solid;
    border-radius: 4px;
    padding: 6px;
 }
@@ -32,6 +32,7 @@
 .clear-fix {
    clear: both;
 }
+
 .sheet nav.sheet-tabs > [data-tab] {
    padding: 4px 8px;
    font-weight: 600;
@@ -90,6 +91,13 @@
    }
 }
 
+.party-table {
+   th {
+      text-align: left;
+   }
+}
+
+
 .collapsible-content {
    overflow: hidden;
    height: auto;
@@ -113,6 +121,7 @@
       height: 16px;
    }
 }
+
 .declared-action {
    font-size: 12px;
    color: #888888;
@@ -121,5 +130,14 @@
 .system-fantastic-depths {
    #tooltip.text-center {
       text-align: left !important;
+   }
+
+   color-picker {
+      gap: 0;
+   }
+
+   color-picker > input:nth-child(2) {
+      height: 32px;
+      max-width: 32px;
    }
 }

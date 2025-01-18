@@ -7,6 +7,10 @@
    padding: 0;
    overflow-y: auto;
    scrollbar-width: thin;
+
+   .warning-bkgd {
+      background: rgba(150, 20, 20, 0.15);
+   }
    // Child lists
    .item-list {
       list-style: none;
@@ -44,15 +48,27 @@
    // Individual Item
    .item {
       align-items: center;
-      padding: 0 2px; // to align with the header border
-      border-bottom: 1px solid $c-faint;
+      padding: 0; // to align with the header border
+
+      ol {
+         padding: 0;
+         margin: 0;
+      }
 
       &:last-child {
          border-bottom: none;
       }
 
       .contained {
-         padding-left: 16px;
+         padding-left: 10px;
+      }
+
+      .contained2 {
+         padding-left: 20px;
+      }
+
+      .contained3 {
+         padding-left: 30px;
       }
 
       .item-name {
@@ -170,7 +186,7 @@
          cursor: pointer;
          flex: 0 8px;
          margin: 1px;
-         box-shadow: inset 0 0 2px $colorTan;
+         box-shadow: inset 0 0 3px $colorTan;
 
          &:hover {
             background: $colorTan;
@@ -178,7 +194,7 @@
       }
 
       .full-mark {
-         background: $colorOlive;
+         background: #808080;
          border: 1px inset $colorTan;
       }
    }

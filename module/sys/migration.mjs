@@ -53,12 +53,23 @@ export class DataMigrator {
 
       if (this.oldVersion.lt(new MySystemVersion("0.6.14"))) {
          await this.fixBreathWeapons();
-      } if (this.oldVersion.lt(new MySystemVersion("0.7.18"))) {
+      }
+      if (this.oldVersion.lt(new MySystemVersion("0.7.18"))) {
          await this.fixLightItems();
       }
-
+      if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.1"))) {
+         //await this.fixAmmoItems();
+      }
+      if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
+         await this.fixBreathWeapons();
+      }
       // Set the new version after migration is complete
       await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+   }
+
+   static fixBreathWeapons2() {
+      const migration = new DataMigrator();
+      migration.fixBreathWeapons();
    }
 
    async fixBreathWeapons() {
@@ -90,34 +101,6 @@ export class DataMigrator {
       const worldItems = game.items;
       await processItems(worldItems, "World Items");
    }
-
-   //async fixLightItems() {
-   //   console.log("-----------------------------------------------");
-   //   console.log("Fixing Light Items");
-   //   console.log("-----------------------------------------------");
-   //   // Helper function to process a collection of items
-   //   const processItems = async (items, contextName) => {
-   //      for (const item of items) {
-   //         if ((item.type === 'item' || item.type === 'light') && (item.system.tags?.includes("light") || item.name=='Lantern')) {
-   //            console.log(`[${contextName}] Updating ${item.name}: setting type to light`);
-   //            await item.update({ 'type': 'light' });
-   //            //await item.update({ "system.fuelType": item.system.fuel });
-   //         } else if (item.type === "item" && (item.system.tags?.includes("lantern-fuel") || item.name=='Oil, flask')) {
-   //            console.log(`[${contextName}] Updating ${item.name}: setting fuelType to lantern`);
-   //            await item.update({ 'system.fuelType': 'lantern' });
-   //         }
-   //      }
-   //   };
-
-   //   // Process all actor items
-   //   for (const actor of game.actors) {
-   //      const actorItems = actor.items;
-   //      await processItems(actorItems, `Actor: ${actor.name}`);
-   //   }
-   //   // Process all world items
-   //   const worldItems = game.items;
-   //   await processItems(worldItems, "World Items");
-   //}
 
    async fixLightItems() {
       console.log("-----------------------------------------------");
@@ -204,5 +187,35 @@ export class DataMigrator {
       await processItems(clonedWorldItems, "World Items");
    }
 
-}
+   //async fixAmmoItems() {
+   //   console.log("-----------------------------------------------");
+   //   console.log("Fixing Ammo Items and Weapons");
+   //   console.log("-----------------------------------------------");
 
+   //   // Take a snapshot (clone) of all current actors and world items
+   //   const clonedActors = Array.from(game.actors);
+   //   const clonedWorldItems = Array.from(game.items);
+
+   //   // Function to process items
+   //   const processItems = async (items, contextName) => {
+   //      // Clone the item array so we don't iterate over newly created items
+   //      const snapshot = Array.from(items);
+
+   //      for (const item of snapshot) {
+   //         if (item.type === 'weapon') {
+
+   //         } else if (item.type === 'item') {
+
+   //         }
+   //      }
+   //   };
+
+   //   // Process cloned actor items
+   //   for (const actor of clonedActors) {
+   //      await processItems(actor.items, `Actor: ${actor.name}`);
+   //   }
+
+   //   // Process cloned world items
+   //   await processItems(clonedWorldItems, "World Items");
+   //}
+}

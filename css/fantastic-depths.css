@@ -188,6 +188,10 @@ h1, h2, h3, h4 {
   color: #888888; /* Darken color on hover */
 }
 
+.party-table th {
+  text-align: left;
+}
+
 .collapsible-content {
   overflow: hidden;
   height: auto;
@@ -218,6 +222,13 @@ h1, h2, h3, h4 {
 
 .system-fantastic-depths #tooltip.text-center {
   text-align: left !important;
+}
+.system-fantastic-depths color-picker {
+  gap: 0;
+}
+.system-fantastic-depths color-picker > input:nth-child(2) {
+  height: 32px;
+  max-width: 32px;
 }
 
 :root {
@@ -409,6 +420,26 @@ h1, h2, h3, h4 {
   text-align: center;
 }
 
+.width-60 {
+  max-width: 60px;
+}
+
+.width-80 {
+  max-width: 80px;
+}
+
+.width-100 {
+  max-width: 100px;
+}
+
+.width-130 {
+  max-width: 130px;
+}
+
+.width-180 {
+  max-width: 180px;
+}
+
 /* Dark mode styles */
 .dark-mode .bordered {
   border-color: #4b4a44;
@@ -448,6 +479,12 @@ h1, h2, h3, h4 {
   border-top: 1px solid #4b4a44;
   border-bottom: 1px solid #4b4a44;
 }
+.dark-mode .fantastic-depths .window-content .top-border {
+  border-top: 1px solid #4b4a44;
+}
+.dark-mode .fantastic-depths .window-content .bottom-border {
+  border-bottom: 1px solid #4b4a44;
+}
 .dark-mode .fantastic-depths .window-content .items-list {
   color: #bbbab4;
 }
@@ -465,9 +502,6 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content .items-list .item-prop {
   border-left: 1px solid #4b4a44;
   border-right: 1px solid #4b4a44;
-}
-.dark-mode .fantastic-depths .window-content .items-list .item {
-  border-bottom: 1px solid #4b4a44;
 }
 .dark-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #ebeae4;
@@ -487,25 +521,6 @@ h1, h2, h3, h4 {
 }
 .dark-mode .fantastic-depths .character .ability-scores .ability, .dark-mode .fantastic-depths .monster .ability-scores .ability {
   border-color: #4b4a44;
-}
-.dark-mode .fantastic-depths .character .hit-points .hp-value, .dark-mode .fantastic-depths .monster .hit-points .hp-value {
-  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
-  background: none;
-}
-.dark-mode .fantastic-depths .character .hit-points .hp-empty, .dark-mode .fantastic-depths .monster .hit-points .hp-empty {
-  background-image: url("../assets/img/heart_empty2.png");
-  background-repeat: no-repeat;
-}
-.dark-mode .fantastic-depths .character .hit-points .hp-full, .dark-mode .fantastic-depths .monster .hit-points .hp-full {
-  background-image: url("../assets/img/heart_full2.png");
-  background-repeat: no-repeat;
-}
-.dark-mode .fantastic-depths .character .armor-class, .dark-mode .fantastic-depths .monster .armor-class {
-  background-image: url("../assets/img/armor1.png");
-  background-repeat: no-repeat;
-}
-.dark-mode .fantastic-depths .character .armor-class .ac-value, .dark-mode .fantastic-depths .monster .armor-class .ac-value {
-  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
 }
 .dark-mode .chat-message {
   background: url("../assets/img/grungeyellow.jpg");
@@ -568,8 +583,17 @@ h1, h2, h3, h4 {
 }
 
 /* Light mode styles */
+.light-mode .fantastic-depths .window-content {
+  background: url("../assets/img/lightgrunge1.jpg");
+}
 .light-mode .fantastic-depths .window-content .bordered {
   border-color: #bbbab4;
+}
+.light-mode .fantastic-depths .window-content .top-border {
+  border-top: 1px solid #c9c7b8;
+}
+.light-mode .fantastic-depths .window-content .bottom-border {
+  border-bottom: 1px solid #c9c7b8;
 }
 .light-mode .fantastic-depths .window-content .items-list {
   color: #4b4a44;
@@ -578,7 +602,7 @@ h1, h2, h3, h4 {
   color: rgba(0, 0, 0, 0.2);
 }
 .light-mode .fantastic-depths .window-content .items-list .items-header {
-  background: rgba(160, 140, 140, 0.2);
+  background: rgba(90, 100, 100, 0.2);
   border: 2px groove #eeede0;
 }
 .light-mode .fantastic-depths .window-content .items-list .items-footer {
@@ -600,24 +624,6 @@ h1, h2, h3, h4 {
 }
 .light-mode .fantastic-depths .character .ability-scores .ability, .light-mode .fantastic-depths .monster .ability-scores .ability {
   border-color: #bbbab4;
-}
-.light-mode .fantastic-depths .character .hit-points .hp-value, .light-mode .fantastic-depths .monster .hit-points .hp-value {
-  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
-}
-.light-mode .fantastic-depths .character .hit-points .hp-empty, .light-mode .fantastic-depths .monster .hit-points .hp-empty {
-  background-image: url("../assets/img/heart_empty.png");
-  background-repeat: no-repeat;
-}
-.light-mode .fantastic-depths .character .hit-points .hp-full, .light-mode .fantastic-depths .monster .hit-points .hp-full {
-  background-image: url("../assets/img/heart_full.png");
-  background-repeat: no-repeat;
-}
-.light-mode .fantastic-depths .character .armor-class, .light-mode .fantastic-depths .monster .armor-class {
-  background-image: url("../assets/img/armor1.png");
-  background-repeat: no-repeat;
-}
-.light-mode .fantastic-depths .character .armor-class .ac-value, .light-mode .fantastic-depths .monster .armor-class .ac-value {
-  text-shadow: 0 0 2px #ebeae4, 0 1px 2px #ebeae4, 1px 0 2px #ebeae4, 1px 1px 2px #ebeae4;
 }
 .light-mode .chat-message .attack-fail, .light-mode .chat-message .roll-fail {
   color: #602010;
@@ -890,10 +896,13 @@ h1, h2, h3, h4 {
   position: relative;
 }
 .fantastic-depths .character .hit-points .hp-value, .fantastic-depths .monster .hit-points .hp-value {
+  color: #ebeae4;
   background: none;
   border: 0 none;
   text-align: center;
   font-weight: bolder;
+  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
+  background: none;
 }
 .fantastic-depths .character .hit-points .hp-top, .fantastic-depths .monster .hit-points .hp-top {
   position: absolute;
@@ -913,23 +922,31 @@ h1, h2, h3, h4 {
   background-size: 74px;
   background-position: top;
   background-clip: content-box;
+  background-image: url("../assets/img/heart_empty2.png");
+  background-repeat: no-repeat;
 }
 .fantastic-depths .character .hit-points .hp-full, .fantastic-depths .monster .hit-points .hp-full {
   background-size: 74px;
   background-position: bottom;
   background-clip: content-box;
+  background-image: url("../assets/img/heart_full2.png");
+  background-repeat: no-repeat;
 }
 .fantastic-depths .character .armor-class, .fantastic-depths .monster .armor-class {
   height: 74px;
   position: relative;
   background-size: 70px;
   background-position: center;
+  background-image: url("../assets/img/armor1.png");
+  background-repeat: no-repeat;
 }
 .fantastic-depths .character .armor-class .ac-value, .fantastic-depths .monster .armor-class .ac-value {
+  color: #ebeae4;
   background: none;
   border: 0 none;
   text-align: center;
   font-weight: bolder;
+  text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
 }
 .fantastic-depths .character .armor-class .ac-top, .fantastic-depths .monster .armor-class .ac-top {
   position: absolute;
@@ -941,16 +958,47 @@ h1, h2, h3, h4 {
 .fantastic-depths .character .armor-class .ac-bottom, .fantastic-depths .monster .armor-class .ac-bottom {
   position: absolute;
   font-size: 12px;
-  bottom: 12px;
+  bottom: 15px;
   width: 50px;
   right: calc(50% - 25px);
 }
 .fantastic-depths .character .armor-class .shield, .fantastic-depths .monster .armor-class .shield {
-  position: relative;
-  left: 58px;
+  position: absolute;
+  left: 71%;
   top: 30px;
-  margin-right: -2px;
-  font-size: 18px;
+  font-size: 24px;
+  color: #707070;
+}
+.fantastic-depths .character .armor-class .shield .shield-ac-val, .fantastic-depths .monster .armor-class .shield .shield-ac-val {
+  width: 40px;
+  color: #ebeae4;
+  font-weight: bolder;
+  text-align: center;
+  text-shadow: 0 0 3px #191813, 0 1px 2px #191813, 1px 0 2px #191813, 1px 1px 2px #191813;
+  position: relative;
+  left: 12px;
+  top: -15px;
+  transform: translate(-50%, -50%); /* Adjust position to truly center */
+  font-size: 14px;
+}
+.fantastic-depths .character .armor-class .ranged-ac, .fantastic-depths .monster .armor-class .ranged-ac {
+  position: absolute;
+  left: 1px;
+  top: 30px;
+  font-size: 24px;
+  color: #808080;
+}
+.fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
+  width: 40px;
+  color: #ebeae4;
+  font-weight: bolder;
+  text-align: center;
+  text-shadow: 0 0 3px #191813, 0 1px 2px #191813, 1px 0 2px #191813, 1px 1px 2px #191813;
+  position: relative;
+  left: 12px;
+  top: -15px;
+  transform: translate(-50%, -50%); /* Adjust position to truly center */
+  font-size: 14px;
 }
 .fantastic-depths .character .category-info, .fantastic-depths .monster .category-info {
   font-weight: normal;
@@ -1025,7 +1073,7 @@ h1, h2, h3, h4 {
   flex-wrap: wrap;
 }
 .fantastic-depths .tag-section .tag-list .tag {
-  background: #4b4a44;
+  background: #393833;
   border-radius: 5px;
   color: whitesmoke;
   padding: 0 5px;
@@ -1100,6 +1148,9 @@ h1, h2, h3, h4 {
   overflow-y: auto;
   scrollbar-width: thin;
 }
+.fantastic-depths .items-list .warning-bkgd {
+  background: rgba(150, 20, 20, 0.15);
+}
 .fantastic-depths .items-list .item-list {
   list-style: none;
   margin: 0;
@@ -1131,14 +1182,23 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .items-list .item {
   align-items: center;
-  padding: 0 2px;
-  border-bottom: 1px solid #c9c7b8;
+  padding: 0;
+}
+.fantastic-depths .items-list .item ol {
+  padding: 0;
+  margin: 0;
 }
 .fantastic-depths .items-list .item:last-child {
   border-bottom: none;
 }
 .fantastic-depths .items-list .item .contained {
-  padding-left: 16px;
+  padding-left: 10px;
+}
+.fantastic-depths .items-list .item .contained2 {
+  padding-left: 20px;
+}
+.fantastic-depths .items-list .item .contained3 {
+  padding-left: 30px;
 }
 .fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;
@@ -1234,14 +1294,14 @@ h1, h2, h3, h4 {
   cursor: pointer;
   flex: 0 8px;
   margin: 1px;
-  box-shadow: inset 0 0 2px #7a7971;
+  box-shadow: inset 0 0 3px #7a7971;
 }
 .fantastic-depths .items-list .consumable-counter .full-mark:hover,
 .fantastic-depths .items-list .consumable-counter .empty-mark:hover {
   background: #7a7971;
 }
 .fantastic-depths .items-list .consumable-counter .full-mark {
-  background: #4b4a44;
+  background: #808080;
   border: 1px inset #7a7971;
 }
 .fantastic-depths .item-formula {
@@ -1262,3 +1322,5 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

@@ -37,7 +37,7 @@ jobs:
             echo "The tag is in the main branch history."
             echo "is_valid=true" >> $GITHUB_ENV
           else
-            echo "The tag is NOT in the main branch history. Skipping release."
+            echo "The tag (${{ env.VERSION }}) is NOT in the main branch history. Skipping release."
             echo "is_valid=false" >> $GITHUB_ENV
           fi
 
@@ -71,5 +71,5 @@ jobs:
           name: "Pre-Release ${{ env.VERSION }}"
           prerelease: true
           artifacts: fantastic-depths.zip
-          body_path: release_notes.txt
+          bodyfile: release_notes.txt
           token: ${{ secrets.GITHUB_TOKEN }}

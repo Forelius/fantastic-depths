@@ -1,19 +1,5 @@
-<ol name="gearItems" class='gear-items items-list'>
-   <li class='item flexrow items-header collapsible-header'>
-      <div class='item-name'>{{localize 'FADE.Item.plural'}} {{#if gearEnc}}<span class="category-info">({{gearEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>{{/if}}</div>
-      <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
-      {{#if showCoinWeight}}
-      <div class="item-50px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
-      {{/if}}
-      <div class='item-controls'>
-         <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.item")}}' data-type='item'>
-            <i class='fas fa-plus'></i>
-            {{localize 'TYPES.Item.item'}}
-         </a>
-      </div>
-   </li>
-   {{#each gear as |item id|}}
-   <li class='flexrow item collapsible-content {{#if item.system.container}}item-container{{/if}}' data-item-id='{{item._id}}' style="border:none;">
+<li class='item collapsible-content{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}' data-item-id='{{item._id}}'>
+   <div class="flexrow{{#unless item.system.quantityMax }} bottom-border{{/unless}}">
       <div class='item-name'>
          <div class='item-image rollable' data-roll-type='item'>
             <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
@@ -23,83 +9,48 @@
          {{/if}}
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
             {{item.name}}
+            {{#if rootobj.showCoinWeight}}
             {{#if item.containedEnc}}
             <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
             {{/if}}
+            {{/if}}
          </a>
       </div>
-      <div class="item-40px item-prop"><label>{{item.system.quantity}}</label></div>
-      {{#if @root.showCoinWeight}}
+      <div class="item-40px item-prop"><label>{{infinity item.system.quantity}}</label></div>
+      {{#if rootobj.showCoinWeight}}
       <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
       {{/if}}
       <div class='item-controls'>
          {{#if item.system.equippable}}
          <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
             data-tooltip="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
-            <i class="fas fa-tshirt"></i>
+            <i class="fas{{#if item.system.isAmmo}} fa-hand{{else}} fa-tshirt{{/if}}"></i>
          </a>
          {{/if}}
          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>
-   </li>
-   <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
-      {{#if item.system.quantityMax }}
-      {{#if (lte item.system.quantityMax 38)}}
-      <div class="consumable-counter">
-         <label>{{localize 'FADE.Item.uses'}}</label>
-         {{#times item.system.quantity}}
-         <div class="full-mark"></div>
-         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
-         <div class="empty-mark"></div>
-         {{/times}}
-      </div>
-      {{/if}}
-      {{/if}}
-   </li>
-   {{#if item.system.container}}
+   </div>
+</li>
+{{#if item.system.container}}
+<!--<ol class="bottom-border" data-item-parentid="{{parentItem._id}}">-->
    {{#each item.contained as |childItem|}}
-   <li class="flexrow item collapsible-content contained-item" data-item-parentid="{{item._id}}" data-item-id='{{childItem._id}}'  style="border:none;">
-      <div class='item-name contained'>
-         <div class='item-image'>
-            <a data-roll-type='item'>
-               <img src='{{childItem.img}}' title='{{childItem.name}}' width='24' height='24' />
-            </a>
-         </div>
-         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>{{childItem.name}}</a>
-      </div>
-      <div class="item-40px item-prop"><label>{{childItem.system.quantity}}</label></div>
-      {{#if @root.showCoinWeight}}
-      <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{childItem.system.totalWeight}}</label></div>
-      {{/if}}
-      <div class='item-controls'>
-         {{#if childItem.system.equippable}}
-         <a class="item-control item-toggle {{#unless childItem.system.equipped}}item-unequipped{{/unless}}"
-            data-tooltip="{{#if childItem.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
-            <i class="fas fa-tshirt"></i>
-         </a>
-         {{/if}}
-         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
-            <i class='fas fa-trash'></i>
-         </a>
-      </div>
-   </li>
-   <li class='flexrow item collapsible-content contained-item' data-item-parentid="{{item._id}}" data-item-id='{{childItem._id}}'>
-      {{#if childItem.system.quantityMax }}
-      {{#if (lte childItem.system.quantityMax 38)}}
-      <div class="consumable-counter contained">
-         <label>{{localize 'FADE.Item.uses'}}</label>
-         {{#times childItem.system.quantity}}
-         <div class="full-mark"></div>
-         {{/times}} {{#times (subtract childItem.system.quantityMax childItem.system.quantity)}}
-         <div class="empty-mark"></div>
-         {{/times}}
-      </div>
-      {{/if}}
-      {{/if}}
-   </li>
+   {{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
    {{/each}}
-   {{/if}}
-   {{/each}}
-</ol>
+<!--</ol>-->
+{{/if}}
+{{#unless item.system.container}}
+{{#if item.system.quantityMax }}
+<li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+   <div class="consumable-counter">
+      <label>{{localize 'FADE.Item.uses'}}</label>
+      {{#times item.system.quantity}}
+      <div class="full-mark"></div>
+      {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+      <div class="empty-mark"></div>
+      {{/times}}
+   </div>
+</li>
+{{/if}}
+{{/unless}}

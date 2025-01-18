@@ -18,6 +18,13 @@ export class CharacterActor extends fadeActor {
       super.prepareDerivedData();
    }
 
+   /**
+    * Intercept updateActor method call to log changes.
+    * @override
+    * @param {any} updateData
+    * @param {any} options
+    * @param {any} userId
+    */
    async updateActor(updateData, options, userId) {
       super.updateActor(updateData, options, userId)
       const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
@@ -71,7 +78,12 @@ export class CharacterActor extends fadeActor {
       return changes;  // This allows recursion to accumulate changes
    }
 
-   // Helper function to send a change message to the GM
+   /**
+    * Helper function to send a change message to the GM
+    * @param {any} changes
+    * @param {any} user
+    * @param {any} type
+    */
    _sendChangeMessageToGM(changes, user, type) {
       let changeDescs = null;
       if (type === "property") {

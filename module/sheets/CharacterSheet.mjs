@@ -31,8 +31,5 @@ export class CharacterSheet extends fadeActorSheet {
 
       // Call the original render method with modified options
       await super.render(force, options);
-
-      // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
-      setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
    }
 }

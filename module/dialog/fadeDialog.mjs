@@ -219,8 +219,7 @@ export class fadeDialog {
       if (attackerActor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectAttack') };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
-         const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped));
-
+         const attackItems = attackerActor.items.filter((item) => item.type === "weapon" && (equippedOnly === false || item.system.equipped) && item.system.quantity !== 0);
 
          if (!attackItems || attackItems.length == 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.weapon') }));
@@ -345,6 +344,47 @@ export class fadeDialog {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
 
+      return dialogResp;
+   }
+
+   static async getSavingThrowDialog(dataset, caller) {
+      const dialogData = { label: dataset.label };
+      const dialogResp = { caller };
+      const type = dataset.type;
+      const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
+      const template = 'systems/fantastic-depths/templates/dialog/save-roll.hbs';
+      const buttons = {
+         roll: {
+            label: game.i18n.localize('FADE.roll'),
+            callback: () => ({
+               rolling: true,
+               mod: parseInt(document.getElementById('mod').value, 10) || 0,
+            })
+         }
+      };
+
+      if (type && type !== "spell" && type !== "breath") {
+         buttons.magic = {
+            label: game.i18n.localize('FADE.vsMagic'),
+            callback: () => ({
+               rolling: true,
+               vsmagic: true,
+               mod: parseInt(document.getElementById('mod').value, 10) || 0,
+            })
+         };
+      }
+
+      dialogResp.resp = await Dialog.wait({
+         title: title,
+         content: await renderTemplate(template, dialogData),
+         render: () => focusById('mod'),
+         buttons,
+         default: 'roll',
+         close: () => { return null; }
+      }, {
+         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+      });
+      dialogResp.context = caller;
       return dialogResp;
    }
 }

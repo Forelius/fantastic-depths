@@ -46,8 +46,19 @@ export class fadeItem extends Item {
    * A getter for dynamically calculating the contained items.
    * This data is not stored in the database.
    */
-   get contained() {
+   get containedItems() {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
+   }
+
+   get totalEnc() {
+      let result = 0;
+      if (this.system.container === true) {
+         result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
+      }
+      const weight = this.system.weight || 0;
+      const quantity = this.system.quantity !== null ? this.system.quantity : 1;
+      result += weight * quantity;
+      return result;
    }
 
    /**
@@ -127,23 +138,13 @@ export class fadeItem extends Item {
       // Initialize chat data.
       //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = await game.settings.get('core', 'rollMode');
-      const chatData = {         
+      const chatData = {
          caller: this,
          context: this.actor,
-         rollMode 
+         rollMode
       };
       const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
       return await builder.createChatMessage();
-
-   //   // If there's no roll data, send a chat message with the item description.
-   //   if (dataset?.test === null || dataset?.test === undefined) {
-   //      ChatMessage.create({
-   //         speaker: speaker,
-   //         rollMode: rollMode,
-   //         flavor: `${item.name}`,
-   //         content: item.system.description ?? '',
-   //      });
-   //   }
    }
 
    async getEvaluatedRoll(formula, options = { minimize: true }) {

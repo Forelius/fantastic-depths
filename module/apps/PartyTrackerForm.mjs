@@ -1,3 +1,4 @@
+import { AwardXPDialog } from "./AwardXPDialog.mjs"
 export class PartyTrackerForm extends FormApplication {
    constructor() {
       super();
@@ -6,14 +7,14 @@ export class PartyTrackerForm extends FormApplication {
       // Load tracked actors from the settings
       let storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
 
-      // Check if data needs migration (old format: array of objects with `id` properties)
-      if (Array.isArray(storedData) && storedData.length > 0 && typeof storedData[0] === "object" && storedData[0].id) {
-         console.log("Migrating old party tracker data format to new format (IDs only).");
-         // Migrate old data to IDs-only format
-         storedData = storedData.map(actor => actor.id);
-         // Save the migrated data
-         game.settings.set(game.system.id, 'partyTrackerData', storedData);
-      }
+      //// Check if data needs migration (old format: array of objects with `id` properties)
+      //if (Array.isArray(storedData) && storedData.length > 0 && typeof storedData[0] === "object" && storedData[0].id) {
+      //   console.log("Migrating old party tracker data format to new format (IDs only).");
+      //   // Migrate old data to IDs-only format
+      //   storedData = storedData.map(actor => actor.id);
+      //   // Save the migrated data
+      //   game.settings.set(game.system.id, 'partyTrackerData', storedData);
+      //}
 
       // Store the updated tracked actor IDs
       this.trackedActorIds = storedData;
@@ -61,6 +62,19 @@ export class PartyTrackerForm extends FormApplication {
          if (this.trackedActorIds.includes(actor.id)) {
             this.render();  // Re-render to reflect updated actor data
          }
+      });
+
+      // **New**: Double-click on a party member to open their actor sheet
+      html.find(".party-member").on("dblclick", (event) => {
+         const actorId = $(event.currentTarget).data("actor-id");
+         const actor = game.actors.get(actorId);
+         if (!actor) return;
+         actor.sheet.render(true);
+      });
+
+      // **New**: Open "Award XP" dialog
+      html.find(".award-xp-button").on("click", (event) => {
+         new AwardXPDialog(this.trackedActorIds).render(true);
       });
    }
 

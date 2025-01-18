@@ -48,6 +48,14 @@
             border-bottom: 1px solid $darkColor;
          }
 
+         .top-border {
+            border-top: 1px solid $darkColor;
+         }
+
+         .bottom-border {
+            border-bottom: 1px solid $darkColor;
+         }
+
          .items-list {
             color: $lightColor;
 
@@ -73,8 +81,6 @@
             }
 
             .item {
-               border-bottom: 1px solid $darkColor;
-
                .item-name {
                   color: $lighterColor;
                }
@@ -108,32 +114,6 @@
          .ability-scores {
             .ability {
                border-color: $darkColor;
-            }
-         }
-
-         .hit-points {
-            .hp-value {
-               text-shadow: 0 0 2px $darkerColor, 0 1px 2px $darkerColor, 1px 0 2px $darkerColor, 1px 1px 2px $darkerColor;
-               background: none;
-            }
-
-            .hp-empty {
-               background-image: url("../assets/img/heart_empty2.png");
-               background-repeat: no-repeat;
-            }
-
-            .hp-full {
-               background-image: url("../assets/img/heart_full2.png");
-               background-repeat: no-repeat;
-            }
-         }
-
-         .armor-class {
-            background-image: url("../assets/img/armor1.png");
-            background-repeat: no-repeat;
-
-            .ac-value {
-               text-shadow: 0 0 2px $darkerColor, 0 1px 2px $darkerColor, 1px 0 2px $darkerColor, 1px 1px 2px $darkerColor;
             }
          }
       }
@@ -217,8 +197,18 @@
 .light-mode {
    .fantastic-depths {
       .window-content {
+         background: url('../assets/img/lightgrunge1.jpg');
+
          .bordered {
             border-color: $lightColor;
+         }
+
+         .top-border {
+            border-top: 1px solid $c-faint;
+         }
+
+         .bottom-border {
+            border-bottom: 1px solid $c-faint;
          }
 
          .items-list {
@@ -231,7 +221,7 @@
             }
 
             .items-header {
-               background: rgba(160, 140, 140, 0.2);
+               background: rgba(90, 100, 100, 0.2);
                border: $borderGroove;
             }
 
@@ -270,31 +260,6 @@
          .ability-scores {
             .ability {
                border-color: $lightColor;
-            }
-         }
-
-         .hit-points {
-            .hp-value {
-               text-shadow: 0 0 2px $lighterColor, 0 1px 2px $lighterColor, 1px 0 2px $lighterColor, 1px 1px 2px $lighterColor;
-            }
-
-            .hp-empty {
-               background-image: url("../assets/img/heart_empty.png");
-               background-repeat: no-repeat;
-            }
-
-            .hp-full {
-               background-image: url("../assets/img/heart_full.png");
-               background-repeat: no-repeat;
-            }
-         }
-
-         .armor-class {
-            background-image: url("../assets/img/armor1.png");
-            background-repeat: no-repeat;
-
-            .ac-value {
-               text-shadow: 0 0 2px $lighterColor, 0 1px 2px $lighterColor, 1px 0 2px $lighterColor, 1px 1px 2px $lighterColor;
             }
          }
       }

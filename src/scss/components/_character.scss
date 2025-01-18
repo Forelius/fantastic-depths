@@ -136,10 +136,13 @@
       position: relative;
 
       .hp-value {
+         color: $lighterColor;
          background: none;
          border: 0 none;
          text-align: center;
          font-weight: bolder;
+         text-shadow: 0 0 2px $darkerColor, 0 1px 2px $darkerColor, 1px 0 2px $darkerColor, 1px 1px 2px $darkerColor;
+         background: none;
       }
 
       .hp-top {
@@ -162,12 +165,16 @@
          background-size: 74px;
          background-position: top;
          background-clip: content-box;
+         background-image: url("../assets/img/heart_empty2.png");
+         background-repeat: no-repeat;
       }
 
       .hp-full {
          background-size: 74px;
          background-position: bottom;
          background-clip: content-box;
+         background-image: url("../assets/img/heart_full2.png");
+         background-repeat: no-repeat;
       }
    }
 
@@ -176,12 +183,16 @@
       position: relative;
       background-size: 70px;
       background-position: center;
+      background-image: url("../assets/img/armor1.png");
+      background-repeat: no-repeat;
 
       .ac-value {
+         color: $lighterColor;
          background: none;
          border: 0 none;
          text-align: center;
          font-weight: bolder;
+         text-shadow: 0 0 2px $darkerColor, 0 1px 2px $darkerColor, 1px 0 2px $darkerColor, 1px 1px 2px $darkerColor;
       }
 
       .ac-top {
@@ -195,17 +206,58 @@
       .ac-bottom {
          position: absolute;
          font-size: 12px;
-         bottom: 12px;
+         bottom: 15px;
          width: 50px;
          right: calc(50% + -25px);
       }
 
       .shield {
-         position: relative;
-         left: 58px;
+         position: absolute;
+         //left: 58px;
+         left: 71%;
          top: 30px;
-         margin-right: -2px;
-         font-size: 18px;
+         font-size: 24px;
+         color: #707070;
+         //text-shadow: 0 0 3px $c-dark;
+
+         .shield-ac-val {
+            width: 40px;
+            color: $lighterColor;
+            font-weight: bolder;
+            text-align: center;
+            text-shadow: 0 0 3px $c-dark, 0 1px 2px $c-dark, 1px 0 2px $c-dark, 1px 1px 2px $c-dark;
+            position: relative;
+            //left: 50%; /* Center horizontally */
+            //top: 50%; /* Center vertically */
+            left: 12px;
+            top: -15px;
+            transform: translate(-50%, -50%); /* Adjust position to truly center */
+            font-size: 14px;
+         }
+      }
+
+      .ranged-ac {
+         position: absolute;
+         left: 1px;
+         top: 30px;
+         font-size: 24px;
+         color: #808080;
+         //text-shadow: 0 0 3px $c-dark;
+
+         .ranged-ac-val {
+            width: 40px;
+            color: $lighterColor;
+            font-weight: bolder;
+            text-align: center;
+            text-shadow: 0 0 3px $c-dark, 0 1px 2px $c-dark, 1px 0 2px $c-dark, 1px 1px 2px $c-dark;
+            position: relative;
+            //left: 50%; /* Center horizontally */
+            //top: 50%; /* Center vertically */
+            left: 12px;
+            top: -15px;
+            transform: translate(-50%, -50%); /* Adjust position to truly center */
+            font-size: 14px;
+         }
       }
    }
 

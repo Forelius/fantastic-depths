@@ -28,6 +28,7 @@ export class ChatBuilder {
     * @param {Object[]} dataset.batch - Bulk object data for batch processing.
     * @param {Object} dataset.mdata - Details for chat card enrichment.
     * @param {Object} dataset.options - Options passed directly to ChatMessage.create().
+    * @param {Object} dataset.digest - A roll digest consisting of an array of strings.
     * @prop {string} template - Path to hbs template. Must be defined by subclasses.
     */
    constructor(dataset, options) {

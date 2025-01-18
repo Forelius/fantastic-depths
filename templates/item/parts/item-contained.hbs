@@ -1,0 +1,60 @@
+<li class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+   <div {{#if item.system.container}}{{#unless item.system.quantityMax }}class="bottom-border"{{/unless}}{{/if}}>
+      <div class="flexrow">
+         <div class='item-name contained'>
+            <div class='item-image'>
+               <a data-roll-type='item'>
+                  <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+               </a>
+            </div>
+            {{#if item.system.container}}
+            <div class="category-caret"><i class="fas fa-caret-down"></i></div>
+            {{/if}}
+            <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
+               {{item.name}}
+               {{#if rootobj.showCoinWeight}}
+               {{#if item.containedEnc}}
+               <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
+               {{/if}}
+               {{/if}}
+            </a>
+         </div>
+         <div class="item-40px item-prop"><label>{{infinity item.system.quantity}}</label></div>
+         {{#if rootobj.showCoinWeight}}
+         <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
+         {{/if}}
+         <div class='item-controls'>
+            {{#if item.system.equippable}}
+            <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
+               data-tooltip="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
+               <i class="fas fa-tshirt"></i>
+            </a>
+            {{/if}}
+            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
+               <i class='fas fa-trash'></i>
+            </a>
+         </div>
+      </div>
+   </div>
+</li>
+{{#if item.system.container}}
+<!--<ol class="bottom-border contained">-->
+   {{#each item.contained as |childItem|}}
+   {{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
+   {{/each}}
+<!--</ol>-->
+{{/if}}
+{{#unless item.system.container}}
+<li class='flexrow item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+   {{#if item.system.quantityMax }}
+   <div class="consumable-counter contained">
+      <label>{{localize 'FADE.Item.uses'}}</label>
+      {{#times item.system.quantity}}
+      <div class="full-mark"></div>
+      {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+      <div class="empty-mark"></div>
+      {{/times}}
+   </div>
+   {{/if}}
+</li>
+{{/unless}}

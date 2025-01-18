@@ -9,6 +9,13 @@ export class fadeActor extends Actor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
+      if (!this.toggleStatusEffect) {
+         // If v11 add toggleStatusEffect method.
+         this.toggleStatusEffect = async (status, options) => {
+            const token = this.getActiveTokens()[0];
+            await token.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
+         };
+      }
    }
 
    /**
@@ -21,10 +28,10 @@ export class fadeActor extends Actor {
       if (game.user.isGM) {
          if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
             this.update({ "system.combat.isDead": true });
-            this.toggleStatusEffect && this.toggleStatusEffect("dead", { active: true, overlay: true });
+            this.toggleStatusEffect("dead", { active: true, overlay: true });
          } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
             this.update({ "system.combat.isDead": false });
-            this.toggleStatusEffect && this.toggleStatusEffect("dead", { active: false });
+            this.toggleStatusEffect("dead", { active: false });
          }
       }
    }
@@ -93,15 +100,15 @@ export class fadeActor extends Actor {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareEffects();
-      this._prepareSpellsUsed();      
+      this._prepareSpellsUsed();
       this.system.prepareEncumbrance(this.items, this.type);
       this.system.prepareDerivedMovement();
    }
 
    /** @override */
    prepareDerivedData() {
-      this.system.prepareArmorClass(this.items);
       super.prepareDerivedData();
+      this.prepareArmorClass();
    }
 
    getRollData() {
@@ -112,7 +119,7 @@ export class fadeActor extends Actor {
    /**
     * Get the attack roll formula for the specified weapon, attack type, mod and target.
     * @param {any} weapon The weapon being used to attack with.
-    * @param {any} attackType The type of attack. Values are melee or missile
+    * @param {any} attackType The type of attack. Values are melee, missile, breath and save.
     * @param {any} options An object containing one or more of the following:
     *    mod - A manual modifier entered by the user.
     *    target - This doesn't work when there are multiple targets.
@@ -121,7 +128,6 @@ export class fadeActor extends Actor {
     */
    getAttackRoll(weapon, attackType, options = {}) {
       const weaponData = weapon.system;
-      const systemData = this.system;
       const targetData = options.target?.system;
       let formula = '1d20';
       let digest = [];
@@ -147,7 +153,7 @@ export class fadeActor extends Actor {
          modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData);
       }
 
-      if (masteryEnabled && weaponData.mastery !== "" && this.type === "character" && systemData.details.species === "Human") {
+      if (masteryEnabled && weaponData.mastery !== "") {
          modifier += this.#getMasteryAttackRollMods(weaponData, options, digest, attackType);
       }
 
@@ -165,12 +171,12 @@ export class fadeActor extends Actor {
    getWeaponType() {
       let result = 'monster';
       const weapons = this.items.filter(item => item.type === 'weapon');
-      const equippedWeapons = weapons?.filter(item => item.system.equipped === true);
+      const equippedWeapons = weapons?.filter(item => item.system.equipped === true && item.system.quantity > 0);
       if (equippedWeapons && equippedWeapons.length > 0) {
          result = equippedWeapons[0].system.weaponType;
       } else if (weapons && weapons.length > 0) {
          result = 'monster';
-         console.warn(`${this.name} has weapons, but none are equipped.`)
+         console.warn(`${this.name} has weapons, but none are equipped or the quantity is zero.`)
       }
       return result;
    }
@@ -232,14 +238,14 @@ export class fadeActor extends Actor {
                   "system.combat.isDead": true
                });
             }
-            this.toggleStatusEffect && await this.toggleStatusEffect("dead", { active: true, overlay: true });
+            await this.toggleStatusEffect("dead", { active: true, overlay: true });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
          }
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
             this.update({ "system.combat.isDead": false });
-            this.toggleStatusEffect && await this.toggleStatusEffect("dead", { active: false });
+            await this.toggleStatusEffect("dead", { active: false });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
          }
       }
@@ -265,13 +271,14 @@ export class fadeActor extends Actor {
    * Handler for updateWorldTime event.
    * @returns
    */
-   onUpdateWorldTime() {
+   onUpdateWorldTime(worldTime, dt, options, userId) {
       // Only the GM should handle updating effects
       if (!game.user.isGM) return;
 
       // Ensure there's an active scene and tokens on the canvas
       if (!canvas?.scene) return;
 
+      // Active effects
       if (this.effects.size > 0) {
          // Ensure the actor has active effects to update
          for (let effect of this.effects) {
@@ -307,16 +314,23 @@ export class fadeActor extends Actor {
       const savingThrow = systemData.savingThrows[type];
       const rollData = this.getRollData();
       let dataset = {};
-      dataset.dialog = "generic";
+      dataset.dialog = "save";
       dataset.pass = "gte";
       dataset.target = savingThrow.value;
       dataset.rollmode = game.settings.get("core", "rollMode");
       dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
-     
+      if (this.type === 'character') {
+         dataset.type = type;
+      }
+
       let dialogResp = await DialogFactory(dataset, this);
-      rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
 
       if (dialogResp?.resp?.rolling === true) {
+         rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
+         const wisMod = this.system.abilities.wis.mod;
+         if (dialogResp.resp.vsmagic === true && wisMod !== 0) {
+            rollData.formula = `${rollData.formula}${wisMod > 0 ? '+' : ''}${wisMod}`;
+         }
          const rollContext = { ...rollData, ...dialogResp?.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
@@ -342,7 +356,7 @@ export class fadeActor extends Actor {
       const selected = Array.from(canvas.tokens.controlled);
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
-         ui.notifications.warn(game.i18n.format('FADE.notification.selectToken1'));
+         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
@@ -351,10 +365,42 @@ export class fadeActor extends Actor {
       }
    }
 
+   /**
+    * A helper method for setting the actor's current active light and active fuel.
+    * @param {any} lightItemId An owned light item's id.
+    * @param {any} fuelItemId An owned light or fuel item's id.
+    */
+   setActiveLight(lightItemId, fuelItemId) {
+      this.update({
+         "system.activeLight": lightItemId,
+         "system.activeFuel": fuelItemId
+      });
+   }
+
+   /**
+    * Finds and returns the appropriate ammo for the specified weapon.
+    * The ammo item must be equipped for it to be recognized.
+    * @param {any} weapon
+    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
+    */
+   getAmmoItem(weapon) {
+      let ammoItem = null;
+      const ammoType = weapon.system.ammoType;
+
+      // If there's no ammo needed use the weapon itself
+      if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
+         ammoItem = weapon;
+      } else {
+         // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
+         ammoItem = this.items.find(item => item.type === "item" && item.system.equipped === true
+            && item.system.ammoType == ammoType && item.system.quantity !== 0);
+      }
+
+      return ammoItem;
+   }
+
    #getMasteryAttackRollMods(weaponData, options, digest, attackType) {
       let result = 0;
-      const target = options.target;
-      const targetData = options.target?.system;
       const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
       if (attackerMastery) {
          const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
@@ -365,8 +411,8 @@ export class fadeActor extends Actor {
             const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
             digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
          }
-      } else if (attackType === "missile") {
-         // Unskilled use
+      } else if (attackType === "missile" && this.type === "character" && this.system.details.species === "Human") {
+         // Unskilled use for humans
          result -= 1;
          digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
       }
@@ -429,7 +475,25 @@ export class fadeActor extends Actor {
       return result;
    }
 
+   /**
+    * Finds the best defense mastery for the specified attacker's weapon type.
+    * @param {any} attackerWeaponType
+    * @returns
+    */
+   getBestDefenseMastery(attackerWeaponType) {
+      let result = null;
+      const defenseMasteries = this.system.ac.mastery;
+      if (defenseMasteries?.length > 0) {
+         result = defenseMasteries.filter(mastery => mastery.acBonusType === attackerWeaponType)
+            .reduce((minMastery, current) => current.acBonus < minMastery.acBonus ? current : minMastery,
+               { acBonus: Infinity });
+      }
+      return result;
+   }
+
    /** 
+    * Performs base classe prep of actor's active effects.
+    * Disables effects from items that are equippable and not equipped. 
     * @protected 
     */
    _prepareEffects() {
@@ -447,6 +511,7 @@ export class fadeActor extends Actor {
 
    /**
     * Prepares the used spells per level totals
+    * @protected 
     */
    _prepareSpellsUsed() {
       const systemData = this.system;
@@ -470,5 +535,117 @@ export class fadeActor extends Actor {
          }
       }
       systemData.spellSlots = spellSlots;
+   }
+
+   /**
+    * Prepare derived armor class values.
+    */
+   prepareArmorClass() {
+      const acDigest = [];
+      const dexMod = (this.system.abilities?.dex.mod ?? 0);
+      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.system.mod.baseAc;
+      let ac = {};
+      ac.nakedAAC = 19 - baseAC;
+      ac.naked = baseAC;
+      // AC value is used for wrestling rating and should not include Dexterity bonus.
+      ac.value = CONFIG.FADE.Armor.acNaked;
+      ac.total = baseAC;
+      ac.mod = 0;
+      ac.shield = 0;
+
+      const naturalArmor = this.items.find(item => item.type === 'armor' && item.system.natural);
+      this.system.equippedArmor = this.items.find(item => item.type === 'armor' && item.system.equipped && !item.system.isShield);
+      const equippedShield = this.items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
+
+      if (dexMod !== 0) {
+         acDigest.push(`Dexterity bonus: ${dexMod}`);
+      }
+
+      // If natural armor
+      if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
+         //naturalArmor.prepareEffects();
+         ac.naked = naturalArmor.system.totalAC - dexMod;
+         ac.value = ac.naked;
+         ac.total = ac.naked;
+         naturalArmor.system.equipped = true;
+         acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
+      }
+
+      // If an equipped armor is found...
+      if (this.system.equippedArmor) {
+         //this.system.equippedArmor.prepareEffects();
+         ac.value = this.system.equippedArmor.system.ac;
+         ac.mod += this.system.equippedArmor.system.mod ?? 0;
+         ac.total = this.system.equippedArmor.system.totalAC;
+         // Reapply dexterity mod, since overwriting ac.total here.
+         ac.total -= dexMod;
+         acDigest.push(`${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
+      }
+
+      // If a shield is equipped...
+      if (equippedShield) {
+         //equippedShield.prepareEffects();
+         ac.value -= equippedShield.system.ac;
+         ac.shield = equippedShield.system.totalAC;
+         ac.total -= equippedShield.system.totalAC;
+         acDigest.push(`${equippedShield.name}: ${equippedShield.system.totalAC}`);
+      }
+
+      if (this.system.mod.baseAc != 0) {
+         ac.total -= this.system.mod.baseAc;
+         acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.baseAc}`);
+      }
+
+      ac.nakedRanged = ac.total;
+      ac.totalRanged = ac.total;
+      // Normal Calcs done at this point --------------------------------
+
+      if (this.system.mod.upgradeAc && this.system.mod.upgradeAc < ac.total) {
+         ac.total = this.system.mod.upgradeAc;
+         ac.naked = this.system.mod.upgradeAc;
+         acDigest.push(`AC upgraded to ${this.system.mod.upgradeAc}`);
+      }
+      if (this.system.mod.upgradeRangedAc && this.system.mod.upgradeRangedAc < ac.totalRanged) {
+         ac.totalRanged = this.system.mod.upgradeRangedAc;
+         ac.nakedRanged = this.system.mod.upgradeRangedAc;
+         acDigest.push(`Ranged AC upgraded to ${this.system.mod.upgradeRangedAc}`);
+      }
+
+      // Now other mods. Dexterity bonus already applied above.
+      ac.nakedAAC = 19 - ac.naked;
+      ac.totalAAC = 19 - ac.total;
+      ac.totalRangedAAC = 19 - ac.totalRanged;
+      ac.nakedRangedAAC = 19 - ac.nakedRanged;
+
+      // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      if (masteryEnabled) {
+         ac.mastery = this.getDefenseMasteries(ac);
+      }
+
+      this.system.ac = ac;
+      this.system.acDigest = acDigest;
+   }
+
+   getDefenseMasteries(ac) {
+      const results = [];
+      const masteries = this.items.filter(item => item.type === "mastery");
+      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
+      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
+      if (masteries?.length > 0 && equippedWeapons?.length > 0) {
+         for (let weapon of equippedWeapons) {
+            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
+            if (weaponMastery) {
+               results.push({
+                  acBonusType: weaponMastery.system.acBonusType,
+                  acBonus: weaponMastery.system.acBonus || 0,
+                  total: ac.total + (weaponMastery.system.acBonus || 0),
+                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
+                  acBonusAT: weaponMastery.system.acBonusAT
+               });
+            }
+         }
+      }
+      return results;
    }
 }

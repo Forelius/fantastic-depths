@@ -51,7 +51,6 @@ import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 import { GMMessageSender } from './sys/GMMessageSender.mjs'
-import { fadeCombatant } from './sys/fadeCombatant.mjs'
 import { fadeEffect } from './sys/fadeEffect.mjs'
 
 /* -------------------------------------------- */
@@ -72,7 +71,8 @@ Hooks.once('init', async function () {
       PartyTrackerForm,
       EffectLibraryForm,
       AttackRollChatBuilder,
-      fadeDialog
+      fadeDialog,
+      DataMigrator
    };
 
    CONFIG.time.roundTime = 10;
@@ -246,11 +246,12 @@ fadeHandlebars.registerHelpers();
  * Hook for time advancement.
  */
 Hooks.on('updateWorldTime', (worldTime, dt, options, userId) => {
+   LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
    //console.debug("updateWorldTime", worldTime, dt, options, userId);
    const tokens = canvas?.tokens.placeables;
    for (let token of tokens) {
       if (token.actor) {  // Only process tokens with an actor
-         token.actor.onUpdateWorldTime();  // Correctly call the actor's method
+         token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
       }
    }
 });
