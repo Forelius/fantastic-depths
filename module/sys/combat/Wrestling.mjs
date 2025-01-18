@@ -1,4 +1,4 @@
-﻿import { DialogFactory } from '../dialog/DialogFactory.mjs';
+﻿import { DialogFactory } from '../../dialog/DialogFactory.mjs';
 
 export class Wrestling {
 

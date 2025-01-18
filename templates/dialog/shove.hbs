@@ -1,0 +1,25 @@
+<form>
+   <div class="form-group">
+      <label>Defender Size:</label>
+      <select id="size" name="size">
+         <option value="1">Tiny (under 2')</option>
+         <option value="2">Small (2' to 4')</option>
+         <option value="3" selected>Medium (4' to 7')</option>
+         <option value="4">Large (7' to 12')</option>
+         <option value="5">Giant (12' to 25')</option>
+         <option value="6">Immense (over 25')</option>
+      </select>
+   </div>
+   <div class="form-group">
+      <label>Defender Hit Dice:</label>
+      <input type="number" id="hitDice" name="hitDice" min="0" value="1" />
+   </div>
+   <div class="form-group">
+      <label>Defender Strength Modifier:</label>
+      <input type="number" id="strengthMod" name="strengthMod" min="-5" max="5" value="0" />
+   </div>
+   <div class="form-group">
+      <label>Additional Legs or Prone (yes = +1):</label>
+      <input type="checkbox" id="extraLegs" name="extraLegs" />
+   </div>
+</form>

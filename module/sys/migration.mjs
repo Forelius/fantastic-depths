@@ -9,10 +9,15 @@ import { SYSTEM_ID } from './config.mjs';
 class MySystemVersion {
    constructor(version) {
       this.version = version;
-      let split = version?.split('.');
+
+      // Parse version string
+      let [core, rc] = version?.split('-') ?? []; // Split into core version and rc (if present)
+      let split = core?.split('.') ?? [];
       this.major = parseInt(split[0]) ?? 0;
       this.minor = parseInt(split[1]) ?? 0;
       this.build = parseInt(split[2]) ?? 0;
+      // Handle RC version (null if not an RC)
+      this.rc = rc ? parseInt(rc.replace('rc.', '')) : null;
    }
 
    /**
@@ -23,22 +28,36 @@ class MySystemVersion {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
-      return (
-         this.major > version.major ||
-         (this.major === version.major && this.minor > version.minor) ||
-         (this.major === version.major && this.minor === version.minor && this.build > version.build)
-      );
+
+      // Compare major, minor, and build numbers first
+      if (this.major !== version.major) return this.major > version.major;
+      if (this.minor !== version.minor) return this.minor > version.minor;
+      if (this.build !== version.build) return this.build > version.build;
+
+      // Compare RC versions
+      if (this.rc === null && version.rc !== null) return true; // Full release > RC
+      if (this.rc !== null && version.rc === null) return false; // RC < Full release
+      if (this.rc !== null && version.rc !== null) return this.rc > version.rc; // Compare RC numbers
+
+      return false;
    }
 
    lt(version) {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
-      return (
-         this.major < version.major ||
-         (this.major === version.major && this.minor < version.minor) ||
-         (this.major === version.major && this.minor === version.minor && this.build < version.build)
-      );
+
+      // Compare major, minor, and build numbers first
+      if (this.major !== version.major) return this.major < version.major;
+      if (this.minor !== version.minor) return this.minor < version.minor;
+      if (this.build !== version.build) return this.build < version.build;
+
+      // Compare RC versions
+      if (this.rc === null && version.rc !== null) return false; // Full release > RC
+      if (this.rc !== null && version.rc === null) return true; // RC < Full release
+      if (this.rc !== null && version.rc !== null) return this.rc < version.rc; // Compare RC numbers
+
+      return false;
    }
 }
 
@@ -51,25 +70,24 @@ export class DataMigrator {
    async migrate() {
       console.debug("FADE Migrate", this.oldVersion, this.newVersion);
 
-      if (this.oldVersion.lt(new MySystemVersion("0.6.14"))) {
-         await this.fixBreathWeapons();
-      }
       if (this.oldVersion.lt(new MySystemVersion("0.7.18"))) {
          await this.fixLightItems();
       }
-      if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.1"))) {
-         //await this.fixAmmoItems();
-      }
       if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
          await this.fixBreathWeapons();
+      }
+      if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.1"))) {
+         await this.updateSizes();
       }
       // Set the new version after migration is complete
       await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
    }
 
-   static fixBreathWeapons2() {
-      const migration = new DataMigrator();
-      migration.fixBreathWeapons();
+   async updateSizes() {
+      console.log("-----------------------------------------------");
+      console.log("Updating Actor Sizes");
+      console.log("-----------------------------------------------");
+
    }
 
    async fixBreathWeapons() {
@@ -186,36 +204,4 @@ export class DataMigrator {
       // Process cloned world items
       await processItems(clonedWorldItems, "World Items");
    }
-
-   //async fixAmmoItems() {
-   //   console.log("-----------------------------------------------");
-   //   console.log("Fixing Ammo Items and Weapons");
-   //   console.log("-----------------------------------------------");
-
-   //   // Take a snapshot (clone) of all current actors and world items
-   //   const clonedActors = Array.from(game.actors);
-   //   const clonedWorldItems = Array.from(game.items);
-
-   //   // Function to process items
-   //   const processItems = async (items, contextName) => {
-   //      // Clone the item array so we don't iterate over newly created items
-   //      const snapshot = Array.from(items);
-
-   //      for (const item of snapshot) {
-   //         if (item.type === 'weapon') {
-
-   //         } else if (item.type === 'item') {
-
-   //         }
-   //      }
-   //   };
-
-   //   // Process cloned actor items
-   //   for (const actor of clonedActors) {
-   //      await processItems(actor.items, `Actor: ${actor.name}`);
-   //   }
-
-   //   // Process cloned world items
-   //   await processItems(clonedWorldItems, "World Items");
-   //}
 }

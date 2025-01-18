@@ -239,6 +239,20 @@
                "label": "Over Encumbered",
                "desc": "Severely overloaded, movement is impossible."
             }
+         },
+         "sizes": {
+            "T": "Tiny",
+            "THint": "Creatures less than 2 feet tall, such as pixies, sprites, and giant rats.",
+            "S": "Small",
+            "SHint": "Creatures between 2 and under 4 feet tall, such as kobolds and goblins. In standard combat mechanics, this size includes all smaller sizes.",
+            "M": "Medium",
+            "MHint": "Creatures between 4 and under 7 feet tall, such as humans, elves, and orcs.",
+            "L": "Large",
+            "LHint": "Creatures between 7 and under 12 feet tall, such as ogres, trolls, and large beasts. In standard combat mechanics, this size includes all larger sizes.",
+            "G": "Huge",
+            "GHint": "Creatures between 12 and under 25 feet tall, such as frost giants and rocs.",
+            "I": "Immense",
+            "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
          }
       },
       "SheetLabel": {

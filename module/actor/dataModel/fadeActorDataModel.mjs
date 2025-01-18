@@ -3,9 +3,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       const { fields } = foundry.data;
       return {
          config: new fields.SchemaField({
-            maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),            
+            maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
-         biography: new fields.StringField({ initial: "" }),         
+         biography: new fields.StringField({ initial: "" }),
          hp: new fields.SchemaField({
             hd: new fields.StringField({ initial: "1d8" }),
             value: new fields.NumberField({ initial: 5 }),

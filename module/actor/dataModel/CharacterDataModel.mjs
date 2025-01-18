@@ -27,6 +27,7 @@ export class CharacterDataModel extends fadeActorDataModel {
             weight: new fields.StringField({ initial: "170 lbs." }),
             eyes: new fields.StringField({ initial: "Blue" }),
             hair: new fields.StringField({ initial: "Brown" }),
+            size: new foundry.data.fields.StringField({ initial: "M" }),
          }),
          abilities: new fields.SchemaField({
             str: new fields.SchemaField({

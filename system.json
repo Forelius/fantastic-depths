@@ -4,8 +4,10 @@
    "description": "The Fantastic Depths system for FoundryVTT!",
    "authors": [
       {
-         "name": "Forelius",
-         "discord": "forelius"
+         "name": "forelius",
+         "url": "https://github.com/Forelius",
+         "discord": "forelius",
+         "flags": {}
       }
    ],
    "url": "https://github.com/Forelius/fantastic-depths",

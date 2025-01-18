@@ -1,5 +1,3 @@
-import { Wrestling } from "../sys/Wrestling.mjs";
-
 function focusById(id) {
    return setTimeout(() => { document.getElementById(id).focus(); }, 50);
 }

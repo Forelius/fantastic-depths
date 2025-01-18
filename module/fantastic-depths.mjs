@@ -35,12 +35,13 @@ import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
-import { fadeCombat } from './sys/fadeCombat.mjs'
+import { fadeCombat } from './sys/combat/fadeCombat.mjs'
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
 import { MacroManager } from './sys/MacroManager.mjs';
 import { LightManager } from './sys/LightManager.mjs';
-import { Wrestling } from './sys/Wrestling.mjs';
+import { Wrestling } from './sys/combat/Wrestling.mjs';
+import { Shove } from './sys/combat/Shove.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
@@ -74,7 +75,8 @@ Hooks.once('init', async function () {
       AttackRollChatBuilder,
       fadeDialog,
       DataMigrator,
-      Wrestling
+      Wrestling,
+      Shove
    };
 
    CONFIG.time.roundTime = 10;

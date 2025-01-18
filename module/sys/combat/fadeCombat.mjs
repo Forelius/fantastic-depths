@@ -1,6 +1,6 @@
 // fadeCombat.mjs
 // Import any required modules (if necessary)
-import { GMMessageSender } from './GMMessageSender.mjs'
+import { GMMessageSender } from '../GMMessageSender.mjs'
 
 // Custom Combat class
 export class fadeCombat extends Combat {

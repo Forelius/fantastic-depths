@@ -65,6 +65,9 @@ export class fadeActorSheet extends ActorSheet {
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
+      context.sizes = CONFIG.FADE.ActorSizes
+         .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
+         .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare shared actor data and items.
       this._prepareItems(context);
@@ -597,7 +600,7 @@ export class fadeActorSheet extends ActorSheet {
          const sectionName = target.parent().attr('name'); // Access the `name` attribute from the DOM element
          //console.debug(`Remembering expanded state for ${sectionName}.`, target);
          if (sectionName !== undefined) {
-            const actor = game.actors.get(this.actor.id);            
+            const actor = game.actors.get(this.actor.id);
             await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
          }
       }
