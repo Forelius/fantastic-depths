@@ -563,7 +563,7 @@
       },
       "dialog": {
          "wrestling": {
-            "attacker": "Attacker(s)",
+            "attacker": "Attacker",
             "defender": "Defender",
             "groupWR": "Total Wrestling Rating",
             "wrestlingContest": "Wrestling Contest",
