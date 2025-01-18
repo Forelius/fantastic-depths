@@ -85,7 +85,12 @@ export class Wrestling {
                                  wrestling: attackerWRs[attacker.id],   // Wrestling Rating
                               })),
                            },
-                           defenderWR,
+                           defender: {
+                              name: defender.name,
+                              id: defender.id,
+                              hd: defender.actor.system.hp.hd, // Hit Dice
+                              wrestling: defenderWR,   // Wrestling Rating
+                           },
                            wrestlingState,
                         });
                      } catch (error) {
@@ -119,15 +124,14 @@ export class Wrestling {
    }
 
    async calculateWrestlingOutcome(wrestlingData) {
-      let { attackerGroup, defenderWR, wrestlingState } = wrestlingData;
+      let { attackerGroup, wrestlingState, defender } = wrestlingData;
 
       // Calculate group WR
-      const leaderWR = attackerGroup.leaderWR;
       const leaderHD = attackerGroup.leaderHD; // Leader's Hit Dice
       let groupWR = 0;
 
       // Apply -3 penalty if pinned
-      defenderWR = defenderWR + (wrestlingState === "attpin" ? -3 : 0);
+      defender.bonus = defender.wrestling + (wrestlingState === "attpin" ? -3 : 0);
       for (let attacker of attackerGroup.members) {
          if (attacker.id === attackerGroup.members[0].id) {
             attacker.bonus = attacker.wrestling + (wrestlingState === "defpin" ? -3 : 0);
@@ -138,7 +142,7 @@ export class Wrestling {
       }
 
       const attackerRoll = await new Roll(`1d20 + ${groupWR}`).roll();
-      const defenderRoll = await new Roll(`1d20 + ${defenderWR}`).roll();
+      const defenderRoll = await new Roll(`1d20 + ${defender.bonus}`).roll();
 
       const states = CONFIG.FADE.WrestlingStates;
       const currentIndex = states.indexOf(wrestlingState);
@@ -156,7 +160,7 @@ export class Wrestling {
          groupWR,
          newState: states[newIndex],
          attackerGroup,
-         leaderHD
+         defender
       };
 
       const message = await this.constructWrestlingMessage(attackerRoll, defenderRoll, result);
@@ -164,7 +168,7 @@ export class Wrestling {
    }
 
    async constructWrestlingMessage(attackerRoll, defenderRoll, result) {
-      const { newState, attackerGroup, groupWR, leaderHD } = result;
+      const { newState, attackerGroup, groupWR, defender } = result;
 
       // Directly localize the new state
       const localizedState = game.i18n.localize(`FADE.dialog.wrestling.states.${newState}`);
@@ -175,13 +179,17 @@ export class Wrestling {
          const memberHD = member.hd || 0;
          message += `<div>${member.name} (${game.i18n.localize("FADE.Actor.HitDiceShort")}: ${memberHD}) → ${member.bonus}</div>`;
       });
-      message += `<div><strong>${game.i18n.localize("FADE.dialog.wrestling.groupWR")}:</strong> ${groupWR}</div>`;
+      message += `<div>${game.i18n.localize("FADE.dialog.wrestling.groupWR")}: ${groupWR}</div>`;
+      message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}:</div>`;
+      message += `<div>${defender.name} (${game.i18n.localize("FADE.Actor.HitDiceShort")}: ${defender.hd}) → ${defender.bonus}</div>`;
+      message += "<hr/>";
       message += `<div class='attack-result attack-info'>${game.i18n.format("FADE.dialog.wrestling.winsRound", { winner })}</div>`;
-      message += `<div><strong>${game.i18n.localize("FADE.dialog.wrestling.attacker")}:</strong> ${attackerRoll.total} (${attackerRoll.formula})</div>`;
-      //message += `<div>${await attackerRoll.render()}</div>`;
-      message += `<div><strong>${game.i18n.localize("FADE.dialog.wrestling.defender")}:</strong> ${defenderRoll.total} (${defenderRoll.formula})</div>`;
-      //message += `<div>${await defenderRoll.render()}</div>`;
-      message += `<div style='margin-top:4px; font-size:18px;'>${game.i18n.localize("FADE.dialog.wrestling.stateLabel")}:</strong> ${localizedState}</div>`;
+      message += `<div>${game.i18n.localize("FADE.dialog.wrestling.attacker")}: ${attackerRoll.total} (${attackerRoll.formula})</div>`;
+      message += `<div>${await attackerRoll.render()}</div>`;
+      message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}: ${defenderRoll.total} (${defenderRoll.formula})</div>`;
+      message += `<div>${await defenderRoll.render()}</div>`;
+      message += "<hr/>";
+      message += `<div style='margin-top:4px;' class='attack-result attack-info'>${game.i18n.localize("FADE.dialog.wrestling.stateLabel")}: ${localizedState}</div>`;
 
       return message;
    }

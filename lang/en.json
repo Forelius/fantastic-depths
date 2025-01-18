@@ -562,6 +562,11 @@
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
       "dialog": {
+         "shove": {
+            "resultsLabel": "Shove Results",
+            "attackerRoll": "{attacker} Roll",
+            "defenderResist": "{defender} Resist"
+         },
          "wrestling": {
             "attacker": "Attacker",
             "defender": "Defender",

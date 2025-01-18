@@ -33,25 +33,28 @@ export class Shove {
       let outcome = "";
 
       if (rollResult >= resistValue) {
-         outcome = `<strong>Success!</strong> The defender is shoved 5 feet back.`;
-         if (rollResult >= resistValue * 2) {
-            outcome += `<br>The defender is shoved 10 feet and must save vs. Paralysis at -2 or fall prone.`;
-         }
+         outcome = `<div class='attack-result attack-success'>Success!</div>`;
          if (rollResult >= resistValue * 4) {
-            outcome += `<br>The defender is shoved 15 feet and must save vs. Paralysis at -4 or fall prone.`;
+            outcome += `<div>The defender is shoved 15 feet and must save vs. Paralysis at -4 or fall prone.</div>`;
+         }
+         else if (rollResult >= resistValue * 2) {
+            outcome += `<div>The defender is shoved 10 feet and must save vs. Paralysis at -2 or fall prone.</div>`;
+         }
+         else {
+            outcome += `<div>The defender is shoved 5 feet back.</div>`;
          }
       } else {
-         outcome = `<strong>Failure:</strong> The shove attempt failed.`;
+         outcome = `<div class='attack-result attack-fail'>Failure</div><div>The shove attempt failed.</div>`;
       }
 
       // Output results to chat
       ChatMessage.create({
          content: `
-            <strong>Shove Results:</strong><br>
-            <strong>Attacker Roll:</strong> ${attackRoll.total} (${attackRoll.formula})<br>
-            <strong>Defender Resist Value:</strong> ${resistValue}<br>
-            ${outcome}
-         `,
+            <h2>${game.i18n.localize("FADE.dialog.shove.resultsLabel") }:</h2>
+            <div style="font-size:14px"><strong>${game.i18n.format("FADE.dialog.shove.defenderResist", { defender: defender.name })}:</strong> ${resistValue}</div>
+            <div style="font-size:14px"><strong>${game.i18n.format("FADE.dialog.shove.attackerRoll", { attacker: attacker.name })}:</strong> ${attackRoll.total} (${attackRoll.formula})</div>
+            <div style='margin-top:4px;'>${await attackRoll.render()}</div>
+            <div style='margin-top:4px;'>${outcome}</div>`,
       });
    }
 
