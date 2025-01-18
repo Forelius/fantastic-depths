@@ -40,6 +40,7 @@ import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
 import { MacroManager } from './sys/MacroManager.mjs';
 import { LightManager } from './sys/LightManager.mjs';
+import { Wrestling } from './sys/Wrestling.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
@@ -72,7 +73,8 @@ Hooks.once('init', async function () {
       EffectLibraryForm,
       AttackRollChatBuilder,
       fadeDialog,
-      DataMigrator
+      DataMigrator,
+      Wrestling
    };
 
    CONFIG.time.roundTime = 10;

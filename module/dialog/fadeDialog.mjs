@@ -1,3 +1,5 @@
+import { Wrestling } from "../sys/Wrestling.mjs";
+
 function focusById(id) {
    return setTimeout(() => { document.getElementById(id).focus(); }, 50);
 }
@@ -386,5 +388,5 @@ export class fadeDialog {
       });
       dialogResp.context = caller;
       return dialogResp;
-   }
+   }  
 }

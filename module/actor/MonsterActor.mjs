@@ -28,14 +28,12 @@ export class MonsterActor extends fadeActor {
       // Wrestling skill
       const data = this.system;
       const hitDice = data.hp.hd?.match(/^\d+/)[0];
-      let wrestling = data.ac.value;
+      let wrestling = 0;
       if (hitDice) {
          wrestling = Math.ceil(hitDice * 2);
       }
       // Determine if the monster is wearing any non-natural armor.
-      const hasArmor = this.items.some(item =>
-         item.type === 'armor' && item.system.equipped === true && item.system.natural === false
-      );
+      const hasArmor = this.items.some(item => item.type === 'armor' && item.system.equipped === true && item.system.natural === false);
       if (hasArmor) {
          wrestling += data.ac.value;
       } else {
@@ -102,7 +100,7 @@ export class MonsterXPCalculator {
          const bonus = 2000 + ((numericHitDice - 20) * 250);
          result = baseXP + (bonus * asteriskValue);
       } else {
-         let row = MonsterXPCalculator.xpTable["Under 1"]; 
+         let row = MonsterXPCalculator.xpTable["Under 1"];
          if (numericHitDice >= 1) {
             row = MonsterXPCalculator.xpTable[effectiveHitDice];
          }
