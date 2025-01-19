@@ -1,0 +1,46 @@
+<form>
+   <style>
+      table {
+         width: 99%;
+         text-align: left;
+         vertical-align: top;
+         border-collapse: collapse;
+      }
+
+      th, td {
+         text-align: left;
+         vertical-align: top;
+         padding: 5px;
+      }
+   </style>
+   <p>{{localize "FADE.apps.playerCombat.prompt"}}</p>
+   <table>
+      <thead>
+         <tr>
+            <th>Name</th>
+            <th>Action</th>
+         </tr>
+      </thead>
+      <tbody>
+         {{#each ownedTokens as |token|}}
+         {{#with token.actor}}
+         <tr>
+            <td>
+               <label>{{name}}</label>
+            </td>
+            <td>
+               <div>
+                  <select class="declared-action-select" data-token-id="{{token.id}}" data-actor-id="{{id}}">
+                     {{selectOptions @root.availableActions selected=system.combat.declaredAction}}
+                  </select>
+               </div>
+               <p class="action-description">
+                  {{localize (concat 'FADE.combat.maneuvers.' system.combat.declaredAction '.description')}}
+               </p>
+            </td>
+         </tr>
+         {{/with}}
+         {{/each}}
+      </tbody>
+   </table>
+</form>

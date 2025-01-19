@@ -52,7 +52,7 @@ import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
-import { GMMessageSender } from './sys/GMMessageSender.mjs'
+import { SocketManager } from './sys/SocketManager.mjs'
 import { fadeEffect } from './sys/fadeEffect.mjs'
 
 /* -------------------------------------------- */
@@ -240,7 +240,7 @@ Hooks.once('ready', async function () {
          });
       }
 
-      GMMessageSender.SetupOnReady();
+      SocketManager.SetupOnReady();
    }
 });
 

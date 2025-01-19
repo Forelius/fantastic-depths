@@ -386,5 +386,5 @@ export class fadeDialog {
       });
       dialogResp.context = caller;
       return dialogResp;
-   }  
+   }
 }

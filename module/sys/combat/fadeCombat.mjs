@@ -1,6 +1,6 @@
 // fadeCombat.mjs
 // Import any required modules (if necessary)
-import { GMMessageSender } from '../GMMessageSender.mjs'
+import { SocketManager } from '../SocketManager.mjs'
 
 // Custom Combat class
 export class fadeCombat extends Combat {
@@ -73,7 +73,7 @@ export class fadeCombat extends Combat {
                await this.#doInitiativeRoll(this.combatants, group);  // Use the custom initiative function
             }
          } else {
-            GMMessageSender.sendToGM("rollGroupInitiative", { combatid: this.id });
+            SocketManager.sendToGM("rollGroupInitiative", { combatid: this.id });
          }
       } else {
          const combatants = this.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
@@ -90,10 +90,9 @@ export class fadeCombat extends Combat {
     **/
    async startCombat() {
       let result = super.startCombat();
-      const user = game.users.get(game.userId);  // Get the user who initiated the roll
-      const speaker = { alias: user.name };  // Use the player's name as the speaker
-      if (user.isGM) {
-         this.resetCombatants();
+      const speaker = { alias: game.user.name };  // Use the player's name as the speaker
+      if (game.user.isGM) {
+         this.#resetCombatants();
          // Send a chat message when combat officially begins (round 1)
          ChatMessage.create({
             speaker: speaker,
@@ -111,11 +110,10 @@ export class fadeCombat extends Combat {
    async nextRound() {
       let nextRound = this.round + 1;
       let result = super.nextRound();
-      const user = game.users.get(game.userId);  // Get the user who initiated the roll
-      const speaker = { alias: user.name };  // Use the player's name as the speaker
+      const speaker = { alias: game.user.name };  // Use the player's name as the speaker
 
-      if (user.isGM) {
-         this.resetCombatants();
+      if (game.user.isGM) {
+         this.#resetCombatants();
 
          // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
@@ -153,12 +151,28 @@ export class fadeCombat extends Combat {
       return result;
    }
 
-   resetCombatants() {
-      for (let combatant of this.combatants) {
-         // Reset initiative to null
-         combatant.actor.update({
-            "system.combat.attacksAgainst": 0,
-            'system.combat.declaredAction': "nothing"
+   /**
+    * Adds the combat manuever declaration control to the combat tracker.
+    * @param {any} combat
+    * @param {any} combatantElement
+    * @param {any} combatant
+    */
+   async addDeclarationControl(combat, combatantElement, combatant) {
+      const combatantControls = combatantElement.find('.combatant-controls');
+      const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
+      let templateData = {
+         combatant,
+         enableEditAction: game.user.isGM, //|| (combatant.actor.isOwner && (combatant.initiative === null || combat.nextRoundMode === "hold")),
+         availableActions: this.availableActions
+      };
+
+      const controlsContent = await renderTemplate(template, templateData);
+      combatantControls.prepend(controlsContent);
+      // Add a change event listener to update the actor's data when the dropdown selection changes
+      if (combatant.initiative === null || game.user.isGM) {
+         combatantElement.find('#combatantDeclaration').on('change', async (event) => {
+            const newAction = event.target.value;
+            await combatant.actor.update({ 'system.combat.declaredAction': newAction });
          });
       }
    }
@@ -272,6 +286,116 @@ export class fadeCombat extends Combat {
       return result;
    }
 
+   /**
+ * Add custom elements to the combat tracker UI.
+ * @param {any} app
+ * @param {any} html
+ * @param {any} data
+ */
+   static async onRenderCombatTracker(app, html, data) {
+      let hasAnyRolls = false;
+      if (data?.combat?.combatants) {
+         // Iterate over each combatant and apply a CSS class based on disposition
+         for (let combatant of data.combat.combatants) {
+            /* console.debug(combatant);*/
+            const disposition = combatant.token.disposition;
+            const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
+            // Set disposition indicator
+            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+               combatantElement.addClass('disposition-friendly');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+               combatantElement.addClass('disposition-neutral');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+               combatantElement.addClass('disposition-hostile');
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+               combatantElement.addClass('disposition-secret');
+            }
+
+            if (data.combat.declaredActions === true) {
+               await data.combat.addDeclarationControl(data.combat, combatantElement, combatant);
+            }
+         }
+      }
+   }
+
+   static onCreateCombat(combat) {
+      if (game.user.isGM) {
+         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
+         // Send a chat message when combat begins
+         ChatMessage.create({
+            speaker: speaker,
+            content: game.i18n.localize("FADE.Chat.combatTracker.created"),
+         });
+      }
+   }
+
+   static onDeleteCombat(combat) {
+      if (game.user.isGM) {
+         this.#tryClosePlayerCombatForm();
+         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
+         // Send a chat message when combat ends
+         ChatMessage.create({
+            speaker: speaker,
+            content: game.i18n.localize("FADE.Chat.combatTracker.ended"),
+         });
+         for (let combatant of combat.combatants) {
+            // Reset initiative to null
+            combatant.actor.update({
+               "system.combat.attacksAgainst": 0,
+               "system.combat.attacks": 0,
+               "system.combat.declaredAction": null
+            });
+         }
+      }
+   }
+
+   static onCreateCombatant(combatant, options, userId) {
+      if (game.user.isGM) {
+         combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
+      }
+   }
+
+   static onDeleteCombatant(combatant, options, userId) {
+      if (game.user.isGM) {
+         this.#tryClosePlayerCombatForm([userId]);
+         combatant.actor.update({ 'system.combat.declaredAction': null });
+      }
+   }
+
+   #tryShowPlayerCombatForm() {
+      if (this.declaredActions === true) {
+         SocketManager.sendToAllUsers("showPlayerCombat", { combatid: this.id });
+      }
+   }
+
+   #tryClosePlayerCombatForm(userIds = []) {
+      if (this.declaredActions === true) {
+         if (userIds.length > 0) {
+            SocketManager.sendToUsers(userIds, "closePlayerCombat", { combatid: this.id });
+         } else {
+            SocketManager.sendToAllUsers("closePlayerCombat", { combatid: this.id });
+         }
+      }
+   }
+
+   #resetCombatants() {
+      this.#tryShowPlayerCombatForm();
+      for (let combatant of this.combatants) {
+         // Reset initiative to null
+         if (this.#getCombatantDisposition(combatant) === 'hostile') {
+            combatant.actor.update({
+               "system.combat.attacksAgainst": 0,
+               'system.combat.declaredAction': "attack"
+            });
+         } else {
+            combatant.actor.update({
+               "system.combat.attacksAgainst": 0,
+               'system.combat.declaredAction': "nothing"
+            });
+         }
+      }
+   }
+
    // Function to handle group-based initiative
    async #rollForGroup(group, groupName) {
       let rollData = {};
@@ -333,6 +457,8 @@ export class fadeCombat extends Combat {
 
       // Handle group-based initiative by disposition
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+         this.#tryClosePlayerCombatForm();
+
          // Get all combatants and group them by disposition         
          this.groups = this.#groupCombatantsByDisposition(combatants);
 
@@ -354,7 +480,16 @@ export class fadeCombat extends Combat {
             if (rollResult) rollResults.push(rollResult);
          }
       } else {
-         // Individual-based initiative
+         // Individual-based initiative  
+         const userIds = [...new Set(combatants.flatMap(c => {
+            const actor = c.actor;
+            if (!actor) return [];
+            return Object.keys(actor.ownership).filter(userId =>
+               actor.ownership[userId] === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
+            );
+         }))];
+         this.#tryClosePlayerCombatForm(userIds);
+
          for (let combatant of combatants) {
             const rollData = combatant.actor.getRollData();
             const mod = this.#getInitiativeMod(combatant.actor); // Get the initiative modifier
@@ -378,8 +513,7 @@ export class fadeCombat extends Combat {
          // Store the base formula without the mod for flavor text
          const baseFormula = this.initiativeFormula.replace(/\+?\s*@mod/, '').trim();
          const flavorText = game.i18n.format(`FADE.Chat.combatTracker.rollFormula`, { formula: baseFormula });
-         const user = game.users.get(game.userId);  // Get the user who initiated the roll
-         const speaker = { alias: user.name };  // Use the player's name as the speaker
+         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
          ChatMessage.create({
             speaker: speaker,
             content: rollResults.join('<br>'),  // Combine all roll results into one message with line breaks
@@ -432,108 +566,6 @@ export class fadeCombat extends Combat {
          result = "secret";
       }
       return result;
-   }
-
-   /**
-    * Add custom elements to the combat tracker UI.
-    * @param {any} app
-    * @param {any} html
-    * @param {any} data
-    */
-   static async onRenderCombatTracker(app, html, data) {
-      let hasAnyRolls = false;
-      if (data?.combat?.combatants) {
-         // Iterate over each combatant and apply a CSS class based on disposition
-         for (let combatant of data.combat.combatants) {
-            /* console.debug(combatant);*/
-            const disposition = combatant.token.disposition;
-            const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
-            // Set disposition indicator
-            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-               combatantElement.addClass('disposition-friendly');
-            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-               combatantElement.addClass('disposition-neutral');
-            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-               combatantElement.addClass('disposition-hostile');
-            } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-               combatantElement.addClass('disposition-secret');
-            }
-
-            if (data.combat.declaredActions === true) {
-               // Add declaration controls
-               await data.combat.addDeclarationControl(data.combat, combatantElement, combatant);
-            }
-         }
-      }
-   }
-
-   /**
-    * Adds the combat manuever declaration control to the combat tracker.
-    * @param {any} combat
-    * @param {any} combatantElement
-    * @param {any} combatant
-    */
-   async addDeclarationControl(combat, combatantElement, combatant) {
-      const combatantControls = combatantElement.find('.combatant-controls');
-      const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
-      let templateData = {
-         combatant,
-         enableEditAction: game.user.isGM || (combatant.actor.isOwner && (combatant.initiative === null || combat.nextRoundMode === "hold")),
-         availableActions: this.availableActions
-      };
-
-      const controlsContent = await renderTemplate(template, templateData);
-      combatantControls.prepend(controlsContent);
-      // Add a change event listener to update the actor's data when the dropdown selection changes
-      if (combatant.initiative === null || game.user.isGM) {
-         combatantElement.find('#combatantDeclaration').on('change', async (event) => {
-            const newAction = event.target.value;
-            await combatant.actor.update({ 'system.combat.declaredAction': newAction });
-         });
-      }
-   }
-
-   static onCreateCombat(combat) {
-      if (game.user.isGM) {
-         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
-         // Send a chat message when combat begins
-         ChatMessage.create({
-            speaker: speaker,
-            content: game.i18n.localize("FADE.Chat.combatTracker.created"),
-         });
-      }
-   }
-
-   static onDeleteCombat(combat) {
-      if (game.user.isGM) {
-         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
-         // Send a chat message when combat ends
-         ChatMessage.create({
-            speaker: speaker,
-            content: game.i18n.localize("FADE.Chat.combatTracker.ended"),
-         });
-         for (let combatant of combat.combatants) {
-            // Reset initiative to null
-            combatant.actor.update({
-               "system.combat.attacksAgainst": 0,
-               "system.combat.attacks": 0,
-               "system.combat.declaredAction": null
-            });
-         }
-      }
-   }
-
-   static onCreateCombatant(combatant, options, userId) {
-      if (game.user.isGM) {
-         const actorData = combatant.actor.system;
-         combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
-      }
-   }
-
-   static onDeleteCombatant(combatant, options, userId) {
-      if (game.user.isGM) {
-         combatant.actor.update({ 'system.combat.declaredAction': null });
-      }
    }
 }
 

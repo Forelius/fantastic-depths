@@ -571,6 +571,12 @@
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
+      "apps": {
+         "playerCombat": {
+            "title": "Player Combat",
+            "prompt": "Select combat manuever for this round. Close this form when you are finished. This form will close automatically when initiative is rolled."            
+         }
+      },
       "dialog": {
          "shove": {
             "resultsLabel": "Shove Results",
