@@ -538,6 +538,16 @@
             "killed": "<span class='attack-fail'>{tokenName} has fallen in battle.</span>",
             "restoredLife": "<span class='attack-success'>{tokenName} has been restored to life.</span>"
          },
+         "combatTracker": {
+            "begin": "Combat has begun!",
+            "created": "Combat encounter created.",
+            "ended": "Combat encounter has ended.",
+            "initReset": "Round {round} started. Initiative rolls reset.",
+            "initRerolled": "Round {round} started. Initiative rerolled for all combatants.",
+            "initHeld": "Round {round} started. Initiative held for all combatants.",
+            "initRoll": "{name} rolled {roll} {mod}.",
+            "rollFormula": "Initiative Rolls (Base Formula: {formula})"
+         },
          "targets": "Targets",
          "apply": "Apply",
          "applyDamageDesc": "Apply damage to selected token or target.",

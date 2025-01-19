@@ -64,7 +64,7 @@ export class fadeCombat extends Combat {
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
          if (game.user.isGM) {
             // Get all combatants and group them by disposition
-            let groups = messageOptions?.group ? [messageOptions?.group] : [];            
+            let groups = messageOptions?.group ? [messageOptions?.group] : [];
             if (groups.length === 0 && ids.length > 0) {
                const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
                groups = [...new Set(rollingCombatants.map(combatant => this.#getCombatantDisposition(combatant)))];
@@ -79,7 +79,7 @@ export class fadeCombat extends Combat {
          const combatants = this.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
          await this.#doInitiativeRoll(combatants);  // Use the custom initiative function
       }
-      
+
       return this;
    }
 
@@ -97,7 +97,7 @@ export class fadeCombat extends Combat {
          // Send a chat message when combat officially begins (round 1)
          ChatMessage.create({
             speaker: speaker,
-            content: `Combat has begun!`,
+            content: game.i18n.localize(`FADE.Chat.combatTracker.begin`),
          });
       }
       return result;
@@ -128,7 +128,7 @@ export class fadeCombat extends Combat {
             // Optionally send a chat message to notify players
             ChatMessage.create({
                speaker: speaker,
-               content: `Round ${nextRound} started. Initiative rolls reset.`,
+               content: game.i18n.format(`FADE.Chat.combatTracker.initReset`, { round: nextRound }),
             });
          }
          else if (this.nextRoundMode === "reroll") {
@@ -138,14 +138,14 @@ export class fadeCombat extends Combat {
             // Optionally send a chat message to notify players
             ChatMessage.create({
                speaker: speaker,
-               content: `Round ${nextRound} started. Initiative rerolled for all combatants.`,
+               content: game.i18n.format(`FADE.Chat.combatTracker.initRerolled`, { round: nextRound }),
             });
          }
          else {
             // Optionally send a chat message to notify players
             ChatMessage.create({
                speaker: speaker,
-               content: `Round ${nextRound} started. Initiative held for all combatants.`,
+               content: game.i18n.format(`FADE.Chat.combatTracker.initHeld`, { round: nextRound }),
             });
          }
       }
@@ -154,14 +154,14 @@ export class fadeCombat extends Combat {
    }
 
    resetCombatants() {
-        for (let combatant of this.combatants) {
-            // Reset initiative to null
-            combatant.actor.update({
-                "system.combat.attacksAgainst": 0,
-                'system.combat.declaredAction': "nothing"
-            });
-        }
-    }
+      for (let combatant of this.combatants) {
+         // Reset initiative to null
+         combatant.actor.update({
+            "system.combat.attacksAgainst": 0,
+            'system.combat.declaredAction': "nothing"
+         });
+      }
+   }
 
    sortCombatantsIndividual(a, b) {
       let result = 0;
@@ -249,7 +249,7 @@ export class fadeCombat extends Combat {
             : null;
 
          // Only compare if both combatants have a valid phase
-         if (aPhase && bPhase && aPhase !== bPhase) {            
+         if (aPhase && bPhase && aPhase !== bPhase) {
             const aPhaseIndex = this.phaseOrder.indexOf(aPhase);
             const bPhaseIndex = this.phaseOrder.indexOf(bPhase);
             result = aPhaseIndex - bPhaseIndex;
@@ -298,14 +298,14 @@ export class fadeCombat extends Combat {
       const rolled = await roll.evaluate();
 
       // Apply the same initiative result to all combatants in the group
-      for (let combatant of group) {
+      for (const combatant of group) {
          combatant.update({ initiative: rolled.total });
       }
 
       // Return the roll result for the digest message, including the used modifier
       if (group.length > 0) {
-         let modText = usedMod !== 0 ? ` (mod ${usedMod > 0 ? '+' : ''}${usedMod})` : '';
-         result = `${groupName} rolled ${rolled.total}${modText}`;
+         const modText = usedMod !== 0 ? `(${usedMod > 0 ? '+' : ''}${usedMod})` : '';
+         result = game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: groupName, roll: rolled.total, mod: modText });
       }
 
       return result;
@@ -332,25 +332,25 @@ export class fadeCombat extends Combat {
       let rollResults = [];
 
       // Handle group-based initiative by disposition
-      if (this.initiativeMode === "group" || this.initiativeMode ==="groupHybrid") {
+      if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
          // Get all combatants and group them by disposition         
          this.groups = this.#groupCombatantsByDisposition(combatants);
 
          // Friendly group (uses modifiers)
-         if ((group === null || group ==='friendly') && this.groups.friendly.length > 0) {
-            let rollResult = await this.#rollForGroup(this.groups.friendly, "Friendlies");
+         if ((group === null || group === 'friendly') && this.groups.friendly.length > 0) {
+            const rollResult = await this.#rollForGroup(this.groups.friendly, "Friendlies");
             if (rollResult) rollResults.push(rollResult);
          }
 
          // Neutral group (uses modifiers)
          if ((group === null || group === 'neutral') && this.groups.neutral.length > 0) {
-            let rollResult = await this.#rollForGroup(this.groups.neutral, "Neutrals");
+            const rollResult = await this.#rollForGroup(this.groups.neutral, "Neutrals");
             if (rollResult) rollResults.push(rollResult);
          }
 
          // Hostile group (monsters may not use modifiers)
          if ((group === null || group === 'hostile') && this.groups.hostile.length > 0) {
-            let rollResult = await this.#rollForGroup(this.groups.hostile, "Hostiles");
+            const rollResult = await this.#rollForGroup(this.groups.hostile, "Hostiles");
             if (rollResult) rollResults.push(rollResult);
          }
       } else {
@@ -368,8 +368,8 @@ export class fadeCombat extends Combat {
             await combatant.update({ initiative: rolled.total });
 
             // Accumulate the roll result for the digest message, showing mod only if it's not 0
-            let modText = mod !== 0 ? ` (mod ${mod > 0 ? '+' : ''}${mod})` : '';
-            rollResults.push(`${combatant.name} rolled ${rolled.total}${modText}`);
+            const modText = mod !== 0 ? `(mod ${mod > 0 ? '+' : ''}${mod})` : '';
+            rollResults.push(game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: combatant.name, roll: rolled.total, mod: modText }));
          }
       }
 
@@ -377,7 +377,7 @@ export class fadeCombat extends Combat {
       if (rollResults.length > 0) {
          // Store the base formula without the mod for flavor text
          const baseFormula = this.initiativeFormula.replace(/\+?\s*@mod/, '').trim();
-         const flavorText = `Initiative Rolls (Base Formula: ${this.initiativeFormula.replace(/\+?\s*@mod/, '').trim()})`;
+         const flavorText = game.i18n.format(`FADE.Chat.combatTracker.rollFormula`, { formula: baseFormula });
          const user = game.users.get(game.userId);  // Get the user who initiated the roll
          const speaker = { alias: user.name };  // Use the player's name as the speaker
          ChatMessage.create({
@@ -422,15 +422,15 @@ export class fadeCombat extends Combat {
    #getCombatantDisposition(combatant) {
       const disposition = combatant.token.disposition;
       let result = null;
-         if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-            result = "friendly";
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-            result = "neutral";
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-            result = "hostile";
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-            result = "secret";
-         }
+      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+         result = "friendly";
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+         result = "neutral";
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+         result = "hostile";
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+         result = "secret";
+      }
       return result;
    }
 
@@ -499,7 +499,7 @@ export class fadeCombat extends Combat {
          // Send a chat message when combat begins
          ChatMessage.create({
             speaker: speaker,
-            content: `Combat encounter created.`,
+            content: game.i18n.localize("FADE.Chat.combatTracker.created"),
          });
       }
    }
@@ -510,7 +510,7 @@ export class fadeCombat extends Combat {
          // Send a chat message when combat ends
          ChatMessage.create({
             speaker: speaker,
-            content: `Combat encounter has ended.`,
+            content: game.i18n.localize("FADE.Chat.combatTracker.ended"),
          });
          for (let combatant of combat.combatants) {
             // Reset initiative to null
