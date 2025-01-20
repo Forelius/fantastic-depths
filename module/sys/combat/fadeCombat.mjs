@@ -318,7 +318,7 @@ export class fadeCombat extends Combat {
 
    static onDeleteCombat(combat) {
       if (game.user.isGM) {
-         this.tryClosePlayerCombatForm();
+         combat.tryClosePlayerCombatForm();
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker
          // Send a chat message when combat ends
          ChatMessage.create({
