@@ -131,6 +131,23 @@ h4 {
    list-style: none;
    border-top: none;
 
+   div {
+      height: calc(100% - 5px);
+      float: left;
+      margin: 2px 2px;
+      padding: 0;
+      line-height: 30px;
+      position: relative;
+
+      label {
+         line-height: 6px;
+         position: absolute;
+         font-size: 10px;
+         top: 31px;
+         left: 2px;
+      }
+   }
+
    li {
       height: calc(100% - 5px);
       float: left;

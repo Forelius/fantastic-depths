@@ -16,15 +16,6 @@ export class fadeCombat extends Combat {
       this.initiativeMode = game.settings.get(game.system.id, "initiativeMode");
       this.nextRoundMode = game.settings.get(game.system.id, "nextRound");
       this.declaredActions = game.settings.get(game.system.id, "declaredActions");
-      this.availableActions = Object.entries(CONFIG.FADE.CombatManeuvers)
-         .map(([key, value]) => ({
-            text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
-            value: key,
-            //   title: game.i18n.localize(`FADE.combat.maneuvers.${key}.description`),
-            //   phase: value.phase
-         }))
-         .sort((a, b) => a.text.localeCompare(b.text))
-         .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {}); // Sort by the `text` property
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases);
    }
 
@@ -160,11 +151,7 @@ export class fadeCombat extends Combat {
    async addDeclarationControl(combat, combatantElement, combatant) {
       const combatantControls = combatantElement.find('.combatant-controls');
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
-      let templateData = {
-         combatant,
-         enableEditAction: game.user.isGM, //|| (combatant.actor.isOwner && (combatant.initiative === null || combat.nextRoundMode === "hold")),
-         availableActions: this.availableActions
-      };
+      let templateData = { combatant };
 
       const controlsContent = await renderTemplate(template, templateData);
       combatantControls.prepend(controlsContent);
@@ -331,7 +318,7 @@ export class fadeCombat extends Combat {
 
    static onDeleteCombat(combat) {
       if (game.user.isGM) {
-         this.#tryClosePlayerCombatForm();
+         this.tryClosePlayerCombatForm();
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker
          // Send a chat message when combat ends
          ChatMessage.create({
@@ -357,7 +344,7 @@ export class fadeCombat extends Combat {
 
    static onDeleteCombatant(combatant, options, userId) {
       if (game.user.isGM) {
-         this.#tryClosePlayerCombatForm([userId]);
+         this.tryClosePlayerCombatForm([userId]);
          combatant.actor.update({ 'system.combat.declaredAction': null });
       }
    }
@@ -368,7 +355,7 @@ export class fadeCombat extends Combat {
       }
    }
 
-   #tryClosePlayerCombatForm(userIds = []) {
+   tryClosePlayerCombatForm(userIds = []) {
       if (this.declaredActions === true) {
          if (userIds.length > 0) {
             SocketManager.sendToUsers(userIds, "closePlayerCombat", { combatid: this.id });
@@ -457,7 +444,7 @@ export class fadeCombat extends Combat {
 
       // Handle group-based initiative by disposition
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
-         this.#tryClosePlayerCombatForm();
+         this.tryClosePlayerCombatForm();
 
          // Get all combatants and group them by disposition         
          this.groups = this.#groupCombatantsByDisposition(combatants);
@@ -488,7 +475,7 @@ export class fadeCombat extends Combat {
                actor.ownership[userId] === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
             );
          }))];
-         this.#tryClosePlayerCombatForm(userIds);
+         this.tryClosePlayerCombatForm(userIds);
 
          for (let combatant of combatants) {
             const rollData = combatant.actor.getRollData();

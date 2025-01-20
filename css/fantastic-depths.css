@@ -1123,6 +1123,21 @@ h1, h2, h3, h4 {
   list-style: none;
   border-top: none;
 }
+.fantastic-depths .summary div {
+  height: calc(100% - 5px);
+  float: left;
+  margin: 2px 2px;
+  padding: 0;
+  line-height: 30px;
+  position: relative;
+}
+.fantastic-depths .summary div label {
+  line-height: 6px;
+  position: absolute;
+  font-size: 10px;
+  top: 31px;
+  left: 2px;
+}
 .fantastic-depths .summary li {
   height: calc(100% - 5px);
   float: left;
@@ -1326,5 +1341,3 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

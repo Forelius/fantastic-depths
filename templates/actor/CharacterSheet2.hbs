@@ -184,26 +184,7 @@
             </div>
             <div>
                <!-- EXPLORATION -->
-               <div class="bordered" style="height:97%;">
-                  <h4>{{localize 'FADE.Actor.explore.long'}}</h4>
-                  <ol name="specialAbilityItems" class='items-list'>
-                     {{#each exploration as |item id|}}
-                     <li class='item flexrow collapsible-content' data-item-id='{{item._id}}'>
-                        <div class='item-name'>
-                           <div class="item-image rollable"
-                                {{#if item.roll}}
-                                data-test="specialAbility"
-                                {{/if}}
-                                data-roll-type='item'
-                                data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-                              <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
-                           </div>
-                           <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
-                        </div>
-                     </li>
-                     {{/each}}
-                  </ol>
-               </div>
+               {{> "systems/fantastic-depths/templates/item/parts/item-exploration.hbs"}}
             </div>
          </div>
          <!-- Equipped Weapons -->

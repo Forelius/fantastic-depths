@@ -265,8 +265,9 @@ FADE.CombatPhases = {
 };
 FADE.CombatManeuvers = {
    nothing: { phase: "special", canMove: false },
-   moveOnly: { phase: "movement", canMove: true },
    readyWeapon: { phase: "special", canMove: true },
+   moveOnly: { phase: "movement", canMove: true },
+   shove: { phase: "movement", canMove: true },
    throw: { phase: "missile", canMove: true },
    fire: { phase: "missile", canMove: true },
    spell: { phase: "magic", canMove: false },
@@ -280,11 +281,10 @@ FADE.CombatManeuvers = {
    smash: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    parry: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    disarm: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
-   shove: { phase: "movement", canMove: true },
    guard: { phase: "melee", canMove: true },
+   unarmed: { phase: "melee", canMove: true }
 }
 FADE.WrestlingStates = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
-FADE.WrestlingPositions = ["neutral", "attacker", "defender"];
 FADE.ActorSizes = [
    { id: "T", shoveResist: 1, isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet
    { id: "S", shoveResist: 2, isCombat: true, maxFeet: 4 },    // Small: 2 to 4 feet

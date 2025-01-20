@@ -787,7 +787,11 @@
             },
             "guard": {
                "name": "Guard",
-               "description": "TThe Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
+               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
+            },
+            "unarmed": {
+               "name": "Unarmed Combat",
+               "description": "Unarmed combat includes striking and wrestling. The defender does not have to engage in unarmed combat and may still attack with their melee weapon."
             }
          }
       },

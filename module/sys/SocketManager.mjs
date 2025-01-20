@@ -89,9 +89,11 @@ export class SocketManager {
             new PlayerCombatForm().render(true);
             break;
          case "closePlayerCombat":
-            for (const app of Object.values(ui.windows)) {
-               if (app.id === PlayerCombatForm.APP_ID) {
-                  app.close(); // Closes the form
+            if (game.user.isGM === false) {
+               for (const app of Object.values(ui.windows)) {
+                  if (app.id === PlayerCombatForm.APP_ID) {
+                     app.close(); // Closes the form
+                  }
                }
             }
             break;
