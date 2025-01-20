@@ -142,36 +142,42 @@
             "str": {
                "long": "Strength",
                "abbr": "STR",
+               "key": "ST",
                "mod": "To-Hit, Damage, Open Doors",
                "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p</div>"
             },
             "dex": {
                "long": "Dexterity",
                "abbr": "DEX",
+               "key": "DX",
                "mod": "Missile To-Hit, AC, Initiative",
                "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p>"
             },
             "int": {
                "long": "Intelligence",
                "abbr": "INT",
+               "key": "IN",
                "mod": "Language(s)",
                "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p>"
             },
             "wis": {
                "long": "Wisdom",
                "abbr": "WIS",
+               "key": "WS",
                "mod": "Saving Throws vs Spells",
                "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p>"
             },
             "con": {
                "long": "Constitution",
                "abbr": "CON",
+               "key": "CN",
                "mod": "Hit Points/Level",
                "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p>"
             },
             "cha": {
                "long": "Charisma",
                "abbr": "CHA",
+               "key": "CH",
                "mod": "Reactions",
                "retainer": "Retainers",
                "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p>"

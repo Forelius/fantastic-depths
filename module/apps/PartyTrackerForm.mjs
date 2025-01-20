@@ -15,7 +15,7 @@ export class PartyTrackerForm extends FormApplication {
       const options = super.defaultOptions;
       options.id = "party-tracker-form";
       options.template = `systems/${game.system.id}/templates/apps/party-tracker.hbs`;
-      options.width = 300;
+      options.width = 350;
       options.height = 500;
       options.resizable = true;
       options.title = "Party Tracker";
@@ -132,7 +132,7 @@ export class PartyTrackerForm extends FormApplication {
     * Clean up hooks when the form is closed 
     */
    async close() {
-      super.close();
       Hooks.off('updateActor', this._updateTrackedActor);
+      super.close();
    }
 }

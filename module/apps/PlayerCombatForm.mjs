@@ -9,7 +9,7 @@ export class PlayerCombatForm extends FormApplication {
       const options = super.defaultOptions;
       options.id = PlayerCombatForm.APP_ID;
       options.template = `systems/${game.system.id}/templates/apps/player-combat.hbs`;
-      options.width = 450;
+      options.width = 500;
       options.height = 250;
       options.resizable = true;
       options.title = game.i18n.localize("FADE.apps.playerCombat.title");
