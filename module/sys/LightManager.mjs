@@ -1,9 +1,6 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 export class LightManager {
-   static initialize() {
-      //   Hooks.on('turnTrackerUpdate', (turnData) => {
-      //      LightManager.updateLightUsage(turnData);
-      //   });
+   static initialize() {      
    }
 
    /**
@@ -14,7 +11,6 @@ export class LightManager {
     * @param {any} userId The user who triggered the time changed.
     */
    static onUpdateWorldTime(worldTime, dt, options, userId) {
-      console.debug('updateLightUsage:', worldTime, dt, options, userId);
       if (dt !== 0) {
          // Iterate over all canvas tokens
          for (let token of canvas.tokens.placeables) {

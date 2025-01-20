@@ -1,8 +1,8 @@
 export class PlayerCombatForm extends FormApplication {
    static APP_ID = "party-combat-form";
 
-   constructor() {
-      super();
+   constructor(object = {}, options = {}) {
+      super(object, options);
    }
 
    static get defaultOptions() {

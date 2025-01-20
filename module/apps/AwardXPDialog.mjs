@@ -2,10 +2,10 @@ export class AwardXPDialog extends FormApplication {
    /**
     * @param {string[]} actorIds - The IDs of the tracked party members
     */
-   constructor(actorIds) {
-      super();
+   constructor(object = {}, options = {}) {
+      super(object, options);
       // Keep the IDs
-      this.actorIds = actorIds;
+      this.actorIds = options.actorIds;
 
       // Store global XP and share factors
       this._globalXP = 0;

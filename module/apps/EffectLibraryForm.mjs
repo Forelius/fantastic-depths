@@ -1,8 +1,8 @@
 import { EffectManager } from "../sys/EffectManager.mjs"
 
 export class EffectLibraryForm extends FormApplication {
-	constructor() {
-		super();
+	constructor(object = {}, options = {}) {
+		super(object, options);
 		this.isGM = game.user.isGM;
 		this.effectMgr = new EffectManager();
 	}

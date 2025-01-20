@@ -1,7 +1,7 @@
 import { AwardXPDialog } from "./AwardXPDialog.mjs"
 export class PartyTrackerForm extends FormApplication {
-   constructor() {
-      super();
+   constructor(object = {}, options = {}) {
+      super(object, options);
       this.isGM = game.user.isGM;
 
       // Load tracked actors from the settings
@@ -60,7 +60,7 @@ export class PartyTrackerForm extends FormApplication {
 
       // **New**: Open "Award XP" dialog
       html.find(".award-xp-button").on("click", (event) => {
-         new AwardXPDialog(this.trackedActorIds).render(true);
+         new AwardXPDialog({}, { actorIds: this.trackedActorIds }).render(true);
       });
    }
 

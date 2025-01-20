@@ -2,17 +2,17 @@
    <section class="flexrow bordered" style="margin-top: 10px;">
       <div class="form-group">
          <label>{{localize 'FADE.time.sessionCount'}}: </label>
-         <span>{{turnData.dungeon.session}}</span>
+         <span>{{turnData.sessionTR.turns}}</span>{{#if turnData.sessionTR.rounds}} / <span>{{turnData.sessionTR.roundsDisplay}}</span>{{/if}}
       </div>
       <div class="form-group">
          <label>{{localize 'FADE.time.totalCount'}}: </label>
-         <span>{{turnData.dungeon.total}}</span>
+         <span>{{turnData.totalTR.turns}}</span>{{#if turnData.totalTR.rounds}} / <span>{{turnData.totalTR.roundsDisplay}}</span>{{/if}}
       </div>
       {{#if restFrequency}}
-      <div class="form-group">
-         <label>{{localize 'FADE.time.sinceRest'}}: </label>
-         <span>{{turnData.dungeon.rest}}</span>
-      </div>
+   <div class="form-group">
+      <label>{{localize 'FADE.time.sinceRest'}}: </label>
+      <span>{{turnData.restTR.rounds}}</span>{{#if turnData.restTR.rounds}} / <span>{{turnData.restTR.roundsDisplay}}</span>{{/if}}
+   </div>
       {{/if}}
    </section>
    <section class="flexrow" style="margin-top: 10px;">
