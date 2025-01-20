@@ -4,6 +4,10 @@ import { SocketManager } from '../SocketManager.mjs'
 
 // Custom Combat class
 export class fadeCombat extends Combat {
+   get ownedCombatants() {
+      return this.combatants.filter(combatant => combatant.actor?.ownership[game.user.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER);
+   }
+
    /**@override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -444,8 +448,6 @@ export class fadeCombat extends Combat {
 
       // Handle group-based initiative by disposition
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
-         this.tryClosePlayerCombatForm();
-
          // Get all combatants and group them by disposition         
          this.groups = this.#groupCombatantsByDisposition(combatants);
 
@@ -475,7 +477,6 @@ export class fadeCombat extends Combat {
                actor.ownership[userId] === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
             );
          }))];
-         this.tryClosePlayerCombatForm(userIds);
 
          for (let combatant of combatants) {
             const rollData = combatant.actor.getRollData();

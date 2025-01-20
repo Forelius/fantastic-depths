@@ -33,11 +33,14 @@ import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
 import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
 import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 
+import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
+import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
+import { PlayerCombatForm } from './apps/PlayerCombatForm.mjs';
+import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
 import { fadeCombat } from './sys/combat/fadeCombat.mjs'
-import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
-import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
+import { fadeCombatant } from './sys/combat/fadeCombatant.mjs'
 import { MacroManager } from './sys/MacroManager.mjs';
 import { LightManager } from './sys/LightManager.mjs';
 import { Wrestling } from './sys/combat/Wrestling.mjs';
@@ -48,8 +51,6 @@ import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
 import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
-import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
-import { PlayerCombatForm } from './apps/PlayerCombatForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
@@ -88,6 +89,7 @@ Hooks.once('init', async function () {
 
    CONFIG.ActiveEffect.documentClass = fadeEffect;
    CONFIG.Combat.documentClass = fadeCombat;
+   CONFIG.Combatant.documentClass = fadeCombatant;
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
    CONFIG.Actor.documentClass = ActorFactory;
    CONFIG.Actor.dataModels = {
@@ -107,7 +109,6 @@ Hooks.once('init', async function () {
       weaponMastery: MasteryDefinitionItemDataModel,
       specialAbility: SpecialAbilityDataModel
    }
-   //CONFIG.Combatant.documentClass = fadeCombatant;
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item

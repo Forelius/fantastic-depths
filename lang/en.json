@@ -574,7 +574,7 @@
       "apps": {
          "playerCombat": {
             "title": "Player Combat",
-            "prompt": "Select combat manuever for this round. Close this form when you are finished. This form will close automatically when initiative is rolled."            
+            "prompt": "Select combat manuever for this round. Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker."            
          }
       },
       "dialog": {

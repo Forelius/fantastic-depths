@@ -12,34 +12,42 @@
          vertical-align: top;
          padding: 5px;
       }
+
+      .action-description {
+         font-size: 12px;
+      }
+      .col-name {
+         min-width: 150px;
+      }
+      .combatant-name {         
+         font-weight: 600;
+         font-size: 15px;
+      }
    </style>
    <p>{{localize "FADE.apps.playerCombat.prompt"}}</p>
    <table>
-      <thead>
-         <tr>
-            <th>Name</th>
-            <th>Action</th>
-         </tr>
-      </thead>
       <tbody>
-         {{#each ownedTokens as |token|}}
-         {{#with token.actor}}
+         {{#each ownedCombatants as |combatant|}}
          <tr>
-            <td>
-               <label>{{name}}</label>
+            <td class="col-name">
+               <label  class="combatant-name">{{combatant.name}}</label><br/>
+               <label class="action-description" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}: {{combatant.attacks}}</label><br />
+               <label class="action-description" data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}: {{combatant.attacksAgainst}}</label>
             </td>
             <td>
                <div>
-                  <select class="declared-action-select" data-token-id="{{token.id}}" data-actor-id="{{id}}">
-                     {{selectOptions @root.availableActions selected=system.combat.declaredAction}}
+                  <select class="declared-action-select" 
+                          data-combatant-id="{{combatant.id}}" 
+                          data-actor-id="{{combatant.actor.id}}"
+                          {{#unless combatant.canChangeAction}} disabled{{/unless}}>
+                     {{selectOptions @root.availableActions selected=combatant.declaredAction}}
                   </select>
                </div>
-               <p class="action-description">
-                  {{localize (concat 'FADE.combat.maneuvers.' system.combat.declaredAction '.description')}}
-               </p>
+               <div class="action-description">
+                  {{localize (concat 'FADE.combat.maneuvers.' combatant.declaredAction '.description')}}
+               </div>
             </td>
          </tr>
-         {{/with}}
          {{/each}}
       </tbody>
    </table>

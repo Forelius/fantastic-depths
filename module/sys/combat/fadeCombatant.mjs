@@ -1,6 +1,15 @@
 export class fadeCombatant extends Combatant {
-   //get actor() {
-   //   return this.actor ?? game.actors.get(this.actorId);
-   //}
+   get declaredAction() {
+      return this.actor.system.combat.declaredAction;
+   }
+   get attacks() {
+      return this.actor.system.combat.attacks;
+   }
+   get attacksAgainst() {
+      return this.actor.system.combat.attacksAgainst;
+   }
+   get canChangeAction() {
+      return game.user.isGM === true || this.initiative === null;
+   }
 }
 
