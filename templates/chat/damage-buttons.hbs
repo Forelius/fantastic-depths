@@ -1,0 +1,54 @@
+<div>
+   <div class="card-tray">
+      <label class="collapser">
+         {{#if (eq attackData.mdata.type 'heal')}}
+         <i class="fa-solid fa-heart" inert></i>
+         {{else}}
+         <i class="fa-solid fa-heart-crack" inert></i>
+         {{/if}}
+         <span>{{localize 'FADE.Chat.apply'}}</span>
+      </label>
+      <div class="collapsible-content">
+         <div class="flexrow">
+            <button style="margin-right:4px;max-width:40px;" type="button" 
+                    {{#if (eq attackData.mdata.type 'heal')}} class="apply-heal" data-tooltip="{{localize 'FADE.Chat.applyHealingDesc'}} ({{attackData.damage}})"
+                    {{else}} class="apply-damage" data-tooltip="{{localize 'FADE.Chat.applyDamageDesc'}} ({{attackData.damage}})" {{/if}}
+                    data-attacktype="{{attackData.mdata.attacktype}}"
+                    data-attackmode="{{attackData.mdata.attackmode}}"
+                    data-damagetype="{{attackData.mdata.damagetype}}"
+                    data-attackerid="{{attackData.mdata.attackerid}}"
+                    data-weaponid="{{attackData.mdata.weaponid}}"
+                    data-amount="{{divide attackData.damage 2}}"
+                    data-label="{{attackData.mdata.label}}"
+                    data-desc="{{attackData.mdata.desc}}">
+               /2
+            </button>
+            <button type="button" {{#if (eq attackData.mdata.type 'heal')}} class="apply-heal" data-tooltip="{{localize 'FADE.Chat.applyHealingDesc'}} ({{attackData.damage}})"
+                    {{else}} class="apply-damage" data-tooltip="{{localize 'FADE.Chat.applyDamageDesc'}} ({{attackData.damage}})" {{/if}}
+                    data-attacktype="{{attackData.mdata.attacktype}}"
+                    data-attackmode="{{attackData.mdata.attackmode}}"
+                    data-damagetype="{{attackData.mdata.damagetype}}"
+                    data-attackerid="{{attackData.mdata.attackerid}}"
+                    data-weaponid="{{attackData.mdata.weaponid}}"
+                    data-amount="{{attackData.damage}}"
+                    data-label="{{attackData.mdata.label}}"
+                    data-desc="{{attackData.mdata.desc}}">
+               <i class="fa-solid fa-reply-all fa-flip-horizontal"></i>
+               <span style="margin-left:2px;">{{localize 'FADE.Chat.apply'}}</span>
+            </button>
+            <button style="margin-left:4px;max-width:40px;" type="button" {{#if (eq attackData.mdata.type 'heal')}} class="apply-heal" data-tooltip="{{localize 'FADE.Chat.applyHealingDesc'}} ({{attackData.damage}})"
+                    {{else}} class="apply-damage" data-tooltip="{{localize 'FADE.Chat.applyDamageDesc'}} ({{attackData.damage}})" {{/if}}
+                    data-attacktype="{{attackData.mdata.attacktype}}"
+                    data-attackmode="{{attackData.mdata.attackmode}}"
+                    data-damagetype="{{attackData.mdata.damagetype}}"
+                    data-attackerid="{{attackData.mdata.attackerid}}"
+                    data-weaponid="{{attackData.mdata.weaponid}}"
+                    data-amount="{{multiply attackData.damage 2}}"
+                    data-label="{{attackData.mdata.label}}"
+                    data-desc="{{attackData.mdata.desc}}">
+               2x
+            </button>
+         </div>
+      </div>
+   </div>
+</div>

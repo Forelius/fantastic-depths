@@ -2,14 +2,14 @@
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
 export class fadeHandlebars {
-   static clamp (value, min, max) {
+   static clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
    }
 
    static registerHelpers() {
-      Handlebars.registerHelper("infinity", function (value) { return value ?? "∞"; });
-      Handlebars.registerHelper('uppercase', function (str) { return str.toUpperCase(); });
-      Handlebars.registerHelper('lowercase', function (str) { return str.toLowerCase(); });
+      Handlebars.registerHelper("infinity", (value) => value ?? "∞");
+      Handlebars.registerHelper('uppercase', (str) => str.toUpperCase());
+      Handlebars.registerHelper('lowercase', (str) => str.toLowerCase());
       Handlebars.registerHelper("counter", (status, value, max) =>
          status
             ? fadeHandlebars.clamp((100 * value) / max, 0, 100)
@@ -21,7 +21,6 @@ export class fadeHandlebars {
          for (let i = 0; i < n; ++i) accum += block.fn(i);
          return accum;
       });
-      Handlebars.registerHelper("subtract", (lh, rh) => parseInt(lh, 10) - parseInt(rh, 10));
       Handlebars.registerHelper('formatHitDice', function (hitDice) {
          let result = "1d8";
          // Regular expression to check for a dice specifier like d<number>
@@ -44,11 +43,11 @@ export class fadeHandlebars {
          return result;
       });
       // Register a Handlebars helper to check if an array includes a value
-      Handlebars.registerHelper('includes', function (array, value) {
-         return array && array.includes(value);
-      });
-      Handlebars.registerHelper('add', function (a, b) {
-         return Number(a) + Number(b);
-      });
+      Handlebars.registerHelper('includes', (array, value) => array && array.includes(value));
+      Handlebars.registerHelper('add', (a, b) => Number(a) + Number(b));
+      Handlebars.registerHelper("subtract", (lh, rh) => Number(lh) - Number(rh));
+      Handlebars.registerHelper("multiply", (a, b) => Number(a) * Number(b));
+      // Round down
+      Handlebars.registerHelper("divide", (a, b) => Math.floor(Number(a) / Number(b)));
    }
- }
+}

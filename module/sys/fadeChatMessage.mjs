@@ -4,7 +4,7 @@ export class fadeChatMessage extends ChatMessage {
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       const html = await super.getHTML();
       this._addAttackTargets(html[0]);
-      this._addApplyDamage(html[0]);
+      await this._addApplyDamage(html[0]);
       return html;
    }
 
@@ -12,48 +12,13 @@ export class fadeChatMessage extends ChatMessage {
     * Add the apply button to a damage chat message if GM.
     * @param {any} html The chat message HTMLElement
     */
-   _addApplyDamage(html) {
+   async _addApplyDamage(html) {
       const attackData = this.getFlag(game.system.id, "attackdata");
       if (!game.user.isGM || !attackData) return;
-      const mdata = attackData.mdata;
-      const damage = attackData.damage;
+      const chatData = { attackData };
+      let content = await renderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
       const tray = document.createElement("div");
-      let innerHTML = `
- <div class="card-tray">
-   <label class="collapser">`;
-      if (mdata.type === 'heal') {
-         innerHTML += `
-      <i class="fa-solid fa-heart" inert></i>`;
-      } else {
-         innerHTML += `
-      <i class="fa-solid fa-heart-crack" inert></i>`;
-      }
-      innerHTML += `
-      <span>${game.i18n.localize("FADE.Chat.apply")}</span>
-   </label>
-   <div class="collapsible-content">`;
-      if (mdata.type === 'heal') {
-         innerHTML += `
-         <button class="apply-heal" type="button" data-tooltip="${game.i18n.localize("FADE.Chat.applyHealingDesc")}" `;
-      } else {
-         innerHTML += `
-         <button class="apply-damage" type="button" data-tooltip="${game.i18n.localize("FADE.Chat.applyDamageDesc")}" `;
-      }
-      innerHTML += `
-              data-attacktype="${mdata.attacktype}"
-              data-attackmode="${mdata.attackmode}"
-              data-damagetype="${mdata.damagetype}"
-              data-attackerid="${mdata.attackerid}"
-              data-weaponid="${mdata.weaponid}"
-              data-amount="${damage}"
-              data-label="${mdata.label}"
-              data-desc="${mdata.desc}">
-         <i class="fa-solid fa-reply-all fa-flip-horizontal"></i>
-         <span style="margin-left:2px;">${game.i18n.localize("FADE.Chat.apply")}</span>
-      </button>
-   </div>
-</div>`;
-      tray.innerHTML = innerHTML
+      tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);
    }
 
