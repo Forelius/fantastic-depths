@@ -482,9 +482,12 @@
          "autoSuccessHint": "Automatically succeeds on a natural/unmodified roll of this value.",
          "autoFail": "Auto-Fail",
          "autoFailHint": "Automatically fails on a natural/unmodified roll of this value.",
+         "saveType": "Save Type",
+         "saveTypeHint": "Set this if this special ability is a saving throw.",
          "categories": {
             "explore": "Exploration",
-            "class": "Class Abilities"
+            "class": "Class Ability",
+            "save": "Saving Throw"
          }
       },
       "class": {
@@ -812,7 +815,8 @@
       "GMNotes": "GM Notes",
       "category": "Category",
       "name": "Name",
-      "bonus": "Bonus"
+      "bonus": "Bonus",
+      "shortName": "Short Name"
    },
 
    "TYPES": {

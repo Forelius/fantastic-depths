@@ -62,9 +62,14 @@ export class SpecialAbilitySheet extends ItemSheet {
       // Saving throws
       const saves = [];
       saves.push({ value: "", text: game.i18n.localize('None') });
-      saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
-         return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
-      }).sort((a, b) => a.text.localeCompare(b.text)));
+      const saveItems = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
+         .sort((a, b) => a.system.shortName.localeCompare(b.system.shortName));
+      saves.push(...saveItems.map((save) => {
+         return { value: save.system.customSaveCode, text: save.system.shortName }
+      }));
+      //saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
+      //   return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
+      //}).sort((a, b) => a.text.localeCompare(b.text)));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {

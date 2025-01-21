@@ -27,7 +27,10 @@ export class SpecialAbilityDataModel extends fadeItemDataModel {
          healFormula: new fields.StringField({ nullable: true, initial: null }),
          damageType: new fields.StringField({ required: false, initial: "" }),
          category: new fields.StringField({ required: false, initial: "" }),
-         combatManeuver: new fields.StringField({ required: false, nullable: true, initial: null}),
+         // The type of combat maneuver this represents
+         combatManeuver: new fields.StringField({ required: false, nullable: true, initial: null }),
+         // The type of saving throw this represents
+         customSaveCode: new fields.StringField({ required: false, nullable: true, initial: null }),
       };
    }
 

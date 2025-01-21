@@ -19,7 +19,7 @@ FADE.SavingThrows = [
    "wand",
    "paralysis",
    "breath",
-   "spell"
+   "spell",
 ];
 FADE.AttackTypes = [
    "melee",
@@ -61,7 +61,8 @@ FADE.LightTypes = [
 ];
 FADE.SpecialAbilityCategories = [
    "explore",
-   "class"
+   "class",
+   "save"
 ];
 FADE.Armor = {
    acNaked: 9

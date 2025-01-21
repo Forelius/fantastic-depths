@@ -5,6 +5,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {
+         shortName: new fields.StringField({ required: false, initial: "" }),
          // Fields from the "base" template
          tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
          description: new fields.StringField({ required: false, initial: "" }),
