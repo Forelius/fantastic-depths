@@ -276,7 +276,7 @@ FADE.CombatManeuvers = {
    withdrawal: { phase: "melee", canMove: true },
    retreat: { phase: "melee", canMove: true },
    lance: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf"] },
-   multiAttack: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf"] },
+   multiAttack: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling"] },
    setSpear: { phase: "melee", canMove: false, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"] },
    smash: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    parry: { phase: "melee", canMove: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },

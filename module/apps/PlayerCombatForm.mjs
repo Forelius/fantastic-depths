@@ -27,13 +27,6 @@ export class PlayerCombatForm extends FormApplication {
    getData() {
       const context = super.getData();
       context.ownedCombatants = game.combat.ownedCombatants;
-      context.availableActions = Object.entries(CONFIG.FADE.CombatManeuvers)
-         .map(([key, value]) => ({
-            text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
-            value: key,
-         }))
-         .sort((a, b) => a.text.localeCompare(b.text))
-         .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {}); // Sort by the `text` property
       return context;
    }
 
@@ -70,6 +63,7 @@ export class PlayerCombatForm extends FormApplication {
    close(options) {
       Hooks.off('updateActor', this._updateTrackedActor);
       Hooks.off("updateCombatant", this._updateCombatant);
+      delete window.fade.combatForm;
       return super.close(options);
    }
 
@@ -84,6 +78,16 @@ export class PlayerCombatForm extends FormApplication {
    _updateCombatant = (combatant, updateData, options, userId) => {
       if (this.trackedActorIds.includes(combatant.actor.id)) {
          console.debug(`Combatant ${combatant.name} changed.`, updateData);
+      }
+   }
+
+   static toggleCombatForm() {
+      window.fade = window.fade || {};
+      if (window.fade.combatForm) {
+         window.fade.combatForm.close();
+      } else {
+         window.fade.combatForm = new PlayerCombatForm();
+         window.fade.combatForm.render(true);
       }
    }
 }

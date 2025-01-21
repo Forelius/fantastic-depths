@@ -104,7 +104,14 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             }
          ),
 
-         // Add other optional fields as needed, ensuring they are marked as required: false and nullable: true
+         //classAbilities: new fields.ArrayField(
+         //   new fields.SchemaField({
+         //      name: new fields.StringField({ required: true, initial: '' }),
+         //      level: new fields.NumberField({ required: true }),
+         //      combatManeuver: new fields.StringField({ required: true, initial: 'Nothing' }),
+         //   }), {
+         //   required: false,
+         //})
       };
    }
 

@@ -19,6 +19,7 @@ export class WeaponItemDataModel extends fadeItemDataModel {
          breath: new fields.StringField({ nullable: true, initial: null }),
          canMelee: new fields.BooleanField({ required: false, initial: true }),
          canRanged: new fields.BooleanField({ required: false, initial: false }),
+         canSet: new fields.BooleanField({ required: false, initial: false }),
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
          saveDmgFormula: new fields.StringField({ nullable: true, initial: null }),
          mastery: new fields.StringField({ required: false, initial: "" }),

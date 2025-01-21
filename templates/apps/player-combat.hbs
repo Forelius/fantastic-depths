@@ -34,11 +34,11 @@
             </td>
             <td>
                <div>
-                  <select class="declared-action-select" 
-                          data-combatant-id="{{combatant.id}}" 
+                  <select class="declared-action-select"
+                          data-combatant-id="{{combatant.id}}"
                           data-actor-id="{{combatant.actor.id}}"
                           {{#unless combatant.canChangeAction}} disabled{{/unless}}>
-                     {{selectOptions @root.availableActions selected=combatant.declaredAction}}
+                     {{selectOptions combatant.availableActions selected=combatant.declaredAction}}
                   </select>
                </div>
                <div class="action-description">

@@ -92,6 +92,12 @@
                </select>
                <label for="system.category">{{localize 'FADE.category'}}</label>
             </li>
+            <li>
+               <select name="system.combatManeuver">
+                  {{selectOptions combatManeuvers selected=system.combatManeuver}}
+               </select>
+               <label for="system.combatManeuver">{{localize 'FADE.combat.maneuvers.label'}}</label>
+            </li>
          </ul>
       </section>
    </div>
