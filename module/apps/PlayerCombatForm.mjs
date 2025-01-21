@@ -89,12 +89,15 @@ export class PlayerCombatForm extends FormApplication {
    }
 
    static toggleCombatForm() {
-      window.fade = window.fade || {};
-      if (window.fade.combatForm) {
-         window.fade.combatForm.close();
-      } else {
-         window.fade.combatForm = new PlayerCombatForm();
-         window.fade.combatForm.render(true);
+      const declaredActions = game.settings.get(game.system.id, "declaredActions");
+      if (declaredActions === true) {
+         window.fade = window.fade || {};
+         if (window.fade.combatForm) {
+            window.fade.combatForm.close();
+         } else {
+            window.fade.combatForm = new PlayerCombatForm();
+            window.fade.combatForm.render(true);
+         }
       }
    }
 }
