@@ -53,6 +53,13 @@ export class PlayerCombatForm extends FormApplication {
 
       Hooks.on('updateActor', this._updateTrackedActor);
       Hooks.on("updateCombatant", this._updateCombatant);
+      Hooks.on("updateItem", async (item, updateData, options, userId) => {
+         const actor = item.parent; // The actor the item belongs to
+         if (this.trackedActorIds.includes(actor.id)) {
+            console.debug(`Actor ${actor.name} changed.`, updateData);
+            this.render();  // Re-render to reflect updated actor data
+         }
+      });
    }
 
    toggleInputs(shouldDisable) {

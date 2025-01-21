@@ -478,7 +478,7 @@ export class fadeActor extends Actor {
       // Melee weapon actions
       if (this.items.filter(item => item.type === "weapon"
          && item.system.canMelee === true && item.system.equipped === true
-         && (item.system.quantity === null || item.system.quantity > 0)?.length > 0)) {
+         && (item.system.quantity === null || item.system.quantity > 0))?.length > 0) {
          result.push("attack");
          result.push("withdrawal");
          hasEquippedWeapon = true;
@@ -492,6 +492,14 @@ export class fadeActor extends Actor {
       if (this.items.filter(item => item.type === "spell"
          && (item.system.memorized /* support infinite?*/))?.length > 0) {
          result.push("spell");
+      }
+      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.combatManeuver !== null)
+         .map((item) => item.system.combatManeuver);
+      for (const ability of specialAbilities) {
+         const config = CONFIG.FADE.CombatManeuvers[ability];
+         if (config === undefined || config.needWeapon === false || (config.needWeapon === true && hasEquippedWeapon === true)) {
+            result.push(ability);
+         }
       }
       return result;
    }

@@ -300,7 +300,7 @@ Hooks.on("updateItem",async (item, updateData, options, userId) => {
    const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
    if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
       // Log the item update and notify the GM
-      console.log(`Item updated: ${item.name} by ${game.users.get(userId).name}`);     
+      console.log(`Item updated: ${item.name} by ${user.name}`, updateData?.system);     
    }
 });
 
