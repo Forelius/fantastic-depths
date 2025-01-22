@@ -177,32 +177,8 @@ export class CharacterActor extends fadeActor {
          // Saving throws
          const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
          if (savesData) {
-            // TODO: Remove later
-            //super._prepareSavingThrows(savesData);
-            const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
-            const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
-            const saveEntries = Object.entries(savesData);
-            const addItems = [];
-            for (const saveData of saveEntries) {
-               if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
-                  const itemData = worldSavingThrows.find(item => item.system.customSaveCode === saveData[0]);
-                  console.debug(`Added saving throw item ${itemData.name} to ${this.name}`);
-                  addItems.push(itemData.toObject());
-               }
-            }
-            if (addItems.length > 0) {
-               await this.createEmbeddedDocuments("Item", addItems);
-            }
-            // Iterate over saving throw items and set each one.
-            for (const savingThrow of savingThrows) {
-               const saveTarget = savesData[savingThrow.system.customSaveCode];
-               if (saveTarget) {
-                  await savingThrow.update({ "system.target": saveTarget });
-               }
-            }
+            await this._setupSavingThrows(savesData);
          }
-         // Apply modifier for wisdom, if needed
-         //this.savingThrows.spell.value -= this.abilities.wis.mod;
       }
 
       return classData; // Return null if no match found

@@ -316,14 +316,14 @@ export class fadeActor extends Actor {
     */
    async rollSavingThrow(type) {
       const systemData = this.system;
-      const savingThrow = systemData.savingThrows[type];
+      const savingThrow = this.#getSavingThrow(type);
       const rollData = this.getRollData();
       let dataset = {};
       dataset.dialog = "save";
-      dataset.pass = "gte";
-      dataset.target = savingThrow.value;
-      dataset.rollmode = game.settings.get("core", "rollMode");
-      dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
+      dataset.pass = savingThrow.system.operator;
+      dataset.target = savingThrow.system.target;
+      dataset.rollmode = savingThrow.system.rollMode;
+      dataset.label = savingThrow.name;
       if (this.type === 'character') {
          dataset.type = type;
       }
@@ -331,12 +331,14 @@ export class fadeActor extends Actor {
       let dialogResp = await DialogFactory(dataset, this);
 
       if (dialogResp?.resp?.rolling === true) {
-         rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
-         const wisMod = this.system.abilities.wis.mod;
-         if (dialogResp.resp.vsmagic === true && wisMod !== 0) {
-            rollData.formula = `${rollData.formula}${wisMod > 0 ? '+' : ''}${wisMod}`;
+         let rollMod = dialogResp.resp?.mod || 0;
+         if (dialogResp.resp.vsmagic === true) {
+            rollMod += this.system.abilities.wis.mod;
          }
-         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+         rollMod += this.system.mod.save[type] || 0;
+         rollMod += this.system.mod.save.all || 0;
+         rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
+         const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
@@ -639,6 +641,34 @@ export class fadeActor extends Actor {
 
       this.system.ac = ac;
       this.system.acDigest = acDigest;
+   }
+
+   async _setupSavingThrows(savesData) {
+      const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      const saveEntries = Object.entries(savesData);
+      const addItems = [];
+      for (const saveData of saveEntries) {
+         if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
+            const itemData = worldSavingThrows.find(item => item.system.customSaveCode === saveData[0]);
+            addItems.push(itemData.toObject());
+         }
+      }
+      if (addItems.length > 0) {
+         console.debug(`Added saving throw items to ${this.name}`);
+         await this.createEmbeddedDocuments("Item", addItems);
+      }
+      // Iterate over saving throw items and set each one.
+      for (const savingThrow of savingThrows) {
+         const saveTarget = savesData[savingThrow.system.customSaveCode];
+         if (saveTarget) {
+            savingThrow.update({ "system.target": saveTarget });
+         }
+      }
+   }
+
+   #getSavingThrow(type) {
+      return this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
    }
 
    #getMasteryAttackRollMods(weaponData, options, digest, attackType) {

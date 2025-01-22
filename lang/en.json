@@ -113,27 +113,7 @@
             },
             "long": "Saving Throws",
             "short": "Save",
-            "singular": "Saving Throw",
-            "death": {
-               "long": "Death Ray or Poison",
-               "abbr": "Death"
-            },
-            "wand": {
-               "long": "Magic Wand",
-               "abbr": "Wand"
-            },
-            "paralysis": {
-               "long": "Turn to Stone or Paralysis",
-               "abbr": "Stone"
-            },
-            "breath": {
-               "long": "Dragon Breath",
-               "abbr": "Breath"
-            },
-            "spell": {
-               "long": "Spell or Magic Staff",
-               "abbr": "Spell"
-            }
+            "singular": "Saving Throw"            
          },
          "Abilities": {
             "score": "Score",
