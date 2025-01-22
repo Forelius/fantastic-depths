@@ -316,8 +316,8 @@ export class fadeDialog {
       const {
          title = game.i18n.localize('FADE.dialog.confirm'),
          content = game.i18n.localize('FADE.dialog.confirm'),
-         yesLabel = game.i18n.localize('Yes'),
-         noLabel = game.i18n.localize('No'),
+         yesLabel = game.i18n.localize('FADE.dialog.yes'),
+         noLabel = game.i18n.localize('FADE.dialog.no'),
          defaultChoice = "no" } = dataset;
       const dialogResp = {};
 

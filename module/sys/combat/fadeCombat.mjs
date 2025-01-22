@@ -1,5 +1,5 @@
 // fadeCombat.mjs
-// Import any required modules (if necessary)
+import { DialogFactory } from '../../dialog/DialogFactory.mjs';
 import { SocketManager } from '../SocketManager.mjs'
 
 // Custom Combat class
@@ -44,8 +44,8 @@ export class fadeCombat extends Combat {
    }
 
    /**
-    * @override
    * Roll initiative for one or multiple Combatants within the Combat document
+    * @override
    * @param {string|string[]} ids     A Combatant id or Array of ids for which to roll
    * @param {object} [options={}]     Additional options which modify how initiative rolls are created or presented.
    * @param {string|null} [options.formula]         A non-default initiative formula to roll. Otherwise, the system
@@ -57,18 +57,29 @@ export class fadeCombat extends Combat {
     */
    async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
       if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+         // Get all combatants and group them by disposition
+         let groups = messageOptions?.group ? [messageOptions?.group] : [];
+         if (groups.length === 0 && ids.length > 0) {
+            const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
+            groups = [...new Set(rollingCombatants.map(combatant => combatant.group))];
+         }
          if (game.user.isGM) {
-            // Get all combatants and group them by disposition
-            let groups = messageOptions?.group ? [messageOptions?.group] : [];
-            if (groups.length === 0 && ids.length > 0) {
-               const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
-               groups = [...new Set(rollingCombatants.map(combatant => this.#getCombatantDisposition(combatant)))];
-            }
             for (const group of groups) {
                await this.#doInitiativeRoll(this.combatants, group);  // Use the custom initiative function
             }
          } else {
-            SocketManager.sendToGM("rollGroupInitiative", { combatid: this.id });
+            let bRolling = true;
+            // If friendly rolling, declared actions enabled...
+            if (groups.includes('friendly') && this.declaredActions === true) {
+               // combatant declared action is 'nothing'...
+               const friendly = this.#getCombatantsForDisposition(CONST.TOKEN_DISPOSITIONS.FRIENDLY);
+               if (this.#hasDeclaredAction(friendly, 'nothing') === true) {
+                  bRolling = await this.#promptUserRoll();
+               }
+            }
+            if (bRolling === true) {
+               SocketManager.sendToGM("rollGroupInitiative", { combatid: this.id });
+            }
          }
       } else {
          const combatants = this.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
@@ -330,12 +341,7 @@ export class fadeCombat extends Combat {
             content: game.i18n.localize("FADE.Chat.combatTracker.ended"),
          });
          for (let combatant of combat.combatants) {
-            // Reset initiative to null
-            combatant.actor.update({
-               "system.combat.attacksAgainst": 0,
-               "system.combat.attacks": 0,
-               "system.combat.declaredAction": null
-            });
+            combatant.exitCombat();
          }
       }
    }
@@ -351,6 +357,16 @@ export class fadeCombat extends Combat {
          this.tryClosePlayerCombatForm([userId]);
          combatant.actor.update({ 'system.combat.declaredAction': null });
       }
+   }
+
+   /**
+    * Determines if any of the specified combatants have their declared action set to 'nothing'
+    * @param {any} combatants an array of combatants.
+    * @param {*} action A string representing a combat maneuver, aka declared action.
+    * @returns true if nothing is declared, otherwise false.
+    */
+   #hasDeclaredAction(combatants, action) {
+      return combatants.filter(combatant => combatant.actor.system.combat.declaredAction === action)?.length > 0;
    }
 
    #tryShowPlayerCombatForm() {
@@ -372,18 +388,7 @@ export class fadeCombat extends Combat {
    #resetCombatants() {
       this.#tryShowPlayerCombatForm();
       for (let combatant of this.combatants) {
-         // Reset initiative to null
-         if (this.#getCombatantDisposition(combatant) === 'hostile') {
-            combatant.actor.update({
-               "system.combat.attacksAgainst": 0,
-               'system.combat.declaredAction': "attack"
-            });
-         } else {
-            combatant.actor.update({
-               "system.combat.attacksAgainst": 0,
-               'system.combat.declaredAction': "nothing"
-            });
-         }
+         combatant.roundReset();
       }
    }
 
@@ -510,6 +515,10 @@ export class fadeCombat extends Combat {
       }
    }
 
+   #getCombatantsForDisposition(disposition) {
+      return this.combatants.filter(combatant => combatant.token.disposition === disposition);
+   }
+
    /**
     * Creates groups based on token disposition.
     * @param {any} combatants
@@ -541,17 +550,14 @@ export class fadeCombat extends Combat {
       return groups;
    }
 
-   #getCombatantDisposition(combatant) {
-      const disposition = combatant.token.disposition;
-      let result = null;
-      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-         result = "friendly";
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-         result = "neutral";
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-         result = "hostile";
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-         result = "secret";
+   async #promptUserRoll() {
+      let result = false;
+      const dialogResp = await DialogFactory({
+         dialog: "yesno",
+         content: game.i18n.localize('FADE.dialog.confirmInitiativeRoll'),
+      });
+      if (dialogResp?.resp?.rolling === true && dialogResp?.resp?.result === true) {
+         result = true;
       }
       return result;
    }
