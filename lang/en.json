@@ -629,7 +629,7 @@
          "confirm": "Are you sure?",
          "yes": "Yes, go ahead",
          "no": "No, cancel",
-         "confirmInitiativeRoll": "One or more combatants have <strong>Nothing</strong> as their declared action. Rolling the group's initiative will freeze declared actions. Are you sure you want to roll the group's initiative?",
+         "confirmInitiativeRoll": "One or more combatants have <strong>Nothing</strong> as their declared action. Rolling the group's initiative will freeze the declared actions. Are you sure you want to proceed with rolling the group's initiative?",
          "applyToPrompt": "Apply to targeted or selected?",
          "targeted": "Targeted",
          "selected": "Selected",
