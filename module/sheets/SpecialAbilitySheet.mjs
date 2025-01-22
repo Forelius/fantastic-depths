@@ -67,9 +67,6 @@ export class SpecialAbilitySheet extends ItemSheet {
       saves.push(...saveItems.map((save) => {
          return { value: save.system.customSaveCode, text: save.system.shortName }
       }));
-      //saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
-      //   return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
-      //}).sort((a, b) => a.text.localeCompare(b.text)));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {

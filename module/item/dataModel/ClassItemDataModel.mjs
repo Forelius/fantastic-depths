@@ -15,11 +15,13 @@ class ClassLevelData {
 export class SavingThrowsData {
    constructor() {
       this.level = 1;
-      this.death = 15;
-      this.wand = 15;
-      this.paralysis = 15;
-      this.breath = 15;
-      this.spell = 15;
+      // Create the saving throw member variables dynamically from the world's save items.
+      const saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
+         .map(item => item.system.shortName);
+      for (let save of saves) {
+         this[save] = 15;
+      }
+      console.debug(this);
    }
 }
 
@@ -78,17 +80,10 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          ),
 
          saves: new fields.ArrayField(
-            new fields.SchemaField({
-               level: new fields.NumberField({ required: true }),
-               death: new fields.NumberField({ required: true }),
-               wand: new fields.NumberField({ required: true }),
-               paralysis: new fields.NumberField({ required: true }),
-               breath: new fields.NumberField({ required: true }),
-               spell: new fields.NumberField({ required: true }),
-            }),
+            new fields.ObjectField({}),           
             {
                required: true,
-               initial: [new SavingThrowsData()]
+               initial: []
             }
          ),
 

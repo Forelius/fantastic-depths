@@ -12,11 +12,6 @@ export class ClassItem extends fadeItem {
       // Define the new save data
       const newSaveData = new SavingThrowsData();
       newSaveData.level = maxLevel + 1; // Increment the level by 1
-      newSaveData.death = 14; // Default save values (customize as needed)
-      newSaveData.wand = 12;
-      newSaveData.paralysis = 13;
-      newSaveData.breath = 15;
-      newSaveData.spell = 16;
 
       // Update the item's saves data
       saves.push(newSaveData);

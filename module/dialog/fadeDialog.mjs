@@ -363,7 +363,7 @@ export class fadeDialog {
          }
       };
 
-      if (type && type !== "spell" && type !== "breath") {
+      //if (type && type !== "spell" && type !== "breath") {
          buttons.magic = {
             label: game.i18n.localize('FADE.vsMagic'),
             callback: () => ({
@@ -372,7 +372,7 @@ export class fadeDialog {
                mod: parseInt(document.getElementById('mod').value, 10) || 0,
             })
          };
-      }
+      //}
 
       dialogResp.resp = await Dialog.wait({
          title: title,

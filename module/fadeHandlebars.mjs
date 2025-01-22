@@ -7,6 +7,7 @@ export class fadeHandlebars {
    }
 
    static registerHelpers() {
+      Handlebars.registerHelper("")
       Handlebars.registerHelper("infinity", (value) => value ?? "∞");
       Handlebars.registerHelper('uppercase', (str) => str.toUpperCase());
       Handlebars.registerHelper('lowercase', (str) => str.toLowerCase());
@@ -49,5 +50,42 @@ export class fadeHandlebars {
       Handlebars.registerHelper("multiply", (a, b) => Number(a) * Number(b));
       // Round down
       Handlebars.registerHelper("divide", (a, b) => Math.floor(Number(a) / Number(b)));
+
+      Handlebars.registerHelper('contextMergeEach', function (array, options) {
+         // If the first argument isn’t a proper array, do nothing or handle differently.
+         if (!Array.isArray(array)) return '';
+
+         // "parentContext" is whatever 'this' was **outside** the helper call.
+         const parentContext = this;
+         // We'll accumulate the rendered output in `result`.
+         let result = '';
+
+         // Loop over the array, just like #each.
+         for (let i = 0; i < array.length; i++) {
+            const item = array[i];
+
+            // Create a new "data frame" so we mimic #each’s index, first, last, etc.
+            // (options.data can contain additional metadata that Foundry or Handlebars might track.)
+            const data = Handlebars.createFrame(options.data || {});
+            data.index = i;
+            data.first = i === 0;
+            data.last = i === array.length - 1;
+
+            // Merge contexts:
+            //  - The parent context (so you can still reference `{{this.something}}` if desired)
+            //  - `options.hash` (the extra variables you passed in the template)
+            //  - The current item of the array
+            // We store the current item under `item`, so you can do `{{item.whatever}}` in the template.
+            const mergedContext = Object.assign({}, parentContext, options.hash, {
+               item
+            });
+
+            // Render the block (`options.fn`) with that merged context.
+            // Provide `data` so you can do {{@index}} inside the block if you want.
+            result += options.fn(mergedContext, { data });
+         }
+
+         return result;
+      });
    }
 }

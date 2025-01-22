@@ -3,11 +3,9 @@
       <!-- Header Row -->
       <li class='item flexrow items-header collapsible-header'>
          <div>{{localize 'FADE.Actor.Level'}}</div>
-         <div>{{localize 'FADE.Actor.Saves.death.abbr'}}</div>
-         <div>{{localize 'FADE.Actor.Saves.wand.abbr'}}</div>
-         <div>{{localize 'FADE.Actor.Saves.paralysis.abbr'}}</div>
-         <div>{{localize 'FADE.Actor.Saves.breath.abbr'}}</div>
-         <div>{{localize 'FADE.Actor.Saves.spell.abbr'}}</div>
+         {{#each saves as |save|}}
+         <div>{{save.system.shortName}}</div>
+         {{/each}}
          <div class='item-controls'>
             <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave'>
                <i class='fas fa-plus'></i>
@@ -19,21 +17,11 @@
       {{#each system.saves as |saveData index|}}
       <li class='item flexrow' data-item-id='{{saveData.level}}'>
          <div class="align-left"><input type="number" name="system.saves.{{index}}.level" value="{{saveData.level}}" data-dtype="Number" /></div>
+         {{#contextMergeEach @root.saves outerIndex=index outerSaveData=saveData}}
          <div class="align-left">
-            <input type="number" name="system.saves.{{index}}.death" value="{{saveData.death}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{outerIndex}}.{{item.system.customSaveCode}}" value="{{lookup outerSaveData item.system.customSaveCode}}" data-dtype="Number" />
          </div>
-         <div class="align-left">
-            <input type="number" name="system.saves.{{index}}.wand" value="{{saveData.wand}}" data-dtype="Number" />
-         </div>
-         <div class="align-left">
-            <input type="number" name="system.saves.{{index}}.paralysis" value="{{saveData.paralysis}}" data-dtype="Number" />
-         </div>
-         <div class="align-left">
-            <input type="number" name="system.saves.{{index}}.breath" value="{{saveData.breath}}" data-dtype="Number" />
-         </div>
-         <div class="align-left">
-            <input type="number" name="system.saves.{{index}}.spell" value="{{saveData.spell}}" data-dtype="Number" />
-         </div>
+         {{/contextMergeEach}}
          <div class='item-controls'>
             <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave' data-index='{{index}}'>
                <i class='fas fa-trash'></i>
