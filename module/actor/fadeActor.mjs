@@ -315,7 +315,6 @@ export class fadeActor extends Actor {
     * @param {any} type A string key of the saving throw type.
     */
    async rollSavingThrow(type) {
-      const systemData = this.system;
       const savingThrow = this.#getSavingThrow(type);
       const rollData = this.getRollData();
       let dataset = {};
@@ -343,7 +342,7 @@ export class fadeActor extends Actor {
          const chatData = {
             dialogResp: dialogResp,
             context: this,
-            caller: this,
+            caller: savingThrow,
             mdata: dataset,
             roll: rolled,
          };
