@@ -189,7 +189,6 @@ function registerSheets() {
    });
 }
 
-
 async function handleAsyncInit() {
    // Register System Settings
    const settings = new fadeSettings();

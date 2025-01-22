@@ -151,29 +151,7 @@
          </div>
          <div class="flexrow">
             <!-- SAVING THROWS -->
-            <div class="bordered">
-               <!-- Saving Throws -->
-               <div class="saving-throws">
-                  <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
-                  {{#each system.savingThrows as |savingThrow key|}}
-                  <div class="flexrow small-row flex-group-center">
-                     <input type="text" name="system.savingThrows.{{key}}.value" value="{{savingThrow.value}}" data-dtype="Number" />
-                     <label for="system.savingThrows.{{key}}.value" class="rollable{{#if @root.saveAbbr}} abbr{{else}} long{{/if}}"
-                            data-test="generic"
-                            data-formula="d20"
-                            data-pass="gte"
-                            data-target="{{savingThrow.value}}"
-                            data-label="{{localize (concat 'FADE.Actor.Saves.' key '.long')}}">
-                        {{#if @root.saveAbbr}}
-                        {{localize (concat 'FADE.Actor.Saves.' key '.abbr')}}
-                        {{else}}
-                        {{localize (concat 'FADE.Actor.Saves.' key '.long')}}
-                        {{/if}}
-                     </label>
-                  </div>
-                  {{/each}}
-               </div>
-            </div>
+            {{> "systems/fantastic-depths/templates/item/parts/item-saves.hbs"}}
             <div>
                <!--HIT POINTS & ARMOR CLASS-->
                {{> "systems/fantastic-depths/templates/actor/parts/hp-ac.hbs"}}

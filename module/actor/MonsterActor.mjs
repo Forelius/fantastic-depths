@@ -42,12 +42,13 @@ export class MonsterActor extends fadeActor {
       this.system.wrestling = wrestling;
    }
 
-   _prepareSavingThrows() {
+   async _prepareSavingThrows() {
       const saveAs = this.system.details.saveAs ?? null;
       if (saveAs) {
          const savesData = ClassItem.getClassSavesByCode(saveAs, this);
          if (savesData) {
-            this.system._prepareSavingThrows(savesData);
+            await this._setupSavingThrows(savesData);
+            //this.system._prepareSavingThrows(savesData);
          }
       }
    }

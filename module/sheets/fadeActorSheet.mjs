@@ -217,6 +217,7 @@ export class fadeActorSheet extends ActorSheet {
       const specialAbilities = [];
       const exploration = [];
       const classAbilities = [];
+      const savingThrows = [];
 
       for (let i = 0; i < 10; i++) {
          spellSlots.push({ spells: [] })
@@ -271,6 +272,8 @@ export class fadeActorSheet extends ActorSheet {
                exploration.push(item);
             } else if (item.system.category === "class") {
                classAbilities.push(item);
+            } else if (item.system.category === "save") {
+               savingThrows.push(item);
             } else {
                specialAbilities.push(item);
             }
@@ -304,6 +307,7 @@ export class fadeActorSheet extends ActorSheet {
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
+      context.savingThrows = savingThrows;
 
       this._calcCategoryEnc(context);
    }
@@ -408,6 +412,11 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   /**
+    * Retrieves an item owned by the actor based on parent element's data-item-id.
+    * @param {any} event
+    * @returns 
+    */
    _getItemFromActor(event) {
       const li = $(event.currentTarget).parents('.item');
       return this.actor.items.get(li.data('itemId'));
@@ -531,6 +540,11 @@ export class fadeActorSheet extends ActorSheet {
       return false;
    }
 
+   /**
+    * Event handler for editable item fields.
+    * @param {any} event
+    * @returns
+    */
    async _onDataChange(event) {
       let result = null;
       event.preventDefault();
@@ -539,10 +553,12 @@ export class fadeActorSheet extends ActorSheet {
          result = item.update({ "system.quantity": parseInt(event.target.value) });
       } else if (event.target.dataset.field === "cast") {
          result = item.update({ "system.cast": parseInt(event.target.value) });
-      }
-      else if (event.target.dataset.field === "memorize") {
+      }else if (event.target.dataset.field === "memorize") {
          result = item.update({ "system.memorized": parseInt(event.target.value) });
+      } else if (event.target.dataset.field === "target") {
+         result = item.update({ "system.target": parseInt(event.target.value) });
       }
+
       return result;
    }
 

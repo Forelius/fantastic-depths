@@ -113,27 +113,7 @@
             },
             "long": "Saving Throws",
             "short": "Save",
-            "singular": "Saving Throw",
-            "death": {
-               "long": "Death Ray or Poison",
-               "abbr": "Death"
-            },
-            "wand": {
-               "long": "Magic Wand",
-               "abbr": "Wand"
-            },
-            "paralysis": {
-               "long": "Turn to Stone or Paralysis",
-               "abbr": "Stone"
-            },
-            "breath": {
-               "long": "Dragon Breath",
-               "abbr": "Breath"
-            },
-            "spell": {
-               "long": "Spell or Magic Staff",
-               "abbr": "Spell"
-            }
+            "singular": "Saving Throw"            
          },
          "Abilities": {
             "score": "Score",
@@ -482,9 +462,12 @@
          "autoSuccessHint": "Automatically succeeds on a natural/unmodified roll of this value.",
          "autoFail": "Auto-Fail",
          "autoFailHint": "Automatically fails on a natural/unmodified roll of this value.",
+         "saveType": "Save Type",
+         "saveTypeHint": "Set this if this special ability is a saving throw.",
          "categories": {
             "explore": "Exploration",
-            "class": "Class Abilities"
+            "class": "Class Ability",
+            "save": "Saving Throw"
          }
       },
       "class": {
@@ -812,7 +795,8 @@
       "GMNotes": "GM Notes",
       "category": "Category",
       "name": "Name",
-      "bonus": "Bonus"
+      "bonus": "Bonus",
+      "shortName": "Short Name"
    },
 
    "TYPES": {

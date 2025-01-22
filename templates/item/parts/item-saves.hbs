@@ -1,21 +1,19 @@
 <div class="bordered" style="height:97%;">
-   <h4>{{localize 'FADE.Actor.explore.long'}}</h4>
-   <ol name="explorationSpecialAbilityItems" class='items-list'>
-      <!--<li class='item flexrow items-header collapsible-header'>
-         <div class='item-name'>{{localize 'FADE.Actor.explore.long'}}</div>
-      </li>-->
-      {{#each exploration as |item id|}}
+   <h4>{{localize 'FADE.Actor.Saves.long'}}</h4>
+   <ol name="savesSpecialAbilityItems" class='items-list'>
+      {{#each savingThrows as |item id|}}
       <li class='item flexrow collapsible-content bottom-border' data-item-id='{{item._id}}'>
          <div class='item-name'>
             <div class="item-image rollable"
-                 {{#if item.roll}}
-                 data-test="specialAbility"
-                 {{/if}}
-                 data-roll-type='item'
+                 data-test="save"
+                 data-type="{{item.system.customSaveCode}}"
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
                <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
+            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.system.shortName}}</a>
+         </div>
+         <div class="editable">
+            <input style="max-width:40px;" type="text" value="{{item.system.target}}" data-field="target" data-dtype="Number" />
          </div>
          {{#if @root.isGM}}
          <div class='item-controls' style="max-width:32px;">

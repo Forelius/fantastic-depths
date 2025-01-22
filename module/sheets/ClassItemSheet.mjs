@@ -46,7 +46,8 @@ export class ClassItemSheet extends ItemSheet {
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-
+      // Saving throw items
+      context.saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       // Enrich description info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
       context.enrichedDescription = await TextEditor.enrichHTML(
