@@ -113,7 +113,7 @@
             },
             "long": "Saving Throws",
             "short": "Save",
-            "singular": "Saving Throw"            
+            "singular": "Saving Throw"
          },
          "Abilities": {
             "score": "Score",
@@ -563,7 +563,7 @@
       "apps": {
          "playerCombat": {
             "title": "Player Combat",
-            "prompt": "Select combat manuever for this round. Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker."            
+            "prompt": "Select combat manuever for this round. Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker."
          }
       },
       "dialog": {
@@ -787,6 +787,57 @@
                "description": "Unarmed combat includes striking and wrestling. The defender does not have to engage in unarmed combat and may still attack with their melee weapon."
             }
          }
+      },
+      "treasure": {
+         "coins": "Coins <i>({total} gp)</i>",
+         "gems": "Gems <i>({total} gp)</i>",
+         "jewelry": "Jewelry <i>({total} gp)</i>",
+         "special": "Special <i>({total} gp)</i>",
+         "magic": "Items, Potions & Scrolls",
+         "formatValue": "{name} <i>({value} gp)</i>",
+         "cp": {
+            "abbr": "cp",
+            "plural": "copper pieces"
+         },
+         "sp": {
+            "abbr": "sp",
+            "plural": "silver pieces"
+         },
+         "ep": {
+            "abbr": "ep",
+            "plural": "electrum pieces"
+         },
+         "gp": {
+            "abbr": "gp",
+            "plural": "gold pieces"
+         },
+         "pp": {
+            "abbr": "pp",
+            "plural": "platinum pieces"
+         },
+         "agate": "Agate",
+         "quartz": "Quartz",
+         "turquoise": "Turquoise",
+         "crystal": "Crystal",
+         "jasper": "Jasper",
+         "onyx": "Onyx",
+         "amber": "Amber",
+         "amethyst": "Amethyst",
+         "coral": "Coral",
+         "garnet": "Garnet",
+         "jade": "Jade",
+         "aquamarine": "Aquamarine",
+         "pearl": "Pearl",
+         "topaz": "Topaz",
+         "carbuncle": "Carbuncle",
+         "opal": "Opal",
+         "emerald": "Emerald",
+         "ruby": "Ruby",
+         "sapphire": "Sapphire",
+         "diamond": "Diamond",
+         "jacinth": "Jacinth",
+         "starstone": "Starstone",
+         "tristal": "Tristal"
       },
       "Size": "Size",
       "roll": "Roll",

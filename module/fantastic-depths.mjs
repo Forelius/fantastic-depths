@@ -56,6 +56,7 @@ import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
 import { SocketManager } from './sys/SocketManager.mjs'
 import { fadeEffect } from './sys/fadeEffect.mjs'
+import { fadeTreasure } from './utils/fadeTreasure.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -79,7 +80,8 @@ Hooks.once('init', async function () {
       DataMigrator,
       Wrestling,
       Shove,
-      PlayerCombatForm
+      PlayerCombatForm,
+      fadeTreasure
    };
 
    CONFIG.time.roundTime = 10;

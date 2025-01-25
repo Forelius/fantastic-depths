@@ -287,3 +287,63 @@ FADE.ActorSizes = [
    { id: "G", shoveResist: 5, isCombat: false, maxFeet: 25 },  // Huge: 12 to 25 feet
    { id: "I", shoveResist: 6, isCombat: false, maxFeet: Infinity } // Immense: Over 25 feet (no upper limit)
 ];
+FADE.TreasureTypes = {
+   coins: {
+      cp: 0.01,
+      sp: 0.1,
+      ep: 0.5,
+      gp: 1,
+      pp: 5
+   },
+   gems: [
+      { "type": "agate", "value": 10 },
+      { "type": "quartz", "value": 10 },
+      { "type": "turquoise", "value": 10 },
+      { "type": "crystal", "value": 50 },
+      { "type": "jasper", "value": 50 },
+      { "type": "onyx", "value": 50 },
+      { "type": "amber", "value": 100 },
+      { "type": "amethyst", "value": 100 },
+      { "type": "coral", "value": 100 },
+      { "type": "garnet", "value": 100 },
+      { "type": "jade", "value": 100 },
+      { "type": "aquamarine", "value": 500 },
+      { "type": "pearl", "value": 500 },
+      { "type": "topaz", "value": 500 },
+      { "type": "carbuncle", "value": 1000 },
+      { "type": "opal", "value": 1000 },
+      { "type": "emerald", "value": 5000 },
+      { "type": "ruby", "value": 5000 },
+      { "type": "sapphire", "value": 5000 },
+      { "type": "diamond", "value": 10000 },
+      { "type": "jacinth", "value": 10000 },
+      { "type": "starstone", "value": 0 },
+      { "type": "tristal", "value": 0 }
+   ],
+   jewelry: {
+      values: [
+         { "min": 1, "max": 1, "value": 100, "encumbrance": 10 },
+         { "min": 2, "max": 3, "value": 500, "encumbrance": 10 },
+         { "min": 4, "max": 6, "value": 1000, "encumbrance": 10 },
+         { "min": 7, "max": 10, "value": 1500, "encumbrance": 10 },
+         { "min": 11, "max": 16, "value": 2000, "encumbrance": 10 },
+         { "min": 17, "max": 24, "value": 2500, "encumbrance": 10 },
+         { "min": 25, "max": 34, "value": 3000, "encumbrance": 25 },
+         { "min": 35, "max": 45, "value": 4000, "encumbrance": 25 },
+         { "min": 46, "max": 58, "value": 5000, "encumbrance": 25 },
+         { "min": 59, "max": 69, "value": 7500, "encumbrance": 25 },
+         { "min": 70, "max": 78, "value": 10000, "encumbrance": 25 },
+         { "min": 79, "max": 85, "value": 15000, "encumbrance": 25 },
+         { "min": 86, "max": 90, "value": 20000, "encumbrance": 50 },
+         { "min": 91, "max": 94, "value": 25000, "encumbrance": 50 },
+         { "min": 95, "max": 97, "value": 30000, "encumbrance": 50 },
+         { "min": 98, "max": 99, "value": 40000, "encumbrance": 50 },
+         { "min": 100, "max": 100, "value": 50000, "encumbrance": 50 }
+      ],
+      rollTables: [
+         { min: 100, max: 3999, table: "Common Jewelry (<4k)" },
+         { min: 4000, max: 14999, table: "Uncommon Jewelry (<15k)" },
+         { min: 15000, max: 50000, table: "Rare Jewelry (<50k)" }
+      ]
+   }
+};
