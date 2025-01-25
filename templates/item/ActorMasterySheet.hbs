@@ -61,7 +61,7 @@
       </ul>
       <ul class="summary flexrow">
          <li class="flex3">
-            <input type='text' name="system.special" value='{{system.special}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
+            <input type='text' name="system.special" value='{{system.special}}' data-dtype='String' data-tooltip="{{level.special}}" {{#unless isGM}} readonly{{/unless}} />
             <label for="system.special">{{localize 'FADE.Mastery.specialEffects'}}</label>
          </li>
          <li class="flex1">
