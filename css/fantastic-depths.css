@@ -150,6 +150,9 @@ h1, h2, h3, h4 {
   min-height: 230px !important;
 }
 
+.party-tracker {
+  flex: 1 1 auto;
+}
 .party-tracker .party-tracker-list {
   max-height: 100%; /* Ensure the list is scrollable */
   overflow-y: auto;
@@ -1340,3 +1343,5 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

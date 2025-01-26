@@ -50,6 +50,8 @@
 }
 
 .party-tracker {
+   flex: 1 1 auto;
+
    .party-tracker-list {
       max-height: 100%; /* Ensure the list is scrollable */
       overflow-y: auto;
