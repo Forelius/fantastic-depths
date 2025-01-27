@@ -1,7 +1,20 @@
-<section class="flexrow">
+﻿<section class="flexrow">
+   {{#if isGM}}
    <div class="bordered">
       <!--<h4>{{localize 'FADE.Weapon.range.section'}}</h4>-->
       <ul class="summary flexrow">
+         <li style="max-width:90px;">
+            <select name="system.size">
+               {{selectOptions weaponSizes selected=system.size}}
+            </select>
+            <label for="system.size">{{localize 'FADE.Size'}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <select name="system.grip">
+               {{selectOptions weaponGrips selected=system.grip}}
+            </select>
+            <label for="system.grip">{{localize 'FADE.Weapon.grip.label'}}</label>
+         </li>
          <li class="flex2">
             <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' />
             <label for="system.mastery">{{localize 'FADE.Mastery.short'}}</label>
@@ -12,6 +25,32 @@
             </select>
             <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
          </li>
+         <li>
+            <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+            <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
+         </li>
+         <li>
+            <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+            <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">         
+         <li class="flex2">
+            <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String" />
+            <label for="system.breath">{{localize 'FADE.DamageTypes.types.breath'}}</label>
+         </li>
+         <li class="flex1">
+            <select name="system.savingThrow">
+               {{selectOptions savingThrows selected=system.savingThrow}}
+            </select>
+            <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+         </li>
+         <li class="flex2">
+            <input type='text' name="system.saveDmgFormula" value='{{system.saveDmgFormula}}' data-dtype='String' />
+            <label for="system.saveDmgFormula">{{localize 'FADE.Actor.Saves.short'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
          <li class="flex1" style="margin-left:3px;">
             <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
             <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
@@ -30,36 +69,5 @@
          </li>
       </ul>
    </div>
-</section>
-{{#if isGM}}
-<section class="bordered">
-   <ul class="summary flexrow">
-      <li class="flex1">
-         <input type="checkbox" name="system.canMelee" data-dtype="Boolean" {{#if system.canMelee}} checked{{/if}} />
-         <label for="system.canMelee">{{localize 'FADE.AttackTypes.types.melee'}}</label>
-      </li>
-      <li class="flex1">
-         <input type="checkbox" name="system.canRanged" data-dtype="Boolean" {{#if system.canRanged}} checked{{/if}} />
-         <label for="system.canRanged">{{localize 'FADE.AttackTypes.types.missile'}}</label>
-      </li>
-      <li class="flex1">
-         <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} data-tooltip="{{localize "FADE.Armor.natural.desc"}}" />
-         <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
-      </li>
-      <li class="flex2">
-         <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String"/>
-         <label for="system.breath">{{localize 'FADE.DamageTypes.types.breath'}}</label>
-      </li>
-      <li class="flex1">
-         <select name="system.savingThrow">
-            {{selectOptions savingThrows selected=system.savingThrow}}
-         </select>
-         <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
-      </li>
-      <li class="flex2">
-         <input type='text' name="system.saveDmgFormula" value='{{system.saveDmgFormula}}' data-dtype='String' />
-         <label for="system.saveDmgFormula">{{localize 'FADE.Actor.Saves.short'}} {{localize 'FADE.Weapon.damage.short'}}</label>
-      </li>
-   </ul>
 </section>
 {{/if}}

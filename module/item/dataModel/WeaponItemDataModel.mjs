@@ -20,6 +20,7 @@ export class WeaponItemDataModel extends fadeItemDataModel {
          canMelee: new fields.BooleanField({ required: false, initial: true }),
          canRanged: new fields.BooleanField({ required: false, initial: false }),
          canSet: new fields.BooleanField({ required: false, initial: false }),
+         isSlow: new fields.BooleanField({ required: false, initial: false }),
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
          saveDmgFormula: new fields.StringField({ nullable: true, initial: null }),
          mastery: new fields.StringField({ required: false, initial: "" }),
@@ -29,11 +30,8 @@ export class WeaponItemDataModel extends fadeItemDataModel {
             medium: new fields.NumberField({ nullable: true, initial: null }),
             long: new fields.NumberField({ nullable: true, initial: null })
          }),
-         //ammo: new fields.SchemaField({
-         //   type: new fields.StringField({ nullable: true, initial: null }),
-         //   load: new fields.NumberField({ nullable: true, initial: null }),
-         //   maxLoad: new fields.NumberField({ nullable: true, initial: null })
-         //}),
+         size: new fields.StringField({ required: false, nullable:true, initial: null }),
+         grip: new fields.StringField({ required: false, nullable: true, initial: null }),
          natural: new fields.BooleanField({ required: false, initial: false }),
          mod: new fields.SchemaField({
             dmg: new fields.NumberField({ initial: 0 }),
@@ -47,5 +45,13 @@ export class WeaponItemDataModel extends fadeItemDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+   }
+
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      if (this.natural === true) {
+         this.size = null;
+         this.grip = null;
+      }
    }
 }

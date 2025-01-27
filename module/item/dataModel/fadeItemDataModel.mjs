@@ -29,6 +29,9 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          fuelType: new fields.StringField({ required: false, initial: "" }),
          ammoType: new fields.StringField({ required: false, initial: "" }),
          isAmmo: new fields.BooleanField({ required: false, initial: false }),
+         unidentifiedName: new fields.StringField({ required: false, initial: "" }),
+         unidentifiedDesc: new fields.StringField({ required: false, initial: "" }),
+         isIdentified: new fields.BooleanField({ required: false, initial: true }),
       };
    }
 

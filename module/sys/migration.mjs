@@ -76,18 +76,13 @@ export class DataMigrator {
       if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
          await this.fixBreathWeapons();
       }
-      if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.1"))) {
-         await this.updateSizes();
+      if (this.oldVersion.lt(new MySystemVersion("0.7.21"))) {
+         await this.updateSizeForWeapons();
+         await this.updateGripForWeapons();
+         await this.updateCanSetForWeapons();
       }
       // Set the new version after migration is complete
       await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
-   }
-
-   async updateSizes() {
-      console.log("-----------------------------------------------");
-      console.log("Updating Actor Sizes");
-      console.log("-----------------------------------------------");
-
    }
 
    async fixBreathWeapons() {
@@ -203,5 +198,164 @@ export class DataMigrator {
 
       // Process cloned world items
       await processItems(clonedWorldItems, "World Items");
+   }
+
+   // Function to update size based on tags
+   async updateSizeForWeapons() {
+      // Map tags to size values
+      const sizeMapping = {
+         small: 'S',
+         medium: 'M',
+         large: 'L',
+      };
+
+      // Helper function to update items
+      const processItems = async (items, actor = null) => {
+         for (const item of items) {
+            if (item.type === 'weapon') {
+               const tags = item.system.tags || [];
+
+               // Handle natural property
+               if (item.system.natural === true) {
+                  if (item.system.size !== null) {
+                     console.log(`Setting size to null for ${actor ? `actor` : `world`} item: ${item.name}`);
+                     await item.update({ 'system.size': null });
+                  }
+                  continue; // Skip further processing for natural items
+               }
+
+               // Skip if system.size already has a non-null value
+               if (item.system.size !== null) {
+                  console.log(`Skipping update for ${actor ? `actor` : `world`} item: ${item.name} as size is already set.`);
+                  continue;
+               }
+
+               // Determine size based on tags or default to 'M'
+               let newSize = sizeMapping.medium; // Default size
+               for (const tag of tags) {
+                  if (sizeMapping[tag]) {
+                     newSize = sizeMapping[tag];
+                     break;
+                  }
+               }
+
+               // Update size if needed
+               if (item.system.size !== newSize) {
+                  console.log(`Updating ${actor ? `actor` : `world`} item: ${item.name} - Size: ${item.system.size} -> ${newSize}`);
+                  await item.update({ 'system.size': newSize });
+               }
+
+               // Remove size-related tags
+               const updatedTags = tags.filter(tag => !Object.keys(sizeMapping).includes(tag));
+               if (tags.length !== updatedTags.length) {
+                  await item.update({ 'system.tags': updatedTags });
+                  console.log(`Removed size tags from ${actor ? `actor` : `world`} item: ${item.name}`);
+               }
+            }
+         }
+      };
+
+      // Process world items
+      await processItems(game.items);
+
+      // Process actor items
+      for (const actor of game.actors) {
+         await processItems(actor.items, actor);
+      }
+
+      console.log("Size update process completed.");
+   }
+
+   async updateGripForWeapons() {
+      console.log("Starting grip update for all items...");
+
+      // Define mapping and tags to remove
+      const gripTags = ['1-handed', '2-handed', 'two-handed'];
+      const getGrip = tags => tags.includes('2-handed') || tags.includes('two-handed') ? '2H' : '1H';
+
+      // Helper function to process items
+      const processItems = async (items, actor = null) => {
+         for (const item of items) {
+            if (item.type === 'weapon') {
+               // Handle natural property
+               if (item.system.natural === true) {
+                  if (item.system.grip !== null) {
+                     console.log(`Setting grip to null for ${actor ? `actor` : `world`} item: ${item.name}`);
+                     await item.update({ 'system.grip': null });
+                  }
+                  continue; // Skip further processing for natural items
+               }
+
+               // Skip if system.grip already has a non-null value
+               if (item.system.grip !== null) {
+                  console.log(`Skipping update for ${actor ? `actor` : `world`} item: ${item.name} as grip is already set.`);
+                  continue;
+               }
+
+               const tags = item.system.tags || [];
+               const newGrip = getGrip(tags);
+
+               // Update grip if needed
+               if (item.system.grip !== newGrip) {
+                  console.log(`Updating ${actor ? `actor` : `world`} item: ${item.name} - Grip: ${item.system.grip} -> ${newGrip}`);
+                  await item.update({ 'system.grip': newGrip });
+               }
+
+               // Remove grip-related tags
+               const updatedTags = tags.filter(tag => !gripTags.includes(tag));
+               if (tags.length !== updatedTags.length) {
+                  await item.update({ 'system.tags': updatedTags });
+                  console.log(`Removed grip tags from ${actor ? `actor` : `world`} item: ${item.name}`);
+               }
+            }
+         }
+      };
+
+      // Process world items
+      await processItems(game.items);
+
+      // Process actor items
+      for (const actor of game.actors) {
+         await processItems(actor.items, actor);
+      }
+
+      console.log("Grip update process completed.");
+   }
+
+   async updateCanSetForWeapons() {
+      console.log("Starting canSet update for all items...");
+
+      // Helper function to process items
+      const processItems = async (items, actor = null) => {
+         for (const item of items) {
+            if (item.type === 'weapon') {
+               const tags = item.system.tags || [];
+               const hasSetTag = tags.includes('set');
+
+               // Update canSet property
+               if (item.system.canSet !== hasSetTag) {
+                  console.log(`Updating ${actor ? `actor` : `world`} item: ${item.name} - canSet: ${item.system.canSet} -> ${hasSetTag}`);
+                  await item.update({ 'system.canSet': hasSetTag });
+               }
+
+               // Remove the 'set' tag if present
+               if (hasSetTag) {
+                  const updatedTags = tags.filter(tag => tag !== 'set');
+                  await item.update({ 'system.tags': updatedTags });
+                  console.log(`Removed 'set' tag from ${actor ? `actor` : `world`} item: ${item.name}`);
+               }
+            }
+         }
+      };
+
+      // Process world items
+      await processItems(game.items);
+
+      // Process actor items
+      for (const actor of game.actors) {
+         await processItems(actor.items, actor);
+      }
+
+      console.log("canSet update process completed.");
    }
 }

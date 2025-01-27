@@ -6,46 +6,54 @@
             <li class="flex3">
                <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
             </li>
-            <li class="flex1" style="max-width:60px;">
+            <li style="max-width:60px;">
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' />
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
-            <li class="flex1" style="max-width:50px;">
+            <li style="max-width:50px;">
                <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' />
                <label for="system.weight" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li class="flex2">
-               <input type='text' name="system.damageRoll" value='{{system.damageRoll}}' data-dtype='String' />
+            <li>
+               <input type='text' name="system.damageRoll" value='{{system.damageRoll}}' data-dtype='String' data-tooltip="{{system.damageRoll}}" />
                <label for="system.damageRoll">{{localize 'FADE.Weapon.damage.long'}}</label>
             </li>
-            <li class="flex2">
+            <li style="max-width:90px;">
                <select name="system.damageType">
                   {{selectOptions damageTypes selected=system.damageType}}
                </select>
                <label for="system.damageType">{{localize 'FADE.Weapon.damage.type'}}</label>
-            </li>           
-            <li class="flex1">
-               <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}"/>
-               <label for="system.quantity">{{localize 'FADE.Item.quantity.long'}}</label>
             </li>
-            <li class="flex1">
-               <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}"/>
-               <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxLong'}}</label>
+            <li style="max-width:40px;">
+               <input type="checkbox" name="system.canMelee" data-dtype="Boolean" {{#if system.canMelee}} checked{{/if}} />
+               <label for="system.canMelee">{{localize 'FADE.AttackTypes.types.melee'}}</label>
+            </li>
+            <li style="max-width:40px;">
+               <input type="checkbox" name="system.canRanged" data-dtype="Boolean" {{#if system.canRanged}} checked{{/if}} />
+               <label for="system.canRanged">{{localize 'FADE.AttackTypes.types.missile'}}</label>
+            </li>
+            <li style="max-width:40px;">
+               <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} data-tooltip="{{localize "FADE.Armor.natural.desc"}}" />
+               <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
+            </li>
+            <li style="max-width:40px;">
+               <input type="checkbox" name="system.canSet" data-dtype="Boolean" {{#if system.canSet}} checked{{/if}} data-tooltip="{{localize "FADE.Weapon.setVsCharge.desc"}}" />
+               <label for="system.canSet" data-tooltip="{{localize "FADE.Weapon.setVsCharge.desc"}}">{{localize "FADE.Weapon.setVsCharge.label"}}</label>
             </li>
          </ul>
       </div>
-   </header>   
+   </header>
    {{! Sheet Tab Navigation }}
-<nav class='sheet-tabs tabs' data-group='primary'>
-   <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
-   <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
-   {{#if isGM}}
-   <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
-   <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
-   {{/if}}
-</nav>
+   <nav class='sheet-tabs tabs' data-group='primary'>
+      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
+      {{#if isGM}}
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
+      <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
+      {{/if}}
+   </nav>
 
    {{! Sheet Body }}
    <section class='sheet-body'>

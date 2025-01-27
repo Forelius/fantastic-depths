@@ -286,8 +286,8 @@
          "quantity": {
             "long": "Quantity",
             "maxLong": "Max. Quantity",
-            "abbr": "qty",
-            "maxAbbr": "max qty",
+            "abbr": "Qty",
+            "maxAbbr": "Max Qty",
             "abbr2": "#"
          },
          "weight": {
@@ -341,6 +341,17 @@
       },
       "Weapon": {
          "plural": "Weapons",
+         "setVsCharge": {
+            "label": "Set",
+            "desc": "Indicates if this weapon can be used to set vs. charge."
+         },
+         "grip": {
+            "label": "Grip",
+            "one": "1-Handed",
+            "oneAbbr": "1H",
+            "two": "2-Handed",
+            "twoAbbr": "2H"
+         },
          "mod": {
             "dmg": {
                "long": "Damage Modifier",
@@ -408,7 +419,6 @@
          "armorWeight": {
             "short": "Weight",
             "choices": {
-               "none": "None",
                "light": "Light",
                "heavy": "Heavy"
             }
@@ -850,7 +860,8 @@
       "category": "Category",
       "name": "Name",
       "bonus": "Bonus",
-      "shortName": "Short Name"
+      "shortName": "Short Name",
+      "none": "None"
    },
 
    "TYPES": {

@@ -18,7 +18,7 @@ export class WeaponItemSheet extends ItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'attributes',
+               initial: 'description',
             },
          ],
       });
@@ -72,6 +72,19 @@ export class WeaponItemSheet extends ItemSheet {
       // TODO: Magic damage type  indicates that a different set of parameters is passed to getDamageRoll.
       // This is not a good design, but not addressing it at the moment, so remove this option.
       //context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.magic'), value: 'magic' });
+
+      let weaponSizes = [];
+      weaponSizes.push({ text: game.i18n.localize('FADE.none'), value: null });
+      weaponSizes.push({ text: game.i18n.localize('FADE.Actor.sizes.S'), value: 'S' });
+      weaponSizes.push({ text: game.i18n.localize('FADE.Actor.sizes.M'), value: 'M' });
+      weaponSizes.push({ text: game.i18n.localize('FADE.Actor.sizes.L'), value: 'L' });
+      context.weaponSizes = weaponSizes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      let weaponGrips = [];
+      weaponGrips.push({ text: game.i18n.localize('FADE.none'), value: null });
+      weaponGrips.push({ text: game.i18n.localize('FADE.Weapon.grip.oneAbbr'), value: '1H' });
+      weaponGrips.push({ text: game.i18n.localize('FADE.Weapon.grip.twoAbbr'), value: '2H' });
+      context.weaponGrips = weaponGrips.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Saving throws
       const saves = [];
