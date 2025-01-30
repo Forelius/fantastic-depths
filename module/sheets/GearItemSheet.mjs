@@ -30,19 +30,19 @@ export class GearItemSheet extends ItemSheet {
 
       // Enrich description info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedDescription = await TextEditor.enrichHTML(
-         this.item.system.description,
-         {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            // Data to fill in for inline rolls
-            rollData: this.item.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.item,
-         }
-      );
+      context.enrichedDescription = await TextEditor.enrichHTML(this.item.system.description, {
+         // Whether to show secret blocks in the finished html
+         secrets: this.document.isOwner,
+         async: true,// Necessary in v11, can be removed in v12
+         rollData: this.item.getRollData(),
+         relativeTo: this.item,
+      });
+      /*context.enrichedUnindentifiedDesc = await TextEditor.enrichHTML(this.item.system.unidentifiedDesc, {
+         secrets: this.document.isOwner,
+         async: true,// Necessary in v11, can be removed in v12
+         rollData: this.item.getRollData(),
+         relativeTo: this.item,
+      });*/
 
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);

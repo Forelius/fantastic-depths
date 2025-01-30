@@ -24,12 +24,6 @@ export class ArmorItemSheet extends ItemSheet {
       });
    }
 
-   ///** @override */
-   //get isEditable() {
-   //   // Allow editing only for GM users
-   //   return this.item.isOwner;
-   //}
-
    /**
     * Prepare data to be used in the Handlebars template.
     */
@@ -38,19 +32,20 @@ export class ArmorItemSheet extends ItemSheet {
       const itemData = context.data;
       // Enrich description info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedDescription = await TextEditor.enrichHTML(
-         this.item.system.description,
-         {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            // Data to fill in for inline rolls
-            rollData: this.item.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.item,
-         }
-      );
+      context.enrichedDescription = await TextEditor.enrichHTML(this.item.system.description, {
+         secrets: this.document.isOwner,
+         // Necessary in v11, can be removed in v12
+         async: true,
+         rollData: this.item.getRollData(),
+         relativeTo: this.item,
+      });
+      /*context.enrichedUnindentifiedDesc = await TextEditor.enrichHTML(this.item.system.unidentifiedDesc, {
+         secrets: this.document.isOwner,
+         async: true,// Necessary in v11, can be removed in v12
+         rollData: this.item.getRollData(),
+         relativeTo: this.item,
+      });*/
+
       context.system = itemData.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;

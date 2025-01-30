@@ -309,7 +309,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          attackerid: attacker.id,
          attacker: attackerName,
          attackType: resp.attackType,
-         weapon: caller.name
+         weapon: caller.system.isIdentified === true ? caller.name : caller.system.unidentifiedName
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
 

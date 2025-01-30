@@ -68,21 +68,23 @@ export class DataMigrator {
    }
 
    async migrate() {
-      console.debug("FADE Migrate", this.oldVersion, this.newVersion);
+      if (game.user.isGM) {
+         console.debug("FADE Migrate", this.oldVersion, this.newVersion);
 
-      if (this.oldVersion.lt(new MySystemVersion("0.7.18"))) {
-         await this.fixLightItems();
+         if (this.oldVersion.lt(new MySystemVersion("0.7.18"))) {
+            await this.fixLightItems();
+         }
+         if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
+            await this.fixBreathWeapons();
+         }
+         if (this.oldVersion.lt(new MySystemVersion("0.7.21"))) {
+            await this.updateSizeForWeapons();
+            await this.updateGripForWeapons();
+            await this.updateCanSetForWeapons();
+         }
+         // Set the new version after migration is complete
+         await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
       }
-      if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
-         await this.fixBreathWeapons();
-      }
-      if (this.oldVersion.lt(new MySystemVersion("0.7.21"))) {
-         await this.updateSizeForWeapons();
-         await this.updateGripForWeapons();
-         await this.updateCanSetForWeapons();
-      }
-      // Set the new version after migration is complete
-      await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
    }
 
    async fixBreathWeapons() {

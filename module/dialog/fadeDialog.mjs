@@ -15,7 +15,7 @@ export class fadeDialog {
       const weaponData = weapon.system;
 
       dialogData.weapon = weaponData;
-      dialogData.label = weapon.name;
+      dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
       dialogData.modes = weapon.getAttackModes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
          return acc;
@@ -227,7 +227,7 @@ export class fadeDialog {
             ui.notifications.warn(game.i18n.localize('FADE.dialog.noEquippedWeapons'));
          } else {
             dialogData.attackItems = attackItems.reduce((acc, item) => {
-               acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
+               acc[item.id] = game.user.isGM || item.system.isIdentified ? item.name : item.system.unidentifiedName; // Use the "id" as the key and "name" as the value
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;

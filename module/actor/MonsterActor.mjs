@@ -49,6 +49,8 @@ export class MonsterActor extends fadeActor {
          if (savesData) {
             await this._setupSavingThrows(savesData);
             //this.system._prepareSavingThrows(savesData);
+         } else {
+            console.warn(`Invalid save-as value ${saveAs} specified for ${this.name}.`);
          }
       }
    }

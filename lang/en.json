@@ -861,7 +861,9 @@
       "name": "Name",
       "bonus": "Bonus",
       "shortName": "Short Name",
-      "none": "None"
+      "none": "None",
+      "unidentified": "Unidentified",
+      "identified": "Identified"
    },
 
    "TYPES": {

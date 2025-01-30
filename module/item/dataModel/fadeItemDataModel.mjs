@@ -5,6 +5,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {
+         // Some item types use short name, like the saving throw.
          shortName: new fields.StringField({ required: false, initial: "" }),
          // Fields from the "base" template
          tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
@@ -43,6 +44,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      this.unidentifiedDesc = this.unidentifiedDesc === '' ? this.description : this.unidentifiedDesc;
       if (this.quantity === 0) {
          this.equipped = false;
       }

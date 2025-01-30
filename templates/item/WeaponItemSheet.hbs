@@ -1,10 +1,20 @@
 ﻿<form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' />
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li class="flex3">
-               <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
+               <div class='charname'>
+                  {{#if item.system.isIdentified}}
+                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
+                  {{else}}
+                  {{#if isGM}}
+                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
+                  {{else}}
+                  <input type='text' name='system.unidentifiedName' value='{{item.system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
+                  {{/if}}
+                  {{/if}}
+               </div>
             </li>
             <li style="max-width:60px;">
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' />
@@ -54,44 +64,102 @@
       <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
       {{/if}}
    </nav>
-
    {{! Sheet Body }}
    <section class='sheet-body'>
       {{! attributes Tab }}
+      {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='attributes'>
-         {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs"}}
+         <div class="bordered">
+            <div class="summary flexrow">
+               <div style="max-width:90px;">
+                  <select name="system.size">
+                     {{selectOptions weaponSizes selected=system.size}}
+                  </select>
+                  <label for="system.size">{{localize 'FADE.Size'}}</label>
+               </div>
+               <div style="max-width: 60px;">
+                  <select name="system.grip">
+                     {{selectOptions weaponGrips selected=system.grip}}
+                  </select>
+                  <label for="system.grip">{{localize 'FADE.Weapon.grip.label'}}</label>
+               </div>
+               <div class="flex2">
+                  <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' />
+                  <label for="system.mastery">{{localize 'FADE.Mastery.short'}}</label>
+               </div>
+               <div class="flex2">
+                  <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+                     {{selectOptions weaponTypes selected=system.weaponType}}
+                  </select>
+                  <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
+               </div>
+               <div>
+                  <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+                  <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
+               </div>
+               <div>
+                  <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+                  <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
+               </div>
+            </div>
+            <div class="summary flexrow">
+               <div class="flex2">
+                  <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String" />
+                  <label for="system.breath">{{localize 'FADE.DamageTypes.types.breath'}}</label>
+               </div>
+               <div class="flex1">
+                  <select name="system.savingThrow">
+                     {{selectOptions savingThrows selected=system.savingThrow}}
+                  </select>
+                  <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+               </div>
+               <div class="flex2">
+                  <input type='text' name="system.saveDmgFormula" value='{{system.saveDmgFormula}}' data-dtype='String' />
+                  <label for="system.saveDmgFormula">{{localize 'FADE.Actor.Saves.short'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+               </div>
+            </div>
+            <div class="summary flexrow">
+               <div class="flex1" style="margin-left:3px;">
+                  <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
+                  <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
+               </div>
+               <div class="flex1">
+                  <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
+                  <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
+               </div>
+               <div class="flex1">
+                  <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
+                  <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
+               </div>
+               <div class="flex2" style="margin-left:3px;">
+                  <input type='text' name="system.ammoType" value='{{system.ammoType}}' data-dtype='String' />
+                  <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+               </div>
+            </div>
+         </div>
+         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
       </div>
+      {{/if}}
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
-         {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+         {{#if system.isIdentified}}
+         {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+         {{else}}
+         {{#if isGM}}
+         {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+         {{else}}
+         {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}
+         {{/if}}
+         {{/if}}
       </div>
       {{#if isGM}}
       {{! Effects Tab }}
       <div class="tab effects" data-group="primary" data-tab="effects">
-         <ul class="summary flexrow">
-            <li class="flex1">
-               <div>{{system.mod.dmg}}</div>
-               <label for="system.mod.dmg">{{localize 'FADE.Weapon.mod.dmg.short'}}</label>
-            </li>
-            <li class="flex1">
-               <div>{{system.mod.toHit}}</div>
-               <label for="system.mod.toHit">{{localize 'FADE.Weapon.mod.toHit.short'}}</label>
-            </li>
-            <li class="flex1">
-               <div>{{system.mod.dmgRanged}}</div>
-               <label for="system.mod.dmgRanged">{{localize 'FADE.Weapon.mod.dmgRanged.short'}}</label>
-            </li>
-            <li class="flex1">
-               <div>{{system.mod.toHitRanged}}</div>
-               <label class="text-center" for="system.mod.toHitRanged">{{localize 'FADE.Weapon.mod.toHitRanged.short'}}</label>
-            </li>
-         </ul>
          {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>
+         {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
          <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
          <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
       </div>

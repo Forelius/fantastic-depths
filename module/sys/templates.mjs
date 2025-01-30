@@ -41,6 +41,7 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs',
       'systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs',
       'systems/fantastic-depths/templates/item/parts/item-exploration.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-saves.hbs'
+      'systems/fantastic-depths/templates/item/parts/item-saves.hbs',
+      'systems/fantastic-depths/templates/item/parts/item-identified.hbs'
    ]);
 };

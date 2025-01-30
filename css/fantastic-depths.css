@@ -223,6 +223,10 @@ h1, h2, h3, h4 {
   color: #888888;
 }
 
+.prosemirror .editor-container .editor-content {
+  position: relative !important;
+}
+
 .system-fantastic-depths #tooltip.text-center {
   text-align: left !important;
 }
@@ -590,9 +594,6 @@ h1, h2, h3, h4 {
 }
 
 /* Light mode styles */
-.light-mode .fantastic-depths .window-content {
-  background: url("../assets/img/lightgrunge1.jpg");
-}
 .light-mode .fantastic-depths .window-content .bordered {
   border-color: #bbbab4;
 }
@@ -1107,7 +1108,7 @@ h1, h2, h3, h4 {
 .fantastic-depths .sheet-body,
 .fantastic-depths .sheet-body .tab,
 .fantastic-depths .sheet-body .tab .editor {
-  height: 100%;
+  /*height: 100%;*/
 }
 .fantastic-depths .tox .tox-editor-container {
   background: #fff;

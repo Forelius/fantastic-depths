@@ -16,6 +16,11 @@ export class fadeItem extends Item {
       super.prepareBaseData();
    }
 
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      this.system.unidentifiedName = this.system.unidentifiedName === '' ? this.name : this.system.unidentifiedName;
+   }
+
    // Define default icons for various item types using core data paths
    static get defaultIcons() {
       const fdPath = `systems/fantastic-depths/assets/img/item`;
@@ -41,6 +46,10 @@ export class fadeItem extends Item {
       }
       return super.create(data, context);
    }
+
+   //get name() {
+   //   return this.system.identified ? this.system.name : this.system.unidentifiedName;
+   //}
 
    /**
    * A getter for dynamically calculating the contained items.
@@ -157,7 +166,9 @@ export class fadeItem extends Item {
             result = roll;
          }
          catch (error) {
-            console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            if (game.user.isGM === true) {
+               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            }
          }
       }
       return result;

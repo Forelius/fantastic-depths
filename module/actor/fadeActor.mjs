@@ -650,7 +650,11 @@ export class fadeActor extends Actor {
       for (const saveData of saveEntries) {
          if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
             const itemData = worldSavingThrows.find(item => item.system.customSaveCode === saveData[0]);
-            addItems.push(itemData.toObject());
+            if (itemData) {
+               addItems.push(itemData.toObject());
+            } else {
+               console.warn(`The specified saving throw (${saveData[0]})does not exist as a world item.`);
+            }
          }
       }
       if (addItems.length > 0) {

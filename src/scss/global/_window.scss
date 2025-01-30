@@ -99,7 +99,6 @@
    }
 }
 
-
 .collapsible-content {
    overflow: hidden;
    height: auto;
@@ -128,6 +127,10 @@
    font-size: 12px;
    color: #888888;
 }
+.prosemirror .editor-container .editor-content {
+   position: relative !important;
+}
+
 
 .system-fantastic-depths {
    #tooltip.text-center {
@@ -147,4 +150,6 @@
       width: 120px;
       max-width: 120px;
    }
+
+
 }

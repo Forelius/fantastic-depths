@@ -505,7 +505,7 @@ export class fadeActorSheet extends ActorSheet {
          this.actor.rollSavingThrow(dataset.type);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
-         let title = elem.getAttribute("title");
+         const title = elem.getAttribute("title");
          if (title) { // Do this because dataset stringifies all properties.
             dataset.desc = title;
          }
@@ -525,7 +525,7 @@ export class fadeActorSheet extends ActorSheet {
 
       if (chatType !== null) {
          const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
-         let rolled = await new Roll(formula, rollContext).evaluate();
+         const rolled = await new Roll(formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
             caller: this.actor,
