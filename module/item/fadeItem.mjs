@@ -18,6 +18,7 @@ export class fadeItem extends Item {
 
    prepareDerivedData() {
       super.prepareDerivedData();
+      // This can't be in data model, because name is a property of Item.
       this.system.unidentifiedName = this.system.unidentifiedName === '' ? this.name : this.system.unidentifiedName;
    }
 
@@ -46,10 +47,6 @@ export class fadeItem extends Item {
       }
       return super.create(data, context);
    }
-
-   //get name() {
-   //   return this.system.identified ? this.system.name : this.system.unidentifiedName;
-   //}
 
    /**
    * A getter for dynamically calculating the contained items.
@@ -161,7 +158,7 @@ export class fadeItem extends Item {
       if (formula !== null && formula !== "") {
          const rollData = this.getRollData();
          try {
-            let roll = new Roll(formula, rollData);
+            const roll = new Roll(formula, rollData);
             await roll.evaluate(options);
             result = roll;
          }

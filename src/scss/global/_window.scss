@@ -2,7 +2,7 @@
    font-family: $font-primary;
 }
 
-.rollable {
+.rollable, .chatable {
    &:hover,
    &:focus {
       cursor: pointer;

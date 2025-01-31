@@ -138,7 +138,7 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Rollable abilities.
-         html.on('click', '.rollable', this._onRoll.bind(this));
+         html.on('click', '.rollable, .chatable', this._onRoll.bind(this));
 
          // Containers collapse/expand
          html.find(".gear-items .category-caret").click((event) => {
@@ -156,12 +156,7 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Toggle equipped state
-         html.find(".item-toggle").click(async (event) => {
-            const item = this._getItemFromActor(event);
-            // Toggle the equipped state and store the new state in isEquipped
-            const isEquipped = !item.system.equipped;
-            await item.update({ "system.equipped": isEquipped });
-         });
+         html.find(".item-toggle").click(async (event) => await this._toggleEquippedState(event));
 
          // Consumables
          html.find(".consumable-counter .full-mark").click((event) => {
@@ -489,7 +484,8 @@ export class fadeActorSheet extends ActorSheet {
          // If clicking an item then have item handle roll.
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
-         if (item) item.roll(dataset);
+         // Directly roll item and skip the rest
+         if (item) await item.roll(dataset);
       } else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          chatType = CHAT_TYPE.ABILITY_CHECK;
@@ -553,7 +549,7 @@ export class fadeActorSheet extends ActorSheet {
          result = item.update({ "system.quantity": parseInt(event.target.value) });
       } else if (event.target.dataset.field === "cast") {
          result = item.update({ "system.cast": parseInt(event.target.value) });
-      }else if (event.target.dataset.field === "memorize") {
+      } else if (event.target.dataset.field === "memorize") {
          result = item.update({ "system.memorized": parseInt(event.target.value) });
       } else if (event.target.dataset.field === "target") {
          result = item.update({ "system.target": parseInt(event.target.value) });
@@ -657,6 +653,34 @@ export class fadeActorSheet extends ActorSheet {
                console.warn("Removed invalid flag: collapsed-undefined");
             }
          });
+      }
+   }
+
+   async _toggleEquippedState(event) {
+      let updateObj = {};
+      const item = this._getItemFromActor(event);
+      let isEquipped = item.system.equipped;
+      // if the item is not equipped or the item is not cursed or the user is GM...
+      if (isEquipped === false || item.system.isCursed === false || game.user.isGM) {
+         // Toggle the equipped state and store the new state in isEquipped
+         isEquipped = !isEquipped;
+
+         // If this is armor and we are equipping it...
+         if (item.type === "armor" && isEquipped === true) {
+            // Unequip other same type armor.
+            const otherSameTypeArmor = this.actor.items.find(aitem => aitem.type === item.type
+               && aitem.system.equipped === true
+               && aitem.system.isShield === item.system.isShield
+               && aitem.system.natural === item.system.natural);
+            if (otherSameTypeArmor) {
+               await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
+            }
+         } else if (item.system.isAmmo === false && (item.type === "item" || item.type === 'light')) {
+            updateObj["system.containerId"] = null;
+         }
+
+         updateObj["system.equipped"] = isEquipped;
+         await item.update(updateObj);
       }
    }
 

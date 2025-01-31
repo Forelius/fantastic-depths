@@ -863,7 +863,8 @@
       "shortName": "Short Name",
       "none": "None",
       "unidentified": "Unidentified",
-      "identified": "Identified"
+      "identified": "Identified",
+      "cursed": "Cursed"
    },
 
    "TYPES": {

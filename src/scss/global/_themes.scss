@@ -87,7 +87,7 @@
             }
          }
 
-         .rollable {
+         .rollable, .chatable {
             &:hover,
             &:focus {
                color: $lighterColor;
@@ -197,7 +197,7 @@
 .light-mode {
    .fantastic-depths {
       .window-content {
-         
+
          .bordered {
             border-color: $lightColor;
          }
@@ -236,7 +236,7 @@
             }
          }
 
-         .rollable {
+         .rollable, .chatable {
             &:hover,
             &:focus {
                color: $darkerColor;

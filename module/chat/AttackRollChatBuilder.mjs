@@ -12,6 +12,67 @@ export class AttackRollChatBuilder extends ChatBuilder {
       this.masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
    }
 
+   /**
+   * Called by the various Actor and Item derived classes to create a chat message.
+   */
+   async createChatMessage() {
+      const { caller, context, resp, roll, mdata, digest } = this.data;
+      const attacker = context;
+      const attackerName = attacker.name;
+      const targetTokens = Array.from(game.user.targets);
+      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
+
+      let descData = {
+         attackerid: attacker.id,
+         attacker: attackerName,
+         attackType: resp.attackType,
+         weapon: caller.system.isIdentified === true ? caller.name : caller.system.unidentifiedName
+      };
+      const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
+
+      let rollContent = null;
+      if (roll) {
+         rollContent = await roll.render();
+      }
+
+      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
+      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
+
+      if (window.toastManager) {
+         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+
+      const chatData = {
+         damageRoll,
+         rollContent,
+         description,
+         descData,
+         toHitResult,
+         digest: digest,
+         weapon: caller,
+         resp,
+         targetWeaponType: resp.targetWeaponType,
+      };
+
+      let content = await renderTemplate(this.template, chatData);
+      // Manipulated the dom to place digest info in roll's tooltip
+      content = this.moveDigest(content);
+
+      const rolls = roll ? [roll] : null;
+      const chatMessageData = await this.getChatMessageData({
+         content,
+         rolls,
+         rollMode,
+         flags: {
+            [game.system.id]: {
+               targets: toHitResult.targetResults
+            }
+         }
+      });
+      const chatMsg = await ChatMessage.create(chatMessageData);
+   }
+
    getHeroicToHitTable(thac0, repeater = 0) {
       const toHitTable = [];
       // Loop through AC values from 0 down to 20
@@ -293,66 +354,5 @@ export class AttackRollChatBuilder extends ChatBuilder {
          maxAttacksAgainst: defenseMastery.acBonusAT,
          defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total
       });
-   }
-
-   /**
-    * Called by the various Actor and Item derived classes to create a chat message.
-    */
-   async createChatMessage() {
-      const { caller, context, resp, roll, mdata, digest } = this.data;
-      const attacker = context;
-      const attackerName = attacker.name;
-      const targetTokens = Array.from(game.user.targets);
-      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
-
-      let descData = {
-         attackerid: attacker.id,
-         attacker: attackerName,
-         attackType: resp.attackType,
-         weapon: caller.system.isIdentified === true ? caller.name : caller.system.unidentifiedName
-      };
-      const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
-
-      let rollContent = null;
-      if (roll) {
-         rollContent = await roll.render();
-      }
-
-      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
-      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
-
-      if (window.toastManager) {
-         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
-
-      const chatData = {
-         damageRoll,
-         rollContent,
-         description,
-         descData,
-         toHitResult,
-         digest: digest,
-         weapon: caller,
-         resp,
-         targetWeaponType: resp.targetWeaponType,
-      };
-
-      let content = await renderTemplate(this.template, chatData);
-      // Manipulated the dom to place digest info in roll's tooltip
-      content = this.moveDigest(content);
-
-      const rolls = roll ? [roll] : null;
-      const chatMessageData = await this.getChatMessageData({
-         content,
-         rolls,
-         rollMode,
-         flags: {
-            [game.system.id]: {
-               targets: toHitResult.targetResults
-            }
-         }
-      });
-      const chatMsg = await ChatMessage.create(chatMessageData);
    }
 }

@@ -1,25 +1,20 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' />
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li class="flex3">
-               <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
-               <label>{{localize 'Name'}}</label>
-            </li>
-            <li class="flex0" style="min-width:40px;">
-               <div class="text-center">{{system.totalAC}}</div>
-               <label>{{localize 'FADE.Armor.total'}}</label>
+               {{#if (or isGM system.isIdentified)}}
+               <input type='text' name='name' value='{{item.name}}' placeholder='Name' />
+               {{else}}
+               <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
+               {{/if}}
             </li>
          </ul>
          <ul class="summary flexrow">
             <li class="flex2">
                <input type='text' name='system.ac' value='{{system.ac}}' data-dtype='Number' />
                <label for="system.ac" data-tooltip="{{localize 'FADE.Armor.hintBase'}}">{{localize 'FADE.Armor.long'}}</label>
-            </li>
-            <li class="flex1">
-               <div class="item-info">{{system.mod}}</div>
-               <label>{{localize 'FADE.Armor.mod'}}</label>
             </li>
             <li class="flex1">
                <input type="checkbox" name="system.isShield" data-dtype="Boolean" {{#if system.isShield}} checked{{/if}} />
@@ -30,7 +25,11 @@
                <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
             </li>
             <li class="flex2">
+               {{#if (or isGM system.isIdentified)}}
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               {{else}}
+               <input type='text' value='?' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               {{/if}}
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
             <li class="flex2">
@@ -52,6 +51,7 @@
    <nav class='sheet-tabs tabs' data-group='primary'>
       <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
       {{#if isGM}}
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
       <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
       <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
       {{/if}}
@@ -59,10 +59,18 @@
 
    {{! Sheet Body }}
    <section class='sheet-body'>
+      {{#if isGM}}
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
+      </div>
+      {{/if}}
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
-         {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+         {{#if (or isGM system.isIdentified)}}
+         {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+         {{else}}
+         {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}
+         {{/if}}
       </div>
       {{#if isGM}}
       {{! Effects Tab }}
@@ -71,8 +79,22 @@
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
-         <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
+         <div class="bordered">
+            <div class="summary flexrow">
+               <div style="max-width:60px;">
+                  <div class="text-center">{{system.totalAC}}</div>
+                  <label>{{localize 'FADE.Armor.total'}}</label>
+               </div>
+               <div style="max-width:60px;">
+                  <div class="item-info">{{system.mod}}</div>
+                  <label>{{localize 'FADE.Armor.mod'}}</label>
+               </div>
+            </div>
+         </div>
+         <div class="bordered">
+            <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
+            <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
+         </div>
       </div>
       {{/if}}
    </section>

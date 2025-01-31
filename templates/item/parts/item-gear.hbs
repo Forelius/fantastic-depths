@@ -1,18 +1,20 @@
 <li class='item collapsible-content{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}' data-item-id='{{item._id}}'>
    <div class="flexrow{{#unless item.system.quantityMax }} bottom-border{{/unless}}">
       <div class='item-name'>
-         <div class='item-image rollable' data-roll-type='item'>
-            <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+         <div class='item-image chatable' data-roll-type='item'>
+            <img src='{{item.img}}' width='24' height='24' />
          </div>
          {{#if item.system.container}}
          <div class="category-caret"><i class="fas fa-caret-down"></i></div>
          {{/if}}
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
+            {{#if (or @root.isGM item.system.isIdentified)}}
             {{item.name}}
-            {{#if rootobj.showCoinWeight}}
-            {{#if item.containedEnc}}
-            <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
+            {{else}}
+            {{item.system.unidentifiedName}}
             {{/if}}
+            {{#if (and rootobj.showCoinWeight item.containedEnc)}}
+            <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
             {{/if}}
          </a>
       </div>
@@ -34,11 +36,9 @@
    </div>
 </li>
 {{#if item.system.container}}
-<!--<ol class="bottom-border" data-item-parentid="{{parentItem._id}}">-->
-   {{#each item.contained as |childItem|}}
-   {{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
-   {{/each}}
-<!--</ol>-->
+{{#each item.contained as |childItem|}}
+{{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
+{{/each}}
 {{/if}}
 {{#unless item.system.container}}
 {{#if item.system.quantityMax }}

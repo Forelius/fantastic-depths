@@ -7,25 +7,17 @@
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
       <img class="item-image" src='{{weapon.img}}' />
-      {{#if item.system.isIdentified}}
-      <div class="item-name">{{weapon.name}}</div>
-      {{else}}
-      {{#if ../isGM}}
+      {{#if weapon.system.isIdentified}}
       <div class="item-name">{{weapon.name}}</div>
       {{else}}
       <div class="item-name">{{weapon.system.unidentifiedName}}</div>
       {{/if}}
-      {{/if}}
    </div>
    <div class="collapsible-content collapsed">
-      {{#if item.system.isIdentified}}
-      {{{weapon.system.description}}}
-      {{else}}
-      {{#if ../isGM}}
+      {{#if weapon.system.isIdentified}}
       {{{weapon.system.description}}}
       {{else}}
       {{{weapon.system.unidentifiedDesc}}}
-      {{/if}}
       {{/if}}
    </div>
 </div>

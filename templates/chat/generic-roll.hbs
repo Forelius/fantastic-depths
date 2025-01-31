@@ -7,11 +7,21 @@
 {{#if caller}}
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
-      <img class="item-image" src='{{caller.img}}' title='{{caller.name}}' />
-      <div class="item-name">{{caller.name}}</div>
+      <img class="item-image" src='{{caller.img}}'/>
+      <div class="item-name">
+         {{#if (or isGM caller.system.isIdentified)}}
+         {{caller.name}}
+         {{else}}
+         {{caller.system.unidentifiedName}}
+         {{/if}}
+      </div>
    </div>
    <div class="collapsible-content collapsed">
+      {{#if (or isGM caller.system.isIdentified)}}
       {{{caller.system.description}}}
+      {{else}}
+      {{{caller.system.unidentifiedDesc}}}
+      {{/if}}
    </div>
 </div>
 {{/if}}

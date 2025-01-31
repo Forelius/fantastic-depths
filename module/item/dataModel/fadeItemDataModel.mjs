@@ -33,6 +33,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          unidentifiedName: new fields.StringField({ required: false, initial: "" }),
          unidentifiedDesc: new fields.StringField({ required: false, initial: "" }),
          isIdentified: new fields.BooleanField({ required: false, initial: true }),
+         isCursed: new fields.BooleanField({ required: false, initial: false }),
       };
    }
 

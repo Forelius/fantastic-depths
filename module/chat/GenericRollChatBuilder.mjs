@@ -44,6 +44,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          resultString,
          actorName,
          userName,
+         isGM: game.user.isGM
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);

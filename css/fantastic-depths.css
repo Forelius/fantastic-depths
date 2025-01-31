@@ -106,7 +106,7 @@ h1, h2, h3, h4 {
   font-family: "Barlow", sans-serif;
 }
 
-.rollable:hover, .rollable:focus {
+.rollable:hover, .rollable:focus, .chatable:hover, .chatable:focus {
   cursor: pointer;
 }
 
@@ -517,7 +517,7 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #ebeae4;
 }
-.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus {
+.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus, .dark-mode .fantastic-depths .window-content .chatable:hover, .dark-mode .fantastic-depths .window-content .chatable:focus {
   color: #ebeae4;
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
@@ -1239,6 +1239,12 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .item .item-name .rollable:hover {
   background-image: url("/icons/svg/d20-highlight.svg");
 }
+.fantastic-depths .items-list .item .item-name .chatable:hover img {
+  opacity: 0; /* Or use display: none; */
+}
+.fantastic-depths .items-list .item .item-name .chatable:hover {
+  background-image: url("/icons/svg/book.svg");
+}
 .fantastic-depths .items-list .item input {
   text-align: center;
 }
@@ -1344,5 +1350,3 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

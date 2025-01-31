@@ -35,6 +35,10 @@ export class fadeItemSheet extends ItemSheet {
       return context;
    }
 
+   get title() {
+      return game.user.isGM || this.item.system.isIdentified ? this.item.name : this.item.system.unidentifiedName;
+   }
+
    /** @override */
    activateListeners(html) {
       super.activateListeners(html);

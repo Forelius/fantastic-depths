@@ -5,19 +5,19 @@
          <ul class="summary flexrow">
             <li class="flex3">
                <div class='charname'>
-                  {{#if item.system.isIdentified}}
-                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
-                  {{else}}
-                  {{#if isGM}}
+                  {{#if (or isGM item.system.isIdentified)}}
                   <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
                   {{else}}
                   <input type='text' name='system.unidentifiedName' value='{{item.system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
                   {{/if}}
-                  {{/if}}
                </div>
             </li>
             <li style="max-width:60px;">
-               <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' />
+               {{#if (or isGM system.isIdentified)}}
+               <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               {{else}}
+               <input type='text' value='?' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               {{/if}}
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
             <li style="max-width:50px;">
@@ -142,14 +142,10 @@
       {{/if}}
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
-         {{#if system.isIdentified}}
-         {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
-         {{else}}
-         {{#if isGM}}
+         {{#if (or isGM system.isIdentified)}}
          {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
          {{else}}
          {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}
-         {{/if}}
          {{/if}}
       </div>
       {{#if isGM}}

@@ -56,7 +56,7 @@ export class SpellItem extends fadeItem {
    * @private
    */
    async roll(dataset) {
-      const caster = canvas.tokens.controlled?.[0] || this.actor;
+      const caster = this.actor || canvas.tokens.controlled?.[0];
       if (caster) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
