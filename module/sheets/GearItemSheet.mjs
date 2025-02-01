@@ -23,7 +23,7 @@ export class GearItemSheet extends fadeItemSheet {
    /** @override */
    async getData() {
       // Retrieve base data structure.
-      const context = super.getData();
+      const context = await super.getData();
 
       if (this.item.type === 'light') {
          const lightTypes = [];

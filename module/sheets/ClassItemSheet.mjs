@@ -28,7 +28,7 @@ export class ClassItemSheet extends ItemSheet {
    /** @override */
    async getData() {
       // Retrieve base data structure
-      const context = super.getData();
+      const context = await super.getData();
       const itemData = context.data;
 
       // Adding a pointer to CONFIG.FADE

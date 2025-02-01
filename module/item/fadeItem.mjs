@@ -61,8 +61,8 @@ export class fadeItem extends Item {
       if (this.system.container === true) {
          result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
       }
-      const weight = this.system.weight || 0;
-      const quantity = this.system.quantity !== null ? this.system.quantity : 1;
+      const weight = this.system.weight > 0 ? this.system.weight : 0;
+      const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
       result += weight * quantity;
       return result;
    }

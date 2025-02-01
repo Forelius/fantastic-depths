@@ -46,7 +46,7 @@ export class fadeActorSheet extends ActorSheet {
       // the context variable to see the structure, but some key properties for
       // sheets are the actor object, the data object, whether or not it's
       // editable, the items array, and the effects array.
-      const context = super.getData();
+      const context = await super.getData();
 
       // Use a safe clone of the actor data for further operations.
       const actorData = this.document.toObject(false);

@@ -90,7 +90,7 @@ export class TurnTrackerForm extends FormApplication {
     * Fetch data for the form, such as turn count and game time 
     */
    async getData() {
-      const context = super.getData();
+      const context = await super.getData();
       context.turnData = this.turnData;
       context.restFrequency = game.settings.get(game.system.id, "restFrequency");
       return context;

@@ -21,43 +21,48 @@ class MySystemVersion {
    }
 
    /**
-    * Is this version greater than the specified version
+    * Are they the same version.
     * @param {any} version
+    * @returns
     */
-   gt(version) {
-      if (!(version instanceof MySystemVersion)) {
-         version = new MySystemVersion(version); // Normalize input
+   eq(version, ignoreRC = false) {
+      if (ignoreRC == false) {
+         return this.version === version.version;
+      } else {
+         return this.major === version.major && this.minor === version.minor && this.build === version.build;
       }
-
-      // Compare major, minor, and build numbers first
-      if (this.major !== version.major) return this.major > version.major;
-      if (this.minor !== version.minor) return this.minor > version.minor;
-      if (this.build !== version.build) return this.build > version.build;
-
-      // Compare RC versions
-      if (this.rc === null && version.rc !== null) return true; // Full release > RC
-      if (this.rc !== null && version.rc === null) return false; // RC < Full release
-      if (this.rc !== null && version.rc !== null) return this.rc > version.rc; // Compare RC numbers
-
-      return false;
    }
 
+   /**
+    * Is this version less than the specified version.
+    * @param {any} version
+    * @returns
+    */
    lt(version) {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
+      const result = { isNextBuild: false, isNextMajor: false, isNextMinor: false, isNextRC: false, isLessThan: false };
+      if (this.eq(version) === false) {
+         // True if current rc has value, next rc has value, current rc is less than next rc
+         //    and majors are same or current major less than next major
+         //    and minors are same or current minor less than next minor
+         //    and build are same or current build less than next build
+         result.isNextRC = (this.rc > 0 && version.rc > 0 && this.rc < version.rc
+            && (this.major === version.major || this.major < version.major)
+            && (this.minor === version.minor || this.minor < version.minor)
+            && (this.build === version.build || this.build < version.build));
+         result.isNextBuild = this.build < version.build;
+         result.isNextMajor = this.major < version.major;
+         result.isNextMinor = this.minor < version.minor;
+         result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextBuild || result.isNextRC
+            || this.rc !== null && version.rc === null && this.eq(version, true);
+         //console.debug(this, version, result);
+      } else {
+         console.debug("Versions are same.", this, version);
+      }
 
-      // Compare major, minor, and build numbers first
-      if (this.major !== version.major) return this.major < version.major;
-      if (this.minor !== version.minor) return this.minor < version.minor;
-      if (this.build !== version.build) return this.build < version.build;
-
-      // Compare RC versions
-      if (this.rc === null && version.rc !== null) return false; // Full release > RC
-      if (this.rc !== null && version.rc === null) return true; // RC < Full release
-      if (this.rc !== null && version.rc !== null) return this.rc < version.rc; // Compare RC numbers
-
-      return false;
+      return result.isLessThan;
    }
 }
 
@@ -69,18 +74,21 @@ export class DataMigrator {
 
    async migrate() {
       if (game.user.isGM) {
-         console.debug("FADE Migrate", this.oldVersion, this.newVersion);
+         //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
+         //this.#testMigrate();
 
-         if (this.oldVersion.lt(new MySystemVersion("0.7.18"))) {
-            await this.fixLightItems();
-         }
          if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
             await this.fixBreathWeapons();
          }
-         if (this.oldVersion.lt(new MySystemVersion("0.7.21"))) {
+         if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.6"))) {
             await this.updateSizeForWeapons();
             await this.updateGripForWeapons();
             await this.updateCanSetForWeapons();
+            ui.notifications.info("Fantastic Depths data migration complete.")
+         }
+         if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
+            await this.fixUnidentified();
+            ui.notifications.info("Fantastic Depths data migration complete.")
          }
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
@@ -290,7 +298,7 @@ export class DataMigrator {
 
                // Skip if system.grip already has a non-null value
                if (item.system.grip !== null) {
-                  console.log(`Skipping update for ${actor ? `actor` : `world`} item: ${item.name} as grip is already set.`);
+                  //console.log(`Skipping update for ${actor ? `actor` : `world`} item: ${item.name} as grip is already set.`);
                   continue;
                }
 
@@ -359,5 +367,73 @@ export class DataMigrator {
       }
 
       console.log("canSet update process completed.");
+   }
+
+   async fixUnidentified() {
+      const processItems = async (items, contextName) => {
+         for (const item of items) {
+            let isUpdated = false;
+            if (item.type === 'weapon' || item.type === 'armor') {
+               if (item.system.natural === true) {
+                  await item.update({
+                     "system.unidentifiedName": null,
+                     "system.unidentifiedDesc": null,
+                  });
+               } else {
+                  if (item.system.unidentifiedName === null || item.system.unidentifiedName === '') {
+                     await item.update({ "system.unidentifiedName": item.name });
+                     isUpdated = true;
+                  }
+                  if ((item.system.unidentifiedDesc === null || item.system.unidentifiedDesc === '') && item.system.description !== null && item.system.description !== '') {
+                     await item.update({ "system.unidentifiedDesc": item.system.description });
+                     isUpdated = true;
+                  }
+                  if (isUpdated === true) {
+                     console.log(`[${contextName}] Updating ${item.name}(${item.type}): setting unidentified values`, item);
+                  }
+               }
+            } else if (item.type === 'item' || item.type === 'light') {
+               if (item.system.unidentifiedName === null || item.system.unidentifiedName === '') {
+                  await item.update({ "system.unidentifiedName": item.name });
+                  isUpdated = true;
+               }
+               if ((item.system.unidentifiedDesc === null || item.system.unidentifiedDesc === '') && item.system.description !== null && item.system.description !== '') {
+                  await item.update({ "system.unidentifiedDesc": item.system.description });
+                  isUpdated = true;
+               }
+               if (isUpdated === true) {
+                  console.log(`[${contextName}] Updating ${item.name}(${item.type}): setting unidentified values`, item);
+               }
+            }
+         }
+      };
+
+      // Process all actor items
+      for (const actor of game.actors) {
+         const actorItems = actor.items;
+         await processItems(actorItems, `Actor: ${actor.name}`);
+      }
+
+      // Process all world items
+      const worldItems = game.items;
+      await processItems(worldItems, "World Items");
+   }
+
+   #testMigrate() {
+      const v1 = new MySystemVersion("0.7.20");
+      const v2 = new MySystemVersion("0.7.21");
+      const v3 = new MySystemVersion("0.7.21-rc.1");
+      const v4 = new MySystemVersion("0.7.21-rc.2");
+      const v5 = new MySystemVersion("0.8.0");
+      const v6 = new MySystemVersion("1.0.0");
+
+      v1.lt(v2);
+      v2.lt(v1);
+      v2.lt(v3);
+      v3.lt(v1);
+      v3.lt(v2);
+      v3.lt(v4);
+      v4.lt(v3);
+      v4.lt(v5);
    }
 }

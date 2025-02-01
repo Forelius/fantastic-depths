@@ -33,7 +33,7 @@ export class PartyTrackerForm extends FormApplication {
     * Fetch data for the form, such as tracked actors 
     */
    async getData() {
-      const context = super.getData();
+      const context = await super.getData();
       // Fetch actor data dynamically based on stored IDs
       context.trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
       return context;
@@ -42,12 +42,8 @@ export class PartyTrackerForm extends FormApplication {
    /** 
     * Attach event listeners to elements in the form 
     */
-   async activateListeners(html) {
+   activateListeners(html) {
       super.activateListeners(html);
-
-      //let dropArea = html.find('.party-tracker');
-      //dropArea.on("dragover", event => event.preventDefault());
-      //dropArea.on("drop", this._onDropActor.bind(this));
 
       html.find(".delete-actor").on("click", (event) => {
          const actorId = $(event.currentTarget).closest(".party-member").data("actor-id");
