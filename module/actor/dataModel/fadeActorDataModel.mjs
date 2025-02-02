@@ -145,9 +145,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       // If using detailed encumbrance, similar to expert rules...
       if (encSetting === 'expert' || encSetting === 'classic') {
          enc = items.reduce((sum, item) => {
-            //const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
-            //const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
-            return sum + item.totalEnc;// (itemWeight * itemQuantity);
+            const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
+            const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
+            return sum + (itemWeight * itemQuantity);
          }, 0);
          encumbrance.value = enc || 0;
       }
