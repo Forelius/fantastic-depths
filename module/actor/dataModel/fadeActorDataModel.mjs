@@ -62,7 +62,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }),
          languages: new fields.StringField({ initial: "" }),
          combat: new fields.SchemaField({
+            // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
+            // This is how many times the character has been attack for the current round
             attacksAgainst: new fields.NumberField({ initial: 0 }),
             deathCount: new fields.NumberField({ initial: 0 }),
             isDead: new fields.BooleanField({ initial: false }),

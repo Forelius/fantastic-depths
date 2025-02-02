@@ -34,69 +34,101 @@ export class PlayerCombatForm extends FormApplication {
       super.activateListeners(html);
 
       // Listen for changes in the action select elements
-      html.find(".declared-action-select").on("change", (event) => {
-         const select = event.currentTarget;
-         const actorId = select.dataset.actorId;
-         const newAction = select.value;
-
-         // Update the action description dynamically
-         const descriptionElement = $(select).closest("td").find(".action-description");
-         const localizedDescription = game.i18n.localize(`FADE.combat.maneuvers.${newAction}.description`);
-         descriptionElement.text(localizedDescription);
-
-         // Optionally update the actor's system data if needed
-         const actor = game.actors.get(actorId);
-         if (actor) {
-            actor.update({ "system.combat.declaredAction": newAction });
-         }
-      });
-
-      Hooks.on('updateActor', this._updateTrackedActor);
-      Hooks.on("updateCombatant", this._updateCombatant);
-      Hooks.on("updateItem", async (item, updateData, options, userId) => {
-         const actor = item.parent; // The actor the item belongs to
-         if (this.trackedActorIds.includes(actor.id)) {
-            console.debug(`Actor ${actor.name} changed.`, updateData);
-            this.render();  // Re-render to reflect updated actor data
-         }
-      });
-   }
-
-   toggleInputs(shouldDisable) {
-      html.find(".declared-action-select").prop("disabled", shouldDisable);
+      html.find('[name="declaredAction"]').on("change", event => this.#onPlayerChangedAction(event));
+      Hooks.on('updateActor', this.#updateTrackedActor);
+      Hooks.on("updateCombatant", this.#updateCombatant);
+      Hooks.on("updateItem", this.#updateItem);
    }
 
    // Optionally handle close actions
    close(options) {
-      Hooks.off('updateActor', this._updateTrackedActor);
-      Hooks.off("updateCombatant", this._updateCombatant);
-      delete window.fade.combatForm;
+      Hooks.off('updateActor', this.#updateTrackedActor);
+      Hooks.off("updateCombatant", this.#updateCombatant);
+      Hooks.off("updateItem", this.#updateItem);
+      delete game.fade.combatForm;
       return super.close(options);
    }
 
-   _updateTrackedActor = (actor, updateData, options, userId) => {
+   #updateTrackedActor = (actor, updateData, options, userId) => {
       // Check if the updated actor is in the tracked actors list by ID
-      if (this.trackedActorIds.includes(actor.id)) {
+      if (game.combat && this.trackedActorIds.includes(actor.id)) {
+         this.#updateActorData(actor, updateData);
          console.debug(`Actor ${actor.name} changed.`, updateData);
+      }
+   };
+
+   #updateCombatant = (combatant, updateData, options, userId) => {
+      if (game.combat && this.trackedActorIds.includes(combatant.actor.id)) {
+         this.#updateCombatantData(combatant, updateData);
+         console.debug(`Combatant ${combatant.name} changed.`, updateData);
+      }
+   };
+
+   #updateItem = async (item, updateData, options, userId) => {
+      const actor = item?.parent; // The actor the item belongs to
+      if (game.combat && this.trackedActorIds.includes(actor.id)) {
          this.render();  // Re-render to reflect updated actor data
+      }
+   };
+
+   #onPlayerChangedAction(event) {
+      const actorId = event.currentTarget.dataset.actorId;
+      const actor = game.actors.get(actorId);
+      const updateData = { "system.combat.declaredAction": event.currentTarget.value };
+
+      // Update the action description dynamically
+      this.#updateActorData(actor, updateData);
+
+      // Optionally update the actor's system data if needed
+      actor.update(updateData);
+   }
+
+   #updateActorData(actor, updateData) {
+      // Find the row matching the actor ID
+      const rowElement = document.querySelector(`tr[data-actor-id="${actor.id}"]`);
+      const combat = updateData.system?.combat;
+      if (rowElement) {
+         if (combat?.declaredAction !== undefined) {
+            // Update select control value
+            rowElement.querySelector('[name="declaredAction"]').value = combat.declaredAction;
+            // Update the declared action description
+            const localizedDescription = game.i18n.localize(`FADE.combat.maneuvers.${combat.declaredAction}.description`);
+            rowElement.querySelector('[name="actionDesc"]').textContent = localizedDescription;
+         }
+
+         if (combat?.attacksAgainst !== undefined) {
+            rowElement.querySelector('[name="atnorecv"]').textContent = combat.attacksAgainst;
+         }
+         if (combat?.attacks !== undefined) {
+            rowElement.querySelector('[name="atno"]').textContent = combat.attacks;
+         }
       }
    }
 
-   _updateCombatant = (combatant, updateData, options, userId) => {
-      if (this.trackedActorIds.includes(combatant.actor.id)) {
-         console.debug(`Combatant ${combatant.name} changed.`, updateData);
+   #updateCombatantData(combatant, updateData) {
+      // Find the row matching the actor ID
+      const rowElement = document.querySelector(`tr[data-actor-id="${combatant.actor.id}"]`);
+      if (rowElement) {
+         // If initiative changed and this isn't the GM
+         if (updateData.initiative !== undefined && game.user.isGM === false) {
+            const selectElement = rowElement.querySelector('[name="declaredAction"]');
+            if (updateData.initiative !== null) {
+               selectElement.setAttribute("disabled", "disabled"); // Add disabled
+            } else {
+               selectElement.removeAttribute("disabled"); // Remove disabled
+            }
+         }
       }
    }
 
    static toggleCombatForm() {
       const declaredActions = game.settings.get(game.system.id, "declaredActions");
-      if (declaredActions === true) {
-         window.fade = window.fade || {};
-         if (window.fade.combatForm) {
-            window.fade.combatForm.close();
+      if (game.combat && declaredActions === true) {
+         if (game.fade.combatForm) {
+            game.fade.combatForm.close();
          } else {
-            window.fade.combatForm = new PlayerCombatForm();
-            window.fade.combatForm.render(true);
+            game.fade.combatForm = new PlayerCombatForm();
+            game.fade.combatForm.render(true);
          }
       }
    }

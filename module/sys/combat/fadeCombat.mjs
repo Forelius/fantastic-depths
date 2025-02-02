@@ -63,7 +63,7 @@ export class fadeCombat extends Combat {
             const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
             groups = [...new Set(rollingCombatants.map(combatant => combatant.group))];
          }
-         if (game.user.isGM) {
+         if (game.user.isGM === true) {
             for (const group of groups) {
                await this.#doInitiativeRoll(this.combatants, group);  // Use the custom initiative function
             }

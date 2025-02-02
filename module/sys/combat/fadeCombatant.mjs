@@ -47,11 +47,13 @@ export class fadeCombatant extends Combatant {
       // Reset initiative to null
       if (this.group === 'hostile') {
          await this.actor.update({
+            "system.combat.attacks": 0,
             "system.combat.attacksAgainst": 0,
             'system.combat.declaredAction': "attack"
          });
       } else {
          await this.actor.update({
+            "system.combat.attacks": 0,
             "system.combat.attacksAgainst": 0,
             'system.combat.declaredAction': "nothing"
          });
@@ -61,8 +63,8 @@ export class fadeCombatant extends Combatant {
    async exitCombat() {
       // Reset initiative to null
       this.actor.update({
-         "system.combat.attacksAgainst": 0,
          "system.combat.attacks": 0,
+         "system.combat.attacksAgainst": 0,
          "system.combat.declaredAction": null
       });
    }

@@ -207,12 +207,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * @returns
     */
    async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') {
+      const attackingActor = attacker.actor ?? attacker;
       let result = null;
 
       if (roll) {
+         attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
+
          const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
-         const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
-         const thbonus = attacker.actor?.system.thbonus ?? attacker.system.thbonus;
+         const thac0 = attackingActor.system.thac0.value;
+         const thbonus = attackingActor.system.thbonus;
          const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0, thbonus);
          let hitACMessage = game.i18n.localize('FADE.Chat.attackACNone');
          if (hitAC === -999) {
@@ -264,12 +267,14 @@ export class AttackRollChatBuilder extends ChatBuilder {
                targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
             }
 
-            // Track number of attacks against target. Do it after getting the tohit result;
+            // Track number of attacks against target. Do it after getting the tohit result. 
+            // Send through socket because this player may not have permission to change the target actor's data.
             SocketManager.sendToGM("incAttacksAgainst", { tokenid: targetToken.id });
 
             result.targetResults.push(targetResult);
          }
-      } else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === 'breath') {
+      }
+      else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === 'breath') {
          // Always hits, but saving throw
          result = {
             savingThrow: weapon.system.savingThrow,

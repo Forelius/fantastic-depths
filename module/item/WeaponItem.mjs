@@ -264,7 +264,7 @@ export class WeaponItem extends fadeItem {
       } else if (getOnly !== true) {
          // Deduct 1 ammo if not infinite
          if (ammoItem.system.quantity !== null) {
-            let newQuantity = Math.max(0, ammoItem.system.quantity - 1);
+            const newQuantity = Math.max(0, ammoItem.system.quantity - 1);
             await ammoItem.update({ "system.quantity": newQuantity });
          }
       }

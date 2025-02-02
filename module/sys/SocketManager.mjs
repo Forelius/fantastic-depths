@@ -68,7 +68,6 @@ export class SocketManager {
    }
 
    receiveSocketMessage = (message) => {
-      console.debug('receiveSocketMessage', message, game.user.id);
       // Ignore messages not meant for this user.
       if ((message.recipients?.length > 0 && message.recipients?.includes(game.user.id) === false)
          && (message.recipient === undefined
@@ -76,6 +75,8 @@ export class SocketManager {
             || (message.recipient === 'alluser' && game.user.isGM === true))) {
          return;
       }
+
+      console.debug('receiveSocketMessage', message, game.user.id);
 
       // Handle the message based on type
       switch (message.action) {
@@ -98,10 +99,10 @@ export class SocketManager {
             }
             break;
          case "incAttacksAgainst":
-            this.handleIncAttacksAgainst(message)
+            this.#handleIncAttacksAgainst(message)
             break;
          case "rollGroupInitiative":
-            this.handleRollGroupInitiative(message);
+            this.#handleRollGroupInitiative(message);
             break;
       }
    }
@@ -114,7 +115,7 @@ export class SocketManager {
    }
 
 
-   handleIncAttacksAgainst(message) {
+   #handleIncAttacksAgainst(message) {
       const { data } = message;
       const targetActor = canvas.tokens.get(data.tokenid)?.actor;
       if (targetActor) {
@@ -124,7 +125,7 @@ export class SocketManager {
       }
    }
 
-   handleRollGroupInitiative(message) {
+   #handleRollGroupInitiative(message) {
       const { data } = message;
       const combat = game.combats.get(data.combatid);
       if (combat) {
