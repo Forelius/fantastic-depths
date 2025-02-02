@@ -52,7 +52,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          spellItem, // spell item
          caster,
          damageRoll,
-         isHeal: damageRoll.damageType === "heal",
+         isHeal: damageRoll.type === "heal",
          targets: targetTokens,
          showTargets: !roll
       };

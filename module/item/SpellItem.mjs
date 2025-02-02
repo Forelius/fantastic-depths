@@ -26,9 +26,9 @@ export class SpellItem extends fadeItem {
 
    async getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      const evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      const digest = [];
       let formula = evaluatedRoll?.formula;
-      let digest = [];
       let modifier = 0;
       let hasDamage = true;
 
@@ -44,7 +44,7 @@ export class SpellItem extends fadeItem {
 
       return {
          formula,
-         damageType: isHeal ? "heal" : "magic",
+         type: isHeal ? "heal" : "magic",
          digest,
          hasDamage
       };
@@ -113,7 +113,7 @@ export class SpellItem extends fadeItem {
                   if (dialogResp.resp.targetWeaponType) {
                      rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                   }
-                  let attackRoll = casterActor.getAttackRoll(this, systemData.attackType, rollOptions);
+                  const attackRoll = casterActor.getAttackRoll(this, systemData.attackType, rollOptions);
                   rollData.formula = attackRoll.formula;
                   digest = attackRoll.digest;
                   const rollContext = { ...rollData };

@@ -28,7 +28,7 @@ export class SpecialAbilityItem extends fadeItem {
 
       return {
          formula,
-         damageType: isHeal ? "heal" : "physical",
+         type: isHeal ? "heal" : "physical",
          digest,
          hasDamage
       };

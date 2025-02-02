@@ -41,7 +41,7 @@ export class SkillItem extends fadeItem {
 
       return {
          formula,
-         damageType: isHeal ? "heal" : null,
+         type: isHeal ? "heal" : null,
          digest,
          hasDamage
       };

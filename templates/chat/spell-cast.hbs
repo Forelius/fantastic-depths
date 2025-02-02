@@ -36,7 +36,7 @@
 <div style="margin-top:8px;">
    {{#if isHeal}}
    <button class="heal-roll"
-           data-damagetype="{{damageRoll.damageType}}"
+           data-damagetype="{{damageRoll.type}}"
            data-attacktype="spell"
            data-label="Heal"
            data-type="heal"
@@ -48,7 +48,7 @@
    </button>
    {{else}}
    <button class="damage-roll"
-           data-damagetype="{{damageRoll.damageType}}"
+           data-damagetype="{{damageRoll.type}}"
            data-attacktype="spell"
            data-label="Damage"
            data-type="damage"
