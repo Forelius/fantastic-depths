@@ -276,7 +276,8 @@ FADE.CombatManeuvers = {
    parry: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    disarm: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    guard: { phase: "melee", canMove: true },
-   unarmed: { phase: "melee", canMove: true }
+   unarmed: { phase: "melee", canMove: true },
+   dodge: { phase: "melee", canMove: true }
 }
 FADE.WrestlingStates = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
 FADE.ActorSizes = [

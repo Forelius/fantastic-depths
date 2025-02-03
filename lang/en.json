@@ -795,6 +795,10 @@
             "unarmed": {
                "name": "Unarmed Combat",
                "description": "Unarmed combat includes striking and wrestling. The defender does not have to engage in unarmed combat and may still attack with their melee weapon."
+            },
+            "dodge": {
+               "name": "Dodge",
+               "description": "When a fighter chooses this combat option, they do not attack at all and instead focus entirely on avoiding incoming attacks. Their AC increases by 5 against one specific attack they choose to evade. Against any other attack they are aware of, their AC increases by 3. Against any other attack they are not aware of, their AC increases by 1. This AC bonus lasts until the end of the round, and at the beginning of the next round, it is no longer in effect."
             }
          }
       },

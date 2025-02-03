@@ -69,7 +69,7 @@ export class MonsterDataModel extends fadeActorDataModel {
    _prepareHitPoints() {
       if (this.hp.max == null) {
          const { base, modifier, dieSides } = this._getParsedHD();
-         this.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);
+         this.hp.value = Math.ceil(((dieSides + 1) / 2) * base) + modifier;
          this.hp.max = this.hp.value;
       }
    }

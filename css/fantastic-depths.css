@@ -620,7 +620,7 @@ h1, h2, h3, h4 {
 .light-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #2b2a24;
 }
-.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus {
+.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus, .light-mode .fantastic-depths .window-content .chatable:hover, .light-mode .fantastic-depths .window-content .chatable:focus {
   color: #2b2a24;
   text-shadow: 0 0 10px #ae7615;
 }
@@ -1109,6 +1109,7 @@ h1, h2, h3, h4 {
 .fantastic-depths .sheet-body .tab,
 .fantastic-depths .sheet-body .tab .editor {
   /*height: 100%;*/
+  min-height: 32px;
 }
 .fantastic-depths .tox .tox-editor-container {
   background: #fff;
