@@ -24,6 +24,11 @@ export class SpecialAbilityChat extends ChatBuilder {
          window.toastManager.showHtmlToast(toast, "info", specAbility.system.rollMode);
       }
 
+      let save = null;
+      if (specAbility.system.savingThrow?.length > 0) {
+         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && specAbility.system.savingThrow === item.system.customSaveCode);
+      }
+
       // Prepare data for the chat template
       const chatData = {
          context,
@@ -34,7 +39,8 @@ export class SpecialAbilityChat extends ChatBuilder {
          isHeal: damageRoll.type === "heal",
          damageRoll,
          targets: targetTokens,
-         showTargets: !roll
+         showTargets: !roll,
+         save
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
@@ -51,7 +57,7 @@ export class SpecialAbilityChat extends ChatBuilder {
    }
 
    getRollResult(specAbility, roll) {
-      let result = { };
+      let result = {};
       const systemData = specAbility.system;
       if (systemData.operator?.length > 0) {
          const testResult = this.getBoolRollResultType({

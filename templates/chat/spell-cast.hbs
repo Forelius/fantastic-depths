@@ -28,7 +28,7 @@
            data-type="{{spellItem.system.savingThrow}}"
            data-weaponid="{{spellItem.id}}">
       <i class="fa-solid fa-life-ring"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{localize (concat 'FADE.Actor.Saves.' spellItem.system.savingThrow '.abbr')}}</span>
+      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{save.system.shortName}}</span>
    </button>
 </div>
 {{/if}}

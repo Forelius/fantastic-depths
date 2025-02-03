@@ -29,7 +29,7 @@ export class SpecialAbilityDataModel extends fadeItemDataModel {
          category: new fields.StringField({ required: false, initial: "" }),
          // The type of combat maneuver this represents
          combatManeuver: new fields.StringField({ required: false, nullable: true, initial: null }),
-         // The type of saving throw this represents
+         // The type of saving throw this represents. Only use if this is a saving throw item
          customSaveCode: new fields.StringField({ required: false, nullable: true, initial: null }),
       };
    }

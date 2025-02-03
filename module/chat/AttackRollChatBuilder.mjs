@@ -43,6 +43,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
          window.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
+      let save = null;
+      if (weapon.system.savingThrow?.length > 0) {
+         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && specAbility.system.weapon === item.system.customSaveCode);
+      }
+
       const chatData = {
          damageRoll,
          rollContent,
@@ -52,6 +57,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          digest: digest,
          weapon: caller,
          resp,
+         save,
          targetWeaponType: resp.targetWeaponType,
       };
 

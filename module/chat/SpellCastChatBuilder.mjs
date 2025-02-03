@@ -44,6 +44,11 @@ export class SpellCastChatBuilder extends ChatBuilder {
          window.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
+      let save = null;
+      if (spellItem.system.savingThrow?.length > 0) {
+         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && spellItem.system.savingThrow === item.system.customSaveCode);
+      }
+
       // Prepare data for the chat template
       const chatData = {
          context,
@@ -54,7 +59,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
          damageRoll,
          isHeal: damageRoll.type === "heal",
          targets: targetTokens,
-         showTargets: !roll
+         showTargets: !roll,
+         save
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
