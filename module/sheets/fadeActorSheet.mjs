@@ -545,14 +545,15 @@ export class fadeActorSheet extends ActorSheet {
       let result = null;
       event.preventDefault();
       const item = this._getItemFromActor(event);
+      const newVal = Number(event.target.value) || 0;
       if (event.target.dataset.field === "quantity") {
-         result = item.update({ "system.quantity": parseInt(event.target.value) });
+         result = item.update({ "system.quantity": newVal });
       } else if (event.target.dataset.field === "cast") {
-         result = item.update({ "system.cast": parseInt(event.target.value) });
+         result = item.update({ "system.cast": newVal });
       } else if (event.target.dataset.field === "memorize") {
-         result = item.update({ "system.memorized": parseInt(event.target.value) });
+         result = item.update({ "system.memorized": newVal });
       } else if (event.target.dataset.field === "target") {
-         result = item.update({ "system.target": parseInt(event.target.value) });
+         result = item.update({ "system.target": newVal });
       }
 
       return result;

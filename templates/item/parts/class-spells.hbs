@@ -4,8 +4,8 @@
       <!-- Header Row -->
       <li class='item flexrow items-header'>
          <div>{{localize 'FADE.Actor.Level'}}</div>
-         {{#each spellLevelHeaders}}
-         <div>{{this}}</div>
+         {{#each spellLevelHeaders as |header|}}
+         <div>{{header}}</div>
          {{/each}}
       </li>
       <!-- Spell Entries -->

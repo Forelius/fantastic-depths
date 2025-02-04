@@ -19,7 +19,7 @@
       </li>
    </ul>
    <ul class="summary flexrow">
-      <li class="flex1">
+      <li style="max-width:65px">
          <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" />
          <label class="hitdie rollable" 
                 data-formula="{{formatHitDice system.hp.hd}}" 
@@ -27,7 +27,7 @@
                 data-label="{{localize 'FADE.Actor.Health'}}">
          {{localize 'FADE.Actor.HitDiceShort'}}</label>
       </li>
-      <li class="flex2" style="max-width:90px">
+      <li class="flex2" style="max-width:65px">
          <input type="text" name="system.na.wandering" value="{{system.na.wandering}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.NumberAppearing.long'}}" />
          <label class="rollable" 
                 data-formula="{{system.na.wandering}}" 
@@ -35,7 +35,7 @@
                 data-rollmode="blindroll"
                 data-tooltip="{{localize 'FADE.Actor.NumberAppearing.long'}}">{{localize 'FADE.Actor.NumberAppearing.short'}}</label>
       </li>
-      <li class="flex2" style="max-width:90px">
+      <li class="flex2" style="max-width: 65px">
          <input type="text" name="system.na.lair" value="{{system.na.lair}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" />
          <label class="rollable" 
                 data-formula="{{system.na.lair}}" 
@@ -43,7 +43,7 @@
                 data-label="{{localize 'FADE.Actor.NumberAppearing.longLair'}}" 
                 data-tooltip="{{localize 'FADE.Actor.NumberAppearing.longLair'}}">{{localize 'FADE.Actor.NumberAppearing.abbrLair'}}</label>
       </li>
-      <li class="flex1">
+      <li class="flex1" style="max-width:50px"> 
          <input type="number" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
          <label class="rollable" 
                 data-formula="2d6" 
@@ -54,7 +54,7 @@
                 data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">
          {{localize 'FADE.Actor.morale'}}</label>
       </li>
-      <li class="flex1">
+      <li>
          <input type="text" name="system.treasure" value="{{system.treasure}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Treasure.long'}}" />
          <label data-tooltip="{{localize 'FADE.Actor.Treasure.long'}}">{{localize 'FADE.Actor.Treasure.short'}}</label>
       </li>

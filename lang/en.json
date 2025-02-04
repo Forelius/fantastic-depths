@@ -680,7 +680,7 @@
          }
       },
       "DamageTypes": {
-         "name": "Damage Types",
+         "name": "Damage Type",
          "types": {
             "physical": "Physical",
             "breath": "Breath",
@@ -688,7 +688,8 @@
             "frost": "Frost",
             "magic": "Magic",
             "poison": "Poison",
-            "heal": "Healing"
+            "heal": "Healing",
+            "hull": "Hull"
          }
       },
       "combat": {

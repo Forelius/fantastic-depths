@@ -27,7 +27,8 @@ FADE.DamageTypes = [
    "frost",
    "magic",
    "poison",
-   "heal"
+   "heal",
+   "hull"
 ]
 /** 
  * This is the type of weapon being used.

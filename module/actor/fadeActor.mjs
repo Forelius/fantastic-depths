@@ -530,15 +530,12 @@ export class fadeActor extends Actor {
    _prepareSpellsUsed() {
       const systemData = this.system;
       const spells = this.items.filter((item) => item.type === 'spell');
-      //const highestSpellLevel = spells.reduce((max, current) => {
-      //   return current.spellLevel > max.spellLevel ? current : max;
-      //})?.spellLevel;
       let spellSlots = systemData.spellSlots || [];
 
       // Reset used spells to zero
-      for (let i = 0; i < systemData.config.maxSpellLevel; i++) {
-         let slot = spellSlots[i] || {};
-         slot.used = 0;
+      for (let i = 0; i <= systemData.config.maxSpellLevel; i++) {
+         spellSlots[i] = spellSlots[i] || {};
+         spellSlots[i].used = 0;
       }
 
       if (spellSlots.length > 0) {

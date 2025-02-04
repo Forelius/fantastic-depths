@@ -11,7 +11,7 @@ export class MonsterSheet extends fadeActorSheet {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'actor'],
          template: `${path}/MonsterSheet.hbs`,
-         width: 650,
+         width: 680,
          height: 540,
          tabs: [
             {
