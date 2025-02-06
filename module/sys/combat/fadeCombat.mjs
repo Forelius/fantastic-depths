@@ -4,6 +4,17 @@ import { SocketManager } from '../SocketManager.mjs'
 
 // Custom Combat class
 export class fadeCombat extends Combat {
+   static initialize() {
+      /** ------------------------------- */
+      /** Register combat-related hooks   */
+      /** ------------------------------- */
+      Hooks.on('renderCombatTracker', async (app, html, data) => data?.combat?.onRenderCombatTracker(app, html, data));
+      Hooks.on('createCombat', (combat) => combat.onCreateCombat(combat));
+      Hooks.on('deleteCombat', (combat) => combat.onDeleteCombat(combat));
+      Hooks.on('createCombatant', (combatant, options, userId) => options.parent.onCreateCombatant(combatant, options, userId));
+      Hooks.on('deleteCombatant', (combatant, options, userId) => options.parent.onDeleteCombatant(combatant, options, userId));
+   }
+
    get ownedCombatants() {
       return this.combatants.filter(combatant => combatant.actor?.ownership[game.user.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER);
    }
@@ -29,23 +40,37 @@ export class fadeCombat extends Combat {
     */
    setupTurns() {
       // console.debug("setupTurns sorting...");
-      let combatants = super.setupTurns();
+      //let turns = super.setupTurns();
 
       // Check to make sure all combatants still exist.
-      combatants = combatants.filter((combatant) => combatant.actor && combatant.token);
+      const turns = this.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
 
-      if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
-         combatants.sort((a, b) => this.sortCombatantsGroup(a, b));
-      } else {
-         combatants.sort((a, b) => this.sortCombatantsIndividual(a, b));
+      if (turns.length > 0) {
+         if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+            turns.sort((a, b) => this.sortCombatantsGroup(a, b));
+         } else {
+            turns.sort((a, b) => this.sortCombatantsIndividual(a, b));
+         }
       }
+      if (this.turn !== null) this.turn = Math.clamp(this.turn, 0, turns.length - 1);
 
-      return this.turns = combatants;
+      // Update state tracking
+      let c = turns[this.turn];
+      this.current = {
+         round: this.round,
+         turn: this.turn,
+         combatantId: c ? c.id : null,
+         tokenId: c ? c.tokenId : null
+      };
+
+      // One-time initialization of the previous state
+      if (!this.previous) this.previous = this.current;
+      return this.turns = turns;
    }
 
    /**
    * Roll initiative for one or multiple Combatants within the Combat document
-    * @override
+   * @override
    * @param {string|string[]} ids     A Combatant id or Array of ids for which to roll
    * @param {object} [options={}]     Additional options which modify how initiative rolls are created or presented.
    * @param {string|null} [options.formula]         A non-default initiative formula to roll. Otherwise, the system
@@ -98,7 +123,7 @@ export class fadeCombat extends Combat {
       let result = super.startCombat();
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
       if (game.user.isGM) {
-         this.#resetCombatants();
+         //this.#resetCombatants();
          // Send a chat message when combat officially begins (round 1)
          ChatMessage.create({
             speaker: speaker,
@@ -294,7 +319,7 @@ export class fadeCombat extends Combat {
  * @param {any} html
  * @param {any} data
  */
-   static async onRenderCombatTracker(app, html, data) {
+   async onRenderCombatTracker(app, html, data) {
       let hasAnyRolls = false;
       if (data?.combat?.combatants) {
          // Iterate over each combatant and apply a CSS class based on disposition
@@ -320,7 +345,7 @@ export class fadeCombat extends Combat {
       }
    }
 
-   static onCreateCombat(combat) {
+   onCreateCombat(combat) {
       if (game.user.isGM) {
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker
          // Send a chat message when combat begins
@@ -331,7 +356,7 @@ export class fadeCombat extends Combat {
       }
    }
 
-   static onDeleteCombat(combat) {
+   onDeleteCombat(combat) {
       if (game.user.isGM) {
          combat.tryClosePlayerCombatForm();
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker
@@ -346,13 +371,13 @@ export class fadeCombat extends Combat {
       }
    }
 
-   static onCreateCombatant(combatant, options, userId) {
+   onCreateCombatant(combatant, options, userId) {
       if (game.user.isGM) {
          combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
       }
    }
 
-   static onDeleteCombatant(combatant, options, userId) {
+   onDeleteCombatant(combatant, options, userId) {
       if (game.user.isGM) {
          this.tryClosePlayerCombatForm([userId]);
          combatant.actor.update({ 'system.combat.declaredAction': null });
@@ -506,7 +531,7 @@ export class fadeCombat extends Combat {
          // Store the base formula without the mod for flavor text
          const baseFormula = this.initiativeFormula.replace(/\+?\s*@mod/, '').trim();
          const flavorText = game.i18n.format(`FADE.Chat.combatTracker.rollFormula`, { formula: baseFormula });
-         const speaker = { alias: game.user.name };  // Use the player's name as the speaker
+         const speaker = { alias: game.user.name }; // Use the player's name as the speaker
          ChatMessage.create({
             speaker: speaker,
             content: rollResults.join('<br>'),  // Combine all roll results into one message with line breaks
@@ -562,12 +587,3 @@ export class fadeCombat extends Combat {
       return result;
    }
 }
-
-/** ------------------------------- */
-/** Register combat-related hooks   */
-/** ------------------------------- */
-Hooks.on('renderCombatTracker', fadeCombat.onRenderCombatTracker);
-Hooks.on('createCombat', fadeCombat.onCreateCombat);
-Hooks.on('deleteCombat', fadeCombat.onDeleteCombat);
-Hooks.on('createCombatant', fadeCombat.onCreateCombatant);
-Hooks.on('deleteCombatant', fadeCombat.onDeleteCombatant);

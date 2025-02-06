@@ -18,7 +18,7 @@ export class PlayerCombatForm extends FormApplication {
    }
 
    get trackedActorIds() {
-      return game.combat.ownedCombatants.map(combatant => combatant.actor?.id).filter(id => id);
+      return game.combat?.ownedCombatants.map(combatant => combatant.actor?.id).filter(id => id);
    }
 
    /**
@@ -30,57 +30,60 @@ export class PlayerCombatForm extends FormApplication {
       return context;
    }
 
+   /**
+    * @override
+    * @param {any} html
+    */
    activateListeners(html) {
       super.activateListeners(html);
 
       // Listen for changes in the action select elements
-      html.find('[name="declaredAction"]').on("change", event => this.#onPlayerChangedAction(event));
-      Hooks.on('updateActor', this.#updateTrackedActor);
+      html.find('[name="declaredAction"]').on("change", this._onPlayerChangedAction);
+      Hooks.on('updateActor', this._updateTrackedActor);
       Hooks.on("updateCombatant", this.#updateCombatant);
       Hooks.on("updateItem", this.#updateItem);
    }
 
    // Optionally handle close actions
    close(options) {
-      Hooks.off('updateActor', this.#updateTrackedActor);
+      Hooks.off('updateActor', this._updateTrackedActor);
       Hooks.off("updateCombatant", this.#updateCombatant);
       Hooks.off("updateItem", this.#updateItem);
       delete game.fade.combatForm;
       return super.close(options);
    }
 
-   #updateTrackedActor = (actor, updateData, options, userId) => {
+   _updateTrackedActor = (actor, updateData, options, userId) => {
       // Check if the updated actor is in the tracked actors list by ID
       if (game.combat && this.trackedActorIds.includes(actor.id)) {
          this.#updateActorData(actor, updateData);
-         console.debug(`Actor ${actor.name} changed.`, updateData);
+         //console.debug(`Actor ${actor.name} changed.`, updateData);
       }
-   };
+   }
 
-   #updateCombatant = (combatant, updateData, options, userId) => {
+   #updateCombatant=(combatant, updateData, options, userId) => {
+      //console.debug(`Combatant ${combatant.name} changed.`, updateData, options);
       if (game.combat && this.trackedActorIds.includes(combatant.actor.id)) {
          this.#updateCombatantData(combatant, updateData);
-         console.debug(`Combatant ${combatant.name} changed.`, updateData);
       }
-   };
+   }
 
-   #updateItem = async (item, updateData, options, userId) => {
+   #updateItem = (item, updateData, options, userId) => {
       const actor = item?.parent; // The actor the item belongs to
       if (game.combat && this.trackedActorIds.includes(actor.id)) {
          this.render();  // Re-render to reflect updated actor data
       }
-   };
+   }
 
-   #onPlayerChangedAction(event) {
+   async _onPlayerChangedAction(event) {
       const actorId = event.currentTarget.dataset.actorId;
-      const actor = game.actors.get(actorId);
+      const actor = game.combat.combatants.find(combatant => combatant.actor.id === actorId)?.actor;
       const updateData = { "system.combat.declaredAction": event.currentTarget.value };
-
       // Update the action description dynamically
-      this.#updateActorData(actor, updateData);
-
+      //this.#updateActorData(actor, updateData);
       // Optionally update the actor's system data if needed
-      actor.update(updateData);
+      const updated = await actor.update(updateData);
+      console.debug(`_onPlayerChangedAction ${actor.name}:`, updated);
    }
 
    #updateActorData(actor, updateData) {
@@ -119,6 +122,21 @@ export class PlayerCombatForm extends FormApplication {
             }
          }
       }
+   }
+
+   /**
+   * This method is called upon form submission after form data is validated
+   * @param {Event} event - The initial triggering submission event
+   * @param {object} formData - The object of validated form data with which to update the object
+   */
+   // eslint-disable-next-line no-underscore-dangle
+   async _updateObject(event, formData) {
+      event.preventDefault();
+      // Update the actor
+      //await this.object.update(formData);
+      //// Re-draw the updated sheet
+      //// eslint-disable-next-line no-underscore-dangle
+      //await this.object.sheet._render(true);
    }
 
    static toggleCombatForm() {

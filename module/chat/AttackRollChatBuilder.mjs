@@ -21,12 +21,12 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const attackerName = attacker.name;
       const targetTokens = Array.from(game.user.targets);
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
-
-      let descData = {
+      const weapon = caller;
+      const descData = {
          attackerid: attacker.id,
          attacker: attackerName,
          attackType: resp.attackType,
-         weapon: caller.system.isIdentified === true ? caller.name : caller.system.unidentifiedName
+         weapon: weapon.system.isIdentified === true ? weapon.name : weapon.system.unidentifiedName
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
 
@@ -45,7 +45,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       let save = null;
       if (weapon.system.savingThrow?.length > 0) {
-         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && specAbility.system.weapon === item.system.customSaveCode);
+         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && weapon.system.savingThrow === item.system.customSaveCode);
       }
 
       const chatData = {
@@ -55,7 +55,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          descData,
          toHitResult,
          digest: digest,
-         weapon: caller,
+         weapon,
          resp,
          save,
          targetWeaponType: resp.targetWeaponType,

@@ -126,12 +126,14 @@ export class SocketManager {
    }
 
    #handleRollGroupInitiative(message) {
-      const { data } = message;
-      const combat = game.combats.get(data.combatid);
-      if (combat) {
-         combat.rollInitiative([], { messageOptions: { group: "friendly" } });
-      } else {
-         console.warn("handleIncAttacksAgainst: combat not found.", data);
+      if (game.user.isGM) {
+         const { data } = message;
+         const combat = game.combats.get(data.combatid);
+         if (combat) {
+            combat.rollInitiative([], { messageOptions: { group: "friendly" } });
+         } else {
+            console.warn("handleIncAttacksAgainst: combat not found.", data);
+         }
       }
    }
 }

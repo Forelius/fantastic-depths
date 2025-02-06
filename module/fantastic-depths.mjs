@@ -244,12 +244,13 @@ Hooks.once('ready', async function () {
          });
       }
 
-      SocketManager.SetupOnReady();
+      SocketManager.SetupOnReady();      
    }
 });
 
 fadeHandlebars.registerHelpers();
 
+fadeCombat.initialize();
 /**
  * Hook for time advancement.
  */
@@ -264,15 +265,6 @@ Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
             token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
          }
       }
-   }
-});
-
-/* -------------------------------------------- */
-/*  Render Sidebar Hook                         */
-/* -------------------------------------------- */
-// Hook to add the "Turn Tracker" button in the sidebar for the GM
-Hooks.on('renderSidebarTab', (app, html) => {
-   if (game.user.isGM) {
    }
 });
 
