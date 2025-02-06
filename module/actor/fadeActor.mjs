@@ -13,9 +13,13 @@ export class fadeActor extends Actor {
          // If v11 add toggleStatusEffect method.
          this.toggleStatusEffect = async (status, options) => {
             const token = this.getActiveTokens()[0];
-            await token.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
+            await token?.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
          };
       }
+   }
+
+   get activeToken() {
+      return canvas.tokens?.placeables?.find(t => t.document.actorId === this.id);
    }
 
    /**
@@ -109,6 +113,14 @@ export class fadeActor extends Actor {
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareArmorClass();
+      if (this.system.activeLight?.length > 0) {
+         const lightItem = this.items.get(this.system.activeLight);
+         if (!lightItem) {
+            console.log(`Deactivating light for ${this.name} due to missing light item.`);
+            this.setActiveLight(null);
+            this.activeToken.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+         }
+      }
    }
 
    /**
@@ -376,13 +388,12 @@ export class fadeActor extends Actor {
     * A helper method for setting the actor's current active light and active fuel.
     * @public
     * @param {any} lightItemId An owned light item's id.
-    * @param {any} fuelItemId An owned light or fuel item's id.
     */
-   setActiveLight(lightItemId, fuelItemId) {
-      this.update({
-         "system.activeLight": lightItemId,
-         "system.activeFuel": fuelItemId
-      });
+   async setActiveLight(lightItemId) {
+      if (lightItemId === null || lightItemId ==='' || lightItemId===undefined) {
+         await this.activeToken?.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+      }
+      await this.update({ "system.activeLight": lightItemId });
    }
 
    /**
@@ -532,16 +543,19 @@ export class fadeActor extends Actor {
       const spells = this.items.filter((item) => item.type === 'spell');
       let spellSlots = systemData.spellSlots || [];
 
-      // Reset used spells to zero
+      // Reset used spells to zero.
+      // Note: This is not how many times it has been cast, but how many slots have been used.
       for (let i = 0; i <= systemData.config.maxSpellLevel; i++) {
          spellSlots[i] = spellSlots[i] || {};
          spellSlots[i].used = 0;
       }
 
-      if (spellSlots.length > 0) {
+      if (spells.length > 0) {
          for (let spell of spells) {
-            if (spell.system.memorized > 0) {
-               spellSlots[spell.system.spellLevel].used += spell.system.memorized;
+            if (spell.system.spellLevel >= spellSlots.length) {
+               console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
+            } else if (spell.system.memorized > 0) {
+               spellSlots[spell.system.spellLevel - 1].used += spell.system.memorized;
             }
          }
       }
@@ -639,6 +653,10 @@ export class fadeActor extends Actor {
       this.system.acDigest = acDigest;
    }
 
+   /**
+    * Called by Character and Monster actor classes to update/add saving throws.
+    * @param {any} savesData The values to use for the saving throws.
+    */
    async _setupSavingThrows(savesData) {
       const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');

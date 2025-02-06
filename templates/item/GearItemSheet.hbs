@@ -77,6 +77,16 @@
                   <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
                   <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
                </li>
+               <li style="max-width: 60px;">
+                  <input name="turnsRemaining" type="text" data-dtype="String" value="{{turnsRemaining}}" readonly />
+                  <label for="turnsRemaining" data-tooltip="{{localize 'FADE.Item.light.turnsRemainingHint'}}">{{localize "FADE.Item.light.turnsRemaining"}}</label>
+               </li>
+               {{#if isGM}}
+               <li class="flex1">
+                  <input name="system.light.secondsRemain" type="text" data-dtype="String" value="{{system.light.secondsRemain}}" />
+                  <label for="system.light.secondsRemain" data-tooltip="{{localize 'FADE.Item.light.secondsRemainingHint'}}">{{localize "FADE.Item.light.secondsRemaining"}}</label>
+               </li>
+               {{/if}}
             </ul>
             <ul class="summary flexrow">
                <li class="flex1">
@@ -100,10 +110,6 @@
                <li class="flex2">
                   <input name="system.light.fuelType" type="text" data-dtype="String" value="{{system.light.fuelType}}" />
                   <label for="system.light.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
-               </li>
-               <li class="flex1">
-                  <input name="system.light.secondsActive" type="text" data-dtype="Number" value="{{system.light.secondsActive}}" readonly />
-                  <label for="system.light.secondsActive" data-tooltip="{{localize 'FADE.Item.light.secondsActiveHint'}}">{{localize "FADE.Item.light.secondsActive"}}</label>
                </li>
             </ul>
             {{#if isCustom}}

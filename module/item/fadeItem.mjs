@@ -11,6 +11,10 @@ export class fadeItem extends Item {
       this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
+   get ownerToken() {
+      return this.actor ? canvas.tokens?.placeables?.find(t => t.document.actorId === this.actor?.id) : null;
+   }
+
    /** @protected */
    prepareBaseData() {
       super.prepareBaseData();

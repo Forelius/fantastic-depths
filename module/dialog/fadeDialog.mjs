@@ -196,7 +196,8 @@ export class fadeDialog {
             extinguish: {
                label: game.i18n.localize('FADE.dialog.extinguish'),
                callback: () => ({
-                  action: "extinguish"
+                  action: "extinguish",
+                  itemId: document.getElementById('lightItem').value,
                })
             },
             close: {

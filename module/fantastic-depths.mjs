@@ -253,13 +253,16 @@ fadeHandlebars.registerHelpers();
 /**
  * Hook for time advancement.
  */
-Hooks.on('updateWorldTime', (worldTime, dt, options, userId) => {
-   LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
-   //console.debug("updateWorldTime", worldTime, dt, options, userId);
-   const tokens = canvas?.tokens.placeables;
-   for (let token of tokens) {
-      if (token.actor) {  // Only process tokens with an actor
-         token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
+   if (game.user.isGM === true) {
+      await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
+      //console.debug("updateWorldTime", worldTime, dt, options, userId);
+      const placeables = canvas?.tokens.placeables;
+      for (let placeable of placeables) {
+         const token = placeable.document;
+         if (token.actor) {  // Only process tokens with an actor
+            token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+         }
       }
    }
 });
@@ -301,7 +304,7 @@ Hooks.on("updateItem",async (item, updateData, options, userId) => {
    const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
    if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
       // Log the item update and notify the GM
-      console.log(`Item updated: ${item.name} by ${user.name}`, updateData?.system);     
+      console.log(`Item updated: ${item.actor?.name} ${item.name} by ${user.name}`, updateData?.system);     
    }
 });
 
