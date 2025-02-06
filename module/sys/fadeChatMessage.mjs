@@ -1,10 +1,19 @@
 export class fadeChatMessage extends ChatMessage {
-   /** @inheritDoc */
-   async getHTML(...args) {
+      /** @inheritDoc */
+   async getHTML(options) {
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
-      const html = await super.getHTML();
-      this._addAttackTargets(html[0]);
-      await this._addApplyDamage(html[0]);
+      const html = await super.getHTML(options);
+      this.#addAttackTargets(html[0]);
+      await this.#addApplyDamage(html[0]);
+      return html;
+   }
+
+   /** @inheritDoc */
+   async renderHTML(options) {
+      this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+      const html = await super.renderHTML(options);
+      this.#addAttackTargets(html[0]);
+      await this.#addApplyDamage(html[0]);
       return html;
    }
 
@@ -12,7 +21,7 @@ export class fadeChatMessage extends ChatMessage {
     * Add the apply button to a damage chat message if GM.
     * @param {any} html The chat message HTMLElement
     */
-   async _addApplyDamage(html) {
+   async #addApplyDamage(html) {
       const attackData = this.getFlag(game.system.id, "attackdata");
       if (!game.user.isGM || !attackData) return;
       const chatData = { attackData };
@@ -27,7 +36,7 @@ export class fadeChatMessage extends ChatMessage {
    * @param {any} html The chat message HTMLElement
    * @protected
    */
-   _addAttackTargets(html) {
+   #addAttackTargets(html) {
       const targets = this.getFlag(game.system.id, "targets");
       if (!game.user.isGM || !targets?.length) return;
 

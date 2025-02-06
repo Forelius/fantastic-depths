@@ -26,7 +26,7 @@
    "compatibility": {
       "minimum": 11,
       "verified": 12,
-      "maximum": 12
+      "maximum": 13
    },
    "esmodules": [
       "module/fantastic-depths.mjs"

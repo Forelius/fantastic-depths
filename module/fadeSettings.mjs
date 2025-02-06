@@ -232,7 +232,7 @@ export class fadeSettings {
                session: 0,
                total: 0
             },
-            worldTime: game.time.worldTime
+            worldTime: 0
          },
          restricted: true // Only the GM can change this setting
       });

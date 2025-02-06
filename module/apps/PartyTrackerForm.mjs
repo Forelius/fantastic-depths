@@ -12,7 +12,6 @@ export class PartyTrackerForm extends FormApplication {
    }
 
    static get defaultOptions() {
-      const options = super.defaultOptions;
       return foundry.utils.mergeObject(super.defaultOptions, {
          id: "party-tracker-form",
          title: "Party Tracker",
@@ -26,7 +25,6 @@ export class PartyTrackerForm extends FormApplication {
          ],
          closeOnSubmit: false,
       });
-      return options;
    }
 
    /** 
