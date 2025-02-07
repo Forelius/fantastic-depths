@@ -25,6 +25,7 @@ export class SpellItemDataModel extends fadeItemDataModel {
          dmgFormula: new fields.StringField({ nullable: true, initial: null }),
          healFormula: new fields.StringField({ nullable: true, initial: null }),
          maxTargetFormula: new fields.StringField({ required: false, initial: "1" }),
+         // Specified in rounds (10 seconds)
          durationFormula: new fields.StringField({ nullable: true, initial: null }),
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
          saveDmgFormula: new fields.StringField({ nullable: true, initial: null }),
