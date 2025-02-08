@@ -545,21 +545,24 @@ export class fadeActor extends Actor {
 
       // Reset used spells to zero.
       // Note: This is not how many times it has been cast, but how many slots have been used.
-      for (let i = 0; i <= systemData.config.maxSpellLevel; i++) {
+      for (let i = 0; i < systemData.config.maxSpellLevel; i++) {
          spellSlots[i] = spellSlots[i] || {};
          spellSlots[i].used = 0;
       }
 
       if (spells.length > 0) {
          for (let spell of spells) {
-            if (spell.system.spellLevel >= spellSlots.length) {
+            if (spell.system.spellLevel > spellSlots.length) {
                console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
             } else if (spell.system.memorized > 0) {
                spellSlots[spell.system.spellLevel - 1].used += spell.system.memorized;
             }
          }
       }
-      systemData.spellSlots = spellSlots;
+      if (spellSlots.length !== systemData.config.maxSpellLevel) {
+         console.warn(`${this.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${systemData.config.maxSpellLevel}).`);
+      }
+      systemData.spellSlots = spellSlots;//.splice(0, systemData.config.maxSpellLevel);
    }
 
    /**

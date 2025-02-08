@@ -157,21 +157,25 @@ export class CharacterActor extends fadeActor {
 
          // Spells
          const classSpellsIdx = this.system.details.level - 1;
-         if (classData.spells && classSpellsIdx < classData.spells.length) {
+         if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
             // Get the spell progression for the given character level
             const spellProgression = classData.spells[classSpellsIdx];
-
-            // Loop through the spell slots in the this and update the 'max' values
-            this.system.spellSlots.forEach((slot, index) => {
-               // Check if the index is within the spellProgression array bounds
-               if (index - 1 >= 0 && index - 1 < spellProgression.length) {
-                  // Set the max value based on the class spell progression
-                  slot.max = spellProgression[index - 1];
-               } else {
-                  // Set max to 0 if the character's class doesn't have spells at this level
-                  slot.max = 0;
-               }
-            });
+            if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
+               console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`);
+            } else {
+               //console.debug(`Class spells ${this.name}: spell levels ${spellProgression.length}, spell slots ${this.system.spellSlots.length}.`);
+               // Loop through the spell slots in the this and update the 'max' values
+               this.system.spellSlots.forEach((slot, index) => {
+                  // Check if the index is within the spellProgression array bounds
+                  if (index >= 0 && index < spellProgression.length) {
+                     // Set the max value based on the class spell progression
+                     slot.max = spellProgression[index];
+                  } else {
+                     // Set max to 0 if the character's class doesn't have spells at this level
+                     slot.max = 0;
+                  }
+               });
+            }
          }
 
          // Saving throws

@@ -79,11 +79,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             max: new fields.NumberField({ initial: 0 })
          }), {
             required: false,
-            initial: Array.from({ length: this.maxSpellLevel }, (_, index) => {
-               const newLevel = new ClassLevelData();
-               newLevel.spellLevel = index + 1;
-               return newLevel;
-            })
+            initial: []
          }),
          mod: new fields.SchemaField({
             // mod is for items that modify AC (add/subtract only) but are not armor items.
@@ -271,6 +267,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
             spellLevel: index + 1
          }));
+      } else {
+         this.spellSlots = [];
       }
    }
 }

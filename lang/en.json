@@ -273,6 +273,7 @@
          "targetOther": "Target Other",
          "maxTargetFormula": "Max. Target Roll",
          "durationFormula": "Duration Roll",
+         "durationFormulaHint": "The effect's duration in rounds. An infinity symbol indicates an infinite duration. A zero indicates an instantaneous effect with no duration.",
          "healFormula": "Heal Roll"
       },
       "Item": {

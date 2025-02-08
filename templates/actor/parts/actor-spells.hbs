@@ -9,25 +9,24 @@
       </div>
    </div>
    {{#each spellSlots as |slot|}}
-   {{#if @index}}
-   <ol name="spellLevel{{@index}}" class='items-list'>
+   <ol name="spellLevel{{add @index 1}}" class='items-list'>
       {{! Spell Level Header}}
       <li class='item flexrow items-header collapsible-header'>
          <div class='item-name'>
-            {{localize 'FADE.Spell.SpellLVL' level=@key}}
+            {{localize 'FADE.Spell.SpellLVL' level=(add @index 1)}}
          </div>
          <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
          <div class="item-80px flexrow">
             <input type="text"
                    value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
-                   name="system.spellSlots[{{@key}}].used"
+                   name="system.spellSlots[{{@index}}].used"
                    data-dtype="Number"
                    placeholder="0"
                    readonly
                    data-tooltip="{{localize 'FADE.Spell.usedSlots'}}" />/
             <input type="text"
-                   value="{{lookup (lookup @root.system.spellSlots @key) 'max'}}"
-                   name="system.spellSlots[{{@key}}].max"
+                   value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
+                   name="system.spellSlots[{{@index}}].max"
                    data-dtype="Number"
                    placeholder="0"
                    data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
@@ -35,7 +34,7 @@
          <div class='item-controls'>
             <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell'>
                <i class='fas fa-plus'></i>
-               {{localize 'FADE.Spell.AddLVL' level=@key}}
+               {{localize 'FADE.Spell.AddLVL' level=(add @index 1)}}
             </a>
          </div>
       </li>
@@ -71,6 +70,5 @@
       </li>
       {{/each}}
    </ol>
-   {{/if}}
    {{/each}}
 </section>

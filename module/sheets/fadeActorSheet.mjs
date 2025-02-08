@@ -214,7 +214,7 @@ export class fadeActorSheet extends ActorSheet {
       const classAbilities = [];
       const savingThrows = [];
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
          spellSlots.push({ spells: [] })
       }
 
@@ -242,8 +242,10 @@ export class fadeActorSheet extends ActorSheet {
          }
          // Append to spells.
          else if (item.type === 'spell') {
-            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
-               spellSlots[item.system.spellLevel].spells.push(item);
+            if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
+               spellSlots[item.system.spellLevel - 1].spells.push(item);
+            } else {
+               console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${this.actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
             }
          }
          // Append to weapons.
