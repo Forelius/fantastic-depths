@@ -28,7 +28,7 @@ export class SpecialAbilityItem extends fadeItem {
 
       return {
          formula,
-         damageType: isHeal ? "heal" : "physical",
+         type: isHeal ? "heal" : this.system.damageType,
          digest,
          hasDamage
       };
@@ -42,7 +42,7 @@ export class SpecialAbilityItem extends fadeItem {
    async roll(dataset) {
       let result = null;
       const systemData = this.system;
-      const ownerTokenOrActor = canvas.tokens.controlled?.[0] || this.actor;
+      const ownerTokenOrActor = this.actor || canvas.tokens.controlled?.[0];
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();

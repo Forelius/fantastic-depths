@@ -15,7 +15,7 @@ export class fadeDialog {
       const weaponData = weapon.system;
 
       dialogData.weapon = weaponData;
-      dialogData.label = weapon.name;
+      dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
       dialogData.modes = weapon.getAttackModes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
          return acc;
@@ -196,7 +196,8 @@ export class fadeDialog {
             extinguish: {
                label: game.i18n.localize('FADE.dialog.extinguish'),
                callback: () => ({
-                  action: "extinguish"
+                  action: "extinguish",
+                  itemId: document.getElementById('lightItem').value,
                })
             },
             close: {
@@ -227,7 +228,7 @@ export class fadeDialog {
             ui.notifications.warn(game.i18n.localize('FADE.dialog.noEquippedWeapons'));
          } else {
             dialogData.attackItems = attackItems.reduce((acc, item) => {
-               acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
+               acc[item.id] = game.user.isGM || item.system.isIdentified ? item.name : item.system.unidentifiedName; // Use the "id" as the key and "name" as the value
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
@@ -270,7 +271,9 @@ export class fadeDialog {
       if (casterActor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectSpell') };
          const template = 'systems/fantastic-depths/templates/dialog/select-spell.hbs';
-         const spellItems = casterActor.items.filter((item) => item.type === "spell");
+         const spellItems = casterActor.items.filter((item) => item.type === "spell")
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .sort((a, b) => (b.system.memorized - b.system.cast) - (a.system.memorized - a.system.cast));
 
          if (!spellItems || spellItems.length == 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.spell') }));
@@ -314,8 +317,8 @@ export class fadeDialog {
       const {
          title = game.i18n.localize('FADE.dialog.confirm'),
          content = game.i18n.localize('FADE.dialog.confirm'),
-         yesLabel = game.i18n.localize('Yes'),
-         noLabel = game.i18n.localize('No'),
+         yesLabel = game.i18n.localize('FADE.dialog.yes'),
+         noLabel = game.i18n.localize('FADE.dialog.no'),
          defaultChoice = "no" } = dataset;
       const dialogResp = {};
 
@@ -363,7 +366,7 @@ export class fadeDialog {
          }
       };
 
-      if (type && type !== "spell" && type !== "breath") {
+      //if (type && type !== "spell" && type !== "breath") {
          buttons.magic = {
             label: game.i18n.localize('FADE.vsMagic'),
             callback: () => ({
@@ -372,7 +375,7 @@ export class fadeDialog {
                mod: parseInt(document.getElementById('mod').value, 10) || 0,
             })
          };
-      }
+      //}
 
       dialogResp.resp = await Dialog.wait({
          title: title,

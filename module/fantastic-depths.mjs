@@ -33,25 +33,30 @@ import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
 import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
 import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 
-import { preloadHandlebarsTemplates } from './sys/templates.mjs';
-import { FADE } from './sys/config.mjs';
-import { fadeCombat } from './sys/fadeCombat.mjs'
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
+import { PlayerCombatForm } from './apps/PlayerCombatForm.mjs';
+import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
+import { preloadHandlebarsTemplates } from './sys/templates.mjs';
+import { FADE } from './sys/config.mjs';
+import { fadeCombat } from './sys/combat/fadeCombat.mjs'
+import { fadeCombatant } from './sys/combat/fadeCombatant.mjs'
 import { MacroManager } from './sys/MacroManager.mjs';
 import { LightManager } from './sys/LightManager.mjs';
+import { Wrestling } from './sys/combat/Wrestling.mjs';
+import { Shove } from './sys/combat/Shove.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
 import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
-import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
 import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
-import { GMMessageSender } from './sys/GMMessageSender.mjs'
+import { SocketManager } from './sys/SocketManager.mjs'
 import { fadeEffect } from './sys/fadeEffect.mjs'
+import { fadeTreasure } from './utils/fadeTreasure.mjs'
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -72,7 +77,11 @@ Hooks.once('init', async function () {
       EffectLibraryForm,
       AttackRollChatBuilder,
       fadeDialog,
-      DataMigrator
+      DataMigrator,
+      Wrestling,
+      Shove,
+      PlayerCombatForm,
+      fadeTreasure
    };
 
    CONFIG.time.roundTime = 10;
@@ -82,6 +91,7 @@ Hooks.once('init', async function () {
 
    CONFIG.ActiveEffect.documentClass = fadeEffect;
    CONFIG.Combat.documentClass = fadeCombat;
+   CONFIG.Combatant.documentClass = fadeCombatant;
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
    CONFIG.Actor.documentClass = ActorFactory;
    CONFIG.Actor.dataModels = {
@@ -101,7 +111,6 @@ Hooks.once('init', async function () {
       weaponMastery: MasteryDefinitionItemDataModel,
       specialAbility: SpecialAbilityDataModel
    }
-   //CONFIG.Combatant.documentClass = fadeCombatant;
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item
@@ -182,7 +191,6 @@ function registerSheets() {
    });
 }
 
-
 async function handleAsyncInit() {
    // Register System Settings
    const settings = new fadeSettings();
@@ -236,32 +244,27 @@ Hooks.once('ready', async function () {
          });
       }
 
-      GMMessageSender.SetupOnReady();
+      SocketManager.SetupOnReady();      
    }
 });
 
 fadeHandlebars.registerHelpers();
 
+fadeCombat.initialize();
 /**
  * Hook for time advancement.
  */
-Hooks.on('updateWorldTime', (worldTime, dt, options, userId) => {
-   LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
-   //console.debug("updateWorldTime", worldTime, dt, options, userId);
-   const tokens = canvas?.tokens.placeables;
-   for (let token of tokens) {
-      if (token.actor) {  // Only process tokens with an actor
-         token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
+   if (game.user.isGM === true) {
+      await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
+      //console.debug("updateWorldTime", worldTime, dt, options, userId);
+      const placeables = canvas?.tokens.placeables;
+      for (let placeable of placeables) {
+         const token = placeable.document;
+         if (token.actor) {  // Only process tokens with an actor
+            token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+         }
       }
-   }
-});
-
-/* -------------------------------------------- */
-/*  Render Sidebar Hook                         */
-/* -------------------------------------------- */
-// Hook to add the "Turn Tracker" button in the sidebar for the GM
-Hooks.on('renderSidebarTab', (app, html) => {
-   if (game.user.isGM) {
    }
 });
 
@@ -293,7 +296,7 @@ Hooks.on("updateItem",async (item, updateData, options, userId) => {
    const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
    if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
       // Log the item update and notify the GM
-      console.log(`Item updated: ${item.name} by ${game.users.get(userId).name}`);     
+      console.log(`Item updated: ${item.actor?.name} ${item.name} by ${user.name}`, updateData?.system);     
    }
 });
 

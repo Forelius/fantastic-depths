@@ -46,7 +46,7 @@ export class fadeActorSheet extends ActorSheet {
       // the context variable to see the structure, but some key properties for
       // sheets are the actor object, the data object, whether or not it's
       // editable, the items array, and the effects array.
-      const context = super.getData();
+      const context = await super.getData();
 
       // Use a safe clone of the actor data for further operations.
       const actorData = this.document.toObject(false);
@@ -65,6 +65,9 @@ export class fadeActorSheet extends ActorSheet {
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
+      context.sizes = CONFIG.FADE.ActorSizes
+         .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
+         .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare shared actor data and items.
       this._prepareItems(context);
@@ -135,7 +138,7 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Rollable abilities.
-         html.on('click', '.rollable', this._onRoll.bind(this));
+         html.on('click', '.rollable, .chatable', this._onRoll.bind(this));
 
          // Containers collapse/expand
          html.find(".gear-items .category-caret").click((event) => {
@@ -153,12 +156,7 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Toggle equipped state
-         html.find(".item-toggle").click(async (event) => {
-            const item = this._getItemFromActor(event);
-            // Toggle the equipped state and store the new state in isEquipped
-            const isEquipped = !item.system.equipped;
-            await item.update({ "system.equipped": isEquipped });
-         });
+         html.find(".item-toggle").click(async (event) => await this._toggleEquippedState(event));
 
          // Consumables
          html.find(".consumable-counter .full-mark").click((event) => {
@@ -214,8 +212,9 @@ export class fadeActorSheet extends ActorSheet {
       const specialAbilities = [];
       const exploration = [];
       const classAbilities = [];
+      const savingThrows = [];
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
          spellSlots.push({ spells: [] })
       }
 
@@ -243,8 +242,10 @@ export class fadeActorSheet extends ActorSheet {
          }
          // Append to spells.
          else if (item.type === 'spell') {
-            if (item.system.spellLevel !== undefined && spellSlots[item.system.spellLevel] !== undefined) {
-               spellSlots[item.system.spellLevel].spells.push(item);
+            if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
+               spellSlots[item.system.spellLevel - 1].spells.push(item);
+            } else {
+               console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${this.actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
             }
          }
          // Append to weapons.
@@ -268,6 +269,8 @@ export class fadeActorSheet extends ActorSheet {
                exploration.push(item);
             } else if (item.system.category === "class") {
                classAbilities.push(item);
+            } else if (item.system.category === "save") {
+               savingThrows.push(item);
             } else {
                specialAbilities.push(item);
             }
@@ -301,6 +304,7 @@ export class fadeActorSheet extends ActorSheet {
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
+      context.savingThrows = savingThrows;
 
       this._calcCategoryEnc(context);
    }
@@ -405,6 +409,11 @@ export class fadeActorSheet extends ActorSheet {
       }
    }
 
+   /**
+    * Retrieves an item owned by the actor based on parent element's data-item-id.
+    * @param {any} event
+    * @returns 
+    */
    _getItemFromActor(event) {
       const li = $(event.currentTarget).parents('.item');
       return this.actor.items.get(li.data('itemId'));
@@ -477,7 +486,8 @@ export class fadeActorSheet extends ActorSheet {
          // If clicking an item then have item handle roll.
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
-         if (item) item.roll(dataset);
+         // Directly roll item and skip the rest
+         if (item) await item.roll(dataset);
       } else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          chatType = CHAT_TYPE.ABILITY_CHECK;
@@ -493,7 +503,7 @@ export class fadeActorSheet extends ActorSheet {
          this.actor.rollSavingThrow(dataset.type);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
-         let title = elem.getAttribute("title");
+         const title = elem.getAttribute("title");
          if (title) { // Do this because dataset stringifies all properties.
             dataset.desc = title;
          }
@@ -513,7 +523,7 @@ export class fadeActorSheet extends ActorSheet {
 
       if (chatType !== null) {
          const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
-         let rolled = await new Roll(formula, rollContext).evaluate();
+         const rolled = await new Roll(formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
             caller: this.actor,
@@ -528,18 +538,26 @@ export class fadeActorSheet extends ActorSheet {
       return false;
    }
 
+   /**
+    * Event handler for editable item fields.
+    * @param {any} event
+    * @returns
+    */
    async _onDataChange(event) {
       let result = null;
       event.preventDefault();
       const item = this._getItemFromActor(event);
+      const newVal = Number(event.target.value) || 0;
       if (event.target.dataset.field === "quantity") {
-         result = item.update({ "system.quantity": parseInt(event.target.value) });
+         result = item.update({ "system.quantity": newVal });
       } else if (event.target.dataset.field === "cast") {
-         result = item.update({ "system.cast": parseInt(event.target.value) });
+         result = item.update({ "system.cast": newVal });
+      } else if (event.target.dataset.field === "memorize") {
+         result = item.update({ "system.memorized": newVal });
+      } else if (event.target.dataset.field === "target") {
+         result = item.update({ "system.target": newVal });
       }
-      else if (event.target.dataset.field === "memorize") {
-         result = item.update({ "system.memorized": parseInt(event.target.value) });
-      }
+
       return result;
    }
 
@@ -597,7 +615,7 @@ export class fadeActorSheet extends ActorSheet {
          const sectionName = target.parent().attr('name'); // Access the `name` attribute from the DOM element
          //console.debug(`Remembering expanded state for ${sectionName}.`, target);
          if (sectionName !== undefined) {
-            const actor = game.actors.get(this.actor.id);            
+            const actor = game.actors.get(this.actor.id);
             await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
          }
       }
@@ -638,6 +656,34 @@ export class fadeActorSheet extends ActorSheet {
                console.warn("Removed invalid flag: collapsed-undefined");
             }
          });
+      }
+   }
+
+   async _toggleEquippedState(event) {
+      let updateObj = {};
+      const item = this._getItemFromActor(event);
+      let isEquipped = item.system.equipped;
+      // if the item is not equipped or the item is not cursed or the user is GM...
+      if (isEquipped === false || item.system.isCursed === false || game.user.isGM) {
+         // Toggle the equipped state and store the new state in isEquipped
+         isEquipped = !isEquipped;
+
+         // If this is armor and we are equipping it...
+         if (item.type === "armor" && isEquipped === true) {
+            // Unequip other same type armor.
+            const otherSameTypeArmor = this.actor.items.find(aitem => aitem.type === item.type
+               && aitem.system.equipped === true
+               && aitem.system.isShield === item.system.isShield
+               && aitem.system.natural === item.system.natural);
+            if (otherSameTypeArmor) {
+               await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
+            }
+         } else if (item.system.isAmmo === false && (item.type === "item" || item.type === 'light')) {
+            updateObj["system.containerId"] = null;
+         }
+
+         updateObj["system.equipped"] = isEquipped;
+         await item.update(updateObj);
       }
    }
 

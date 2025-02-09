@@ -3,9 +3,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       const { fields } = foundry.data;
       return {
          config: new fields.SchemaField({
-            maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),            
+            maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
-         biography: new fields.StringField({ initial: "" }),         
+         biography: new fields.StringField({ initial: "" }),
          hp: new fields.SchemaField({
             hd: new fields.StringField({ initial: "1d8" }),
             value: new fields.NumberField({ initial: 5 }),
@@ -34,23 +34,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             }),
          }),
          thbonus: new fields.NumberField({ initial: 0 }),
-         savingThrows: new fields.SchemaField({
-            death: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-            }),
-            wand: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-            }),
-            paralysis: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-            }),
-            breath: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-            }),
-            spell: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-            }),
-         }),
          movement: new fields.SchemaField({
             turn: new fields.NumberField({ initial: 120 }),
             max: new fields.NumberField({ initial: 120 }),
@@ -79,7 +62,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }),
          languages: new fields.StringField({ initial: "" }),
          combat: new fields.SchemaField({
+            // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
+            // This is how many times the character has been attack for the current round
             attacksAgainst: new fields.NumberField({ initial: 0 }),
             deathCount: new fields.NumberField({ initial: 0 }),
             isDead: new fields.BooleanField({ initial: false }),
@@ -94,11 +79,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             max: new fields.NumberField({ initial: 0 })
          }), {
             required: false,
-            initial: Array.from({ length: this.maxSpellLevel }, (_, index) => {
-               const newLevel = new ClassLevelData();
-               newLevel.spellLevel = index + 1;
-               return newLevel;
-            })
+            initial: []
          }),
          mod: new fields.SchemaField({
             // mod is for items that modify AC (add/subtract only) but are not armor items.
@@ -121,19 +102,19 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                selfToHit: new fields.NumberField({ initial: 0 }),
                selfToHitRanged: new fields.NumberField({ initial: 0 }),
             }),
-            save: new fields.SchemaField({
+            save: new fields.ObjectField({
+               initial: { all: 0 },
                all: new fields.NumberField({ initial: 0 }),
-               death: new fields.NumberField({ initial: 0 }),
-               wand: new fields.NumberField({ initial: 0 }),
-               paralysis: new fields.NumberField({ initial: 0 }),
-               breath: new fields.NumberField({ initial: 0 }),
-               spell: new fields.NumberField({ initial: 0 }),
+               //death: new fields.NumberField({ initial: 0 }),
+               //wand: new fields.NumberField({ initial: 0 }),
+               //paralysis: new fields.NumberField({ initial: 0 }),
+               //breath: new fields.NumberField({ initial: 0 }),
+               //spell: new fields.NumberField({ initial: 0 }),
             })
          }),
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
-         activeFuel: new fields.StringField({ nullable: true, required: false, initial: null }),
       };
    }
 
@@ -161,8 +142,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       // If using detailed encumbrance, similar to expert rules...
       if (encSetting === 'expert' || encSetting === 'classic') {
          enc = items.reduce((sum, item) => {
-            const itemWeight = item.system.weight || 0;
-            const itemQuantity = item.system.quantity || 1;
+            const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
+            const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
             return sum + (itemWeight * itemQuantity);
          }, 0);
          encumbrance.value = enc || 0;
@@ -224,11 +205,12 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.combat.selfToHit = 0;
       this.mod.combat.selfToHitRanged = 0;
       this.mod.save.all = 0;
-      this.mod.save.death = 0;
-      this.mod.save.wand = 0;
-      this.mod.save.paralysis = 0;
-      this.mod.save.breath = 0;
-      this.mod.save.spell = 0;
+      // Create the saving throw member variables dynamically from the world's save items.
+      const saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
+         .map(item => item.system.customSaveCode);
+      for (let save of saves) {
+         this.mod.save[save] = 0;
+      }
    }
 
    /**
@@ -285,28 +267,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
             spellLevel: index + 1
          }));
+      } else {
+         this.spellSlots = [];
       }
-   }
-
-   /**
-    * Prepares derived saving throw values based on class name and class level.
-    * @protected
-    * @param {any} savesData The class saving throw data
-    */
-   _prepareSavingThrows(savesData) {
-      // Apply the class data
-      for (let saveType in savesData) {
-         if (this.savingThrows.hasOwnProperty(saveType)) {
-            this.savingThrows[saveType].value = savesData[saveType];
-         }
-      }
-
-      // Apply mods, mostly from effects
-      const mods = this.mod.save;
-      this.savingThrows.death.value -= mods.death + mods.all;
-      this.savingThrows.wand.value -= mods.wand + mods.all;
-      this.savingThrows.paralysis.value -= mods.paralysis + mods.all;
-      this.savingThrows.breath.value -= mods.breath + mods.all;
-      this.savingThrows.spell.value -= mods.spell + mods.all;
    }
 }

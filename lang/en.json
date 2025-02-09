@@ -113,27 +113,7 @@
             },
             "long": "Saving Throws",
             "short": "Save",
-            "singular": "Saving Throw",
-            "death": {
-               "long": "Death Ray or Poison",
-               "abbr": "Death"
-            },
-            "wand": {
-               "long": "Magic Wand",
-               "abbr": "Wand"
-            },
-            "paralysis": {
-               "long": "Turn to Stone or Paralysis",
-               "abbr": "Stone"
-            },
-            "breath": {
-               "long": "Dragon Breath",
-               "abbr": "Breath"
-            },
-            "spell": {
-               "long": "Spell or Magic Staff",
-               "abbr": "Spell"
-            }
+            "singular": "Saving Throw"
          },
          "Abilities": {
             "score": "Score",
@@ -142,36 +122,42 @@
             "str": {
                "long": "Strength",
                "abbr": "STR",
+               "key": "ST",
                "mod": "To-Hit, Damage, Open Doors",
                "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p</div>"
             },
             "dex": {
                "long": "Dexterity",
                "abbr": "DEX",
+               "key": "DX",
                "mod": "Missile To-Hit, AC, Initiative",
                "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p>"
             },
             "int": {
                "long": "Intelligence",
                "abbr": "INT",
+               "key": "IN",
                "mod": "Language(s)",
                "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p>"
             },
             "wis": {
                "long": "Wisdom",
                "abbr": "WIS",
+               "key": "WS",
                "mod": "Saving Throws vs Spells",
                "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p>"
             },
             "con": {
                "long": "Constitution",
                "abbr": "CON",
+               "key": "CN",
                "mod": "Hit Points/Level",
                "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p>"
             },
             "cha": {
                "long": "Charisma",
                "abbr": "CHA",
+               "key": "CH",
                "mod": "Reactions",
                "retainer": "Retainers",
                "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p>"
@@ -239,6 +225,20 @@
                "label": "Over Encumbered",
                "desc": "Severely overloaded, movement is impossible."
             }
+         },
+         "sizes": {
+            "T": "Tiny",
+            "THint": "Creatures less than 2 feet tall, such as pixies, sprites, and giant rats.",
+            "S": "Small",
+            "SHint": "Creatures between 2 and under 4 feet tall, such as kobolds and goblins. In standard combat mechanics, this size includes all smaller sizes.",
+            "M": "Medium",
+            "MHint": "Creatures between 4 and under 7 feet tall, such as humans, elves, and orcs.",
+            "L": "Large",
+            "LHint": "Creatures between 7 and under 12 feet tall, such as ogres, trolls, and large beasts. In standard combat mechanics, this size includes all larger sizes.",
+            "G": "Huge",
+            "GHint": "Creatures between 12 and under 25 feet tall, such as frost giants and rocs.",
+            "I": "Immense",
+            "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
          }
       },
       "SheetLabel": {
@@ -273,6 +273,7 @@
          "targetOther": "Target Other",
          "maxTargetFormula": "Max. Target Roll",
          "durationFormula": "Duration Roll",
+         "durationFormulaHint": "The effect's duration in rounds. An infinity symbol indicates an infinite duration. A zero indicates an instantaneous effect with no duration.",
          "healFormula": "Heal Roll"
       },
       "Item": {
@@ -286,8 +287,8 @@
          "quantity": {
             "long": "Quantity",
             "maxLong": "Max. Quantity",
-            "abbr": "qty",
-            "maxAbbr": "max qty",
+            "abbr": "Qty",
+            "maxAbbr": "Max Qty",
             "abbr2": "#"
          },
          "weight": {
@@ -313,10 +314,10 @@
             "bright": "Bright",
             "brightHint": "Bright is the radius of the central bright part of the light.",
             "durationHint": "How long the light source lasts before expiring.",
-            "secondsActive": "Secs. Active",
-            "secondsActiveHint": "How many seconds this item has been active.",
-            "turnsActive": "Turns Active",
-            "turnsActiveHint": "How many turns this item has been active.",
+            "secondsRemaining": "Secs. Left",
+            "secondsRemainingHint": "How many seconds this light will last.",
+            "turnsRemaining": "Turns Left",
+            "turnsRemainingHint": "How many turns this light will last.",
             "color": "Color",
             "colorHint": "This is the color of the light as an HTML Color value. eg., #d0a750.",
             "attenuation": "Attenuation",
@@ -326,7 +327,7 @@
             "animationSpeed": "Animation Speed",
             "animationIntensity": "Animation Intensity",
             "noMoreItem": "{actor} has no more {item} to light.",
-            "noFuel": "{actor} has no fuel for the {item}.",
+            "noFuel": "{actor} has no lighting fuel or items of the required type.",
             "disabled": "{actor}'s light source has been extinguished.",
             "enabled": "{actor} has lit their {item}.",
             "lightTypes": {
@@ -341,6 +342,17 @@
       },
       "Weapon": {
          "plural": "Weapons",
+         "setVsCharge": {
+            "label": "Set",
+            "desc": "Indicates if this weapon can be used to set vs. charge."
+         },
+         "grip": {
+            "label": "Grip",
+            "one": "1-Handed",
+            "oneAbbr": "1H",
+            "two": "2-Handed",
+            "twoAbbr": "2H"
+         },
          "mod": {
             "dmg": {
                "long": "Damage Modifier",
@@ -408,7 +420,6 @@
          "armorWeight": {
             "short": "Weight",
             "choices": {
-               "none": "None",
                "light": "Light",
                "heavy": "Heavy"
             }
@@ -462,9 +473,12 @@
          "autoSuccessHint": "Automatically succeeds on a natural/unmodified roll of this value.",
          "autoFail": "Auto-Fail",
          "autoFailHint": "Automatically fails on a natural/unmodified roll of this value.",
+         "saveType": "Save Type",
+         "saveTypeHint": "Set this if this special ability is a saving throw.",
          "categories": {
             "explore": "Exploration",
-            "class": "Class Abilities"
+            "class": "Class Ability",
+            "save": "Saving Throw"
          }
       },
       "class": {
@@ -486,6 +500,7 @@
          "desc": "Some tags are used by the system and others are meant for GM or player usage."
       },
       "notification": {
+         "selectTarget": "A targetted must first be selected.",
          "selectToken1": "A token must first be selected.",
          "spellSelectToken": "You must have your token selected to cast a spell.",
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
@@ -495,8 +510,8 @@
          "missingItem2": "{actor} does not have a {type}.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition.",
-         "advancedTime": "<div>Time advances {turns} turn(s).</div>",
-         "reversedTime": "<div>Time goes back {turns} turn(s).</div>",
+         "advancedTime": "<div>Time advances {turns} turn(s) {rounds} round(s).</div>",
+         "reversedTime": "<div>Time goes back {turns} turn(s) {rounds} round(s).</div>",
          "needRest": "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>",
          "timeReset1": "Resetting session turn count to zero.",
          "timeReset2": "Resetting global turn count to zero.",
@@ -523,6 +538,16 @@
             "killed": "<span class='attack-fail'>{tokenName} has fallen in battle.</span>",
             "restoredLife": "<span class='attack-success'>{tokenName} has been restored to life.</span>"
          },
+         "combatTracker": {
+            "begin": "Combat has begun!",
+            "created": "Combat encounter created.",
+            "ended": "Combat encounter has ended.",
+            "initReset": "Round {round} started. Initiative rolls reset.",
+            "initRerolled": "Round {round} started. Initiative rerolled for all combatants.",
+            "initHeld": "Round {round} started. Initiative held for all combatants.",
+            "initRoll": "{name} rolled {roll} {mod}.",
+            "rollFormula": "Initiative Rolls (Base Formula: {formula})"
+         },
          "targets": "Targets",
          "apply": "Apply",
          "applyDamageDesc": "Apply damage to selected token or target.",
@@ -546,7 +571,36 @@
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
+      "apps": {
+         "playerCombat": {
+            "title": "Player Combat",
+            "prompt": "Select combat manuever for this round. Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker."
+         }
+      },
       "dialog": {
+         "shove": {
+            "resultsLabel": "Shove Results",
+            "attackerRoll": "{attacker} Roll",
+            "defenderResist": "{defender} Resist"
+         },
+         "wrestling": {
+            "attacker": "Attacker",
+            "defender": "Defender",
+            "groupWR": "Total Wrestling Rating",
+            "wrestlingContest": "Wrestling Contest",
+            "stateLabel": "Current State",
+            "statusLabel": "Wrestler Status",
+            "winsRound": "{winner} wins this round.",
+            "states": {
+               "free": "Free",
+               "attgrab": "Attacker Grabs",
+               "atttakedown": "Attacker Takedown",
+               "attpin": "Attacker Pin",
+               "defgrab": "Defender Grabs",
+               "deftakedown": "Defender Takedown",
+               "defpin": "Defender Pin"
+            }
+         },
          "awardXP": {
             "short": "Award XP",
             "long": "Award Experience Points",
@@ -584,6 +638,9 @@
          "selectAttack": "Select What to Attack With",
          "selectSpell": "Select spell to cast",
          "confirm": "Are you sure?",
+         "yes": "Yes, go ahead",
+         "no": "No, cancel",
+         "confirmInitiativeRoll": "One or more combatants have <strong>Nothing</strong> as their declared action. Rolling the group's initiative will freeze the declared actions. Are you sure you want to proceed with rolling the group's initiative?",
          "applyToPrompt": "Apply to targeted or selected?",
          "targeted": "Targeted",
          "selected": "Selected",
@@ -624,7 +681,7 @@
          }
       },
       "DamageTypes": {
-         "name": "Damage Types",
+         "name": "Damage Type",
          "types": {
             "physical": "Physical",
             "breath": "Breath",
@@ -632,7 +689,8 @@
             "frost": "Frost",
             "magic": "Magic",
             "poison": "Poison",
-            "heal": "Healing"
+            "heal": "Healing",
+            "hull": "Hull"
          }
       },
       "combat": {
@@ -663,6 +721,7 @@
             }
          },
          "maneuvers": {
+            "label": "Combat Manuever",
             "nothing": {
                "name": "Nothing",
                "description": "Combatant does absolutely nothing this round. No move, no attack, no nothing."
@@ -681,7 +740,7 @@
             },
             "fire": {
                "name": "Fire/Shoot",
-               "description": "Combatant uses a ranged weapon, applying Dexterity and magic bonuses to the attack roll, provided the target is within the weapon’s range."
+               "description": "Combatant uses a ranged weapon, such as a bow or breath weapon, provided the target is within the weapon’s range."
             },
             "spell": {
                "name": "Cast Spell",
@@ -733,9 +792,68 @@
             },
             "guard": {
                "name": "Guard",
-               "description": "TThe Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
+               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
+            },
+            "unarmed": {
+               "name": "Unarmed Combat",
+               "description": "Unarmed combat includes striking and wrestling. The defender does not have to engage in unarmed combat and may still attack with their melee weapon."
+            },
+            "dodge": {
+               "name": "Dodge",
+               "description": "When a fighter chooses this combat option, they do not attack at all and instead focus entirely on avoiding incoming attacks. Their AC increases by 5 against one specific attack they choose to evade. Against any other attack they are aware of, their AC increases by 3. Against any other attack they are not aware of, their AC increases by 1. This AC bonus lasts until the end of the round, and at the beginning of the next round, it is no longer in effect."
             }
          }
+      },
+      "treasure": {
+         "coins": "Coins <i>({total} gp)</i>",
+         "gems": "Gems <i>({total} gp)</i>",
+         "jewelry": "Jewelry <i>({total} gp)</i>",
+         "special": "Special <i>({total} gp)</i>",
+         "magic": "Items, Potions & Scrolls",
+         "formatValue": "{name} <i>({value} gp)</i>",
+         "cp": {
+            "abbr": "cp",
+            "plural": "copper pieces"
+         },
+         "sp": {
+            "abbr": "sp",
+            "plural": "silver pieces"
+         },
+         "ep": {
+            "abbr": "ep",
+            "plural": "electrum pieces"
+         },
+         "gp": {
+            "abbr": "gp",
+            "plural": "gold pieces"
+         },
+         "pp": {
+            "abbr": "pp",
+            "plural": "platinum pieces"
+         },
+         "agate": "Agate",
+         "quartz": "Quartz",
+         "turquoise": "Turquoise",
+         "crystal": "Crystal",
+         "jasper": "Jasper",
+         "onyx": "Onyx",
+         "amber": "Amber",
+         "amethyst": "Amethyst",
+         "coral": "Coral",
+         "garnet": "Garnet",
+         "jade": "Jade",
+         "aquamarine": "Aquamarine",
+         "pearl": "Pearl",
+         "topaz": "Topaz",
+         "carbuncle": "Carbuncle",
+         "opal": "Opal",
+         "emerald": "Emerald",
+         "ruby": "Ruby",
+         "sapphire": "Sapphire",
+         "diamond": "Diamond",
+         "jacinth": "Jacinth",
+         "starstone": "Starstone",
+         "tristal": "Tristal"
       },
       "Size": "Size",
       "roll": "Roll",
@@ -746,7 +864,13 @@
       "target": "Target",
       "GMNotes": "GM Notes",
       "category": "Category",
-      "name": "Name"
+      "name": "Name",
+      "bonus": "Bonus",
+      "shortName": "Short Name",
+      "none": "None",
+      "unidentified": "Unidentified",
+      "identified": "Identified",
+      "cursed": "Cursed"
    },
 
    "TYPES": {

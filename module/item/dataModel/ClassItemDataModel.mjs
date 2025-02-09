@@ -15,11 +15,12 @@ class ClassLevelData {
 export class SavingThrowsData {
    constructor() {
       this.level = 1;
-      this.death = 15;
-      this.wand = 15;
-      this.paralysis = 15;
-      this.breath = 15;
-      this.spell = 15;
+      // Create the saving throw member variables dynamically from the world's save items.
+      const saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
+         .map(item => item.system.customSaveCode);
+      for (let save of saves) {
+         this[save] = 15;
+      }
    }
 }
 
@@ -78,17 +79,10 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          ),
 
          saves: new fields.ArrayField(
-            new fields.SchemaField({
-               level: new fields.NumberField({ required: true }),
-               death: new fields.NumberField({ required: true }),
-               wand: new fields.NumberField({ required: true }),
-               paralysis: new fields.NumberField({ required: true }),
-               breath: new fields.NumberField({ required: true }),
-               spell: new fields.NumberField({ required: true }),
-            }),
+            new fields.ObjectField({}),           
             {
                required: true,
-               initial: [new SavingThrowsData()]
+               initial: []
             }
          ),
 
@@ -104,7 +98,14 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             }
          ),
 
-         // Add other optional fields as needed, ensuring they are marked as required: false and nullable: true
+         //classAbilities: new fields.ArrayField(
+         //   new fields.SchemaField({
+         //      name: new fields.StringField({ required: true, initial: '' }),
+         //      level: new fields.NumberField({ required: true }),
+         //      combatManeuver: new fields.StringField({ required: true, initial: 'Nothing' }),
+         //   }), {
+         //   required: false,
+         //})
       };
    }
 

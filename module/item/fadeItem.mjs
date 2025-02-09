@@ -11,9 +11,19 @@ export class fadeItem extends Item {
       this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
+   get ownerToken() {
+      return this.actor ? canvas.tokens?.placeables?.find(t => t.document.actorId === this.actor?.id) : null;
+   }
+
    /** @protected */
    prepareBaseData() {
       super.prepareBaseData();
+   }
+
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      // This can't be in data model, because name is a property of Item.
+      this.system.unidentifiedName = this.system.unidentifiedName === '' ? this.name : this.system.unidentifiedName;
    }
 
    // Define default icons for various item types using core data paths
@@ -55,8 +65,8 @@ export class fadeItem extends Item {
       if (this.system.container === true) {
          result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
       }
-      const weight = this.system.weight || 0;
-      const quantity = this.system.quantity !== null ? this.system.quantity : 1;
+      const weight = this.system.weight > 0 ? this.system.weight : 0;
+      const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
       result += weight * quantity;
       return result;
    }
@@ -152,12 +162,14 @@ export class fadeItem extends Item {
       if (formula !== null && formula !== "") {
          const rollData = this.getRollData();
          try {
-            let roll = new Roll(formula, rollData);
+            const roll = new Roll(formula, rollData);
             await roll.evaluate(options);
             result = roll;
          }
          catch (error) {
-            console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            if (game.user.isGM === true) {
+               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            }
          }
       }
       return result;

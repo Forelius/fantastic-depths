@@ -1,0 +1,24 @@
+{{#if isGM}}
+<div class="bordered">
+   <h4>{{localize 'FADE.unidentified'}}</h4>
+   <div class="summary flexrow">
+      <div>
+         <input name='system.unidentifiedName' type='text' value='{{system.unidentifiedName}}' data-dtype='String' />
+         <label for="system.unidentifiedName">{{localize 'FADE.name'}}</label>
+      </div>
+      <div style="max-width:60px;">
+         <input type="checkbox" name="system.isIdentified" data-dtype="Boolean" {{#if system.isIdentified}} checked{{/if}} />
+         <label for="system.isIdentified">{{localize "FADE.identified"}}</label>
+      </div>
+      <div style="max-width:60px;">
+         <input type="checkbox" name="system.isCursed" data-dtype="Boolean" {{#if system.isCursed}} checked{{/if}} />
+         <label for="system.isCursed">{{localize "FADE.cursed"}}</label>
+      </div>
+   </div>
+   <div>
+      {{! Editors must receive enriched text data from getData to properly handle rolls }}
+      <label>{{localize 'FADE.tabs.description'}}</label>
+      {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}      
+   </div>
+</div>
+{{/if}}

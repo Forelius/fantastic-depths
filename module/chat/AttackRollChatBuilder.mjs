@@ -1,5 +1,5 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { GMMessageSender } from '../sys/GMMessageSender.mjs'
+import { SocketManager } from '../sys/SocketManager.mjs'
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -10,6 +10,73 @@ export class AttackRollChatBuilder extends ChatBuilder {
       this.isAAC = this.toHitSystem === 'aac';
       this.acAbbr = this.isAAC ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
       this.masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+   }
+
+   /**
+   * Called by the various Actor and Item derived classes to create a chat message.
+   */
+   async createChatMessage() {
+      const { caller, context, resp, roll, mdata, digest } = this.data;
+      const attacker = context;
+      const attackerName = attacker.name;
+      const targetTokens = Array.from(game.user.targets);
+      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
+      const weapon = caller;
+      const descData = {
+         attackerid: attacker.id,
+         attacker: attackerName,
+         attackType: resp.attackType,
+         weapon: weapon.system.isIdentified === true ? weapon.name : weapon.system.unidentifiedName
+      };
+      const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
+
+      let rollContent = null;
+      if (roll) {
+         rollContent = await roll.render();
+      }
+
+      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
+      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
+
+      if (window.toastManager) {
+         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
+         window.toastManager.showHtmlToast(toast, "info", rollMode);
+      }
+
+      let save = null;
+      if (weapon.system.savingThrow?.length > 0) {
+         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && weapon.system.savingThrow === item.system.customSaveCode);
+      }
+
+      const chatData = {
+         damageRoll,
+         rollContent,
+         description,
+         descData,
+         toHitResult,
+         digest: digest,
+         weapon,
+         resp,
+         save,
+         targetWeaponType: resp.targetWeaponType,
+      };
+
+      let content = await renderTemplate(this.template, chatData);
+      // Manipulated the dom to place digest info in roll's tooltip
+      content = this.moveDigest(content);
+
+      const rolls = roll ? [roll] : null;
+      const chatMessageData = await this.getChatMessageData({
+         content,
+         rolls,
+         rollMode,
+         flags: {
+            [game.system.id]: {
+               targets: toHitResult.targetResults
+            }
+         }
+      });
+      const chatMsg = await ChatMessage.create(chatMessageData);
    }
 
    getHeroicToHitTable(thac0, repeater = 0) {
@@ -146,12 +213,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
     * @returns
     */
    async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') {
+      const attackingActor = attacker.actor ?? attacker;
       let result = null;
 
       if (roll) {
+         attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
+
          const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
-         const thac0 = attacker.actor?.system.thac0.value ?? attacker.system.thac0.value;
-         const thbonus = attacker.actor?.system.thbonus ?? attacker.system.thbonus;
+         const thac0 = attackingActor.system.thac0.value;
+         const thbonus = attackingActor.system.thbonus;
          const hitAC = this.getLowestACHitProcedurally(ChatBuilder.getDiceSum(roll), roll.total, thac0, thbonus);
          let hitACMessage = game.i18n.localize('FADE.Chat.attackACNone');
          if (hitAC === -999) {
@@ -203,12 +273,14 @@ export class AttackRollChatBuilder extends ChatBuilder {
                targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
             }
 
-            // Track number of attacks against target. Do it after getting the tohit result;
-            GMMessageSender.sendToGM("incAttacksAgainst", { tokenid: targetToken.id });
+            // Track number of attacks against target. Do it after getting the tohit result. 
+            // Send through socket because this player may not have permission to change the target actor's data.
+            SocketManager.sendToGM("incAttacksAgainst", { tokenid: targetToken.id });
 
             result.targetResults.push(targetResult);
          }
-      } else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === 'breath') {
+      }
+      else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === 'breath') {
          // Always hits, but saving throw
          result = {
             savingThrow: weapon.system.savingThrow,
@@ -293,66 +365,5 @@ export class AttackRollChatBuilder extends ChatBuilder {
          maxAttacksAgainst: defenseMastery.acBonusAT,
          defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total
       });
-   }
-
-   /**
-    * Called by the various Actor and Item derived classes to create a chat message.
-    */
-   async createChatMessage() {
-      const { caller, context, resp, roll, mdata, digest } = this.data;
-      const attacker = context;
-      const attackerName = attacker.name;
-      const targetTokens = Array.from(game.user.targets);
-      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
-
-      let descData = {
-         attackerid: attacker.id,
-         attacker: attackerName,
-         attackType: resp.attackType,
-         weapon: caller.name
-      };
-      const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
-
-      let rollContent = null;
-      if (roll) {
-         rollContent = await roll.render();
-      }
-
-      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
-      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
-
-      if (window.toastManager) {
-         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
-
-      const chatData = {
-         damageRoll,
-         rollContent,
-         description,
-         descData,
-         toHitResult,
-         digest: digest,
-         weapon: caller,
-         resp,
-         targetWeaponType: resp.targetWeaponType,
-      };
-
-      let content = await renderTemplate(this.template, chatData);
-      // Manipulated the dom to place digest info in roll's tooltip
-      content = this.moveDigest(content);
-
-      const rolls = roll ? [roll] : null;
-      const chatMessageData = await this.getChatMessageData({
-         content,
-         rolls,
-         rollMode,
-         flags: {
-            [game.system.id]: {
-               targets: toHitResult.targetResults
-            }
-         }
-      });
-      const chatMsg = await ChatMessage.create(chatMessageData);
    }
 }

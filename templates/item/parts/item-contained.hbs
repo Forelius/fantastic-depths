@@ -1,21 +1,21 @@
 <li class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   <div {{#if item.system.container}}{{#unless item.system.quantityMax }}class="bottom-border"{{/unless}}{{/if}}>
+   <div {{#if item.system.container}} {{#unless item.system.quantityMax }} class="bottom-border" {{/unless}} {{/if}}>
       <div class="flexrow">
          <div class='item-name contained'>
-            <div class='item-image'>
-               <a data-roll-type='item'>
-                  <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
-               </a>
+            <div class='item-image chatable'>
+               <a data-roll-type='item'><img src='{{item.img}}' width='24' height='24' /></a>
             </div>
             {{#if item.system.container}}
             <div class="category-caret"><i class="fas fa-caret-down"></i></div>
             {{/if}}
             <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
+               {{#if (or @root.isGM item.system.isIdentified)}}
                {{item.name}}
-               {{#if rootobj.showCoinWeight}}
-               {{#if item.containedEnc}}
-               <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
+               {{else}}
+               {{item.system.unidentifiedName}}
                {{/if}}
+               {{#if (and rootobj.showCoinWeight item.containedEnc)}}
+               <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
                {{/if}}
             </a>
          </div>
@@ -38,15 +38,13 @@
    </div>
 </li>
 {{#if item.system.container}}
-<!--<ol class="bottom-border contained">-->
-   {{#each item.contained as |childItem|}}
-   {{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
-   {{/each}}
-<!--</ol>-->
+{{#each item.contained as |childItem|}}
+{{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
+{{/each}}
 {{/if}}
 {{#unless item.system.container}}
 <li class='flexrow item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   {{#if item.system.quantityMax }}
+   {{#if item.system.quantityMax}}
    <div class="consumable-counter contained">
       <label>{{localize 'FADE.Item.uses'}}</label>
       {{#times item.system.quantity}}

@@ -1,6 +1,4 @@
 import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
-import { ClassItem } from "../../item/ClassItem.mjs";
-import Formatter from '../../utils/Formatter.mjs';
 
 export class CharacterDataModel extends fadeActorDataModel {
    static defineSchema() {
@@ -27,6 +25,7 @@ export class CharacterDataModel extends fadeActorDataModel {
             weight: new fields.StringField({ initial: "170 lbs." }),
             eyes: new fields.StringField({ initial: "Blue" }),
             hair: new fields.StringField({ initial: "Brown" }),
+            size: new foundry.data.fields.StringField({ initial: "M" }),
          }),
          abilities: new fields.SchemaField({
             str: new fields.SchemaField({
@@ -71,7 +70,7 @@ export class CharacterDataModel extends fadeActorDataModel {
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();      
+      super.prepareBaseData();
       this.encumbrance.max = this.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
    }
 
@@ -80,7 +79,6 @@ export class CharacterDataModel extends fadeActorDataModel {
       this._prepareDerivedAbilities();
       super.prepareDerivedData();
       this._prepareWrestling();
-      this._prepareClassInfo();
    }
 
    _prepareDerivedAbilities() {
@@ -104,80 +102,5 @@ export class CharacterDataModel extends fadeActorDataModel {
       // Wrestling skill
       this.wrestling = Math.ceil(this.details.level / 2) + this.ac.value;
       this.wrestling += this.abilities.str.mod + this.abilities.dex.mod;
-   }
-
-   /**
-    * Prepares all derived class-related data when the class name is recognized.
-    * @returns
-    */
-   _prepareClassInfo() {
-      // Replace hyphen with underscore for "Magic-User"
-      const classNameInput = this.details.class?.toLowerCase();
-      const classLevel = this.details.level;
-
-      const classItem = ClassItem.getClassItem(classNameInput);
-      const classData = classItem?.system;
-
-      if (classData) {
-         const currentLevel = classLevel;
-         const levelData = classData.levels.find(level => level.level === currentLevel);
-         const prevLevelData = classData.levels.find(level => level.level === currentLevel - 1);
-         const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
-         const nameLevel = classData.levels.find(level => level.level === 9);
-
-         // Level Bonus
-         const { pr5Count, pr10Count } = classData.primeReqs.reduce((counts, primeReq) => {
-            const value = this.abilities[primeReq.ability].value;
-            if (value >= primeReq.xpBonus5) counts.pr5Count++;
-            if (value >= primeReq.xpBonus10) counts.pr10Count++;
-            return counts;
-         }, { pr5Count: 0, pr10Count: 0 });
-         this.details.xp.bonus = pr10Count === classData.primeReqs.length ? 10 : pr5Count === classData.primeReqs.length ? 5 : 0;
-
-         // Level stuff
-         if (levelData) {
-            this.hp.hd = levelData.hd;
-            this.thac0.value = levelData.thac0;
-            this.thbonus = levelData.thbonus;
-            if (this.details.title == "" || this.details.title == null || this.details.title == prevLevelData?.title) {
-               let ordinalized = Formatter.formatOrdinal(currentLevel);
-               this.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
-            }
-         }
-         if (nextLevelData) {
-            this.details.xp.next = nextLevelData.xp;
-         }
-         this.details.species = this.details.species == "" || this.details.species == null ? classData.species : this.details.species;
-         this.config.maxSpellLevel = classData.maxSpellLevel;
-
-         // Spells
-         const classSpellsIdx = this.details.level - 1;
-         if (classData.spells && classSpellsIdx < classData.spells.length) {
-            // Get the spell progression for the given character level
-            const spellProgression = classData.spells[classSpellsIdx];
-
-            // Loop through the spell slots in the this and update the 'max' values
-            this.spellSlots.forEach((slot, index) => {
-               // Check if the index is within the spellProgression array bounds
-               if (index - 1 >= 0 && index - 1 < spellProgression.length) {
-                  // Set the max value based on the class spell progression
-                  slot.max = spellProgression[index - 1];
-               } else {
-                  // Set max to 0 if the character's class doesn't have spells at this level
-                  slot.max = 0;
-               }
-            });
-         }
-
-         // Saving throws
-         const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
-         if (savesData) {
-            super._prepareSavingThrows(savesData);
-         }
-         // Apply modifier for wisdom, if needed
-         this.savingThrows.spell.value -= this.abilities.wis.mod;
-      }
-
-      return classData; // Return null if no match found
-   }
+   } 
 }

@@ -62,8 +62,10 @@ export class SpecialAbilitySheet extends ItemSheet {
       // Saving throws
       const saves = [];
       saves.push({ value: "", text: game.i18n.localize('None') });
-      saves.push(...CONFIG.FADE.SavingThrows.map((save) => {
-         return { value: save, text: game.i18n.localize(`FADE.Actor.Saves.${save}.abbr`) }
+      const saveItems = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
+         .sort((a, b) => a.system.shortName.localeCompare(b.system.shortName));
+      saves.push(...saveItems.map((save) => {
+         return { value: save.system.customSaveCode, text: save.system.shortName }
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
@@ -81,15 +83,24 @@ export class SpecialAbilitySheet extends ItemSheet {
       abilities.push({ value: "", text: game.i18n.localize('None') });
       abilities.push(...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
-      }));
+      }).sort((a, b) => a.text.localeCompare(b.text)));
       context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Categories
       const categories = []
       categories.push({ value: "", text: game.i18n.localize('None') });
       categories.push(...CONFIG.FADE.SpecialAbilityCategories.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.SpecialAbility.categories.${type}`) }
-      }));
+      }).sort((a, b) => a.text.localeCompare(b.text)));
       context.categories = categories.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});;
+      // Combat Maneuvers
+      const combatManeuvers = [];
+      combatManeuvers.push({ value: null, text: game.i18n.localize('None') });
+      combatManeuvers.push(...Object.entries(CONFIG.FADE.CombatManeuvers)
+         .filter(action => action[1].classes?.length > 0)
+         .map((action) => {
+            return { value: action[0], text: game.i18n.localize(`FADE.combat.maneuvers.${action[0]}.name`) }
+         }).sort((a, b) => a.text.localeCompare(b.text)));
+      context.combatManeuvers = combatManeuvers.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});;
 
       return context;
    }

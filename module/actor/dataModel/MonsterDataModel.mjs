@@ -10,6 +10,7 @@ export class MonsterDataModel extends fadeActorDataModel {
             alignment: new foundry.data.fields.StringField({ initial: "Chaotic" }),
             xpAward: new foundry.data.fields.NumberField({ initial: 5 }),
             abilityCount: new foundry.data.fields.NumberField({ initial: 0 }),
+            // This is how many attacks the monster gets
             attacks: new foundry.data.fields.StringField({ initial: "1" }),
             size: new foundry.data.fields.StringField({ initial: "M" }),
             intelligence: new foundry.data.fields.StringField({ initial: "7" }),
@@ -68,7 +69,7 @@ export class MonsterDataModel extends fadeActorDataModel {
    _prepareHitPoints() {
       if (this.hp.max == null) {
          const { base, modifier, dieSides } = this._getParsedHD();
-         this.hp.value = Math.ceil((((dieSides + 1) / 2) + modifier) * base);
+         this.hp.value = Math.ceil(((dieSides + 1) / 2) * base) + modifier;
          this.hp.max = this.hp.value;
       }
    }

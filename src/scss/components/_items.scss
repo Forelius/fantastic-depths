@@ -91,6 +91,14 @@
          .rollable:hover {
             background-image: url('/icons/svg/d20-highlight.svg');
          }
+
+         .chatable:hover img {
+            opacity: 0; /* Or use display: none; */
+         }
+
+         .chatable:hover {
+            background-image: url('/icons/svg/book.svg');
+         }
       }
 
       input {

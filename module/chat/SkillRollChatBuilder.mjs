@@ -26,7 +26,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       // Prepare data for the chat template
       const chatData = {
          damageRoll,
-         isHeal: damageRoll.damageType === "heal",
+         isHeal: damageRoll.type === "heal",
          targets: targetTokens,
          rollContent,
          mdata,

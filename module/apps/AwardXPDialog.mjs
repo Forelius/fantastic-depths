@@ -2,10 +2,10 @@ export class AwardXPDialog extends FormApplication {
    /**
     * @param {string[]} actorIds - The IDs of the tracked party members
     */
-   constructor(actorIds) {
-      super();
+   constructor(object = {}, options = {}) {
+      super(object, options);
       // Keep the IDs
-      this.actorIds = actorIds;
+      this.actorIds = options.actorIds;
 
       // Store global XP and share factors
       this._globalXP = 0;
@@ -150,7 +150,7 @@ export class AwardXPDialog extends FormApplication {
          const finalXP = Number(data[fieldName] || 0);
 
          // Add that to the actor's current XP
-         const currentXP = getProperty(actor, "system.details.xp.value") ?? 0;
+         const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
          const updatedXP = currentXP + finalXP;
 
          promises.push(actor.update({ "system.details.xp.value": updatedXP }));

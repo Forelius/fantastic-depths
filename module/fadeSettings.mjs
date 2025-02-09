@@ -231,7 +231,8 @@ export class fadeSettings {
                restWarnCount: 0,
                session: 0,
                total: 0
-            }
+            },
+            worldTime: 0
          },
          restricted: true // Only the GM can change this setting
       });

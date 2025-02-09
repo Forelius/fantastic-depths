@@ -1,0 +1,64 @@
+<form>
+   <table>
+      <thead>
+         <tr>
+            <th colspan="2">{{attacker.name}}</th>
+         </tr>
+      </thead>
+      <tbody>
+         <tr>
+            <td>
+               <label for="system.details.size">{{localize 'FADE.Size'}}</label>
+            </td>
+            <td>
+               <select id="attsize" name="attsize">
+                  {{selectOptions sizes selected=attsize}}
+               </select>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <label>{{localize 'FADE.bonus'}}</label>
+            </td>
+            <td>
+               <input type="number" id="attbonus" name="attbonus" value="{{attbonus}}" />
+            </td>
+         </tr>
+      </tbody>
+   </table>
+   <table>
+      <thead>
+         <tr>
+            <th colspan="2">{{defender.name}}</th>
+         </tr>
+      </thead>
+      <tbody>
+         <tr>
+            <td>
+               <label for="system.details.size">{{localize 'FADE.Size'}}</label>
+            </td>
+            <td>
+               <select id="defsize" name="defsize">
+                  {{selectOptions sizes selected=defsize}}
+               </select>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <label>{{localize 'FADE.bonus'}}</label>
+            </td>
+            <td>
+               <input type="number" id="defbonus" name="defbonus" value="{{defbonus}}" />
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <label>{{localize 'FADE.Actor.HitDice'}}</label>
+            </td>
+            <td>
+               <input type="number" id="defhd" name="defhd" value="{{defhd}}" />
+            </td>
+         </tr>
+      </tbody>
+   </table>
+</form>

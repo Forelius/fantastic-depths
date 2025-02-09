@@ -1,31 +1,50 @@
-<div class="party-tracker">   
-   <div class="party-tracker-list">
-      <!-- Toolbar with XP Button -->
-      <div class="party-tracker-toolbar">
-         <button class="award-xp-button">{{localize 'FADE.dialog.awardXP.short'}}</button>
-      </div>
+<form style="display:flex">
+   <style>
+      .character-name {
+         font-weight: 600;
+         font-size: 15px;
+      }
+      .small-text{
+         font-size:11px;
+      }
+      .ml-4{
+         margin-left:4px;
+      }
+      .ability-score {
+         margin-right: 3px;
+      }
+   </style>
+   <div class="party-tracker">
+      <div class="party-tracker-list">
+         <!-- Toolbar with XP Button -->
+         <div class="party-tracker-toolbar">
+            <button class="award-xp-button">{{localize 'FADE.dialog.awardXP.short'}}</button>
+         </div>
 
-      {{#each trackedActors}}
-      <div class="party-member bordered {{ifThen system.combat.isDead "is-dead" "alive"}}" data-actor-id="{{id}}">
-         <!-- Delete button positioned in the top-right corner -->
-         <span class="delete-actor" data-tooltip="Remove Actor">
-            <i class="fas fa-trash"></i> <!-- Trash icon -->
-         </span>
-         <!-- Actor details -->
-         <div>
-            <span><strong>{{name}}</strong></span>
-            <span> {{system.details.class}}</span>
-            <span> Level: {{system.details.level}}</span>
+         {{#each trackedActors}}
+         <div class="party-member bordered {{ifThen system.combat.isDead "is-dead" "alive"}}" data-actor-id="{{id}}">
+            <!-- Delete button positioned in the top-right corner -->
+            <span class="delete-actor" data-tooltip="Remove Actor"><i class="fas fa-trash"></i></span>
+            <!-- Actor details -->
+            <div>
+               <span class="character-name">{{name}}</span>
+               <span class="ml-4 small-text">{{system.details.class}}</span>
+               <span class="small-text">{{localize 'FADE.Actor.Level'}}: {{system.details.level}}</span>
+            </div>
+            <div class="small-text">
+               {{#each system.abilities as |ability key|}}
+               <span class="ability-score">{{localize (concat 'FADE.Actor.Abilities.' key '.key')}}: {{ability.value}}</span>
+               {{/each}}
+            </div>
+            <div>
+               <span><i class="fas fa-heart" data-tooltip="{{localize 'FADE.Actor.Health'}}"></i> {{system.hp.value}}/{{system.hp.max}}</span>
+               <span class="ml-4"><i class="fas fa-shield-halved" data-tooltip="{{localize 'FADE.Armor.total'}}"></i> {{system.ac.total}}</span>
+               <span class="ml-4"><i class="fas fa-swords" data-tooltip="{{localize "FADE.Actor.THAC0"}}"></i> {{system.thac0.value}}</span>
+               <span class="ml-4"><i class="fas fa-walking" data-tooltip="{{localize 'FADE.Actor.Movement.long'}}"></i> <span data-tooltip="{{localize 'FADE.Actor.Movement.turn'}}">{{system.movement.turn}}</span>, <span data-tooltip="{{localize 'FADE.Actor.Movement.round'}}">{{system.movement.round}}</span></span>
+            </div>
          </div>
-         <div>
-            <span>HP: {{system.hp.value}}/{{system.hp.max}}</span>
-            <span> AC: {{system.ac.total}}</span>
-            <span> THAC0: {{system.thac0.value}}</span>
-         </div>
-         <div>
-            <span> Movement: {{system.movement.turn}} (Turn), {{system.movement.round}} (Round)</span>
-         </div>
+         {{/each}}
       </div>
-      {{/each}}
    </div>
-</div>
+
+</form>

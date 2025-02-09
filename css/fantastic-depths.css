@@ -106,7 +106,7 @@ h1, h2, h3, h4 {
   font-family: "Barlow", sans-serif;
 }
 
-.rollable:hover, .rollable:focus {
+.rollable:hover, .rollable:focus, .chatable:hover, .chatable:focus {
   cursor: pointer;
 }
 
@@ -150,6 +150,9 @@ h1, h2, h3, h4 {
   min-height: 230px !important;
 }
 
+.party-tracker {
+  flex: 1 1 auto;
+}
 .party-tracker .party-tracker-list {
   max-height: 100%; /* Ensure the list is scrollable */
   overflow-y: auto;
@@ -220,6 +223,10 @@ h1, h2, h3, h4 {
   color: #888888;
 }
 
+.prosemirror .editor-container .editor-content {
+  position: relative !important;
+}
+
 .system-fantastic-depths #tooltip.text-center {
   text-align: left !important;
 }
@@ -229,6 +236,10 @@ h1, h2, h3, h4 {
 .system-fantastic-depths color-picker > input:nth-child(2) {
   height: 32px;
   max-width: 32px;
+}
+.system-fantastic-depths .width-120 {
+  width: 120px;
+  max-width: 120px;
 }
 
 :root {
@@ -506,7 +517,7 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #ebeae4;
 }
-.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus {
+.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus, .dark-mode .fantastic-depths .window-content .chatable:hover, .dark-mode .fantastic-depths .window-content .chatable:focus {
   color: #ebeae4;
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
@@ -583,9 +594,6 @@ h1, h2, h3, h4 {
 }
 
 /* Light mode styles */
-.light-mode .fantastic-depths .window-content {
-  background: url("../assets/img/lightgrunge1.jpg");
-}
 .light-mode .fantastic-depths .window-content .bordered {
   border-color: #bbbab4;
 }
@@ -612,7 +620,7 @@ h1, h2, h3, h4 {
 .light-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #2b2a24;
 }
-.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus {
+.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus, .light-mode .fantastic-depths .window-content .chatable:hover, .light-mode .fantastic-depths .window-content .chatable:focus {
   color: #2b2a24;
   text-shadow: 0 0 10px #ae7615;
 }
@@ -661,15 +669,15 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content {
   padding: 1px 5px 4px 5px;
+  /*.collapser {
+     margin-bottom: 4px;
+  }*/
 }
 .chat-message .message-content button {
   margin: 0;
 }
 .chat-message .message-content .digest {
   margin-bottom: 6px;
-}
-.chat-message .message-content .collapser {
-  margin-bottom: 4px;
 }
 .chat-message .message-content .apply-damage, .chat-message .message-content .apply-heal {
   margin-top: 4px;
@@ -688,14 +696,14 @@ h1, h2, h3, h4 {
   font-size: 20px;
 }
 .chat-message .message-content .item-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
 }
 .chat-message .message-content .attack-success, .chat-message .message-content .roll-success {
-  font-size: 20px;
+  font-size: 18px;
 }
 .chat-message .message-content .damage {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: bold;
 }
 .chat-message .message-content .attack-desc {
@@ -703,10 +711,10 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .attack-result {
   margin: 2px 0 6px 0;
-  font-size: 20px;
+  font-size: 18px;
 }
 .chat-message .message-content .attack-info {
-  font-size: 20px;
+  font-size: 18px;
 }
 .chat-message .message-content .roll-info {
   font-size: 16px;
@@ -725,9 +733,9 @@ h1, h2, h3, h4 {
   background-repeat: no-repeat;
   background-position: center;
   border: none;
-  margin-right: 6px;
+  margin-right: 5px;
   position: relative;
-  top: -4px;
+  top: -2px;
 }
 .chat-message .message-content .expander {
   width: 30px; /* Set a fixed width to control the space for the symbol */
@@ -735,7 +743,7 @@ h1, h2, h3, h4 {
   cursor: pointer; /* Optional: to make it appear clickable */
 }
 .chat-message .message-content .expander::after {
-  font-size: 30px; /* Keep the size as you intended */
+  font-size: 28px; /* Keep the size as you intended */
   content: ">";
   transform: translateY(-50%); /* Vertically center the symbol */
   transition: transform 0.3s ease; /* Smooth transition for rotation */
@@ -1100,7 +1108,8 @@ h1, h2, h3, h4 {
 .fantastic-depths .sheet-body,
 .fantastic-depths .sheet-body .tab,
 .fantastic-depths .sheet-body .tab .editor {
-  height: 100%;
+  /*height: 100%;*/
+  min-height: 32px;
 }
 .fantastic-depths .tox .tox-editor-container {
   background: #fff;
@@ -1118,6 +1127,20 @@ h1, h2, h3, h4 {
   padding: 0;
   list-style: none;
   border-top: none;
+}
+.fantastic-depths .summary div {
+  height: calc(100% - 5px);
+  margin: 2px 2px;
+  padding: 0;
+  line-height: 30px;
+  position: relative;
+}
+.fantastic-depths .summary div label {
+  line-height: 6px;
+  position: absolute;
+  font-size: 10px;
+  top: 31px;
+  left: 2px;
 }
 .fantastic-depths .summary li {
   height: calc(100% - 5px);
@@ -1216,6 +1239,12 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .items-list .item .item-name .rollable:hover {
   background-image: url("/icons/svg/d20-highlight.svg");
+}
+.fantastic-depths .items-list .item .item-name .chatable:hover img {
+  opacity: 0; /* Or use display: none; */
+}
+.fantastic-depths .items-list .item .item-name .chatable:hover {
+  background-image: url("/icons/svg/book.svg");
 }
 .fantastic-depths .items-list .item input {
   text-align: center;
@@ -1322,5 +1351,3 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

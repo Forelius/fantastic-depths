@@ -77,7 +77,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
    static async handleDamageRoll(ev, dataset) {
       const { attackerid, weaponid, attacktype, attackmode, damagetype, targetweapontype } = dataset;
       const attacker = canvas.tokens.get(attackerid) || game.actors.get(attackerid);
-      let weaponItem = attacker.actor?.items.find((item) => item.id === weaponid) || attacker.items.find((item) => item.id === weaponid);
+      const attackerActor = attacker.actor ?? attacker;
+      const weaponItem = attackerActor.items.find(item => item.id === weaponid);
       let canRoll = true;
       let dialogResp = null;
       const isHeal = damagetype === 'heal';
@@ -93,11 +94,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       let damageRoll = null;
-      const damageTypes = ["physical", "breath", "fire", "frost", "poison"];
-      const spellType = ["magic", "heal"];
-      if (damageTypes.includes(dataset.damagetype)) {
+      const weaponDamageType = ["physical", "breath", "fire", "frost", "poison"];
+      const otherDamageType = ["magic", "heal", "hull"];
+      if (weaponDamageType.includes(dataset.damagetype)) {
          damageRoll = await weaponItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp, targetweapontype);
-      } else if (spellType.includes(dataset.damagetype)) {
+      } else if (otherDamageType.includes(dataset.damagetype)) {
          damageRoll = await weaponItem.getDamageRoll(dialogResp?.resp);
       }
 
@@ -106,9 +107,10 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const roll = new Roll(damageRoll.formula);
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
+         const attackName = weaponItem.system.isIdentified ? weaponItem.name : weaponItem.system.unidentifiedName;
          const descData = {
             attacker: attacker.name,
-            weapon: weaponItem.name,
+            weapon: attackName,
             damage
          };
          const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
@@ -122,7 +124,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const options = {
             damage: damage,
             resultString,
-            attackName: weaponItem.name,
+            attackName,
          };
          const builder = new DamageRollChatBuilder(chatData, options);
          builder.createChatMessage();

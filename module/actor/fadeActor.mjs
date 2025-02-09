@@ -13,9 +13,13 @@ export class fadeActor extends Actor {
          // If v11 add toggleStatusEffect method.
          this.toggleStatusEffect = async (status, options) => {
             const token = this.getActiveTokens()[0];
-            await token.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
+            await token?.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
          };
       }
+   }
+
+   get activeToken() {
+      return canvas.tokens?.placeables?.find(t => t.document.actorId === this.id);
    }
 
    /**
@@ -108,9 +112,20 @@ export class fadeActor extends Actor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this.prepareArmorClass();
+      this._prepareArmorClass();
+      if (this.system.activeLight?.length > 0) {
+         const lightItem = this.items.get(this.system.activeLight);
+         if (!lightItem) {
+            console.log(`Deactivating light for ${this.name} due to missing light item.`);
+            this.setActiveLight(null);
+            this.activeToken.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+         }
+      }
    }
 
+   /**
+    * @returns
+    */
    getRollData() {
       const data = { ...this.system };
       return data;
@@ -118,6 +133,7 @@ export class fadeActor extends Actor {
 
    /**
     * Get the attack roll formula for the specified weapon, attack type, mod and target.
+    * @public
     * @param {any} weapon The weapon being used to attack with.
     * @param {any} attackType The type of attack. Values are melee, missile, breath and save.
     * @param {any} options An object containing one or more of the following:
@@ -166,6 +182,7 @@ export class fadeActor extends Actor {
 
    /**
     * Attemtps to determine the weapon type of this actor.
+    * @public
     * @returns The weapon type of this actor or 'monster' if it can't be determined.
     */
    getWeaponType() {
@@ -183,6 +200,7 @@ export class fadeActor extends Actor {
 
    /**
     * Applies damage or healing to the actor.
+    * @public
     * @param {any} amount
     * @param {any} damageType
     * @param {any} source
@@ -269,7 +287,6 @@ export class fadeActor extends Actor {
 
    /**
    * Handler for updateWorldTime event.
-   * @returns
    */
    onUpdateWorldTime(worldTime, dt, options, userId) {
       // Only the GM should handle updating effects
@@ -310,15 +327,14 @@ export class fadeActor extends Actor {
     * @param {any} type A string key of the saving throw type.
     */
    async rollSavingThrow(type) {
-      const systemData = this.system;
-      const savingThrow = systemData.savingThrows[type];
+      const savingThrow = this.#getSavingThrow(type);
       const rollData = this.getRollData();
       let dataset = {};
       dataset.dialog = "save";
-      dataset.pass = "gte";
-      dataset.target = savingThrow.value;
-      dataset.rollmode = game.settings.get("core", "rollMode");
-      dataset.label = game.i18n.localize(`FADE.Actor.Saves.${type}.long`);
+      dataset.pass = savingThrow.system.operator;
+      dataset.target = savingThrow.system.target;
+      dataset.rollmode = savingThrow.system.rollMode;
+      dataset.label = savingThrow.name;
       if (this.type === 'character') {
          dataset.type = type;
       }
@@ -326,17 +342,19 @@ export class fadeActor extends Actor {
       let dialogResp = await DialogFactory(dataset, this);
 
       if (dialogResp?.resp?.rolling === true) {
-         rollData.formula = dialogResp.resp?.mod != 0 ? `1d20+@mod` : `1d20`;
-         const wisMod = this.system.abilities.wis.mod;
-         if (dialogResp.resp.vsmagic === true && wisMod !== 0) {
-            rollData.formula = `${rollData.formula}${wisMod > 0 ? '+' : ''}${wisMod}`;
+         let rollMod = dialogResp.resp?.mod || 0;
+         if (dialogResp.resp.vsmagic === true) {
+            rollMod += this.system.abilities.wis.mod;
          }
-         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+         rollMod += this.system.mod.save[type] || 0;
+         rollMod += this.system.mod.save.all || 0;
+         rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
+         const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
             dialogResp: dialogResp,
             context: this,
-            caller: this,
+            caller: savingThrow,
             mdata: dataset,
             roll: rolled,
          };
@@ -347,6 +365,7 @@ export class fadeActor extends Actor {
 
    /**
     * Static event handler for click on the saving throw button in chat.
+    * @public
     * @param {any} event
     */
    static async handleSavingThrowRequest(event) {
@@ -367,19 +386,20 @@ export class fadeActor extends Actor {
 
    /**
     * A helper method for setting the actor's current active light and active fuel.
+    * @public
     * @param {any} lightItemId An owned light item's id.
-    * @param {any} fuelItemId An owned light or fuel item's id.
     */
-   setActiveLight(lightItemId, fuelItemId) {
-      this.update({
-         "system.activeLight": lightItemId,
-         "system.activeFuel": fuelItemId
-      });
+   async setActiveLight(lightItemId) {
+      if (lightItemId === null || lightItemId ==='' || lightItemId===undefined) {
+         await this.activeToken?.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+      }
+      await this.update({ "system.activeLight": lightItemId });
    }
 
    /**
     * Finds and returns the appropriate ammo for the specified weapon.
     * The ammo item must be equipped for it to be recognized.
+    * @public
     * @param {any} weapon
     * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
     */
@@ -399,84 +419,9 @@ export class fadeActor extends Actor {
       return ammoItem;
    }
 
-   #getMasteryAttackRollMods(weaponData, options, digest, attackType) {
-      let result = 0;
-      const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
-      if (attackerMastery) {
-         const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
-         // Get the to hit bonus, if any.
-         const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
-         if (toHitMod > 0) {
-            result += toHitMod;
-            const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
-            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
-         }
-      } else if (attackType === "missile" && this.type === "character" && this.system.details.species === "Human") {
-         // Unskilled use for humans
-         result -= 1;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
-      }
-      return result;
-   }
-
-   #getMissileAttackRollMods(weaponData, digest, targetData) {
-      let result = 0;
-      const systemData = this.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
-
-      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
-         result += weaponData.mod.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
-      }
-      if (systemData.mod.combat?.toHitRanged !== 0) {
-         result += systemData.mod.combat.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
-      }
-      // If the attacker has ability scores...
-      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
-         result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
-      } else if (systemData.abilities && systemData.abilities.dex.mod) {
-         result += systemData.abilities.dex.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
-      }
-      if (targetMods && targetMods.selfToHitRanged !== 0) {
-         result += targetMods.selfToHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
-      }
-      return result;
-   }
-
-   #getMeleeAttackRollMods(weaponData, digest, targetData) {
-      let result = 0;
-      const systemData = this.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
-
-      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
-         result += weaponData.mod.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
-      }
-      if (systemData.mod?.combat.toHit !== 0) {
-         result += systemData.mod.combat.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
-      }
-      // If the attacker has ability scores...
-      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-         result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
-      }
-      if (targetMods && targetMods.selfToHit !== 0) {
-         result += targetMods.selfToHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
-      }
-
-      return result;
-   }
-
    /**
     * Finds the best defense mastery for the specified attacker's weapon type.
+    * @public
     * @param {any} attackerWeaponType
     * @returns
     */
@@ -487,6 +432,86 @@ export class fadeActor extends Actor {
          result = defenseMasteries.filter(mastery => mastery.acBonusType === attackerWeaponType)
             .reduce((minMastery, current) => current.acBonus < minMastery.acBonus ? current : minMastery,
                { acBonus: Infinity });
+      }
+      return result;
+   }
+
+   /**
+    * Get this actor's defense masteries for all equipped weapons.
+    * @public
+    * @param {any} ac
+    * @returns
+    */
+   getDefenseMasteries(ac) {
+      const results = [];
+      const masteries = this.items.filter(item => item.type === "mastery");
+      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
+      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
+      if (masteries?.length > 0 && equippedWeapons?.length > 0) {
+         for (let weapon of equippedWeapons) {
+            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
+            if (weaponMastery) {
+               results.push({
+                  acBonusType: weaponMastery.system.acBonusType,
+                  acBonus: weaponMastery.system.acBonus || 0,
+                  total: ac.total + (weaponMastery.system.acBonus || 0),
+                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
+                  acBonusAT: weaponMastery.system.acBonusAT
+               });
+            }
+         }
+      }
+      return results;
+   }
+
+   /**
+    * Get an array of strings indicating which combat maneuvers this actor is capable of.
+    */
+   getAvailableActions() {
+      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem"];
+      let hasEquippedWeapon = false;
+      // Ready weapon
+      if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {
+         result.push("readyWeapon");
+      }
+      // Ranged weapon actions
+      let rangedWeapons = this.items.filter(item => item.type === "weapon"
+         && item.system.canRanged === true && item.system.equipped === true
+         && (item.system.quantity === null || item.system.quantity > 0));
+      if (rangedWeapons?.length > 0) {
+         if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
+            || (item.system.damageType === 'breath' || item.system.natural === true))) {
+            result.push("fire");
+         } else {
+            result.push("throw");
+         }
+         hasEquippedWeapon = true;
+      }
+      // Melee weapon actions
+      if (this.items.filter(item => item.type === "weapon"
+         && item.system.canMelee === true && item.system.equipped === true
+         && (item.system.quantity === null || item.system.quantity > 0))?.length > 0) {
+         result.push("attack");
+         result.push("withdrawal");
+         hasEquippedWeapon = true;
+      }
+      // Unarmed actions
+      if (hasEquippedWeapon === false) {
+         result.push("unarmed");
+         result.push("wrestle");
+      }
+      // Spells
+      if (this.items.filter(item => item.type === "spell"
+         && (item.system.memorized /* support infinite?*/))?.length > 0) {
+         result.push("spell");
+      }
+      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.combatManeuver !== null)
+         .map((item) => item.system.combatManeuver);
+      for (const ability of specialAbilities) {
+         const config = CONFIG.FADE.CombatManeuvers[ability];
+         if (config === undefined || config.needWeapon === false || (config.needWeapon === true && hasEquippedWeapon === true)) {
+            result.push(ability);
+         }
       }
       return result;
    }
@@ -516,31 +541,35 @@ export class fadeActor extends Actor {
    _prepareSpellsUsed() {
       const systemData = this.system;
       const spells = this.items.filter((item) => item.type === 'spell');
-      //const highestSpellLevel = spells.reduce((max, current) => {
-      //   return current.spellLevel > max.spellLevel ? current : max;
-      //})?.spellLevel;
       let spellSlots = systemData.spellSlots || [];
 
-      // Reset used spells to zero
+      // Reset used spells to zero.
+      // Note: This is not how many times it has been cast, but how many slots have been used.
       for (let i = 0; i < systemData.config.maxSpellLevel; i++) {
-         let slot = spellSlots[i] || {};
-         slot.used = 0;
+         spellSlots[i] = spellSlots[i] || {};
+         spellSlots[i].used = 0;
       }
 
-      if (spellSlots.length > 0) {
+      if (spells.length > 0) {
          for (let spell of spells) {
-            if (spell.system.memorized > 0) {
-               spellSlots[spell.system.spellLevel].used += spell.system.memorized;
+            if (spell.system.spellLevel > spellSlots.length) {
+               console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
+            } else if (spell.system.memorized > 0) {
+               spellSlots[spell.system.spellLevel - 1].used += spell.system.memorized;
             }
          }
       }
-      systemData.spellSlots = spellSlots;
+      if (spellSlots.length !== systemData.config.maxSpellLevel) {
+         console.warn(`${this.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${systemData.config.maxSpellLevel}).`);
+      }
+      systemData.spellSlots = spellSlots;//.splice(0, systemData.config.maxSpellLevel);
    }
 
    /**
+    * @protected
     * Prepare derived armor class values.
     */
-   prepareArmorClass() {
+   _prepareArmorClass() {
       const acDigest = [];
       const dexMod = (this.system.abilities?.dex.mod ?? 0);
       const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.system.mod.baseAc;
@@ -627,25 +656,115 @@ export class fadeActor extends Actor {
       this.system.acDigest = acDigest;
    }
 
-   getDefenseMasteries(ac) {
-      const results = [];
-      const masteries = this.items.filter(item => item.type === "mastery");
-      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
-      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
-      if (masteries?.length > 0 && equippedWeapons?.length > 0) {
-         for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
-            if (weaponMastery) {
-               results.push({
-                  acBonusType: weaponMastery.system.acBonusType,
-                  acBonus: weaponMastery.system.acBonus || 0,
-                  total: ac.total + (weaponMastery.system.acBonus || 0),
-                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
-                  acBonusAT: weaponMastery.system.acBonusAT
-               });
+   /**
+    * Called by Character and Monster actor classes to update/add saving throws.
+    * @param {any} savesData The values to use for the saving throws.
+    */
+   async _setupSavingThrows(savesData) {
+      const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      const saveEntries = Object.entries(savesData);
+      const addItems = [];
+      for (const saveData of saveEntries) {
+         if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
+            const itemData = worldSavingThrows.find(item => item.system.customSaveCode === saveData[0]);
+            if (itemData) {
+               addItems.push(itemData.toObject());
+            } else {
+               console.warn(`The specified saving throw (${saveData[0]})does not exist as a world item.`);
             }
          }
       }
-      return results;
+      if (addItems.length > 0) {
+         console.debug(`Added saving throw items to ${this.name}`);
+         await this.createEmbeddedDocuments("Item", addItems);
+      }
+      // Iterate over saving throw items and set each one.
+      for (const savingThrow of savingThrows) {
+         const saveTarget = savesData[savingThrow.system.customSaveCode];
+         if (saveTarget) {
+            savingThrow.update({ "system.target": saveTarget });
+         }
+      }
+   }
+
+   #getSavingThrow(type) {
+      return this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
+   }
+
+   #getMasteryAttackRollMods(weaponData, options, digest, attackType) {
+      let result = 0;
+      const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
+      if (attackerMastery) {
+         const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
+         // Get the to hit bonus, if any.
+         const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
+         if (toHitMod > 0) {
+            result += toHitMod;
+            const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
+            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
+         }
+      } else if (attackType === "missile" && this.type === "character" && this.system.details.species === "Human") {
+         // Unskilled use for humans
+         result -= 1;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
+      }
+      return result;
+   }
+
+   #getMissileAttackRollMods(weaponData, digest, targetData) {
+      let result = 0;
+      const systemData = this.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
+         result += weaponData.mod.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
+      }
+      if (systemData.mod.combat?.toHitRanged !== 0) {
+         result += systemData.mod.combat.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
+         result += systemData.abilities.str.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+      } else if (systemData.abilities && systemData.abilities.dex.mod) {
+         result += systemData.abilities.dex.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
+      }
+      if (targetMods && targetMods.selfToHitRanged !== 0) {
+         result += targetMods.selfToHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
+      }
+      return result;
+   }
+
+   #getMeleeAttackRollMods(weaponData, digest, targetData) {
+      let result = 0;
+      const systemData = this.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
+         result += weaponData.mod.toHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
+      }
+      if (systemData.mod?.combat.toHit !== 0) {
+         result += systemData.mod.combat.toHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
+         result += systemData.abilities.str.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+      }
+      if (targetMods && targetMods.selfToHit !== 0) {
+         result += targetMods.selfToHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
+      }
+
+      return result;
    }
 }

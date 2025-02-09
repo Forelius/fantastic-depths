@@ -18,9 +18,15 @@
    <li class='flexrow item collapsible-content{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#unless item.system.quantityMax }} bottom-border{{/unless}}' data-item-id='{{item._id}}'>
       <div class='item-name'>
          <div class='item-image rollable' data-test="attack" data-roll-type='item'>
-            <img src='{{item.img}}' title='{{item.name}}' width='26' height='26' />
+            <img src='{{item.img}}' width='26' height='26' />
          </div>
-         <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>{{item.name}}</a>
+         <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>
+            {{#if (or ../isGM item.system.isIdentified)}}
+            {{item.name}}
+            {{else}}
+            {{item.system.unidentifiedName}}
+            {{/if}}
+         </a>
       </div>
       <div class="item-40px item-prop"><label>{{item.system.mod.toHitText}}</label></div>
       <div class="item-60px item-prop"><label>{{item.system.damageRoll}}</label></div>

@@ -12,9 +12,9 @@
          margin-bottom: 6px;
       }
 
-      .collapser {
+      /*.collapser {
          margin-bottom: 4px;
-      }
+      }*/
 
       .apply-damage, .apply-heal {
          margin-top: 4px;
@@ -37,16 +37,16 @@
       }
 
       .item-name {
-         font-size: 20px;
+         font-size: 18px;
          font-weight: 600;
       }
 
       .attack-success, .roll-success {
-         font-size: 20px;
+         font-size: 18px;
       }
 
       .damage {
-         font-size: 19px;
+         font-size: 18px;
          font-weight: bold;
       }
 
@@ -56,11 +56,11 @@
 
       .attack-result {
          margin: 2px 0 6px 0;
-         font-size: 20px;
+         font-size: 18px;
       }
 
       .attack-info {
-         font-size: 20px;
+         font-size: 18px;
       }
 
       .roll-info {
@@ -83,9 +83,9 @@
          background-repeat: no-repeat;
          background-position: center;
          border: none;
-         margin-right: 6px;
+         margin-right: 5px;
          position: relative;
-         top: -4px;
+         top: -3px;
       }
 
       .expander {
@@ -95,7 +95,7 @@
       }
 
       .expander::after {
-         font-size: 30px; /* Keep the size as you intended */
+         font-size: 28px; /* Keep the size as you intended */
          content: '>';
          transform: translateY(-50%); /* Vertically center the symbol */
          transition: transform 0.3s ease; /* Smooth transition for rotation */

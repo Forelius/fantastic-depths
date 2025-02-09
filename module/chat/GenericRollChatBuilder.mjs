@@ -12,7 +12,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
    }
 
    async createChatMessage() {
-      const { context, mdata, resp, roll, caller } = this.data;
+      const { context, mdata, roll, caller } = this.data;
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
@@ -44,6 +44,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          resultString,
          actorName,
          userName,
+         isGM: game.user.isGM
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);

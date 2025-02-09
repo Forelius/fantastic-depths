@@ -34,19 +34,15 @@
                   {{selectOptions abilities selected=system.abilityMod}}
                </select>
                <label for="system.abilityMod">{{localize 'FADE.SpecialAbility.abilityMod'}}</label>
-            </li>
-            <li class="flex1">
-               <select name="system.savingThrow">
-                  {{selectOptions savingThrows selected=system.savingThrow}}
-               </select>
-               <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
-            </li>
+            </li>            
          </ul>
       </div>
    </header>
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
+      {{#if isGM}}
       <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+      {{/if}}
       <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
    </nav>
 
@@ -58,43 +54,62 @@
          {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
       </div>
       {{! Attributes Tab }}
-   <div class='tab' data-group='primary' data-tab='attributes'>
-      {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
-      <section class="bordered">
-         <ul class="summary flexrow" style="min-height:26px;">
-            <li class="flex1">
-               <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
-               <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.autoFail" value='{{system.autoFail}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}" />
-               <label for="system.autoFail" data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}">{{localize 'FADE.SpecialAbility.autoFail'}}</label>
-            </li>
-            <li>
-               <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
-               <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
-            </li>
-            <li>
-               <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
-               <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
-            </li>
-            <li>
-               <select name="system.damageType">
-                  {{selectOptions damageTypes selected=system.damageType}}
-               </select>
-               <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
-            </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li>
-               <select name="system.category">
-                  {{selectOptions categories selected=system.category}}
-               </select>
-               <label for="system.category">{{localize 'FADE.category'}}</label>
-            </li>
-         </ul>
-      </section>
-   </div>
-
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+         <section class="bordered">
+            <ul class="summary flexrow" style="min-height:26px;">
+               <li class="flex1">
+                  <select name="system.savingThrow">
+                     {{selectOptions savingThrows selected=system.savingThrow}}
+                  </select>
+                  <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+               </li>
+               <li class="flex1">
+                  <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
+                  <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
+               </li>
+               <li class="flex1">
+                  <input type='text' name="system.autoFail" value='{{system.autoFail}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}" />
+                  <label for="system.autoFail" data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}">{{localize 'FADE.SpecialAbility.autoFail'}}</label>
+               </li>
+               <li>
+                  <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+                  <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+               </li>
+               <li>
+                  <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+                  <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
+               </li>
+               <li>
+                  <select name="system.damageType">
+                     {{selectOptions damageTypes selected=system.damageType}}
+                  </select>
+                  <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+               </li>
+            </ul>
+            <ul class="summary flexrow">
+               <li>
+                  <input type='text' name='system.shortName' value='{{system.shortName}}' data-dtype='String' />
+                  <label for="system.shortName">{{localize 'FADE.shortName'}}</label>
+               </li>
+               <li>
+                  <select name="system.category">
+                     {{selectOptions categories selected=system.category}}
+                  </select>
+                  <label for="system.category">{{localize 'FADE.category'}}</label>
+               </li>
+               <li>
+                  <select name="system.combatManeuver">
+                     {{selectOptions combatManeuvers selected=system.combatManeuver}}
+                  </select>
+                  <label for="system.combatManeuver">{{localize 'FADE.combat.maneuvers.label'}}</label>
+               </li>
+               <li>
+                  <input type='text' name='system.customSaveCode' value='{{system.customSaveCode}}' data-dtype='String' />
+                  <label for="system.customSaveCode" data-tooltip="{{localize 'FADE.SpecialAbility.saveTypeHint'}}">{{localize 'FADE.SpecialAbility.saveType'}}</label>
+               </li>
+            </ul>
+         </section>
+      </div>
    </section>
 </form>

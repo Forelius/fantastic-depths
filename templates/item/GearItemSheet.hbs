@@ -1,9 +1,15 @@
 ﻿<form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' />
       <div class='header-fields'>
          <ul class="summary flexrow">
-            <li><div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div></li>
+            <li>
+               {{#if (or isGM system.isIdentified)}}
+               <input type='text' name='name' value='{{item.name}}' placeholder='Name' />
+               {{else}}
+               <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
+               {{/if}}
+            </li>
          </ul>
          <ul class="summary flexrow">
             <li class="flex1">
@@ -15,23 +21,25 @@
                <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxLong'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-               <label for="system.weight" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</label>
+               {{#if (or isGM system.isIdentified)}}
+               <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               {{else}}
+               <input type='text' value='?' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               {{/if}}
+               <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-               <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
+               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               <label for="system.weight" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</label>
             </li>
          </ul>
       </div>
    </header>
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
-      {{#if isGM}}
-      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
-      {{/if}}
       <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
       {{#if isGM}}
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
       <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
       <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
       {{/if}}
@@ -42,7 +50,11 @@
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+         {{#if (or isGM system.isIdentified)}}
+         {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+         {{else}}
+         {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}
+         {{/if}}
       </div>
       {{#if isGM}}
       {{! Effects Tab }}
@@ -54,7 +66,7 @@
          <div>
             {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
          </div>
-         <section class="bordered">
+         <div class="bordered">
             {{#if system.isLight}}
             <ul class="summary flexrow">
                <li class="flex1">
@@ -65,10 +77,20 @@
                   <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
                   <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
                </li>
+               <li style="max-width: 60px;">
+                  <input name="turnsRemaining" type="text" data-dtype="String" value="{{turnsRemaining}}" readonly />
+                  <label for="turnsRemaining" data-tooltip="{{localize 'FADE.Item.light.turnsRemainingHint'}}">{{localize "FADE.Item.light.turnsRemaining"}}</label>
+               </li>
+               {{#if isGM}}
+               <li class="flex1">
+                  <input name="system.light.secondsRemain" type="text" data-dtype="String" value="{{system.light.secondsRemain}}" />
+                  <label for="system.light.secondsRemain" data-tooltip="{{localize 'FADE.Item.light.secondsRemainingHint'}}">{{localize "FADE.Item.light.secondsRemaining"}}</label>
+               </li>
+               {{/if}}
             </ul>
             <ul class="summary flexrow">
                <li class="flex1">
-                  <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" placeholder="{{#if (eq system.light.duration null)}}∞{{/if}}"/>
+                  <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" placeholder="{{#if (eq system.light.duration null)}}∞{{/if}}" />
                   <label for="system.light.duration" data-tooltip="{{localize "FADE.Item.light.durationHint"}}">{{localize "FADE.Spell.duration"}}</label>
                </li>
                <li class="flex1">
@@ -88,10 +110,6 @@
                <li class="flex2">
                   <input name="system.light.fuelType" type="text" data-dtype="String" value="{{system.light.fuelType}}" />
                   <label for="system.light.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
-               </li>
-               <li class="flex1">
-                  <input name="system.light.secondsActive" type="text" data-dtype="Number" value="{{system.light.secondsActive}}" readonly />
-                  <label for="system.light.secondsActive" data-tooltip="{{localize 'FADE.Item.light.secondsActiveHint'}}">{{localize "FADE.Item.light.secondsActive"}}</label>
                </li>
             </ul>
             {{#if isCustom}}
@@ -154,7 +172,9 @@
                </li>
             </ul>
             {{/if}}
-         </section>
+         </div>
+         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
+
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>

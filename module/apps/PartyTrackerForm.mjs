@@ -1,42 +1,37 @@
 import { AwardXPDialog } from "./AwardXPDialog.mjs"
 export class PartyTrackerForm extends FormApplication {
-   constructor() {
-      super();
+   constructor(object = {}, options = {}) {
+      super(object, options);
       this.isGM = game.user.isGM;
 
       // Load tracked actors from the settings
       let storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
-
-      //// Check if data needs migration (old format: array of objects with `id` properties)
-      //if (Array.isArray(storedData) && storedData.length > 0 && typeof storedData[0] === "object" && storedData[0].id) {
-      //   console.log("Migrating old party tracker data format to new format (IDs only).");
-      //   // Migrate old data to IDs-only format
-      //   storedData = storedData.map(actor => actor.id);
-      //   // Save the migrated data
-      //   game.settings.set(game.system.id, 'partyTrackerData', storedData);
-      //}
 
       // Store the updated tracked actor IDs
       this.trackedActorIds = storedData;
    }
 
    static get defaultOptions() {
-      const options = super.defaultOptions;
-      options.id = "party-tracker-form";
-      options.template = `systems/${game.system.id}/templates/apps/party-tracker.hbs`;
-      options.width = 300;
-      options.height = 500;
-      options.resizable = true;
-      options.title = "Party Tracker";
-      options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
-      return options;
+      return foundry.utils.mergeObject(super.defaultOptions, {
+         id: "party-tracker-form",
+         title: "Party Tracker",
+         classes: ["fantastic-depths", ...super.defaultOptions.classes],
+         template: `systems/${game.system.id}/templates/apps/party-tracker.hbs`,
+         width: 350,
+         height: 500,
+         resizable: true,
+         dragDrop: [
+            { dragSelector: ".actor-list .actor", dropSelector: ".party-tracker" },
+         ],
+         closeOnSubmit: false,
+      });
    }
 
    /** 
     * Fetch data for the form, such as tracked actors 
     */
    async getData() {
-      const context = super.getData();
+      const context = await super.getData();
       // Fetch actor data dynamically based on stored IDs
       context.trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
       return context;
@@ -45,24 +40,15 @@ export class PartyTrackerForm extends FormApplication {
    /** 
     * Attach event listeners to elements in the form 
     */
-   async activateListeners(html) {
+   activateListeners(html) {
       super.activateListeners(html);
-
-      let dropArea = html.closest('.party-tracker');
-      dropArea.on("dragover", event => event.preventDefault());
-      dropArea.on("drop", this._onDropActor.bind(this));
 
       html.find(".delete-actor").on("click", (event) => {
          const actorId = $(event.currentTarget).closest(".party-member").data("actor-id");
          this._removeTrackedActor(actorId);
       });
 
-      Hooks.on('updateActor', (actor) => {
-         // Check if the updated actor is in the tracked actors list by ID
-         if (this.trackedActorIds.includes(actor.id)) {
-            this.render();  // Re-render to reflect updated actor data
-         }
-      });
+      Hooks.on('updateActor', this._updateTrackedActor);
 
       // **New**: Double-click on a party member to open their actor sheet
       html.find(".party-member").on("dblclick", (event) => {
@@ -74,21 +60,21 @@ export class PartyTrackerForm extends FormApplication {
 
       // **New**: Open "Award XP" dialog
       html.find(".award-xp-button").on("click", (event) => {
-         new AwardXPDialog(this.trackedActorIds).render(true);
+         new AwardXPDialog({}, { actorIds: this.trackedActorIds }).render(true);
       });
    }
 
    /** 
     * Handle the drop event for actors 
     */
-   async _onDropActor(event) {
+   async _onDrop(event) {
       event.preventDefault();
 
       let data = null;
       let actor = null;
 
       try {
-         data = JSON.parse(event.originalEvent.dataTransfer.getData('text/plain'));
+         data = JSON.parse(event.dataTransfer.getData("text/plain"));
       } catch (err) {
          console.error("Failed to parse drop data:", err);
          ui.notifications.warn("Invalid data dropped.");
@@ -135,11 +121,33 @@ export class PartyTrackerForm extends FormApplication {
       game.settings.set(game.system.id, 'partyTrackerData', this.trackedActorIds);
    }
 
+   _updateTrackedActor = (actor) => {
+      // Check if the updated actor is in the tracked actors list by ID
+      if (this.trackedActorIds.includes(actor.id)) {
+         this.render();  // Re-render to reflect updated actor data
+      }
+   };
+
+   /**
+    * This method is called upon form submission after form data is validated
+    * @param {Event} event - The initial triggering submission event
+    * @param {object} formData - The object of validated form data with which to update the object
+    */
+   // eslint-disable-next-line no-underscore-dangle
+   async _updateObject(event, formData) {
+      event.preventDefault();
+      // Update the actor
+      //await this.object.update(formData);
+      //// Re-draw the updated sheet
+      //// eslint-disable-next-line no-underscore-dangle
+      //await this.object.sheet._render(true);
+   }
+
    /** 
     * Clean up hooks when the form is closed 
     */
    async close() {
-      super.close();
       Hooks.off('updateActor', this._updateTrackedActor);
+      super.close();
    }
 }

@@ -2,7 +2,7 @@
    font-family: $font-primary;
 }
 
-.rollable {
+.rollable, .chatable {
    &:hover,
    &:focus {
       cursor: pointer;
@@ -50,6 +50,8 @@
 }
 
 .party-tracker {
+   flex: 1 1 auto;
+
    .party-tracker-list {
       max-height: 100%; /* Ensure the list is scrollable */
       overflow-y: auto;
@@ -97,7 +99,6 @@
    }
 }
 
-
 .collapsible-content {
    overflow: hidden;
    height: auto;
@@ -126,6 +127,10 @@
    font-size: 12px;
    color: #888888;
 }
+.prosemirror .editor-container .editor-content {
+   position: relative !important;
+}
+
 
 .system-fantastic-depths {
    #tooltip.text-center {
@@ -140,4 +145,11 @@
       height: 32px;
       max-width: 32px;
    }
+
+   .width-120 {
+      width: 120px;
+      max-width: 120px;
+   }
+
+
 }

@@ -41,7 +41,7 @@ export class SkillItem extends fadeItem {
 
       return {
          formula,
-         damageType: isHeal ? "heal" : null,
+         type: isHeal ? "heal" : null,
          digest,
          hasDamage
       };
@@ -56,7 +56,7 @@ export class SkillItem extends fadeItem {
    async roll(dataset) {
       const systemData = this.system;
       const ownerData = this.actor.system;
-      const roller = this.parent.getActiveTokens()?.[0] || this.actor;
+      const roller = this.actor || this.parent.getActiveTokens()?.[0];
 
       // Retrieve roll data.
       const rollData = this.getRollData();

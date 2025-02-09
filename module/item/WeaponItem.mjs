@@ -74,8 +74,16 @@ export class WeaponItem extends fadeItem {
 
       // Check weapon mastery
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (hasDamage && masteryEnabled && weaponData.mastery !== "") {
-         const attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
+      if (hasDamage && masteryEnabled && (weaponData.mastery !== "" || weaponData.natural)) {
+         let attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
+         if (attackerMastery === undefined && attacker.type === 'monster') {
+            attackerMastery = {
+               system: {
+                  primaryType: 'all',
+                  pDmgFormula: this.system.damageRoll
+               }
+            };
+         }
          if (attackerMastery) {
             // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
             if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
@@ -92,7 +100,7 @@ export class WeaponItem extends fadeItem {
                formula = attackerMastery.system.pDmgFormula;
                digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
             }
-         } else if (attacker.type === "character" && attackerData.details.species === "Human") {
+         } else {
             // Half damage if unskilled use.
             formula = `floor(${formula}/2)`;
             digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
@@ -165,7 +173,7 @@ export class WeaponItem extends fadeItem {
    async roll() {
       const systemData = this.system;
       // The selected token, not the actor
-      const attacker = canvas.tokens.controlled?.[0] || this.actor;
+      const attacker = this.actor || canvas.tokens.controlled?.[0];
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;
@@ -256,7 +264,7 @@ export class WeaponItem extends fadeItem {
       } else if (getOnly !== true) {
          // Deduct 1 ammo if not infinite
          if (ammoItem.system.quantity !== null) {
-            let newQuantity = Math.max(0, ammoItem.system.quantity - 1);
+            const newQuantity = Math.max(0, ammoItem.system.quantity - 1);
             await ammoItem.update({ "system.quantity": newQuantity });
          }
       }
