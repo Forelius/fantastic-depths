@@ -1,18 +1,18 @@
 import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
 
 /**
- * Data model for an actor mastery item extending fadeItemDataModel.
+ * Data model for an actor mastery item.
  */
 export class ActorMasteryItemDataModel extends fadeItemDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
-
-      // Extend the schema from fadeItemDataModel
-      const baseSchema = super.defineSchema();
-
       return {
-         ...baseSchema, // Include fields from fadeItemDataModel
-
+         // Fields from the "base" template
+         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
+         description: new fields.StringField({ required: false, initial: "" }),
+         gm: new fields.SchemaField({
+            notes: new fields.StringField({ required: false, initial: "" })
+         }),
          // Fields specific to the "mastery" template
          level: new fields.StringField({ required: true, initial: "basic" }),
          primaryType: new fields.StringField({ nullable: true, initial: null }),

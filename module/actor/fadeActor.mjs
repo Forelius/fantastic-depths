@@ -166,7 +166,7 @@ export class fadeActor extends Actor {
          modifier += this.#getMeleeAttackRollMods(weaponData, digest, targetData);
       } else {
          // Missile attack
-         modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData);
+         modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData, options?.ammo);
       }
 
       if (masteryEnabled && weaponData.mastery !== "") {
@@ -408,7 +408,9 @@ export class fadeActor extends Actor {
       const ammoType = weapon.system.ammoType;
 
       // If there's no ammo needed use the weapon itself
-      if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
+      if (weapon.system.isRanged === false) {
+         // Do nothing, return null
+      } else if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
          ammoItem = weapon;
       } else {
          // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
@@ -712,7 +714,7 @@ export class fadeActor extends Actor {
       return result;
    }
 
-   #getMissileAttackRollMods(weaponData, digest, targetData) {
+   #getMissileAttackRollMods(weaponData, digest, targetData, ammo) {
       let result = 0;
       const systemData = this.system;
       const targetMods = targetData?.mod.combat;

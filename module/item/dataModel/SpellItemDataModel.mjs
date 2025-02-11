@@ -1,18 +1,18 @@
 import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
 
 /**
- * Data model for a spell item extending fadeItemDataModel.
+ * Data model for a spell item.
  */
-export class SpellItemDataModel extends fadeItemDataModel {
+export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
-
-      // Extend the schema from fadeItemDataModel
-      const baseSchema = super.defineSchema();
-
       return {
-         ...baseSchema, // Include fields from fadeItemDataModel
-
+         // Fields from the "base" template
+         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
+         description: new fields.StringField({ required: false, initial: "" }),
+         gm: new fields.SchemaField({
+            notes: new fields.StringField({ required: false, initial: "" })
+         }),
          // Fields specific to the "spell" template
          spellLevel: new fields.NumberField({ required: true, initial: 1 }),
          range: new fields.StringField({ required: false, initial: ""}),

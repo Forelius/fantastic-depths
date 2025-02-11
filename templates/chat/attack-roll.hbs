@@ -21,6 +21,25 @@
       {{/if}}
    </div>
 </div>
+{{#if ammoItem}}
+<div class="bordered" style="padding-bottom:2px;">
+   <div class="flexrow collapser">
+      <img class="item-image" src='{{ammoItem.img}}' />
+      {{#if ammoItem.system.isIdentified}}
+      <div class="item-name">{{ammoItem.name}}</div>
+      {{else}}
+      <div class="item-name">{{ammoItem.system.unidentifiedName}}</div>
+      {{/if}}
+   </div>
+   <div class="collapsible-content collapsed">
+      {{#if ammoItem.system.isIdentified}}
+      {{{ammoItem.system.description}}}
+      {{else}}
+      {{{ammoItem.system.unidentifiedDesc}}}
+      {{/if}}
+   </div>
+</div>
+{{/if}}
 {{#if rollContent}}
 {{{rollContent}}}
 {{/if}}

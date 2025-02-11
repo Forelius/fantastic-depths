@@ -13,6 +13,8 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
          gm: new fields.SchemaField({
             notes: new fields.StringField({ required: false, initial: "" })
          }),
+         charges: new fields.NumberField({ required: false, initial: null, nullable: true }),
+         maxCharges: new fields.NumberField({ required: false, initial: null, nullable: true }),
          // Fields from the "physical" template
          quantity: new fields.NumberField({ required: false, initial: 1, nullable: true }),
          quantityMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),

@@ -16,7 +16,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
    * Called by the various Actor and Item derived classes to create a chat message.
    */
    async createChatMessage() {
-      const { caller, context, resp, roll, mdata, digest } = this.data;
+      const { caller, context, resp, roll, mdata, digest, options } = this.data;
       const attacker = context;
       const attackerName = attacker.name;
       const targetTokens = Array.from(game.user.targets);
@@ -58,6 +58,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          weapon,
          resp,
          save,
+         ammoItem: options?.ammoItem,
          targetWeaponType: resp.targetWeaponType,
       };
 

@@ -185,18 +185,19 @@ export class WeaponItem extends fadeItem {
          ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
       }
       else if (attacker) {
-         const ammoItem = this.actor?.getAmmoItem(this);
+         let ammoItem = this.actor?.getAmmoItem(this);
          try {
             const targetTokens = Array.from(game.user.targets);
             const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
             dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
             if (dialogResp?.resp) {
+               // If not breath...
                if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
                   let rollOptions = {
                      mod: dialogResp.resp.mod,
                      target: targetToken?.actor,
-                     ammo: ammoItem
+                     ammoItem
                   };
                   if (dialogResp.resp.targetWeaponType) {
                      rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
@@ -219,6 +220,10 @@ export class WeaponItem extends fadeItem {
          if (canAttack && dialogResp.resp.attackType === 'missile') {
             await this.#tryUseAmmo();
             canAttack = ammoItem !== null && ammoItem !== undefined;
+            // No need to show ammo item if it is also the weapon we are using (thrown).
+            ammoItem = ammoItem.id === this.id ? null : ammoItem;
+         } else {
+            ammoItem = null;
          }
 
          // Perform the roll if there's ammo or if it's a melee attack
@@ -234,11 +239,10 @@ export class WeaponItem extends fadeItem {
                caller: this, // the weapon
                context: attacker,
                roll: rolled,
-               digest: digest,
-               options: { ammoItem }
+               digest: digest
             };
 
-            const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData);
+            const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData, { ammoItem });
             await builder.createChatMessage();
          }
       } else {
