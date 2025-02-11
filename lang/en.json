@@ -870,7 +870,9 @@
       "none": "None",
       "unidentified": "Unidentified",
       "identified": "Identified",
-      "cursed": "Cursed"
+      "cursed": "Cursed",
+      "rounds": "rounds",
+      "turns": "turns"
    },
 
    "TYPES": {

@@ -85,10 +85,10 @@ export class SpellItem extends fadeItem {
       let result = null;
       
       if (systemData.cast < systemData.memorized) {         
-         let attackRollResult = null;
-         if (systemData.attackType === 'melee') {
-           attackRollResult = await this.#doAttackRoll(casterActor);
-         }
+         const attackRollResult = await this.#doAttackRoll();
+
+         const durationRollResult = await this.#getDurationText();
+         console.debug(durationRollResult)
 
          if (attackRollResult === null || attackRollResult?.canProceed===true) {
             const rollData = this.getRollData();
@@ -101,12 +101,11 @@ export class SpellItem extends fadeItem {
                rollData,
                caller: this, // the spell
                context: (caster || casterActor), // the caster
-               roll: attackRollResult?.attackRollEval,
-               resp: attackRollResult?.resp,
+               roll: attackRollResult?.rollEval,
                digest: attackRollResult?.digest
             };
 
-            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData);
+            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, { durationMsg: durationRollResult });
             await builder.createChatMessage();
          }
       }
@@ -121,11 +120,25 @@ export class SpellItem extends fadeItem {
       return result;
    }
 
-   async #doAttackRoll(casterActor) {
+   async #getDurationText() {
+      let result = `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`;
+      if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
+         const rollEval = await new Roll(this.system.durationFormula).evaluate();
+         result = `${result} (${rollEval.total} ${game.i18n.format('FADE.rounds')})`;
+      }
+      return result;
+   }
+
+   async #doAttackRoll() {
+      if (this.system.attackType !== 'melee') {
+         return null;
+      }
+
+      const caster = this.parent.getActiveTokens()?.[0] || this.actor;
+      const casterActor = caster.actor || this.actor;
       const rollMode = game.settings.get("core", "rollMode");
-      const systemData = this.system;
       const rollData = this.getRollData();
-      let attackRollEval = null;
+      let rollEval = null;
       let canProceed = true;
       let dialogResp = null;
       let digest = [];
@@ -149,11 +162,11 @@ export class SpellItem extends fadeItem {
             if (dialogResp.resp.targetWeaponType) {
                rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
             }
-            const attackRoll = casterActor.getAttackRoll(this, systemData.attackType, rollOptions);
-            rollData.formula = attackRoll.formula;
-            digest = attackRoll.digest;
+            const rollInfo = casterActor.getAttackRoll(this, this.system.attackType, rollOptions);
+            rollData.formula = rollInfo.formula;
+            digest = rollInfo.digest;
             const rollContext = { ...rollData };
-            attackRollEval = await new Roll(rollData.formula, rollContext).evaluate();
+            rollEval = await new Roll(rollData.formula, rollContext).evaluate();
          } else {
             canProceed = false;
          }
@@ -161,6 +174,6 @@ export class SpellItem extends fadeItem {
          // Close button pressed or other error
          canProceed = false;
       }
-      return { resp: dialogResp?.resp, digest, attackRollEval, canProceed };
+      return { resp: dialogResp?.resp, digest, rollEval, canProceed };
    }
 }

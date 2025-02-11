@@ -12,7 +12,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    * Called by the various Actor and Item derived classes to create a chat message.
    */
    async createChatMessage() {
-      const { context, caller, roll, resp } = this.data;
+      const { context, caller, roll, options } = this.data;
       const damageRoll = await caller.getDamageRoll(null);
       const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
@@ -60,7 +60,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
          isHeal: damageRoll.type === "heal",
          targets: targetTokens,
          showTargets: !roll,
-         save
+         save,
+         durationMsg: options.durationMsg
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
