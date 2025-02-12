@@ -261,6 +261,7 @@
          "WeaponItem": "Weapon Item Sheet"
       },
       "Spell": {
+         "casts": "casts",
          "SpellLVL": "Spell Level {level}",
          "slots": "Slots",
          "resetSlots": "Reset memorized spells to zero casts. Memorized count will not be changed.",
