@@ -2,26 +2,29 @@ import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
 
 export class MonsterDataModel extends fadeActorDataModel {
    static defineSchema() {
+      const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
       return {
          ...baseSchema,
-         details: new foundry.data.fields.SchemaField({
-            morale: new foundry.data.fields.NumberField({ initial: 9 }),
-            alignment: new foundry.data.fields.StringField({ initial: "Chaotic" }),
-            xpAward: new foundry.data.fields.NumberField({ initial: 5 }),
-            abilityCount: new foundry.data.fields.NumberField({ initial: 0 }),
+         details: new fields.SchemaField({
+            morale: new fields.NumberField({ initial: 9 }),
+            alignment: new fields.StringField({ initial: "Chaotic" }),
+            xpAward: new fields.NumberField({ initial: 5 }),
+            abilityCount: new fields.NumberField({ initial: 0 }),
             // This is how many attacks the monster gets
-            attacks: new foundry.data.fields.StringField({ initial: "1" }),
-            size: new foundry.data.fields.StringField({ initial: "M" }),
-            intelligence: new foundry.data.fields.StringField({ initial: "7" }),
-            monsterType: new foundry.data.fields.StringField({ initial: "Monster (Common)" }),
-            saveAs: new foundry.data.fields.StringField({ initial: "F1" }),
+            attacks: new fields.StringField({ initial: "1" }),
+            size: new fields.StringField({ initial: "M" }),
+            intelligence: new fields.StringField({ initial: "7" }),
+            monsterType: new fields.StringField({ initial: "Monster (Common)" }),
+            saveAs: new fields.StringField({ initial: "F1" }),
          }),
-         na: new foundry.data.fields.SchemaField({
-            wandering: new foundry.data.fields.StringField({ initial: "1d6" }),
-            lair: new foundry.data.fields.StringField({ initial: "" }),
+         na: new fields.SchemaField({
+            wandering: new fields.StringField({ initial: "1d6" }),
+            lair: new fields.StringField({ initial: "" }),
          }),
-         treasure: new foundry.data.fields.StringField({ initial: "" })
+         treasure: new fields.StringField({ initial: "" }),
+         // If enchanted, can only hit with magic weapons or spells.
+         isEnchanted: new fields.BooleanField({ initial: false }),
       };
    }
 

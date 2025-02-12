@@ -40,6 +40,10 @@
          "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
          "XPAward": "XP Award",
          "attackRank": "Attack Rank",
+         "enchanted": {
+            "name": "Enchanted",
+            "hint": "Enchanted creatures can only be hit by magical weapons or spells"
+         },
          "hdConBonus": {
             "name": "HD Con.",
             "hint": "Character's Constitution modifier is added to the hit die roll."

@@ -1,0 +1,52 @@
+<!-- Content that only the GM should see goes here -->
+{{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+<section class="bordered">
+   <ul class="summary flexrow">
+      <li>
+         <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}" />
+         <label for="system.encumbrance.max" data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
+         <label for="system.movement.max" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.flight.max" value='{{system.flight.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}" />
+         <label for="system.flight.max" data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
+      </li>
+      <li style="max-width:60px;">
+         <input type="checkbox" name="system.isEnchanted" data-dtype="Boolean" {{#if system.isEnchanted}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}" />
+         <label for="system.isEnchanted" data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}">{{localize 'FADE.Actor.enchanted.name'}}</label>
+      </li>
+      <li style="max-width:60px;">
+         <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
+         <label for="system.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
+      </li>      
+   </ul>
+   <ul class="summary flexrow">
+      <li>
+         <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
+         <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
+         <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}" />
+         <label for="system.combat.attacksAgainst" data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}</label>
+      </li>
+      <li>
+         <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
+         <label for="system.combat.isDead" data-tooltip="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}" />
+         <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
+      </li>
+   </ul>
+</section>
+<section class="bordered">
+   <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
+   <textarea id="gm-notes" name="system.gm.notes" rows="8">{{system.gm.notes}}</textarea>
+</section>
