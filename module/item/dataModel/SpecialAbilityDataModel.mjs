@@ -32,6 +32,7 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          combatManeuver: new fields.StringField({ required: false, nullable: true, initial: null }),
          // The type of saving throw this represents. Only use if this is a saving throw item
          customSaveCode: new fields.StringField({ required: false, nullable: true, initial: null }),
+         classKey: new fields.StringField({ required: false, nullable: true, initial: null }),
       };
    }
 

@@ -373,12 +373,16 @@ export class fadeCombat extends Combat {
 
    onCreateCombatant(combatant, options, userId) {
       if (game.user.isGM) {
-         combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
+         if (combatant.actor === null || combatant.actor === undefined) {
+            console.warn(`World actor no longer exists for combatant ${combatant.name}. Skipping combatant.`);
+         } else {
+            combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
+         }
       }
    }
 
    onDeleteCombatant(combatant, options, userId) {
-      if (game.user.isGM) {
+      if (game.user.isGM && combatant.actor) {
          this.tryClosePlayerCombatForm([userId]);
          combatant.actor.update({ 'system.combat.declaredAction': null });
       }

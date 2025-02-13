@@ -97,15 +97,14 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: this.maxSpellLevel }))
             }
          ),
-
-         //classAbilities: new fields.ArrayField(
-         //   new fields.SchemaField({
-         //      name: new fields.StringField({ required: true, initial: '' }),
-         //      level: new fields.NumberField({ required: true }),
-         //      combatManeuver: new fields.StringField({ required: true, initial: 'Nothing' }),
-         //   }), {
-         //   required: false,
-         //})
+         classAbilities: new fields.ArrayField(
+            new fields.SchemaField({
+               name: new fields.StringField({ required: true, initial: '' }),
+               level: new fields.NumberField({ required: true }),
+               target: new fields.NumberField({ required: true, nullable: true }),
+            }), {
+            required: false,
+         })
       };
    }
 
@@ -145,7 +144,9 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
    #prepareSpellLevels() {
       const totalLevelCount = this.maxLevel;
       const currentMaxSpellLevel = this.spells.length > 0 ? this.spells[0].length : 0;
-      if (totalLevelCount !== this.spells.length || currentMaxSpellLevel !== this.maxSpellLevel) {
+      if (this.maxSpellLevel === 0) {
+         this.spells = [];
+      } else if (totalLevelCount !== this.spells.length || currentMaxSpellLevel !== this.maxSpellLevel) {
          const newLevels = Array.from({ length: totalLevelCount }, () => Array.from({ length: this.maxSpellLevel }, () => 0));
          // Try to preserve existing spells
          if (this.spells && this.spells.length > 0) {

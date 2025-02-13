@@ -26,14 +26,16 @@ h4 {
       height: 130px;
       width: 130px;
       margin-right: 10px;
+      border: none;
    }
 
    .profile-img-sm {
-      float:left;
+      float: left;
       flex: 0 0 10px;
       height: 80px;
       width: 80px;
       margin-right: 10px;
+      border: none;
    }
 
    .profile-img-xsm {
@@ -41,6 +43,7 @@ h4 {
       height: 50px;
       width: 50px;
       margin-right: 10px;
+      border: none;
    }
 
    .header-fields {

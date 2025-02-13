@@ -735,7 +735,7 @@ h1, h2, h3, h4 {
   border: none;
   margin-right: 5px;
   position: relative;
-  top: -2px;
+  top: -3px;
 }
 .chat-message .message-content .expander {
   width: 30px; /* Set a fixed width to control the space for the symbol */
@@ -1042,6 +1042,7 @@ h1, h2, h3, h4 {
   height: 130px;
   width: 130px;
   margin-right: 10px;
+  border: none;
 }
 .fantastic-depths .sheet-header .profile-img-sm {
   float: left;
@@ -1049,12 +1050,14 @@ h1, h2, h3, h4 {
   height: 80px;
   width: 80px;
   margin-right: 10px;
+  border: none;
 }
 .fantastic-depths .sheet-header .profile-img-xsm {
   flex: 0 0 10px;
   height: 50px;
   width: 50px;
   margin-right: 10px;
+  border: none;
 }
 .fantastic-depths .sheet-header .header-fields {
   flex: 1;

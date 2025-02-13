@@ -161,7 +161,7 @@ export class CharacterActor extends fadeActor {
             // Get the spell progression for the given character level
             const spellProgression = classData.spells[classSpellsIdx];
             if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
-               console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`);
+               console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`, classData.spells);
             } else {
                //console.debug(`Class spells ${this.name}: spell levels ${spellProgression.length}, spell slots ${this.system.spellSlots.length}.`);
                // Loop through the spell slots in the this and update the 'max' values
@@ -182,6 +182,11 @@ export class CharacterActor extends fadeActor {
          const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
          if (savesData) {
             await this._setupSavingThrows(savesData);
+         }
+
+         const abilitiesData = ClassItem.getClassAbilities(classNameInput, currentLevel);
+         if (abilitiesData) {
+            await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
          }
       }
 

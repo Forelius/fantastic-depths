@@ -1,15 +1,15 @@
 export class fadeCombatant extends Combatant {
    get declaredAction() {
-      return this.actor.system.combat.declaredAction;
+      return this.actor?.system.combat.declaredAction;
    }
    set declaredAction(value) {
       console.debug(`set declaredAction called for ${this.actor.name}:`, value);
    }
    get attacks() {
-      return this.actor.system.combat.attacks;
+      return this.actor?.system.combat.attacks;
    }
    get attacksAgainst() {
-      return this.actor.system.combat.attacksAgainst;
+      return this.actor?.system.combat.attacksAgainst;
    }
    get canChangeAction() {
       return game.user.isGM === true || this.initiative === null;

@@ -34,6 +34,21 @@ export class ClassItem extends fadeItem {
       await this.update({ "system.primeReqs": primeReqs });
    }
 
+   async createClassAbility() {
+      // Retrieve the primeReqs array
+      const classAbilities = this.system.classAbilities || [];
+
+      // Define the new primeReq data
+      const newClassAbility = {
+         level: 1,
+         name: "",
+         target: 0
+      };
+
+      // Add the new primeReq to the array
+      classAbilities.push(newClassAbility);
+      await this.update({ "system.classAbilities": classAbilities });
+   }
    /**
     * Retrieves the specified class item, if it exists.
     * @param {any} className The class item's full and case-sensitive name.
@@ -45,6 +60,16 @@ export class ClassItem extends fadeItem {
          console.warn(`Class item not found ${className}.`);
       }
       return result;
+   }
+
+   static getClassAbilities(className, classLevel) {
+      const classItem = ClassItem.getClassItem(className);
+      let result;
+      if (classItem) {
+         //result = ((filtered) => filtered.filter(a => a.level === Math.max(...filtered.map(a => a.level))))(classItem.system.classAbilities.filter(a => a.level <= classLevel));
+         result = Object.values(classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {}));
+      }
+      return result?.length > 0 ? result : undefined;
    }
 
    /**

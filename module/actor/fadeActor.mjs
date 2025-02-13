@@ -390,7 +390,7 @@ export class fadeActor extends Actor {
     * @param {any} lightItemId An owned light item's id.
     */
    async setActiveLight(lightItemId) {
-      if (lightItemId === null || lightItemId ==='' || lightItemId===undefined) {
+      if (lightItemId === null || lightItemId === '' || lightItemId === undefined) {
          await this.activeToken?.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
       }
       await this.update({ "system.activeLight": lightItemId });
@@ -658,6 +658,34 @@ export class fadeActor extends Actor {
       this.system.acDigest = acDigest;
    }
 
+   async _setupSpecialAbilities(classKey, abilitiesData) {
+      const worldAbilities = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class' && item.system.classKey === classKey);
+      const classAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+      const addItems = [];      
+      for (const abilityData of abilitiesData) {
+         if (classAbilities.find(item => item.name === abilityData.name) === undefined
+            && addItems.find(item => item.name === abilityData.name) === undefined) {
+            const itemData = worldAbilities.find(item => item.name === abilityData.name);
+            if (itemData) {
+               addItems.push(itemData.toObject());
+            } else {
+               console.warn(`The specified class ability (${abilityData.name}) does not exist as a world item.`);
+            }
+         }
+      }
+      if (addItems.length > 0) {
+         console.log(`Adding ${addItems.length} class ability items to ${this.name}`);
+         await this.createEmbeddedDocuments("Item", addItems);
+      }
+      // Iterate over ability items and set each one.
+      for (const classAbility of classAbilities) {
+         const target = abilitiesData.find(item => item.name === classAbility.name)?.target;
+         if (target) {
+            classAbility.update({ "system.target": target });
+         }
+      }
+   }
+
    /**
     * Called by Character and Monster actor classes to update/add saving throws.
     * @param {any} savesData The values to use for the saving throws.
@@ -668,17 +696,18 @@ export class fadeActor extends Actor {
       const saveEntries = Object.entries(savesData);
       const addItems = [];
       for (const saveData of saveEntries) {
-         if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
+         if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined
+            && addItems.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
             const itemData = worldSavingThrows.find(item => item.system.customSaveCode === saveData[0]);
             if (itemData) {
                addItems.push(itemData.toObject());
             } else {
-               console.warn(`The specified saving throw (${saveData[0]})does not exist as a world item.`);
+               console.warn(`The specified saving throw (${saveData[0]}) does not exist as a world item.`);
             }
          }
       }
       if (addItems.length > 0) {
-         console.debug(`Added saving throw items to ${this.name}`);
+         console.log(`Adding saving throw items to ${this.name}`);
          await this.createEmbeddedDocuments("Item", addItems);
       }
       // Iterate over saving throw items and set each one.
