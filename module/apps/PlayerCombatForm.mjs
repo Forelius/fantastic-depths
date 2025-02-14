@@ -83,7 +83,7 @@ export class PlayerCombatForm extends FormApplication {
       //this.#updateActorData(actor, updateData);
       // Optionally update the actor's system data if needed
       const updated = await actor.update(updateData);
-      console.debug(`_onPlayerChangedAction ${actor.name}:`, updated);
+      //console.debug(`_onPlayerChangedAction ${actor.name}:`, updated);
    }
 
    #updateActorData(actor, updateData) {
