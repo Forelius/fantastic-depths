@@ -131,10 +131,10 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Active Effect management
-         html.on('click', '.effect-control', (event) => {
+         html.on('click', '.effect-control', async (event) => {
             const row = event.currentTarget.closest('li');
             const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
-            EffectManager.onManageActiveEffect(event, document);
+            await EffectManager.onManageActiveEffect(event, document);
          });
 
          // Rollable abilities.
@@ -159,11 +159,11 @@ export class fadeActorSheet extends ActorSheet {
          html.find(".item-toggle").click(async (event) => await this._toggleEquippedState(event));
 
          // Consumables
-         html.find(".consumable-counter .full-mark").click((event) => {
-            this._useConsumable(event, true);
+         html.find(".consumable-counter .full-mark").click(async (event) => {
+            await this._useConsumable(event, true);
          });
-         html.find(".consumable-counter .empty-mark").click((event) => {
-            this._useConsumable(event, false);
+         html.find(".consumable-counter .empty-mark").click(async (event) => {
+            await this._useConsumable(event, false);
          });
 
          // Editable
@@ -366,12 +366,12 @@ export class fadeActorSheet extends ActorSheet {
             const itemData = droppedItem.toObject();
             if (droppedItem.actor == null) {
                const newItem = await this._onDropItemCreate(itemData, event);
-               newItem[0].update({ "system.containerId": targetId });
+               await newItem[0].update({ "system.containerId": targetId });
             } else if (droppedItem.actor.id != this.actor.id) {
                const newItem = await this._onDropItemCreate(itemData, event);
-               newItem[0].update({ "system.containerId": targetId });
+               await newItem[0].update({ "system.containerId": targetId });
             } else {
-               droppedItem.update({ "system.containerId": targetId });
+               await droppedItem.update({ "system.containerId": targetId });
             }
          }
          // The drop target is not a container
@@ -379,14 +379,14 @@ export class fadeActorSheet extends ActorSheet {
             // If the dropped item is owned by an actor already...
             if (droppedItem.actor !== null) {
                // Remove the item from any container
-               droppedItem.update({ "system.containerId": null });
+               await droppedItem.update({ "system.containerId": null });
             }
             super._onDropItem(event, data);
          }
       } else if (droppedItem.type == "class") {
-         this.actor.update({ "system.details.class": droppedItem.name });
+         await this.actor.update({ "system.details.class": droppedItem.name });
          if (this.actor.system.details.level === 0) {
-            this.actor.update({ "system.details.level": 1 });
+            await this.actor.update({ "system.details.level": 1 });
          }
       } else {
          super._onDropItem(event, data);
@@ -423,10 +423,10 @@ export class fadeActorSheet extends ActorSheet {
   * @param event
   * @param {bool} decrement
   */
-   _useConsumable(event, decrement) {
+   async _useConsumable(event, decrement) {
       const item = this._getItemFromActor(event);
       let quantity = item.system.quantity;
-      item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+      await item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
    }
 
    /**
@@ -549,13 +549,13 @@ export class fadeActorSheet extends ActorSheet {
       const item = this._getItemFromActor(event);
       const newVal = Number(event.target.value) || 0;
       if (event.target.dataset.field === "quantity") {
-         result = item.update({ "system.quantity": newVal });
+         result = await item.update({ "system.quantity": newVal });
       } else if (event.target.dataset.field === "cast") {
-         result = item.update({ "system.cast": newVal });
+         result = await item.update({ "system.cast": newVal });
       } else if (event.target.dataset.field === "memorize") {
-         result = item.update({ "system.memorized": newVal });
+         result = await item.update({ "system.memorized": newVal });
       } else if (event.target.dataset.field === "target") {
-         result = item.update({ "system.target": newVal });
+         result = await item.update({ "system.target": newVal });
       }
 
       return result;
@@ -563,9 +563,9 @@ export class fadeActorSheet extends ActorSheet {
 
    async _resetSpells(event) {
       const spells = this.actor.items.filter((item) => item.type === 'spell');
-      spells.forEach((spell) => {
+      spells.forEach(async (spell) => {
          spell.system.cast = 0;
-         spell.update({ "system.cast": spell.system.cast });
+         await spell.update({ "system.cast": spell.system.cast });
       });
 
       const msg = game.i18n.format('FADE.Chat.resetSpells', { actorName: this.actor.name });

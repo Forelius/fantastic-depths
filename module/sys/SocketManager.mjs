@@ -115,11 +115,11 @@ export class SocketManager {
    }
 
 
-   #handleIncAttacksAgainst(message) {
+   async #handleIncAttacksAgainst(message) {
       const { data } = message;
       const targetActor = canvas.tokens.get(data.tokenid)?.actor;
       if (targetActor) {
-         targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });
+         await targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });
       } else {
          console.warn("handleIncAttacksAgainst: targetActor not found.", data);
       }
@@ -132,7 +132,7 @@ export class SocketManager {
          if (combat) {
             combat.rollInitiative([], { messageOptions: { group: "friendly" } });
          } else {
-            console.warn("handleIncAttacksAgainst: combat not found.", data);
+            console.warn("handleRollGroupInitiative: combat not found.", data);
          }
       }
    }

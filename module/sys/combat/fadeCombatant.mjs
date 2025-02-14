@@ -65,7 +65,7 @@ export class fadeCombatant extends Combatant {
 
    async exitCombat() {
       // Reset initiative to null
-      this.actor.update({
+      await this.actor.update({
          "system.combat.attacks": 0,
          "system.combat.attacksAgainst": 0,
          "system.combat.declaredAction": null

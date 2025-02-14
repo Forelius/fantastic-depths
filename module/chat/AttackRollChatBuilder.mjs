@@ -218,7 +218,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       let result = null;
 
       if (roll) {
-         attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
+         await attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
 
          const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
          const thac0 = attackingActor.system.thac0.value;

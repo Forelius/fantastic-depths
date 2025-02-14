@@ -153,7 +153,7 @@ export class AwardXPDialog extends FormApplication {
          const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
          const updatedXP = currentXP + finalXP;
 
-         promises.push(actor.update({ "system.details.xp.value": updatedXP }));
+         promises.push(await actor.update({ "system.details.xp.value": updatedXP }));
       }
 
       await Promise.all(promises);

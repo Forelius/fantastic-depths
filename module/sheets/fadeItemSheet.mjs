@@ -46,8 +46,8 @@ export class fadeItemSheet extends ItemSheet {
       // Everything below here is only needed if the sheet is editable
       if (this.isEditable) {
          // Active Effect management
-         html.on('click', '.effect-control', (ev) =>
-            EffectManager.onManageActiveEffect(ev, this.item)
+         html.on('click', '.effect-control', async (ev) =>
+            await EffectManager.onManageActiveEffect(ev, this.item)
          );
          html.find('input[data-action="add-tag"]').keypress((ev) => {
             if (ev.which === 13) {

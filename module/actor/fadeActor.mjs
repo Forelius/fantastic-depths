@@ -31,10 +31,10 @@ export class fadeActor extends Actor {
    async updateActor(updateData, options, userId) {
       if (game.user.isGM) {
          if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
-            this.update({ "system.combat.isDead": true });
+            await this.update({ "system.combat.isDead": true });
             this.toggleStatusEffect("dead", { active: true, overlay: true });
          } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
-            this.update({ "system.combat.isDead": false });
+            await this.update({ "system.combat.isDead": false });
             this.toggleStatusEffect("dead", { active: false });
          }
       }
@@ -241,7 +241,7 @@ export class fadeActor extends Actor {
          systemData.hp.value -= dmgAmt;
          digest.push(game.i18n.format('FADE.Chat.damageRoll.applied', { damage: dmgAmt, type: damageType, tokenName: tokenName }));
       }
-      this.update({ "system.hp.value": systemData.hp.value });
+      await this.update({ "system.hp.value": systemData.hp.value });
 
       // Check if the actor already has the "Dead" effect
       let hasDeadStatus = this.statuses.has("dead");
@@ -251,7 +251,7 @@ export class fadeActor extends Actor {
          if (isKilled) {
             if (this.type === 'character') {
                systemData.combat.deathCount++;
-               this.update({
+               await this.update({
                   "system.combat.deathCount": systemData.combat.deathCount + 1,
                   "system.combat.isDead": true
                });
@@ -262,7 +262,7 @@ export class fadeActor extends Actor {
       } else if (prevHP < 0 && systemData.hp.value > 0) {
          isRestoredToLife = hasDeadStatus === true;
          if (isRestoredToLife) {
-            this.update({ "system.combat.isDead": false });
+            await this.update({ "system.combat.isDead": false });
             await this.toggleStatusEffect("dead", { active: false });
             digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
          }
@@ -681,7 +681,7 @@ export class fadeActor extends Actor {
       for (const classAbility of classAbilities) {
          const target = abilitiesData.find(item => item.name === classAbility.name)?.target;
          if (target) {
-            classAbility.update({ "system.target": target });
+            await classAbility.update({ "system.target": target });
          }
       }
    }
@@ -714,7 +714,7 @@ export class fadeActor extends Actor {
       for (const savingThrow of savingThrows) {
          const saveTarget = savesData[savingThrow.system.customSaveCode];
          if (saveTarget) {
-            savingThrow.update({ "system.target": saveTarget });
+            await savingThrow.update({ "system.target": saveTarget });
          }
       }
    }
