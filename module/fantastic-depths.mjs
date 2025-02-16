@@ -53,7 +53,7 @@ import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
 import { Collapser } from './utils/collapser.mjs';
-import {fadeChatMessage } from './sys/fadeChatMessage.mjs'
+import { fadeChatMessage } from './sys/fadeChatMessage.mjs'
 import { SocketManager } from './sys/SocketManager.mjs'
 import { fadeEffect } from './sys/fadeEffect.mjs'
 import { fadeTreasure } from './utils/fadeTreasure.mjs'
@@ -244,7 +244,7 @@ Hooks.once('ready', async function () {
          });
       }
 
-      SocketManager.SetupOnReady();      
+      SocketManager.SetupOnReady();
    }
 });
 
@@ -271,46 +271,33 @@ Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
 /* -------------------------------------------- */
 /*  Log Changes                                 */
 /* -------------------------------------------- */
-
 // Hook into `updateActor` to compare the old and new values
 Hooks.on("updateActor", async (actor, updateData, options, userId) => {
-   actor.updateActor(updateData, options, userId);
+   if (game.user.isGM) {
+      actor?.onUpdateActor(updateData, options, userId);
+   }
 });
 
 // Hook into item creation (added to the actor)
 Hooks.on("createItem", async (item, options, userId) => {
-   const actor = item.parent; // The actor the item belongs to
-   const user = game.users.get(userId);
-   // Check if the logging feature is enabled and the user is not a GM
-   const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
-   if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
-      actor.logActorChanges(item, null, user, "addItem");
+   if (game.user.isGM) {
+      const actor = item.parent; // The actor the item belongs to
+      actor?.onCreateActorItem(item, options, userId);
    }
 });
 
 // Hook into item updates (e.g., changes to an existing item)
-Hooks.on("updateItem",async (item, updateData, options, userId) => {
-   const actor = item.parent; // The actor the item belongs to
-   const user = game.users.get(userId);
-   // Check if the logging feature is enabled and the user is not a GM
-   const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
-   if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
-      // Log the item update and notify the GM
-      console.log(`Item updated: ${item.actor?.name} ${item.name} by ${user.name}`, updateData?.system);     
+Hooks.on("updateItem", async (item, updateData, options, userId) => {
+   if (game.user.isGM) {
+      const actor = item.parent; // The actor the item belongs to
+      actor?.onUpdateActorItem(item, updateData, options, userId);
    }
 });
 
 // Hook into item deletion (removed from the actor)
 Hooks.on("deleteItem", async (item, options, userId) => {
-   const actor = item.parent; // The actor the item belongs to
-   const user = game.users.get(userId);
-   // Check if the logging feature is enabled and the user is not a GM
-   const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
-   if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
-      
-      // Log the item removal and notify the GM
-      console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
-
-      actor.logActorChanges(item, null, user, "deleteItem");
+   if (game.user.isGM) {
+      const actor = item.parent; // The actor the item belongs to
+      actor?.onDeleteActorItem(item, options, userId);
    }
 });

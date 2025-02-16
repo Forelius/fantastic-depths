@@ -43,6 +43,7 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.isAmmo = this.ammoType?.length > 0;
    }
 
    /** @override */
@@ -51,9 +52,5 @@ export class fadeItemDataModel extends foundry.abstract.TypeDataModel {
       if (this.quantity === 0) {
          this.equipped = false;
       }
-      const qty = this.quantity > 0 ? this.quantity : 0;
-      this.totalWeight = Math.round((this.weight * qty) * 100) / 100;
-      this.totalCost = Math.round((this.cost * qty) * 100) / 100;
-      this.isAmmo = this.ammoType?.length > 0;
    }
 }

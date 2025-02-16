@@ -15,13 +15,39 @@ export class fadeItem extends Item {
       return this.actor ? canvas.tokens?.placeables?.find(t => t.document.actorId === this.actor?.id) : null;
    }
 
-   /** @protected */
+   /** A getter for dynamically calculating the contained items.
+    * This data is not stored in the database. */
+   get containedItems() {
+      return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
+   }
+
+   get totalEnc() {
+      let result = 0;
+      if (this.system.container === true) {
+         result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
+      }
+      const weight = this.system.weight > 0 ? this.system.weight : 0;
+      const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
+      result += weight * quantity;
+      return result;
+   }
+
+   /** @override
+    * @protected */
    prepareBaseData() {
       super.prepareBaseData();
    }
 
+   /** @override
+    * @protected */
    prepareDerivedData() {
       super.prepareDerivedData();
+      if (this.system.quantity !== undefined) {
+         const qty = this.system.quantity > 0 ? this.system.quantity : 0;
+         this.system.totalWeight = Math.round((this.system.weight * qty) * 100) / 100;
+         //console.debug(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${qty}x${this.system.weight})`);
+         this.system.totalCost = Math.round((this.system.cost * qty) * 100) / 100;
+      }
       // This can't be in data model, because name is a property of Item.
       this.system.unidentifiedName = this.system.unidentifiedName === '' ? this.name : this.system.unidentifiedName;
    }
@@ -50,25 +76,6 @@ export class fadeItem extends Item {
          data.img = this.defaultIcons[data.type] || "icons/svg/item-bag.svg"; // Fallback icon
       }
       return super.create(data, context);
-   }
-
-   /**
-   * A getter for dynamically calculating the contained items.
-   * This data is not stored in the database.
-   */
-   get containedItems() {
-      return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
-   }
-
-   get totalEnc() {
-      let result = 0;
-      if (this.system.container === true) {
-         result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
-      }
-      const weight = this.system.weight > 0 ? this.system.weight : 0;
-      const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
-      result += weight * quantity;
-      return result;
    }
 
    /**

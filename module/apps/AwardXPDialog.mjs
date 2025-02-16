@@ -136,7 +136,7 @@ export class AwardXPDialog extends FormApplication {
 
       // expandObject converts the formData into a JS object
       // e.g. { globalXP: "200", actorXP_ABC: "120", actorShareFactor_ABC: "2", ... }
-      const data = expandObject(formData);
+      const data = foundry.utils.expandObject(formData);
 
       // We'll gather update Promises
       const promises = [];
@@ -153,7 +153,7 @@ export class AwardXPDialog extends FormApplication {
          const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
          const updatedXP = currentXP + finalXP;
 
-         promises.push(await actor.update({ "system.details.xp.value": updatedXP }));
+         promises.push(actor.update({ "system.details.xp.value": updatedXP }));
       }
 
       await Promise.all(promises);

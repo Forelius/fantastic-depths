@@ -1202,13 +1202,32 @@ h1, h2, h3, h4 {
   justify-content: flex-end;
 }
 .fantastic-depths .items-list .item-controls a {
-  font-size: 12px;
+  font-size: 10px;
   text-align: center;
   margin: 0 5px;
+}
+.fantastic-depths .items-list .item-controls i {
+  font-size: 12px;
+}
+.fantastic-depths .items-list .item-controls-sm {
+  display: flex;
+  flex: 0 0 50px;
+  justify-content: flex-end;
+}
+.fantastic-depths .items-list .item-controls-sm a {
+  font-size: 8px;
+  text-align: center;
+  margin: 0 5px;
+}
+.fantastic-depths .items-list .item-controls-sm i {
+  font-size: 10px;
 }
 .fantastic-depths .items-list .item {
   align-items: center;
   padding: 0;
+}
+.fantastic-depths .items-list .item .center-vert {
+  align-items: center;
 }
 .fantastic-depths .items-list .item ol {
   padding: 0;
@@ -1354,3 +1373,5 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

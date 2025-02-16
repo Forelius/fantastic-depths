@@ -1,12 +1,14 @@
 <ol name="specialAbilityItems" class='items-list'>
    <li class='item flexrow items-header collapsible-header'>
       <div class='item-name'>{{localize 'FADE.SpecialAbility.plural'}}</div>
-      <div class='item-controls'>
+      {{#if @root.isGM}}
+      <div class='item-controls-sm'>
          <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility'>
             <i class='fas fa-plus'></i>
             {{localize 'FADE.SpecialAbility.short'}}
          </a>
       </div>
+      {{/if}}
    </li>
    {{#each specialAbilities as |item id|}}
    <li class='item flexrow collapsible-content bottom-border' data-item-id='{{item._id}}'>
@@ -21,11 +23,13 @@
          </div>
          <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
       </div>
-      <div class='item-controls'>
+      {{#if @root.isGM}}
+      <div class='item-controls-sm'>
          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>
+      {{/if}}
    </li>
-   {{/each}}  
+   {{/each}}
 </ol>

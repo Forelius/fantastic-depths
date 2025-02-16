@@ -71,7 +71,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             declaredAction: new fields.StringField({ initial: "attack" }),
          }),
          gm: new fields.SchemaField({
-            notes: new fields.StringField({ initial: "" }),
+            notes: new fields.StringField({ initial: "", gmOnly: true }),
          }),
          spellSlots: new fields.ArrayField(new fields.SchemaField({
             spellLevel: new fields.NumberField({ initial: 0 }),

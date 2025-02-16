@@ -18,7 +18,7 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareClassInfo();
+      //this._prepareClassInfo();
    }
 
    /**
@@ -28,11 +28,10 @@ export class CharacterActor extends fadeActor {
     * @param {any} options
     * @param {any} userId
     */
-   async updateActor(updateData, options, userId) {
-      super.updateActor(updateData, options, userId)
+   async onUpdateActor(updateData, options, userId) {
+      super.onUpdateActor(updateData, options, userId)
       const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
       const user = await game.users.get(userId);
-
       // Only proceed if logging is enabled and the update is by a player
       if (isLoggingEnabled && game.user.isGM) {
          // Get the old actor data before changes
@@ -41,6 +40,10 @@ export class CharacterActor extends fadeActor {
          // Log changes between the old and new data
          this.logActorChanges(updateData, oldActorData, user, "property");
       }
+      // Class or level updated.
+      if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
+         await this._prepareClassInfo();
+      }      
    }
 
    /**
@@ -52,6 +55,8 @@ export class CharacterActor extends fadeActor {
     * @returns
     */
    logActorChanges(updateData, oldData, user, type, parentKey = '') {
+      if (this.testUserPermission(game.user, "OWNER") === false) return;
+
       let changes = [];
       const ignore = ["_stats", "_id", "flags"];
 
@@ -116,6 +121,9 @@ export class CharacterActor extends fadeActor {
     * @returns
     */
    async _prepareClassInfo() {
+      if (this.testUserPermission(game.user, "OWNER") === false) return;
+      if (game.user.isGM === false) return;
+
       // Replace hyphen with underscore for "Magic-User"
       const classNameInput = this.system.details.class?.toLowerCase();
       const classLevel = this.system.details.level;
@@ -178,15 +186,17 @@ export class CharacterActor extends fadeActor {
             }
          }
 
-         // Saving throws
-         const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
-         if (savesData) {
-            await this._setupSavingThrows(savesData);
-         }
+         if (this.id) {
+            // Saving throws
+            const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
+            if (savesData) {
+               await this._setupSavingThrows(savesData);
+            }
 
-         const abilitiesData = ClassItem.getClassAbilities(classNameInput, currentLevel);
-         if (abilitiesData) {
-            await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
+            const abilitiesData = ClassItem.getClassAbilities(classNameInput, currentLevel);
+            if (abilitiesData) {
+               await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
+            }
          }
       }
 

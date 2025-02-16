@@ -43,14 +43,16 @@ export class MonsterActor extends fadeActor {
    }
 
    async _prepareSavingThrows() {
-      const saveAs = this.system.details.saveAs ?? null;
-      if (saveAs) {
-         const savesData = ClassItem.getClassSavesByCode(saveAs, this);
-         if (savesData) {
-            await this._setupSavingThrows(savesData);
-            //this.system._prepareSavingThrows(savesData);
-         } else {
-            console.warn(`Invalid save-as value ${saveAs} specified for ${this.name}.`);
+      if (this.id) {
+         const saveAs = this.system.details.saveAs ?? null;
+         if (saveAs) {
+            const savesData = ClassItem.getClassSavesByCode(saveAs, this);
+            if (savesData) {
+               await this._setupSavingThrows(savesData);
+               //this.system._prepareSavingThrows(savesData);
+            } else {
+               console.warn(`Invalid save-as value ${saveAs} specified for ${this.name}.`);
+            }
          }
       }
    }

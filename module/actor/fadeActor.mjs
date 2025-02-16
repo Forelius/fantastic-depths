@@ -23,24 +23,6 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * Handler for the updateActor hook.
-    * @param {any} updateData
-    * @param {any} options
-    * @param {any} userId
-    */
-   async updateActor(updateData, options, userId) {
-      if (game.user.isGM) {
-         if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
-            await this.update({ "system.combat.isDead": true });
-            this.toggleStatusEffect("dead", { active: true, overlay: true });
-         } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
-            await this.update({ "system.combat.isDead": false });
-            this.toggleStatusEffect("dead", { active: false });
-         }
-      }
-   }
-
-   /**
     * Pre-create method. Being used to set some defaults on the prototype token.
     * @override
     * @param {any} data
@@ -120,6 +102,59 @@ export class fadeActor extends Actor {
             this.setActiveLight(null);
             this.activeToken.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
          }
+      }
+   }
+
+   /**
+    * Handler for the updateActor hook.
+    * @param {any} updateData
+    * @param {any} options
+    * @param {any} userId
+    */
+   async onUpdateActor(updateData, options, userId) {
+      // Hit points updated.
+      if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
+         await this.update({ "system.combat.isDead": true });
+         this.toggleStatusEffect("dead", { active: true, overlay: true });
+      } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
+         await this.update({ "system.combat.isDead": false });
+         this.toggleStatusEffect("dead", { active: false });
+      }      
+      //// Armor class
+      //if (updateData.system?.abilities !== undefined || updateData.system?.ac !== undefined || updateData.system?.mod !== undefined) {
+      //   this._prepareArmorClass();
+      //}
+   }
+
+   async onUpdateActorItem(item, updateData, options, userId) {
+      const user = game.users.get(userId);
+      // Check if the logging feature is enabled and the user is not a GM
+      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
+         // Log the item update and notify the GM
+         console.log(`Item updated: ${item.actor?.name} ${item.name} by ${user.name}`, updateData?.system);
+      }
+   }
+
+   async onCreateActorItem(item, options, userId) {
+      const user = game.users.get(userId);
+      // Check if the logging feature is enabled and the user is not a GM
+      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
+         actor.logActorChanges(item, null, user, "addItem");
+      }
+   }
+
+   async onDeleteActorItem(item, options, userId) {
+      const user = game.users.get(userId);
+      // Check if the logging feature is enabled and the user is not a GM
+      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
+
+         // Log the item removal and notify the GM
+         console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
+
+         actor.logActorChanges(item, null, user, "deleteItem");
       }
    }
 
@@ -206,6 +241,8 @@ export class fadeActor extends Actor {
     * @param {any} source
     */
    async applyDamage(amount, damageType, source = null) {
+      if (game.user.isGM === false) return;
+
       const systemData = this.system;
       const tokenName = this.parent?.name ?? this.name;
       let dmgAmt = amount;
@@ -327,6 +364,8 @@ export class fadeActor extends Actor {
     * @param {any} type A string key of the saving throw type.
     */
    async rollSavingThrow(type) {
+      if (this.testUserPermission(game.user, "OWNER") === false) return;
+
       const savingThrow = this.#getSavingThrow(type);
       const rollData = this.getRollData();
       let dataset = {};
@@ -369,6 +408,8 @@ export class fadeActor extends Actor {
     * @param {any} event
     */
    static async handleSavingThrowRequest(event) {
+      if (this.testUserPermission(game.user, "OWNER") === false) return;
+
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
@@ -524,6 +565,7 @@ export class fadeActor extends Actor {
     * @protected 
     */
    _prepareEffects() {
+      //if (this.testUserPermission(game.user, "OWNER") === false) return;
       // Iterate over all applicable effects
       for (const effect of this.allApplicableEffects()) {
          //this.effects.forEach((effect) => {
@@ -541,6 +583,8 @@ export class fadeActor extends Actor {
     * @protected 
     */
    _prepareSpellsUsed() {
+      if (this.testUserPermission(game.user, "OWNER") === false) return;
+
       const systemData = this.system;
       const spells = this.items.filter((item) => item.type === 'spell');
       let spellSlots = systemData.spellSlots || [];
@@ -659,22 +703,27 @@ export class fadeActor extends Actor {
    }
 
    async _setupSpecialAbilities(classKey, abilitiesData) {
+      if (game.user.isGM === false) return;
+
       const worldAbilities = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class' && item.system.classKey === classKey);
       const classAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
-      const addItems = [];      
+      const addItems = [];
       for (const abilityData of abilitiesData) {
          if (classAbilities.find(item => item.name === abilityData.name) === undefined
             && addItems.find(item => item.name === abilityData.name) === undefined) {
             const itemData = worldAbilities.find(item => item.name === abilityData.name);
             if (itemData) {
-               addItems.push(itemData.toObject());
+               const newAbility = itemData.toObject();
+               console.debug(`${this.name}(${this.id}) pushed ${newAbility.name}.`,
+                  addItems.find(item => item.name === abilityData.name), addItems);
+               addItems.push(newAbility);
             } else {
                console.warn(`The specified class ability (${abilityData.name}) does not exist as a world item.`);
             }
          }
       }
       if (addItems.length > 0) {
-         console.log(`Adding ${addItems.length} class ability items to ${this.name}`);
+         console.debug(`Adding ${addItems.length} class ability items to ${this.name}`);
          await this.createEmbeddedDocuments("Item", addItems);
       }
       // Iterate over ability items and set each one.
@@ -691,23 +740,30 @@ export class fadeActor extends Actor {
     * @param {any} savesData The values to use for the saving throws.
     */
    async _setupSavingThrows(savesData) {
+      if (game.user.isGM === false) return;
+
       const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
       const addItems = [];
+      //console.debug(saveEntries);
       for (const saveData of saveEntries) {
-         if (saveData[0] !== 'level' && savingThrows.find(item => item.system.customSaveCode === saveData[0]) === undefined
-            && addItems.find(item => item.system.customSaveCode === saveData[0]) === undefined) {
-            const itemData = worldSavingThrows.find(item => item.system.customSaveCode === saveData[0]);
+         const stName = saveData[0];
+         if (stName !== 'level' && savingThrows.find(item => item.system.customSaveCode === stName) === undefined
+            && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
+            const itemData = worldSavingThrows.find(item => item.system.customSaveCode === stName);
             if (itemData) {
-               addItems.push(itemData.toObject());
+               const newSave = itemData.toObject();
+               console.debug(`${this.name}(${this.id}) pushed ${newSave.name} (${itemData.system.customSaveCode}/${stName}).`,
+                  addItems.find(item => item.system.customSaveCode === stName), addItems);
+               addItems.push(newSave);
             } else {
-               console.warn(`The specified saving throw (${saveData[0]}) does not exist as a world item.`);
+               console.warn(`The specified saving throw (${stName}) does not exist as a world item.`);
             }
          }
       }
       if (addItems.length > 0) {
-         console.log(`Adding saving throw items to ${this.name}`);
+         //console.log(`Adding saving throw items to ${this.name}`);
          await this.createEmbeddedDocuments("Item", addItems);
       }
       // Iterate over saving throw items and set each one.

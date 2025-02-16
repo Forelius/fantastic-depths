@@ -16,9 +16,11 @@
          <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
       </div>
       <div class='item-controls'>
+         {{#if @root.isGM}}
          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
             <i class='fas fa-trash'></i>
          </a>
+         {{/if}}
       </div>
    </li>
    {{/each}}

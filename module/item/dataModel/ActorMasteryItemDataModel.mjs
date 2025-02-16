@@ -1,9 +1,8 @@
-import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
 
 /**
  * Data model for an actor mastery item.
  */
-export class ActorMasteryItemDataModel extends fadeItemDataModel {
+export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {

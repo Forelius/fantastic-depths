@@ -62,6 +62,7 @@ export class LightItem extends fadeItem {
             }
          }
       }
+      //console.log(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${this.system.quantity}x${this.system.weight}) - LightItem.prepareDerivedData`);
    }
 
    async enableLight() {

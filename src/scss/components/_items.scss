@@ -40,15 +40,39 @@
       justify-content: flex-end;
 
       a {
-         font-size: 12px;
+         font-size: 10px;
          text-align: center;
          margin: 0 5px;
+      }
+
+      i {
+         font-size: 12px;
+      }
+   }
+
+   .item-controls-sm {
+      display: flex;
+      flex: 0 0 50px;
+      justify-content: flex-end;
+
+      a {
+         font-size: 8px;
+         text-align: center;
+         margin: 0 5px;
+      }
+
+      i {
+         font-size: 10px;
       }
    }
    // Individual Item
    .item {
       align-items: center;
       padding: 0; // to align with the header border
+
+      .center-vert {
+         align-items: center;
+      }
 
       ol {
          padding: 0;
