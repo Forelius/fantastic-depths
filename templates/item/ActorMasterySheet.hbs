@@ -31,7 +31,7 @@
                <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType}}
                </select>
-               <label for="system.acBonusType">{{localize 'Type'}}</label>
+               <label for="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.acBonusTypeHint'}}">{{localize 'FADE.Mastery.acBonusType'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}} />

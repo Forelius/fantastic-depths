@@ -134,7 +134,7 @@ export class ChatBuilder {
     * @param {string[]} obj.rolls - An array of roll.render(). Supercedes data.roll if present.
     * @param {string} obj.flavor - Chat flavor text. Supercedes this.data.caller.name if present.
     */
-   async getChatMessageData(obj) {
+   getChatMessageData(obj) {
       const chatMessageData = {
          ...obj,
          author: game.user.id,
@@ -150,7 +150,7 @@ export class ChatBuilder {
          Object.assign(chatMessageData, rollData);
 
          // Decide roll mode (public, gm only,...)
-         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? await game.settings.get('core', 'rollMode');
+         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get('core', 'rollMode');
          ChatMessage.applyRollMode(chatMessageData, rollMode);
       }
 

@@ -39,9 +39,9 @@ export class SpellCastChatBuilder extends ChatBuilder {
          }
       }
 
-      if (window.toastManager) {
+      if (game.fade.toastManager) {
          let toast = `${description}${toHitResult.message}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
       let save = null;
@@ -67,7 +67,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const content = await renderTemplate(this.template, chatData);
 
       const rolls = roll ? [roll] : null;
-      const chatMessageData = await this.getChatMessageData({
+      const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          flags: {
             [game.system.id]: {

@@ -19,7 +19,7 @@ export class EffectManager {
    }
 
    async OnGameReady() {
-      //let globalEffects = await game.settings.get(game.system.id, 'globalEffects') || [];
+      //let globalEffects = game.settings.get(game.system.id, 'globalEffects') || [];
 
       //// Filter the existing status effects to keep only the ones you want
       //if (globalEffects.length === 0) {

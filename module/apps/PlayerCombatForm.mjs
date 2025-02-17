@@ -27,6 +27,7 @@ export class PlayerCombatForm extends FormApplication {
    getData() {
       const context = super.getData();
       context.ownedCombatants = game.combat.ownedCombatants;
+      context.useMastery = game.settings.get(game.system.id, "weaponMastery");
       return context;
    }
 
@@ -36,7 +37,6 @@ export class PlayerCombatForm extends FormApplication {
     */
    activateListeners(html) {
       super.activateListeners(html);
-
       // Listen for changes in the action select elements
       html.find('[name="declaredAction"]').on("change", this._onPlayerChangedAction);
       Hooks.on('updateActor', this._updateTrackedActor);
@@ -57,12 +57,39 @@ export class PlayerCombatForm extends FormApplication {
       // Check if the updated actor is in the tracked actors list by ID
       if (game.combat && this.trackedActorIds.includes(actor.id)) {
          this.#updateActorData(actor, updateData);
-         //console.debug(`Actor ${actor.name} changed.`, updateData);
       }
    }
 
-   #updateCombatant=(combatant, updateData, options, userId) => {
-      //console.debug(`Combatant ${combatant.name} changed.`, updateData, options);
+   async _onPlayerChangedAction(event) {
+      const actorId = event.currentTarget.dataset.actorId;
+      const actor = game.combat.combatants.find(combatant => combatant.actor.id === actorId)?.actor;
+      const updateData = { "system.combat.declaredAction": event.currentTarget.value };
+      await actor.update(updateData);
+   }
+
+   /**
+   * This method is called upon form submission after form data is validated
+   * @param {Event} event - The initial triggering submission event
+   * @param {object} formData - The object of validated form data with which to update the object
+   */
+   // eslint-disable-next-line no-underscore-dangle
+   async _updateObject(event, formData) {
+      event.preventDefault();
+   }
+
+   static toggleCombatForm() {
+      const declaredActions = game.settings.get(game.system.id, "declaredActions");
+      if (game.combat && declaredActions === true) {
+         if (game.fade.combatForm) {
+            game.fade.combatForm.close();
+         } else {
+            game.fade.combatForm = new PlayerCombatForm();
+            game.fade.combatForm.render(true);
+         }
+      }
+   }
+
+   #updateCombatant = (combatant, updateData, options, userId) => {
       if (game.combat && this.trackedActorIds.includes(combatant.actor.id)) {
          this.#updateCombatantData(combatant, updateData);
       }
@@ -73,17 +100,6 @@ export class PlayerCombatForm extends FormApplication {
       if (game.combat && this.trackedActorIds.includes(actor.id)) {
          this.render();  // Re-render to reflect updated actor data
       }
-   }
-
-   async _onPlayerChangedAction(event) {
-      const actorId = event.currentTarget.dataset.actorId;
-      const actor = game.combat.combatants.find(combatant => combatant.actor.id === actorId)?.actor;
-      const updateData = { "system.combat.declaredAction": event.currentTarget.value };
-      // Update the action description dynamically
-      //this.#updateActorData(actor, updateData);
-      // Optionally update the actor's system data if needed
-      const updated = await actor.update(updateData);
-      //console.debug(`_onPlayerChangedAction ${actor.name}:`, updated);
    }
 
    #updateActorData(actor, updateData) {
@@ -99,8 +115,11 @@ export class PlayerCombatForm extends FormApplication {
             rowElement.querySelector('[name="actionDesc"]').textContent = localizedDescription;
          }
 
-         if (combat?.attacksAgainst !== undefined) {
-            rowElement.querySelector('[name="atnorecv"]').textContent = combat.attacksAgainst;
+         if (combat?.attAgainstH !== undefined) {
+            rowElement.querySelector('[name="atnorecvh"]').textContent = combat.attAgainstH;
+         }
+         if (combat?.attAgainstM !== undefined) {
+            rowElement.querySelector('[name="atnorecvm"]').textContent = combat.attAgainstM;
          }
          if (combat?.attacks !== undefined) {
             rowElement.querySelector('[name="atno"]').textContent = combat.attacks;
@@ -120,33 +139,6 @@ export class PlayerCombatForm extends FormApplication {
             } else {
                selectElement.removeAttribute("disabled"); // Remove disabled
             }
-         }
-      }
-   }
-
-   /**
-   * This method is called upon form submission after form data is validated
-   * @param {Event} event - The initial triggering submission event
-   * @param {object} formData - The object of validated form data with which to update the object
-   */
-   // eslint-disable-next-line no-underscore-dangle
-   async _updateObject(event, formData) {
-      event.preventDefault();
-      // Update the actor
-      //await this.object.update(formData);
-      //// Re-draw the updated sheet
-      //// eslint-disable-next-line no-underscore-dangle
-      //await this.object.sheet._render(true);
-   }
-
-   static toggleCombatForm() {
-      const declaredActions = game.settings.get(game.system.id, "declaredActions");
-      if (game.combat && declaredActions === true) {
-         if (game.fade.combatForm) {
-            game.fade.combatForm.close();
-         } else {
-            game.fade.combatForm = new PlayerCombatForm();
-            game.fade.combatForm.render(true);
          }
       }
    }

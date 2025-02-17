@@ -19,9 +19,9 @@ export class SpecialAbilityChat extends ChatBuilder {
          rollResult = this.getRollResult(specAbility, roll);
       }
 
-      if (window.toastManager) {
+      if (game.fade.toastManager) {
          let toast = `${description}${rollResult.message}`;
-         window.toastManager.showHtmlToast(toast, "info", specAbility.system.rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", specAbility.system.rollMode);
       }
 
       let save = null;
@@ -47,7 +47,7 @@ export class SpecialAbilityChat extends ChatBuilder {
 
       // Prepare chat message data, including rollMode
       const rolls = roll ? [roll] : null;
-      const chatMessageData = await this.getChatMessageData({
+      const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode: specAbility.system.rollMode, // Pass the determined rollMode

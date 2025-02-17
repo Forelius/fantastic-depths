@@ -197,7 +197,6 @@ async function handleAsyncInit() {
    await settings.RegisterSystemSettings();
    // Hook into the rendering of the settings form
    Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
-
    const fxMgr = new EffectManager();
    await fxMgr.OnGameInit();
 }
@@ -234,17 +233,22 @@ Hooks.once('ready', async function () {
       const toastsEnabled = game.settings.get(game.system.id, "toasts");
       if (toastsEnabled) {
          // Ensure that the socket is ready before using it
-         window.toastManager = new ToastManager();
+         game.fade.toastManager = new ToastManager();
+         game.fade.SocketManager = new SocketManager();
+         
          game.socket.on(`system.${game.system.id}`, (data) => {
+            console.debug("onSocketReceived", data);
             if (data.action === 'showToast') {
                // Call the public method to create the toast
-               window.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
-               //handled = true;
+               game.fade.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
+            } else {
+               game.fade.SocketManager.receiveSocketMessage(data)
             }
          });
+         console.info(`Registered socket listener: system.${game.system.id}`);
       }
 
-      SocketManager.SetupOnReady();
+      //SocketManager.SetupOnReady();
    }
 });
 
@@ -274,12 +278,12 @@ Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
 // Hook into `updateActor` to compare the old and new values
 Hooks.on("updateActor", async (actor, updateData, options, userId) => {
    if (game.user.isGM) {
-      actor?.onUpdateActor(updateData, options, userId);
+      await actor?.onUpdateActor(updateData, options, userId);
    }
 });
 
 // Hook into item creation (added to the actor)
-Hooks.on("createItem", async (item, options, userId) => {
+Hooks.on("createItem", (item, options, userId) => {
    if (game.user.isGM) {
       const actor = item.parent; // The actor the item belongs to
       actor?.onCreateActorItem(item, options, userId);
@@ -287,7 +291,7 @@ Hooks.on("createItem", async (item, options, userId) => {
 });
 
 // Hook into item updates (e.g., changes to an existing item)
-Hooks.on("updateItem", async (item, updateData, options, userId) => {
+Hooks.on("updateItem", (item, updateData, options, userId) => {
    if (game.user.isGM) {
       const actor = item.parent; // The actor the item belongs to
       actor?.onUpdateActorItem(item, updateData, options, userId);
@@ -295,7 +299,7 @@ Hooks.on("updateItem", async (item, updateData, options, userId) => {
 });
 
 // Hook into item deletion (removed from the actor)
-Hooks.on("deleteItem", async (item, options, userId) => {
+Hooks.on("deleteItem", (item, options, userId) => {
    if (game.user.isGM) {
       const actor = item.parent; // The actor the item belongs to
       actor?.onDeleteActorItem(item, options, userId);

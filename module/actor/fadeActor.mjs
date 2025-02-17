@@ -70,7 +70,7 @@ export class fadeActor extends Actor {
             assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER);
             assignIfUndefined(data, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.HOSTILE);
             assignIfUndefined(data, changeData, "prototypeToken.actorLink", false);
-            assignIfUndefined(data, changeData, "prototypeToken.scale", 0.9);
+            assignIfUndefined(data, changeData, "prototypeToken.scale", 1);
             break;
       }
 
@@ -119,41 +119,35 @@ export class fadeActor extends Actor {
       } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
          await this.update({ "system.combat.isDead": false });
          this.toggleStatusEffect("dead", { active: false });
-      }      
-      //// Armor class
-      //if (updateData.system?.abilities !== undefined || updateData.system?.ac !== undefined || updateData.system?.mod !== undefined) {
-      //   this._prepareArmorClass();
-      //}
+      }
    }
 
-   async onUpdateActorItem(item, updateData, options, userId) {
+   onUpdateActorItem(item, updateData, options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
-      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
       if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
          // Log the item update and notify the GM
          console.log(`Item updated: ${item.actor?.name} ${item.name} by ${user.name}`, updateData?.system);
       }
    }
 
-   async onCreateActorItem(item, options, userId) {
+   onCreateActorItem(item, options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
-      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
       if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
          actor.logActorChanges(item, null, user, "addItem");
       }
    }
 
-   async onDeleteActorItem(item, options, userId) {
+   onDeleteActorItem(item, options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
-      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
       if (isLoggingEnabled && game.user.isGM && (actor instanceof CharacterActor)) {
-
          // Log the item removal and notify the GM
          console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
-
          actor.logActorChanges(item, null, user, "deleteItem");
       }
    }
@@ -310,8 +304,8 @@ export class fadeActor extends Actor {
          chatContent += `<div>${msg}</div>`;
       }
 
-      if (window.toastManager) {
-         window.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+      if (game.fade.toastManager) {
+         game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
       }
 
       const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
@@ -463,21 +457,56 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * Finds the best defense mastery for the specified attacker's weapon type.
+    * Finds the best defense mastery for the specified attacker weapon type,
+    * taking into account the number of times the actor has been attacked this round,
+    * and the fact that the AC bonus only applies a limited number of times per round.
+    *
+    * The actor’s combat object contains:
+    *   - system.combat.attAgainstH: number of handheld attacks this round
+    *   - system.combat.attAgainstM: number of monster attacks this round
+    *
+    * Each mastery in system.ac.mastery has the following properties:
+    *   - acBonus:      the AC bonus value.
+    *   - acBonusType:  indicates which attack types the bonus applies to:
+    *                   "handheld", "monster", or "all" (applies to both).
+    *   - acBonusAT:    the maximum number of attacks per round for which this bonus applies.
+    *
     * @public
-    * @param {any} attackerWeaponType
-    * @returns
+    * @param {string} attackerWeaponType - "handheld" or "monster"
+    * @param {string} attackDirection - "front" or "rear"
+    * @returns {object|null} The best defense mastery, or null if none qualifies.
     */
-   getBestDefenseMastery(attackerWeaponType) {
-      let result = null;
+   getBestDefenseMastery(attackerWeaponType, attackDirection = 'front') {
       const defenseMasteries = this.system.ac.mastery;
-      if (defenseMasteries?.length > 0) {
-         result = defenseMasteries.filter(mastery => mastery.acBonusType === attackerWeaponType)
-            .reduce((minMastery, current) => current.acBonus < minMastery.acBonus ? current : minMastery,
-               { acBonus: Infinity });
+      if (!defenseMasteries || defenseMasteries.length === 0) {
+         return null;
       }
-      return result;
+
+      // Determine how many attacks of this type have been made this round.
+      // (For "handheld" attacks use attAgainstH; for "monster" attacks use attAgainstM)
+      const attackCount = attackerWeaponType === 'handheld'
+         ? (this.system.combat.attAgainstH || 0)
+         : (this.system.combat.attAgainstM || 0);
+
+      // Filter masteries to those that:
+      //   1. Apply to this weapon type (or all types).
+      //   2. Still have their bonus available (i.e. current attackCount is less than acBonusAT).
+      const applicableMasteries = defenseMasteries.filter(mastery => {
+         const typeMatches = (mastery.acBonusType === attackerWeaponType || mastery.acBonusType === 'all');
+         const bonusAvailable = attackCount < mastery.acBonusAT || mastery.acBonusAT === null;
+         return typeMatches && bonusAvailable;
+      });
+
+      if (applicableMasteries.length === 0) {
+         return null;
+      }
+
+      // Choose the mastery with the best (lowest) AC bonus.
+      return applicableMasteries.reduce((best, current) => {
+         return (current.acBonus < best.acBonus) ? current : best;
+      });
    }
+
 
    /**
     * Get this actor's defense masteries for all equipped weapons.
@@ -492,14 +521,20 @@ export class fadeActor extends Actor {
       // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
       if (masteries?.length > 0 && equippedWeapons?.length > 0) {
          for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => { return mastery.name === weapon.system.mastery; });
+            const weaponMastery = masteries.find((mastery) => mastery.name === weapon.system.mastery);
             if (weaponMastery) {
                results.push({
+                  // The type(s) of attack the AC bonus applies to.
                   acBonusType: weaponMastery.system.acBonusType,
+                  // The AC bonus itself, specified as a negative number for better AC.
                   acBonus: weaponMastery.system.acBonus || 0,
+                  // The total of the AC with the mastery AC bonus.
                   total: ac.total + (weaponMastery.system.acBonus || 0),
+                  // The total of the AAC with the mastery AC bonus.
                   totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
-                  acBonusAT: weaponMastery.system.acBonusAT
+                  // The number of attacks that this bonus applies to per round.
+                  acBonusAT: weaponMastery.system.acBonusAT,
+                  name: weaponMastery.name
                });
             }
          }

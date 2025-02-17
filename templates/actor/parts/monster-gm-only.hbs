@@ -33,8 +33,12 @@
          <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
       </li>
       <li>
-         <input type='text' name="system.combat.attacksAgainst" value='{{system.combat.attacksAgainst}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}" />
-         <label for="system.combat.attacksAgainst" data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}</label>
+         <input type='text' name="system.combat.attAgainstH" value='{{system.combat.attAgainstH}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}" />
+         <label for="system.combat.attAgainstH" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}">{{localize 'FADE.Actor.AT#Recv.nameH'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.combat.attAgainstM" value='{{system.combat.attAgainstM}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}" />
+         <label for="system.combat.attAgainstM" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}">{{localize 'FADE.Actor.AT#Recv.nameM'}}</label>
       </li>
       <li>
          <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />

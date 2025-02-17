@@ -16,10 +16,13 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             nakedRanged: new fields.NumberField({ initial: 9 }),
             nakedAAC: new fields.NumberField({ initial: 10 }),
             nakedRangedAAC: new fields.NumberField({ initial: 10 }),
-            value: new fields.NumberField({ initial: 9 }),
             // This is the raw AC based on armor and no modifiers applied. Used for wrestling.
+            value: new fields.NumberField({ initial: 9 }),
+            // For melee attacks
             total: new fields.NumberField({ initial: 9 }),
+            // For ranged attacks
             totalRanged: new fields.NumberField({ initial: 9 }),
+            // Same for ascending armor class
             totalAAC: new fields.NumberField({ initial: 10 }),
             totalRangedAAC: new fields.NumberField({ initial: 10 }),
             shield: new fields.NumberField({ initial: 0 }),
@@ -65,7 +68,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round
-            attacksAgainst: new fields.NumberField({ initial: 0 }),
+            attAgainstH: new fields.NumberField({ initial: 0 }),
+            attAgainstM: new fields.NumberField({ initial: 0 }),
             deathCount: new fields.NumberField({ initial: 0 }),
             isDead: new fields.BooleanField({ initial: false }),
             declaredAction: new fields.StringField({ initial: "attack" }),
@@ -265,7 +269,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    _prepareSpells() {
       if (this.config.maxSpellLevel > 0) {
          this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
-            spellLevel: index + 1
+            spellLevel: index + 1,
+            used: 0,
+            max: 0
          }));
       } else {
          this.spellSlots = [];

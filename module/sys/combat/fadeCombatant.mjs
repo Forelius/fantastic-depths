@@ -8,8 +8,11 @@ export class fadeCombatant extends Combatant {
    get attacks() {
       return this.actor?.system.combat.attacks;
    }
-   get attacksAgainst() {
-      return this.actor?.system.combat.attacksAgainst;
+   get attAgainst() {
+      return {
+         h: this.actor?.system.combat.attAgainstH,
+         m: this.actor?.system.combat.attAgainstM
+      };
    }
    get canChangeAction() {
       return game.user.isGM === true || this.initiative === null;
@@ -51,13 +54,15 @@ export class fadeCombatant extends Combatant {
       if (this.group === 'hostile') {
          await this.actor.update({
             "system.combat.attacks": 0,
-            "system.combat.attacksAgainst": 0,
+            "system.combat.attAgainstH": 0,
+            "system.combat.attAgainstM": 0,
             'system.combat.declaredAction': "attack"
          });
       } else {
          await this.actor.update({
             "system.combat.attacks": 0,
-            "system.combat.attacksAgainst": 0,
+            "system.combat.attAgainstH": 0,
+            "system.combat.attAgainstM": 0,
             'system.combat.declaredAction': "nothing"
          });
       }
@@ -67,7 +72,8 @@ export class fadeCombatant extends Combatant {
       // Reset initiative to null
       await this.actor.update({
          "system.combat.attacks": 0,
-         "system.combat.attacksAgainst": 0,
+         "system.combat.attAgainstH": 0,
+         "system.combat.attAgainstM": 0,
          "system.combat.declaredAction": null
       });
    }

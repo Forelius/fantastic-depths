@@ -32,14 +32,14 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
          rollMode
       };
 
-      if (window.toastManager) {
+      if (game.fade.toastManager) {
          const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${mdata.ability}.long`);
          let toast = `${actorName}: ${abilityName} check.${resultString}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
       const content = await renderTemplate(this.template, chatData);
-      const chatMessageData = await this.getChatMessageData({ content, rolls });
+      const chatMessageData = this.getChatMessageData({ content, rolls });
       await ChatMessage.create(chatMessageData);
    }
 }

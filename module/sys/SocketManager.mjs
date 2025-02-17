@@ -24,11 +24,13 @@ export class SocketManager {
          data,
          playerName: game.user.name,
       };
-
-      // Emit the message via the socket to be received by the GM
-      game.socket.emit(FADE_SOCKET, messageData);
+      if (game.user.isGM) {
+         game.fade.SocketManager.receiveSocketMessage(messageData);
+      } else {
+         // Emit the message via the socket to be received by the GM
+         game.socket.emit(FADE_SOCKET, messageData);
+      }
    }
-
 
    /**
     * Send the message to all users.
@@ -67,24 +69,24 @@ export class SocketManager {
       game.socket.emit(FADE_SOCKET, messageData);
    }
 
-   receiveSocketMessage = (message) => {
+   receiveSocketMessage (data) {
       // Ignore messages not meant for this user.
-      if ((message.recipients?.length > 0 && message.recipients?.includes(game.user.id) === false)
-         && (message.recipient === undefined
-            || (message.recipient === 'gm' && game.user.isGM === false)
-            || (message.recipient === 'alluser' && game.user.isGM === true))) {
+      if ((data.recipients?.length > 0 && data.recipients?.includes(game.user.id) === false)
+         && (data.recipient === undefined
+            || (data.recipient === 'gm' && game.user.isGM === false)
+            || (data.recipient === 'alluser' && game.user.isGM === true))) {
          return;
       }
 
-      console.debug('receiveSocketMessage', message, game.user.id);
+      console.debug('receiveSocketMessage', data, game.user.id);
 
       // Handle the message based on type
-      switch (message.action) {
+      switch (data.action) {
          case "alert":
-            ui.notifications.info(`${message.playerName}: ${message.data.text}`);
+            ui.notifications.info(`${data.playerName}: ${data.data.text}`);
             break;
          case "log":
-            console.log(`Log from ${message.playerName}:`, message.data);
+            console.log(`Log from ${data.playerName}:`, data.data);
             break;
          case "showPlayerCombat":
             new PlayerCombatForm().render(true);
@@ -99,27 +101,30 @@ export class SocketManager {
             }
             break;
          case "incAttacksAgainst":
-            this.#handleIncAttacksAgainst(message)
+            this.#handleIncAttacksAgainst(data)
             break;
          case "rollGroupInitiative":
-            this.#handleRollGroupInitiative(message);
+            this.#handleRollGroupInitiative(data);
             break;
       }
    }
 
    static SetupOnReady() {
       // GM-Only: Listen for messages from players
-      window.SocketManager = new SocketManager();
-      game.socket.on(FADE_SOCKET, window.SocketManager.receiveSocketMessage);
+      game.fade.SocketManager = new SocketManager();
+      game.socket.on(FADE_SOCKET, (message) => game.fade.SocketManager.receiveSocketMessage(message));
       console.info(`Registered socket listener: ${FADE_SOCKET}`);
    }
-
 
    async #handleIncAttacksAgainst(message) {
       const { data } = message;
       const targetActor = canvas.tokens.get(data.tokenid)?.actor;
       if (targetActor) {
-         await targetActor.update({ "system.combat.attacksAgainst": targetActor.system.combat.attacksAgainst + 1 });
+         if (data.type === 'handheld') {
+            await targetActor.update({ "system.combat.attAgainstH": targetActor.system.combat.attAgainstH + 1 });
+         } else {
+            await targetActor.update({ "system.combat.attAgainstM": targetActor.system.combat.attAgainstM + 1 });
+         }
       } else {
          console.warn("handleIncAttacksAgainst: targetActor not found.", data);
       }

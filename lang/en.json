@@ -201,8 +201,10 @@
             "desc": "Number of attacks this round."
          },
          "AT#Recv": {
-            "name": "AT# recv.",
-            "desc": "Number of attacks received this round."
+            "nameM": "AT# recv. M",
+            "descM": "Number of monster/missile attacks received this round.",
+            "nameH": "AT# recv. H",
+            "descH": "Number of handheld attacks received this round."
          },
          "encumbrance": {
             "unencumbered": {
@@ -464,6 +466,8 @@
             "master": "Master",
             "grandMaster": "Grand Master"
          },
+         "acBonusType": "AC Bonus Type",
+         "acBonusTypeHint": "The type of attack that the AC bonus applies to.",
          "acBonus": "AC Bonus",
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
@@ -572,7 +576,7 @@
          "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
          "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
          "healRoll": "Heal",
-         "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
+         "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery ({masteryName}) bonus. Attacked {attAgainst}/{maxAttAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },

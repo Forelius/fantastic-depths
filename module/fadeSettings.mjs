@@ -56,7 +56,7 @@ export class fadeSettings {
          default: "false"
       });
       // Apply the current theme when the game is initialized
-      const currentTheme = await game.settings.get(game.system.id, "theme");
+      const currentTheme = game.settings.get(game.system.id, "theme");
       this.applyTheme(currentTheme);
 
       game.settings.register(game.system.id, "initiativeFormula", {
@@ -276,7 +276,7 @@ export class fadeSettings {
       }
    }
 
-   async renderSettingsConfig(app, html, data) {
+   renderSettingsConfig(app, html, data) {
       // Select the Initiative Mode dropdown by its name attribute
       const initiativeModeSetting = html.find(`select[name="${game.system.id}.initiativeMode"]`);
       // Select the Initiative Formula input by its name attribute
@@ -310,7 +310,7 @@ export class fadeSettings {
       });
 
       // Set the initial state when the settings form is rendered
-      const currentValue = await game.settings.get(game.system.id, "initiativeMode");
+      const currentValue = game.settings.get(game.system.id, "initiativeMode");
       this.toggleGroupModifier(currentValue);
    }
 }

@@ -154,7 +154,7 @@ export class fadeItem extends Item {
    async roll(dataset) {
       // Initialize chat data.
       //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const rollMode = await game.settings.get('core', 'rollMode');
+      const rollMode = game.settings.get('core', 'rollMode');
       const chatData = {
          caller: this,
          context: this.actor,

@@ -18,7 +18,7 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      //this._prepareClassInfo();
+      this._prepareClassInfo();
    }
 
    /**
@@ -30,19 +30,31 @@ export class CharacterActor extends fadeActor {
     */
    async onUpdateActor(updateData, options, userId) {
       super.onUpdateActor(updateData, options, userId)
-      const isLoggingEnabled = await game.settings.get(game.system.id, "logCharacterChanges");
+      const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
       const user = await game.users.get(userId);
       // Only proceed if logging is enabled and the update is by a player
       if (isLoggingEnabled && game.user.isGM) {
          // Get the old actor data before changes
          const oldActorData = updateData;
-
          // Log changes between the old and new data
          this.logActorChanges(updateData, oldActorData, user, "property");
       }
       // Class or level updated.
       if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
-         await this._prepareClassInfo();
+         if (this.id) {
+            const classNameInput = this.system.details.class?.toLowerCase();
+            const classItem = ClassItem.getClassItem(classNameInput);
+            // Saving throws
+            const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
+            if (savesData) {
+               await this._setupSavingThrows(savesData);
+            }
+            // Class special abilities
+            const abilitiesData = ClassItem.getClassAbilities(classNameInput, currentLevel);
+            if (abilitiesData) {
+               await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
+            }
+         }
       }      
    }
 
@@ -118,6 +130,7 @@ export class CharacterActor extends fadeActor {
 
    /**
     * Prepares all derived class-related data when the class name is recognized.
+    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
     * @returns
     */
    async _prepareClassInfo() {
@@ -127,7 +140,6 @@ export class CharacterActor extends fadeActor {
       // Replace hyphen with underscore for "Magic-User"
       const classNameInput = this.system.details.class?.toLowerCase();
       const classLevel = this.system.details.level;
-
       const classItem = ClassItem.getClassItem(classNameInput);
       const classData = classItem?.system;
 
@@ -171,9 +183,10 @@ export class CharacterActor extends fadeActor {
             if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
                console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`, classData.spells);
             } else {
-               //console.debug(`Class spells ${this.name}: spell levels ${spellProgression.length}, spell slots ${this.system.spellSlots.length}.`);
+               //console.debug(`Class spells ${this.name}: spell levels ${spellProgression.length}, spell slots ${this.system.spellSlots.length}.`, this.system.spellSlots, spellProgression);
                // Loop through the spell slots in the this and update the 'max' values
-               this.system.spellSlots.forEach((slot, index) => {
+               for (let slot of this.system.spellSlots) {
+                  const index = slot.spellLevel - 1;
                   // Check if the index is within the spellProgression array bounds
                   if (index >= 0 && index < spellProgression.length) {
                      // Set the max value based on the class spell progression
@@ -182,24 +195,9 @@ export class CharacterActor extends fadeActor {
                      // Set max to 0 if the character's class doesn't have spells at this level
                      slot.max = 0;
                   }
-               });
+               }
             }
          }
-
-         if (this.id) {
-            // Saving throws
-            const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
-            if (savesData) {
-               await this._setupSavingThrows(savesData);
-            }
-
-            const abilitiesData = ClassItem.getClassAbilities(classNameInput, currentLevel);
-            if (abilitiesData) {
-               await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
-            }
-         }
-      }
-
-      return classData; // Return null if no match found
+      }      
    }
 }

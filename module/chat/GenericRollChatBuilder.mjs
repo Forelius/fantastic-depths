@@ -50,7 +50,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       const content = await renderTemplate(this.template, chatData);
 
       // Prepare chat message data, including rollMode from mdata
-      const chatMessageData = await this.getChatMessageData({
+      const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode, // Pass the determined rollMode
@@ -61,11 +61,11 @@ export class GenericRollChatBuilder extends ChatBuilder {
    }
 
    handleToast(actorName, mdata, roll, resultString, rollMode) {
-      if (window.toastManager) {
+      if (game.fade.toastManager) {
          let toast = `${actorName}: ${mdata?.label ?? ''}${mdata?.desc ?? ''}`;
          toast += `<div>Roll: ${roll.total}</div>`;
          if (resultString) toast += `<div>${resultString}</div>`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
    }
 

@@ -20,13 +20,20 @@ export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
             medium: new fields.NumberField({ nullable: true, initial: null }),
             long: new fields.NumberField({ nullable: true, initial: null })
          }),
+         // Primary damage
          pDmgFormula: new fields.StringField({ nullable: true, initial: null }),
+         // Secondary damage
          sDmgFormula: new fields.StringField({ nullable: true, initial: null }),
+         // Type of weapon that AC bonus applies to
          acBonusType: new fields.StringField({ nullable: true, initial: null }),
+         // The AC bonus
          acBonus: new fields.NumberField({ nullable: true, initial: 0 }),
+         // The number of attacks the AC bonus applies to per round
          acBonusAT: new fields.NumberField({ nullable: true, initial: null }),
          special: new fields.StringField({ nullable: true, initial: null }),
+         // Primary to-hit bonus
          pToHit: new fields.NumberField({ required: true, initial: 0 }),
+         // Secondary to-hit bonus
          sToHit: new fields.NumberField({ required: true, initial: 0 })
       };
    }
