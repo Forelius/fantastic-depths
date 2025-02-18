@@ -24,6 +24,7 @@ export class SocketManager {
          data,
          playerName: game.user.name,
       };
+      //console.debug(`SocketManager.sendToGM ${action}`, messageData);
       if (game.user.isGM) {
          game.fade.SocketManager.receiveSocketMessage(messageData);
       } else {
@@ -69,12 +70,13 @@ export class SocketManager {
       game.socket.emit(FADE_SOCKET, messageData);
    }
 
-   receiveSocketMessage (data) {
+   receiveSocketMessage(data) {
       // Ignore messages not meant for this user.
-      if ((data.recipients?.length > 0 && data.recipients?.includes(game.user.id) === false)
-         && (data.recipient === undefined
-            || (data.recipient === 'gm' && game.user.isGM === false)
-            || (data.recipient === 'alluser' && game.user.isGM === true))) {
+      if (data.recipients?.length > 0 && data.recipients?.includes(game.user.id) === false) {
+         return;
+      }
+      if ((data.recipient === 'gm' && game.user.isGM === false)
+         || (data.recipient === 'alluser' && game.user.isGM === true)) {
          return;
       }
 
