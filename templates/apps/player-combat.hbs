@@ -49,7 +49,7 @@
             </td>
             <td>
                <div>
-                  <select name="declaredAction" data-actor-id="{{combatant.actor.id}}" {{#unless combatant.canChangeAction}} disabled{{/unless}}>
+                  <select name="declaredAction" data-token-id="{{combatant.token.id}}" {{#unless combatant.canChangeAction}} disabled{{/unless}}>
                      {{selectOptions combatant.availableActions selected=combatant.declaredAction}}
                   </select>
                </div>

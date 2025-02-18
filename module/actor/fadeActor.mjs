@@ -18,8 +18,15 @@ export class fadeActor extends Actor {
       }
    }
 
-   get activeToken() {
-      return canvas.tokens?.placeables?.find(t => t.document.actorId === this.id);
+   get currentActiveToken() {
+      let result = null;
+      if (this.isToken === true) {
+         result = canvas.tokens?.placeables?.find(token => token.id === this.token.id).document;
+      } else {
+         result = canvas.tokens?.placeables?.find(token => token.actor.id === this.id).document;
+      }
+      //console.debug(`Get currentActiveToken for ${this.name} (${result?.name}). ${result?.id}`, this);
+      return result;
    }
 
    /**
@@ -95,14 +102,15 @@ export class fadeActor extends Actor {
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareArmorClass();
-      if (this.system.activeLight?.length > 0) {
-         const lightItem = this.items.get(this.system.activeLight);
-         if (!lightItem) {
-            console.log(`Deactivating light for ${this.name} due to missing light item.`);
-            this.setActiveLight(null);
-            this.activeToken.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
-         }
-      }
+      // TODO: This is the incorrect way to do this, it causes recursion through the call to setActiveLight.
+      //if (this.system.activeLight?.length > 0) {
+      //   const lightItem = this.items.get(this.system.activeLight);
+      //   if (!lightItem) {
+      //      console.log(`Deactivating light for ${this.name} due to missing light item.`);
+      //      this.setActiveLight(null);
+      //      this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+      //   }
+      //}
    }
 
    /**
@@ -426,7 +434,7 @@ export class fadeActor extends Actor {
     */
    async setActiveLight(lightItemId) {
       if (lightItemId === null || lightItemId === '' || lightItemId === undefined) {
-         await this.activeToken?.document.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+         await this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
       }
       await this.update({ "system.activeLight": lightItemId });
    }

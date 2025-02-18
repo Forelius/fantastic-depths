@@ -12,7 +12,8 @@ export class fadeItem extends Item {
    }
 
    get ownerToken() {
-      return this.actor ? canvas.tokens?.placeables?.find(t => t.document.actorId === this.actor?.id) : null;
+      //console.debug(`Get ownerToken ${this.name} (${this.actor?.name}/${this.parent.name})`);
+      return this.actor ? this.actor.currentActiveToken : null;
    }
 
    /** A getter for dynamically calculating the contained items.

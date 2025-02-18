@@ -38,7 +38,7 @@ export class PlayerCombatForm extends FormApplication {
    activateListeners(html) {
       super.activateListeners(html);
       // Listen for changes in the action select elements
-      html.find('[name="declaredAction"]').on("change", this._onPlayerChangedAction);
+      html.find('[name="declaredAction"]').on("change", this.#onPlayerChangedAction);
       Hooks.on('updateActor', this._updateTrackedActor);
       Hooks.on("updateCombatant", this.#updateCombatant);
       Hooks.on("updateItem", this.#updateItem);
@@ -60,9 +60,9 @@ export class PlayerCombatForm extends FormApplication {
       }
    }
 
-   async _onPlayerChangedAction(event) {
-      const actorId = event.currentTarget.dataset.actorId;
-      const actor = game.combat.combatants.find(combatant => combatant.actor.id === actorId)?.actor;
+   async #onPlayerChangedAction(event) {
+      const tokenId = event.currentTarget.dataset.tokenId;
+      const actor = game.combat.combatants.find(combatant => combatant.token.id === tokenId)?.actor;
       const updateData = { "system.combat.declaredAction": event.currentTarget.value };
       await actor.update(updateData);
    }
