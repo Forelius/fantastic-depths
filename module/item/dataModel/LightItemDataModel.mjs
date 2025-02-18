@@ -36,8 +36,9 @@ export class LightItemDataModel extends fadeItemDataModel {
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();
+      this.equippable = true;
       this.isLight = true;
+      super.prepareBaseData();
       //console.log(`${this.parent?.actor?.name}: ${this.parent.name} total weight: ${this.totalWeight} (${this.quantity}x${this.weight}) - LightItemDataModel.prepareBaseData`);
    }
 

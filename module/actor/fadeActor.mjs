@@ -614,7 +614,8 @@ export class fadeActor extends Actor {
          //this.effects.forEach((effect) => {
          const parentItem = effect.parent;
          // If the effect has a parent and the parent is an equippable item...
-         if (parentItem && parentItem.type === 'item' && parentItem.system.equippable === true) {
+         const equippableFx = ['item', 'armor', 'weapon', 'light'];
+         if (parentItem && equippableFx.includes(parentItem.type) && parentItem.system.equippable === true) {
             // Set disabled state of effect based on item equipped state
             effect.disabled = !parentItem.system.equipped;
          }
