@@ -237,7 +237,7 @@ Hooks.once('ready', async function () {
          game.fade.SocketManager = new SocketManager();
          
          game.socket.on(`system.${game.system.id}`, (data) => {
-            console.debug("onSocketReceived", data);
+            //console.debug("onSocketReceived", data);
             if (data.action === 'showToast') {
                // Call the public method to create the toast
                game.fade.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);

@@ -17,8 +17,8 @@ export class PlayerCombatForm extends FormApplication {
       return options;
    }
 
-   get trackedActorIds() {
-      return game.combat?.ownedCombatants.map(combatant => combatant.actor?.id).filter(id => id);
+   get trackedTokenIds() {
+      return game.combat?.ownedCombatants.map(combatant => combatant.token?.id).filter(id => id);
    }
 
    /**
@@ -55,7 +55,7 @@ export class PlayerCombatForm extends FormApplication {
 
    _updateTrackedActor = (actor, updateData, options, userId) => {
       // Check if the updated actor is in the tracked actors list by ID
-      if (game.combat && this.trackedActorIds.includes(actor.id)) {
+      if (game.combat && this.trackedTokenIds.includes(actor.currentActiveToken?.id)) {
          this.#updateActorData(actor, updateData);
       }
    }
@@ -90,14 +90,14 @@ export class PlayerCombatForm extends FormApplication {
    }
 
    #updateCombatant = (combatant, updateData, options, userId) => {
-      if (game.combat && this.trackedActorIds.includes(combatant.actor.id)) {
+      if (game.combat && this.trackedTokenIds.includes(combatant.token.id)) {
          this.#updateCombatantData(combatant, updateData);
       }
    }
 
    #updateItem = (item, updateData, options, userId) => {
-      const actor = item?.parent; // The actor the item belongs to
-      if (game.combat && this.trackedActorIds.includes(actor.id)) {
+      const token = item?.parent?.currentActiveToken; // The actor the item belongs to
+      if (game.combat && this.trackedTokenIds.includes(token.id)) {
          this.render();  // Re-render to reflect updated actor data
       }
    }
@@ -129,7 +129,7 @@ export class PlayerCombatForm extends FormApplication {
 
    #updateCombatantData(combatant, updateData) {
       // Find the row matching the actor ID
-      const rowElement = document.querySelector(`tr[data-actor-id="${combatant.actor.id}"]`);
+      const rowElement = document.querySelector(`tr[data-token-id="${combatant.token.id}"]`);
       if (rowElement) {
          // If initiative changed and this isn't the GM
          if (updateData.initiative !== undefined && game.user.isGM === false) {

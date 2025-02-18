@@ -78,7 +78,7 @@ export class SocketManager {
          return;
       }
 
-      console.debug('receiveSocketMessage', data, game.user.id);
+      //console.debug('receiveSocketMessage', data, game.user.id);
 
       // Handle the message based on type
       switch (data.action) {

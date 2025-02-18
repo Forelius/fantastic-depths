@@ -30,7 +30,7 @@
    <table>
       <tbody>
          {{#each ownedCombatants as |combatant|}}
-         <tr data-actor-id="{{combatant.actor.id}}">
+         <tr data-token-id="{{combatant.token.id}}" data-actor-id="{{combatant.actor.id}}">
             <td class="col-name">
                <label class="combatant-name">{{combatant.name}}</label><br />
                <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">
