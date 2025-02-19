@@ -42,7 +42,11 @@
          "attackRank": "Attack Rank",
          "enchanted": {
             "name": "Enchanted",
-            "hint": "Enchanted creatures can only be hit by magical weapons or spells"
+            "hint": "This enchanted creature can only be hit by magical weapons or spells."
+         },
+         "castAs": {
+            "name": "Cast As",
+            "hint": "Some monsters can cast spells or have other abilities that are equivelent of a specific class and level. Specify as class key and level, similar to save as. Example: A monster that can cast spells as a 9th level Magic-User would have a castAs value of 'M9'."
          },
          "hdConBonus": {
             "name": "HD Con.",

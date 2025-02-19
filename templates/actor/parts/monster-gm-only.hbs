@@ -14,6 +14,10 @@
          <input type='text' name="system.flight.max" value='{{system.flight.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}" />
          <label for="system.flight.max" data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
       </li>
+      <li>
+         <input type='text' name="system.details.castAs" value='{{system.details.castAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}" />
+         <label for="system.details.castAs" data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}">{{localize 'FADE.Actor.castAs.name'}}</label>
+      </li>
       <li style="max-width:60px;">
          <input type="checkbox" name="system.isEnchanted" data-dtype="Boolean" {{#if system.isEnchanted}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}" />
          <label for="system.isEnchanted" data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}">{{localize 'FADE.Actor.enchanted.name'}}</label>

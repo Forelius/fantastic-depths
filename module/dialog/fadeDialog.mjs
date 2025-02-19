@@ -273,7 +273,7 @@ export class fadeDialog {
          const template = 'systems/fantastic-depths/templates/dialog/select-spell.hbs';
          const spellItems = casterActor.items.filter((item) => item.type === "spell")
             .sort((a, b) => a.name.localeCompare(b.name))
-            .sort((a, b) => (b.system.memorized - b.system.cast) - (a.system.memorized - a.system.cast));
+            .sort((a, b) => ((b.system.memorized ?? 999) - b.system.cast) - ((a.system.memorized ?? 999) - a.system.cast));
 
          if (!spellItems || spellItems.length == 0) {
             ui.notifications.warn(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('TYPES.Item.spell') }));
@@ -367,14 +367,14 @@ export class fadeDialog {
       };
 
       //if (type && type !== "spell" && type !== "breath") {
-         buttons.magic = {
-            label: game.i18n.localize('FADE.vsMagic'),
-            callback: () => ({
-               rolling: true,
-               vsmagic: true,
-               mod: parseInt(document.getElementById('mod').value, 10) || 0,
-            })
-         };
+      buttons.magic = {
+         label: game.i18n.localize('FADE.vsMagic'),
+         callback: () => ({
+            rolling: true,
+            vsmagic: true,
+            mod: parseInt(document.getElementById('mod').value, 10) || 0,
+         })
+      };
       //}
 
       dialogResp.resp = await Dialog.wait({

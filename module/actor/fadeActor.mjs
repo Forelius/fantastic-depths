@@ -588,7 +588,7 @@ export class fadeActor extends Actor {
       }
       // Spells
       if (this.items.filter(item => item.type === "spell"
-         && (item.system.memorized /* support infinite?*/))?.length > 0) {
+         && (item.system.memorized === null || item.system.memorized > 0))?.length > 0) {
          result.push("spell");
       }
       const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.combatManeuver !== null)
@@ -645,7 +645,7 @@ export class fadeActor extends Actor {
             if (spell.system.spellLevel > spellSlots.length) {
                console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
             } else if (spell.system.memorized > 0) {
-               spellSlots[spell.system.spellLevel - 1].used += spell.system.memorized;
+               spellSlots[spell.system.spellLevel - 1].used += spell.system.memorized ?? 1;
             }
          }
       }

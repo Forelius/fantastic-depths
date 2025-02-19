@@ -84,11 +84,9 @@ export class SpellItem extends fadeItem {
       const systemData = this.system;
       let result = null;
       
-      if (systemData.cast < systemData.memorized) {         
+      if (systemData.cast < systemData.memorized || systemData.memorized === null) {
          const attackRollResult = await this.#doAttackRoll();
-
          const durationRollResult = await this.#getDurationText();
-         console.debug(durationRollResult)
 
          if (attackRollResult === null || attackRollResult?.canProceed===true) {
             const rollData = this.getRollData();

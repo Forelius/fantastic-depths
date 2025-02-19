@@ -17,6 +17,9 @@ export class MonsterDataModel extends fadeActorDataModel {
             intelligence: new fields.StringField({ initial: "7" }),
             monsterType: new fields.StringField({ initial: "Monster (Common)" }),
             saveAs: new fields.StringField({ initial: "F1" }),
+            // Some monsters have spells are abilities of a specific class level
+            castAs: new fields.StringField({ initial: null, nullable: true }),
+            level: new fields.NumberField({ initial: 1 })
          }),
          na: new fields.SchemaField({
             wandering: new fields.StringField({ initial: "1d6" }),
@@ -39,6 +42,10 @@ export class MonsterDataModel extends fadeActorDataModel {
 
    /** @override */
    prepareDerivedData() {
+      // Extract class identifier and level from the input
+      const match = this.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+      this.level = parsed?.classLevel ?? 1;
       super.prepareDerivedData();
    }
 
