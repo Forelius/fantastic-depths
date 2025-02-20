@@ -46,7 +46,11 @@
          },
          "castAs": {
             "name": "Cast As",
-            "hint": "Some monsters can cast spells or have other abilities that are equivelent of a specific class and level. Specify as class key and level, similar to save as. Example: A monster that can cast spells as a 9th level Magic-User would have a castAs value of 'M9'."
+            "hint": "Some monsters can cast spells that are equivelent of a specific class and level. Specify as class key and level, similar to save as. Example: A monster that can cast spells as a 9th level Magic-User would have a castAs value of 'M9'."
+         },
+         "classAbilityAs": {
+            "name": "Class Abl. As",
+            "hint": "Some monsters have the class abilities of a specific class and level. Specify as class key and level, similar to save as. Example: A monster with 2nd level thief class abilities would have a class ability as of 'T2'."
          },
          "hdConBonus": {
             "name": "HD Con.",

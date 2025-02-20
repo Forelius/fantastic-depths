@@ -65,7 +65,7 @@ export class SkillItem extends fadeItem {
       let dialogResp = null;
       try {
          dialogResp = await DialogFactory(dataset, this.actor);
-         let levelMod = systemData.level > 1 ? `-${systemData.level}` : '';
+         const levelMod = systemData.level > 1 ? `-${systemData.level-1}` : '';
          rollData.formula = dialogResp.resp.mod != 0 ? `1d20${levelMod}-@mod` : `1d20${levelMod}`;
       }
       // If close button is pressed

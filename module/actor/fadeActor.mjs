@@ -746,6 +746,12 @@ export class fadeActor extends Actor {
       this.system.acDigest = acDigest;
    }
 
+   /**
+    * @protected
+    * @param {any} classKey The class key by itself.
+    * @param {any} abilitiesData The class ability array for the desired level.
+    * @returns
+    */
    async _setupSpecialAbilities(classKey, abilitiesData) {
       if (game.user.isGM === false) return;
 

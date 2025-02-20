@@ -62,11 +62,28 @@ export class ClassItem extends fadeItem {
       return result;
    }
 
+   static getClassAbilitiesByCode(key, owner) {
+      // Extract class identifier and level from the input
+      let match = key.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
+      let result;
+      if (parsed) {
+         const classItem = game.items.find(item => item.system.key === parsed.classKey && item.type === 'class');
+         if (!classItem) {
+            console.warn(`Class item not found ${key}.`);
+         } else {
+            result = this.getClassAbilities(classItem.name, parsed.classLevel)
+         }
+      } else {
+         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
+      }
+      return { classAbilityData: result, classKey: parsed?.classKey, classLevel: parsed?.classLevel };
+   }
+
    static getClassAbilities(className, classLevel) {
       const classItem = ClassItem.getClassItem(className);
       let result;
       if (classItem) {
-         //result = ((filtered) => filtered.filter(a => a.level === Math.max(...filtered.map(a => a.level))))(classItem.system.classAbilities.filter(a => a.level <= classLevel));
          result = Object.values(classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {}));
       }
       return result?.length > 0 ? result : undefined;
