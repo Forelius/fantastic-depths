@@ -12,11 +12,11 @@ export class MonsterTHAC0Calculator {
       // Parse the hit dice string
       if (hitDiceString.includes("+")) {
          effectiveHitDice = hitDiceString.split("+")[0];
-         numericHitDice = parseFloat(effectiveHitDice + 1);
+         numericHitDice = parseFloat(effectiveHitDice) + 1;
          effectiveHitDice += "+";
       } else if (hitDiceString.includes("-")) {
          effectiveHitDice = hitDiceString.split("-")[0];
-         numericHitDice = parseFloat(effectiveHitDice - 1);
+         numericHitDice = parseFloat(effectiveHitDice) - 1;
       } else {
          numericHitDice = parseFloat(effectiveHitDice);
       }
