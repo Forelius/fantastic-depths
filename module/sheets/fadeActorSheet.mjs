@@ -242,8 +242,9 @@ export class fadeActorSheet extends ActorSheet {
          }
          // Append to spells.
          else if (item.type === 'spell') {
+            const spellLevel = Math.max(0, item.system.spellLevel - 1);
             if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
-               spellSlots[item.system.spellLevel - 1].spells.push(item);
+               spellSlots[spellLevel].spells.push(item);
             } else {
                console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${this.actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
             }

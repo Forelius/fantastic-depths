@@ -15,7 +15,7 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
          }),
          // Fields specific to the "spell" template
          spellLevel: new fields.NumberField({ required: true, initial: 1 }),
-         range: new fields.StringField({ required: false, initial: ""}),
+         range: new fields.StringField({ required: false, initial: "" }),
          duration: new fields.StringField({ required: false, initial: "Instant" }),
          effect: new fields.StringField({ required: false, initial: "" }),
          memorized: new fields.NumberField({ nullable: true, initial: 0 }),
@@ -37,5 +37,6 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.spellLevel = this.spellLevel !== null ? Math.max(0, this.spellLevel) : 1;
    }
 }

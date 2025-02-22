@@ -642,10 +642,11 @@ export class fadeActor extends Actor {
 
       if (spells.length > 0) {
          for (let spell of spells) {
+            const spellLevel = Math.max(0, spell.system.spellLevel - 1);
             if (spell.system.spellLevel > spellSlots.length) {
                console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
             } else if (spell.system.memorized > 0) {
-               spellSlots[spell.system.spellLevel - 1].used += spell.system.memorized ?? 1;
+               spellSlots[spellLevel].used += spell.system.memorized ?? 1;
             }
          }
       }
