@@ -75,7 +75,6 @@ export class SpecialAbilityItem extends fadeItem {
 
       if (canProceed === true) {
          const chatData = {
-            rollData,
             caller: this,
             resp: dialogResp?.resp,
             context: ownerTokenOrActor,

@@ -18,7 +18,7 @@
          </ul>
          <ul class="summary flexrow">
             <li class="flex2">
-               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}"  {{#unless isGM}} readonly{{/unless}}>
+               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions weaponTypes selected=system.primaryType}}
                </select>
                <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>
@@ -28,7 +28,7 @@
                <label for="system.acBonus">{{localize 'FADE.Mastery.acBonus'}}</label>
             </li>
             <li class="flex2">
-               <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} readonly{{/unless}}>
+               <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType}}
                </select>
                <label for="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.acBonusTypeHint'}}">{{localize 'FADE.Mastery.acBonusType'}}</label>

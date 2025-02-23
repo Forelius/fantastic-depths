@@ -15,7 +15,8 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          // Fields from the "rollable" template
          rollFormula: new fields.StringField({ required: false, initial: "" }),
          operator: new fields.StringField({ required: false, initial: "" }),
-         target: new fields.NumberField({ required: false, initial: 0 }),
+         //target: new fields.NumberField({ required: false, initial: 0 }),
+         target: new fields.StringField({ required: false, initial: "" }),
          rollMode: new fields.StringField({ required: false, initial: "publicroll" }),
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
          autoSuccess: new fields.NumberField({ required: false, initial: null, nullable: true }),
@@ -41,4 +42,3 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
       super.prepareBaseData();
    }
 }
-

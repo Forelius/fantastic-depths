@@ -144,10 +144,9 @@ export class ChatBuilder {
       const { roll } = this.data;
       // If there was a roll involved in the chat message...
       if (obj.rolls ?? roll) {
-         const rollData = {}; // Empty for now. 
-
-         if (!obj.rolls) rollData.rolls = Array.isArray(roll) ? roll : [roll];
-         Object.assign(chatMessageData, rollData);
+         const rollsData = {}; // Empty for now. 
+         if (!obj.rolls) rollsData.rolls = Array.isArray(roll) ? roll : [roll];
+         Object.assign(chatMessageData, rollsData);
 
          // Decide roll mode (public, gm only,...)
          const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get('core', 'rollMode');

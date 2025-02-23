@@ -576,6 +576,7 @@
          "attackFlavor": "{attacker} {attackType} attacks with {weapon}",
          "spellCast": "{caster} casts {spell}",
          "useSpecAbility": "{owner} uses {specAbility}",
+         "useWithTarget": "{owner} uses {used} ({operator}{target})",
          "attackAC": "<div class='attack-info'>Attack hits <strong>{acAbbr} {hitAC}</strong>.</div>",
          "attackACAny": "<div class='attack-info'>Natural 20! Attack hits any AC!</strong>.</div>",
          "attackACNone": "<div class='attack-info'>Attack doesn't hit any AC.</div>",

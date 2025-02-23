@@ -88,15 +88,12 @@ export class SpellItem extends fadeItem {
          const attackRollResult = await this.#doAttackRoll();
          const durationRollResult = await this.#getDurationText();
 
-         if (attackRollResult === null || attackRollResult?.canProceed===true) {
-            const rollData = this.getRollData();
-
+         if (attackRollResult === null || attackRollResult?.canProceed === true) {
             // Use spell resource
             systemData.cast += 1;
             await this.update({ "system.cast": systemData.cast });
 
             const chatData = {
-               rollData,
                caller: this, // the spell
                context: (caster || casterActor), // the caster
                roll: attackRollResult?.rollEval,
