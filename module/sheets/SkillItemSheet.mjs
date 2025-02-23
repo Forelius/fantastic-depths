@@ -52,11 +52,17 @@ export class SkillItemSheet extends ItemSheet {
          acc[key] = game.i18n.localize(value);
          return acc;
       }, {});
+      // Abilities
       let abilities = [];
       abilities.push(...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       }));
       context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      // Prepare operators
+      context.operators = Object.entries(CONFIG.FADE.Operators).reduce((acc, [key, value]) => {
+         acc[key] = value;
+         return acc;
+      }, {});
 
       return context;
    }

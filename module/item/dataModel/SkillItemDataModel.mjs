@@ -15,6 +15,9 @@ export class SkillItemDataModel extends foundry.abstract.TypeDataModel {
          }),
          // Fields specific to the "skill" template
          ability: new fields.StringField({ required: true, initial: "str" }),
+         targetFormula: new fields.StringField({ required: true, initial: "@rollTarget" }),
+         operator: new fields.StringField({ required: true, initial: "lte" }),
+         rollFormula: new fields.StringField({ required: true, initial: "1d20" }),
          level: new fields.NumberField({ required: true, initial: 1 }),
          rollMode: new fields.StringField({ required: false, initial: "" }),
          healFormula: new fields.StringField({ nullable: true, initial: null })

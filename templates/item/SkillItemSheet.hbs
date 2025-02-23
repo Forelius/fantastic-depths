@@ -4,13 +4,15 @@
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li>
-               <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
+               <div class='charname'>
+                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+               </div>
                <label>{{localize 'Name'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
             <li class="flex0">
-               <select name="system.ability">
+               <select name="system.ability" {{#unless isGM}} disabled='disabled' {{/unless}}>
                   {{selectOptions abilities selected=system.ability}}
                </select>
                <label for="system.ability">{{localize 'FADE.Actor.Abilities.long'}}</label>
@@ -20,12 +22,12 @@
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>
             <li class="flex2">
-               <select name="system.rollMode">
+               <select name="system.rollMode" {{#unless isGM}} disabled='disabled' {{/unless}}>
                   {{selectOptions rollModes selected=system.rollMode}}
                </select>
             </li>
             <li class="flex2">
-               <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+               <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
             </li>
          </ul>
@@ -33,10 +35,36 @@
    </header>
    {{! Sheet Tab Navigation }}
    <nav class='sheet-tabs tabs' data-group='primary'>
+      {{#if isGM}}
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+      {{/if}}
       <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
    </nav>
    {{! Sheet Body }}
    <section class='sheet-body'>
+      {{! attributes Tab }}
+      {{#if isGM}}
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         <div class="bordered">
+            <div class="summary flexrow">
+               <div style="max-width:90px;">
+                  <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String'/>
+                  <label for="system.rollFormula">{{localize 'FADE.roll'}}</label>
+               </div>
+               <div style="max-width:50px;">
+                  <select name="system.operator">
+                     {{selectOptions operators selected=system.operator}}
+                  </select>
+                  <label for="system.operator">{{localize 'FADE.operator'}}</label>
+               </div>
+               <div>
+                  <input type='text' name="system.targetFormula" value='{{system.targetFormula}}' data-dtype='String' />
+                  <label for="system.targetFormula">{{localize 'FADE.target'}}</label>
+               </div>
+            </div>
+         </div>
+      </div>
+      {{/if}}
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}

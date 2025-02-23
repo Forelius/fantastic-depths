@@ -55,7 +55,6 @@ export class SkillItem extends fadeItem {
    */
    async roll(dataset) {
       const systemData = this.system;
-      const ownerData = this.actor.system;
       const roller = this.actor || this.parent.getActiveTokens()?.[0];
 
       // Retrieve roll data.
@@ -66,7 +65,7 @@ export class SkillItem extends fadeItem {
       try {
          dialogResp = await DialogFactory(dataset, this.actor);
          const levelMod = systemData.level > 1 ? `-${systemData.level-1}` : '';
-         rollData.formula = dialogResp.resp.mod != 0 ? `1d20${levelMod}-@mod` : `1d20${levelMod}`;
+         rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}${levelMod}-@mod` : `${systemData.rollFormula}${levelMod}`;
       }
       // If close button is pressed
       catch (error) {
@@ -78,13 +77,14 @@ export class SkillItem extends fadeItem {
          // Roll
          const rollContext = { ...rollData, ...dialogResp?.resp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const targetRoll = await new Roll(systemData.targetFormula, rollContext).evaluate();
 
          // Show the chat message
-         dataset.pass = "lte"; // this is a less than or equal to roll
-         dataset.target = systemData.rollTarget;
+         dataset.pass = systemData.operator; // this is a less than or equal to roll
+         dataset.target = targetRoll.total; // systemData.rollTarget;
          dataset.rollmode = systemData.rollMode;
          const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
-         dataset.desc = `${localizeAbility} (${ownerData.abilities[systemData.ability].value})`
+         dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
             dialogResp: dialogResp,
             caller: this, // the skill item
