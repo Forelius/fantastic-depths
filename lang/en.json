@@ -621,7 +621,7 @@
          "awardXP": {
             "short": "Award XP",
             "long": "Award Experience Points",
-            "awarded": "XP awarded successfully!",
+            "awardedCharacter": "{name} received {amount} XP!",
             "xpAmountTotal": "Total XP Amount",
             "xpAmount": "XP Amount",
             "share": "Share"

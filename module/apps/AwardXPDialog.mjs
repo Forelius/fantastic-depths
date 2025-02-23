@@ -148,15 +148,19 @@ export class AwardXPDialog extends FormApplication {
          // The final XP is in actorXP_<id>
          const fieldName = `actorXP_${actorId}`;
          const finalXP = Number(data[fieldName] || 0);
+         if (finalXP > 0) {
+            // Add that to the actor's current XP
+            const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
+            const updatedXP = currentXP + finalXP;
 
-         // Add that to the actor's current XP
-         const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
-         const updatedXP = currentXP + finalXP;
+            const msg = game.i18n.format("FADE.dialog.awardXP.awardedCharacter", { name: actor.name, amount: finalXP });
+            // Create a chat message only visible to the GM
+            ChatMessage.create({ user: game.user.id, content: msg });
 
-         promises.push(actor.update({ "system.details.xp.value": updatedXP }));
+            promises.push(actor.update({ "system.details.xp.value": updatedXP }));
+         }
       }
 
       await Promise.all(promises);
-      ui.notifications.info(game.i18n.localize("FADE.dialog.awardXP.awarded"));
    }
 }
