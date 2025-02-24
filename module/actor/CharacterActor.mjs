@@ -42,6 +42,7 @@ export class CharacterActor extends fadeActor {
       // Class or level updated.
       if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
          if (this.id) {
+            const currentLevel = this.system.details.level;
             const classNameInput = this.system.details.class?.toLowerCase();
             const classItem = ClassItem.getClassItem(classNameInput);
             // Saving throws
