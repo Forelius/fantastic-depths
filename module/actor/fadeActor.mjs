@@ -94,7 +94,7 @@ export class fadeActor extends Actor {
       super.prepareBaseData();
       this._prepareEffects();
       this._prepareSpellsUsed();
-      this.system.prepareEncumbrance(this.items, this.type);
+      this._prepareEncumbrance(this.type);
       this.system.prepareDerivedMovement();
    }
 
@@ -653,7 +653,7 @@ export class fadeActor extends Actor {
       if (spellSlots.length !== systemData.config.maxSpellLevel) {
          console.warn(`${this.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${systemData.config.maxSpellLevel}).`);
       }
-      systemData.spellSlots = spellSlots;//.splice(0, systemData.config.maxSpellLevel);
+      systemData.spellSlots = spellSlots;
    }
 
    /**
@@ -823,6 +823,89 @@ export class fadeActor extends Actor {
          const saveTarget = savesData[savingThrow.system.customSaveCode];
          if (saveTarget) {
             await savingThrow.update({ "system.target": saveTarget });
+         }
+      }
+   }
+
+   /**
+    * @protected
+    * Prepares the actor's encumbrance values. Supports optional settings for different encumbrance systems.
+   */
+   _prepareEncumbrance(actorType) {
+      const encSetting = game.settings.get(game.system.id, "encumbrance");
+      let encumbrance = this.system.encumbrance || {};
+      let enc = 0;
+
+      //-- Caclulate how much is being carried/tracked --//
+      // If using detailed encumbrance, similar to expert rules...
+      if (encSetting === 'expert' || encSetting === 'classic') {
+         enc = this.items.reduce((sum, item) => {
+            const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
+            const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
+            return sum + (itemWeight * itemQuantity);
+         }, 0);
+         encumbrance.value = enc || 0;
+      }
+      // Else if using simple encumbrance, similar to basic rules...
+      else if (encSetting === 'basic') {
+         encumbrance.value = 0;
+      } else {
+         encumbrance.value = 0;
+      }
+
+      //-- Calculate movement and label --//
+      // If max encumbrace is set to zero...
+      if (encumbrance.max === 0) {
+         encumbrance.mv = this.system.movement.max;
+         encumbrance.fly = this.system.flight.max;
+      } else {
+         this.#calculateEncMovement(actorType, enc, encumbrance, encSetting);
+      }
+
+      this.system.encumbrance = encumbrance;
+   }
+
+   /**
+    * Calculate movement rate based on encumbrance.
+    * @private
+    * @param {any} actorType The actor.type
+    * @param {number} enc The total encumbrance in coins.
+    * @param {any} encumbrance The encumbrance object to set.
+    * @param {encSetting} The current encumbrance setting.
+    */
+   #calculateEncMovement(actorType, enc, encumbrance, encSetting) {
+      let weightPortion = this.system.encumbrance.max / enc;
+      let table = [];
+      switch (actorType) {
+         case "monster":
+            table = CONFIG.FADE.Encumbrance.monster;
+            break;
+         case "character":
+            if (encSetting === 'classic' || encSetting === 'basic') {
+               table = CONFIG.FADE.Encumbrance.classicPC;
+            } else if (encSetting === 'expert') {
+               table = CONFIG.FADE.Encumbrance.expertPC;
+            }
+            break;
+      }
+
+      if (table.length > 0) {
+         let encTier = table.length > 0 ? table[0] : null;
+         if (encSetting === 'basic') {
+            if (this.system.equippedArmor?.system.armorWeight === 'light') {
+               encTier = table[1];
+            } else if (this.system.equippedArmor?.system.armorWeight === 'heavy') {
+               encTier = table[2];
+            }
+         } else {
+            encTier = table.find(tier => weightPortion >= tier.wtPortion) || table[table.length - 1];
+         }
+
+         if (encTier) {
+            encumbrance.label = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`);
+            encumbrance.desc = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`);
+            encumbrance.mv = Math.floor(this.system.movement.max * encTier.mvFactor);
+            encumbrance.fly = Math.floor(this.system.flight.max * encTier.mvFactor);
          }
       }
    }
