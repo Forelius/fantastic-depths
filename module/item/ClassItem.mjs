@@ -55,6 +55,8 @@ export class ClassItem extends fadeItem {
     * @returns The specified class item or undefined if not found.
     */
    static getClassItem(className) {
+      if (className === null || className === undefined || className === '') return;
+
       const result = game.items.find(item => item.name.toLowerCase() == className.toLowerCase() && item.type === 'class');
       if (!result) {
          console.warn(`Class item not found ${className}.`);
@@ -84,7 +86,8 @@ export class ClassItem extends fadeItem {
       const classItem = ClassItem.getClassItem(className);
       let result;
       if (classItem) {
-         result = Object.values(classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {}));
+         result = classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+         result = result ? Object.values(result) : null;
       }
       return result?.length > 0 ? result : undefined;
    }

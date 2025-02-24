@@ -805,8 +805,9 @@ export class fadeActor extends Actor {
             const itemData = worldSavingThrows.find(item => item.system.customSaveCode === stName);
             if (itemData) {
                const newSave = itemData.toObject();
-               console.debug(`${this.name}(${this.id}) pushed ${newSave.name} (${itemData.system.customSaveCode}/${stName}).`,
-                  addItems.find(item => item.system.customSaveCode === stName), addItems);
+               const saveTarget = savesData[newSave.system.customSaveCode];
+               newSave.system.target = saveTarget ?? 15;
+               console.debug(`${this.name}(${this.id}) pushed ${newSave.name} (${itemData.system.customSaveCode}/${stName}) = ${saveTarget}.`);
                addItems.push(newSave);
             } else {
                console.warn(`The specified saving throw (${stName}) does not exist as a world item.`);

@@ -110,6 +110,9 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
 
    /** @override */
    prepareBaseData() {
+      this.maxSpellLevel = Math.max(0, (this.maxSpellLevel ?? 0));
+      this.firstLevel = Math.max(0, (this.firstLevel ?? 1));
+      this.maxLevel = Math.max(this.firstLevel, (this.maxLevel ?? this.firstLevel));
       super.prepareBaseData();
       this.#prepareLevels();
       this.#prepareSpellLevels();
@@ -144,7 +147,7 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
    #prepareSpellLevels() {
       const totalLevelCount = this.maxLevel;
       const currentMaxSpellLevel = this.spells.length > 0 ? this.spells[0].length : 0;
-      if (this.maxSpellLevel === 0) {
+      if (this.maxSpellLevel <= 0) {
          this.spells = [];
       } else if (totalLevelCount !== this.spells.length || currentMaxSpellLevel !== this.maxSpellLevel) {
          const newLevels = Array.from({ length: totalLevelCount }, () => Array.from({ length: this.maxSpellLevel }, () => 0));
