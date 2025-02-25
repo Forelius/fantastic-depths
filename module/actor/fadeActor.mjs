@@ -92,16 +92,25 @@ export class fadeActor extends Actor {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      this._prepareEffects();
-      this._prepareSpellsUsed();
-      this._prepareEncumbrance(this.type);
-      this.system.prepareDerivedMovement();
+      if (this.id) {
+         this._prepareEffects();
+         this._prepareSpellsUsed();
+         this._prepareEncumbrance(this.type);
+         this.system.prepareDerivedMovement();
+      } else {
+         //console.warn(`Preparing base data for ${this.name}, but id is null.`);
+      }
+
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareArmorClass();
+      if (this.id) {
+         this._prepareArmorClass();
+      } else {
+         //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
+      }
       // TODO: This is the incorrect way to do this, it causes recursion through the call to setActiveLight.
       //if (this.system.activeLight?.length > 0) {
       //   const lightItem = this.items.get(this.system.activeLight);
@@ -755,8 +764,10 @@ export class fadeActor extends Actor {
     */
    async _setupSpecialAbilities(classKey, abilitiesData) {
       if (game.user.isGM === false) return;
-
+      const promises = [];
+      // Get class ability world items for specified class
       const worldAbilities = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class' && item.system.classKey === classKey);
+      // Get this actor's class ability items.
       const classAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
       const addItems = [];
       for (const abilityData of abilitiesData) {
@@ -765,8 +776,7 @@ export class fadeActor extends Actor {
             const itemData = worldAbilities.find(item => item.name === abilityData.name);
             if (itemData) {
                const newAbility = itemData.toObject();
-               console.debug(`${this.name}(${this.id}) pushed ${newAbility.name}.`,
-                  addItems.find(item => item.name === abilityData.name), addItems);
+               newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                addItems.push(newAbility);
             } else {
                console.warn(`The specified class ability (${abilityData.name}) does not exist as a world item.`);
@@ -775,14 +785,18 @@ export class fadeActor extends Actor {
       }
       if (addItems.length > 0) {
          console.debug(`Adding ${addItems.length} class ability items to ${this.name}`);
-         await this.createEmbeddedDocuments("Item", addItems);
+         promises.push(this.createEmbeddedDocuments("Item", addItems));
       }
+
       // Iterate over ability items and set each one.
       for (const classAbility of classAbilities) {
          const target = abilitiesData.find(item => item.name === classAbility.name)?.target;
          if (target) {
-            await classAbility.update({ "system.target": target });
+            promises.push(classAbility.update({ "system.target": target }));
          }
+      }
+      if (promises.length > 0) {
+         await Promise.all(promises);
       }
    }
 
@@ -792,7 +806,7 @@ export class fadeActor extends Actor {
     */
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
-
+      const promises = [];
       const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
@@ -807,7 +821,7 @@ export class fadeActor extends Actor {
                const newSave = itemData.toObject();
                const saveTarget = savesData[newSave.system.customSaveCode];
                newSave.system.target = saveTarget ?? 15;
-               console.debug(`${this.name}(${this.id}) pushed ${newSave.name} (${itemData.system.customSaveCode}/${stName}) = ${saveTarget}.`);
+               //console.debug(`${this.name}(${this.id}) pushed ${newSave.name} (${itemData.system.customSaveCode}/${stName}) = ${saveTarget}.`);
                addItems.push(newSave);
             } else {
                console.warn(`The specified saving throw (${stName}) does not exist as a world item.`);
@@ -816,14 +830,18 @@ export class fadeActor extends Actor {
       }
       if (addItems.length > 0) {
          //console.log(`Adding saving throw items to ${this.name}`);
-         await this.createEmbeddedDocuments("Item", addItems);
+         promises.push(this.createEmbeddedDocuments("Item", addItems));
       }
       // Iterate over saving throw items and set each one.
       for (const savingThrow of savingThrows) {
          const saveTarget = savesData[savingThrow.system.customSaveCode];
          if (saveTarget) {
-            await savingThrow.update({ "system.target": saveTarget });
+            promises.push(savingThrow.update({ "system.target": saveTarget }));
          }
+      }
+
+      if (promises.length > 0) {
+         await Promise.all(promises);
       }
    }
 
@@ -859,7 +877,7 @@ export class fadeActor extends Actor {
          encumbrance.mv = this.system.movement.max;
          encumbrance.fly = this.system.flight.max;
       } else {
-         this.#calculateEncMovement(actorType, enc, encumbrance, encSetting);
+         this._calculateEncMovement(actorType, enc, encumbrance, encSetting);
       }
 
       this.system.encumbrance = encumbrance;
@@ -867,13 +885,13 @@ export class fadeActor extends Actor {
 
    /**
     * Calculate movement rate based on encumbrance.
-    * @private
+    * @protected
     * @param {any} actorType The actor.type
     * @param {number} enc The total encumbrance in coins.
     * @param {any} encumbrance The encumbrance object to set.
     * @param {encSetting} The current encumbrance setting.
     */
-   #calculateEncMovement(actorType, enc, encumbrance, encSetting) {
+   _calculateEncMovement(actorType, enc, encumbrance, encSetting) {
       let weightPortion = this.system.encumbrance.max / enc;
       let table = [];
       switch (actorType) {
