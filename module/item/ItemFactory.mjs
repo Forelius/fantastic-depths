@@ -1,4 +1,5 @@
 import { fadeItem } from '../item/fadeItem.mjs';
+import { GearItem } from '../item/GearItem.mjs';
 import { ArmorItem } from '../item/ArmorItem.mjs';
 import { WeaponItem } from '../item/WeaponItem.mjs';
 import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs';
@@ -14,7 +15,7 @@ const handler = {
       let result = null;
       if (args[0]?.type === 'armor') result = new ArmorItem(...args);
       else if (args[0]?.type === 'weapon') result = new WeaponItem(...args);
-      else if (args[0]?.type === 'item') result = new fadeItem(...args);
+      else if (args[0]?.type === 'item') result = new GearItem(...args);
       else if (args[0]?.type === 'specialAbility') result = new SpecialAbilityItem(...args);
       else if (args[0]?.type === 'mastery') result = new ActorMasteryItem(...args);
       else if (args[0]?.type === 'skill') result = new SkillItem(...args);

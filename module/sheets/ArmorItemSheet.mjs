@@ -29,7 +29,6 @@ export class ArmorItemSheet extends fadeItemSheet {
     */
    async getData(options) {
       const context = super.getData(options);
-      const itemData = context.data;
      
       context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
       if (context.isBasicEnc === true) {

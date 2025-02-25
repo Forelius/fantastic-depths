@@ -4,7 +4,6 @@ import { EffectManager } from '../sys/EffectManager.mjs';
  * Base sheet class for fadeItem.
  */
 export class fadeItemSheet extends ItemSheet {
-   
    /**
     * Prepare data to be used in the Handlebars template.
     */
@@ -20,11 +19,13 @@ export class fadeItemSheet extends ItemSheet {
          rollData,
          relativeTo: this.item,
       });
-      context.enrichedUIDesc = await TextEditor.enrichHTML(this.item.system.unidentifiedDesc, {
-         secrets: this.document.isOwner,
-         rollData,
-         relativeTo: this.item,
-      });
+      if (this.item.system.unidentifiedDesc !== undefined) {
+         context.enrichedUIDesc = await TextEditor.enrichHTML(this.item.system.unidentifiedDesc, {
+            secrets: this.document.isOwner,
+            rollData,
+            relativeTo: this.item,
+         });
+      }
       context.system = itemData.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;

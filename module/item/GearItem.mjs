@@ -1,14 +1,15 @@
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
+import { fadeItem } from './fadeItem.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class fadeItem extends Item {
+export class GearItem extends fadeItem {
    constructor(data, context) {
       super(data, context);
-      this.tagManager = new TagManager(this); // Initialize TagManager
+      //this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    get ownerToken() {
@@ -22,6 +23,17 @@ export class fadeItem extends Item {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
 
+   get totalEnc() {
+      let result = 0;
+      if (this.system.container === true) {
+         result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
+      }
+      const weight = this.system.weight > 0 ? this.system.weight : 0;
+      const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
+      result += weight * quantity;
+      return result;
+   }
+
    /** @override
     * @protected */
    prepareBaseData() {
@@ -31,35 +43,17 @@ export class fadeItem extends Item {
    /** @override
     * @protected */
    prepareDerivedData() {
-      super.prepareDerivedData();   
-   }
-
-   // Define default icons for various item types using core data paths
-   static get defaultIcons() {
-      const fdPath = `systems/fantastic-depths/assets/img/item`;
-      return {
-         spell: `${fdPath}/spell.png`,
-         specialAbility: `${fdPath}/specialAbility.png`,
-         skill: `${fdPath}/skill.png`,
-         armor: `${fdPath}/armor.png`,
-         weapon: "icons/svg/sword.svg",
-         mastery: "icons/svg/combat.svg",
-         item: "icons/svg/item-bag.svg",
-         container: "icons/svg/chest.svg",
-         class: `${fdPath}/class.webp`,
-         weaponMastery: "icons/svg/combat.svg",
-         light: "icons/sundries/lights/lantern-iron-lit-yellow.webp"
-      };
-   }
-
-   // Override the create method to assign default icons if not provided
-   static async create(data, context = {}) {
-      if (data.img === undefined) {
-         data.img = this.defaultIcons[data.type] || "icons/svg/item-bag.svg"; // Fallback icon
+      super.prepareDerivedData();
+      if (this.system.quantity !== undefined) {
+         const qty = this.system.quantity > 0 ? this.system.quantity : 0;
+         this.system.totalWeight = Math.round((this.system.weight * qty) * 100) / 100;
+         //console.debug(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${qty}x${this.system.weight})`);
+         this.system.totalCost = Math.round((this.system.cost * qty) * 100) / 100;
       }
-      return super.create(data, context);
+      // This can't be in data model, because name is a property of Item.
+      this.system.unidentifiedName = this.system.unidentifiedName ?? this.name;
    }
-
+      
    /**
     * Prepare a data object which defines the data schema used by dice roll commands against this Item
     * @override
@@ -67,11 +61,13 @@ export class fadeItem extends Item {
    getRollData() {
       // Starts off by populating the roll data with a shallow copy of `this.system`
       const rollData = { ...this.system };
+
       // Quit early if there's no parent actor
       if (this.actor !== null) {
          // If present, add the actor's roll data
          rollData.actor = this.actor.getRollData();
       }
+
       return rollData;
    }
 

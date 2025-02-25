@@ -14,7 +14,7 @@ import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
 import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
 import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
-import { fadeItemDataModel } from './item/dataModel/fadeItemDataModel.mjs';
+import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
 import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
 import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
@@ -100,7 +100,7 @@ Hooks.once('init', async function () {
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
-      item: fadeItemDataModel,
+      item: GearItemDataModel,
       armor: ArmorItemDataModel,
       skill: SkillItemDataModel,
       light: LightItemDataModel,
@@ -247,8 +247,6 @@ Hooks.once('ready', async function () {
          });
          console.info(`Registered socket listener: system.${game.system.id}`);
       }
-
-      //SocketManager.SetupOnReady();
    }
 });
 
