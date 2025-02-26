@@ -120,7 +120,7 @@ export class WeaponItem extends fadeItem {
     */
    getAttackModes() {
       let result = [];
-      const twoHand = this.system.tags?.includes("2-handed");
+      const twoHand = this.system.grip === '2H';
       const breath = this.system.breath?.length > 0;
       const natural = this.system.natural === true;
 

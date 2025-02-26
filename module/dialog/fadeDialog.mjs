@@ -16,10 +16,12 @@ export class fadeDialog {
 
       dialogData.weapon = weaponData;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
+      // Attack mode is how the weapon is held.
       dialogData.modes = weapon.getAttackModes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
          return acc;
       }, {});
+      // Attack type includes melee, missile and breath.
       dialogData.types = weapon.getAttackTypes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
          return acc;
