@@ -15,6 +15,7 @@ import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
 import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
 import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
 import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
+import { EffectItemDataModel } from './item/dataModel/EffectItemDataModel.mjs';
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
 import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
 import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
@@ -109,7 +110,8 @@ Hooks.once('init', async function () {
       mastery: ActorMasteryItemDataModel,
       class: ClassItemDataModel,
       weaponMastery: MasteryDefinitionItemDataModel,
-      specialAbility: SpecialAbilityDataModel
+      specialAbility: SpecialAbilityDataModel,
+      effect: EffectItemDataModel
    }
 
    // Active Effects are never copied to the Actor,
