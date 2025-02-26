@@ -504,6 +504,16 @@
             "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
          }
       },
+      "condition": {
+         "plural": "Conditions",
+         "key": {
+            "hint": "The key used for refering to this item. Can be one or more characters in length and should not include any special characters."
+         },
+         "addStatusEffect": {
+            "name": "Status Effect",
+            "hint": "If checked, the condition will be added as a status effect."
+         }
+      },
       "Effect": {
          "short": "Effect",
          "Source": "Source",

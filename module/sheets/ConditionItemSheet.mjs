@@ -30,7 +30,6 @@ export class ConditionItemSheet extends fadeItemSheet {
     */
    async getData(options) {
       const context = await super.getData(options);
-      // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
       return context;
    }

@@ -112,7 +112,7 @@ Hooks.once('init', async function () {
       class: ClassItemDataModel,
       weaponMastery: MasteryDefinitionItemDataModel,
       specialAbility: SpecialAbilityDataModel,
-      effect: ConditionItemDataModel
+      condition: ConditionItemDataModel
    }
 
    // Active Effects are never copied to the Actor,

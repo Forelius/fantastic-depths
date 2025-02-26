@@ -213,6 +213,7 @@ export class fadeActorSheet extends ActorSheet {
       const exploration = [];
       const classAbilities = [];
       const savingThrows = [];
+      const conditions = [];
 
       for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
          spellSlots.push({ spells: [] })
@@ -261,6 +262,10 @@ export class fadeActorSheet extends ActorSheet {
          else if (item.type === 'skill') {
             skills.push(item);
          }
+         // Append to conditions.
+         else if (item.type === 'condition') {
+            conditions.push(item);
+         }
          // Append to masteries.
          else if (item.type === 'mastery') {
             masteries.push(item);
@@ -306,6 +311,7 @@ export class fadeActorSheet extends ActorSheet {
       context.classAbilities = classAbilities;
       context.exploration = exploration;
       context.savingThrows = savingThrows;
+      context.conditions = conditions;
 
       this._calcCategoryEnc(context);
    }
