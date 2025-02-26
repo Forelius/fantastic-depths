@@ -1,7 +1,7 @@
 /**
  * Data model for a generic item inheriting from multiple templates.
  */
-export class EffectItemDataModel extends foundry.abstract.TypeDataModel {
+export class ConditionItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {

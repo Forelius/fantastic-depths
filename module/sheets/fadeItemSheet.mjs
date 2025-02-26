@@ -29,10 +29,6 @@ export class fadeItemSheet extends ItemSheet {
       context.system = itemData.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
-
-      // Prepare active effects for easier access
-      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
-
       return context;
    }
 

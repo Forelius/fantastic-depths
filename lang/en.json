@@ -909,7 +909,8 @@
          "specialAbility": "Special Ability",
          "treasure": "Treasure",
          "class": "Character Class",
-         "weaponMastery": "Weapon Mastery Definition"
+         "weaponMastery": "Weapon Mastery Definition",
+         "condition": "Condition"
       }
    },
 

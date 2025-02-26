@@ -2,18 +2,18 @@ import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 
 /**
- * Sheet class for ArmorItem.
+ * Sheet class for ConditionItem.
  */
-export class ArmorItemSheet extends fadeItemSheet {
+export class ConditionItemSheet extends fadeItemSheet {
    /**
-    * Get the default options for the MasteryDefinitionItem sheet.
+    * Get the default options for the SkillItem sheet.
     */
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'item'],
-         template: "systems/fantastic-depths/templates/item/ArmorItemSheet.hbs",
+         template: "systems/fantastic-depths/templates/item/ConditionItemSheet.hbs",
          width: 540,
-         height: 340,
+         height: 360,
          resizable: true,
          tabs: [
             {
@@ -30,19 +30,8 @@ export class ArmorItemSheet extends fadeItemSheet {
     */
    async getData(options) {
       const context = await super.getData(options);
-     
-      context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
-      if (context.isBasicEnc === true) {
-         let encOptions = [];
-         encOptions.push({ text: game.i18n.localize('FADE.none'), value: "none" });
-         encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.light'), value: "light" });
-         encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });
-         context.encOptions = encOptions;
-      }
-
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
-
       return context;
    }
 }
