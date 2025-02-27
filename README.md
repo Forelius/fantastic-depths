@@ -23,12 +23,12 @@ WIKI: https://github.com/Forelius/fantastic-depths/wiki
 
 Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 
-**Thanks to the testers:** Hal²O, Darvus Maximus, borealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).
+**Thanks to the testers:** HalÂ²O, Darvus Maximus, borealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).
 
 ---
 
 ## Character Sheet
-The character sheet can handle any of the core classes and levels up to 24. Monsters and retainers are also supported. Core classes are recognized when entered into the class field, and this will result in the auto-population of various class-related inputs. All auto-populated class-related values can be overwritten if desired.
+The character sheets are designed to be flexible and will provide class and level automation for any world-defined classes. Monsters and retainers are also supported. Core classes are recognized when entered into the class field or dragged and dropped from a class item. Setting the class will result in the auto-population of various class-related inputs. Most auto-populated class-related values can be overwritten if desired.
 
 ![character](./assets/img/docs/charsheet1.jpg)
 
@@ -39,12 +39,12 @@ The character sheet can handle any of the core classes and levels up to 24. Mons
 ![skills](./assets/img/docs/charsheet3.jpg)
 
 ## Monster Sheet
-The monster sheet allows for custom equippment, spells and possession and use of magic items.
+The monster sheet allows for custom equippment, spells, special abilities and possession and use of most items.
 
 ![monster](./assets/img/docs/monstersheet1.jpg)
 
 ## Item Sheet
-There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
+There are item sheets for character classes, exploration abilities, saving throws, adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
 
 ### Light Item Sheet
 ![light](./assets/img/docs/lightitemsheet1.jpg)
