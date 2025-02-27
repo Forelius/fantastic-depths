@@ -1,3 +1,4 @@
+import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 
 /**
@@ -28,8 +29,7 @@ export class ArmorItemSheet extends fadeItemSheet {
     * Prepare data to be used in the Handlebars template.
     */
    async getData(options) {
-      const context = super.getData(options);
-      const itemData = context.data;
+      const context = await super.getData(options);
      
       context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
       if (context.isBasicEnc === true) {
@@ -39,6 +39,9 @@ export class ArmorItemSheet extends fadeItemSheet {
          encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });
          context.encOptions = encOptions;
       }
+
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
    }

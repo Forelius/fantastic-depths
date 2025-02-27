@@ -1,9 +1,9 @@
-import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
+import { GearItemDataModel } from "./GearItemDataModel.mjs";
 
 /**
- * Data model for an armor item extending fadeItemDataModel.
+ * Data model for an armor item extending GearItemDataModel.
  */
-export class ArmorItemDataModel extends fadeItemDataModel {
+export class ArmorItemDataModel extends GearItemDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
 

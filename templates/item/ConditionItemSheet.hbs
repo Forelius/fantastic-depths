@@ -1,0 +1,54 @@
+<form class='{{cssClass}}' autocomplete='off'>
+   <header class='sheet-header'>
+      <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <div class='header-fields'>
+         <div class="summary flexrow">
+            <div>
+               <div class='charname'>
+                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+               </div>
+               <label>{{localize 'Name'}}</label>
+            </div>
+            <div style="max-width:100px">
+               <input type="text" name='item.system.key' value="{{item.system.key}}" data-type="String" />
+               <label for="item.system.key" data-tooltip="{{localize 'FADE.condition.key.hint'}}">{{localize 'FADE.class.key.name'}}</label>
+            </div>
+         </div>
+         <!--<div class="summary flexrow">
+            <div>
+               <input type="checkbox" name="system.addStatusEffect" data-dtype="Boolean" {{#if system.addStatusEffect}} checked{{/if}} data-tooltip="{{localize "FADE.condition.addStatusEffect.hint"}}" {{#unless isGM}} readonly{{/unless}} />
+               <label for="system.addStatusEffect" data-tooltip="{{localize "FADE.condition.addStatusEffect.hint"}}">{{localize "FADE.condition.addStatusEffect.name"}}</label>
+            </div>
+         </div>-->
+      </div>
+   </header>
+   {{! Sheet Tab Navigation }}
+   <nav class='sheet-tabs tabs' data-group='primary'>
+      {{#if isGM}}
+      <!--<a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>-->
+      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
+      {{/if}}
+      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
+   </nav>
+   {{! Sheet Body }}
+   <section class='sheet-body'>
+      {{! attributes Tab }}
+      {{#if isGM}}
+      {{! Effects Tab }}
+      <div class="tab effects" data-group="primary" data-tab="effects">
+         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+      </div>
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         <div class="bordered">
+            <div class="summary flexrow">
+            </div>
+         </div>
+      </div>
+      {{/if}}
+      {{! Description Tab }}
+      <div class='tab' data-group='primary' data-tab='description'>
+         {{! Editors must receive enriched text data from getData to properly handle rolls }}
+         {{editor enrichedDesc target='system.description' engine='prosemirror' button=true editable=editable}}
+      </div>
+   </section>
+</form>

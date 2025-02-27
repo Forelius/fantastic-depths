@@ -213,6 +213,7 @@ export class fadeActorSheet extends ActorSheet {
       const exploration = [];
       const classAbilities = [];
       const savingThrows = [];
+      const conditions = [];
 
       for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
          spellSlots.push({ spells: [] })
@@ -261,6 +262,10 @@ export class fadeActorSheet extends ActorSheet {
          else if (item.type === 'skill') {
             skills.push(item);
          }
+         // Append to conditions.
+         else if (item.type === 'condition') {
+            conditions.push(item);
+         }
          // Append to masteries.
          else if (item.type === 'mastery') {
             masteries.push(item);
@@ -306,6 +311,7 @@ export class fadeActorSheet extends ActorSheet {
       context.classAbilities = classAbilities;
       context.exploration = exploration;
       context.savingThrows = savingThrows;
+      context.conditions = conditions;
 
       this._calcCategoryEnc(context);
    }
@@ -384,12 +390,15 @@ export class fadeActorSheet extends ActorSheet {
             }
             super._onDropItem(event, data);
          }
-      } else if (droppedItem.type == "class") {
+      } else if (droppedItem.type === "class") {
          await this.actor.update({ "system.details.class": droppedItem.name });
          if (this.actor.system.details.level === 0) {
             await this.actor.update({ "system.details.level": 1 });
          }
-      } else {
+      } else if (droppedItem.type === 'effect') {
+
+      }
+      else {
          super._onDropItem(event, data);
       }
    }

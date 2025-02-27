@@ -1,6 +1,6 @@
-import { fadeItem } from './fadeItem.mjs';
+import { GearItem } from './GearItem.mjs';
 
-export class LightItem extends fadeItem {
+export class LightItem extends GearItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);

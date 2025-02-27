@@ -49,6 +49,7 @@ export class ClassItem extends fadeItem {
       classAbilities.push(newClassAbility);
       await this.update({ "system.classAbilities": classAbilities });
    }
+
    /**
     * Retrieves the specified class item, if it exists.
     * @param {any} className The class item's full and case-sensitive name.

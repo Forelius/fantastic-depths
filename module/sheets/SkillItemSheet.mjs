@@ -1,7 +1,8 @@
+import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 /**
  * Sheet class for SkillItem.
  */
-export class SkillItemSheet extends ItemSheet {
+export class SkillItemSheet extends fadeItemSheet {
    /**
     * Get the default options for the SkillItem sheet.
     */
@@ -26,26 +27,7 @@ export class SkillItemSheet extends ItemSheet {
     * Prepare data to be used in the Handlebars template.
     */
    async getData(options) {
-      const context = super.getData(options);
-      const itemData = context.data;
-      // Enrich description info for display
-      // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedDescription = await TextEditor.enrichHTML(
-         this.item.system.description,
-         {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            // Data to fill in for inline rolls
-            rollData: this.item.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.item,
-         }
-      );
-      context.system = itemData.system;
-      context.config = CONFIG.FADE;
-      context.isGM = game.user.isGM;
+      const context = await super.getData(options);
 
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
@@ -53,7 +35,7 @@ export class SkillItemSheet extends ItemSheet {
          return acc;
       }, {});
       // Abilities
-      let abilities = [];
+      const abilities = [];
       abilities.push(...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       }));

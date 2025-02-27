@@ -18,14 +18,14 @@ export class MasteryDefinitionSheet extends ItemSheet {
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   getData(options) {
-      const context = super.getData(options);
+   async getData(options) {
+      const context = await super.getData(options);
       const itemData = context.data;
 
       context.system = itemData.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
-
+      // Weapon types
       const types = [];
       types.push({ value: null, text: game.i18n.localize('None') });
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
