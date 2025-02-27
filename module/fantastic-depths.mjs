@@ -134,12 +134,12 @@ function registerSheets() {
    Actors.registerSheet('fantastic-depths', CharacterSheet, {
       label: 'FADE.SheetLabel.Character',
       types: ['character'],
-      makeDefault: true
+      makeDefault: false
    });
    Actors.registerSheet('fantastic-depths', CharacterSheet2, {
       label: 'FADE.SheetLabel.Character2',
       types: ['character'],
-      makeDefault: false
+      makeDefault: true
    });
    Actors.registerSheet('fantastic-depths', MonsterSheet, {
       label: 'FADE.SheetLabel.Monster',

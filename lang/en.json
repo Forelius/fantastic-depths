@@ -256,8 +256,8 @@
          }
       },
       "SheetLabel": {
-         "Character": "Character Sheet (DD)",
-         "Character2": "Character Sheet (Alternate)",
+         "Character": "Character Sheet (Old School)",
+         "Character2": "Character Sheet",
          "Monster": "Monster Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
