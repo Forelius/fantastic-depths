@@ -1,7 +1,8 @@
-# Fantastic Depths - Foundry VTT System
+![image info](https://private-user-images.githubusercontent.com/140267826/417668224-1d0e4dcf-0df7-4f48-8b0b-a35c2d2ba83b.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA2NzA3NjUsIm5iZiI6MTc0MDY3MDQ2NSwicGF0aCI6Ii8xNDAyNjc4MjYvNDE3NjY4MjI0LTFkMGU0ZGNmLTBkZjctNGY0OC04YjBiLWEzNWMyZDJiYTgzYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMjI3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDIyN1QxNTM0MjVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iYmYyZDUxYTcyMWM2MGI1ZDkwNTZhYTg5OTczYWFhMWQ1Yzg1NWY1NjYzYmViYzZiODE4NmJmMzg3YzdmZGRmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9._rkb5Bio5ZVJc8HkCv9vuZlmsFWNOP47BvH_S0yR-c0)
+
+## Fantastic Depths - Foundry VTT System
 ![Foundry v11](https://img.shields.io/badge/foundry-v11-green)![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
 
-![image info](./assets/cover.webp)
 This Foundry VTT system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
 
 The system comes with two themes, which are a light mode and a dark mode.
