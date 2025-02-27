@@ -40,7 +40,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const content = await renderTemplate(this.template, chatData);
 
       // Prepare chat message data, including rollMode from mdata
-      const chatMessageData = await this.getChatMessageData({
+      const chatMessageData = this.getChatMessageData({
          caller,
          content,
          rolls,

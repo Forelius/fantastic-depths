@@ -86,8 +86,8 @@ export class SpellItemSheet extends ItemSheet {
       // Everything below here is only needed if the sheet is editable
       if (this.isEditable) {
          // Active Effect management
-         html.on('click', '.effect-control', (ev) =>
-            EffectManager.onManageActiveEffect(ev, this.item)
+         html.on('click', '.effect-control', async (ev) =>
+            await EffectManager.onManageActiveEffect(ev, this.item)
          );
          // Tags
          html.find('input[data-action="add-tag"]').keypress((ev) => {

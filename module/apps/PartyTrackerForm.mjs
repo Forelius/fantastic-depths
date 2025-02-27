@@ -42,26 +42,27 @@ export class PartyTrackerForm extends FormApplication {
     */
    activateListeners(html) {
       super.activateListeners(html);
+      if (game.user.isGM) {
+         html.find(".delete-actor").on("click", (event) => {
+            const actorId = $(event.currentTarget).closest(".party-member").data("actor-id");
+            this._removeTrackedActor(actorId);
+         });
 
-      html.find(".delete-actor").on("click", (event) => {
-         const actorId = $(event.currentTarget).closest(".party-member").data("actor-id");
-         this._removeTrackedActor(actorId);
-      });
+         Hooks.on('updateActor', this._updateTrackedActor);
 
-      Hooks.on('updateActor', this._updateTrackedActor);
+         // **New**: Double-click on a party member to open their actor sheet
+         html.find(".party-member").on("dblclick", (event) => {
+            const actorId = $(event.currentTarget).data("actor-id");
+            const actor = game.actors.get(actorId);
+            if (!actor) return;
+            actor.sheet.render(true);
+         });
 
-      // **New**: Double-click on a party member to open their actor sheet
-      html.find(".party-member").on("dblclick", (event) => {
-         const actorId = $(event.currentTarget).data("actor-id");
-         const actor = game.actors.get(actorId);
-         if (!actor) return;
-         actor.sheet.render(true);
-      });
-
-      // **New**: Open "Award XP" dialog
-      html.find(".award-xp-button").on("click", (event) => {
-         new AwardXPDialog({}, { actorIds: this.trackedActorIds }).render(true);
-      });
+         // **New**: Open "Award XP" dialog
+         html.find(".award-xp-button").on("click", (event) => {
+            new AwardXPDialog({}, { actorIds: this.trackedActorIds }).render(true);
+         });
+      }
    }
 
    /** 
@@ -136,11 +137,6 @@ export class PartyTrackerForm extends FormApplication {
    // eslint-disable-next-line no-underscore-dangle
    async _updateObject(event, formData) {
       event.preventDefault();
-      // Update the actor
-      //await this.object.update(formData);
-      //// Re-draw the updated sheet
-      //// eslint-disable-next-line no-underscore-dangle
-      //await this.object.sheet._render(true);
    }
 
    /** 

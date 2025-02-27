@@ -16,7 +16,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
    * Called by the various Actor and Item derived classes to create a chat message.
    */
    async createChatMessage() {
-      const { caller, context, resp, roll, mdata, digest } = this.data;
+      const { caller, context, resp, roll, mdata, digest, options } = this.data;
       const attacker = context;
       const attackerName = attacker.name;
       const targetTokens = Array.from(game.user.targets);
@@ -38,9 +38,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
       const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
 
-      if (window.toastManager) {
+      if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
       let save = null;
@@ -58,6 +58,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          weapon,
          resp,
          save,
+         ammoItem: options?.ammoItem,
          targetWeaponType: resp.targetWeaponType,
       };
 
@@ -66,7 +67,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       content = this.moveDigest(content);
 
       const rolls = roll ? [roll] : null;
-      const chatMessageData = await this.getChatMessageData({
+      const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode,
@@ -217,7 +218,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       let result = null;
 
       if (roll) {
-         attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
+         await attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
 
          const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
          const thac0 = attackingActor.system.thac0.value;
@@ -275,7 +276,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
             // Track number of attacks against target. Do it after getting the tohit result. 
             // Send through socket because this player may not have permission to change the target actor's data.
-            SocketManager.sendToGM("incAttacksAgainst", { tokenid: targetToken.id });
+            SocketManager.sendToGM("incAttacksAgainst", { tokenid: targetToken.id, type: attackerWeaponType });
 
             result.targetResults.push(targetResult);
          }
@@ -313,9 +314,12 @@ export class AttackRollChatBuilder extends ChatBuilder {
    #calcMasteryDefenseAC(attackerWeaponType, targetResult, targetToken, ac, attackType) {
       const defenseMastery = targetToken.actor.getBestDefenseMastery(attackerWeaponType);
       if (defenseMastery && defenseMastery.acBonus !== Infinity) {
+         // Get the appropriate attacks against weapon type.
+         const attAgainst = attackerWeaponType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM;
+         // Get the appropriate total AC based on attack type.
+         const totalAC = attackType === 'melee' ? targetToken.actor.system.ac?.total : targetToken.actor.system.ac?.totalRanged;
          // Normal AC/Mastery Def. AC
-         const useMasteryAC = targetToken.actor.system.combat.attacksAgainst < defenseMastery.acBonusAT
-            && targetToken.actor.system.ac?.totalRanged > defenseMastery.total;
+         const useMasteryAC = (defenseMastery.acBonusAT === null || attAgainst < defenseMastery.acBonusAT) && totalAC > defenseMastery.total;
          targetResult.targetac = this.#getMasteryDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType);
          if (useMasteryAC) {
             ac = defenseMastery.total;
@@ -326,6 +330,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
    /**
     * Creates the DM's view of an attack result for the specified target.
+    * Use this when not using weapon mastery rules.
     * @param {any} targetToken
     * @param {any} attackType
     * @returns
@@ -361,9 +366,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
                cssClass: (!useMasteryAC && attackType === 'missile' ? "style='color:green'" : "")
             })
             : "",
-         attacksAgainst: targetToken.actor.system.combat.attacksAgainst,
-         maxAttacksAgainst: defenseMastery.acBonusAT,
-         defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total
+         attAgainst: attackType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM,
+         maxAttAgainst: defenseMastery.acBonusAT,
+         defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total,
+         masteryName: defenseMastery.name
       });
    }
 }

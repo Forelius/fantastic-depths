@@ -32,9 +32,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
          digest
       };
 
-      if (window.toastManager) {
+      if (game.fade.toastManager) {
          let toast = `${options.resultString}`;
-         window.toastManager.showHtmlToast(toast, "info", rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
       // Render the content using the template, now with messageId
@@ -42,7 +42,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
-      const chatMessageData = await this.getChatMessageData({
+      const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          [`flags.${game.system.id}.attackdata`]: {
             mdata,

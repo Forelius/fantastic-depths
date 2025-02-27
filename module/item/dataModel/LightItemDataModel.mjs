@@ -1,5 +1,4 @@
 import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
-import { LightManager } from '../../sys/LightManager.mjs';
 
 /**
  * Data model for a skill item extending fadeItemDataModel.
@@ -37,8 +36,10 @@ export class LightItemDataModel extends fadeItemDataModel {
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();
+      this.equippable = true;
       this.isLight = true;
+      super.prepareBaseData();
+      //console.log(`${this.parent?.actor?.name}: ${this.parent.name} total weight: ${this.totalWeight} (${this.quantity}x${this.weight}) - LightItemDataModel.prepareBaseData`);
    }
 
    /** @override */
@@ -48,6 +49,7 @@ export class LightItemDataModel extends fadeItemDataModel {
       if (this.light.type !== 'custom') {
          this.#setFromSettings();
       }
+      //console.log(`${this.parent?.actor?.name}: ${this.parent.name} total weight: ${this.totalWeight} (${this.quantity}x${this.weight}) - LightItemDataModel.prepareDerivedData`);
    }
 
    /**

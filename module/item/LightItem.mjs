@@ -51,17 +51,19 @@ export class LightItem extends fadeItem {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      if (this.actor) {
-         const token = this.ownerToken;
-         if (token) {
-            const lightSettings = this.system.getLightSettings();
-            // If this item owner's token is currently a light source...
-            if (token.document.light.dim > 0) {
-               //console.debug(`Updating ${this.name} for ${token.name}:`, this.system.light, lightSettings);
-               token.document.update({ light: lightSettings });
-            }
-         }
-      }
+      // TODO: Move this elsewhere, because this gets called multiple times when light enabled or disabled.
+      //if (this.actor) {
+      //   const token = this.ownerToken;
+      //   if (token) {
+      //      const lightSettings = this.system.getLightSettings();
+      //      // If this item owner's token is currently a light source...
+      //      if (token.light.dim > 0) {
+      //         //console.debug(`Updating ${this.name} for ${token.name}:`, this.system.light, lightSettings);
+      //         token.update({ light: lightSettings });
+      //      }
+      //   }
+      //}
+      //console.log(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${this.system.quantity}x${this.system.weight}) - LightItem.prepareDerivedData`);
    }
 
    async enableLight() {
@@ -87,7 +89,7 @@ export class LightItem extends fadeItem {
                const lightSettings = this.system.getLightSettings();
                await this.actor.setActiveLight(this.id);
                await this.update({ "system.light.enabled": true });
-               await token.document.update({ light: lightSettings });
+               await token.update({ light: lightSettings });
                this.notify(game.i18n.format('FADE.Item.light.enabled', { actor: token.name, item: this.name }), 'info');
             }
          }

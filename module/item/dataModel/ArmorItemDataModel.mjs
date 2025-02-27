@@ -28,6 +28,7 @@ export class ArmorItemDataModel extends fadeItemDataModel {
    /** @override */
    prepareBaseData() {
       this.mod = 0;
+      this.equippable = true;
       super.prepareBaseData();
    }
 

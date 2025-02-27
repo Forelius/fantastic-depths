@@ -16,7 +16,7 @@ export class CharacterDataModel extends fadeActorDataModel {
                bonus: new fields.NumberField({ initial: 0 }),
                next: new fields.NumberField({ initial: 0 }),
             }),
-            class: new fields.StringField({ initial: "Fighter" }),
+            class: new fields.StringField({ initial: "" }),
             species: new fields.StringField({ initial: "Human" }),
             title: new fields.StringField({ initial: "" }),
             age: new fields.NumberField({ initial: 20 }),

@@ -17,8 +17,8 @@ export class PlayerCombatForm extends FormApplication {
       return options;
    }
 
-   get trackedActorIds() {
-      return game.combat?.ownedCombatants.map(combatant => combatant.actor?.id).filter(id => id);
+   get trackedTokenIds() {
+      return game.combat?.ownedCombatants.map(combatant => combatant.token?.id).filter(id => id);
    }
 
    /**
@@ -27,6 +27,7 @@ export class PlayerCombatForm extends FormApplication {
    getData() {
       const context = super.getData();
       context.ownedCombatants = game.combat.ownedCombatants;
+      context.useMastery = game.settings.get(game.system.id, "weaponMastery");
       return context;
    }
 
@@ -36,9 +37,8 @@ export class PlayerCombatForm extends FormApplication {
     */
    activateListeners(html) {
       super.activateListeners(html);
-
       // Listen for changes in the action select elements
-      html.find('[name="declaredAction"]').on("change", this._onPlayerChangedAction);
+      html.find('[name="declaredAction"]').on("change", this.#onPlayerChangedAction);
       Hooks.on('updateActor', this._updateTrackedActor);
       Hooks.on("updateCombatant", this.#updateCombatant);
       Hooks.on("updateItem", this.#updateItem);
@@ -55,35 +55,51 @@ export class PlayerCombatForm extends FormApplication {
 
    _updateTrackedActor = (actor, updateData, options, userId) => {
       // Check if the updated actor is in the tracked actors list by ID
-      if (game.combat && this.trackedActorIds.includes(actor.id)) {
+      if (game.combat && this.trackedTokenIds.includes(actor.currentActiveToken?.id)) {
          this.#updateActorData(actor, updateData);
-         //console.debug(`Actor ${actor.name} changed.`, updateData);
       }
    }
 
-   #updateCombatant=(combatant, updateData, options, userId) => {
-      //console.debug(`Combatant ${combatant.name} changed.`, updateData, options);
-      if (game.combat && this.trackedActorIds.includes(combatant.actor.id)) {
+   async #onPlayerChangedAction(event) {
+      const tokenId = event.currentTarget.dataset.tokenId;
+      const actor = game.combat.combatants.find(combatant => combatant.token.id === tokenId)?.actor;
+      const updateData = { "system.combat.declaredAction": event.currentTarget.value };
+      await actor.update(updateData);
+   }
+
+   /**
+   * This method is called upon form submission after form data is validated
+   * @param {Event} event - The initial triggering submission event
+   * @param {object} formData - The object of validated form data with which to update the object
+   */
+   // eslint-disable-next-line no-underscore-dangle
+   async _updateObject(event, formData) {
+      event.preventDefault();
+   }
+
+   static toggleCombatForm() {
+      const declaredActions = game.settings.get(game.system.id, "declaredActions");
+      if (game.combat && declaredActions === true) {
+         if (game.fade.combatForm) {
+            game.fade.combatForm.close();
+         } else {
+            game.fade.combatForm = new PlayerCombatForm();
+            game.fade.combatForm.render(true);
+         }
+      }
+   }
+
+   #updateCombatant = (combatant, updateData, options, userId) => {
+      if (game.combat && this.trackedTokenIds.includes(combatant.token.id)) {
          this.#updateCombatantData(combatant, updateData);
       }
    }
 
    #updateItem = (item, updateData, options, userId) => {
-      const actor = item?.parent; // The actor the item belongs to
-      if (game.combat && this.trackedActorIds.includes(actor.id)) {
+      const token = item?.parent?.currentActiveToken; // The actor the item belongs to
+      if (game.combat && this.trackedTokenIds.includes(token.id)) {
          this.render();  // Re-render to reflect updated actor data
       }
-   }
-
-   async _onPlayerChangedAction(event) {
-      const actorId = event.currentTarget.dataset.actorId;
-      const actor = game.combat.combatants.find(combatant => combatant.actor.id === actorId)?.actor;
-      const updateData = { "system.combat.declaredAction": event.currentTarget.value };
-      // Update the action description dynamically
-      //this.#updateActorData(actor, updateData);
-      // Optionally update the actor's system data if needed
-      const updated = await actor.update(updateData);
-      console.debug(`_onPlayerChangedAction ${actor.name}:`, updated);
    }
 
    #updateActorData(actor, updateData) {
@@ -99,8 +115,11 @@ export class PlayerCombatForm extends FormApplication {
             rowElement.querySelector('[name="actionDesc"]').textContent = localizedDescription;
          }
 
-         if (combat?.attacksAgainst !== undefined) {
-            rowElement.querySelector('[name="atnorecv"]').textContent = combat.attacksAgainst;
+         if (combat?.attAgainstH !== undefined) {
+            rowElement.querySelector('[name="atnorecvh"]').textContent = combat.attAgainstH;
+         }
+         if (combat?.attAgainstM !== undefined) {
+            rowElement.querySelector('[name="atnorecvm"]').textContent = combat.attAgainstM;
          }
          if (combat?.attacks !== undefined) {
             rowElement.querySelector('[name="atno"]').textContent = combat.attacks;
@@ -110,7 +129,7 @@ export class PlayerCombatForm extends FormApplication {
 
    #updateCombatantData(combatant, updateData) {
       // Find the row matching the actor ID
-      const rowElement = document.querySelector(`tr[data-actor-id="${combatant.actor.id}"]`);
+      const rowElement = document.querySelector(`tr[data-token-id="${combatant.token.id}"]`);
       if (rowElement) {
          // If initiative changed and this isn't the GM
          if (updateData.initiative !== undefined && game.user.isGM === false) {
@@ -120,33 +139,6 @@ export class PlayerCombatForm extends FormApplication {
             } else {
                selectElement.removeAttribute("disabled"); // Remove disabled
             }
-         }
-      }
-   }
-
-   /**
-   * This method is called upon form submission after form data is validated
-   * @param {Event} event - The initial triggering submission event
-   * @param {object} formData - The object of validated form data with which to update the object
-   */
-   // eslint-disable-next-line no-underscore-dangle
-   async _updateObject(event, formData) {
-      event.preventDefault();
-      // Update the actor
-      //await this.object.update(formData);
-      //// Re-draw the updated sheet
-      //// eslint-disable-next-line no-underscore-dangle
-      //await this.object.sheet._render(true);
-   }
-
-   static toggleCombatForm() {
-      const declaredActions = game.settings.get(game.system.id, "declaredActions");
-      if (game.combat && declaredActions === true) {
-         if (game.fade.combatForm) {
-            game.fade.combatForm.close();
-         } else {
-            game.fade.combatForm = new PlayerCombatForm();
-            game.fade.combatForm.render(true);
          }
       }
    }

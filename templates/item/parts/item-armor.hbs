@@ -24,7 +24,7 @@
    {{#each armor as |armor id|}}
    <li class='item flexrow collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{armor._id}}'>
       <div class='item-name'>
-         <div class='item-image'>
+         <div class='item-image chatable' data-roll-type='item'>
             <img src='{{armor.img}}' width='26' height='26' />
          </div>
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.armor")}}'>

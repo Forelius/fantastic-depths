@@ -54,36 +54,40 @@
    </header>
 
    {{! Sheet Tab Navigation }}
-   <nav class='sheet-tabs tabs' data-group='primary'>
-      <a class='item' data-tab='levels'>{{localize 'FADE.tabs.levels'}}</a>
-      <a class='item' data-tab='saves'>{{localize 'FADE.Actor.Saves.long'}}</a>
-      <a class='item' data-tab='primeReqs'>{{localize 'FADE.tabs.primeRequisites'}}</a>
-      {{#if isSpellcaster}}
-      <a class='item' data-tab='spells'>{{localize 'FADE.tabs.spells'}}</a>
-      {{/if}}
-      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
-   </nav>
+<nav class='sheet-tabs tabs' data-group='primary'>
+   <a class='item' data-tab='levels'>{{localize 'FADE.tabs.levels'}}</a>
+   <a class='item' data-tab='saves'>{{localize 'FADE.Actor.Saves.long'}}</a>
+   <a class='item' data-tab='primeReqs'>{{localize 'FADE.tabs.primeRequisites'}}</a>
+   <a class='item' data-tab='classAbilities'>{{localize 'FADE.SpecialAbility.plural'}}</a>
+   {{#if isSpellcaster}}
+   <a class='item' data-tab='spells'>{{localize 'FADE.tabs.spells'}}</a>
+   {{/if}}
+   <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
+</nav>
 
    {{! Sheet Body }}
-   <section class='sheet-body'>
-      <div class='tab' data-group='primary' data-tab='levels'>
-         {{> "systems/fantastic-depths/templates/item/parts/class-levels.hbs"}}
-      </div>
-      <div class='tab' data-group='primary' data-tab='saves'>
-         {{> "systems/fantastic-depths/templates/item/parts/class-saves.hbs"}}
-      </div>
-      <div class='tab' data-group='primary' data-tab='primeReqs'>
-         {{> "systems/fantastic-depths/templates/item/parts/class-primereqs.hbs"}}
-      </div>
-      {{#if isSpellcaster}}
-      <div class='tab' data-group='primary' data-tab='spells'>
-         {{> "systems/fantastic-depths/templates/item/parts/class-spells.hbs"}}
-      </div>
-      {{/if}}
-      {{! Description Tab }}
-      <div class='tab' data-group='primary' data-tab='description'>
-         {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
-      </div>
-   </section>
+<section class='sheet-body'>
+   <div class='tab' data-group='primary' data-tab='levels'>
+      {{> "systems/fantastic-depths/templates/item/parts/class-levels.hbs"}}
+   </div>
+   <div class='tab' data-group='primary' data-tab='saves'>
+      {{> "systems/fantastic-depths/templates/item/parts/class-saves.hbs"}}
+   </div>
+   <div class='tab' data-group='primary' data-tab='primeReqs'>
+      {{> "systems/fantastic-depths/templates/item/parts/class-primereqs.hbs"}}
+   </div>
+   <div class='tab' data-group='primary' data-tab='classAbilities'>
+      {{> "systems/fantastic-depths/templates/item/parts/class-abilities.hbs"}}
+   </div>
+   {{#if isSpellcaster}}
+   <div class='tab' data-group='primary' data-tab='spells'>
+      {{> "systems/fantastic-depths/templates/item/parts/class-spells.hbs"}}
+   </div>
+   {{/if}}
+   {{! Description Tab }}
+   <div class='tab' data-group='primary' data-tab='description'>
+      {{! Editors must receive enriched text data from getData to properly handle rolls }}
+      {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+   </div>
+</section>
 </form>

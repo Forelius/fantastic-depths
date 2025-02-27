@@ -40,6 +40,18 @@
          "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
          "XPAward": "XP Award",
          "attackRank": "Attack Rank",
+         "enchanted": {
+            "name": "Enchanted",
+            "hint": "This enchanted creature can only be hit by magical weapons or spells."
+         },
+         "castAs": {
+            "name": "Cast As",
+            "hint": "Some monsters can cast spells that are equivelent of a specific class and level. Specify as class key and level, similar to save as. Example: A monster that can cast spells as a 9th level Magic-User would have a castAs value of 'M9'."
+         },
+         "classAbilityAs": {
+            "name": "Class Abl. As",
+            "hint": "Some monsters have the class abilities of a specific class and level. Specify as class key and level, similar to save as. Example: A monster with 2nd level thief class abilities would have a class ability as of 'T2'."
+         },
          "hdConBonus": {
             "name": "HD Con.",
             "hint": "Character's Constitution modifier is added to the hit die roll."
@@ -197,8 +209,10 @@
             "desc": "Number of attacks this round."
          },
          "AT#Recv": {
-            "name": "AT# recv.",
-            "desc": "Number of attacks received this round."
+            "nameM": "AT# recv. M",
+            "descM": "Number of monster/missile attacks received this round.",
+            "nameH": "AT# recv. H",
+            "descH": "Number of handheld attacks received this round."
          },
          "encumbrance": {
             "unencumbered": {
@@ -257,6 +271,7 @@
          "WeaponItem": "Weapon Item Sheet"
       },
       "Spell": {
+         "casts": "casts",
          "SpellLVL": "Spell Level {level}",
          "slots": "Slots",
          "resetSlots": "Reset memorized spells to zero casts. Memorized count will not be changed.",
@@ -459,6 +474,8 @@
             "master": "Master",
             "grandMaster": "Grand Master"
          },
+         "acBonusType": "AC Bonus Type",
+         "acBonusTypeHint": "The type of attack that the AC bonus applies to.",
          "acBonus": "AC Bonus",
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
@@ -559,6 +576,7 @@
          "attackFlavor": "{attacker} {attackType} attacks with {weapon}",
          "spellCast": "{caster} casts {spell}",
          "useSpecAbility": "{owner} uses {specAbility}",
+         "useWithTarget": "{owner} uses {used} ({operator}{target})",
          "attackAC": "<div class='attack-info'>Attack hits <strong>{acAbbr} {hitAC}</strong>.</div>",
          "attackACAny": "<div class='attack-info'>Natural 20! Attack hits any AC!</strong>.</div>",
          "attackACNone": "<div class='attack-info'>Attack doesn't hit any AC.</div>",
@@ -567,7 +585,7 @@
          "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
          "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
          "healRoll": "Heal",
-         "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery bonus. Attacked {attacksAgainst}/{maxAttacksAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
+         "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery ({masteryName}) bonus. Attacked {attAgainst}/{maxAttAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
@@ -604,7 +622,7 @@
          "awardXP": {
             "short": "Award XP",
             "long": "Award Experience Points",
-            "awarded": "XP awarded successfully!",
+            "awardedCharacter": "{name} received {amount} XP!",
             "xpAmountTotal": "Total XP Amount",
             "xpAmount": "XP Amount",
             "share": "Share"
@@ -870,7 +888,9 @@
       "none": "None",
       "unidentified": "Unidentified",
       "identified": "Identified",
-      "cursed": "Cursed"
+      "cursed": "Cursed",
+      "rounds": "rounds",
+      "turns": "turns"
    },
 
    "TYPES": {

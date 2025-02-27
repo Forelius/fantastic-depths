@@ -1,24 +1,24 @@
 import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
 
 /**
- * Data model for a spell item extending fadeItemDataModel.
+ * Data model for a spell item.
  */
-export class SpellItemDataModel extends fadeItemDataModel {
+export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
-
-      // Extend the schema from fadeItemDataModel
-      const baseSchema = super.defineSchema();
-
       return {
-         ...baseSchema, // Include fields from fadeItemDataModel
-
+         // Fields from the "base" template
+         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
+         description: new fields.StringField({ required: false, initial: "" }),
+         gm: new fields.SchemaField({
+            notes: new fields.StringField({ required: false, initial: "" })
+         }),
          // Fields specific to the "spell" template
          spellLevel: new fields.NumberField({ required: true, initial: 1 }),
-         range: new fields.StringField({ required: false, initial: ""}),
+         range: new fields.StringField({ required: false, initial: "" }),
          duration: new fields.StringField({ required: false, initial: "Instant" }),
          effect: new fields.StringField({ required: false, initial: "" }),
-         memorized: new fields.NumberField({ required: true, initial: 0 }),
+         memorized: new fields.NumberField({ nullable: true, initial: 0 }),
          cast: new fields.NumberField({ required: true, initial: 0 }),
          targetSelf: new fields.BooleanField({ required: false, initial: true }),
          targetOther: new fields.BooleanField({ required: false, initial: true }),
@@ -37,5 +37,6 @@ export class SpellItemDataModel extends fadeItemDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.spellLevel = this.spellLevel !== null ? Math.max(0, this.spellLevel) : 1;
    }
 }

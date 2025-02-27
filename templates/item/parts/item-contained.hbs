@@ -1,8 +1,8 @@
 <li class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   <div {{#if item.system.container}} {{#unless item.system.quantityMax }} class="bottom-border" {{/unless}} {{/if}}>
-      <div class="flexrow">
+   <div {{#if item.system.container}}{{#unless item.system.quantityMax }} class="bottom-border"{{/unless}}{{/if}}>
+      <div class="flexrow center-vert">
          <div class='item-name contained'>
-            <div class='item-image chatable'>
+            <div class='item-image chatable' data-roll-type='item'>
                <a data-roll-type='item'><img src='{{item.img}}' width='24' height='24' /></a>
             </div>
             {{#if item.system.container}}

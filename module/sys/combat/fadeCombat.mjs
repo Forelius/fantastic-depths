@@ -11,8 +11,8 @@ export class fadeCombat extends Combat {
       Hooks.on('renderCombatTracker', async (app, html, data) => data?.combat?.onRenderCombatTracker(app, html, data));
       Hooks.on('createCombat', (combat) => combat.onCreateCombat(combat));
       Hooks.on('deleteCombat', (combat) => combat.onDeleteCombat(combat));
-      Hooks.on('createCombatant', (combatant, options, userId) => options.parent.onCreateCombatant(combatant, options, userId));
-      Hooks.on('deleteCombatant', (combatant, options, userId) => options.parent.onDeleteCombatant(combatant, options, userId));
+      Hooks.on('createCombatant', async (combatant, options, userId) => await options.parent.onCreateCombatant(combatant, options, userId));
+      Hooks.on('deleteCombatant', async (combatant, options, userId) => await options.parent.onDeleteCombatant(combatant, options, userId));
    }
 
    get ownedCombatants() {
@@ -151,7 +151,7 @@ export class fadeCombat extends Combat {
             // Reset initiative for all combatants
             for (let combatant of this.combatants) {
                // Reset initiative to null
-               combatant.update({ initiative: null });
+               await combatant.update({ initiative: null });
             }
 
             // Optionally send a chat message to notify players
@@ -371,16 +371,20 @@ export class fadeCombat extends Combat {
       }
    }
 
-   onCreateCombatant(combatant, options, userId) {
+   async onCreateCombatant(combatant, options, userId) {
       if (game.user.isGM) {
-         combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
+         if (combatant.actor === null || combatant.actor === undefined) {
+            console.warn(`World actor no longer exists for combatant ${combatant.name}. Skipping combatant.`);
+         } else {
+            await combatant.actor.update({ 'system.combat.declaredAction': "nothing" });
+         }
       }
    }
 
-   onDeleteCombatant(combatant, options, userId) {
-      if (game.user.isGM) {
+   async onDeleteCombatant(combatant, options, userId) {
+      if (game.user.isGM && combatant.actor) {
          this.tryClosePlayerCombatForm([userId]);
-         combatant.actor.update({ 'system.combat.declaredAction': null });
+         await combatant.actor.update({ 'system.combat.declaredAction': null });
       }
    }
 
@@ -444,7 +448,7 @@ export class fadeCombat extends Combat {
 
       // Apply the same initiative result to all combatants in the group
       for (const combatant of group) {
-         combatant.update({ initiative: rolled.total });
+         await combatant.update({ initiative: rolled.total });
       }
 
       // Return the roll result for the digest message, including the used modifier

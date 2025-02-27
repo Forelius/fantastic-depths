@@ -1,18 +1,17 @@
-import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
 
 /**
- * Data model for an actor mastery item extending fadeItemDataModel.
+ * Data model for an actor mastery item.
  */
-export class ActorMasteryItemDataModel extends fadeItemDataModel {
+export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
-
-      // Extend the schema from fadeItemDataModel
-      const baseSchema = super.defineSchema();
-
       return {
-         ...baseSchema, // Include fields from fadeItemDataModel
-
+         // Fields from the "base" template
+         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
+         description: new fields.StringField({ required: false, initial: "" }),
+         gm: new fields.SchemaField({
+            notes: new fields.StringField({ required: false, initial: "" })
+         }),
          // Fields specific to the "mastery" template
          level: new fields.StringField({ required: true, initial: "basic" }),
          primaryType: new fields.StringField({ nullable: true, initial: null }),
@@ -21,13 +20,20 @@ export class ActorMasteryItemDataModel extends fadeItemDataModel {
             medium: new fields.NumberField({ nullable: true, initial: null }),
             long: new fields.NumberField({ nullable: true, initial: null })
          }),
+         // Primary damage
          pDmgFormula: new fields.StringField({ nullable: true, initial: null }),
+         // Secondary damage
          sDmgFormula: new fields.StringField({ nullable: true, initial: null }),
+         // Type of weapon that AC bonus applies to
          acBonusType: new fields.StringField({ nullable: true, initial: null }),
+         // The AC bonus
          acBonus: new fields.NumberField({ nullable: true, initial: 0 }),
+         // The number of attacks the AC bonus applies to per round
          acBonusAT: new fields.NumberField({ nullable: true, initial: null }),
          special: new fields.StringField({ nullable: true, initial: null }),
+         // Primary to-hit bonus
          pToHit: new fields.NumberField({ required: true, initial: 0 }),
+         // Secondary to-hit bonus
          sToHit: new fields.NumberField({ required: true, initial: 0 })
       };
    }

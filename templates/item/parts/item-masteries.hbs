@@ -2,12 +2,14 @@
    <li class='item flexrow items-header collapsible-header'>
       <div class='item-name'>{{localize 'FADE.Mastery.plural'}}</div>
       <div class="item-80px">{{localize 'FADE.Actor.Level'}}</div>
-      <div class='item-controls'>
+      {{#if @root.isGM}}
+      <div class='item-controls-sm'>
          <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "FADE.Mastery.long")}}' data-type='mastery'>
             <i class='fas fa-plus'></i>
             {{localize 'FADE.Mastery.short'}}
          </a>
       </div>
+      {{/if}}
    </li>
    {{#each masteries as |item|}}
    <li class='item flexrow collapsible-content bottom-border' data-item-id='{{item._id}}'>
@@ -20,11 +22,13 @@
          <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "FADE.Mastery.long")}}'>{{item.name}}</a>
       </div>
       <div class="item-80px item-prop">{{item.system.level}}</div>
-      <div class='item-controls'>
+      {{#if @root.isGM}}
+      <div class='item-controls-sm'>
          <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Mastery.long")}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>
+      {{/if}}
    </li>
    {{/each}}
 </ol>

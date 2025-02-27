@@ -15,13 +15,13 @@
          <div class="editable">
             <input style="max-width:40px;" type="text" value="{{item.system.target}}" data-field="target" data-dtype="Number" />
          </div>
-         {{#if @root.isGM}}
          <div class='item-controls' style="max-width:32px;">
+            {{#if @root.isGM}}
             <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
+            {{/if}}
          </div>
-         {{/if}}
       </li>
       {{/each}}
    </ol>

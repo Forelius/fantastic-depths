@@ -25,7 +25,7 @@ export class LightManager {
             const token = placeable.document;
             // Get the token actor's active light.
             const lightItem = token.actor.items.get(token.actor.system.activeLight);
-            if (lightItem && lightItem.system.light.duration !== null) {               
+            if (lightItem && lightItem.system.light.duration !== null) {
                // Get the current length of time that the item has been active.
                const secondsRemain = Math.max(0, lightItem.system.light.secondsRemain - dt);
                await lightItem.update({ "system.light.secondsRemain": secondsRemain });
@@ -37,7 +37,7 @@ export class LightManager {
                   if (lightItem.usesExternalFuel === false) {
                      await lightItem.consumeFuel(); // Pass the token for extinguishing the light
                   }
-               }            
+               }
             }
          }
       }
@@ -56,7 +56,7 @@ export class LightManager {
          const token = LightManager.getToken();
          const actorItems = token.actor.items;
          // Filter items to get those with system.isLight==true and map them to options
-         const lightItems = actorItems.filter(item => item.system.isLight ===true && item.system.quantity > 0 && (item.hasFuel || item.nextFuelItem));
+         const lightItems = actorItems.filter(item => item.system.isLight === true && item.system.quantity > 0 && (item.hasFuel || item.nextFuelItem));
 
          if (lightItems.length === 0) {
             LightManager.notify(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
@@ -79,11 +79,8 @@ export class LightManager {
                      LightManager.notify(game.i18n.format('FADE.notifcation.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
                   }
                } else if (dialogResponse.resp.action === 'extinguish') {
-                  await token.actor.setActiveLight(null);  
-                  const lightItems = token.actor.items.filter(item => item.type === 'light' && item.system.light.enabled);
-                  for (let lightItem of lightItems) {
-                     await lightItem?.update({ "system.light.enabled": false });
-                  }
+                  await token.actor.setActiveLight(null);
+                  await selectedItem.update({ "system.light.enabled": false });
                   LightManager.notify(game.i18n.format('FADE.Item.light.disabled', { actor: token.name }), 'info');
                }
             }

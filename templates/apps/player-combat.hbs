@@ -6,18 +6,22 @@
          vertical-align: top;
          border-collapse: collapse;
       }
+
       th, td {
          text-align: left;
          vertical-align: top;
          padding: 5px;
       }
+
       .font-12 {
          font-size: 12px;
       }
+
       .col-name {
          min-width: 150px;
       }
-      .combatant-name {         
+
+      .combatant-name {
          font-weight: 600;
          font-size: 15px;
       }
@@ -26,16 +30,26 @@
    <table>
       <tbody>
          {{#each ownedCombatants as |combatant|}}
-         <tr data-actor-id="{{combatant.actor.id}}">
+         <tr data-token-id="{{combatant.token.id}}" data-actor-id="{{combatant.actor.id}}">
             <td class="col-name">
-               <label class="combatant-name">{{combatant.name}}</label><br/>
-               <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}: <span name="atno">{{combatant.attacks}}</span></label><br />
-               <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#Recv.desc'}}">{{localize 'FADE.Actor.AT#Recv.name'}}: <span name="atnorecv">{{combatant.attacksAgainst}}</span></label>
+               <label class="combatant-name">{{combatant.name}}</label><br />
+               <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">
+                  {{localize 'FADE.Actor.AT#.name'}}: <span name="atno">{{combatant.attacks}}</span>
+               </label>
+               {{#if @root.useMastery}}
+               <br />
+               <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}">
+                  {{localize 'FADE.Actor.AT#Recv.nameH'}}: <span name="atnorecvh">{{combatant.attAgainst.h}}</span>
+               </label>
+               <br />
+               <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}">
+                  {{localize 'FADE.Actor.AT#Recv.nameM'}}: <span name="atnorecvm">{{combatant.attAgainst.m}}</span>
+               </label>
+               {{/if}}
             </td>
             <td>
                <div>
-                  <select name="declaredAction" data-actor-id="{{combatant.actor.id}}"
-                          {{#unless combatant.canChangeAction}} disabled{{/unless}}>
+                  <select name="declaredAction" data-token-id="{{combatant.token.id}}" {{#unless combatant.canChangeAction}} disabled{{/unless}}>
                      {{selectOptions combatant.availableActions selected=combatant.declaredAction}}
                   </select>
                </div>

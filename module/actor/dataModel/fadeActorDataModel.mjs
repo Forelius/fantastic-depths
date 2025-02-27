@@ -16,10 +16,13 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             nakedRanged: new fields.NumberField({ initial: 9 }),
             nakedAAC: new fields.NumberField({ initial: 10 }),
             nakedRangedAAC: new fields.NumberField({ initial: 10 }),
-            value: new fields.NumberField({ initial: 9 }),
             // This is the raw AC based on armor and no modifiers applied. Used for wrestling.
+            value: new fields.NumberField({ initial: 9 }),
+            // For melee attacks
             total: new fields.NumberField({ initial: 9 }),
+            // For ranged attacks
             totalRanged: new fields.NumberField({ initial: 9 }),
+            // Same for ascending armor class
             totalAAC: new fields.NumberField({ initial: 10 }),
             totalRangedAAC: new fields.NumberField({ initial: 10 }),
             shield: new fields.NumberField({ initial: 0 }),
@@ -65,13 +68,14 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round
-            attacksAgainst: new fields.NumberField({ initial: 0 }),
+            attAgainstH: new fields.NumberField({ initial: 0 }),
+            attAgainstM: new fields.NumberField({ initial: 0 }),
             deathCount: new fields.NumberField({ initial: 0 }),
             isDead: new fields.BooleanField({ initial: false }),
             declaredAction: new fields.StringField({ initial: "attack" }),
          }),
          gm: new fields.SchemaField({
-            notes: new fields.StringField({ initial: "" }),
+            notes: new fields.StringField({ initial: "", gmOnly: true }),
          }),
          spellSlots: new fields.ArrayField(new fields.SchemaField({
             spellLevel: new fields.NumberField({ initial: 0 }),
@@ -103,8 +107,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                selfToHitRanged: new fields.NumberField({ initial: 0 }),
             }),
             save: new fields.ObjectField({
-               initial: { all: 0 },
-               all: new fields.NumberField({ initial: 0 }),
+               //initial: { all: 0 },
+               //all: new fields.NumberField({ initial: 0 }),
                //death: new fields.NumberField({ initial: 0 }),
                //wand: new fields.NumberField({ initial: 0 }),
                //paralysis: new fields.NumberField({ initial: 0 }),
@@ -128,43 +132,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-   }
-
-   /**
-   * Prepares the actor's encumbrance values. Supports optional settings for different encumbrance systems.
-   */
-   prepareEncumbrance(items, actorType) {
-      const encSetting = game.settings.get(game.system.id, "encumbrance");
-      let encumbrance = this.encumbrance || {};
-      let enc = 0;
-
-      //-- Caclulate how much is being carried/tracked --//
-      // If using detailed encumbrance, similar to expert rules...
-      if (encSetting === 'expert' || encSetting === 'classic') {
-         enc = items.reduce((sum, item) => {
-            const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
-            const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
-            return sum + (itemWeight * itemQuantity);
-         }, 0);
-         encumbrance.value = enc || 0;
-      }
-      // Else if using simple encumbrance, similar to basic rules...
-      else if (encSetting === 'basic') {
-         encumbrance.value = 0;
-      } else {
-         encumbrance.value = 0;
-      }
-
-      //-- Calculate movement and label --//
-      // If max encumbrace is set to zero...
-      if (encumbrance.max === 0) {
-         encumbrance.mv = this.movement.max;
-         encumbrance.fly = this.flight.max;
-      } else {
-         this._calculateEncMovement(actorType, enc, encumbrance, encSetting);
-      }
-
-      this.encumbrance = encumbrance;
    }
 
    /**
@@ -204,6 +171,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.combat.selfDmgFire = 0;
       this.mod.combat.selfToHit = 0;
       this.mod.combat.selfToHitRanged = 0;
+      // Saving throw mods
+      this.mod.save = {};
       this.mod.save.all = 0;
       // Create the saving throw member variables dynamically from the world's save items.
       const saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
@@ -212,52 +181,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          this.mod.save[save] = 0;
       }
    }
-
-   /**
-    * Calculate movement rate based on encumbrance.
-    * @protected
-    * @param {any} actorType The actor.type
-    * @param {number} enc The total encumbrance in coins.
-    * @param {any} encumbrance The encumbrance object to set.
-    * @param {encSetting} The current encumbrance setting.
-    */
-   _calculateEncMovement(actorType, enc, encumbrance, encSetting) {
-      let weightPortion = this.encumbrance.max / enc;
-      let table = [];
-      switch (actorType) {
-         case "monster":
-            table = CONFIG.FADE.Encumbrance.monster;
-            break;
-         case "character":
-            if (encSetting === 'classic' || encSetting === 'basic') {
-               table = CONFIG.FADE.Encumbrance.classicPC;
-            } else if (encSetting === 'expert') {
-               table = CONFIG.FADE.Encumbrance.expertPC;
-            }
-            break;
-      }
-
-      if (table.length > 0) {
-         let encTier = table.length > 0 ? table[0] : null;
-         if (encSetting === 'basic') {
-            if (this.equippedArmor?.system.armorWeight === 'light') {
-               encTier = table[1];
-            } else if (this.equippedArmor?.system.armorWeight === 'heavy') {
-               encTier = table[2];
-            }
-         } else {
-            encTier = table.find(tier => weightPortion >= tier.wtPortion) || table[table.length - 1];
-         }
-
-         if (encTier) {
-            encumbrance.label = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`);
-            encumbrance.desc = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`);
-            encumbrance.mv = Math.floor(this.movement.max * encTier.mvFactor);
-            encumbrance.fly = Math.floor(this.flight.max * encTier.mvFactor);
-         }
-      }
-   }
-
+      
    /**
     * Prepares the spell slots used and max values.
     * @protected
@@ -265,7 +189,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    _prepareSpells() {
       if (this.config.maxSpellLevel > 0) {
          this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
-            spellLevel: index + 1
+            spellLevel: index + 1,
+            used: 0,
+            max: 0
          }));
       } else {
          this.spellSlots = [];

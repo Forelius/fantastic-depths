@@ -2,22 +2,34 @@
 {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
 <section class="bordered">
    <ul class="summary flexrow">
-      <li class="flex2">
+      <li>
          <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}" />
          <label for="system.encumbrance.max" data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
       </li>
-      <li class="flex2">
+      <li>
          <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
          <label for="system.movement.max" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
       </li>
-      <li class="flex2">
+      <li>
          <input type='text' name="system.flight.max" value='{{system.flight.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}" />
          <label for="system.flight.max" data-tooltip="{{localize 'SETTINGS.move.maxFlight.hint'}}">{{localize 'SETTINGS.move.maxFlight.name'}}</label>
       </li>
-      <li class="flex1">
+      <li>
+         <input type='text' name="system.details.castAs" value='{{system.details.castAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}" />
+         <label for="system.details.castAs" data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}">{{localize 'FADE.Actor.castAs.name'}}</label>
+      </li>
+      <li>
+         <input type='text' name="system.details.classAbilityAs" value='{{system.details.classAbilityAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.classAbilityAs.hint'}}" />
+         <label for="system.details.classAbilityAs" data-tooltip="{{localize 'FADE.Actor.classAbilityAs.hint'}}">{{localize 'FADE.Actor.classAbilityAs.name'}}</label>
+      </li>
+      <li style="max-width:60px;">
+         <input type="checkbox" name="system.isEnchanted" data-dtype="Boolean" {{#if system.isEnchanted}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}" />
+         <label for="system.isEnchanted" data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}">{{localize 'FADE.Actor.enchanted.name'}}</label>
+      </li>
+      <li style="max-width:60px;">
          <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
          <label for="system.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
-      </li>      
+      </li>
    </ul>
    <ul class="summary flexrow">
       <li>

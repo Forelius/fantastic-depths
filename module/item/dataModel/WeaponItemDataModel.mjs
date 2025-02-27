@@ -44,6 +44,7 @@ export class WeaponItemDataModel extends fadeItemDataModel {
 
    /** @override */
    prepareBaseData() {
+      this.equippable = true;
       super.prepareBaseData();
    }
 

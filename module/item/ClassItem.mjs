@@ -34,17 +34,62 @@ export class ClassItem extends fadeItem {
       await this.update({ "system.primeReqs": primeReqs });
    }
 
+   async createClassAbility() {
+      // Retrieve the primeReqs array
+      const classAbilities = this.system.classAbilities || [];
+
+      // Define the new primeReq data
+      const newClassAbility = {
+         level: 1,
+         name: "",
+         target: 0
+      };
+
+      // Add the new primeReq to the array
+      classAbilities.push(newClassAbility);
+      await this.update({ "system.classAbilities": classAbilities });
+   }
    /**
     * Retrieves the specified class item, if it exists.
     * @param {any} className The class item's full and case-sensitive name.
     * @returns The specified class item or undefined if not found.
     */
    static getClassItem(className) {
+      if (className === null || className === undefined || className === '') return;
+
       const result = game.items.find(item => item.name.toLowerCase() == className.toLowerCase() && item.type === 'class');
       if (!result) {
          console.warn(`Class item not found ${className}.`);
       }
       return result;
+   }
+
+   static getClassAbilitiesByCode(key, owner) {
+      // Extract class identifier and level from the input
+      let match = key.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
+      let result;
+      if (parsed) {
+         const classItem = game.items.find(item => item.system.key === parsed.classKey && item.type === 'class');
+         if (!classItem) {
+            console.warn(`Class item not found ${key}.`);
+         } else {
+            result = this.getClassAbilities(classItem.name, parsed.classLevel)
+         }
+      } else {
+         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
+      }
+      return { classAbilityData: result, classKey: parsed?.classKey, classLevel: parsed?.classLevel };
+   }
+
+   static getClassAbilities(className, classLevel) {
+      const classItem = ClassItem.getClassItem(className);
+      let result;
+      if (classItem) {
+         result = classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+         result = result ? Object.values(result) : null;
+      }
+      return result?.length > 0 ? result : undefined;
    }
 
    /**

@@ -19,6 +19,8 @@ We are on Discord: https://discord.gg/6nCTfKun9d
 
 Compendiums are available as a separate module: https://github.com/Forelius/fade-compendiums
 
+WIKI: https://github.com/Forelius/fantastic-depths/wiki
+
 Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 
 **Thanks to the testers:** Hal²O, Darvus Maximus, borealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).

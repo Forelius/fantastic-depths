@@ -19,7 +19,7 @@ export class EffectManager {
    }
 
    async OnGameReady() {
-      //let globalEffects = await game.settings.get(game.system.id, 'globalEffects') || [];
+      //let globalEffects = game.settings.get(game.system.id, 'globalEffects') || [];
 
       //// Filter the existing status effects to keep only the ones you want
       //if (globalEffects.length === 0) {
@@ -113,7 +113,7 @@ export class EffectManager {
    * @param {MouseEvent} event      The left-click event on the effect control
    * @param {Actor|Item} owner      The owning document which manages this effect
     */
-   static onManageActiveEffect(event, owner) {
+   static async onManageActiveEffect(event, owner) {
       event.preventDefault();
       const a = event.currentTarget;
       const li = a.closest('li');
@@ -136,7 +136,7 @@ export class EffectManager {
          case 'delete':
             return effect.delete();
          case 'toggle':
-            return effect.update({ disabled: !effect.disabled });
+            return await effect.update({ disabled: !effect.disabled });
       }
    }
 

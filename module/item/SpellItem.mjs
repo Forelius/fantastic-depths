@@ -12,7 +12,6 @@ export class SpellItem extends fadeItem {
    prepareBaseData() {
       super.prepareBaseData();
       const systemData = this.system;
-
       systemData.targetSelf = systemData.targetSelf === undefined ? true : systemData.targetSelf;
       systemData.targetOther = systemData.targetOther === undefined ? true : systemData.targetOther
       systemData.dmgFormula = systemData.dmgFormula || null;
@@ -84,63 +83,24 @@ export class SpellItem extends fadeItem {
       const casterActor = caster.actor || this.actor;
       const systemData = this.system;
       let result = null;
+      
+      if (systemData.cast < systemData.memorized || systemData.memorized === null) {
+         const attackRollResult = await this.#doAttackRoll();
+         const durationRollResult = await this.#getDurationText();
 
-      if (systemData.cast < systemData.memorized) {
-         const rollData = this.getRollData();
-         const rollMode = game.settings.get("core", "rollMode");
-         let canProceed = true;
-         let digest = [];
-         let hasAttackRoll = systemData.attackType === 'melee';
-         let rolled = null;
-         let dialogResp = null;
-
-         if (hasAttackRoll) {
-            try {
-               const targetTokens = Array.from(game.user.targets);
-               const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
-               // Get roll modification
-               let dataset = {
-                  dialog: "spellattack",
-                  label: "Attack",
-                  rollMode
-               };
-               dialogResp = await DialogFactory(dataset, casterActor, { targetToken: targetToken });
-               if (dialogResp?.resp) {
-                  const rollOptions = {
-                     mod: dialogResp.resp.mod,
-                     target: targetToken?.actor
-                  };
-                  if (dialogResp.resp.targetWeaponType) {
-                     rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
-                  }
-                  const attackRoll = casterActor.getAttackRoll(this, systemData.attackType, rollOptions);
-                  rollData.formula = attackRoll.formula;
-                  digest = attackRoll.digest;
-                  const rollContext = { ...rollData };
-                  rolled = await new Roll(rollData.formula, rollContext).evaluate();
-               } else {
-                  canProceed = false;
-               }
-            } catch (error) {
-               // Close button pressed or other error
-               canProceed = false;
-            }
-         }
-
-         if (canProceed) {
+         if (attackRollResult === null || attackRollResult?.canProceed === true) {
+            // Use spell resource
             systemData.cast += 1;
             await this.update({ "system.cast": systemData.cast });
 
             const chatData = {
-               rollData,
                caller: this, // the spell
                context: (caster || casterActor), // the caster
-               roll: rolled,
-               resp: dialogResp?.resp,
-               digest
+               roll: attackRollResult?.rollEval,
+               digest: attackRollResult?.digest
             };
 
-            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData);
+            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, { durationMsg: durationRollResult });
             await builder.createChatMessage();
          }
       }
@@ -153,5 +113,62 @@ export class SpellItem extends fadeItem {
       }
 
       return result;
+   }
+
+   async #getDurationText() {
+      let result = `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`;
+      if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
+         const rollEval = await new Roll(this.system.durationFormula).evaluate();
+         result = `${result} (${rollEval.total} ${game.i18n.format('FADE.rounds')})`;
+      }
+      return result;
+   }
+
+   async #doAttackRoll() {
+      if (this.system.attackType !== 'melee') {
+         return null;
+      }
+
+      const caster = this.parent.getActiveTokens()?.[0] || this.actor;
+      const casterActor = caster.actor || this.actor;
+      const rollMode = game.settings.get("core", "rollMode");
+      const rollData = this.getRollData();
+      let rollEval = null;
+      let canProceed = true;
+      let dialogResp = null;
+      let digest = [];
+
+      try {
+         const targetTokens = Array.from(game.user.targets);
+         // Touch attacks can only be performed against a single opponent.
+         const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
+         // Get roll modification
+         let dataset = {
+            dialog: "spellattack",
+            label: "Attack",
+            rollMode
+         };
+         dialogResp = await DialogFactory(dataset, casterActor, { targetToken: targetToken });
+         if (dialogResp?.resp) {
+            const rollOptions = {
+               mod: dialogResp.resp.mod,
+               target: targetToken?.actor
+            };
+            if (dialogResp.resp.targetWeaponType) {
+               rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
+            }
+            const rollInfo = casterActor.getAttackRoll(this, this.system.attackType, rollOptions);
+            rollData.formula = rollInfo.formula;
+            digest = rollInfo.digest;
+            const rollContext = { ...rollData };
+            rollEval = await new Roll(rollData.formula, rollContext).evaluate();
+         } else {
+            canProceed = false;
+         }
+      } catch (error) {
+         // Close button pressed or other error
+         canProceed = false;
+      }
+      return { resp: dialogResp?.resp, digest, rollEval, canProceed };
    }
 }

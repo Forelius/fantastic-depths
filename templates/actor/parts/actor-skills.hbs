@@ -3,7 +3,7 @@
       {{> "systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs"}}
    </div>
    <div style="padding:0 2px;">
-      {{> "systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs"}}
+      {{#if weaponMastery}}{{> "systems/fantastic-depths/templates/item/parts/item-masteries.hbs"}}{{/if}}
    </div>
 </div>
 <div class="flexrow">  
@@ -11,11 +11,9 @@
 <div class="flexrow">
    <div style="padding:0 2px;">
       {{> "systems/fantastic-depths/templates/item/parts/item-skills.hbs"}}
-      {{#if weaponMastery}}
    </div>
    <div style="padding:0 2px;">
-      {{> "systems/fantastic-depths/templates/item/parts/item-masteries.hbs"}}
-      {{/if}}
+      {{> "systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs"}}
    </div>
 </div>
 

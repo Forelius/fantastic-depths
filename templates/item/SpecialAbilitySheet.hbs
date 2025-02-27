@@ -4,33 +4,35 @@
          <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
          <ul class="summary flexrow">
             <li class="flex3">
-               <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
+               <div class='charname'>
+                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}}readonly{{/unless}}/>
+               </div>
                <label>{{localize 'Name'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.rollMode">
+               <select name="system.rollMode" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions rollModes selected=system.rollMode}}
                </select>
                <label for="system.operator">{{localize 'FADE.rollMode'}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li>
-               <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' />
+            <li style="max-width:90px;">
+               <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' {{#unless isGM}}readonly{{/unless}}/>
                <label for="system.rollFormula">{{localize 'FADE.roll'}}</label>
             </li>
-            <li>
-               <select name="system.operator">
+            <li style="max-width:50px;">
+               <select name="system.operator" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions operators selected=system.operator}}
                </select>
                <label for="system.operator">{{localize 'FADE.operator'}}</label>
             </li>
             <li>
-               <input type='text' name="system.target" value='{{system.target}}' data-dtype='Number' />
+               <input type='text' name="system.target" value='{{system.target}}' data-dtype='String' data-tooltip="{{system.target}}" {{#unless isGM}}readonly{{/unless}}/>
                <label for="system.target">{{localize 'FADE.target'}}</label>
             </li>
             <li class="flex1">
-               <select name="system.abilityMod">
+               <select name="system.abilityMod" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions abilities selected=system.abilityMod}}
                </select>
                <label for="system.abilityMod">{{localize 'FADE.SpecialAbility.abilityMod'}}</label>
@@ -59,7 +61,7 @@
          <section class="bordered">
             <ul class="summary flexrow" style="min-height:26px;">
                <li class="flex1">
-                  <select name="system.savingThrow">
+                  <select name="system.savingThrow" {{#unless isGM}}disabled='disabled'{{/unless}}>
                      {{selectOptions savingThrows selected=system.savingThrow}}
                   </select>
                   <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
@@ -81,7 +83,7 @@
                   <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
                </li>
                <li>
-                  <select name="system.damageType">
+                  <select name="system.damageType" {{#unless isGM}}disabled='disabled'{{/unless}}>
                      {{selectOptions damageTypes selected=system.damageType}}
                   </select>
                   <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
@@ -93,13 +95,13 @@
                   <label for="system.shortName">{{localize 'FADE.shortName'}}</label>
                </li>
                <li>
-                  <select name="system.category">
+                  <select name="system.category" {{#unless isGM}}disabled='disabled'{{/unless}}>
                      {{selectOptions categories selected=system.category}}
                   </select>
                   <label for="system.category">{{localize 'FADE.category'}}</label>
                </li>
                <li>
-                  <select name="system.combatManeuver">
+                  <select name="system.combatManeuver" {{#unless isGM}}disabled='disabled'{{/unless}}>
                      {{selectOptions combatManeuvers selected=system.combatManeuver}}
                   </select>
                   <label for="system.combatManeuver">{{localize 'FADE.combat.maneuvers.label'}}</label>
@@ -107,6 +109,10 @@
                <li>
                   <input type='text' name='system.customSaveCode' value='{{system.customSaveCode}}' data-dtype='String' />
                   <label for="system.customSaveCode" data-tooltip="{{localize 'FADE.SpecialAbility.saveTypeHint'}}">{{localize 'FADE.SpecialAbility.saveType'}}</label>
+               </li>
+               <li style="max-width:50px">
+                  <input type="text" name='system.classKey' value="{{system.classKey}}" data-type="String"/>
+                  <label for="system.classKey" data-tooltip="{{localize 'FADE.class.key.hint'}}">{{localize 'FADE.class.key.name'}}</label>
                </li>
             </ul>
          </section>

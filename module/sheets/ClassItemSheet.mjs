@@ -94,6 +94,8 @@ export class ClassItemSheet extends ItemSheet {
          this.item.createClassSave();
       } else if (type === 'primeReq') {
          this.item.createPrimeReq();
+      } else if (type === 'classAbility') {
+         this.item.createClassAbility();
       }
       this.render();
    }
@@ -113,6 +115,12 @@ export class ClassItemSheet extends ItemSheet {
          if (primeReqs.length > index) {
             primeReqs.splice(index, 1);
             await this.item.update({ "system.primeReqs": primeReqs });
+         }
+      } else if (type === 'classAbility') {
+         const classAbilities = this.item.system.classAbilities;
+         if (classAbilities.length > index) {
+            classAbilities.splice(index, 1);
+            await this.item.update({ "system.classAbilities": classAbilities });
          }
       }
       this.render();
