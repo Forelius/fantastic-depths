@@ -84,11 +84,15 @@ export class DataMigrator {
             await this.updateSizeForWeapons();
             await this.updateGripForWeapons();
             await this.updateCanSetForWeapons();
-            ui.notifications.info("Fantastic Depths data migration complete.")
+            ui.notifications.info("Fantastic Depths 0.7.21-rc.6 data migration complete.")
          }
          if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
             await this.fixUnidentified();
-            ui.notifications.info("Fantastic Depths data migration complete.")
+            ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
+         }
+         if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
+            await this.fixTreasureItems();
+            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.")
          }
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
@@ -417,6 +421,45 @@ export class DataMigrator {
       // Process all world items
       const worldItems = game.items;
       await processItems(worldItems, "World Items");
+   }
+
+   async fixTreasureItems() {
+      // Helper function to filter for treasure items.
+      const findTreasureItems = items => items.filter(item => {
+         // Only consider items of type "item" for this filter.
+         if (item.type !== "item") return false;
+         // Assume tags are stored in item.system.tags.
+         const tags = item.system?.tags;
+         if (!tags) return false;
+         // If tags is an array, check if it includes "treasure".
+         return Array.isArray(tags) ? tags.includes("treasure") : tags === "treasure";
+      });
+
+      // 1. Get world items from the global item collection.
+      const worldItems = game.items.contents;
+      const treasureWorldItems = findTreasureItems(worldItems);
+
+      // 2. Get owned items from all actors.
+      let actorOwnedItems = [];
+      for (let actor of game.actors.contents) {
+         actorOwnedItems.push(...actor.items.contents);
+      }
+      const treasureActorItems = findTreasureItems(actorOwnedItems);
+
+      // Combine both collections.
+      const allTreasureItems = [...treasureWorldItems, ...treasureActorItems];
+
+      // Iterate over each treasure item and update its type to "treasure".
+      for (let item of allTreasureItems) {
+         console.log(`Updating item "${item.name}" (${item.id}) to type "treasure"`);
+         try {
+            await item.update({ type: "treasure" });
+            await item.tagManager.popTag("treasure");
+            console.log(`Item "${item.name}" updated successfully.`);
+         } catch (error) {
+            console.error(`Error updating item "${item.name}":`, error);
+         }
+      }
    }
 
    #testMigrate() {

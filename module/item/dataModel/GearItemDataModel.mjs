@@ -26,7 +26,6 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          // Fields from the "equippable" template
          equipped: new fields.BooleanField({ required: false, initial: false }),
          // Additional properties specific to the "item" type
-         treasure: new fields.BooleanField({ required: false, initial: false }),
          container: new fields.BooleanField({ required: false, initial: false }),
          equippable: new fields.BooleanField({ required: false, initial: false }),
          // Indicates why type of fuel this item is, if any.

@@ -1,3 +1,6 @@
+/**
+ * Utility class for treasure table rolls.
+ */
 export class fadeTreasure {
    constructor() {
       this.group = {

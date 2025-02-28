@@ -6,10 +6,10 @@ import { GearItemDataModel } from "./GearItemDataModel.mjs";
 export class LightItemDataModel extends GearItemDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
-      // Extend the schema from fadeItemDataModel
+      // Extend the schema from GearItemDataModel
       const baseSchema = super.defineSchema();
       return {
-         ...baseSchema, // Include fields from fadeItemDataModel
+         ...baseSchema,
          isLight: new fields.BooleanField({ required: false, initial: true }),
          light: new fields.SchemaField({
             enabled: new fields.BooleanField({ required: false, initial: false }),

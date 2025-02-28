@@ -25,7 +25,6 @@ export class fadeSettings {
          },
          restricted: true // Only the GM can change this setting         
       });
-
       game.settings.register(game.system.id, "theme", {
          name: "SETTINGS.Theme.Name",
          hint: "SETTINGS.Theme.Hint",

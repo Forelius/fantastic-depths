@@ -1,4 +1,3 @@
-import { fadeItemDataModel } from "./fadeItemDataModel.mjs";
 /**
  * Data model for a special ability item.
  */

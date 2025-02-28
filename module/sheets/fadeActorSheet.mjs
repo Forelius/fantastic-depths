@@ -224,7 +224,7 @@ export class fadeActorSheet extends ActorSheet {
          const docItem = context.document.items.get(item._id);
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
-         if (item.type === 'item' || item.type === 'light') {
+         if (item.type === 'item' || item.type === 'light' || item.type === 'treasure') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
                // Check to see if container still exists.
@@ -236,8 +236,9 @@ export class fadeActorSheet extends ActorSheet {
             } else {
                gear.push(item);
             }
-            // TODO: Remove tag, not localizable.
-            if (item.system.tags.includes("treasure")) {
+            // If this is a treasure item...
+            if (item.type === 'treasure') {
+               // Also add to the treasure array
                treasure.push(item);
             }
          }
@@ -324,7 +325,15 @@ export class fadeActorSheet extends ActorSheet {
     */
    _calcCategoryEnc(context) {
       const encSetting = game.settings.get(game.system.id, "encumbrance");
-      if (encSetting === 'expert' || encSetting === 'classic') {
+      if (encSetting === 'classic') {
+         context.gearEnc = 80 + context.items
+            .filter(item => item.type === 'treasure')
+            .reduce((sum, item) => {
+               const itemWeight = item.system.weight || 0;
+               const itemQuantity = item.system.quantity || 1;
+               return sum + (itemWeight * itemQuantity);
+            }, 0);
+      } else if (encSetting === 'expert') {
          // Gear
          context.gearEnc = context.items
             .filter(item => item.type === 'item' || item.type === 'light')
@@ -335,6 +344,8 @@ export class fadeActorSheet extends ActorSheet {
                //console.debug(item.name, citem.totalEnc);
                return sum + (itemWeight * itemQuantity);
             }, 0);
+      }
+      if (encSetting === 'expert' || encSetting === 'classic') {
          // Weapons
          context.weaponsEnc = context.items
             .filter(item => item.type === 'weapon')
@@ -358,17 +369,16 @@ export class fadeActorSheet extends ActorSheet {
     */
    async _onDropItem(event, data) {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
-      const itemParentid = event.target.closest(".item")?.dataset?.itemParentid;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'weaponMastery') {
          //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
-         const actorMastery = droppedItem.createActorWeaponMastery(this.actor);
+         droppedItem.createActorWeaponMastery(this.actor);
       }
       // If the drop target is a container...
-      else if (droppedItem.type === "item" || droppedItem.type === "light") {
+      else if (droppedItem.type === 'item' || droppedItem.type === 'light' || droppedItem.type === 'treasure') {
          if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
             const itemData = droppedItem.toObject();
             if (droppedItem.actor == null) {

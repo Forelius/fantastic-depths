@@ -7,7 +7,6 @@ import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
-import { CharacterSheet } from './sheets/CharacterSheet.mjs';
 import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
@@ -24,6 +23,7 @@ import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
 import { ArmorItem } from './item/ArmorItem.mjs';
 import { GearItemSheet } from './sheets/GearItemSheet.mjs';
+import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
 import { WeaponItem } from './item/WeaponItem.mjs';
 import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
 import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
@@ -102,6 +102,7 @@ Hooks.once('init', async function () {
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
+      treasure: GearItemDataModel,
       item: GearItemDataModel,
       armor: ArmorItemDataModel,
       skill: SkillItemDataModel,
@@ -131,11 +132,6 @@ Hooks.once('init', async function () {
 function registerSheets() {
    // Register sheet application classes
    Actors.unregisterSheet('core', ActorSheet);
-   Actors.registerSheet('fantastic-depths', CharacterSheet, {
-      label: 'FADE.SheetLabel.Character',
-      types: ['character'],
-      makeDefault: false
-   });
    Actors.registerSheet('fantastic-depths', CharacterSheet2, {
       label: 'FADE.SheetLabel.Character2',
       types: ['character'],
@@ -150,7 +146,12 @@ function registerSheets() {
    Items.registerSheet('fantastic-depths', GearItemSheet, {
       label: 'FADE.SheetLabel.Item',
       makeDefault: true,
-      types: ['item', 'treasure', 'light']
+      types: ['item', 'light']
+   });
+   Items.registerSheet('fantastic-depths', TreasureItemSheet, {
+      label: 'FADE.SheetLabel.Treasure',
+      makeDefault: true,
+      types: ['treasure']
    });
    Items.registerSheet('fantastic-depths', ActorMasterySheet, {
       label: 'FADE.SheetLabel.ActorMasteryItem',

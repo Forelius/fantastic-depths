@@ -7,11 +7,11 @@ export class WeaponItemDataModel extends GearItemDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
 
-      // Extend the schema from fadeItemDataModel
+      // Extend the schema from GearItemDataModel
       const baseSchema = super.defineSchema();
 
       return {
-         ...baseSchema, // Include fields from fadeItemDataModel
+         ...baseSchema,
 
          // Fields specific to the "weapon" template
          damageRoll: new fields.StringField({ required: true, initial: "1d6" }),

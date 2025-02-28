@@ -268,7 +268,8 @@
          "SkillItem": "Skill Item Sheet",
          "LightItem": "Light Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
-         "WeaponItem": "Weapon Item Sheet"
+         "WeaponItem": "Weapon Item Sheet",
+         "Treasure": "Treasure Item Sheet"
       },
       "Spell": {
          "casts": "casts",

@@ -17,6 +17,7 @@ const handler = {
       if (args[0]?.type === 'armor') result = new ArmorItem(...args);
       else if (args[0]?.type === 'weapon') result = new WeaponItem(...args);
       else if (args[0]?.type === 'item') result = new GearItem(...args);
+      else if (args[0]?.type === 'treasure') result = new GearItem(...args);
       else if (args[0]?.type === 'specialAbility') result = new SpecialAbilityItem(...args);
       else if (args[0]?.type === 'mastery') result = new ActorMasteryItem(...args);
       else if (args[0]?.type === 'skill') result = new SkillItem(...args);

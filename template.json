@@ -3,6 +3,6 @@
       "types": [ "character", "monster" ]
    },
    "Item": {
-      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility", "class", "weaponMastery", "light", "condition" ] 
+      "types": [ "item", "weapon", "armor", "spell", "skill", "mastery", "specialAbility", "class", "weaponMastery", "light", "condition", "treasure" ] 
    }
 }
