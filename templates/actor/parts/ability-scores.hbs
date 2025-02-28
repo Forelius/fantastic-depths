@@ -1,19 +1,24 @@
-<section class="bordered ability-scores">
+<!--ABILITY SCORES-->
+<div class="bordered flexrow">
    {{#each system.abilities as |ability key|}}
-   <div class="ability ability-vert flexrow flex-group-left">
-      <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-      <label for="system.abilities.{{key}}.value" style="margin: 0 4px;" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
-             data-ability="{{key}}"
-             data-test="ability"
-             data-pass="lte"
-             data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
-         {{#if @root.abilityAbbr}}
-         {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
-         {{else}}
-         {{localize (concat 'FADE.Actor.Abilities.' key '.long')}}
-         {{/if}}
-      </label>
-      <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+   <div class="ability ability-horz">
+      <div class="flex-group-center">
+         <label for="system.abilities.{{key}}.value" style="text-align:center;" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
+                data-ability="{{key}}"
+                data-test="ability"
+                data-pass="lte"
+                data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
+            {{#if @root.abilityAbbr}}
+            {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
+            {{else}}
+            {{localize (concat 'FADE.Actor.Abilities.' key '.long')}}
+            {{/if}}
+         </label>
+      </div>
+      <div class="flex-group-center">
+         <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+         <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+      </div>
    </div>
    {{/each}}
-</section>
+</div>

@@ -7,6 +7,7 @@ import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
 import { CharacterActor } from './actor/CharacterActor.mjs';
 import { MonsterActor } from './actor/MonsterActor.mjs';
+import { CharacterSheet } from './sheets/CharacterSheet.mjs';
 import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
@@ -132,6 +133,11 @@ Hooks.once('init', async function () {
 function registerSheets() {
    // Register sheet application classes
    Actors.unregisterSheet('core', ActorSheet);
+   Actors.registerSheet('fantastic-depths', CharacterSheet, {
+      label: 'FADE.SheetLabel.Character',
+      types: ['character'],
+      makeDefault: true
+   });
    Actors.registerSheet('fantastic-depths', CharacterSheet2, {
       label: 'FADE.SheetLabel.Character2',
       types: ['character'],

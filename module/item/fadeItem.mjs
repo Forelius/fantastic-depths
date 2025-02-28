@@ -26,6 +26,9 @@ export class fadeItem extends Item {
     * @protected */
    prepareBaseData() {
       super.prepareBaseData();
+      if (this.type === 'treasure') {
+         this.system.quantityMax = 0;
+      }
    }
 
    /** @override

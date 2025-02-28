@@ -17,7 +17,7 @@ export class CharacterSheet extends fadeActorSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'features',
+               initial: 'abilities',
             },
          ],
       });
@@ -27,9 +27,38 @@ export class CharacterSheet extends fadeActorSheet {
    async render(force, options = {}) {
       // Adjust options before rendering based on item type
       options.width = 600;
-      options.height = 540;
+      options.height = 580;
 
       // Call the original render method with modified options
       await super.render(force, options);
+   }
+
+   /** @override */
+   async getData() {
+      // Retrieve the data structure from the base sheet. You can inspect or log
+      // the context variable to see the structure, but some key properties for
+      // sheets are the actor object, the data object, whether or not it's
+      // editable, the items array, and the effects array.
+      const context = await super.getData();
+      const equippedWeapons = [];
+      // Iterate through items, allocating to arrays
+      for (let item of context.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         if (item.type === 'weapon' && item.system.equipped === true) {
+            equippedWeapons.push(item);
+         }
+      }
+      context.equippedWeapons = equippedWeapons;
+      return context;
+   }
+
+   /** @inheritDoc */
+   async _renderOuter() {
+      const html = await super._renderOuter();
+      const header = html[0].querySelector(".window-title");
+      const actorData = this.document.toObject(false);
+      const level = game.i18n.localize('FADE.Actor.Level');
+      header.append(`(${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`);
+      return html;
    }
 }

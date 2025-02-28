@@ -15,11 +15,7 @@
             <li class="flex1">
                <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}}readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
                <label for="system.quantity">{{localize 'FADE.Item.quantity.long'}}</label>
-            </li>
-            <li class="flex1">
-               <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}}readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
-               <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxLong'}}</label>
-            </li>
+            </li>            
             <li class="flex1">
                {{#if (or isGM system.isIdentified)}}
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />

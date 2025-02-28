@@ -1,5 +1,10 @@
 .window-app {
    font-family: $font-primary;
+   --minimized-width:300px;
+   .minimized{
+      min-width:300px;
+      width:300px;
+   }
 }
 
 .rollable, .chatable {
@@ -41,9 +46,11 @@
 /* Apply these styles only when the "minimized" class is not present */
 .window-app.fantastic-depths.sheet.actor:not(.minimized) {
    min-width: 600px !important;
-   min-height: 540px !important;
+   min-height: 400px !important;
 }
-
+.window-app.fantastic-depths.sheet.actor.minimized {
+   min-width: 400px !important;   
+}
 .window-app.fantastic-depths.sheet.item:not(.minimized) {
    min-width: 460px !important;
    min-height: 230px !important;
