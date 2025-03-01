@@ -42,7 +42,7 @@ class MySystemVersion {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
-      const result = { isNextBuild: false, isNextMajor: false, isNextMinor: false, isNextRC: false, isLessThan: false };
+      const result = { isNextMajor: false, isNextMinor: false, isNextBuild: false, isNextRC: false, isLessThan: false };
       if (this.eq(version) === false) {
          // True if current rc has value, next rc has value, current rc is less than next rc
          //    and majors are same or current major less than next major
@@ -52,12 +52,12 @@ class MySystemVersion {
             && (this.major === version.major || this.major < version.major)
             && (this.minor === version.minor || this.minor < version.minor)
             && (this.build === version.build || this.build < version.build));
-         result.isNextBuild = this.build < version.build;
          result.isNextMajor = this.major < version.major;
-         result.isNextMinor = this.minor < version.minor;
+         result.isNextMinor = this.major == version.major && this.minor < version.minor;
+         result.isNextBuild = this.minor == version.minor && this.build < version.build;
          result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextBuild || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
-         //console.debug(this, version, result);
+         console.debug(this, version, result);
       } else {
          console.debug("Versions are same.", this, version);
       }
@@ -75,16 +75,16 @@ export class DataMigrator {
    async migrate() {
       if (game.user.isGM) {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
-         //this.#testMigrate();
+         this.#testMigrate();
 
-         if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
-            await this.fixUnidentified();
-            ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
-         }
-         if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
-            await this.fixTreasureItems();
-            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.")
-         }
+         //if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
+         //   await this.fixUnidentified();
+         //   ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
+         //}
+         //if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
+         //   await this.fixTreasureItems();
+         //   ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.")
+         //}
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
       }
@@ -183,17 +183,20 @@ export class DataMigrator {
       const v1 = new MySystemVersion("0.7.20");
       const v2 = new MySystemVersion("0.7.21");
       const v3 = new MySystemVersion("0.7.21-rc.1");
-      const v4 = new MySystemVersion("0.7.21-rc.2");
+      const v4 = new MySystemVersion("0.7.21-rc.7");
       const v5 = new MySystemVersion("0.8.0");
+      const v7 = new MySystemVersion('0.8.0-rc.1');
       const v6 = new MySystemVersion("1.0.0");
 
       v1.lt(v2);
       v2.lt(v1);
-      v2.lt(v3);
-      v3.lt(v1);
-      v3.lt(v2);
-      v3.lt(v4);
-      v4.lt(v3);
-      v4.lt(v5);
+      //v2.lt(v3);
+      //v3.lt(v1);
+      //v3.lt(v2);
+      //v3.lt(v4);
+      //v4.lt(v3);
+      //v4.lt(v5);
+      v4.lt(v7);
+      v7.lt(v4);
    }
 }
