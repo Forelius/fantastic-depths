@@ -1,3 +1,4 @@
+import { EffectManager } from '../sys/EffectManager.mjs';
 /**
  * Sheet class for ActorMasteryItem.
  */
