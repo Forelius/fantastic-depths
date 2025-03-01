@@ -392,4 +392,167 @@ export class fadeDialog {
       dialogResp.context = caller;
       return dialogResp;
    }
+
+   static async getRolltableDialog() {
+      // Get all roll tables and sort them alphabetically by name
+      const rollTables = game.tables.contents.sort((a, b) => a.name.localeCompare(b.name));
+
+      // Get roll modes from the Foundry system
+      const rollModes = Object.entries(CONFIG.Dice.rollModes).map(([key, value]) => {
+         return `<option value="${key}">${game.i18n.localize(value)}</option>`;
+      }).join('');
+
+      // Create the dialog content
+      let content = `
+        <form>
+            <div class="form-group">
+                <label for="rollTableSelect">Select Roll Table:</label>
+                <select id="rollTableSelect" name="rollTableSelect">
+                    ${rollTables.map(table => `<option value="${table.id}">${table.name}</option>`).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modifierInput">Modifier:</label>
+                <input type="number" id="modifierInput" name="modifierInput" value="0" />
+            </div>
+            <div class="form-group">
+                <label for="rollModeSelect">Select Roll Mode:</label>
+                <select id="rollModeSelect" name="rollModeSelect">
+                    ${rollModes}
+                </select>
+            </div>
+        </form>
+    `;
+      console.debug(content);
+      // Create the dialog
+      new Dialog({
+         title: "Roll Table with Modifier",
+         content: content,
+         buttons: {
+            roll: {
+               label: "Roll",
+               callback: async (html) => {
+                  const selectedTableId = html.find("#rollTableSelect").val();
+                  const modifier = parseInt(html.find("#modifierInput").val()) || 0;
+                  const selectedRollMode = html.find("#rollModeSelect").val();
+
+                  // Get the selected roll table
+                  const rollTable = game.tables.get(selectedTableId);
+                  if (rollTable) {
+                     // Roll the table with the selected roll mode
+                     const rollResult = await rollTable.roll();
+
+                     // Calculate the total based on the roll's total and the modifier
+                     const rollTotal = rollResult.roll._total;
+                     const total = rollTotal + modifier;
+
+                     // Get the text descriptions of the rolled results
+                     const rolledResultsText = rollResult.results.map(r => r.text).join(', ');
+
+                     // Create a message to display the result
+                     const messageContent = `
+                            <h2>${rollTable.name}</h2>
+                            <p>${rolledResultsText}</p>
+                            <hr/>
+                            <p>Total: <strong>${rollTotal} + ${modifier} = ${total}</strong></p>
+                        `;
+                     const chatMsgData = {
+                        content: messageContent,
+                        speaker: ChatMessage.getSpeaker()
+                     };
+                     ChatMessage.applyRollMode(chatMsgData, selectedRollMode);
+                     // Send the result to chat
+                     ChatMessage.create(chatMsgData);
+                  } else {
+                     ui.notifications.error("Selected roll table not found.");
+                  }
+               }
+            },
+            close: {
+               label: "Close",
+               callback: () => { }
+            }
+         },
+         default: "close",
+         close: () => { }
+      }).render(true);
+   }
+
+   static async getSpecialAbilityDialog() {
+      // Get the first selected actor of the player
+      const player = game.user;
+      const actor = player.character || (player.actors.length > 0 ? player.actors[0] : null);
+
+      if (!actor) {
+         ui.notifications.error("No actor selected or available for the player.");
+         return;
+      }
+
+      // Filter items of type 'specialAbility'
+      const specialAbilities = actor.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+
+      // Check if there are any special abilities
+      if (specialAbilities.length === 0) {
+         ui.notifications.warn("No special abilities found for the selected actor.");
+         return;
+      }
+
+      // Create the dialog content
+      let content = `
+        <form>
+            <div class="form-group">
+                <label for="abilitySelect">Select Special Ability:</label>
+                <select id="abilitySelect" name="abilitySelect">
+                    ${specialAbilities.map(item => `<option value="${item.id}">${item.name}</option>`).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modifierInput">Modifier:</label>
+                <input type="number" id="modifierInput" name="modifierInput" value="0" />
+            </div>
+        </form>
+    `;
+
+      // Create the dialog
+      new Dialog({
+         title: "Roll Special Ability",
+         content: content,
+         buttons: {
+            roll: {
+               label: "Roll",
+               callback: async (html) => {
+                  const selectedAbilityId = html.find("#abilitySelect").val();
+                  const selectedAbility = specialAbilities.find(item => item.id === selectedAbilityId);
+                  const modifier = parseInt(html.find("#modifierInput").val()) || 0; // Get the modifier value
+
+                  if (selectedAbility && selectedAbility.roll) {
+                     // Prepare the dataset
+                     const dataset = {
+                        test: 'specialAbility',
+                        rollType: 'item',
+                        label: `${selectedAbility.name} ${game.i18n.localize('FADE.SpecialAbility.short')}`
+                     };
+
+                     // Prepare the dialog response
+                     const dialogResp = {
+                        mod: modifier, // Include the modifier in the dialog response
+                        rolling: true
+                     };
+
+                     // Call the roll method with dataset and dialogResp
+                     await selectedAbility.roll(dataset, dialogResp);
+                  } else {
+                     ui.notifications.error("Selected ability does not have a roll method.");
+                  }
+               }
+            },
+            cancel: {
+               label: "Cancel",
+               callback: () => { }
+            }
+         },
+         default: "cancel",
+         close: () => { }
+      }).render(true);
+   }
 }

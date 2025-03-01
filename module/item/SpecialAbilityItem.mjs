@@ -39,7 +39,7 @@ export class SpecialAbilityItem extends fadeItem {
    * @param {Event} event The originating click event
    * @private
    */
-   async roll(dataset) {
+   async roll(dataset, dialogResp = null) {
       let result = null;
       const systemData = this.system;
       const ownerTokenOrActor = this.actor || canvas.tokens.controlled?.[0];
@@ -48,27 +48,34 @@ export class SpecialAbilityItem extends fadeItem {
       const rollData = this.getRollData();
 
       let rolled = null;
-      let dialogResp = null
       if (hasRoll === true) {
          try {
             // Retrieve roll data.
             dataset.dialog = "generic";
             dataset.rollmode = systemData.rollMode;
-            dialogResp = await DialogFactory(dataset, this.actor);
-            if (dialogResp?.resp?.rolling === true) {
+            if (dialogResp) {
+               dialogResp.rolling === true
+            }
+            else {
+               const dialog = await DialogFactory(dataset, this.actor);
+               dialogResp = dialog?.resp;
+            }
+
+            if (dialogResp.rolling === true) {
                if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
-                  dialogResp.resp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
+                  dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
                } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
-                  dialogResp.resp.mod += systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
+                  dialogResp.mod += systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
                }
-               rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
-               const rollContext = { ...rollData, ...dialogResp?.resp || {} };
-               rolled = await new Roll(rollData.formula, rollContext).evaluate();
             } else {
                canProceed = false;
             }
+            rollData.formula = dialogResp?.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
+            const rollContext = { ...rollData, ...dialogResp || {} };
+            rolled = await new Roll(rollData.formula, rollContext).evaluate();
          } catch (error) {
             // Close button pressed or other error
+            console.warn(error);
             canProceed = false;
          }
       }
@@ -76,7 +83,7 @@ export class SpecialAbilityItem extends fadeItem {
       if (canProceed === true) {
          const chatData = {
             caller: this,
-            resp: dialogResp?.resp,
+            resp: dialogResp,
             context: ownerTokenOrActor,
             roll: rolled,
          };
