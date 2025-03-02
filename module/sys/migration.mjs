@@ -15,7 +15,7 @@ class MySystemVersion {
       let split = core?.split('.') ?? [];
       this.major = parseInt(split[0]) ?? 0;
       this.minor = parseInt(split[1]) ?? 0;
-      this.build = parseInt(split[2]) ?? 0;
+      this.patch = parseInt(split[2]) ?? 0;
       // Handle RC version (null if not an RC)
       this.rc = rc ? parseInt(rc.replace('rc.', '')) : null;
    }
@@ -29,7 +29,7 @@ class MySystemVersion {
       if (ignoreRC == false) {
          return this.version === version.version;
       } else {
-         return this.major === version.major && this.minor === version.minor && this.build === version.build;
+         return this.major === version.major && this.minor === version.minor && this.patch === version.build;
       }
    }
 
@@ -42,7 +42,7 @@ class MySystemVersion {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
-      const result = { isNextMajor: false, isNextMinor: false, isNextBuild: false, isNextRC: false, isLessThan: false };
+      const result = { isNextMajor: false, isNextMinor: false, isNextPatch: false, isNextRC: false, isLessThan: false };
       if (this.eq(version) === false) {
          // True if current rc has value, next rc has value, current rc is less than next rc
          //    and majors are same or current major less than next major
@@ -51,13 +51,13 @@ class MySystemVersion {
          result.isNextRC = (this.rc > 0 && version.rc > 0 && this.rc < version.rc
             && (this.major === version.major || this.major < version.major)
             && (this.minor === version.minor || this.minor < version.minor)
-            && (this.build === version.build || this.build < version.build));
+            && (this.patch === version.build || this.patch < version.build));
          result.isNextMajor = this.major < version.major;
          result.isNextMinor = this.major == version.major && this.minor < version.minor;
-         result.isNextBuild = this.minor == version.minor && this.build < version.build;
-         result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextBuild || result.isNextRC
+         result.isNextPatch = this.minor == version.minor && this.patch < version.build;
+         result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextPatch || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
-         console.debug(this, version, result);
+         //console.debug(this, version, result);
       } else {
          console.debug("Versions are same.", this, version);
       }
