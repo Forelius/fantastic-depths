@@ -1,4 +1,4 @@
-﻿<section name="spellItemsSection" class="items-list">
+﻿<section name="spellItemsSection" class="items-list" style="margin-top:-12px;">
    <div class="item-category-title flexrow" style="line-height: 15px">
       <div class="item-controls">
          <a class="item-control item-reset"
@@ -38,35 +38,41 @@
             </a>
          </div>
       </li>
-      {{#each slot.spells as |spell id|}}
+      {{#each slot.spells as |item id|}}
       {{! Spell Item }}
-      <li class='item flexrow collapsible-content bottom-border' data-item-id='{{spell._id}}'>
-         <div class='item-name flexrow'>
-            <div class='item-image rollable' data-roll-type='item'>
-               <img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' />
+      <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+         <div class="flexrow center-vert">
+            <div class='item-name flexrow'>
+               <div class='item-image rollable' data-roll-type='item'>
+                  <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+               </div>
+               <a class="item-control description-expand" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>{{item.name}}</a>
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>{{spell.name}}</a>
+            <div class="item-40px">{{localize 'FADE.Spell.casts'}}</div>
+            <div class="item-80px flexrow editable">
+               <input type="text"
+                      value="{{item.system.cast}}"
+                      data-dtype="Number"
+                      placeholder="0"
+                      data-field="cast"
+                      data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
+               <input type="text"
+                      value="{{item.system.memorized}}"
+                      data-field="memorized"
+                      data-dtype="Number"
+                      placeholder="∞"
+                      data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
+            </div>
+            <div class='item-controls-sm center-vert'>
+               <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
+                  <i class='fas fa-pencil'></i>
+               </a>
+               <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
+                  <i class='fas fa-trash'></i>
+               </a>
+            </div>
          </div>
-         <div class="item-40px">{{localize 'FADE.Spell.casts'}}</div>
-         <div class="item-80px flexrow editable">
-            <input type="text"
-                   value="{{spell.system.cast}}"
-                   data-dtype="Number"
-                   placeholder="0"
-                   data-field="cast"
-                   data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
-            <input type="text"
-                   value="{{spell.system.memorized}}"
-                   data-field="memorized"
-                   data-dtype="Number"
-                   placeholder="∞"
-                   data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
-         </div>
-         <div class='item-controls'>
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
-               <i class='fas fa-trash'></i>
-            </a>
-         </div>
+         <div class='item-description desc-collapsed'></div>
       </li>
       {{/each}}
    </ol>

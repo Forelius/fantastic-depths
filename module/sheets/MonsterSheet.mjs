@@ -17,7 +17,7 @@ export class MonsterSheet extends fadeActorSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'features',
+               initial: 'abilities',
             },
          ],
       });

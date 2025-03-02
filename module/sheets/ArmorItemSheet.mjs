@@ -19,7 +19,7 @@ export class ArmorItemSheet extends fadeItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'attributes',
+               initial: 'description'
             },
          ],
       });

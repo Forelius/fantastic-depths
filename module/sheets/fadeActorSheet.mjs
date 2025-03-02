@@ -192,6 +192,8 @@ export class fadeActorSheet extends ActorSheet {
                await this._toggleCollapsibleContent(event);
             }
          });
+         // Bind the collapsible functionality to the header click event
+         html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
       }
    }
 
@@ -761,6 +763,38 @@ export class fadeActorSheet extends ActorSheet {
                   containers.push($subContainer);
                }
             });
+         }
+      }
+   }
+
+   async _onDescriptionExpand(event) {
+      // If not the create item column...
+      const descElem = $(event.target).parents('.item').find('.item-description');
+      if (descElem) {
+         const isCollapsed = $(descElem[0]).hasClass('desc-collapsed');
+         if (isCollapsed === true) {
+            descElem.removeClass('desc-collapsed');
+            const li = $(event.currentTarget).parents('.item');
+            const item = this.actor.items.get(li.data('itemId'));
+            if (item !== null) {
+               const enrichedDesc = await TextEditor.enrichHTML(
+                  item.system.description,
+                  {
+                     // Whether to show secret blocks in the finished html
+                     secrets: this.document.isOwner,
+                     // Necessary in v11, can be removed in v12
+                     async: true,
+                     // Data to fill in for inline rolls
+                     rollData: item.getRollData(),
+                     // Relative UUID resolution
+                     relativeTo: this.actor,
+                  }
+               );
+               descElem.append($(enrichedDesc));
+            }
+         } else {
+            descElem.addClass('desc-collapsed');
+            descElem.empty();
          }
       }
    }
