@@ -53,10 +53,15 @@ export class SkillItem extends fadeItem {
    * @param {Event} event The originating click event
    * @private
    */
-   async roll(dataset) {
+   async roll() {
       const systemData = this.system;
       const roller = this.actor || this.parent.getActiveTokens()?.[0];
-
+      const dataset = {
+         rollType: 'item',
+         label: this.name,
+         dialog: 'generic',
+         test: 'skill'
+      };
       // Retrieve roll data.
       const rollData = this.getRollData();
 
