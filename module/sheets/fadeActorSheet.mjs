@@ -318,7 +318,15 @@ export class fadeActorSheet extends ActorSheet {
     */
    _calcCategoryEnc(context) {
       const encSetting = game.settings.get(game.system.id, "encumbrance");
-      if (encSetting === 'expert' || encSetting === 'classic') {
+      if (encSetting === 'classic') {
+         context.gearEnc = 80 + context.items
+            .filter(item => item.system.tags.includes("treasure")
+            .reduce((sum, item) => {
+               const itemWeight = item.system.weight || 0;
+               const itemQuantity = item.system.quantity || 1;
+               return sum + (itemWeight * itemQuantity);
+            }, 0);
+      } else if (encSetting === 'expert') {
          // Gear
          context.gearEnc = context.items
             .filter(item => item.type === 'item' || item.type === 'light')
@@ -329,6 +337,8 @@ export class fadeActorSheet extends ActorSheet {
                //console.debug(item.name, citem.totalEnc);
                return sum + (itemWeight * itemQuantity);
             }, 0);
+      }
+      if (encSetting === 'expert' || encSetting === 'classic') {
          // Weapons
          context.weaponsEnc = context.items
             .filter(item => item.type === 'weapon')
