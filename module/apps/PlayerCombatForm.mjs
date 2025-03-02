@@ -53,14 +53,49 @@ export class PlayerCombatForm extends FormApplication {
       return super.close(options);
    }
 
+   /**
+    * Hook event handler for updateActor. 
+    * @protected
+    * @param {any} actor
+    * @param {any} updateData
+    * @param {any} options
+    * @param {any} userId
+    */
    _updateTrackedActor = (actor, updateData, options, userId) => {
       // Check if the updated actor is in the tracked actors list by ID
       if (game.combat && this.trackedTokenIds.includes(actor.currentActiveToken?.id)) {
-         this.#updateActorData(actor, updateData);
+         // Find the row matching the actor ID
+         const rowElement = document.querySelector(`tr[data-actor-id="${actor.id}"]`);
+         const combat = updateData.system?.combat;
+         if (rowElement) {
+            if (combat?.declaredAction !== undefined) {
+               // Update select control value
+               rowElement.querySelector('[name="declaredAction"]').value = combat.declaredAction;
+               // Update the declared action description
+               const localizedDescription = game.i18n.localize(`FADE.combat.maneuvers.${combat.declaredAction}.description`);
+               rowElement.querySelector('[name="actionDesc"]').textContent = localizedDescription;
+            }
+
+            if (combat?.attAgainstH !== undefined) {
+               rowElement.querySelector('[name="atnorecvh"]').textContent = combat.attAgainstH;
+            }
+            if (combat?.attAgainstM !== undefined) {
+               rowElement.querySelector('[name="atnorecvm"]').textContent = combat.attAgainstM;
+            }
+            if (combat?.attacks !== undefined) {
+               rowElement.querySelector('[name="atno"]').textContent = combat.attacks;
+            }
+         }
       }
    }
 
+   /**
+    * Event handler for when the player changes one of their character's declared action.
+    * @private
+    * @param {any} event
+    */
    async #onPlayerChangedAction(event) {
+      console.debug(event);
       const tokenId = event.currentTarget.dataset.tokenId;
       const actor = game.combat.combatants.find(combatant => combatant.token.id === tokenId)?.actor;
       const updateData = { "system.combat.declaredAction": event.currentTarget.value };
@@ -99,31 +134,6 @@ export class PlayerCombatForm extends FormApplication {
       const token = item?.parent?.currentActiveToken; // The actor the item belongs to
       if (game.combat && this.trackedTokenIds.includes(token.id)) {
          this.render();  // Re-render to reflect updated actor data
-      }
-   }
-
-   #updateActorData(actor, updateData) {
-      // Find the row matching the actor ID
-      const rowElement = document.querySelector(`tr[data-actor-id="${actor.id}"]`);
-      const combat = updateData.system?.combat;
-      if (rowElement) {
-         if (combat?.declaredAction !== undefined) {
-            // Update select control value
-            rowElement.querySelector('[name="declaredAction"]').value = combat.declaredAction;
-            // Update the declared action description
-            const localizedDescription = game.i18n.localize(`FADE.combat.maneuvers.${combat.declaredAction}.description`);
-            rowElement.querySelector('[name="actionDesc"]').textContent = localizedDescription;
-         }
-
-         if (combat?.attAgainstH !== undefined) {
-            rowElement.querySelector('[name="atnorecvh"]').textContent = combat.attAgainstH;
-         }
-         if (combat?.attAgainstM !== undefined) {
-            rowElement.querySelector('[name="atnorecvm"]').textContent = combat.attAgainstM;
-         }
-         if (combat?.attacks !== undefined) {
-            rowElement.querySelector('[name="atno"]').textContent = combat.attacks;
-         }
       }
    }
 
