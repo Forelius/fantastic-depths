@@ -18,7 +18,7 @@
          </ul>
          <ul class="summary flexrow">
             <li style="max-width:90px;">
-               <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' {{#unless isGM}}readonly{{/unless}}/>
+               <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} data-tooltip="{{system.rollFormula}}" />
                <label for="system.rollFormula">{{localize 'FADE.roll'}}</label>
             </li>
             <li style="max-width:50px;">
