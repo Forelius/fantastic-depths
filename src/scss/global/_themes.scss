@@ -9,6 +9,24 @@
          background: url('../assets/img/grunge2.jpg');
          color: $lighterColor;
 
+         .editor-container {
+            margin: 0 4px;
+            padding: 0 4px;
+            border: $darkColor solid 1px;
+
+            .editor-content {
+               padding: 0 2px;
+            }
+         }
+
+         .prosemirror-menu {
+            padding: 2px;
+         }
+
+         .content-link {
+            background: $darkerColor;
+         }
+
          button {
             background: url('../assets/img/grungeyellow.jpg');
             color: $lighterColor;
