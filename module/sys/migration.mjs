@@ -42,7 +42,7 @@ class MySystemVersion {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
-      const result = { isNextBuild: false, isNextMajor: false, isNextMinor: false, isNextRC: false, isLessThan: false };
+      const result = { isNextMajor: false, isNextMinor: false, isNextBuild: false, isNextRC: false, isLessThan: false };
       if (this.eq(version) === false) {
          // True if current rc has value, next rc has value, current rc is less than next rc
          //    and majors are same or current major less than next major
@@ -52,9 +52,9 @@ class MySystemVersion {
             && (this.major === version.major || this.major < version.major)
             && (this.minor === version.minor || this.minor < version.minor)
             && (this.build === version.build || this.build < version.build));
-         result.isNextBuild = this.build < version.build;
          result.isNextMajor = this.major < version.major;
-         result.isNextMinor = this.minor < version.minor;
+         result.isNextMinor = this.major == version.major && this.minor < version.minor;
+         result.isNextBuild = this.minor == version.minor && this.build < version.build;
          result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextBuild || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
          //console.debug(this, version, result);
