@@ -22,7 +22,7 @@ const handler = {
       else if (args[0]?.type === 'spell') result = new SpellItem(...args);
       else if (args[0]?.type === 'class') result = new ClassItem(...args);
       else if (args[0]?.type === 'weaponMastery') result = new MasteryDefinitionItem(...args);
-      else throw new Error(SYSTEM_ID, { type: args[0]?.type });
+      else throw new Error(`Item constructor error: Type=${args[0]?.type} not defined by ItemFactory.`);
       return result;
    }
 };

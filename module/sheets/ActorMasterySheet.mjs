@@ -26,7 +26,7 @@ export class ActorMasterySheet extends ItemSheet {
     * Prepare data to be used in the Handlebars template.
     */
    async getData(options) {
-      const context = super.getData(options);
+      const context = await super.getData(options);
       const itemData = context.data;
       // Enrich description info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons

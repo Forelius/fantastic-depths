@@ -17,7 +17,7 @@ export class CharacterSheet extends fadeActorSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'features',
+               initial: 'abilities'
             },
          ],
       });

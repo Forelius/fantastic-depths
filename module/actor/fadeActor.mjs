@@ -95,8 +95,7 @@ export class fadeActor extends Actor {
       if (this.id) {
          this._prepareEffects();
          this._prepareSpellsUsed();
-         this._prepareEncumbrance(this.type);
-         this.system.prepareDerivedMovement();
+
       } else {
          //console.warn(`Preparing base data for ${this.name}, but id is null.`);
       }
@@ -107,6 +106,8 @@ export class fadeActor extends Actor {
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
+         this._prepareEncumbrance(this.type);
+         this.system.prepareDerivedMovement();
          this._prepareArmorClass();
       } else {
          //console.warn(`Preparing derived data for ${this.name}, but id is null.`);

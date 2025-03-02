@@ -18,7 +18,7 @@ export class ArmorItemSheet extends fadeItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'attributes',
+               initial: 'description'
             },
          ],
       });
@@ -28,8 +28,7 @@ export class ArmorItemSheet extends fadeItemSheet {
     * Prepare data to be used in the Handlebars template.
     */
    async getData(options) {
-      const context = super.getData(options);
-      const itemData = context.data;
+      const context = await super.getData(options);
      
       context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
       if (context.isBasicEnc === true) {

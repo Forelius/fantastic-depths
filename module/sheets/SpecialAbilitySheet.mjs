@@ -18,7 +18,7 @@ export class SpecialAbilitySheet extends ItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'attributes',
+               initial: 'description'
             },
          ],
       });
