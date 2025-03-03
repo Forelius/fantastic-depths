@@ -1377,9 +1377,9 @@ h1, h2, h3, h4 {
   font-size: 12px;
 }
 .fantastic-depths .items-list .items-header {
-  height: 28px;
+  height: auto;
   margin: 2px 0;
-  padding: 0;
+  padding: 3px 1px;
   align-items: center;
   font-weight: bold;
 }

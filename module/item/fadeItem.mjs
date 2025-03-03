@@ -34,7 +34,7 @@ export class fadeItem extends Item {
    /** @override
     * @protected */
    prepareDerivedData() {
-      super.prepareDerivedData();   
+      super.prepareDerivedData();
    }
 
    // Define default icons for various item types using core data paths
@@ -79,10 +79,64 @@ export class fadeItem extends Item {
       return rollData;
    }
 
+   async getInlineDescription() {
+      return await TextEditor.enrichHTML(this.system.description, {
+         // Whether to show secret blocks in the finished html
+         secrets: false,
+         // Necessary in v11, can be removed in v12
+         async: true,
+         // Data to fill in for inline rolls
+         rollData: this.getRollData(),
+         // Relative UUID resolution
+         relativeTo: this.actor,
+      });
+   }
+
    /**
-    * Process all item active effects that are not set to transfer to the owning actor.
-    * @protected
+    * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
+    * does not override this message the result is a chat message with the item description.
+    * @param {dataset} event The data- tag values from the clicked element
+    * @private
     */
+   async roll(dataset) {
+      // Initialize chat data.
+      //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      const rollMode = game.settings.get('core', 'rollMode');
+      const chatData = {
+         caller: this,
+         context: this.actor,
+         rollMode
+      };
+      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+      return await builder.createChatMessage();
+   }
+
+   async getEvaluatedRoll(formula, options = { minimize: true }) {
+      let result = null;
+      if (formula !== null && formula !== "") {
+         const rollData = this.getRollData();
+         try {
+            const roll = new Roll(formula, rollData);
+            await roll.evaluate(options);
+            result = roll;
+         }
+         catch (error) {
+            if (game.user.isGM === true) {
+               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            }
+         }
+      }
+      return result;
+   }
+
+   async getEvaluatedRollFormula(formula) {
+      return await this.getEvaluatedRoll(formula)?.formula;
+   }
+
+   /**
+ * Process all item active effects that are not set to transfer to the owning actor.
+ * @protected
+ */
    _processNonTransferActiveEffects() {
       const data = this.system;
 
@@ -127,46 +181,5 @@ export class fadeItem extends Item {
             console.warn(`Unsupported Active Effect mode: ${mode}`);
             return currentValue;
       }
-   }
-
-   /**
-    * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
-    * does not override this message the result is a chat message with the item description.
-    * @param {dataset} event The data- tag values from the clicked element
-    * @private
-    */
-   async roll(dataset) {
-      // Initialize chat data.
-      //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const rollMode = game.settings.get('core', 'rollMode');
-      const chatData = {
-         caller: this,
-         context: this.actor,
-         rollMode
-      };
-      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
-      return await builder.createChatMessage();
-   }
-
-   async getEvaluatedRoll(formula, options = { minimize: true }) {
-      let result = null;
-      if (formula !== null && formula !== "") {
-         const rollData = this.getRollData();
-         try {
-            const roll = new Roll(formula, rollData);
-            await roll.evaluate(options);
-            result = roll;
-         }
-         catch (error) {
-            if (game.user.isGM === true) {
-               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
-            }
-         }
-      }
-      return result;
-   }
-
-   async getEvaluatedRollFormula(formula) {
-      return await this.getEvaluatedRoll(formula)?.formula;
    }
 }

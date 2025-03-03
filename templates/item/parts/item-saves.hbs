@@ -8,16 +8,16 @@
                  data-test="save"
                  data-type="{{item.system.customSaveCode}}"
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-               <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+               <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.system.shortName}}</a>
+            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.system.shortName}}</a>
          </div>
          <div class="editable">
             <input style="max-width:40px;" type="text" value="{{item.system.target}}" data-field="target" data-dtype="Number" />
          </div>
          <div class='item-controls' style="max-width:32px;">
             {{#if @root.isGM}}
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
             {{/if}}

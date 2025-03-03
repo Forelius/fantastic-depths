@@ -777,19 +777,7 @@ export class fadeActorSheet extends ActorSheet {
             const li = $(event.currentTarget).parents('.item');
             const item = this.actor.items.get(li.data('itemId'));
             if (item !== null) {
-               const enrichedDesc = await TextEditor.enrichHTML(
-                  item.system.description,
-                  {
-                     // Whether to show secret blocks in the finished html
-                     secrets: this.document.isOwner,
-                     // Necessary in v11, can be removed in v12
-                     async: true,
-                     // Data to fill in for inline rolls
-                     rollData: item.getRollData(),
-                     // Relative UUID resolution
-                     relativeTo: this.actor,
-                  }
-               );
+               const enrichedDesc = await item.getInlineDescription();
                descElem.append($(enrichedDesc));
             }
          } else {

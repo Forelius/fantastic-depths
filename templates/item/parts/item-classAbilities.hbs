@@ -12,16 +12,16 @@
                  {{/if}}
                  data-roll-type='item'
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-               <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+               <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
             </div>
-            <a class="item-control description-expand" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
+            <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
          </div>
          <div class='item-controls-sm center-vert'>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-pencil'></i>
             </a>
             {{#if @root.isGM}}
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
             {{/if}}

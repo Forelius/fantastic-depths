@@ -8,6 +8,14 @@ export class SpecialAbilityItem extends fadeItem {
       super(data, context);
    }
 
+   get targetSummary() {
+      let summary = '';
+      if (this.system.rollFormula?.length > 0 && this.system.target?.length > 0) {
+         summary = `${CONFIG.FADE.Operators[this.system.operator]} ${this.system.target}`;
+      }
+      return summary;
+   }
+
    async getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
       let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
@@ -92,5 +100,12 @@ export class SpecialAbilityItem extends fadeItem {
       }
 
       return result;
+   }
+
+   async getInlineDescription() {
+      const desc = await super.getInlineDescription();
+      //desc.replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div>')
+      const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : '';
+      return `${summary}${desc}`;
    }
 }

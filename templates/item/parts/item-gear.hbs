@@ -7,7 +7,7 @@
          {{#if item.system.container}}
          <div class="category-caret"><i class="fas fa-caret-down"></i></div>
          {{/if}}
-         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
+         <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
             {{#if (or @root.isGM item.system.isIdentified)}}
             {{item.name}}
             {{else}}
@@ -29,7 +29,7 @@
             <i class="fas{{#if item.system.isAmmo}} fa-hand{{else}} fa-tshirt{{/if}}"></i>
          </a>
          {{/if}}
-         <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
+         <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>

@@ -1,6 +1,6 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class="sheet-header">
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li class="flex3">
@@ -9,7 +9,13 @@
             </li>
          </ul>
          <ul class="summary flexrow">
-            <li class="flex1">
+            <li>
+               <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+                  {{selectOptions weaponTypes selected=system.weaponType}}
+               </select>
+               <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
+            </li>
+            <li>
                <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
                   {{selectOptions weaponTypes selected=system.primaryType}}
                </select>

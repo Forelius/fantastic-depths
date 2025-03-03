@@ -7,13 +7,9 @@ export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
       const { fields } = foundry.data;
       return {
          // Fields from the "base" template
-         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
-         description: new fields.StringField({ required: false, initial: "" }),
-         gm: new fields.SchemaField({
-            notes: new fields.StringField({ required: false, initial: "" })
-         }),
          // Fields specific to the "mastery" template
          level: new fields.StringField({ required: true, initial: "basic" }),
+         weaponType: new fields.StringField({ required: true, initial: "handheld" }),
          primaryType: new fields.StringField({ nullable: true, initial: null }),
          range: new fields.SchemaField({
             short: new fields.NumberField({ nullable: true, initial: null }),
@@ -46,6 +42,7 @@ export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      this.acBonusType = this.acBonusType !== 'null' ? this.acBonusType : null
       this.canRanged = this.range.short > 0 || this.range.medium > 0 || this.range.long > 0;
    }
 }

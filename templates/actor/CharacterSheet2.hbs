@@ -62,9 +62,9 @@
                         <img src='{{item.img}}' width='26' height='26' />
                      </div>
                      {{#if (or ../isGM item.system.isIdentified)}}
-                     <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>{{item.name}}</a>
+                     <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>{{item.name}}</a>
                      {{else}}
-                     <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>{{item.system.unidentifiedName}}</a>
+                     <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.weapon")}}'>{{item.system.unidentifiedName}}</a>
                      {{/if}}
                   </div>
                   <div class="item-40px item-prop"><label>{{item.system.ammo.load}}</label></div>

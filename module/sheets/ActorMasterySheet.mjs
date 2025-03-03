@@ -50,7 +50,7 @@ export class ActorMasterySheet extends ItemSheet {
 
       // Weapon types
       const types = [];
-      types.push({ value: "", text: game.i18n.localize('None') });
+      types.push({ value: null, text: game.i18n.localize('None') });
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
       }));
