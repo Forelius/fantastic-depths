@@ -1,5 +1,5 @@
 <li class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   <div {{#if item.system.container}}{{#unless item.system.quantityMax }} class="bottom-border"{{/unless}}{{/if}}>
+   <div {{#if item.system.container}} {{#unless item.system.quantityMax }} class="bottom-border" {{/unless}} {{/if}}>
       <div class="flexrow center-vert">
          <div class='item-name contained'>
             <div class='item-image chatable' data-roll-type='item'>
@@ -8,7 +8,7 @@
             {{#if item.system.container}}
             <div class="category-caret"><i class="fas fa-caret-down"></i></div>
             {{/if}}
-            <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
+            <a class='item-control description-expand' data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
                {{#if (or @root.isGM item.system.isIdentified)}}
                {{item.name}}
                {{else}}
@@ -30,12 +30,16 @@
                <i class="fas fa-tshirt"></i>
             </a>
             {{/if}}
+            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
+               <i class='fas fa-pencil'></i>
+            </a>
             <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>
       </div>
    </div>
+   <div class='item-description desc-collapsed'></div>
 </li>
 {{#if item.system.container}}
 {{#each item.contained as |childItem|}}

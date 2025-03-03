@@ -51,5 +51,5 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       if (this.quantity === 0) {
          this.equipped = false;
       }
-   }
+   }  
 }

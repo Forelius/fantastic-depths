@@ -1,5 +1,4 @@
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
 /**
@@ -72,6 +71,61 @@ export class GearItem extends fadeItem {
    }
 
    /**
+    * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
+    * does not override this message the result is a chat message with the item description.
+    * @param {dataset} event The data- tag values from the clicked element
+    * @private
+    */
+   async roll(dataset) {
+      // Initialize chat data.
+      //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+      const rollMode = game.settings.get('core', 'rollMode');
+      const chatData = {
+         caller: this,
+         context: this.actor,
+         rollMode
+      };
+      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+      return await builder.createChatMessage();
+   }
+
+   async getEvaluatedRoll(formula, options = { minimize: true }) {
+      let result = null;
+      if (formula !== null && formula !== "") {
+         const rollData = this.getRollData();
+         try {
+            const roll = new Roll(formula, rollData);
+            await roll.evaluate(options);
+            result = roll;
+         }
+         catch (error) {
+            if (game.user.isGM === true) {
+               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            }
+         }
+      }
+      return result;
+   }
+
+   async getEvaluatedRollFormula(formula) {
+      return await this.getEvaluatedRoll(formula)?.formula;
+   }
+
+   async getInlineDescription() {
+      const description = this.system.isIdentified === true ?
+         await super.getInlineDescription()
+         : await TextEditor.enrichHTML(this.system.unidentifiedDesc, {
+            secrets: false,
+            // Necessary in v11, can be removed in v12
+            async: true,
+            rollData: this.getRollData(),
+            // Relative UUID resolution
+            relativeTo: this.actor,
+         });
+      return description?.length > 0 ? description : '<p>--</p>';
+   }
+
+   /**
     * Process all item active effects that are not set to transfer to the owning actor.
     * @protected
     */
@@ -119,46 +173,5 @@ export class GearItem extends fadeItem {
             console.warn(`Unsupported Active Effect mode: ${mode}`);
             return currentValue;
       }
-   }
-
-   /**
-    * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
-    * does not override this message the result is a chat message with the item description.
-    * @param {dataset} event The data- tag values from the clicked element
-    * @private
-    */
-   async roll(dataset) {
-      // Initialize chat data.
-      //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-      const rollMode = game.settings.get('core', 'rollMode');
-      const chatData = {
-         caller: this,
-         context: this.actor,
-         rollMode
-      };
-      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
-      return await builder.createChatMessage();
-   }
-
-   async getEvaluatedRoll(formula, options = { minimize: true }) {
-      let result = null;
-      if (formula !== null && formula !== "") {
-         const rollData = this.getRollData();
-         try {
-            const roll = new Roll(formula, rollData);
-            await roll.evaluate(options);
-            result = roll;
-         }
-         catch (error) {
-            if (game.user.isGM === true) {
-               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
-            }
-         }
-      }
-      return result;
-   }
-
-   async getEvaluatedRollFormula(formula) {
-      return await this.getEvaluatedRoll(formula)?.formula;
    }
 }

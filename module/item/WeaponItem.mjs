@@ -251,7 +251,7 @@ export class WeaponItem extends GearItem {
 
       return result;
    }
-
+     
    /**
     * Gets the equipped ammo item and optionally uses it.
     * @private
