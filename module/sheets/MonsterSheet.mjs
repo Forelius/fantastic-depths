@@ -25,13 +25,8 @@ export class MonsterSheet extends fadeActorSheet {
 
    /** @override */
    async render(force, options = {}) {
-      // Adjust options before rendering based on item type
-      options.width = 670;
-      options.height = 540;
-
       // Call the original render method with modified options
       await super.render(force, options);
-
       // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
       setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
    }

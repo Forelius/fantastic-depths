@@ -11,8 +11,8 @@ export class CharacterSheet extends fadeActorSheet {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'actor'],
          template: `${path}/CharacterSheet.hbs`,
-         width: 650,
-         height: 540,
+         width: 600,
+         height: 600,
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -21,16 +21,6 @@ export class CharacterSheet extends fadeActorSheet {
             },
          ],
       });
-   }
-
-   /** @override */
-   async render(force, options = {}) {
-      // Adjust options before rendering based on item type
-      options.width = 600;
-      options.height = 580;
-
-      // Call the original render method with modified options
-      await super.render(force, options);
    }
 
    /** @override */

@@ -3,7 +3,7 @@
    <ul class="summary flexrow">
       <li>
          <div class="charname">
-            <input name="name" class="charname" type="text" value="{{actor.name}}" placeholder="Name" />
+            <input name="name" class="charname" type="text" value="{{actor.name}}" placeholder="Name" data-tooltip="{{actor.name}}" />
             <label>{{localize 'Name'}}</label>
          </div>
       </li>
@@ -55,7 +55,7 @@
          {{localize 'FADE.Actor.morale'}}</label>
       </li>
       <li>
-         <input type="text" name="system.treasure" value="{{system.treasure}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Treasure.long'}}" />
+         <input type="text" name="system.treasure" value="{{system.treasure}}" data-dtype="String" data-tooltip="{{system.treasure}}" />
          <label data-tooltip="{{localize 'FADE.Actor.Treasure.long'}}">{{localize 'FADE.Actor.Treasure.short'}}</label>
       </li>
       <li class="flex1">
