@@ -112,7 +112,7 @@ export class GearItem extends fadeItem {
    }
 
    async getInlineDescription() {
-      const description = this.system.isIdentified === true ?
+      let description = this.system.isIdentified === true ?
          await super.getInlineDescription()
          : await TextEditor.enrichHTML(this.system.unidentifiedDesc, {
             secrets: false,
@@ -122,7 +122,13 @@ export class GearItem extends fadeItem {
             // Relative UUID resolution
             relativeTo: this.actor,
          });
-      return description?.length > 0 ? description : '<p>--</p>';
+      if (description?.length <= 0) {
+         description = '--';
+      }
+      //if (description.startsWith('<p>') === false) {
+      //   description = `<p>${description}</p>`;
+      //}
+      return description;
    }
 
    /**

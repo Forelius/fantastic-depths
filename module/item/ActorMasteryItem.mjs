@@ -52,7 +52,7 @@ export class ActorMasteryItem extends fadeItem {
 
    async getInlineDescription() {
       //desc.replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div>')
-      const summary = game.i18n.format('FADE.Mastery.summary', {
+      let description = game.i18n.format('FADE.Mastery.summary', {
          weaponType: this.system.weaponType ? game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.weaponType}.long`) : '--',
          primaryType: game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.primaryType}.long`) ,
          special: this.system.special ?? '--',
@@ -64,6 +64,12 @@ export class ActorMasteryItem extends fadeItem {
          //acBonus: this.system.acBonus ?? '--',
          //acBonusAT: this.system.acBonusAT ?? '--',
       });
-      return summary;
+      if (description?.length <= 0) {
+         description = '--';
+      }
+      //if (description.startsWith('<p>') === false) {
+      //   description = `<p>${description}</p>`;
+      //}
+      return description;
    }
 }

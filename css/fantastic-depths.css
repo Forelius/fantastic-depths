@@ -1345,6 +1345,8 @@ h1, h2, h3, h4 {
   padding: 0 2px;
   display: block;
   flex: auto;
+}
+.fantastic-depths .items-list .item .item-description p {
   margin-top: -6px;
 }
 .fantastic-depths .items-list .item .desc-collapsed {
@@ -1456,5 +1458,3 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

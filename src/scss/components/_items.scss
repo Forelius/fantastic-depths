@@ -134,7 +134,10 @@
          padding: 0 2px;
          display: block;
          flex: auto;
-         margin-top: -6px;
+
+         p {
+            margin-top: -6px;
+         }
       }
 
       .desc-collapsed {

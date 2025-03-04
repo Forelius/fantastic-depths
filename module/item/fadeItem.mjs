@@ -80,7 +80,7 @@ export class fadeItem extends Item {
    }
 
    async getInlineDescription() {
-      const description = await TextEditor.enrichHTML(this.system.description, {
+      let description = await TextEditor.enrichHTML(this.system.description, {
          // Whether to show secret blocks in the finished html
          secrets: false,
          // Necessary in v11, can be removed in v12
@@ -90,7 +90,13 @@ export class fadeItem extends Item {
          // Relative UUID resolution
          relativeTo: this.actor,
       });
-      return description?.length > 0 ? description : '<p>--</p>';
+      if (description?.length <= 0) {
+         description = '--';
+      }
+      //if (description.startsWith('<p>') === false) {
+      //   description = `<p>${description}</p>`;
+      //}
+      return description;
    }
 
    /**

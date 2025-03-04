@@ -753,7 +753,11 @@ export class fadeActorSheet extends ActorSheet {
             const item = this.actor.items.get(li.data('itemId'));
             if (item !== null) {
                const enrichedDesc = await item.getInlineDescription();
-               descElem.append($(enrichedDesc));
+               if (enrichedDesc.startsWith('<') === false) {
+                  descElem.append(enrichedDesc);
+               } else {
+                  descElem.append($(enrichedDesc));
+               }
             }
          } else {
             descElem.addClass('desc-collapsed');
