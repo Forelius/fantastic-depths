@@ -24,7 +24,7 @@ export class fadeHandlebars {
       Handlebars.registerHelper('formatHitDice', function (hitDice) {
          const xpCalc = new MonsterXPCalculator();
          const parsed = xpCalc.parseDiceSpecification(hitDice);
-         let result = `${parsed.numberOfDice}d${parsed.numberOfSides}${parsed.modifierSign}`;
+         let result = `${parsed.numberOfDice}d${parsed.numberOfSides}${parsed.modifierSign}${parsed.modifier != 0 ? parsed.modifier : ''}`;
          return result;
       });
       // Register a Handlebars helper to check if an array includes a value
