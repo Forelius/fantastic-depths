@@ -22,14 +22,4 @@ export class CharacterSheet extends fadeActorSheet {
          ],
       });
    }
-
-   /** @override */
-   async render(force, options = {}) {
-      // Adjust options before rendering based on item type
-      options.width = 600;
-      options.height = 540;
-
-      // Call the original render method with modified options
-      await super.render(force, options);
-   }
 }

@@ -24,16 +24,6 @@ export class CharacterSheet2 extends fadeActorSheet {
    }
 
    /** @override */
-   async render(force, options = {}) {
-      // Adjust options before rendering based on item type
-      options.width = 600;
-      options.height = 540;
-
-      // Call the original render method with modified options
-      await super.render(force, options);
-   }
-
-   /** @override */
    async getData() {
       // Retrieve the data structure from the base sheet. You can inspect or log
       // the context variable to see the structure, but some key properties for
