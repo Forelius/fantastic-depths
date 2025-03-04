@@ -1,6 +1,5 @@
-﻿/* -------------------------------------------- */
-/*  Handlebars Helpers                          */
-/* -------------------------------------------- */
+﻿import { MonsterXPCalculator } from './utils/MonsterXPCalculator.mjs'
+
 export class fadeHandlebars {
    static clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
@@ -23,24 +22,9 @@ export class fadeHandlebars {
          return accum;
       });
       Handlebars.registerHelper('formatHitDice', function (hitDice) {
-         let result = "1d8";
-         // Regular expression to check for a dice specifier like d<number>
-         const diceRegex = /\d*d\d+/;
-         // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
-         const modifierRegex = /([+\-*/]\d+)$/;
-
-         // Check if the input contains a dice specifier
-         if (diceRegex.test(hitDice)) {
-            // If a dice specifier is found, return the original hitDice
-            result = hitDice;
-         } else {
-            // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-            const base = hitDice.replace(modifierRegex, ''); // Extract base number
-            const modifier = hitDice.match(modifierRegex)?.[0] || ''; // Extract modifier (if any)
-            // Append 'd8' to the base number, followed by the modifier
-            result = base + 'd8' + modifier;
-         }
-
+         const xpCalc = new MonsterXPCalculator();
+         const parsed = xpCalc.parseDiceSpecification(hitDice);
+         let result = `${parsed.numberOfDice}d${parsed.numberOfSides}${parsed.modifierSign}${parsed.modifier != 0 ? parsed.modifier : ''}`;
          return result;
       });
       // Register a Handlebars helper to check if an array includes a value
