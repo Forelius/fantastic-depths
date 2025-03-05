@@ -185,13 +185,6 @@ export class DataMigrator {
          const folder = game.folders.find(f => f.name === folderName && f.type === folderType);
 
          if (folder) {
-            //// Get all items in the folder
-            //const items = await Item.collection.getDocuments();
-            //const itemsInFolder = items.filter(item => item.folder === folder.id);
-
-            //// Delete all items in the folder
-            //await Promise.all(itemsInFolder.map(item => item.delete()));
-
             // Delete the folder itself
             await folder.delete({ deleteSubfolders: true, deleteContents: true });
             ui.notifications.info(`Deleted folder '${folderName}' and its contents.`);
@@ -207,25 +200,24 @@ export class DataMigrator {
          const compendium = game.packs.get(compendiumName);
          if (compendium) {
             // Import all items into a new folder
-            const importedDocuments = await compendium.importAll({ folderName: folderName });
+            const importedDocuments = await compendium.importAll({ folderName: folderName, keepId: true });
          } else {
             ui.notifications.error(`Compendium '${compendiumName}' not found.`);
          }
       }
 
       // Main function to perform the operations
-      async function performOperations() {
-         let compendiumName = 'fade-compendiums.item-compendium';
-         let folderName = 'FaDe Items';
-         let folderType = 'Item';
-         // Step 1: Delete the 'FaDe Items' folder and its contents
-         await deleteFolderAndContents('FaDe Items', folderType);
-         // Step 2: Import the 'item-compendium' from the 'fade-compendiums' system into a new folder
-         await importCompendium('fade-compendiums.item-compendium', folderName);
-         const folder = game.folders.find(f => f.name === folderName && f.type === folderType);
-         ui.notifications.info(`Setting permissions. This could take a few minutes.`);
-         await updatePermissions(folder, 1, folderType);
-         ui.notifications.info(`Imported compendium '${compendiumName}' successfully into folder '${folderName}' and permissions set.`);
+      async function performOperations(compendiumName, folderName, folderType, permissionLevel) {
+         // Delete the 'FaDe Items' folder and its contents
+         await deleteFolderAndContents(folderName, folderType);
+         // Import the 'item-compendium' from the 'fade-compendiums' system into a new folder
+         await importCompendium(compendiumName, folderName);
+         if (permissionLevel > 0){
+            let folder = game.folders.find(f => f.name === folderName && f.type === folderType);
+            ui.notifications.info(`Setting permissions. This could take a few minutes. You will be notified when the process completes.`);
+            await updatePermissions(folder, permissionLevel, folderType);
+         }
+         ui.notifications.info(`Imported compendium '${compendiumName}' successfully into folder '${folderName}'.`);         
       }
 
          // Recursive Permission Update for Folders and Their Contents
@@ -264,7 +256,9 @@ export class DataMigrator {
       }
 
       // Execute the main function
-      await performOperations();
+      await performOperations('fade-compendiums.item-compendium', 'FaDe Items', 'Item', 1);
+      await performOperations('fade-compendiums.actor-compendium', 'FaDe Actors', 'Actor', 0);
+      await performOperations('fade-compendiums.roll-table-compendium', 'FaDe Roll Tables', 'RollTable', 0);
    }
 
    #testMigrate() {
