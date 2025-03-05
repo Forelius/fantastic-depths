@@ -75,16 +75,16 @@ export class DataMigrator {
    async migrate() {
       if (game.user.isGM) {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
-         this.#testMigrate();
+         //this.#testMigrate();
 
          //if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
          //   await this.fixUnidentified();
          //   ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
          //}
-         //if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
-         //   await this.fixTreasureItems();
-         //   ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.")
-         //}
+         if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
+            await this.fixTreasureItems();
+            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.")
+         }
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
       }
@@ -177,6 +177,94 @@ export class DataMigrator {
             console.error(`Error updating item "${item.name}":`, error);
          }
       }
+   }
+
+   static async importCompendiums() {
+      // Function to delete a folder and its contents recursively
+      async function deleteFolderAndContents(folderName, folderType) {
+         const folder = game.folders.find(f => f.name === folderName && f.type === folderType);
+
+         if (folder) {
+            //// Get all items in the folder
+            //const items = await Item.collection.getDocuments();
+            //const itemsInFolder = items.filter(item => item.folder === folder.id);
+
+            //// Delete all items in the folder
+            //await Promise.all(itemsInFolder.map(item => item.delete()));
+
+            // Delete the folder itself
+            await folder.delete({ deleteSubfolders: true, deleteContents: true });
+            ui.notifications.info(`Deleted folder '${folderName}' and its contents.`);
+         }
+      }
+
+      // Function to import a compendium
+      async function importCompendium(compendiumName, folderName) {
+         if (game.user.isGM === false) {
+            ui.notifications.warn("You must be a GM to perform this operation.");
+            return;
+         }
+         const compendium = game.packs.get(compendiumName);
+         if (compendium) {
+            // Import all items into a new folder
+            const importedDocuments = await compendium.importAll({ folderName: folderName });
+         } else {
+            ui.notifications.error(`Compendium '${compendiumName}' not found.`);
+         }
+      }
+
+      // Main function to perform the operations
+      async function performOperations() {
+         let compendiumName = 'fade-compendiums.item-compendium';
+         let folderName = 'FaDe Items';
+         let folderType = 'Item';
+         // Step 1: Delete the 'FaDe Items' folder and its contents
+         await deleteFolderAndContents('FaDe Items', folderType);
+         // Step 2: Import the 'item-compendium' from the 'fade-compendiums' system into a new folder
+         await importCompendium('fade-compendiums.item-compendium', folderName);
+         const folder = game.folders.find(f => f.name === folderName && f.type === folderType);
+         ui.notifications.info(`Setting permissions. This could take a few minutes.`);
+         await updatePermissions(folder, 1, folderType);
+         ui.notifications.info(`Imported compendium '${compendiumName}' successfully into folder '${folderName}' and permissions set.`);
+      }
+
+         // Recursive Permission Update for Folders and Their Contents
+      async function updatePermissions(folder, level, folderType) {
+         const actualFolder = game.folders.get(folder.id);
+         if (!actualFolder) {
+            console.error("Invalid folder encountered:", folder);
+            return;
+         }
+
+         try {
+            // Update folder permissions
+            await actualFolder.update({ ownership: { default: level } });
+            console.log(`Updated permissions for folder: ${actualFolder.name}`);
+
+            // Update permissions for all items/actors in the folder
+            const contents = folderType === "Actor" ? game.actors : game.items;
+            const folderContents = contents.filter(i => i.folder?.id === folder.id);
+            for (const item of folderContents) {
+               await item.update({ ownership: { default: level } });
+               //console.log(`Updated permissions for item: ${item.name}`);
+            }
+         } catch (err) {
+            console.error(`Failed to update permissions for folder "${actualFolder.name}" or its contents`, err);
+         }
+
+         // Process child folders recursively
+         for (const childWrapper of folder.children) {
+            const childFolder = game.folders.get(childWrapper.folder._id);
+            if (childFolder) {
+               await updatePermissions(childFolder, level, folderType);
+            } else {
+               console.error("Failed to resolve child folder:", childWrapper);
+            }
+         }
+      }
+
+      // Execute the main function
+      await performOperations();
    }
 
    #testMigrate() {
