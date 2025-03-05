@@ -77,7 +77,7 @@
          .items-list {
             color: $lightColor;
 
-            .item-controls {
+            .item-controls, .item-controls-sm {
                .item-unequipped {
                   color: rgba(220, 220, 220, 0.1);
                }
@@ -241,7 +241,7 @@
          .items-list {
             color: $darkColor;
 
-            .item-controls {
+            .item-controls, .item-controls-sm {
                .item-unequipped {
                   color: rgba(0, 0, 0, 0.2);
                }
@@ -276,6 +276,7 @@
       .summary {
          li {
             color: $darkColor;
+
             label {
                color: $darkColor;
             }
@@ -286,6 +287,7 @@
          .nav-tabs-right {
             .nav-tab, .nav-tab-vert {
                background: url('../assets/img/lightgrunge1.jpg');
+
                a {
                   border-color: $lightColor;
                }
