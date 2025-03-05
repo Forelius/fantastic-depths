@@ -9,7 +9,7 @@ export class PlayerCombatForm extends FormApplication {
       const options = super.defaultOptions;
       options.id = PlayerCombatForm.APP_ID;
       options.template = `systems/${game.system.id}/templates/apps/player-combat.hbs`;
-      options.width = 400;
+      options.width = 350;
       options.height = 300;
       options.resizable = true;
       options.title = game.i18n.localize("FADE.apps.playerCombat.title");
@@ -130,21 +130,21 @@ export class PlayerCombatForm extends FormApplication {
    }
 
    #updateCombatant = (combatant, updateData, options, userId) => {
-      if (game.combat && this.trackedTokenIds.includes(combatant.token.id)) {
+      if (game.combat && this.trackedTokenIds.includes(combatant.token?.id)) {
          this.#updateCombatantData(combatant, updateData);
       }
    }
 
    #updateItem = (item, updateData, options, userId) => {
       const token = item?.parent?.currentActiveToken; // The actor the item belongs to
-      if (game.combat && this.trackedTokenIds.includes(token.id)) {
+      if (game.combat && token && this.trackedTokenIds.includes(token.id)) {
          this.render();  // Re-render to reflect updated actor data
       }
    }
 
    #updateCombatantData(combatant, updateData) {
       // Find the row matching the actor ID
-      const rowElement = document.querySelector(`tr[data-token-id="${combatant.token.id}"]`);
+      const rowElement = document.querySelector(`tr[data-token-id="${combatant.token?.id}"]`);
       if (rowElement) {
          // If initiative changed and this isn't the GM
          if (updateData.initiative !== undefined && game.user.isGM === false) {
