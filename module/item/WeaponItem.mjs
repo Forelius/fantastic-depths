@@ -221,7 +221,7 @@ export class WeaponItem extends GearItem {
             await this.#tryUseAmmo();
             canAttack = ammoItem !== null && ammoItem !== undefined;
             // No need to show ammo item if it is also the weapon we are using (thrown).
-            ammoItem = ammoItem.id === this.id ? null : ammoItem;
+            ammoItem = ammoItem?.id === this.id ? null : ammoItem;
          } else {
             ammoItem = null;
          }
