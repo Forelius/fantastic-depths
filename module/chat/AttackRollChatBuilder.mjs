@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { SocketManager } from '../sys/SocketManager.mjs'
+import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs'
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -289,7 +290,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             targetResults: []
          };
          for (let targetToken of targetTokens) {
-            const saveLocalized = game.i18n.localize(`FADE.Actor.Saves.${weapon.system.savingThrow}.abbr`);
+            const saveLocalized = SpecialAbilityItem.getSavingThrow(weapon.system.savingThrow);
             let targetResult = {
                targetid: targetToken.id,
                targetname: targetToken.name,

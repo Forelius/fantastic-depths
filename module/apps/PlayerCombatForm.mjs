@@ -9,8 +9,8 @@ export class PlayerCombatForm extends FormApplication {
       const options = super.defaultOptions;
       options.id = PlayerCombatForm.APP_ID;
       options.template = `systems/${game.system.id}/templates/apps/player-combat.hbs`;
-      options.width = 500;
-      options.height = 250;
+      options.width = 400;
+      options.height = 300;
       options.resizable = true;
       options.title = game.i18n.localize("FADE.apps.playerCombat.title");
       options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
@@ -114,7 +114,12 @@ export class PlayerCombatForm extends FormApplication {
 
    static toggleCombatForm() {
       const declaredActions = game.settings.get(game.system.id, "declaredActions");
-      if (game.combat && declaredActions === true) {
+      if (!game.combat) {
+         ui.notifications.warn(game.i18n.localize('FADE.apps.playerCombat.noCombat'));
+      }
+      else if (declaredActions === false) {
+         ui.notifications.warn(game.i18n.localize('FADE.apps.playerCombat.noDeclaredActions'));
+      } else {
          if (game.fade.combatForm) {
             game.fade.combatForm.close();
          } else {

@@ -522,7 +522,7 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content .items-list {
   color: #bbbab4;
 }
-.dark-mode .fantastic-depths .window-content .items-list .item-controls .item-unequipped {
+.dark-mode .fantastic-depths .window-content .items-list .item-controls .item-unequipped, .dark-mode .fantastic-depths .window-content .items-list .item-controls-sm .item-unequipped {
   color: rgba(220, 220, 220, 0.1);
 }
 .dark-mode .fantastic-depths .window-content .items-list .items-header {
@@ -635,7 +635,7 @@ h1, h2, h3, h4 {
 .light-mode .fantastic-depths .window-content .items-list {
   color: #4b4a44;
 }
-.light-mode .fantastic-depths .window-content .items-list .item-controls .item-unequipped {
+.light-mode .fantastic-depths .window-content .items-list .item-controls .item-unequipped, .light-mode .fantastic-depths .window-content .items-list .item-controls-sm .item-unequipped {
   color: rgba(0, 0, 0, 0.2);
 }
 .light-mode .fantastic-depths .window-content .items-list .items-header {

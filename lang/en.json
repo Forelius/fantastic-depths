@@ -604,7 +604,10 @@
       "apps": {
          "playerCombat": {
             "title": "Player Combat",
-            "prompt": "Select combat manuever for this round. Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker."
+            "prompt": "Select combat manuever for this round.",
+            "instructions": "Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker.",
+            "noCombat": "Combat has not started yet.",
+            "noDeclaredActions": "Fantastic Depths is not configured to use declared actions."
          }
       },
       "dialog": {
