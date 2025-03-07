@@ -34,7 +34,7 @@ export class SkillItem extends fadeItem {
       let hasDamage = false;
 
       if (isHeal) {
-         let evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
+         const evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
          formula = evaluatedRoll?.formula;
          hasDamage = true;
       }
@@ -55,7 +55,7 @@ export class SkillItem extends fadeItem {
    */
    async roll() {
       const systemData = this.system;
-      const roller = this.actor || this.parent.getActiveTokens()?.[0];
+      const roller = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const dataset = {
          rollType: 'item',
          label: this.name,

@@ -9,7 +9,7 @@
    <div class="flexrow collapser">
       <img class="item-image" src='{{caller.img}}'/>
       <div class="item-name">
-         {{#if (or isGM caller.system.isIdentified)}}
+         {{#if (ne caller.system.isIdentified false)}}
          {{caller.name}}
          {{else}}
          {{caller.system.unidentifiedName}}
@@ -17,7 +17,7 @@
       </div>
    </div>
    <div class="collapsible-content collapsed">
-      {{#if (or isGM caller.system.isIdentified)}}
+      {{#if (ne caller.system.isIdentified false)}}
       {{{caller.system.description}}}
       {{else}}
       {{{caller.system.unidentifiedDesc}}}

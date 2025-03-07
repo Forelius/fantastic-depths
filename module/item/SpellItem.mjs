@@ -79,8 +79,7 @@ export class SpellItem extends fadeItem {
    }
 
    async doSpellcast() {
-      const caster = this.parent.getActiveTokens()?.[0] || this.actor;
-      const casterActor = caster.actor || this.actor;
+      const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
       
@@ -95,7 +94,7 @@ export class SpellItem extends fadeItem {
 
             const chatData = {
                caller: this, // the spell
-               context: (caster || casterActor), // the caster
+               context: instigator, // the caster
                roll: attackRollResult?.rollEval,
                digest: attackRollResult?.digest
             };

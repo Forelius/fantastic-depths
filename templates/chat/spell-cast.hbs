@@ -27,9 +27,8 @@
 {{#if spellItem.system.savingThrow}}
 <div style="margin-top:6px;">
    <button class="saving-roll"
-           data-attackerid="{{descData.attackerid}}"
            data-type="{{spellItem.system.savingThrow}}"
-           data-weaponid="{{spellItem.id}}">
+           data-weaponuuid="{{spellItem.uuid}}">
       <i class="fa-solid fa-life-ring"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{save.system.shortName}}</span>
    </button>
@@ -43,8 +42,7 @@
            data-attacktype="spell"
            data-label="Heal"
            data-type="heal"
-           data-attackerid="{{context.id}}"
-           data-weaponid="{{spellItem.id}}"
+           data-weaponuuid="{{spellItem.uuid}}"
            data-tooltip="<b>{{localize 'FADE.Spell.healFormula'}}:</b> {{damageRoll.formula}}">
       <i class="fa-solid fa-heart"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}}</span>
@@ -55,8 +53,7 @@
            data-attacktype="spell"
            data-label="Damage"
            data-type="damage"
-           data-attackerid="{{context.id}}"
-           data-weaponid="{{spellItem.id}}"
+           data-weaponuuid="{{spellItem.uuid}}"
            data-tooltip="<b>{{localize 'FADE.Weapon.damage.long'}}:</b> {{damageRoll.formula}}">
       <i class="fa-solid fa-burst"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}}</span> <span class="small-text">{{localize (concat 'FADE.DamageTypes.types.' damageRoll.type)}}</span>

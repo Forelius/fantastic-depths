@@ -13,6 +13,7 @@ export class fadeDialog {
       const dialogData = { caller };
       const result = {};
       const weaponData = weapon.system;
+      const callerName = caller.token?.name || caller.name;
 
       dialogData.weapon = weaponData;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
@@ -31,7 +32,7 @@ export class fadeDialog {
       // Determines which target weapon type to pick by default.
       dialogData.selectedWeaponType = opt.targetToken?.actor.getWeaponType();
 
-      const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
+      const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
       result.resp = await Dialog.wait({

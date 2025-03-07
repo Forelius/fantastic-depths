@@ -62,7 +62,22 @@ export class ClassItemSheet extends fadeItemSheet {
       // Delete Inventory Item
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
    }
-  
+
+   /**
+   * @override
+   * @param {any} event
+   * @param {any} data
+   * @returns
+   */
+   async _onDropItem(event, data) {
+      const droppedItem = await Item.implementation.fromDropData(data);
+      console.debug(droppedItem, event, data)
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'specialAbility' && droppedItem.system.category === 'class') {
+
+      }      
+   }
+
    /**
    * Handle creating a new child object using initial data defined in the HTML dataset
    * @param {Event} event The originating click event

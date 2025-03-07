@@ -406,7 +406,7 @@ export class fadeActor extends Actor {
             context: this,
             caller: savingThrow,
             mdata: dataset,
-            roll: rolled,
+            roll: rolled
          };
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
          return await builder.createChatMessage();
@@ -419,8 +419,8 @@ export class fadeActor extends Actor {
     * @param {any} event
     */
    static async handleSavingThrowRequest(event) {
-      if (this.testUserPermission(game.user, "OWNER") === false) return;
-
+      // Not sure why this is here, because this is a static method and 'this' is not the actor.
+      //if (this.testUserPermission(game.user, "OWNER") === false) return;
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;

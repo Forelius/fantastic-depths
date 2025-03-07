@@ -14,7 +14,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const rollContent = await this.getRollContent(roll, mdata);
 
       // Get the actor and user names
-      const actorName = context.name; // Actor name (e.g., character name)
+      const instigatorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
@@ -23,7 +23,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const renderData = {
          rollContent,
          mdata,
-         actorName,
+         instigatorName,
          userName,
          resultString: options.resultString,
          damage: options.damage,
@@ -33,8 +33,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       };
 
       if (game.fade.toastManager) {
-         let toast = `${options.resultString}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
+         game.fade.toastManager.showHtmlToast(options.resultString, "info", rollMode);
       }
 
       // Render the content using the template, now with messageId
@@ -75,16 +74,15 @@ export class DamageRollChatBuilder extends ChatBuilder {
     * @param {any} dataset
     */
    static async handleDamageRoll(ev, dataset) {
-      const { attackerid, weaponid, attacktype, attackmode, damagetype, targetweapontype } = dataset;
-      const attacker = canvas.tokens.get(attackerid) || game.actors.get(attackerid);
-      const attackerActor = attacker.actor ?? attacker;
-      const weaponItem = attackerActor.items.find(item => item.id === weaponid);
+      const { weaponuuid, attacktype, attackmode, damagetype, targetweapontype } = dataset;
+      const theItem = await fromUuid(weaponuuid);
+      const instigator = theItem.actor.token ?? theItem.actor;
       let canRoll = true;
       let dialogResp = null;
       const isHeal = damagetype === 'heal';
 
       try {
-         dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, weaponItem);
+         dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, theItem);
          if (!dialogResp?.resp) {
             canRoll = false;
          }
@@ -94,12 +92,12 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       let damageRoll = null;
-      const weaponDamageType = ["physical", "breath", "fire", "frost", "poison"];
-      const otherDamageType = ["magic", "heal", "hull"];
-      if (weaponDamageType.includes(dataset.damagetype)) {
-         damageRoll = await weaponItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp, targetweapontype);
-      } else if (otherDamageType.includes(dataset.damagetype)) {
-         damageRoll = await weaponItem.getDamageRoll(dialogResp?.resp);
+      const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison"];
+      const otherDamageTypes = ["magic", "heal", "hull"];
+      if (weaponDamageTypes.includes(dataset.damagetype)) {
+         damageRoll = await theItem.getDamageRoll(attacktype, attackmode, dialogResp?.resp, targetweapontype);
+      } else if (otherDamageTypes.includes(dataset.damagetype)) {
+         damageRoll = await theItem.getDamageRoll(dialogResp?.resp);
       }
 
       if (canRoll === true) {
@@ -107,16 +105,17 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const roll = new Roll(damageRoll.formula);
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
-         const attackName = weaponItem.system.isIdentified ? weaponItem.name : weaponItem.system.unidentifiedName;
+         const attackName = (theItem.system.isIdentified !== false) ? theItem.name : theItem.system.unidentifiedName;
          const descData = {
-            attacker: attacker.name,
+            attacker: instigator.name,
             weapon: attackName,
             damage
          };
          const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
+         dataset.desc = dataset.desc ? dataset.desc : resultString;
 
          const chatData = {
-            context: attacker,
+            context: instigator,
             mdata: dataset,
             roll: roll,
             digest: damageRoll.digest
@@ -138,8 +137,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
    static async clickApplyDamage(ev) {
       const element = ev.currentTarget;
       const dataset = element.dataset;
-      const attackerToken = canvas.tokens.get(dataset.attackerid);
-      const weapon = attackerToken?.actor.items.find((item) => item.id === dataset.weaponid);
+      const weapon = await fromUuid(dataset.weaponuuid);
       const selected = Array.from(canvas.tokens.controlled);
       const targeted = Array.from(game.user.targets);
       let applyTo = [];
@@ -155,7 +153,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
             yesLabel: game.i18n.localize('FADE.dialog.targeted'),
             noLabel: game.i18n.localize('FADE.dialog.selected'),
             defaultChoice: "yes"
-         }, attackerToken);
+         });
 
          if (dialogResp?.resp?.result == undefined) {
             isCanceled = true;

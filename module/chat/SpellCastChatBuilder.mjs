@@ -51,7 +51,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
 
       // Prepare data for the chat template
       const chatData = {
-         context,
+         context, // the caster/instigator
          rollContent,
          toHitResult,
          spellItem, // spell item

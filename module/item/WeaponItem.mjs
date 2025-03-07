@@ -173,7 +173,7 @@ export class WeaponItem extends GearItem {
    async roll() {
       const systemData = this.system;
       // The selected token, not the actor
-      const attacker = this.actor || canvas.tokens.controlled?.[0];
+      const attacker = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;
