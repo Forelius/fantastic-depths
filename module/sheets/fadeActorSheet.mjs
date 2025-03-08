@@ -2,6 +2,7 @@ import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
+import { ClassItem } from '../item/ClassItem.mjs';
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -90,6 +91,12 @@ export class fadeActorSheet extends ActorSheet {
          const item = this._getItemFromActor(event);
          item.sheet.render(true);
       });
+      html.on('click', '.class-edit', (event) => {
+         const item = ClassItem.getClassItem(this.actor.system.details.class);
+         if (item) {
+            item.sheet.render(true);
+         }
+      });
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable
@@ -167,16 +174,17 @@ export class fadeActorSheet extends ActorSheet {
                await this._toggleCollapsibleContent(event);
             }
          });
+
          // Bind the collapsible functionality to the header click event
          html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
       }
    }
 
    /**
- * Organize and classify Items for Actor sheets.
- *
- * @param {object} context The context object to mutate
- */
+    * Organize and classify Items for Actor sheets.
+    *
+    * @param {object} context The context object to mutate
+    */
    _prepareItems(context) {
       // Initialize arrays.
       let gear = [];

@@ -540,7 +540,7 @@ h1, h2, h3, h4 {
 .dark-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #ebeae4;
 }
-.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus, .dark-mode .fantastic-depths .window-content .chatable:hover, .dark-mode .fantastic-depths .window-content .chatable:focus {
+.dark-mode .fantastic-depths .window-content .rollable:hover, .dark-mode .fantastic-depths .window-content .rollable:focus, .dark-mode .fantastic-depths .window-content .chatable:hover, .dark-mode .fantastic-depths .window-content .chatable:focus, .dark-mode .fantastic-depths .window-content .class-edit:hover, .dark-mode .fantastic-depths .window-content .class-edit:focus {
   color: #ebeae4;
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
@@ -649,7 +649,7 @@ h1, h2, h3, h4 {
 .light-mode .fantastic-depths .window-content .items-list .item .item-name {
   color: #2b2a24;
 }
-.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus, .light-mode .fantastic-depths .window-content .chatable:hover, .light-mode .fantastic-depths .window-content .chatable:focus {
+.light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus, .light-mode .fantastic-depths .window-content .chatable:hover, .light-mode .fantastic-depths .window-content .chatable:focus, .light-mode .fantastic-depths .window-content .class-edit:hover, .light-mode .fantastic-depths .window-content .class-edit:focus {
   color: #2b2a24;
   text-shadow: 0 0 10px #ae7615;
 }

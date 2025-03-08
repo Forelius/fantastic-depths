@@ -14,7 +14,7 @@ export class ClassItemSheet extends fadeItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'levels',
+               initial: 'description',
             },
          ],
       });
