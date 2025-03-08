@@ -8,8 +8,6 @@ export const preloadHandlebarsTemplates = async function () {
       // Actor partials.
       'systems/fantastic-depths/templates/actor/parts/ability-scores.hbs',
       'systems/fantastic-depths/templates/actor/parts/hp-ac.hbs',
-      'systems/fantastic-depths/templates/actor/parts/exploration.hbs',
-      'systems/fantastic-depths/templates/actor/parts/saving-throws.hbs',
       'systems/fantastic-depths/templates/actor/parts/movement.hbs',
       'systems/fantastic-depths/templates/actor/parts/flight.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-items.hbs',

@@ -424,7 +424,7 @@ export class fadeDialog {
             </div>
         </form>
     `;
-      console.debug(content);
+      //console.debug(content);
       // Create the dialog
       new Dialog({
          title: "Roll Table with Modifier",

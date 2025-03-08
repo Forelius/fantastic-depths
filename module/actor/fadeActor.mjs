@@ -374,11 +374,13 @@ export class fadeActor extends Actor {
     * @public
     * @param {any} type A string key of the saving throw type.
     */
-   async rollSavingThrow(type) {
+   async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
+      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
       const savingThrow = this.#getSavingThrow(type);
       const rollData = this.getRollData();
+      let dialogResp = null;
       let dataset = {};
       dataset.dialog = "save";
       dataset.pass = savingThrow.system.operator;
@@ -389,11 +391,19 @@ export class fadeActor extends Actor {
          dataset.type = type;
       }
 
-      let dialogResp = await DialogFactory(dataset, this);
+      if (ctrlKey === true) {
+         dialogResp = {
+            rolling: true,
+            mod: 0
+         };
+      } else {
+         const dialog = await DialogFactory(dataset, this);
+         dialogResp = dialog?.resp;
+      }
 
-      if (dialogResp?.resp?.rolling === true) {
-         let rollMod = dialogResp.resp?.mod || 0;
-         if (dialogResp.resp.vsmagic === true) {
+      if (dialogResp?.rolling === true) {
+         let rollMod = dialogResp.mod || 0;
+         if (dialogResp.vsmagic === true) {
             rollMod += this.system.abilities.wis.mod;
          }
          rollMod += this.system.mod.save[type] || 0;
@@ -402,7 +412,6 @@ export class fadeActor extends Actor {
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
-            dialogResp: dialogResp,
             context: this,
             caller: savingThrow,
             mdata: dataset,
@@ -431,7 +440,7 @@ export class fadeActor extends Actor {
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
-            target.actor.rollSavingThrow(dataset.type);
+            target.actor.rollSavingThrow(dataset.type, event);
          }
       }
    }

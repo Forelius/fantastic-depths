@@ -7,12 +7,15 @@
       <div class="flexrow">
          <div class='item-name'>
             <div class="item-image rollable"
-                 {{#if item.roll}}
-                 data-test="specialAbility"
-                 {{/if}}
                  data-roll-type='item'
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-               <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
+               <img src='{{item.img}}' 
+                    {{#if (or (eq item.system.rollFormula null) (eq item.system.rollFormula ''))}}
+                    data-tooltip='{{item.name}}' 
+                    {{else}}
+                    data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}'
+                    {{/if}}
+                    width='24' height='24' />
             </div>
             <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
          </div>

@@ -53,10 +53,10 @@ export class SkillItem extends fadeItem {
    * @param {Event} event The originating click event
    * @private
    */
-   async roll() {
+   async roll(dataset, dialogResp = null, event = null) {
       const systemData = this.system;
       const roller = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
-      const dataset = {
+      dataset = {
          rollType: 'item',
          label: this.name,
          dialog: 'generic',
@@ -64,23 +64,32 @@ export class SkillItem extends fadeItem {
       };
       // Retrieve roll data.
       const rollData = this.getRollData();
+      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
 
-      // Show the dialog for roll modifier
-      let dialogResp = null;
-      try {
-         dialogResp = await DialogFactory(dataset, this.actor);
-         const levelMod = systemData.level > 1 ? `-${systemData.level-1}` : '';
-         rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}${levelMod}-@mod` : `${systemData.rollFormula}${levelMod}`;
-      }
-      // If close button is pressed
-      catch (error) {
-         // Like Weird Al says, eat it
+      const levelMod = systemData.level > 1 ? `-${systemData.level - 1}` : '';
+      if (ctrlKey === true) {
+         dialogResp = {
+            rolling: true,
+            mod: 0            
+         };
+         rollData.formula = `${systemData.rollFormula}${levelMod}`;
+      } else {
+         // Show the dialog for roll modifier
+         try {
+            const dialog = await DialogFactory(dataset, this.actor);
+            dialogResp = dialog?.resp;
+            rollData.formula = dialogResp.mod != 0 ? `${systemData.rollFormula}${levelMod}-@mod` : `${systemData.rollFormula}${levelMod}`;
+         }
+         // If close button is pressed
+         catch (error) {
+            // Like Weird Al says, eat it
+         }
       }
 
       let result = null;
       if (dialogResp !== null) {
          // Roll
-         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
+         const rollContext = { ...rollData, ...dialogResp || {} };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const targetRoll = await new Roll(systemData.targetFormula, rollContext).evaluate();
 
@@ -91,7 +100,6 @@ export class SkillItem extends fadeItem {
          const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
-            dialogResp: dialogResp,
             caller: this, // the skill item
             context: roller, // the skill item owner
             mdata: dataset,

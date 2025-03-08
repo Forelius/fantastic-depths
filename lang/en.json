@@ -12,6 +12,7 @@
          "Title": "Title",
          "Alignment": "Alignment",
          "Class": "Class",
+         "ClassHint": "<p>Class can be selected by manually typing the class name or drag/droppping the class item onto the character sheet. It is possible to type any value, but class data will only be synched if the class name matches exactly.</p><p><i>Click label to view class sheet.</i></p>",
          "Species": "Race",
          "Sex": "Sex",
          "Age": "Age",
@@ -96,27 +97,7 @@
             "moveTurn": "Base Movement"
          },
          "explore": {
-            "long": "Exploration",
-            "OpenDoor": {
-               "long": "Force open door or lift heavy object.",
-               "short": "Open Door",
-               "abbr": "OD"
-            },
-            "SecretDoor": {
-               "long": "Detect a hidden door or compartment.",
-               "short": "Secret Door",
-               "abbr": "SD"
-            },
-            "ListenDoor": {
-               "long": "Hear a sound through a door or in the distance.",
-               "short": "Listen Door",
-               "abbr": "LD"
-            },
-            "FindTrap": {
-               "long": "Find a concealed medium to large trap or hazard.",
-               "short": "Find Trap",
-               "abbr": "FT"
-            }
+            "long": "Exploration"            
          },
          "Saves": {
             "saveAs": {
@@ -136,35 +117,35 @@
                "abbr": "STR",
                "key": "ST",
                "mod": "To-Hit, Damage, Open Doors",
-               "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p</div>"
+               "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "dex": {
                "long": "Dexterity",
                "abbr": "DEX",
                "key": "DX",
                "mod": "Missile To-Hit, AC, Initiative",
-               "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p>"
+               "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "int": {
                "long": "Intelligence",
                "abbr": "INT",
                "key": "IN",
                "mod": "Language(s)",
-               "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p>"
+               "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "wis": {
                "long": "Wisdom",
                "abbr": "WIS",
                "key": "WS",
                "mod": "Saving Throws vs Spells",
-               "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p>"
+               "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "con": {
                "long": "Constitution",
                "abbr": "CON",
                "key": "CN",
                "mod": "Hit Points/Level",
-               "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p>"
+               "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "cha": {
                "long": "Charisma",
@@ -172,7 +153,7 @@
                "key": "CH",
                "mod": "Reactions",
                "retainer": "Retainers",
-               "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p>"
+               "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             }
          },
          "Attacks": {
@@ -890,6 +871,7 @@
       },
       "Size": "Size",
       "roll": "Roll",
+      "rollWithCtrl": "<p>Roll {name} check.</p><p><i>Click to roll. Ctrl-click to roll without mod.</i></p>",
       "vsMagic": "vs Magic",
       "rollMode": "Roll Mode",
       "operator": "Operator",

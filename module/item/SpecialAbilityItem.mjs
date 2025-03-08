@@ -47,13 +47,14 @@ export class SpecialAbilityItem extends fadeItem {
    * @param {Event} event The originating click event
    * @private
    */
-   async roll(dataset, dialogResp = null) {
+   async roll(dataset, dialogResp = null, event = null) {
       let result = null;
       const systemData = this.system;
       const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
+      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
 
       let rolled = null;
       if (hasRoll === true) {
@@ -63,13 +64,17 @@ export class SpecialAbilityItem extends fadeItem {
             dataset.rollmode = systemData.rollMode;
             if (dialogResp) {
                dialogResp.rolling === true
-            }
-            else {
+            } else if (ctrlKey === true) {
+               dialogResp = {
+                  rolling: true,
+                  mod: 0
+               };
+            } else {
                const dialog = await DialogFactory(dataset, this.actor);
                dialogResp = dialog?.resp;
             }
 
-            if (dialogResp.rolling === true) {
+            if (dialogResp?.rolling === true) {
                if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
                   dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
                } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {

@@ -10,7 +10,7 @@
                  {{/if}}
                  data-roll-type='item'
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-               <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
+               <img src='{{item.img}}' data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}' width='24' height='24' />
             </div>
             <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
          </div>

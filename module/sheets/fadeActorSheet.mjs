@@ -120,7 +120,8 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Rollable abilities.
-         html.on('click', '.rollable, .chatable', this._onRoll.bind(this));
+         html.on('click', '.rollable', this._onRoll.bind(this));
+         html.on('click', '.chatable', this._onRoll.bind(this));
 
          // Containers collapse/expand
          html.find(".gear-items .category-caret").click((event) => {
@@ -481,31 +482,35 @@ export class fadeActorSheet extends ActorSheet {
       event.preventDefault();
       event.stopPropagation();
 
+      //console.debug('_onRoll', event);
+      const ctrlKey = event.originalEvent.ctrlKey;
       const elem = event.currentTarget;
       const dataset = elem.dataset;
       let formula = dataset.formula;
       let chatType = null;
-      let dialogResp;
+      let dialogResp = null;
 
       if (dataset.rollType === 'item') {
          // If clicking an item then have item handle roll.
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
          // Directly roll item and skip the rest
-         if (item) await item.roll(dataset);
+         if (item) await item.roll(dataset, null, event);
       } else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          chatType = CHAT_TYPE.ABILITY_CHECK;
-         try {
-            dialogResp = await DialogFactory(dataset, this.actor);
-            formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
-         }
-         // If close button is pressed
-         catch (error) {
-            chatType = null;
+         if (ctrlKey === false) {
+            try {
+               dialogResp = await DialogFactory(dataset, this.actor);
+               formula = (dialogResp !== null && dialogResp?.resp.mod != 0) ? "1d20-@mod" : "1d20";
+            }
+            // If close button is pressed
+            catch (error) {
+               chatType = null;
+            }
          }
       } else if (dataset.test === 'save') {
-         this.actor.rollSavingThrow(dataset.type);
+         this.actor.rollSavingThrow(dataset.type, event);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
          const title = elem.getAttribute("title");
