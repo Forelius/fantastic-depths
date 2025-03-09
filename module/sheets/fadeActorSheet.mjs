@@ -386,13 +386,9 @@ export class fadeActorSheet extends ActorSheet {
             }
             super._onDropItem(event, data);
          }
-      } else if (droppedItem.type === "class") {
-         await this.actor.update({ "system.details.class": droppedItem.name });
-         if (this.actor.system.details.level === 0) {
-            await this.actor.update({ "system.details.level": 1 });
-         }
+      } else if (droppedItem.type === "class" && this.actor.type === 'character') {
+         await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
       } else if (droppedItem.type === 'effect') {
-
       }
       else {
          super._onDropItem(event, data);
