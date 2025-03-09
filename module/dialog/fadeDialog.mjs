@@ -395,8 +395,43 @@ export class fadeDialog {
    }
 
    static async getRolltableDialog() {
+      // Helper: Recursively gather folder IDs starting from a given folderId.
+      function getChildFolderIds(folderId) {
+         // Start with the provided folder.
+         let ids = [folderId];
+         // In v11, the folder's parent is stored directly in f.parent
+         const children = game.folders.filter(f => f.parent === folderId).sort((a, b) => a.name.localeCompare(b.name));
+         for (let child of children) {
+            ids.push(...getChildFolderIds(child.id));
+         }
+         return ids;
+      }
+      // Helper: Given a folderId, returns all roll tables located in that folder or in any child folder.
+      function getRollTablesForFolder(folderId) {
+         const folderIds = getChildFolderIds(folderId);
+         return game.tables.filter(rt => folderIds.includes(rt.folder?.id || ""));
+      }
+
+      // First, get all folders that can contain roll tables.
+      // In Foundry, folders have a "type" property that matches the document type they hold.
+      // For roll tables, this is usually "RollTable". Adjust if your system uses a different type.
+      const rollTableFolders = game.folders.filter(f => f.type === "RollTable");
+      if (!rollTableFolders.length) {
+         return ui.notifications.warn("No folders for Roll Tables were found.");
+      }
+      // Build folder dropdown options.
+      const folderOptions = rollTableFolders
+         .map(f => `<option value="${f.id}">${f.name}</option>`)
+         .join("");
+      // Use the first folder in the list as the default.
+      const defaultFolderId = rollTableFolders[0].id;
+      let initialRollTables = getRollTablesForFolder(defaultFolderId);
+      let tableOptions = initialRollTables.length
+         ? initialRollTables.map(rt => `<option value="${rt.id}">${rt.name}</option>`).join("")
+         : `<option value="">No Roll Tables in this folder</option>`;
+
       // Get all roll tables and sort them alphabetically by name
-      const rollTables = game.tables.contents.sort((a, b) => a.name.localeCompare(b.name));
+      /*const rollTables = game.tables.contents.sort((a, b) => a.name.localeCompare(b.name));*/
 
       // Get roll modes from the Foundry system
       const rollModes = Object.entries(CONFIG.Dice.rollModes).map(([key, value]) => {
@@ -407,10 +442,16 @@ export class fadeDialog {
       let content = `
         <form>
             <div class="form-group">
-                <label for="rollTableSelect">Select Roll Table:</label>
-                <select id="rollTableSelect" name="rollTableSelect">
-                    ${rollTables.map(table => `<option value="${table.id}">${table.name}</option>`).join('')}
-                </select>
+              <label>Folder:</label>
+              <select name="folder" id="folder-select">
+                ${folderOptions}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="rollTableSelect">Select Roll Table:</label>
+              <select name="table" id="table-select">
+                ${tableOptions}
+              </select>
             </div>
             <div class="form-group">
                 <label for="modifierInput">Modifier:</label>
@@ -433,7 +474,7 @@ export class fadeDialog {
             roll: {
                label: "Roll",
                callback: async (html) => {
-                  const selectedTableId = html.find("#rollTableSelect").val();
+                  const selectedTableId = html.find("#table-select").val();
                   const modifier = parseInt(html.find("#modifierInput").val()) || 0;
                   const selectedRollMode = html.find("#rollModeSelect").val();
 
@@ -475,7 +516,21 @@ export class fadeDialog {
             }
          },
          default: "close",
-         close: () => { }
+         close: () => { },
+         render: (html) => {
+            // When the folder dropdown changes, update the roll table dropdown.
+            html.find("#folder-select").on("change", (ev) => {
+               const folderId = ev.currentTarget.value;
+               const rollTables = getRollTablesForFolder(folderId);
+               let options = "";
+               if (rollTables.length) {
+                  options = rollTables.map(rt => `<option value="${rt.id}">${rt.name}</option>`).join("");
+               } else {
+                  options = `<option value="">No Roll Tables in this folder</option>`;
+               }
+               html.find("#table-select").html(options);
+            });
+         }
       }).render(true);
    }
 
