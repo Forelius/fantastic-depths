@@ -159,6 +159,10 @@ h1, h2, h3, h4 {
   min-height: 230px !important;
 }
 
+.player-combat-form .is-dead, .party-tracker-list .is-dead {
+  background: url("../assets/img/grungered.jpg");
+}
+
 .party-tracker {
   flex: 1 1 auto;
 }
@@ -166,9 +170,6 @@ h1, h2, h3, h4 {
   max-height: 100%; /* Ensure the list is scrollable */
   overflow-y: auto;
   padding: 4px;
-}
-.party-tracker .party-tracker-list .is-dead {
-  background: url("../assets/img/grungered.jpg");
 }
 .party-tracker .party-tracker-list .party-member {
   position: relative; /* Relative positioning allows the delete button to be positioned inside */

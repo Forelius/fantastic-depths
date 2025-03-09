@@ -68,6 +68,11 @@ export class PlayerCombatForm extends FormApplication {
          const rowElement = document.querySelector(`tr[data-actor-id="${actor.id}"]`);
          const combat = updateData.system?.combat;
          if (rowElement) {
+            // Dead or alive styling.
+            if (updateData.system?.hp.value !== undefined) {
+               $(rowElement).toggleClass(updateData.system?.hp.value <= 0 ? 'is-dead' : 'alive', true);
+               $(rowElement).toggleClass(updateData.system?.hp.value <= 0 ? 'alive' : 'is-dead', false);
+            }
             if (combat?.declaredAction !== undefined) {
                // Update select control value
                rowElement.querySelector('[name="declaredAction"]').value = combat.declaredAction;

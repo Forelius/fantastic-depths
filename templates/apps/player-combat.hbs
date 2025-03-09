@@ -1,4 +1,4 @@
-<form>
+<form class="player-combat-form">
    <style>
       table {
          width: 99%;
@@ -31,7 +31,7 @@
    <table>
       <tbody>
          {{#each ownedCombatants as |combatant|}}
-         <tr data-token-id="{{combatant.token.id}}" data-actor-id="{{combatant.actor.id}}">
+         <tr class="{{ifThen combatant.actor.system.combat.isDead "is-dead" "alive"}}" data-token-id="{{combatant.token.id}}" data-actor-id="{{combatant.actor.id}}">
             <td class="col-name">
                <label class="combatant-name">{{combatant.name}}</label><br />
                <label class="font-12" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">
