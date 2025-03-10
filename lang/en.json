@@ -97,7 +97,7 @@
             "moveTurn": "Base Movement"
          },
          "explore": {
-            "long": "Exploration"            
+            "long": "Exploration"
          },
          "Saves": {
             "saveAs": {
@@ -887,7 +887,13 @@
       "identified": "Identified",
       "cursed": "Cursed",
       "rounds": "rounds",
-      "turns": "turns"
+      "turns": "turns",
+      "concatLogic": {
+         "name": "Logic",
+         "none": "",
+         "and": "and",
+         "or": "or"
+      }
    },
 
    "TYPES": {

@@ -259,6 +259,7 @@ export class DataMigrator {
       await performOperations('fade-compendiums.item-compendium', 'FaDe Items', 'Item', 1);
       await performOperations('fade-compendiums.actor-compendium', 'FaDe Actors', 'Actor', 0);
       await performOperations('fade-compendiums.roll-table-compendium', 'FaDe Roll Tables', 'RollTable', 0);
+      await performOperations('fade-compendiums.macro-compendium', 'FaDe Macros', 'Macro', 0);
    }
 
    #testMigrate() {

@@ -146,13 +146,7 @@ export class CharacterActor extends fadeActor {
       const nameLevel = classData.levels.find(level => level.level === 9);
 
       // Level Bonus
-      const { pr5Count, pr10Count } = classData.primeReqs.reduce((counts, primeReq) => {
-         const value = this.system.abilities[primeReq.ability].value;
-         if (value >= primeReq.xpBonus5) counts.pr5Count++;
-         if (value >= primeReq.xpBonus10) counts.pr10Count++;
-         return counts;
-      }, { pr5Count: 0, pr10Count: 0 });
-      this.system.details.xp.bonus = pr10Count === classData.primeReqs.length ? 10 : pr5Count === classData.primeReqs.length ? 5 : 0;
+      this.system.details.xp.bonus = classItem.getXPBonus(this.system.abilities);
 
       // Level stuff
       if (levelData) {

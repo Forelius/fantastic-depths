@@ -40,11 +40,16 @@ export class ClassItemSheet extends fadeItemSheet {
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
+      // Abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Saving throw items
       context.saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      // Concat logics
+      context.logics = [...CONFIG.FADE.ConcatLogic.map((key) => {
+         return { value: key, text: game.i18n.localize(`FADE.concatLogic.${key}`) }
+      })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }

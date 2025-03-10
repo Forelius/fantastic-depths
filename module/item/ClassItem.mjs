@@ -50,6 +50,28 @@ export class ClassItem extends fadeItem {
       await this.update({ "system.classAbilities": classAbilities });
    }
 
+   getXPBonus(abilities) {
+      const groups = this.system.primeReqs.reduce((acc, curr) => {
+         if (!acc[curr.percentage]) acc[curr.percentage] = []; //If this type wasn't previously stored
+         acc[curr.percentage].push(curr);
+         return acc;
+      }, {});
+      let highest = 0;
+      
+      for (const group of Object.entries(groups)) {
+         const tier = groups[group[0]];
+         let isQualified = false;
+         for (const requirement of tier) {
+            isQualified = (requirement.concatLogic === 'none' || requirement.concatLogic === 'or')
+               ? abilities[requirement.ability].value >= requirement.minScore
+               : isQualified && abilities[requirement.ability].value >= requirement.minScore;
+         }
+         const currentPerc = parseInt(group);
+         highest = isQualified && currentPerc > highest ? currentPerc : highest;
+      }
+      return highest;
+   }
+
    /**
     * Retrieves the specified class item, if it exists.
     * @param {any} className The class item's full and case-sensitive name.

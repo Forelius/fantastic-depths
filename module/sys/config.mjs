@@ -30,6 +30,11 @@ FADE.DamageTypes = [
    "heal",
    "hull"
 ]
+FADE.ConcatLogic = [
+   "none",
+   "and",
+   "or"
+];
 /** 
  * This is the type of weapon being used.
  */
