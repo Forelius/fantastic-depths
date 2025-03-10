@@ -251,7 +251,9 @@
          "LightItem": "Light Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
          "WeaponItem": "Weapon Item Sheet",
-         "Treasure": "Treasure Item Sheet"
+         "Treasure": "Treasure Item Sheet",
+         "Condition": "Condition Item Sheet",
+         "Species": "Ancestry Item Sheet"
       },
       "Spell": {
          "casts": "casts",
@@ -914,7 +916,8 @@
          "treasure": "Treasure",
          "class": "Character Class",
          "weaponMastery": "Weapon Mastery Definition",
-         "condition": "Condition"
+         "condition": "Condition",
+         "species": "Ancestry"
       }
    },
 

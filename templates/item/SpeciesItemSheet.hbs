@@ -1,0 +1,50 @@
+﻿<form class='{{cssClass}}' autocomplete='off'>
+   <header class='sheet-header'>
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' />
+      <div class='header-fields'>
+         <ul class="summary flexrow">
+            <li>
+               <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+            </li>
+         </ul>
+         <ul class="summary flexrow">
+         </ul>
+      </div>
+   </header>
+   {{! Sheet Tab Navigation }}
+   <nav class='sheet-tabs tabs' data-group='primary'>
+      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
+      {{#if isGM}}
+      <a class='item' data-tab='attributes'>{{localize 'FADE.tabs.attributes'}}</a>
+      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
+      <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
+      {{/if}}
+   </nav>
+
+   {{! Sheet Body }}
+   <section class='sheet-body'>
+      {{! Description Tab }}
+      <div class='tab' data-group='primary' data-tab='description'>
+         {{! Editors must receive enriched text data from getData to properly handle rolls }}
+         {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+      </div>
+      {{#if isGM}}
+      {{! Effects Tab }}
+      <div class="tab effects" data-group="primary" data-tab="effects">
+         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+      </div>
+      {{! Attributes Tab }}
+      <div class='tab' data-group='primary' data-tab='attributes'>
+         <div>
+            {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+         </div>
+         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
+      </div>
+      {{! GM-Only Tab }}
+      <div class='tab' data-group='primary' data-tab='gm-only'>
+         <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
+         <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
+      </div>
+      {{/if}}
+   </section>
+</form>
