@@ -17,7 +17,9 @@ export class MonsterDataModel extends fadeActorDataModel {
             attacks: new fields.StringField({ initial: "1" }),
             size: new fields.StringField({ initial: "M" }),
             intelligence: new fields.StringField({ initial: "7" }),
-            monsterType: new fields.StringField({ initial: "Monster (Common)" }),
+            monsterType: new fields.StringField({ initial: "Monster" }),
+            rarity: new fields.StringField({ initial: "Common" }),
+            //monsterTypes: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
             saveAs: new fields.StringField({ initial: "F1" }),
             // Some monsters have spells of a specific class level.
             castAs: new fields.StringField({ initial: null, nullable: true }),

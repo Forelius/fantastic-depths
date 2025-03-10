@@ -41,6 +41,7 @@
          "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
          "XPAward": "XP Award",
          "attackRank": "Attack Rank",
+         "rarity": "Rarity",
          "enchanted": {
             "name": "Enchanted",
             "hint": "This enchanted creature can only be hit by magical weapons or spells."
