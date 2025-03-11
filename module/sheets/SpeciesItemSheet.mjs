@@ -1,5 +1,6 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { ClassItem } from "../item/ClassItem.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -10,8 +11,8 @@ export class SpeciesItemSheet extends fadeItemSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'item'],
-         width: 650,
-         height: 480,
+         width: 500,
+         height: 400,
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -40,17 +41,31 @@ export class SpeciesItemSheet extends fadeItemSheet {
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare active effects for easier access
-      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+      context.effects = EffectManager.preparePassiveEffects(this.item.effects);
 
       return context;
    }
 
-   /** @override */
+   /** @override
+    * We do not call fadeItemSheet activateListeners from this sheet.
+    */
    activateListeners(html) {
       super.activateListeners(html);
-
       // Everything below here is only needed if the sheet is editable
       if (!this.isEditable) return;
+
+      // Everything below here is only needed if the sheet is editable
+      // Languages
+      html.find('input[data-action="add-language"]').keypress((ev) => {
+         if (ev.which === 13) {
+            const value = $(ev.currentTarget).val();
+            this.object.languageManager.pushTag(value);
+         }
+      });
+      html.find(".language-delete").click((ev) => {
+         const value = ev.currentTarget.parentElement.dataset.tag;
+         this.object.languageManager.popTag(value);
+      });
 
       // Add Inventory Item
       html.on('click', '.item-create', async (event) => { await this.#onCreateChild(event) });
@@ -71,7 +86,7 @@ export class SpeciesItemSheet extends fadeItemSheet {
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'specialAbility') {
 
-      }      
+      }
    }
 
    /**
@@ -83,13 +98,11 @@ export class SpeciesItemSheet extends fadeItemSheet {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type;
-      //if (type === 'classSave') {
-      //   this.item.createClassSave();
-      //} else if (type === 'primeReq') {
-      //   this.item.createPrimeReq();
-      //} else if (type === 'classAbility') {
-      //   this.item.createClassAbility();
-      //}
+      if (type === 'specialAbility') {
+         this.item.createSpecialAbility();
+      } else if (type === 'class') {
+         this.item.createClass();
+      }
       this.render();
    }
 
@@ -98,24 +111,19 @@ export class SpeciesItemSheet extends fadeItemSheet {
       const type = event.currentTarget.dataset.type;
       const index = parseInt(event.currentTarget.dataset.index);
 
-      //if (type === 'classSave') {
-      //   const saves = this.item.system.saves;
-      //   // Handle deletion of a class save
-      //   saves.splice(index, 1);
-      //   await this.item.update({ "system.saves": saves });
-      //} else if (type === 'primeReq') {
-      //   const primeReqs = this.item.system.primeReqs;
-      //   if (primeReqs.length > index) {
-      //      primeReqs.splice(index, 1);
-      //      await this.item.update({ "system.primeReqs": primeReqs });
-      //   }
-      //} else if (type === 'classAbility') {
-      //   const classAbilities = this.item.system.classAbilities;
-      //   if (classAbilities.length > index) {
-      //      classAbilities.splice(index, 1);
-      //      await this.item.update({ "system.classAbilities": classAbilities });
-      //   }
-      //}
+      if (type === 'specialAbility') {
+         const items = this.item.system.specialAbilities;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.specialAbilities": items });
+         }
+      } else if (type === 'class') {
+         const items = this.item.system.classes;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.classes": items });
+         }
+      }
       this.render();
    }
 }

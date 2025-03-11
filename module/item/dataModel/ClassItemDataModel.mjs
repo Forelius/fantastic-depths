@@ -35,7 +35,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
-
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
          minCon: new fields.NumberField({ required: false, nullable: true }),
@@ -78,7 +77,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                })
             }
          ),
-
          saves: new fields.ArrayField(
             new fields.ObjectField({}),           
             {
@@ -86,7 +84,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                initial: []
             }
          ),
-
          // Spells Field Adjusted to Be Optional
          spells: new fields.ArrayField(
             new fields.ArrayField(

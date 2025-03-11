@@ -182,4 +182,31 @@ export class EffectManager {
       }
       return categories;
    }
+
+   /**
+    * Prepare the data structure for Active Effects which are currently embedded in an Actor or Item.
+    * @param {ActiveEffect[]} effects    A collection or generator of Active Effect documents to prepare sheet data for
+    * @return {object}                   Data for rendering
+    */
+   static preparePassiveEffects(effects) {
+      // Define effect header categories
+      const categories = {
+         passive: {
+            type: 'passive',
+            label: game.i18n.localize('FADE.Effect.Passive'),
+            effects: [],
+         }
+      };
+
+      // Iterate over active effects, classifying them into categories
+      for (const effect of effects) {
+         // Fix for unknown source
+         effect.sourceNameFix = effect.sourceName;
+         if (effect.sourceName === "Unknown" && effect.parent) {
+            effect.sourceNameFix = effect.parent.name ?? effect.sourceName;
+         }
+         categories.passive.effects.push(effect);
+      }
+      return categories;
+   }
 }

@@ -1,5 +1,4 @@
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -7,8 +6,7 @@ import { TagManager } from '../sys/TagManager.mjs';
  */
 export class fadeItem extends Item {
    constructor(data, context) {
-      super(data, context);
-      this.tagManager = new TagManager(this); // Initialize TagManager
+      super(data, context);      
    }
 
    get ownerToken() {
@@ -93,9 +91,6 @@ export class fadeItem extends Item {
       if (description?.length <= 0) {
          description = '--';
       }
-      //if (description.startsWith('<p>') === false) {
-      //   description = `<p>${description}</p>`;
-      //}
       return description;
    }
 
@@ -165,7 +160,7 @@ export class fadeItem extends Item {
 
    /**
     * Helper method to process Active Effect changes.
-    * @private
+    * @protected
     * @param {any} mode A valid CONST.ACTIVE_EFFECT_MODES value.
     * @param {any} currentValue The property's current value/
     * @param {any} changeValue The value specified in the effect change data.

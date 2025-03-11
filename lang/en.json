@@ -6,6 +6,7 @@
          "HealthMaxMonster": "Max HP. Set to zero to autocalculate max HP from hit dice.",
          "Max": "Max",
          "Min": "Min",
+         "Mod":  "Mod",
          "HealthShort": "HP",
          "HitDice": "Hit Dice",
          "HitDiceShort": "HD",
@@ -500,6 +501,10 @@
             "hint": "If checked, the condition will be added as a status effect."
          }
       },
+      "species": {
+         "requiredScores": "Required Attribute Scores",
+         "classes": "Classes"
+      },
       "Effect": {
          "short": "Effect",
          "Source": "Source",
@@ -510,7 +515,9 @@
       },
       "Tags": {
          "addTags": "Add tags",
-         "desc": "Some tags are used by the system and others are meant for GM or player usage."
+         "desc": "Some tags are used by the system and others are meant for GM or player usage.",
+         "addLanguage": "Add Language",
+         "languageDesc": "Add one or more languages."
       },
       "notification": {
          "selectTarget": "A targetted must first be selected.",

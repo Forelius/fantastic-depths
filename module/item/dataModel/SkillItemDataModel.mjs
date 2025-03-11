@@ -6,7 +6,6 @@ export class SkillItemDataModel extends foundry.abstract.TypeDataModel {
       const { fields } = foundry.data;
       return {
          // Fields from the "base" template
-         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
          description: new fields.StringField({ required: false, initial: "" }),
          gm: new fields.SchemaField({
             notes: new fields.StringField({ required: false, initial: "" })

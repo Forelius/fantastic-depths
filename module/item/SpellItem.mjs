@@ -1,11 +1,13 @@
 import { fadeItem } from './fadeItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 export class SpellItem extends fadeItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    /** @override */

@@ -1,5 +1,6 @@
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from './fadeItem.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -8,7 +9,7 @@ import { fadeItem } from './fadeItem.mjs';
 export class GearItem extends fadeItem {
    constructor(data, context) {
       super(data, context);
-      //this.tagManager = new TagManager(this); // Initialize TagManager
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    get ownerToken() {
@@ -125,59 +126,6 @@ export class GearItem extends fadeItem {
       if (description?.length <= 0) {
          description = '--';
       }
-      //if (description.startsWith('<p>') === false) {
-      //   description = `<p>${description}</p>`;
-      //}
       return description;
-   }
-
-   /**
-    * Process all item active effects that are not set to transfer to the owning actor.
-    * @protected
-    */
-   _processNonTransferActiveEffects() {
-      const data = this.system;
-
-      // Apply Active Effects only if transfer is false
-      const changes = this.effects
-         .filter(effect => !effect.disabled && effect.transfer === false) // Only local effects
-         .flatMap(effect => effect.changes);
-
-      // Process changes
-      for (const change of changes) {
-         if (change.key.startsWith("system.")) {
-            const path = change.key.slice(7); // Strip "system." prefix
-            const currentValue = foundry.utils.getProperty(data, path);
-            const newValue = this._applyEffectChange(change.mode, currentValue, change.value);
-            foundry.utils.setProperty(data, path, newValue);
-         }
-      }
-   }
-
-   /**
-    * Helper method to process Active Effect changes.
-    * @private
-    * @param {any} mode A valid CONST.ACTIVE_EFFECT_MODES value.
-    * @param {any} currentValue The property's current value/
-    * @param {any} changeValue The value specified in the effect change data.
-    * @returns
-    */
-   _applyEffectChange(mode, currentValue, changeValue) {
-      const value = Number(changeValue) || 0;
-      switch (mode) {
-         case CONST.ACTIVE_EFFECT_MODES.ADD:
-            return (currentValue || 0) + value;
-         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
-            return (currentValue || 1) * value;
-         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
-            return value;
-         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
-            return Math.min(currentValue || Infinity, value); // Set to the lower value
-         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
-            return Math.max(currentValue || -Infinity, value); // Set to the higher value
-         default:
-            console.warn(`Unsupported Active Effect mode: ${mode}`);
-            return currentValue;
-      }
    }
 }

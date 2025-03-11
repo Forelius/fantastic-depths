@@ -29,7 +29,7 @@ class MySystemVersion {
       if (ignoreRC == false) {
          return this.version === version.version;
       } else {
-         return this.major === version.major && this.minor === version.minor && this.patch === version.build;
+         return this.major === version.major && this.minor === version.minor && this.patch === version.patch;
       }
    }
 
@@ -47,14 +47,14 @@ class MySystemVersion {
          // True if current rc has value, next rc has value, current rc is less than next rc
          //    and majors are same or current major less than next major
          //    and minors are same or current minor less than next minor
-         //    and build are same or current build less than next build
+         //    and patch are same or current patch less than next patch
          result.isNextRC = (this.rc > 0 && version.rc > 0 && this.rc < version.rc
             && (this.major === version.major || this.major < version.major)
             && (this.minor === version.minor || this.minor < version.minor)
-            && (this.patch === version.build || this.patch < version.build));
+            && (this.patch === version.patch || this.patch < version.patch));
          result.isNextMajor = this.major < version.major;
          result.isNextMinor = this.major == version.major && this.minor < version.minor;
-         result.isNextPatch = this.minor == version.minor && this.patch < version.build;
+         result.isNextPatch = this.minor == version.minor && this.patch < version.patch;
          result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextPatch || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
          //console.debug(this, version, result);
@@ -83,10 +83,60 @@ export class DataMigrator {
          //}
          if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
             await this.fixTreasureItems();
-            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.")
+            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.");
+         }
+         if (this.oldVersion.lt(new MySystemVersion("0.8.1-rc.11"))) {
+            await this.fixTypeAndRarity();
+            const msg = "Fantastic Depths 0.8.0-rc.11 data migration complete.";
+            ui.notifications.info(msg);
          }
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+      }
+   }
+
+   async fixTypeAndRarity() {
+      function parseMonsterType(monsterType) {
+         // Split the monsterType by commas and trim whitespace
+         const terms = monsterType.split(',').map(term => term.trim());
+         let rarity = null;
+
+         // Iterate through the terms to find the one with rarity
+         const monsterTypes = terms.map(term => {
+            // Check if the term contains parentheses with the correct regex
+            const match = term.match(/^(.*?)\s*\((.*?)\)\s*$/);
+            if (match && match[2]) {
+               // If there's a match, extract the rarity from inside the parentheses
+               rarity = match[2].trim(); // Extract the rarity
+               return match[1].trim(); // Return the term without the rarity
+            }
+            return term; // Return the term if it doesn't contain rarity
+         }).filter(term => term); // Filter out any empty terms
+
+         return {
+            monsterTypes,
+            rarity
+         };
+      }
+
+      const monsters = game.actors.filter(actor => actor.type === 'monster');
+
+      const parsedMonsters = monsters.map(actor => {
+         const { monsterTypes, rarity } = parseMonsterType(actor.system.details.monsterType);
+         return {
+            actor,
+            name: actor.name,
+            monsterType: monsterTypes.join(', '),
+            rarity
+         };
+      });
+      for (let monster of parsedMonsters) {
+         if (monster.rarity === null) continue;
+         await monster.actor.update({
+            'system.details.monsterType': monster.monsterType,
+            'system.details.rarity': monster.rarity
+         });
+         console.debug(`Set ${monster.name}`, monster);
       }
    }
 
@@ -212,15 +262,15 @@ export class DataMigrator {
          await deleteFolderAndContents(folderName, folderType);
          // Import the 'item-compendium' from the 'fade-compendiums' system into a new folder
          await importCompendium(compendiumName, folderName);
-         if (permissionLevel > 0){
+         if (permissionLevel > 0) {
             let folder = game.folders.find(f => f.name === folderName && f.type === folderType);
             ui.notifications.info(`Setting permissions. This could take a few minutes. You will be notified when the process completes.`);
             await updatePermissions(folder, permissionLevel, folderType);
          }
-         ui.notifications.info(`Imported compendium '${compendiumName}' successfully into folder '${folderName}'.`);         
+         ui.notifications.info(`Imported compendium '${compendiumName}' successfully into folder '${folderName}'.`);
       }
 
-         // Recursive Permission Update for Folders and Their Contents
+      // Recursive Permission Update for Folders and Their Contents
       async function updatePermissions(folder, level, folderType) {
          const actualFolder = game.folders.get(folder.id);
          if (!actualFolder) {
