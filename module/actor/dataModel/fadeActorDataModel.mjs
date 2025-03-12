@@ -108,7 +108,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             }),
             save: new fields.ObjectField({
                //initial: { all: 0 },
-               //all: new fields.NumberField({ initial: 0 }),
+               all: new fields.NumberField({ initial: 0 }),
                //death: new fields.NumberField({ initial: 0 }),
                //wand: new fields.NumberField({ initial: 0 }),
                //paralysis: new fields.NumberField({ initial: 0 }),

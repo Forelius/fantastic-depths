@@ -8,8 +8,10 @@ export class SpeciesItemDataModel extends foundry.abstract.TypeDataModel {
          description: new fields.StringField({ required: false, initial: "" }),
          languages: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
          baseMovement: new fields.NumberField({ required: true }),
-         heightFormula: new fields.StringField({ nullable: true }),
-         weightFormula: new fields.StringField({ nullable: true }),
+         heightFormulaM: new fields.StringField({ nullable: true }),
+         weightFormulaM: new fields.StringField({ nullable: true }),
+         heightFormulaF: new fields.StringField({ nullable: true }),
+         weightFormulaF: new fields.StringField({ nullable: true }),
          classes: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: '' }),

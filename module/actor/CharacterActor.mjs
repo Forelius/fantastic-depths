@@ -1,7 +1,10 @@
 ﻿// actor-character.mjs
 import Formatter from '../utils/Formatter.mjs';
+import { fadeItem } from '../item/fadeItem.mjs';
 import { fadeActor } from './fadeActor.mjs';
 import { ClassItem } from "../item/ClassItem.mjs";
+import { SpeciesItem } from "../item/SpeciesItem.mjs";
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
 
 export class CharacterActor extends fadeActor {
 
@@ -40,9 +43,12 @@ export class CharacterActor extends fadeActor {
          this.logActorChanges(updateData, oldActorData, user, "property");
       }
       // Class or level updated.
-      if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
-         if (this.id) {
+      if (this.id) {
+         if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
             await this._updateLevelClass();
+         }
+         if (updateData.system?.details?.species !== undefined) {
+            await this._updateSpecies();
          }
       }
    }
@@ -120,17 +126,17 @@ export class CharacterActor extends fadeActor {
    /**
     * Prepares all derived class-related data when the class name is recognized.
     * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
-    * @returns
+    * @protected
     */
    async _prepareClassInfo() {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
       if (game.user.isGM === false) return;
 
       // Replace hyphen with underscore for "Magic-User"
-      const classNameInput = this.system.details.class?.toLowerCase();
-      const classItem = ClassItem.getClassItem(classNameInput);
+      const nameInput = this.system.details.class?.toLowerCase();
+      const classItem = ClassItem.getByName(nameInput);
       if (!classItem) {
-         if (classNameInput !== null && classNameInput !== '') {
+         if (nameInput !== null && nameInput !== '') {
             console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
          }
          return;
@@ -191,25 +197,91 @@ export class CharacterActor extends fadeActor {
 
    /**
     * Called by update actor event handler to update class and level data, if those changed.
-    * @returns
+    * @protected
     */
    async _updateLevelClass() {
-      const classNameInput = this.system.details.class?.toLowerCase();
-      const classItem = ClassItem.getClassItem(classNameInput);
-      if (!classItem) {
-         console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
+      const nameInput = this.system.details.class?.toLowerCase();
+      const worldItem = ClassItem.getByName(nameInput);
+      if (!worldItem) {
+         //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
          return;
       }
-      const currentLevel = Math.min(classItem.system.maxLevel, Math.max(classItem.system.firstLevel, this.system.details.level));
+
+      const currentLevel = Math.min(worldItem.system.maxLevel, Math.max(worldItem.system.firstLevel, this.system.details.level));
       // Saving throws
-      const savesData = ClassItem.getClassSaves(classNameInput, currentLevel);
+      const savesData = ClassItem.getClassSaves(nameInput, currentLevel);
       if (savesData) {
          await this._setupSavingThrows(savesData);
       }
+
       // Class special abilities
-      const abilitiesData = ClassItem.getClassAbilities(classNameInput, currentLevel);
+      const abilitiesData = ClassItem.getClassAbilities(nameInput, currentLevel);
       if (abilitiesData) {
-         await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
+         const dialogResp = await DialogFactory({
+            dialog: "yesno",
+            title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
+            content: game.i18n.format('FADE.dialog.specialAbilities.content', {
+               name: this.system.details.class,
+               type: game.i18n.localize('FADE.Actor.Class')
+            }),
+            yesLabel: game.i18n.localize('FADE.dialog.yes'),
+            noLabel: game.i18n.localize('FADE.dialog.no'),
+            defaultChoice: "yes"
+         }, this.actor);
+
+         if (dialogResp?.resp?.result === true) {
+            await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+         }
+      }
+   }
+
+   /**
+    * Called by update actor even halder to update species-related data.
+    */
+   async _updateSpecies() {
+      const nameInput = this.system.details.species?.toLowerCase();
+      const worldItem = SpeciesItem.getByName(nameInput);
+      const actorItem = this.items.find(item => item.type === 'species');
+
+      if (!worldItem) {
+         //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
+         return;
+      }
+
+      // Manage the species embedded item
+      if (actorItem) {
+         actorItem.delete();         
+      }
+      const itemData = [worldItem.toObject()];
+      await this.createEmbeddedDocuments("Item", itemData);
+
+      // Prepare the item object.
+      //const itemData = {
+      //   name: this.system.details.species,
+      //   type: 'species',
+      //   system: worldItem.system,
+      //   effects: worldItem.effects
+      //};
+      //await fadeItem.create(itemData, { parent: this.actor });
+
+      // Class special abilities
+      const abilitiesData = SpeciesItem.getSpecialAbilities(nameInput);
+      if (abilitiesData) {
+         const dialogResp = await DialogFactory({
+            dialog: "yesno",
+            title: game.i18n.format('FADE.dialog.specialAbilities.title', {name: this.system.details.species }),
+            content: game.i18n.format('FADE.dialog.specialAbilities.content', {
+               name: this.system.details.species,
+               type: game.i18n.localize('FADE.Actor.Species')
+            }),
+            yesLabel: game.i18n.localize('FADE.dialog.yes'),
+            noLabel: game.i18n.localize('FADE.dialog.no'),
+            defaultChoice: "yes"
+         }, this.actor);
+
+         if (dialogResp?.resp?.result === true) {
+            await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+         }
       }
    }
 }

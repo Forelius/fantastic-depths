@@ -774,34 +774,37 @@ export class fadeActor extends Actor {
    async _setupSpecialAbilities(classKey, abilitiesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      // Get class ability world items for specified class
-      const worldAbilities = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class' && item.system.classKey === classKey);
       // Get this actor's class ability items.
-      const classAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+
+      // Determine which special abilities are missing and need to be added.
       const addItems = [];
       for (const abilityData of abilitiesData) {
-         if (classAbilities.find(item => item.name === abilityData.name) === undefined
+         if (specialAbilities.find(item => item.name === abilityData.name) === undefined
             && addItems.find(item => item.name === abilityData.name) === undefined) {
-            const itemData = worldAbilities.find(item => item.name === abilityData.name);
+            //const itemData = worldAbilities.find(item => item.name === abilityData.name);
+            classKey = classKey ? classKey : abilityData.classKey;
+            const itemData = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'class' && item.name === abilityData.name && item.system.classKey === classKey);
             if (itemData) {
                const newAbility = itemData.toObject();
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                addItems.push(newAbility);
             } else {
-               console.warn(`The specified class ability (${abilityData.name}) does not exist as a world item.`);
+               console.warn(`The special ability (${abilityData.name}) does not exist as a world item.`);
             }
          }
       }
+      // Add the missing special abilities.
       if (addItems.length > 0) {
-         console.debug(`Adding ${addItems.length} class ability items to ${this.name}`);
+         console.debug(`Adding ${addItems.length} special ability items to ${this.name}`);
          promises.push(this.createEmbeddedDocuments("Item", addItems));
       }
 
       // Iterate over ability items and set each one.
-      for (const classAbility of classAbilities) {
-         const target = abilitiesData.find(item => item.name === classAbility.name)?.target;
+      for (const specialAbility of specialAbilities) {
+         const target = abilitiesData.find(item => item.name === specialAbility.name)?.target;
          if (target) {
-            promises.push(classAbility.update({ "system.target": target }));
+            promises.push(specialAbility.update({ "system.target": target }));
          }
       }
       if (promises.length > 0) {

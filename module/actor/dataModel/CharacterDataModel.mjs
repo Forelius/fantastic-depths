@@ -30,34 +30,34 @@ export class CharacterDataModel extends fadeActorDataModel {
          abilities: new fields.SchemaField({
             str: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
             }),
             int: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
             }),
             wis: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
             }),
             dex: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
             }),
             con: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
             }),
             cha: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
             }),
-         }),
-         exploration: new fields.SchemaField({
-            openDoor: new fields.NumberField({ initial: 2 }),
-            secretDoor: new fields.NumberField({ initial: 1 }),
-            listenDoor: new fields.NumberField({ initial: 2 }),
-            findTrap: new fields.NumberField({ initial: 1 }),
          }),
          retainer: new fields.SchemaField({
             max: new fields.NumberField({ initial: 0 }),
@@ -71,6 +71,9 @@ export class CharacterDataModel extends fadeActorDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      for (let [key, ability] of Object.entries(this.abilities)) {         
+         ability.total = ability.value;
+      }
       this.encumbrance.max = this.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
    }
 
@@ -85,7 +88,7 @@ export class CharacterDataModel extends fadeActorDataModel {
       // Initialize abilities if missing
       const adjustments = CONFIG.FADE.AdjustmentTableDD;
       for (let [key, ability] of Object.entries(this.abilities)) {
-         let adjustment = adjustments.find(item => ability.value <= item.max);
+         let adjustment = adjustments.find(item => ability.total <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;
       }
 

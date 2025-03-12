@@ -3,6 +3,8 @@ import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
 import { ClassItem } from '../item/ClassItem.mjs';
+import { SpeciesItem } from '../item/SpeciesItem.mjs';
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -87,16 +89,9 @@ export class fadeActorSheet extends ActorSheet {
       super.activateListeners(html);
 
       // Render the item sheet for viewing/editing prior to the editable check.
-      html.on('click', '.item-edit', (event) => {
-         const item = this._getItemFromActor(event);
-         item.sheet.render(true);
-      });
-      html.on('click', '.class-edit', (event) => {
-         const item = ClassItem.getClassItem(this.actor.system.details.class);
-         if (item) {
-            item.sheet.render(true);
-         }
-      });
+      html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
+      html.on('click', '.class-edit', (event) => ClassItem.getByName(this.actor.system.details.class)?.sheet?.render(true));
+      html.on('click', '.species-edit', (event) => SpeciesItem.getByName(this.actor.system.details.species)?.sheet?.render(true));
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable
@@ -116,7 +111,7 @@ export class fadeActorSheet extends ActorSheet {
          html.on('click', '.effect-control', async (event) => {
             const row = event.currentTarget.closest('li');
             const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
-            await EffectManager.onManageActiveEffect(event, document);
+            await EffectManager.onManageActiveEffect(event, document);            
          });
 
          // Rollable abilities.
@@ -386,8 +381,14 @@ export class fadeActorSheet extends ActorSheet {
             }
             super._onDropItem(event, data);
          }
-      } else if (droppedItem.type === "class" && this.actor.type === 'character') {
-         await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
+      } else if (droppedItem.type === "class") {
+         if (this.actor.type === 'character') {
+            await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
+         }
+      } else if (droppedItem.type === "species") {
+         if (this.actor.type === 'character') {
+            await this.actor.update({ "system.details.species": droppedItem.name });
+         }
       } else if (droppedItem.type === 'effect') {
       }
       else {
@@ -472,7 +473,7 @@ export class fadeActorSheet extends ActorSheet {
    /**
     * Handle clickable rolls.
     * @param {Event} event   The originating click event
-    * @private
+    * @protected
     */
    async _onRoll(event) {
       event.preventDefault();

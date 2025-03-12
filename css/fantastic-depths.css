@@ -924,6 +924,11 @@ h1, h2, h3, h4 {
   padding-top: 0;
   text-align: center;
 }
+.fantastic-depths .character .ability .ability-score, .fantastic-depths .monster .ability .ability-score {
+  font-size: 25px;
+  text-align: center;
+  padding-right: 5px;
+}
 .fantastic-depths .character .ability .ability-mod, .fantastic-depths .monster .ability .ability-mod {
   max-width: 36px;
   font-size: 18px;

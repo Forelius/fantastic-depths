@@ -1,6 +1,6 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
-import { ClassItem } from "../item/ClassItem.mjs";
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -34,7 +34,6 @@ export class SpeciesItemSheet extends fadeItemSheet {
       // Retrieve base data structure
       const context = await super.getData();
       const itemData = context.data;
-
       // Abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
@@ -69,9 +68,36 @@ export class SpeciesItemSheet extends fadeItemSheet {
 
       // Add Inventory Item
       html.on('click', '.item-create', async (event) => { await this.#onCreateChild(event) });
-
       // Delete Inventory Item
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
+
+      html.on('click', '.rollable', this._onRoll.bind(this));
+   }
+
+   /**
+    * Handle clickable rolls.
+    * @param {Event} event   The originating click event
+    * @protected
+    */
+   async _onRoll(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const elem = event.currentTarget;
+      const dataset = elem.dataset;
+      let formula = dataset.formula;
+      let chatType = CHAT_TYPE.GENERIC_ROLL;;
+
+      const rollContext = { ...this.item.getRollData() };
+      const rolled = await new Roll(formula, rollContext).evaluate();
+      const chatData = {
+         caller: this.item,
+         context: this.item,
+         mdata: dataset,
+         roll: rolled,
+      };
+      const builder = new ChatFactory(chatType, chatData);
+      return builder.createChatMessage();
    }
 
    /**

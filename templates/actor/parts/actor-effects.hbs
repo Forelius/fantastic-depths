@@ -29,9 +29,9 @@
    {{/each}}
 </div>
 {{#if isGM}}
-<div class="items-list effects-list">
+<ol class="items-list effects-list">
    {{#each effects as |section sid|}}
-   <div class="items-header flexrow collapsible-header" data-effect-type="{{section.type}}" data-parent-id="{{@root.actor.id}}">
+   <li class="items-header flexrow collapsible-header" data-effect-type="{{section.type}}" data-parent-id="{{@root.actor.id}}">
       <h3 class="item-name effect-name flexrow">{{localize section.label}}</h3>
       <div class="effect-source">{{localize "FADE.Effect.Source"}}</div>
       <div class="effect-source">{{localize "EFFECT.TabDuration"}}</div>
@@ -40,29 +40,31 @@
             <i class="fas fa-plus"></i> {{localize 'FADE.Effect.short'}}
          </a>
       </div>
-   </div>
-   <ol class="item-list">
-      {{#each section.effects as |effect|}}
-      <li class="item effect flexrow collapsible-content" data-effect-id="{{effect.id}}" data-parent-id="{{effect.parent.id}}">
-         <div class='item-name effect-name'>
-            <div class='item-image'>
-               <img src='{{effect.img}}' data-tooltip='{{effect.name}}' width='26' height='26' />
+   </li>
+   <li>
+      <ol class="item-list">
+         {{#each section.effects as |effect|}}
+         <li class="item effect flexrow collapsible-content" data-effect-id="{{effect.id}}" data-parent-id="{{effect.parent.id}}">
+            <div class='item-name effect-name'>
+               <div class='item-image'>
+                  <img src='{{effect.img}}' data-tooltip='{{effect.name}}' width='26' height='26' />
+               </div>
+               <a class="effect-control" data-action="edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Effect.short")}}'>{{effect.name}}</a>
             </div>
-            <a class="effect-control" data-action="edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Effect.short")}}'>{{effect.name}}</a>
-         </div>
-         <div class="effect-source">{{effect.sourceNameFix}}</div>
-         <div class="effect-duration">{{effect.duration.label}}</div>
-         <div class="item-controls effect-controls flexrow">
-            <a class="effect-control" data-action="toggle" data-tooltip="{{localize 'FADE.Effect.Toggle'}}">
-               <i class="fas {{#if effect.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
-            </a>
-            <a class="effect-control" data-action="delete" data-tooltip="{{localize 'DOCUMENT.Delete' type=(localize "FADE.Effect.short")}}">
-               <i class="fas fa-trash"></i>
-            </a>
-         </div>
-      </li>
-      {{/each}}
-   </ol>
+            <div class="effect-source">{{effect.sourceNameFix}}</div>
+            <div class="effect-duration">{{effect.duration.label}}</div>
+            <div class="item-controls effect-controls flexrow">
+               <a class="effect-control" data-action="toggle" data-tooltip="{{localize 'FADE.Effect.Toggle'}}">
+                  <i class="fas {{#if effect.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
+               </a>
+               <a class="effect-control" data-action="delete" data-tooltip="{{localize 'DOCUMENT.Delete' type=(localize "FADE.Effect.short")}}">
+                  <i class="fas fa-trash"></i>
+               </a>
+            </div>
+         </li>
+         {{/each}}
+      </ol>
+   </li>
    {{/each}}
-</div>
-{{/if}}
+   </ol>
+   {{/if}}

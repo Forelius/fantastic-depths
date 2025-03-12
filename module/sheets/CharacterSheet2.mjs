@@ -42,6 +42,16 @@ export class CharacterSheet2 extends fadeActorSheet {
       return context;
    }
 
+   /**
+ * @override
+ */
+   activateListeners(html) {
+      super.activateListeners(html);
+      html.on('click', '.edit-scores', async (event) => {
+         html.find('.ability-score-input, .ability-score').toggle();
+      });
+   }
+
    /** @inheritDoc */
    async _renderOuter() {
       const html = await super._renderOuter();

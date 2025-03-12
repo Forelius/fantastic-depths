@@ -55,23 +55,6 @@ export class GearItem extends fadeItem {
    }
       
    /**
-    * Prepare a data object which defines the data schema used by dice roll commands against this Item
-    * @override
-    */
-   getRollData() {
-      // Starts off by populating the roll data with a shallow copy of `this.system`
-      const rollData = { ...this.system };
-
-      // Quit early if there's no parent actor
-      if (this.actor !== null) {
-         // If present, add the actor's roll data
-         rollData.actor = this.actor.getRollData();
-      }
-
-      return rollData;
-   }
-
-   /**
     * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
     * does not override this message the result is a chat message with the item description.
     * @param {dataset} event The data- tag values from the clicked element

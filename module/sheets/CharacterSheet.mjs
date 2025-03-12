@@ -23,6 +23,16 @@ export class CharacterSheet extends fadeActorSheet {
       });
    }
 
+   /**
+    * @override
+    */
+   activateListeners(html) {
+      super.activateListeners(html);
+      html.on('click', '.edit-scores', async (event) => {
+         html.find('.ability-score-input, .ability-score').toggle();
+      });
+   }
+
    /** @override */
    async getData() {
       // Retrieve the data structure from the base sheet. You can inspect or log

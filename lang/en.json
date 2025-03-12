@@ -503,7 +503,9 @@
       },
       "species": {
          "requiredScores": "Required Attribute Scores",
-         "classes": "Classes"
+         "classes": "Classes",
+         "male": "Male",
+         "female": "Female"
       },
       "Effect": {
          "short": "Effect",
@@ -668,7 +670,11 @@
          "applyToPrompt": "Apply to targeted or selected?",
          "targeted": "Targeted",
          "selected": "Selected",
-         "noEquippedWeapons": "The selected actor does not have any weapons equipped."
+         "noEquippedWeapons": "The selected actor does not have any weapons equipped.",
+         "specialAbilities": {
+            "title": "Add special abilities?",
+            "content": "Would you like to automatically add the related special abilities from {type} {name}?"
+         }
       },
       "time": {
          "sessionCount": "Session Count",

@@ -1,5 +1,8 @@
-<!--ABILITY SCORES-->
-<div class="bordered flexrow">
+         <!--ABILITY SCORES-->
+<div class="bordered flexrow" style="position:relative;">
+   <a class="edit-scores" style="position:absolute; top:2px; left: 4px; font-size:11px;">
+      <i class="fas fa-pencil"></i>
+   </a>
    {{#each system.abilities as |ability key|}}
    <div class="ability ability-horz">
       <div class="flex-group-center">
@@ -7,7 +10,6 @@
                 data-ability="{{key}}"
                 data-test="ability"
                 data-pass="lte"
-                data-formula="1d20"
                 data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
             {{#if @root.abilityAbbr}}
             {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
@@ -17,7 +19,10 @@
          </label>
       </div>
       <div class="flex-group-center">
-         <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+         <span class="ability-score-input" style="display:none;">
+            <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
+         </span>
+         <span class="ability-score">{{ability.total}}</span>
          <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
       </div>
    </div>

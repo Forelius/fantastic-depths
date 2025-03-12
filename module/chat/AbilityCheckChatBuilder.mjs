@@ -4,11 +4,11 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/ability-check.hbs';
 
    async createChatMessage() {
-      const { context, mdata, resp, roll } = this.data;
+      const { context, mdata, roll } = this.data;
 
       const rolls = [roll];
       const rollContent = await roll.render();
-      mdata.score = context.system.abilities[mdata.ability].value;
+      mdata.score = context.system.abilities[mdata.ability].total;
 
       // Determine if the roll is successful based on the roll type and target number      
       const testResult = this.getBoolRollResultType({
