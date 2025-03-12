@@ -105,7 +105,7 @@
             }
          }
 
-         .rollable, .chatable, .class-edit {
+         .rollable, .chatable, .open-sheet {
             &:hover,
             &:focus {
                color: $lighterColor;
@@ -264,7 +264,7 @@
             }
          }
 
-         .rollable, .chatable, .class-edit {
+         .rollable, .chatable, .open-sheet {
             &:hover,
             &:focus {
                color: $darkerColor;

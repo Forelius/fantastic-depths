@@ -97,8 +97,6 @@ export class CharacterDataModel extends fadeActorDataModel {
       let adjustment = adjustments.find(item => charisma <= item.max);
       this.retainer.max = adjustment.maxRetainers;
       this.retainer.morale = adjustment.retainerMorale;
-      // Safe to override because no rules or classes change this.
-      this.exploration.openDoor = Math.min(5 - this.abilities.str.mod, 6);
    }
 
    _prepareWrestling() {
