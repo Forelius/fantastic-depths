@@ -27,6 +27,7 @@ Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 **Thanks to the testers:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
 FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin and Herrenlosigkeit.
 
+If you wish to send me a financial gift, you can do so on Ko-Fi: https://ko-fi.com/forelius
 ---
 
 ## Character Sheet
