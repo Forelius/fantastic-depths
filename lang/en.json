@@ -429,7 +429,9 @@
       "Skill": {
          "plural": "General Skills",
          "short": "Skill",
-         "long": "General Skill"
+         "long": "General Skill",
+         "bonusHint": "A roll bonus for having the skill.",
+         "penaltyHint": "A roll penalty for not having the skill."
       },
       "Mastery": {
          "plural": "Weapon Masteries",
@@ -897,6 +899,7 @@
       "category": "Category",
       "name": "Name",
       "bonus": "Bonus",
+      "penalty": "Penalty",
       "shortName": "Short Name",
       "none": "None",
       "unidentified": "Unidentified",

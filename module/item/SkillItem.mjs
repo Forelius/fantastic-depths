@@ -65,19 +65,23 @@ export class SkillItem extends fadeItem {
       // Retrieve roll data.
       const rollData = this.getRollData();
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
-      const levelMod = systemData.level > 1 ? `-${systemData.level - 1}` : '';
+      let levelMod = Math.max(0, systemData.level - 1) + (systemData.level > 0 ? systemData.skillBonus : systemData.skillPenalty);
+      const bonusOperator = systemData.operator === 'lte' ? '-' : '+';
+      rollData.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
+
       if (ctrlKey === true) {
          dialogResp = {
             rolling: true,
             mod: 0
          };
-         rollData.formula = `${systemData.rollFormula}${levelMod}`;
       } else {
          // Show the dialog for roll modifier
          try {
             const dialog = await DialogFactory(dataset, this.actor);
             dialogResp = dialog?.resp;
-            rollData.formula = dialogResp.mod != 0 ? `${systemData.rollFormula}${levelMod}-@mod` : `${systemData.rollFormula}${levelMod}`;
+            if (dialogResp.mod != 0) {
+               rollData.formula = `${rollData.formula}${bonusOperator}@mod`;
+            }
          }
          // If close button is pressed
          catch (error) {
@@ -89,8 +93,8 @@ export class SkillItem extends fadeItem {
       if (dialogResp !== null) {
          // Roll
          const rollContext = { ...rollData, ...dialogResp || {} };
-         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const targetRoll = await new Roll(systemData.targetFormula, rollContext).evaluate();
+         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
 
          // Show the chat message
          dataset.pass = systemData.operator; // this is a less than or equal to roll

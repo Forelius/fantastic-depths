@@ -19,6 +19,12 @@ export class SkillItemDataModel extends foundry.abstract.TypeDataModel {
          rollMode: new fields.StringField({ required: false, initial: "" }),
          healFormula: new fields.StringField({ nullable: true, initial: null }),
          showResult: new fields.BooleanField({ required: false, initial: true }),
+         // Bonus to roll for having skill. Different than level bonus.
+         skillBonus: new fields.NumberField({ required: true, initial: 0 }),
+         // Bonus to roll for not having skill. When level equals zero.
+         skillPenalty: new fields.NumberField({ required: true, initial: 0 }),
+         autoSuccess: new fields.NumberField({ required: false, initial: null, nullable: true }),
+         autoFail: new fields.NumberField({ required: false, initial: null, nullable: true }),
       };
    }
 
