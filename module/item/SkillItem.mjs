@@ -100,6 +100,8 @@ export class SkillItem extends fadeItem {
          dataset.pass = systemData.operator; // this is a less than or equal to roll
          dataset.target = targetRoll.total; // systemData.rollTarget;
          dataset.rollmode = systemData.rollMode;
+         dataset.autofail = systemData.autoFail;
+         dataset.autosuccess = systemData.autoSuccess;
          const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
