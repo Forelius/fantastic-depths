@@ -65,12 +65,11 @@ export class SkillItem extends fadeItem {
       // Retrieve roll data.
       const rollData = this.getRollData();
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
-
       const levelMod = systemData.level > 1 ? `-${systemData.level - 1}` : '';
       if (ctrlKey === true) {
          dialogResp = {
             rolling: true,
-            mod: 0            
+            mod: 0
          };
          rollData.formula = `${systemData.rollFormula}${levelMod}`;
       } else {
@@ -105,7 +104,8 @@ export class SkillItem extends fadeItem {
             mdata: dataset,
             roll: rolled,
          };
-         const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData);
+         const showResult = this._getShowResult(event);
+         const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData, { showResult });
          result = builder.createChatMessage();
       }
 

@@ -111,7 +111,7 @@ export class fadeActorSheet extends ActorSheet {
          html.on('click', '.effect-control', async (event) => {
             const row = event.currentTarget.closest('li');
             const document = row.dataset.parentId === this.actor.id ? this.actor : this.actor.items.get(row.dataset.parentId);
-            await EffectManager.onManageActiveEffect(event, document);            
+            await EffectManager.onManageActiveEffect(event, document);
          });
 
          // Rollable abilities.
@@ -496,6 +496,7 @@ export class fadeActorSheet extends ActorSheet {
       } else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          chatType = CHAT_TYPE.ABILITY_CHECK;
+         formula = formula ? formula : '1d20';
          if (ctrlKey === false) {
             try {
                dialogResp = await DialogFactory(dataset, this.actor);
@@ -536,9 +537,10 @@ export class fadeActorSheet extends ActorSheet {
             caller: this.actor,
             context: this.actor,
             mdata: dataset,
-            roll: rolled,
+            roll: rolled
          };
-         const builder = new ChatFactory(chatType, chatData);
+         const showResult = this.actor._getShowResult(event);
+         const builder = new ChatFactory(chatType, chatData, { showResult });
          return builder.createChatMessage();
       }
 

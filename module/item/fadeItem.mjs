@@ -184,4 +184,19 @@ export class fadeItem extends Item {
             return currentValue;
       }
    }
+
+   /**
+    * Determines if a roll on an item should show a success/fail result message.
+    * @protected
+    * @param {any} event
+    * @returns True if the results should be shown, otherwise false.
+    */
+   _getShowResult(event) {
+      let result = this.system.showResult ?? true;
+      const shiftKey = event?.originalEvent?.shiftKey ?? false;
+      if (game.user.isGM === true) {
+         result = shiftKey === false && result === true;
+      }
+      return result;
+   }
 }

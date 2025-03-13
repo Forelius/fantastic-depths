@@ -378,7 +378,7 @@ export class fadeActor extends Actor {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
-      const savingThrow = this.#getSavingThrow(type);
+      const savingThrow = this.#getSavingThrow(type); // Saving throw item
       const rollData = this.getRollData();
       let dialogResp = null;
       let dataset = {};
@@ -404,7 +404,7 @@ export class fadeActor extends Actor {
       if (dialogResp?.rolling === true) {
          let rollMod = dialogResp.mod || 0;
          if (dialogResp.vsmagic === true) {
-            rollMod += this.system.abilities.wis.mod;
+            rollMod += this.system.abilities?.wis?.mod ?? 0;
          }
          rollMod += this.system.mod.save[type] || 0;
          rollMod += this.system.mod.save.all || 0;
@@ -417,7 +417,8 @@ export class fadeActor extends Actor {
             mdata: dataset,
             roll: rolled
          };
-         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+         const showResult = savingThrow._getShowResult(event);
+         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();
       }
    }
@@ -938,6 +939,21 @@ export class fadeActor extends Actor {
             encumbrance.fly = Math.floor(this.system.flight.max * encTier.mvFactor);
          }
       }
+   }
+
+   /**
+    * Determines if a roll on a non-item (ability score check) should show a success/fail result message.
+    * @protected
+    * @param {any} event
+    * @returns True if the results should be shown, otherwise false.
+    */
+   _getShowResult(event) {
+      let result = true;
+      const shiftKey = event?.originalEvent?.shiftKey ?? false;
+      if (game.user.isGM === true) {
+         result = shiftKey === false && result === true;
+      }
+      return result;
    }
 
    #getSavingThrow(type) {

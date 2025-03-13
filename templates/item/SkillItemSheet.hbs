@@ -61,6 +61,10 @@
                   <input type='text' name="system.targetFormula" value='{{system.targetFormula}}' data-dtype='String' />
                   <label for="system.targetFormula">{{localize 'FADE.target'}}</label>
                </div>
+               <div style="max-width:60px">
+                  <input type="checkbox" name="system.showResult" data-dtype="Boolean" {{#if system.showResult}} checked{{/if}} data-tooltip="{{localize 'FADE.showResult.hint'}}" />
+                  <label for="system.showResult" data-tooltip="{{localize 'FADE.showResult.hint'}}">{{localize 'FADE.showResult.name'}}</label>
+               </div>
             </div>
          </div>
       </div>

@@ -4,7 +4,7 @@ export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
 
    async createChatMessage() {
-      const { context, caller, roll } = this.data;
+      const { context, caller, roll, options } = this.data;
       const targetTokens = Array.from(game.user.targets);
       const specAbility = caller;
       const damageRoll = await caller.getDamageRoll(null);
@@ -16,6 +16,9 @@ export class SpecialAbilityChat extends ChatBuilder {
          rollContent = await roll.render();
          // Determine the roll result based on the provided data
          rollResult = await this.#getRollResult(specAbility, roll);
+         if (options.showResult === false) {
+            delete rollResult.message;
+         }
          description = game.i18n.format('FADE.Chat.useWithTarget', {
             owner: context.name, // The item's owning token or actor
             used: specAbility.name,

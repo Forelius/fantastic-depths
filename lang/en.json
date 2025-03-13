@@ -6,7 +6,7 @@
          "HealthMaxMonster": "Max HP. Set to zero to autocalculate max HP from hit dice.",
          "Max": "Max",
          "Min": "Min",
-         "Mod":  "Mod",
+         "Mod": "Mod",
          "HealthShort": "HP",
          "HitDice": "Hit Dice",
          "HitDiceShort": "HD",
@@ -904,6 +904,10 @@
       "cursed": "Cursed",
       "rounds": "rounds",
       "turns": "turns",
+      "showResult": {
+         "name": "Result",
+         "hint": "Show the result?"
+      },
       "concatLogic": {
          "name": "Logic",
          "none": "",

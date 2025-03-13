@@ -64,7 +64,7 @@ export class SpecialAbilitySheet extends fadeItemSheet {
       const abilities = [];
       abilities.push({ value: "", text: game.i18n.localize('None') });
       abilities.push(...CONFIG.FADE.Abilities.map((key) => {
-         return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
+         return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.abbr`) }
       }).sort((a, b) => a.text.localeCompare(b.text)));
       context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Categories

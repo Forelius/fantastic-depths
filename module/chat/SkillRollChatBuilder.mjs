@@ -4,7 +4,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/skill-roll.hbs';
 
    async createChatMessage() {
-      const { context, mdata, roll, caller } = this.data;
+      const { context, mdata, roll, caller, options } = this.data;
       const actor = context;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
@@ -13,7 +13,10 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const targetTokens = Array.from(game.user.targets);
 
       // Determine the roll result based on the provided data
-      const resultString = this.getResultString(mdata, roll, targetNumber);
+      let resultString;
+      if (options.showResult !== false) {
+         resultString = this.getResultString(mdata, roll, targetNumber);
+      }
 
       // Get the actor and user names
       const actorName = actor.token?.name ?? actor.name; // Actor name (e.g., character name)

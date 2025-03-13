@@ -57,6 +57,7 @@ export class SpecialAbilityItem extends fadeItem {
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const showResult = this._getShowResult(event);
 
       let rolled = null;
       if (hasRoll === true) {
@@ -102,7 +103,7 @@ export class SpecialAbilityItem extends fadeItem {
             context: instigator,
             roll: rolled,
          };
-         const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData);
+         const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
          result = builder.createChatMessage();
       }
 

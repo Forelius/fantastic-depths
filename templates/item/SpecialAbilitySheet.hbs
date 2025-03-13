@@ -31,7 +31,7 @@
                <input type='text' name="system.target" value='{{system.target}}' data-dtype='String' data-tooltip="{{system.target}}" {{#unless isGM}}readonly{{/unless}}/>
                <label for="system.target">{{localize 'FADE.target'}}</label>
             </li>
-            <li class="flex1">
+            <li style="max-width:70px;">
                <select name="system.abilityMod" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions abilities selected=system.abilityMod}}
                </select>
@@ -58,7 +58,7 @@
       {{! Attributes Tab }}
       <div class='tab' data-group='primary' data-tab='attributes'>
          {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
-         <section class="bordered">
+         <div class="bordered">
             <ul class="summary flexrow" style="min-height:26px;">
                <li class="flex1">
                   <select name="system.savingThrow" {{#unless isGM}}disabled='disabled'{{/unless}}>
@@ -115,7 +115,13 @@
                   <label for="system.classKey" data-tooltip="{{localize 'FADE.class.key.hint'}}">{{localize 'FADE.class.key.name'}}</label>
                </li>
             </ul>
-         </section>
+            <ul class="summary flexrow">
+               <li style="max-width:60px">
+                  <input type="checkbox" name="system.showResult" data-dtype="Boolean" {{#if system.showResult}} checked{{/if}} data-tooltip="{{localize 'FADE.showResult.hint'}}" />
+                  <label for="system.showResult" data-tooltip="{{localize 'FADE.showResult.hint'}}">{{localize 'FADE.showResult.name'}}</label>
+               </li>
+            </ul>
+         </div>
       </div>
    </section>
 </form>
