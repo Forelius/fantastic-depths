@@ -76,6 +76,6 @@ export class fadeFinder {
    }
 
    static getWeaponMastery(name) {
-      fadeFinder._getItem(name, 'weaponMastery');
+      return fadeFinder._getItem(name, 'weaponMastery');
    }
 }
