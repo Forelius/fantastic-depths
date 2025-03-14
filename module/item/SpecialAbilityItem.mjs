@@ -110,8 +110,4 @@ export class SpecialAbilityItem extends fadeItem {
       const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : '';
       return `${summary}${description}`;
    }
-
-   static getSavingThrow(saveCode) {
-      return game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === saveCode)?.name;
-   }
 }

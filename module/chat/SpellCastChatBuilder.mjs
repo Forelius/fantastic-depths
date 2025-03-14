@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 
@@ -46,7 +47,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
 
       let save = null;
       if (spellItem.system.savingThrow?.length > 0) {
-         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && spellItem.system.savingThrow === item.system.customSaveCode);
+         save = fadeFinder.getSavingThrow(spellItem.system.savingThrow);
       }
 
       // Prepare data for the chat template

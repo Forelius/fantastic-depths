@@ -1,3 +1,5 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+
 export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
@@ -175,8 +177,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.save = {};
       this.mod.save.all = 0;
       // Create the saving throw member variables dynamically from the world's save items.
-      const saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
-         .map(item => item.system.customSaveCode);
+      const saves = fadeFinder.getSavingThrows().map(item => item.system.customSaveCode);
       for (let save of saves) {
          this.mod.save[save] = 0;
       }

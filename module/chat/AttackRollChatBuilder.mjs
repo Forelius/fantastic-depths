@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { SocketManager } from '../sys/SocketManager.mjs'
 import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs'
@@ -45,7 +46,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       let save = null;
       if (weapon.system.savingThrow?.length > 0) {
-         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && weapon.system.savingThrow === item.system.customSaveCode);
+         save = fadeFinder.getSavingThrow(weapon.system.savingThrow);
       }
 
       const chatData = {
@@ -289,7 +290,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             targetResults: []
          };
          for (let targetToken of targetTokens) {
-            const saveLocalized = SpecialAbilityItem.getSavingThrow(weapon.system.savingThrow);
+            const saveLocalized = fadeFinder.getSavingThrow(weapon.system.savingThrow)?.name;
             let targetResult = {
                targetid: targetToken.id,
                targetname: targetToken.name,

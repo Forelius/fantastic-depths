@@ -2,8 +2,7 @@ import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
-import { ClassItem } from '../item/ClassItem.mjs';
-import { SpeciesItem } from '../item/SpeciesItem.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -90,8 +89,8 @@ export class fadeActorSheet extends ActorSheet {
 
       // Render the item sheet for viewing/editing prior to the editable check.
       html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
-      html.on('click', '.class-edit', (event) => ClassItem.getByName(this.actor.system.details.class)?.sheet?.render(true));
-      html.on('click', '.species-edit', (event) => SpeciesItem.getByName(this.actor.system.details.species)?.sheet?.render(true));
+      html.on('click', '.class-edit', (event) => fadeFinder.getClass(this.actor.system.details.class)?.sheet?.render(true));
+      html.on('click', '.species-edit', (event) => fadeFinder.getSpecies(this.actor.system.details.species)?.sheet?.render(true));
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable

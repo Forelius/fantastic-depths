@@ -1,10 +1,9 @@
-﻿// actor-character.mjs
-import Formatter from '../utils/Formatter.mjs';
-import { fadeItem } from '../item/fadeItem.mjs';
+﻿import Formatter from '../utils/Formatter.mjs';
 import { fadeActor } from './fadeActor.mjs';
 import { ClassItem } from "../item/ClassItem.mjs";
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 export class CharacterActor extends fadeActor {
 
@@ -134,7 +133,7 @@ export class CharacterActor extends fadeActor {
 
       // Replace hyphen with underscore for "Magic-User"
       const nameInput = this.system.details.class?.toLowerCase();
-      const classItem = ClassItem.getByName(nameInput);
+      const classItem = fadeFinder.getClass(nameInput);
       if (!classItem) {
          if (nameInput !== null && nameInput !== '') {
             console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
@@ -200,10 +199,10 @@ export class CharacterActor extends fadeActor {
     */
    async _updateLevelClass() {
       const nameInput = this.system.details.class?.toLowerCase();
-      const worldItem = ClassItem.getByName(nameInput);
-      if (worldItem) {
+      const classItem = fadeFinder.getClass(nameInput);
+      if (classItem) {
          // Get the class data for the character's current level.
-         const currentLevel = Math.min(worldItem.system.maxLevel, Math.max(worldItem.system.firstLevel, this.system.details.level));
+         const currentLevel = Math.min(classItem.system.maxLevel, Math.max(classItem.system.firstLevel, this.system.details.level));
 
          this.system.thbonus = currentLevel.thbonus;
 
@@ -229,7 +228,7 @@ export class CharacterActor extends fadeActor {
             }, this.actor);
 
             if (dialogResp?.resp?.result === true) {
-               await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+               await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
             }
          }
       }
@@ -240,7 +239,7 @@ export class CharacterActor extends fadeActor {
     */
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
-      const worldItem = SpeciesItem.getByName(nameInput);
+      const worldItem = fadeFinder.getSpecies(nameInput);
       const actorItem = this.items.find(item => item.type === 'species');
 
       if (!worldItem) {
@@ -254,15 +253,6 @@ export class CharacterActor extends fadeActor {
       }
       const itemData = [worldItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
-
-      // Prepare the item object.
-      //const itemData = {
-      //   name: this.system.details.species,
-      //   type: 'species',
-      //   system: worldItem.system,
-      //   effects: worldItem.effects
-      //};
-      //await fadeItem.create(itemData, { parent: this.actor });
 
       // Class special abilities
       const abilitiesData = SpeciesItem.getSpecialAbilities(nameInput);

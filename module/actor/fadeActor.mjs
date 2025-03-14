@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
@@ -429,8 +430,6 @@ export class fadeActor extends Actor {
     * @param {any} event
     */
    static async handleSavingThrowRequest(event) {
-      // Not sure why this is here, because this is a static method and 'this' is not the actor.
-      //if (this.testUserPermission(game.user, "OWNER") === false) return;
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
@@ -785,7 +784,7 @@ export class fadeActor extends Actor {
             && addItems.find(item => item.name === abilityData.name) === undefined) {
             //const itemData = worldAbilities.find(item => item.name === abilityData.name);
             classKey = classKey ? classKey : abilityData.classKey;
-            const itemData = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'class' && item.name === abilityData.name && item.system.classKey === classKey);
+            const itemData = fadeFinder.getClassAbility(abilityData.name, classKey);
             if (itemData) {
                const newAbility = itemData.toObject();
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
@@ -820,7 +819,7 @@ export class fadeActor extends Actor {
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      const worldSavingThrows = fadeFinder.getSavingThrows();
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
       const addItems = [];

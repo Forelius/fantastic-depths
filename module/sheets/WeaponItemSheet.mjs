@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
 
@@ -66,8 +67,7 @@ export class WeaponItemSheet extends fadeItemSheet {
       // Saving throws
       const saves = [];
       saves.push({ value: "", text: game.i18n.localize('None') });
-      const saveItems = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
-         .sort((a, b) => a.system.shortName.localeCompare(b.system.shortName));
+      const saveItems = fadeFinder.getSavingThrows().sort((a, b) => a.system.shortName.localeCompare(b.system.shortName));
       saves.push(...saveItems.map((save) => {
          return { value: save.system.customSaveCode, text: save.system.shortName }
       }));

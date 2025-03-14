@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { SavingThrowsData } from './dataModel/ClassItemDataModel.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
@@ -72,28 +73,13 @@ export class ClassItem extends fadeItem {
       return highest;
    }
 
-   /**
-    * Retrieves the specified class item, if it exists.
-    * @param {any} name The class item's full and case-sensitive name.
-    * @returns The specified class item or undefined if not found.
-    */
-   static getByName(name) {
-      if (name === null || name === undefined || name === '') return;
-
-      const result = game.items.find(item => item.name.toLowerCase() == name.toLowerCase() && item.type === 'class');
-      if (!result) {
-         console.warn(`Class item not found ${name}.`);
-      }
-      return result;
-   }
-
    static getClassAbilitiesByCode(key, owner) {
       // Extract class identifier and level from the input
       let match = key.match(/^([a-zA-Z]+)(\d+)$/);
       const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
       let result;
       if (parsed) {
-         const classItem = game.items.find(item => item.system.key === parsed.classKey && item.type === 'class');
+         const classItem = fadeFinder.getClass(null, parsed.classKey);
          if (!classItem) {
             console.warn(`Class item not found ${key}.`);
          } else {
@@ -106,10 +92,10 @@ export class ClassItem extends fadeItem {
    }
 
    static getClassAbilities(className, classLevel) {
-      const theItem = ClassItem.getByName(className);
+      const classItem = fadeFinder.getClass(className);
       let result;
-      if (theItem) {
-         result = theItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+      if (classItem) {
+         result = classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
          result = result ? Object.values(result) : null;
       }
       return result?.length > 0 ? result : undefined;
@@ -122,7 +108,7 @@ export class ClassItem extends fadeItem {
     * @returns The saving throw data for the specified class and level, otherwise undefined
     */
    static getClassSaves(className, classLevel) {
-      const classItem = ClassItem.getByName(className);
+      const classItem = fadeFinder.getClass(className);
       let result;
       if (classItem) {
          result = classItem.system.saves.find(save => classLevel <= save.level);
@@ -137,11 +123,11 @@ export class ClassItem extends fadeItem {
     */
    static getClassSavesByCode(key, owner) {
       // Extract class identifier and level from the input
-      let match = key.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+      const match = key.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
       let result;
       if (parsed) {
-         const classItem = game.items.find(item => item.system.key === parsed.classId && item.type === 'class');
+         const classItem = fadeFinder.getClass(null, parsed.classKey);
          if (!classItem) {
             console.warn(`Class item not found ${key}.`);
          } else {
