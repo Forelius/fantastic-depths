@@ -219,7 +219,7 @@ export class fadeDialog {
    static async getSelectAttackDialog(equippedOnly = false) {
       // The selected token, not the actor
       const result = {};
-      const attackerActor = canvas.tokens.controlled?.[0]?.actor || game.user.character;
+      const attackerActor = canvas.tokens.controlled?.[0]?.actor;
       if (attackerActor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectAttack') };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
@@ -270,11 +270,11 @@ export class fadeDialog {
    }
 
    static async getSelectSpellDialog(memorizedOnly = false) {
-      const casterActor = canvas.tokens.controlled?.[0]?.actor || game.user.character;
-      if (casterActor) {
+      const actor = canvas.tokens.controlled?.[0]?.actor;
+      if (actor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectSpell') };
          const template = 'systems/fantastic-depths/templates/dialog/select-spell.hbs';
-         const spellItems = casterActor.items.filter((item) => item.type === "spell")
+         const spellItems = actor.items.filter((item) => item.type === "spell")
             .sort((a, b) => a.name.localeCompare(b.name))
             .sort((a, b) => ((b.system.memorized ?? 999) - b.system.cast) - ((a.system.memorized ?? 999) - a.system.cast));
 
@@ -293,7 +293,7 @@ export class fadeDialog {
                      label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
                      callback: function (html) {
                         const itemId = document.getElementById('spellItem').value;
-                        const item = casterActor.items.get(itemId);
+                        const item = actor.items.get(itemId);
                         // Call item's roll method.
                         item.roll();
                         return { item };
@@ -537,15 +537,16 @@ export class fadeDialog {
    static async getSpecialAbilityDialog() {
       // Get the first selected actor of the player
       const player = game.user;
-      const actor = player.character || (player.actors.length > 0 ? player.actors[0] : null);
+      const actor = canvas.tokens.controlled?.[0]?.actor;
 
       if (!actor) {
-         ui.notifications.error("No actor selected or available for the player.");
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
          return;
       }
 
       // Filter items of type 'specialAbility'
-      const specialAbilities = actor.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+      const specialAbilities = actor.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save')
+         .sort((a, b) => a.name.localeCompare(b.name));
 
       // Check if there are any special abilities
       if (specialAbilities.length === 0) {
