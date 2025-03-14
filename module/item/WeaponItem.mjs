@@ -186,34 +186,27 @@ export class WeaponItem extends GearItem {
       }
       else if (attacker) {
          let ammoItem = this.actor?.getAmmoItem(this);
-         try {
-            const targetTokens = Array.from(game.user.targets);
-            const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
+         const targetTokens = Array.from(game.user.targets);
+         const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-            dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
-            if (dialogResp?.resp) {
-               // If not breath...
-               if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
-                  let rollOptions = {
-                     mod: dialogResp.resp.mod,
-                     target: targetToken?.actor,
-                     ammoItem
-                  };
-                  if (dialogResp.resp.targetWeaponType) {
-                     rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
-                  }
-                  let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
-                  rollData.formula = attackRoll.formula;
-                  digest = attackRoll.digest;
-                  hasRoll = true;
+         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
+         canAttack = dialogResp?.resp?.rolling === true;
+         if (canAttack) {
+            // If not breath...
+            if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
+               let rollOptions = {
+                  mod: dialogResp.resp.mod,
+                  target: targetToken?.actor,
+                  ammoItem
+               };
+               if (dialogResp.resp.targetWeaponType) {
+                  rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                }
-            } else {
-               canAttack = false;
+               let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
+               rollData.formula = attackRoll.formula;
+               digest = attackRoll.digest;
+               hasRoll = true;
             }
-         } catch (error) {
-            // Close button pressed or other error
-            console.error("attack roll error:", error);
-            canAttack = false;
          }
 
          // Check if the attack type is a missile/ranged attack
@@ -251,7 +244,7 @@ export class WeaponItem extends GearItem {
 
       return result;
    }
-     
+
    /**
     * Gets the equipped ammo item and optionally uses it.
     * @private

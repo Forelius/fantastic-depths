@@ -68,6 +68,7 @@ export class SkillItem extends fadeItem {
       let levelMod = Math.max(0, systemData.level - 1) + (systemData.level > 0 ? systemData.skillBonus : systemData.skillPenalty);
       const bonusOperator = systemData.operator === 'lte' ? '-' : '+';
       rollData.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
+      let rolling = true;
 
       if (ctrlKey === true) {
          dialogResp = {
@@ -76,21 +77,16 @@ export class SkillItem extends fadeItem {
          };
       } else {
          // Show the dialog for roll modifier
-         try {
-            const dialog = await DialogFactory(dataset, this.actor);
-            dialogResp = dialog?.resp;
-            if (dialogResp.mod != 0) {
-               rollData.formula = `${rollData.formula}${bonusOperator}@mod`;
-            }
-         }
-         // If close button is pressed
-         catch (error) {
-            // Like Weird Al says, eat it
+         const dialog = await DialogFactory(dataset, this.actor);
+         dialogResp = dialog?.resp;
+         rolling = dialogResp.rolling === true;
+         if (dialogResp.mod != 0) {
+            rollData.formula = `${rollData.formula}${bonusOperator}@mod`;
          }
       }
 
       let result = null;
-      if (dialogResp !== null) {
+      if (rolling === true) {
          // Roll
          const rollContext = { ...rollData, ...dialogResp || {} };
          const targetRoll = await new Roll(systemData.targetFormula, rollContext).evaluate();

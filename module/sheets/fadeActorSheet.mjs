@@ -498,12 +498,11 @@ export class fadeActorSheet extends ActorSheet {
          chatType = CHAT_TYPE.ABILITY_CHECK;
          formula = formula ? formula : '1d20';
          if (ctrlKey === false) {
-            try {
-               dialogResp = await DialogFactory(dataset, this.actor);
+            dialogResp = await DialogFactory(dataset, this.actor);
+            if (dialogResp?.resp?.rolling === true) {
                formula = (dialogResp !== null && dialogResp?.resp.mod != 0) ? "1d20-@mod" : "1d20";
-            }
-            // If close button is pressed
-            catch (error) {
+            } else {
+               // This will stop the process below.
                chatType = null;
             }
          }
@@ -516,12 +515,11 @@ export class fadeActorSheet extends ActorSheet {
             dataset.desc = title;
          }
          chatType = CHAT_TYPE.GENERIC_ROLL;
-         try {
-            dialogResp = await DialogFactory(dataset, this.actor);
+         dialogResp = await DialogFactory(dataset, this.actor);
+         if (dialogResp?.resp?.rolling === true) {
             formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`) : formula;
-         }
-         // If close button is pressed
-         catch (error) {
+         } else {
+            // This will stop the process below.
             chatType = null;
          }
       } else {

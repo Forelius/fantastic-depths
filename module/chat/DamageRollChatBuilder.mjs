@@ -77,19 +77,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const { weaponuuid, attacktype, attackmode, damagetype, targetweapontype } = dataset;
       const theItem = await fromUuid(weaponuuid);
       const instigator = theItem.actor.token ?? theItem.actor;
-      let canRoll = true;
+      let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === 'heal';
-
-      try {
-         dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, theItem);
-         if (!dialogResp?.resp) {
-            canRoll = false;
-         }
-      } catch (error) {
-         // Close button pressed or other error
-         canRoll = false;
-      }
+      dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, theItem);
+      rolling = dialogResp?.resp?.rolling === true;
 
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison"];
@@ -100,7 +92,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          damageRoll = await theItem.getDamageRoll(dialogResp?.resp);
       }
 
-      if (canRoll === true) {
+      if (rolling === true) {
          // Roll the damage and wait for the result
          const roll = new Roll(damageRoll.formula);
          await roll.evaluate(); // Wait for the roll result

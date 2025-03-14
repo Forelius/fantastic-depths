@@ -52,7 +52,7 @@ export class fadeDialog {
             },
          },
          default: 'check',
-         close: () => { return null; }
+         close: () => { return { rolling: false } }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -133,7 +133,7 @@ export class fadeDialog {
             }
          },
          default: 'roll',
-         close: () => { return null; }
+         close: () => { return { rolling: false } }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -165,7 +165,7 @@ export class fadeDialog {
             },
          },
          default: 'check',
-         close: () => { return null; }
+         close: () => { return { rolling: false }; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });

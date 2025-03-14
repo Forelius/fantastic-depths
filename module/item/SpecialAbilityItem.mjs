@@ -61,39 +61,33 @@ export class SpecialAbilityItem extends fadeItem {
 
       let rolled = null;
       if (hasRoll === true) {
-         try {
-            // Retrieve roll data.
-            dataset.dialog = "generic";
-            dataset.rollmode = systemData.rollMode;
-            if (dialogResp) {
-               dialogResp.rolling === true
-            } else if (ctrlKey === true) {
-               dialogResp = {
-                  rolling: true,
-                  mod: 0
-               };
-            } else {
-               const dialog = await DialogFactory(dataset, this.actor);
-               dialogResp = dialog?.resp;
-            }
+         // Retrieve roll data.
+         dataset.dialog = "generic";
+         dataset.rollmode = systemData.rollMode;
+         if (dialogResp) {
+            dialogResp.rolling === true
+         } else if (ctrlKey === true) {
+            dialogResp = {
+               rolling: true,
+               mod: 0
+            };
+         } else {
+            const dialog = await DialogFactory(dataset, this.actor);
+            dialogResp = dialog?.resp;
+         }
 
-            if (dialogResp?.rolling === true) {
-               if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
-                  dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
-               } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
-                  dialogResp.mod += systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
-               }
-            } else {
-               canProceed = false;
+         if (dialogResp?.rolling === true) {
+            if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
+               dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
+            } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
+               dialogResp.mod += systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
             }
-            rollData.formula = dialogResp?.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
-            const rollContext = { ...rollData, ...dialogResp || {} };
-            rolled = await new Roll(rollData.formula, rollContext).evaluate();
-         } catch (error) {
-            // Close button pressed or other error
-            console.warn(error);
+         } else {
             canProceed = false;
          }
+         rollData.formula = dialogResp?.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
+         const rollContext = { ...rollData, ...dialogResp || {} };
+         rolled = await new Roll(rollData.formula, rollContext).evaluate();
       }
 
       if (canProceed === true) {
