@@ -158,7 +158,7 @@ export class CharacterActor extends fadeActor {
       if (levelData) {
          this.system.hp.hd = levelData.hd;
          this.system.thac0.value = levelData.thac0;
-         this.system.thbonus = levelData.thbonus;
+         //this.system.thbonus = levelData.thbonus;
          if (this.system.details.title == "" || this.system.details.title == null || this.system.details.title == prevLevelData?.title) {
             const ordinalized = Formatter.formatOrdinal(currentLevel);
             this.system.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
@@ -178,7 +178,6 @@ export class CharacterActor extends fadeActor {
          if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
             console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`, classData.spells);
          } else {
-            //console.debug(`Class spells ${this.name}: spell levels ${spellProgression.length}, spell slots ${this.system.spellSlots.length}.`, this.system.spellSlots, spellProgression);
             // Loop through the spell slots in the this and update the 'max' values
             for (let slot of this.system.spellSlots) {
                const index = slot.spellLevel - 1;
@@ -202,35 +201,36 @@ export class CharacterActor extends fadeActor {
    async _updateLevelClass() {
       const nameInput = this.system.details.class?.toLowerCase();
       const worldItem = ClassItem.getByName(nameInput);
-      if (!worldItem) {
-         //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
-         return;
-      }
+      if (worldItem) {
+         // Get the class data for the character's current level.
+         const currentLevel = Math.min(worldItem.system.maxLevel, Math.max(worldItem.system.firstLevel, this.system.details.level));
 
-      const currentLevel = Math.min(worldItem.system.maxLevel, Math.max(worldItem.system.firstLevel, this.system.details.level));
-      // Saving throws
-      const savesData = ClassItem.getClassSaves(nameInput, currentLevel);
-      if (savesData) {
-         await this._setupSavingThrows(savesData);
-      }
+         this.system.thbonus = currentLevel.thbonus;
 
-      // Class special abilities
-      const abilitiesData = ClassItem.getClassAbilities(nameInput, currentLevel);
-      if (abilitiesData) {
-         const dialogResp = await DialogFactory({
-            dialog: "yesno",
-            title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
-            content: game.i18n.format('FADE.dialog.specialAbilities.content', {
-               name: this.system.details.class,
-               type: game.i18n.localize('FADE.Actor.Class')
-            }),
-            yesLabel: game.i18n.localize('FADE.dialog.yes'),
-            noLabel: game.i18n.localize('FADE.dialog.no'),
-            defaultChoice: "yes"
-         }, this.actor);
+         // Saving throws
+         const savesData = ClassItem.getClassSaves(nameInput, currentLevel);
+         if (savesData) {
+            await this._setupSavingThrows(savesData);
+         }
 
-         if (dialogResp?.resp?.result === true) {
-            await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+         // Class special abilities
+         const abilitiesData = ClassItem.getClassAbilities(nameInput, currentLevel);
+         if (abilitiesData) {
+            const dialogResp = await DialogFactory({
+               dialog: "yesno",
+               title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
+               content: game.i18n.format('FADE.dialog.specialAbilities.content', {
+                  name: this.system.details.class,
+                  type: game.i18n.localize('FADE.Actor.Class')
+               }),
+               yesLabel: game.i18n.localize('FADE.dialog.yes'),
+               noLabel: game.i18n.localize('FADE.dialog.no'),
+               defaultChoice: "yes"
+            }, this.actor);
+
+            if (dialogResp?.resp?.result === true) {
+               await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+            }
          }
       }
    }
@@ -250,7 +250,7 @@ export class CharacterActor extends fadeActor {
 
       // Manage the species embedded item
       if (actorItem) {
-         actorItem.delete();         
+         actorItem.delete();
       }
       const itemData = [worldItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
@@ -269,7 +269,7 @@ export class CharacterActor extends fadeActor {
       if (abilitiesData) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
-            title: game.i18n.format('FADE.dialog.specialAbilities.title', {name: this.system.details.species }),
+            title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: this.system.details.species }),
             content: game.i18n.format('FADE.dialog.specialAbilities.content', {
                name: this.system.details.species,
                type: game.i18n.localize('FADE.Actor.Species')
