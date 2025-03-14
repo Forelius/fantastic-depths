@@ -1,6 +1,6 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li>
@@ -18,7 +18,7 @@
                <label for="system.ability">{{localize 'FADE.Actor.Abilities.long'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.level" value='{{system.level}}' data-dtype='Number' />
+               <input type='number' name="system.level" value='{{system.level}}' data-dtype='Number' />
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </li>
             <li class="flex2">
@@ -47,8 +47,8 @@
       <div class='tab' data-group='primary' data-tab='attributes'>
          <div class="bordered">
             <div class="summary flexrow">
-               <div style="max-width:90px;">
-                  <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String'/>
+               <div>
+                  <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' />
                   <label for="system.rollFormula">{{localize 'FADE.roll'}}</label>
                </div>
                <div style="max-width:50px;">
@@ -61,6 +61,28 @@
                   <input type='text' name="system.targetFormula" value='{{system.targetFormula}}' data-dtype='String' />
                   <label for="system.targetFormula">{{localize 'FADE.target'}}</label>
                </div>
+               <div style="max-width:60px">
+                  <input type="checkbox" name="system.showResult" data-dtype="Boolean" {{#if system.showResult}} checked{{/if}} data-tooltip="{{localize 'FADE.showResult.hint'}}" />
+                  <label for="system.showResult" data-tooltip="{{localize 'FADE.showResult.hint'}}">{{localize 'FADE.showResult.name'}}</label>
+               </div>
+            </div>
+            <div class="summary flexrow">
+               <div style="max-width:100px">
+                  <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
+                  <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
+               </div>
+               <div style="max-width:100px">
+                  <input type='text' name="system.autoFail" value='{{system.autoFail}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}" />
+                  <label for="system.autoFail" data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}">{{localize 'FADE.SpecialAbility.autoFail'}}</label>
+               </div>
+               <div style="max-width:100px">
+                  <input type='number' name="system.skillBonus" value='{{system.skillBonus}}' data-dtype='Number' />
+                  <label for="system.skillBonus" data-tooltip="{{localize 'FADE.Skill.bonusHint'}}">{{localize 'FADE.bonus'}}</label>
+               </div>
+               <div style="max-width:100px">
+                  <input type='number' name="system.skillPenalty" value='{{system.skillPenalty}}' data-dtype='Number' />
+                  <label for="system.skillPenalty" data-tooltip="{{localize 'FADE.Skill.penaltyHint'}}">{{localize 'FADE.penalty'}}</label>
+               </div>
             </div>
          </div>
       </div>
@@ -68,7 +90,7 @@
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable}}
+         {{editor enrichedDesc target='system.description' engine='prosemirror' button=true editable=editable}}
       </div>
    </section>
 </form>

@@ -8,6 +8,7 @@
    overflow-y: auto;
    scrollbar-width: thin;
 
+
    .warning-bkgd {
       background: rgba(150, 20, 20, 0.15);
    }
@@ -128,6 +129,24 @@
       input {
          text-align: center;
       }
+
+      .item-description {
+         padding: 0 2px;
+         display: block;
+         flex: auto;
+
+         p {
+            margin-top: -6px;
+         }
+      }
+
+      .desc-collapsed {
+         display: none;
+         height: 0;
+         padding: 0;
+         margin: 0;
+         transition: height 0.1s ease-in, padding 0.1s ease-in;
+      }
    }
 
    .item-40px {
@@ -158,9 +177,9 @@
    }
    // Section Header
    .items-header {
-      height: 28px;
+      height: auto;
       margin: 2px 0;
-      padding: 0;
+      padding: 3px 1px;
       align-items: center;
       font-weight: bold;
 
@@ -171,6 +190,7 @@
 
       .align-left {
          text-align: left;
+         padding-left:6px;
       }
 
       .item-name {

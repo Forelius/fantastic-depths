@@ -1,3 +1,4 @@
+import { EffectManager } from '../sys/EffectManager.mjs';
 /**
  * Sheet class for ActorMasteryItem.
  */
@@ -47,15 +48,20 @@ export class ActorMasterySheet extends ItemSheet {
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
 
+      // Weapon types
       const types = [];
-      types.push({ value: "", text: game.i18n.localize('None') });
+      types.push({ value: null, text: game.i18n.localize('None') });
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
       }));
       context.weaponTypes = types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      // Mastery types
       context.masteryLevels = [...CONFIG.FADE.MasteryLevels.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Mastery.levels.${key}`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
    }

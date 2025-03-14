@@ -17,9 +17,17 @@ export class MonsterSheet extends fadeActorSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'features',
+               initial: 'abilities',
             },
          ],
       });
+   }
+
+   /** @override */
+   async render(force, options = {}) {
+      // Call the original render method with modified options
+      await super.render(force, options);
+      // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
+      setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
    }
 }

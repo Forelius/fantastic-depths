@@ -34,7 +34,6 @@ export class fadeHandlebars {
       Handlebars.registerHelper("multiply", (a, b) => Number(a) * Number(b));
       // Round down
       Handlebars.registerHelper("divide", (a, b) => Math.floor(Number(a) / Number(b)));
-
       Handlebars.registerHelper('contextMergeEach', function (array, options) {
          // If the first argument isn’t a proper array, do nothing or handle differently.
          if (!Array.isArray(array)) return '';

@@ -3,7 +3,7 @@ export class fadeCombatant extends Combatant {
       return this.actor?.system.combat.declaredAction;
    }
    set declaredAction(value) {
-      console.debug(`set declaredAction called for ${this.actor.name}:`, value);
+      //console.debug(`set declaredAction called for ${this.actor.name}:`, value);
    }
    get attacks() {
       return this.actor?.system.combat.attacks;

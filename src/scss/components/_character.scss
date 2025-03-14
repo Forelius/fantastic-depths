@@ -1,4 +1,48 @@
 .character, .monster {
+   .nav-tabs-right {
+      left: 100%;
+      top: 10%;
+      position: absolute;
+      flex-direction: column;
+
+      .nav-tab {
+         width: 38px;
+         margin: 2px 0;
+         padding-inline-end: 12px;
+         border-radius: 0 8px 8px 0;
+         padding: 4px;
+
+         .active {
+            img {
+               filter: brightness(100%);
+            }
+         }
+
+         a {
+            border-radius: 0 6px 6px 0;
+            border-right: 1px solid;
+            border-bottom: 1px solid;
+            border-top: 1px solid;
+            padding: 4px 4px 4px 0;
+            width: 30px;
+            display: inline-block;
+
+            img {
+               filter: brightness(50%);
+            }
+         }
+      }
+
+      .nav-tab-vert {
+         width: 26px;
+         padding: 8px 2px;
+         margin: 4px 0;
+         padding-inline-end: 8px;
+         border-radius: 0 8px 8px 0;
+         writing-mode: vertical-lr;
+      }
+   }
+
    input {
       border: 0 none;
       padding: 2px 5px;
@@ -43,6 +87,7 @@
 
       label {
          font-weight: 500;
+         margin: 0 0 2px 0;
       }
 
       .abbr {
@@ -60,12 +105,18 @@
       }
 
       input {
-         font-size: 24px;
+         font-size: 20px;
          max-width: 40px;
-         border-radius: 15px;
+         border-radius: 5px;
          padding-top: 0;
-         min-height: 32px;
+         //min-height: 32px;
          text-align: center;
+      }
+
+      .ability-score {
+         font-size: 25px;
+         text-align: center;
+         padding-right: 5px;
       }
 
       .ability-mod {

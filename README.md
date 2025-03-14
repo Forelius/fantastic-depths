@@ -1,7 +1,8 @@
-# Fantastic Depths - Foundry VTT System
+![image](https://github.com/user-attachments/assets/14893284-d6e9-4603-acff-f3179b80cb4c)
+
+## Fantastic Depths - Foundry VTT System
 ![Foundry v11](https://img.shields.io/badge/foundry-v11-green)![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
 
-![image info](./assets/cover.webp)
 This Foundry VTT system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
 
 The system comes with two themes, which are a light mode and a dark mode.
@@ -23,12 +24,15 @@ WIKI: https://github.com/Forelius/fantastic-depths/wiki
 
 Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 
-**Thanks to the testers:** Hal²O, Darvus Maximus, borealforestbase, Francis, Jordan, FR4NC35C0 and Wingfireblade(Paolo).
+**Thanks to the testers:** HalÂ²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
+FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin and Herrenlosigkeit.
+
+If you wish to send me a financial gift, you can do so on Ko-Fi: https://ko-fi.com/forelius
 
 ---
 
 ## Character Sheet
-The character sheet can handle any of the core classes and levels up to 24. Monsters and retainers are also supported. Core classes are recognized when entered into the class field, and this will result in the auto-population of various class-related inputs. All auto-populated class-related values can be overwritten if desired.
+The character sheets are designed to be flexible and will provide class and level automation for any world-defined classes. Monsters and retainers are also supported. Core classes are recognized when entered into the class field or dragged and dropped from a class item. Setting the class will result in the auto-population of various class-related inputs. Most auto-populated class-related values can be overwritten if desired.
 
 ![character](./assets/img/docs/charsheet1.jpg)
 
@@ -39,12 +43,12 @@ The character sheet can handle any of the core classes and levels up to 24. Mons
 ![skills](./assets/img/docs/charsheet3.jpg)
 
 ## Monster Sheet
-The monster sheet allows for custom equippment, spells and possession and use of magic items.
+The monster sheet allows for custom equippment, spells, special abilities and possession and use of most items.
 
 ![monster](./assets/img/docs/monstersheet1.jpg)
 
 ## Item Sheet
-There are item sheets for adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
+There are item sheets for character classes, exploration abilities, saving throws, adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
 
 ### Light Item Sheet
 ![light](./assets/img/docs/lightitemsheet1.jpg)

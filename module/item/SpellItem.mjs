@@ -1,11 +1,13 @@
 import { fadeItem } from './fadeItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 export class SpellItem extends fadeItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    /** @override */
@@ -79,8 +81,7 @@ export class SpellItem extends fadeItem {
    }
 
    async doSpellcast() {
-      const caster = this.parent.getActiveTokens()?.[0] || this.actor;
-      const casterActor = caster.actor || this.actor;
+      const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
       
@@ -95,7 +96,7 @@ export class SpellItem extends fadeItem {
 
             const chatData = {
                caller: this, // the spell
-               context: (caster || casterActor), // the caster
+               context: instigator, // the caster
                roll: attackRollResult?.rollEval,
                digest: attackRollResult?.digest
             };

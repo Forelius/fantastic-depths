@@ -49,17 +49,40 @@ export class ClassItem extends fadeItem {
       classAbilities.push(newClassAbility);
       await this.update({ "system.classAbilities": classAbilities });
    }
+
+   getXPBonus(abilities) {
+      const groups = this.system.primeReqs.reduce((acc, curr) => {
+         if (!acc[curr.percentage]) acc[curr.percentage] = []; //If this type wasn't previously stored
+         acc[curr.percentage].push(curr);
+         return acc;
+      }, {});
+      let highest = 0;
+      
+      for (const group of Object.entries(groups)) {
+         const tier = groups[group[0]];
+         let isQualified = false;
+         for (const requirement of tier) {
+            isQualified = (requirement.concatLogic === 'none' || requirement.concatLogic === 'or')
+               ? abilities[requirement.ability].value >= requirement.minScore
+               : isQualified && abilities[requirement.ability].value >= requirement.minScore;
+         }
+         const currentPerc = parseInt(group);
+         highest = isQualified && currentPerc > highest ? currentPerc : highest;
+      }
+      return highest;
+   }
+
    /**
     * Retrieves the specified class item, if it exists.
-    * @param {any} className The class item's full and case-sensitive name.
+    * @param {any} name The class item's full and case-sensitive name.
     * @returns The specified class item or undefined if not found.
     */
-   static getClassItem(className) {
-      if (className === null || className === undefined || className === '') return;
+   static getByName(name) {
+      if (name === null || name === undefined || name === '') return;
 
-      const result = game.items.find(item => item.name.toLowerCase() == className.toLowerCase() && item.type === 'class');
+      const result = game.items.find(item => item.name.toLowerCase() == name.toLowerCase() && item.type === 'class');
       if (!result) {
-         console.warn(`Class item not found ${className}.`);
+         console.warn(`Class item not found ${name}.`);
       }
       return result;
    }
@@ -83,10 +106,10 @@ export class ClassItem extends fadeItem {
    }
 
    static getClassAbilities(className, classLevel) {
-      const classItem = ClassItem.getClassItem(className);
+      const theItem = ClassItem.getByName(className);
       let result;
-      if (classItem) {
-         result = classItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+      if (theItem) {
+         result = theItem.system.classAbilities.filter(a => a.level <= classLevel).reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
          result = result ? Object.values(result) : null;
       }
       return result?.length > 0 ? result : undefined;
@@ -99,7 +122,7 @@ export class ClassItem extends fadeItem {
     * @returns The saving throw data for the specified class and level, otherwise undefined
     */
    static getClassSaves(className, classLevel) {
-      const classItem = ClassItem.getClassItem(className);
+      const classItem = ClassItem.getByName(className);
       let result;
       if (classItem) {
          result = classItem.system.saves.find(save => classLevel <= save.level);

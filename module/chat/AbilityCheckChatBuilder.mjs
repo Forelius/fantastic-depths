@@ -4,19 +4,23 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/ability-check.hbs';
 
    async createChatMessage() {
-      const { context, mdata, resp, roll } = this.data;
+      const { context, mdata, roll, options } = this.data;
 
       const rolls = [roll];
       const rollContent = await roll.render();
-      mdata.score = context.system.abilities[mdata.ability].value;
+      let resultString;
 
-      // Determine if the roll is successful based on the roll type and target number      
-      const testResult = this.getBoolRollResultType({
-         roll,
-         target: mdata.score,
-         operator: mdata.pass
-      });
-      const resultString = this.getBoolResult(testResult);
+      mdata.score = context.system.abilities[mdata.ability].total;
+
+      if (options.showResult !== false) {
+         // Determine if the roll is successful based on the roll type and target number      
+         const testResult = this.getBoolRollResultType({
+            roll,
+            target: mdata.score,
+            operator: mdata.pass
+         });
+         resultString = this.getBoolResult(testResult);
+      }
 
       // Get the actor and user names
       const actorName = context.name; // Actor name (e.g., character name)
@@ -34,7 +38,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
 
       if (game.fade.toastManager) {
          const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${mdata.ability}.long`);
-         let toast = `${actorName}: ${abilityName} check.${resultString}`;
+         let toast = `${actorName}: ${abilityName} check.${resultString ?? ''}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 

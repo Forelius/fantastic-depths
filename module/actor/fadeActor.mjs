@@ -95,7 +95,6 @@ export class fadeActor extends Actor {
       if (this.id) {
          this._prepareEffects();
          this._prepareSpellsUsed();
-
       } else {
          //console.warn(`Preparing base data for ${this.name}, but id is null.`);
       }
@@ -375,11 +374,13 @@ export class fadeActor extends Actor {
     * @public
     * @param {any} type A string key of the saving throw type.
     */
-   async rollSavingThrow(type) {
+   async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
-      const savingThrow = this.#getSavingThrow(type);
+      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const savingThrow = this.#getSavingThrow(type); // Saving throw item
       const rollData = this.getRollData();
+      let dialogResp = null;
       let dataset = {};
       dataset.dialog = "save";
       dataset.pass = savingThrow.system.operator;
@@ -390,12 +391,20 @@ export class fadeActor extends Actor {
          dataset.type = type;
       }
 
-      let dialogResp = await DialogFactory(dataset, this);
+      if (ctrlKey === true) {
+         dialogResp = {
+            rolling: true,
+            mod: 0
+         };
+      } else {
+         const dialog = await DialogFactory(dataset, this);
+         dialogResp = dialog?.resp;
+      }
 
-      if (dialogResp?.resp?.rolling === true) {
-         let rollMod = dialogResp.resp?.mod || 0;
-         if (dialogResp.resp.vsmagic === true) {
-            rollMod += this.system.abilities.wis.mod;
+      if (dialogResp?.rolling === true) {
+         let rollMod = dialogResp.mod || 0;
+         if (dialogResp.vsmagic === true) {
+            rollMod += this.system.abilities?.wis?.mod ?? 0;
          }
          rollMod += this.system.mod.save[type] || 0;
          rollMod += this.system.mod.save.all || 0;
@@ -403,13 +412,13 @@ export class fadeActor extends Actor {
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
-            dialogResp: dialogResp,
             context: this,
             caller: savingThrow,
             mdata: dataset,
-            roll: rolled,
+            roll: rolled
          };
-         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
+         const showResult = savingThrow._getShowResult(event);
+         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();
       }
    }
@@ -420,8 +429,8 @@ export class fadeActor extends Actor {
     * @param {any} event
     */
    static async handleSavingThrowRequest(event) {
-      if (this.testUserPermission(game.user, "OWNER") === false) return;
-
+      // Not sure why this is here, because this is a static method and 'this' is not the actor.
+      //if (this.testUserPermission(game.user, "OWNER") === false) return;
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
@@ -432,7 +441,7 @@ export class fadeActor extends Actor {
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
-            target.actor.rollSavingThrow(dataset.type);
+            target.actor.rollSavingThrow(dataset.type, event);
          }
       }
    }
@@ -766,34 +775,37 @@ export class fadeActor extends Actor {
    async _setupSpecialAbilities(classKey, abilitiesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      // Get class ability world items for specified class
-      const worldAbilities = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class' && item.system.classKey === classKey);
       // Get this actor's class ability items.
-      const classAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+
+      // Determine which special abilities are missing and need to be added.
       const addItems = [];
       for (const abilityData of abilitiesData) {
-         if (classAbilities.find(item => item.name === abilityData.name) === undefined
+         if (specialAbilities.find(item => item.name === abilityData.name) === undefined
             && addItems.find(item => item.name === abilityData.name) === undefined) {
-            const itemData = worldAbilities.find(item => item.name === abilityData.name);
+            //const itemData = worldAbilities.find(item => item.name === abilityData.name);
+            classKey = classKey ? classKey : abilityData.classKey;
+            const itemData = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'class' && item.name === abilityData.name && item.system.classKey === classKey);
             if (itemData) {
                const newAbility = itemData.toObject();
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                addItems.push(newAbility);
             } else {
-               console.warn(`The specified class ability (${abilityData.name}) does not exist as a world item.`);
+               console.warn(`The special ability (${abilityData.name}) does not exist as a world item.`);
             }
          }
       }
+      // Add the missing special abilities.
       if (addItems.length > 0) {
-         console.debug(`Adding ${addItems.length} class ability items to ${this.name}`);
+         console.debug(`Adding ${addItems.length} special ability items to ${this.name}`);
          promises.push(this.createEmbeddedDocuments("Item", addItems));
       }
 
       // Iterate over ability items and set each one.
-      for (const classAbility of classAbilities) {
-         const target = abilitiesData.find(item => item.name === classAbility.name)?.target;
+      for (const specialAbility of specialAbilities) {
+         const target = abilitiesData.find(item => item.name === specialAbility.name)?.target;
          if (target) {
-            promises.push(classAbility.update({ "system.target": target }));
+            promises.push(specialAbility.update({ "system.target": target }));
          }
       }
       if (promises.length > 0) {
@@ -927,6 +939,21 @@ export class fadeActor extends Actor {
             encumbrance.fly = Math.floor(this.system.flight.max * encTier.mvFactor);
          }
       }
+   }
+
+   /**
+    * Determines if a roll on a non-item (ability score check) should show a success/fail result message.
+    * @protected
+    * @param {any} event
+    * @returns True if the results should be shown, otherwise false.
+    */
+   _getShowResult(event) {
+      let result = true;
+      const shiftKey = event?.originalEvent?.shiftKey ?? false;
+      if (game.user.isGM === true) {
+         result = shiftKey === false && result === true;
+      }
+      return result;
    }
 
    #getSavingThrow(type) {

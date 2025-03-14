@@ -1,20 +1,23 @@
 export class EffectManager {
+   constructor() {
+      //this.effectsToKeep = ["dead", "sleep", "prone", "fly", "invisible", "blind", "deaf", "stun",
+      //   "silence", "frightened", "poison", "restrain"];
+   }
 
    async OnGameInit() {
       const path = 'systems/fantastic-depths/assets/img';
-      let allEffects = [];
+      //let allEffects = [];
 
-      // Filter the existing status effects to keep only the ones you want
-      if (allEffects.length === 0) {
-         const effectsToKeep = ["dead", "sleep", "prone", "fly", "invisible", "blind", "deaf", "stunned", "silenced", "frightened"];
-         const sfx = CONFIG.statusEffects;// CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
-         allEffects = [...allEffects.slice(sfx.length - allEffects.length), ...sfx];
-      }
+      //// Filter the existing status effects to keep only the ones you want
+      //if (allEffects.length === 0) {         
+      //   const sfx = CONFIG.statusEffects;// CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
+      //   allEffects = [...allEffects.slice(sfx.length - allEffects.length), ...sfx];
+      //}
 
-      allEffects.push(...CONFIG.FADE.Conditions);
+      //allEffects.push(...CONFIG.FADE.Conditions);
 
       // Sync global effects into CONFIG.statusEffects
-      CONFIG.statusEffects = allEffects;
+      //CONFIG.statusEffects = allEffects;
       //await game.settings.set(game.system.id, 'globalEffects', allEffects);
    }
 
@@ -28,7 +31,7 @@ export class EffectManager {
       //   globalEffects = [...globalEffects.slice(sfx.length - globalEffects.length), ...sfx];
       //}
 
-      await game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
+      //await game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
    }
 
    //static async applyInvulnerabilityEffect(token) {
@@ -176,6 +179,33 @@ export class EffectManager {
          if (effect.disabled) categories.inactive.effects.push(effect);
          else if (effect.isTemporary) categories.temporary.effects.push(effect);
          else categories.passive.effects.push(effect);
+      }
+      return categories;
+   }
+
+   /**
+    * Prepare the data structure for Active Effects which are currently embedded in an Actor or Item.
+    * @param {ActiveEffect[]} effects    A collection or generator of Active Effect documents to prepare sheet data for
+    * @return {object}                   Data for rendering
+    */
+   static preparePassiveEffects(effects) {
+      // Define effect header categories
+      const categories = {
+         passive: {
+            type: 'passive',
+            label: game.i18n.localize('FADE.Effect.Passive'),
+            effects: [],
+         }
+      };
+
+      // Iterate over active effects, classifying them into categories
+      for (const effect of effects) {
+         // Fix for unknown source
+         effect.sourceNameFix = effect.sourceName;
+         if (effect.sourceName === "Unknown" && effect.parent) {
+            effect.sourceNameFix = effect.parent.name ?? effect.sourceName;
+         }
+         categories.passive.effects.push(effect);
       }
       return categories;
    }

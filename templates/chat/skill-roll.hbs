@@ -1,7 +1,8 @@
+<h4>{{actorName}}</h4>
 <div><strong>{{mdata.label}}:</strong> {{mdata.desc}}</div>
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
-      <img class="item-image" src='{{skillItem.img}}' title='{{skillItem.name}}' />
+      <img class="item-image" src='{{skillItem.img}}' data-tooltip='{{skillItem.name}}' />
       <div class="item-name">{{skillItem.name}}</div>
    </div>
    <div class="collapsible-content collapsed">
@@ -19,8 +20,7 @@
            data-attacktype="skill"
            data-label="Heal"
            data-type="heal"
-           data-attackerid="{{context.id}}"
-           data-weaponid="{{skillItem.id}}"
+           data-weaponuuid="{{skillItem.uuid}}"
            data-tooltip="<b>{{localize 'FADE.Spell.healFormula'}}:</b> {{damageRoll.formula}}">
       <i class="fa-solid fa-heart"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}}</span>

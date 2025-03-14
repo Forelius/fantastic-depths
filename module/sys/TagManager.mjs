@@ -1,18 +1,21 @@
 export class TagManager {
-   constructor(parentDocument) {
+   constructor(parentDocument, tagProperty='tags') {
       this.parentDocument = parentDocument; // Store the reference to the parent document
+      this.property = tagProperty;
    }
 
    pushTag(value) {
       const systemData = this.parentDocument.system; // Access the system via the document
-      systemData.tags = systemData.tags || [];
+      systemData[this.property] = systemData[this.property] || [];
 
       const trimmedValue = value.trim();
-      if (!systemData.tags.includes(trimmedValue)) {
-         systemData.tags.push(trimmedValue);
+      if (!systemData[this.property].includes(trimmedValue)) {
+         systemData[this.property].push(trimmedValue);
       }
 
-      let updates = { "system.tags": systemData.tags };
+      const propertyName = `system.${this.property}`;
+      let updates = {};
+      updates[propertyName] = systemData[this.property];
 
       // Call update on the parent document
       return this.parentDocument.update(updates);
@@ -20,13 +23,15 @@ export class TagManager {
 
    popTag(value) {
       const systemData = this.parentDocument.system; // Access the system via the document
-      systemData.tags = systemData.tags || [];
+      systemData[this.property] = systemData[this.property] || [];
 
-      const index = systemData.tags.indexOf(value);
+      const index = systemData[this.property].indexOf(value);
       if (index > -1) {
-         systemData.tags.splice(index, 1);
+         systemData[this.property].splice(index, 1);
       }
-      let updates = { "system.tags": systemData.tags };
+      const propertyName = `system.${this.property}`;
+      let updates = {};
+      updates[propertyName] = systemData[this.property];
 
       // Call update on the parent document
       return this.parentDocument.update(updates);

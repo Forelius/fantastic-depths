@@ -1,3 +1,4 @@
+import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
 
 export class GearItemSheet extends fadeItemSheet {
@@ -13,7 +14,7 @@ export class GearItemSheet extends fadeItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'attributes',
+               initial: 'description',
             },
          ],
       });
@@ -39,6 +40,9 @@ export class GearItemSheet extends fadeItemSheet {
          const stTurnsRemaining = (lightData.secondsRemain > 0 || this.item.system.light.enabled) ? (turnsRemaining).toFixed(1) : '-';
          context.turnsRemaining = `${stTurnsRemaining}`;
       }
+
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
    }

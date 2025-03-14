@@ -15,7 +15,7 @@ class MySystemVersion {
       let split = core?.split('.') ?? [];
       this.major = parseInt(split[0]) ?? 0;
       this.minor = parseInt(split[1]) ?? 0;
-      this.build = parseInt(split[2]) ?? 0;
+      this.patch = parseInt(split[2]) ?? 0;
       // Handle RC version (null if not an RC)
       this.rc = rc ? parseInt(rc.replace('rc.', '')) : null;
    }
@@ -29,7 +29,7 @@ class MySystemVersion {
       if (ignoreRC == false) {
          return this.version === version.version;
       } else {
-         return this.major === version.major && this.minor === version.minor && this.build === version.build;
+         return this.major === version.major && this.minor === version.minor && this.patch === version.patch;
       }
    }
 
@@ -42,20 +42,20 @@ class MySystemVersion {
       if (!(version instanceof MySystemVersion)) {
          version = new MySystemVersion(version); // Normalize input
       }
-      const result = { isNextMajor: false, isNextMinor: false, isNextBuild: false, isNextRC: false, isLessThan: false };
+      const result = { isNextMajor: false, isNextMinor: false, isNextPatch: false, isNextRC: false, isLessThan: false };
       if (this.eq(version) === false) {
          // True if current rc has value, next rc has value, current rc is less than next rc
          //    and majors are same or current major less than next major
          //    and minors are same or current minor less than next minor
-         //    and build are same or current build less than next build
+         //    and patch are same or current patch less than next patch
          result.isNextRC = (this.rc > 0 && version.rc > 0 && this.rc < version.rc
             && (this.major === version.major || this.major < version.major)
             && (this.minor === version.minor || this.minor < version.minor)
-            && (this.build === version.build || this.build < version.build));
+            && (this.patch === version.patch || this.patch < version.patch));
          result.isNextMajor = this.major < version.major;
          result.isNextMinor = this.major == version.major && this.minor < version.minor;
-         result.isNextBuild = this.minor == version.minor && this.build < version.build;
-         result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextBuild || result.isNextRC
+         result.isNextPatch = this.minor == version.minor && this.patch < version.patch;
+         result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextPatch || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
          //console.debug(this, version, result);
       } else {
@@ -77,296 +77,67 @@ export class DataMigrator {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
-         if (this.oldVersion.lt(new MySystemVersion("0.7.20-rc.10"))) {
-            await this.fixBreathWeapons();
+         //if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
+         //   await this.fixUnidentified();
+         //   ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
+         //}
+         if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
+            await this.fixTreasureItems();
+            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.");
          }
-         if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.6"))) {
-            await this.updateSizeForWeapons();
-            await this.updateGripForWeapons();
-            await this.updateCanSetForWeapons();
-            ui.notifications.info("Fantastic Depths data migration complete.")
-         }
-         if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
-            await this.fixUnidentified();
-            ui.notifications.info("Fantastic Depths data migration complete.")
+         if (this.oldVersion.lt(new MySystemVersion("0.8.1-rc.11"))) {
+            await this.fixTypeAndRarity();
+            const msg = "Fantastic Depths 0.8.0-rc.11 data migration complete.";
+            ui.notifications.info(msg);
          }
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
       }
    }
 
-   async fixBreathWeapons() {
-      console.log("-----------------------------------------------");
-      console.log("Fixing Breath Weapons");
-      console.log("-----------------------------------------------");
-      // Helper function to process a collection of items
-      const processItems = async (items, contextName) => {
-         for (const item of items) {
-            if (item.type === 'weapon') {
-               const savingThrow = item.system.savingThrow;
-               const newBreathValue = savingThrow === "breath" ? item.name.split(" ")[0] : null;
-               // Update the item if necessary
-               if (item.system.breath === "false" || item.system.breath !== newBreathValue) {
-                  console.log(`[${contextName}] Updating ${item.name}: setting breath to ${newBreathValue}`);
-                  await item.update({ "system.breath": newBreathValue });
-               }
-            }
-         }
-      };
+   async fixTypeAndRarity() {
+      function parseMonsterType(monsterType) {
+         // Split the monsterType by commas and trim whitespace
+         const terms = monsterType.split(',').map(term => term.trim());
+         let rarity = null;
 
-      // Process all actor items
-      for (const actor of game.actors) {
-         const actorItems = actor.items;
-         await processItems(actorItems, `Actor: ${actor.name}`);
+         // Iterate through the terms to find the one with rarity
+         const monsterTypes = terms.map(term => {
+            // Check if the term contains parentheses with the correct regex
+            const match = term.match(/^(.*?)\s*\((.*?)\)\s*$/);
+            if (match && match[2]) {
+               // If there's a match, extract the rarity from inside the parentheses
+               rarity = match[2].trim(); // Extract the rarity
+               return match[1].trim(); // Return the term without the rarity
+            }
+            return term; // Return the term if it doesn't contain rarity
+         }).filter(term => term); // Filter out any empty terms
+
+         return {
+            monsterTypes,
+            rarity
+         };
       }
 
-      // Process all world items
-      const worldItems = game.items;
-      await processItems(worldItems, "World Items");
-   }
+      const monsters = game.actors.filter(actor => actor.type === 'monster');
 
-   async fixLightItems() {
-      console.log("-----------------------------------------------");
-      console.log("Fixing Light Items (with Cloned Collections)");
-      console.log("-----------------------------------------------");
-
-      // Take a snapshot (clone) of all current actors and world items
-      const clonedActors = Array.from(game.actors);
-      const clonedWorldItems = Array.from(game.items);
-
-      // Function to process items
-      const processItems = async (items, contextName) => {
-         // Clone the item array so we don't iterate over newly created items
-         const snapshot = Array.from(items);
-
-         for (const item of snapshot) {
-            // 1) Converting "item" -> "light" if it has 'light' tag or name 'Lantern'
-            if (
-               item.type === "item" &&
-               (item.system.tags?.includes("light") || item.name === "Lantern")
-            ) {
-               console.log(`[${contextName}] Converting ${item.name} to type "light".`);
-
-               // Duplicate the old item’s data using the correct Foundry utility
-               const newItemData = foundry.utils.duplicate(item.toObject());
-
-               // Remove the "light" tag (and/or "lantern-fuel" if you wish) before creation
-               if (Array.isArray(newItemData.system?.tags)) {
-                  newItemData.system.tags = newItemData.system.tags.filter(
-                     (tag) => tag !== "light" && tag !== "lantern-fuel"
-                  );
-               }
-
-               // Force system.light to exist
-               newItemData.system.light = newItemData.system.light || {};
-               console.debug(item.system);
-               // Now set the default
-               newItemData.system.light.fuelType = item.name == 'Lantern' ? 'lantern' : null;
-               newItemData.system.light.type = "lantern";
-
-               // Finally set the new item type
-               newItemData.type = "light";
-
-               // Create new item, then delete the old one
-               if (item.isEmbedded) {
-                  // Actor-owned (embedded) item
-                  const actor = item.parent;
-                  await actor.createEmbeddedDocuments("Item", [newItemData]);
-                  await actor.deleteEmbeddedDocuments("Item", [item.id]);
-               } else {
-                  // World item
-                  await Item.create(newItemData);
-                  await item.delete();
-               }
-            }
-
-            // 2) Updating "item" if it has 'lantern-fuel' tag or name 'Oil, flask'
-            else if (
-               item.type === "item" &&
-               (item.system.tags?.includes("lantern-fuel") || item.name === "Oil, flask")
-            ) {
-               console.log(`[${contextName}] Updating ${item.name}: fuelType = lantern`);
-
-               // Remove the "lantern-fuel" tag before updating
-               let updatedTags = item.system.tags;
-               if (Array.isArray(updatedTags)) {
-                  updatedTags = updatedTags.filter((tag) => tag !== "lantern-fuel");
-               }
-
-               await item.update({
-                  "system.fuelType": "lantern",
-                  "system.tags": updatedTags
-               });
-            }
-         }
-      };
-
-      // Process cloned actor items
-      for (const actor of clonedActors) {
-         await processItems(actor.items, `Actor: ${actor.name}`);
+      const parsedMonsters = monsters.map(actor => {
+         const { monsterTypes, rarity } = parseMonsterType(actor.system.details.monsterType);
+         return {
+            actor,
+            name: actor.name,
+            monsterType: monsterTypes.join(', '),
+            rarity
+         };
+      });
+      for (let monster of parsedMonsters) {
+         if (monster.rarity === null) continue;
+         await monster.actor.update({
+            'system.details.monsterType': monster.monsterType,
+            'system.details.rarity': monster.rarity
+         });
+         console.debug(`Set ${monster.name}`, monster);
       }
-
-      // Process cloned world items
-      await processItems(clonedWorldItems, "World Items");
-   }
-
-   // Function to update size based on tags
-   async updateSizeForWeapons() {
-      // Map tags to size values
-      const sizeMapping = {
-         small: 'S',
-         medium: 'M',
-         large: 'L',
-      };
-
-      // Helper function to update items
-      const processItems = async (items, actor = null) => {
-         for (const item of items) {
-            if (item.type === 'weapon') {
-               const tags = item.system.tags || [];
-
-               // Handle natural property
-               if (item.system.natural === true) {
-                  if (item.system.size !== null) {
-                     console.log(`Setting size to null for ${actor ? `actor` : `world`} item: ${item.name}`);
-                     await item.update({ 'system.size': null });
-                  }
-                  continue; // Skip further processing for natural items
-               }
-
-               // Skip if system.size already has a non-null value
-               if (item.system.size !== null) {
-                  console.log(`Skipping update for ${actor ? `actor` : `world`} item: ${item.name} as size is already set.`);
-                  continue;
-               }
-
-               // Determine size based on tags or default to 'M'
-               let newSize = sizeMapping.medium; // Default size
-               for (const tag of tags) {
-                  if (sizeMapping[tag]) {
-                     newSize = sizeMapping[tag];
-                     break;
-                  }
-               }
-
-               // Update size if needed
-               if (item.system.size !== newSize) {
-                  console.log(`Updating ${actor ? `actor` : `world`} item: ${item.name} - Size: ${item.system.size} -> ${newSize}`);
-                  await item.update({ 'system.size': newSize });
-               }
-
-               // Remove size-related tags
-               const updatedTags = tags.filter(tag => !Object.keys(sizeMapping).includes(tag));
-               if (tags.length !== updatedTags.length) {
-                  await item.update({ 'system.tags': updatedTags });
-                  console.log(`Removed size tags from ${actor ? `actor` : `world`} item: ${item.name}`);
-               }
-            }
-         }
-      };
-
-      // Process world items
-      await processItems(game.items);
-
-      // Process actor items
-      for (const actor of game.actors) {
-         await processItems(actor.items, actor);
-      }
-
-      console.log("Size update process completed.");
-   }
-
-   async updateGripForWeapons() {
-      console.log("Starting grip update for all items...");
-
-      // Define mapping and tags to remove
-      const gripTags = ['1-handed', '2-handed', 'two-handed'];
-      const getGrip = tags => tags.includes('2-handed') || tags.includes('two-handed') ? '2H' : '1H';
-
-      // Helper function to process items
-      const processItems = async (items, actor = null) => {
-         for (const item of items) {
-            if (item.type === 'weapon') {
-               // Handle natural property
-               if (item.system.natural === true) {
-                  if (item.system.grip !== null) {
-                     console.log(`Setting grip to null for ${actor ? `actor` : `world`} item: ${item.name}`);
-                     await item.update({ 'system.grip': null });
-                  }
-                  continue; // Skip further processing for natural items
-               }
-
-               // Skip if system.grip already has a non-null value
-               if (item.system.grip !== null) {
-                  //console.log(`Skipping update for ${actor ? `actor` : `world`} item: ${item.name} as grip is already set.`);
-                  continue;
-               }
-
-               const tags = item.system.tags || [];
-               const newGrip = getGrip(tags);
-
-               // Update grip if needed
-               if (item.system.grip !== newGrip) {
-                  console.log(`Updating ${actor ? `actor` : `world`} item: ${item.name} - Grip: ${item.system.grip} -> ${newGrip}`);
-                  await item.update({ 'system.grip': newGrip });
-               }
-
-               // Remove grip-related tags
-               const updatedTags = tags.filter(tag => !gripTags.includes(tag));
-               if (tags.length !== updatedTags.length) {
-                  await item.update({ 'system.tags': updatedTags });
-                  console.log(`Removed grip tags from ${actor ? `actor` : `world`} item: ${item.name}`);
-               }
-            }
-         }
-      };
-
-      // Process world items
-      await processItems(game.items);
-
-      // Process actor items
-      for (const actor of game.actors) {
-         await processItems(actor.items, actor);
-      }
-
-      console.log("Grip update process completed.");
-   }
-
-   async updateCanSetForWeapons() {
-      console.log("Starting canSet update for all items...");
-
-      // Helper function to process items
-      const processItems = async (items, actor = null) => {
-         for (const item of items) {
-            if (item.type === 'weapon') {
-               const tags = item.system.tags || [];
-               const hasSetTag = tags.includes('set');
-
-               // Update canSet property
-               if (item.system.canSet !== hasSetTag) {
-                  console.log(`Updating ${actor ? `actor` : `world`} item: ${item.name} - canSet: ${item.system.canSet} -> ${hasSetTag}`);
-                  await item.update({ 'system.canSet': hasSetTag });
-               }
-
-               // Remove the 'set' tag if present
-               if (hasSetTag) {
-                  const updatedTags = tags.filter(tag => tag !== 'set');
-                  await item.update({ 'system.tags': updatedTags });
-                  console.log(`Removed 'set' tag from ${actor ? `actor` : `world`} item: ${item.name}`);
-               }
-            }
-         }
-      };
-
-      // Process world items
-      await processItems(game.items);
-
-      // Process actor items
-      for (const actor of game.actors) {
-         await processItems(actor.items, actor);
-      }
-
-      console.log("canSet update process completed.");
    }
 
    async fixUnidentified() {
@@ -419,21 +190,146 @@ export class DataMigrator {
       await processItems(worldItems, "World Items");
    }
 
+   async fixTreasureItems() {
+      // Helper function to filter for treasure items.
+      const findTreasureItems = items => items.filter(item => {
+         // Only consider items of type "item" for this filter.
+         if (item.type !== "item") return false;
+         // Assume tags are stored in item.system.tags.
+         const tags = item.system?.tags;
+         if (!tags) return false;
+         // If tags is an array, check if it includes "treasure".
+         return Array.isArray(tags) ? tags.includes("treasure") : tags === "treasure";
+      });
+
+      // 1. Get world items from the global item collection.
+      const worldItems = game.items.contents;
+      const treasureWorldItems = findTreasureItems(worldItems);
+
+      // 2. Get owned items from all actors.
+      let actorOwnedItems = [];
+      for (let actor of game.actors.contents) {
+         actorOwnedItems.push(...actor.items.contents);
+      }
+      const treasureActorItems = findTreasureItems(actorOwnedItems);
+
+      // Combine both collections.
+      const allTreasureItems = [...treasureWorldItems, ...treasureActorItems];
+
+      // Iterate over each treasure item and update its type to "treasure".
+      for (let item of allTreasureItems) {
+         console.log(`Updating item "${item.name}" (${item.id}) to type "treasure"`);
+         try {
+            await item.update({ type: "treasure" });
+            await item.tagManager.popTag("treasure");
+            console.log(`Item "${item.name}" updated successfully.`);
+         } catch (error) {
+            console.error(`Error updating item "${item.name}":`, error);
+         }
+      }
+   }
+
+   static async importCompendiums() {
+      // Function to delete a folder and its contents recursively
+      async function deleteFolderAndContents(folderName, folderType) {
+         const folder = game.folders.find(f => f.name === folderName && f.type === folderType);
+
+         if (folder) {
+            // Delete the folder itself
+            await folder.delete({ deleteSubfolders: true, deleteContents: true });
+            ui.notifications.info(`Deleted folder '${folderName}' and its contents.`);
+         }
+      }
+
+      // Function to import a compendium
+      async function importCompendium(compendiumName, folderName) {
+         if (game.user.isGM === false) {
+            ui.notifications.warn("You must be a GM to perform this operation.");
+            return;
+         }
+         const compendium = game.packs.get(compendiumName);
+         if (compendium) {
+            // Import all items into a new folder
+            const importedDocuments = await compendium.importAll({ folderName: folderName, keepId: true });
+         } else {
+            ui.notifications.error(`Compendium '${compendiumName}' not found.`);
+         }
+      }
+
+      // Main function to perform the operations
+      async function performOperations(compendiumName, folderName, folderType, permissionLevel) {
+         // Delete the 'FaDe Items' folder and its contents
+         await deleteFolderAndContents(folderName, folderType);
+         // Import the 'item-compendium' from the 'fade-compendiums' system into a new folder
+         await importCompendium(compendiumName, folderName);
+         if (permissionLevel > 0) {
+            let folder = game.folders.find(f => f.name === folderName && f.type === folderType);
+            ui.notifications.info(`Setting permissions. This could take a few minutes. You will be notified when the process completes.`);
+            await updatePermissions(folder, permissionLevel, folderType);
+         }
+         ui.notifications.info(`Imported compendium '${compendiumName}' successfully into folder '${folderName}'.`);
+      }
+
+      // Recursive Permission Update for Folders and Their Contents
+      async function updatePermissions(folder, level, folderType) {
+         const actualFolder = game.folders.get(folder.id);
+         if (!actualFolder) {
+            console.error("Invalid folder encountered:", folder);
+            return;
+         }
+
+         try {
+            // Update folder permissions
+            await actualFolder.update({ ownership: { default: level } });
+            console.log(`Updated permissions for folder: ${actualFolder.name}`);
+
+            // Update permissions for all items/actors in the folder
+            const contents = folderType === "Actor" ? game.actors : game.items;
+            const folderContents = contents.filter(i => i.folder?.id === folder.id);
+            for (const item of folderContents) {
+               await item.update({ ownership: { default: level } });
+               //console.log(`Updated permissions for item: ${item.name}`);
+            }
+         } catch (err) {
+            console.error(`Failed to update permissions for folder "${actualFolder.name}" or its contents`, err);
+         }
+
+         // Process child folders recursively
+         for (const childWrapper of folder.children) {
+            const childFolder = game.folders.get(childWrapper.folder._id);
+            if (childFolder) {
+               await updatePermissions(childFolder, level, folderType);
+            } else {
+               console.error("Failed to resolve child folder:", childWrapper);
+            }
+         }
+      }
+
+      // Execute the main function
+      await performOperations('fade-compendiums.item-compendium', 'FaDe Items', 'Item', 1);
+      await performOperations('fade-compendiums.actor-compendium', 'FaDe Actors', 'Actor', 0);
+      await performOperations('fade-compendiums.roll-table-compendium', 'FaDe Roll Tables', 'RollTable', 0);
+      await performOperations('fade-compendiums.macro-compendium', 'FaDe Macros', 'Macro', 0);
+   }
+
    #testMigrate() {
       const v1 = new MySystemVersion("0.7.20");
       const v2 = new MySystemVersion("0.7.21");
       const v3 = new MySystemVersion("0.7.21-rc.1");
-      const v4 = new MySystemVersion("0.7.21-rc.2");
+      const v4 = new MySystemVersion("0.7.21-rc.7");
       const v5 = new MySystemVersion("0.8.0");
+      const v7 = new MySystemVersion('0.8.0-rc.1');
       const v6 = new MySystemVersion("1.0.0");
 
       v1.lt(v2);
       v2.lt(v1);
-      v2.lt(v3);
-      v3.lt(v1);
-      v3.lt(v2);
-      v3.lt(v4);
-      v4.lt(v3);
-      v4.lt(v5);
+      //v2.lt(v3);
+      //v3.lt(v1);
+      //v3.lt(v2);
+      //v3.lt(v4);
+      //v4.lt(v3);
+      //v4.lt(v5);
+      v4.lt(v7);
+      v7.lt(v4);
    }
 }

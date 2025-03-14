@@ -13,6 +13,7 @@ export class fadeDialog {
       const dialogData = { caller };
       const result = {};
       const weaponData = weapon.system;
+      const callerName = caller.token?.name || caller.name;
 
       dialogData.weapon = weaponData;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
@@ -31,7 +32,7 @@ export class fadeDialog {
       // Determines which target weapon type to pick by default.
       dialogData.selectedWeaponType = opt.targetToken?.actor.getWeaponType();
 
-      const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
+      const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
       result.resp = await Dialog.wait({
@@ -51,7 +52,7 @@ export class fadeDialog {
             },
          },
          default: 'check',
-         close: () => { return null; }
+         close: () => { return { rolling: false } }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -132,7 +133,7 @@ export class fadeDialog {
             }
          },
          default: 'roll',
-         close: () => { return null; }
+         close: () => { return { rolling: false } }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -164,7 +165,7 @@ export class fadeDialog {
             },
          },
          default: 'check',
-         close: () => { return null; }
+         close: () => { return { rolling: false }; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
@@ -218,7 +219,7 @@ export class fadeDialog {
    static async getSelectAttackDialog(equippedOnly = false) {
       // The selected token, not the actor
       const result = {};
-      const attackerActor = canvas.tokens.controlled?.[0]?.actor || game.user.character;
+      const attackerActor = canvas.tokens.controlled?.[0]?.actor;
       if (attackerActor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectAttack') };
          const template = 'systems/fantastic-depths/templates/dialog/select-attack.hbs';
@@ -269,11 +270,11 @@ export class fadeDialog {
    }
 
    static async getSelectSpellDialog(memorizedOnly = false) {
-      const casterActor = canvas.tokens.controlled?.[0]?.actor || game.user.character;
-      if (casterActor) {
+      const actor = canvas.tokens.controlled?.[0]?.actor;
+      if (actor) {
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectSpell') };
          const template = 'systems/fantastic-depths/templates/dialog/select-spell.hbs';
-         const spellItems = casterActor.items.filter((item) => item.type === "spell")
+         const spellItems = actor.items.filter((item) => item.type === "spell")
             .sort((a, b) => a.name.localeCompare(b.name))
             .sort((a, b) => ((b.system.memorized ?? 999) - b.system.cast) - ((a.system.memorized ?? 999) - a.system.cast));
 
@@ -292,7 +293,7 @@ export class fadeDialog {
                      label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
                      callback: function (html) {
                         const itemId = document.getElementById('spellItem').value;
-                        const item = casterActor.items.get(itemId);
+                        const item = actor.items.get(itemId);
                         // Call item's roll method.
                         item.roll();
                         return { item };
@@ -391,5 +392,224 @@ export class fadeDialog {
       });
       dialogResp.context = caller;
       return dialogResp;
+   }
+
+   static async getRolltableDialog() {
+      // Helper: Recursively gather folder IDs starting from a given folderId.
+      function getChildFolderIds(folderId) {
+         // Start with the provided folder.
+         let ids = [folderId];
+         // In v11, the folder's parent is stored directly in f.parent
+         const children = game.folders.filter(f => f.parent === folderId).sort((a, b) => a.name.localeCompare(b.name));
+         for (let child of children) {
+            ids.push(...getChildFolderIds(child.id));
+         }
+         return ids;
+      }
+      // Helper: Given a folderId, returns all roll tables located in that folder or in any child folder.
+      function getRollTablesForFolder(folderId) {
+         const folderIds = getChildFolderIds(folderId);
+         return game.tables.filter(rt => folderIds.includes(rt.folder?.id || ""));
+      }
+
+      // First, get all folders that can contain roll tables.
+      // In Foundry, folders have a "type" property that matches the document type they hold.
+      // For roll tables, this is usually "RollTable". Adjust if your system uses a different type.
+      const rollTableFolders = game.folders.filter(f => f.type === "RollTable");
+      if (!rollTableFolders.length) {
+         return ui.notifications.warn("No folders for Roll Tables were found.");
+      }
+      // Build folder dropdown options.
+      const folderOptions = rollTableFolders
+         .map(f => `<option value="${f.id}">${f.name}</option>`)
+         .join("");
+      // Use the first folder in the list as the default.
+      const defaultFolderId = rollTableFolders[0].id;
+      let initialRollTables = getRollTablesForFolder(defaultFolderId);
+      let tableOptions = initialRollTables.length
+         ? initialRollTables.map(rt => `<option value="${rt.id}">${rt.name}</option>`).join("")
+         : `<option value="">No Roll Tables in this folder</option>`;
+
+      // Get all roll tables and sort them alphabetically by name
+      /*const rollTables = game.tables.contents.sort((a, b) => a.name.localeCompare(b.name));*/
+
+      // Get roll modes from the Foundry system
+      const rollModes = Object.entries(CONFIG.Dice.rollModes).map(([key, value]) => {
+         return `<option value="${key}">${game.i18n.localize(value)}</option>`;
+      }).join('');
+
+      // Create the dialog content
+      let content = `
+        <form>
+            <div class="form-group">
+              <label>Folder:</label>
+              <select name="folder" id="folder-select">
+                ${folderOptions}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="rollTableSelect">Select Roll Table:</label>
+              <select name="table" id="table-select">
+                ${tableOptions}
+              </select>
+            </div>
+            <div class="form-group">
+                <label for="modifierInput">Modifier:</label>
+                <input type="number" id="modifierInput" name="modifierInput" value="0" />
+            </div>
+            <div class="form-group">
+                <label for="rollModeSelect">Select Roll Mode:</label>
+                <select id="rollModeSelect" name="rollModeSelect">
+                    ${rollModes}
+                </select>
+            </div>
+        </form>
+    `;
+      //console.debug(content);
+      // Create the dialog
+      new Dialog({
+         title: "Roll Table with Modifier",
+         content: content,
+         buttons: {
+            roll: {
+               label: "Roll",
+               callback: async (html) => {
+                  const selectedTableId = html.find("#table-select").val();
+                  const modifier = parseInt(html.find("#modifierInput").val()) || 0;
+                  const selectedRollMode = html.find("#rollModeSelect").val();
+
+                  // Get the selected roll table
+                  const rollTable = game.tables.get(selectedTableId);
+                  if (rollTable) {
+                     // Roll the table with the selected roll mode
+                     const rollResult = await rollTable.roll();
+
+                     // Calculate the total based on the roll's total and the modifier
+                     const rollTotal = rollResult.roll._total;
+                     const total = rollTotal + modifier;
+
+                     // Get the text descriptions of the rolled results
+                     const rolledResultsText = rollResult.results.map(r => r.text).join(', ');
+
+                     // Create a message to display the result
+                     const messageContent = `
+                            <h2>${rollTable.name}</h2>
+                            <p>${rolledResultsText}</p>
+                            <hr/>
+                            <p>Total: <strong>${rollTotal} + ${modifier} = ${total}</strong></p>
+                        `;
+                     const chatMsgData = {
+                        content: messageContent,
+                        speaker: ChatMessage.getSpeaker()
+                     };
+                     ChatMessage.applyRollMode(chatMsgData, selectedRollMode);
+                     // Send the result to chat
+                     ChatMessage.create(chatMsgData);
+                  } else {
+                     ui.notifications.error("Selected roll table not found.");
+                  }
+               }
+            },
+            close: {
+               label: "Close",
+               callback: () => { }
+            }
+         },
+         default: "close",
+         close: () => { },
+         render: (html) => {
+            // When the folder dropdown changes, update the roll table dropdown.
+            html.find("#folder-select").on("change", (ev) => {
+               const folderId = ev.currentTarget.value;
+               const rollTables = getRollTablesForFolder(folderId);
+               let options = "";
+               if (rollTables.length) {
+                  options = rollTables.map(rt => `<option value="${rt.id}">${rt.name}</option>`).join("");
+               } else {
+                  options = `<option value="">No Roll Tables in this folder</option>`;
+               }
+               html.find("#table-select").html(options);
+            });
+         }
+      }).render(true);
+   }
+
+   static async getSpecialAbilityDialog() {
+      // Get the first selected actor of the player
+      const player = game.user;
+      const actor = canvas.tokens.controlled?.[0]?.actor;
+
+      if (!actor) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
+         return;
+      }
+
+      // Filter items of type 'specialAbility'
+      const specialAbilities = actor.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save')
+         .sort((a, b) => a.name.localeCompare(b.name));
+
+      // Check if there are any special abilities
+      if (specialAbilities.length === 0) {
+         ui.notifications.warn("No special abilities found for the selected actor.");
+         return;
+      }
+
+      // Create the dialog content
+      let content = `
+        <form>
+            <div class="form-group">
+                <label for="abilitySelect">Select Special Ability:</label>
+                <select id="abilitySelect" name="abilitySelect">
+                    ${specialAbilities.map(item => `<option value="${item.id}">${item.name}</option>`).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modifierInput">Modifier:</label>
+                <input type="number" id="modifierInput" name="modifierInput" value="0" />
+            </div>
+        </form>
+    `;
+
+      // Create the dialog
+      new Dialog({
+         title: "Roll Special Ability",
+         content: content,
+         buttons: {
+            roll: {
+               label: "Roll",
+               callback: async (html) => {
+                  const selectedAbilityId = html.find("#abilitySelect").val();
+                  const selectedAbility = specialAbilities.find(item => item.id === selectedAbilityId);
+                  const modifier = parseInt(html.find("#modifierInput").val()) || 0; // Get the modifier value
+
+                  if (selectedAbility && selectedAbility.roll) {
+                     // Prepare the dataset
+                     const dataset = {
+                        test: 'specialAbility',
+                        rollType: 'item',
+                        label: `${selectedAbility.name} ${game.i18n.localize('FADE.SpecialAbility.short')}`
+                     };
+
+                     // Prepare the dialog response
+                     const dialogResp = {
+                        mod: modifier, // Include the modifier in the dialog response
+                        rolling: true
+                     };
+
+                     // Call the roll method with dataset and dialogResp
+                     await selectedAbility.roll(dataset, dialogResp);
+                  } else {
+                     ui.notifications.error("Selected ability does not have a roll method.");
+                  }
+               }
+            },
+            cancel: {
+               label: "Cancel",
+               callback: () => { }
+            }
+         },
+         default: "cancel",
+         close: () => { }
+      }).render(true);
    }
 }

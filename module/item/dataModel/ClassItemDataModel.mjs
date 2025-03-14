@@ -35,7 +35,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
-
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
          minCon: new fields.NumberField({ required: false, nullable: true }),
@@ -43,10 +42,12 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          minDex: new fields.NumberField({ required: false, nullable: true }),
          minWis: new fields.NumberField({ required: false, nullable: true }),
          description: new fields.StringField({ required: false, initial: "" }),
-
          primeReqs: new fields.ArrayField(
             new fields.SchemaField({
+               concatLogic: new fields.StringField({ required: true }),
                ability: new fields.StringField({ required: true }),
+               percentage: new fields.NumberField({ required: true, initial: 5 }),
+               minScore: new fields.NumberField({ required: true }),
                xpBonus5: new fields.NumberField({ required: true }),
                xpBonus10: new fields.NumberField({ required: true }),
             }),
@@ -55,7 +56,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                initial: []
             }
          ),
-
          levels: new fields.ArrayField(
             new fields.SchemaField({
                level: new fields.NumberField({ required: true }),
@@ -77,7 +77,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                })
             }
          ),
-
          saves: new fields.ArrayField(
             new fields.ObjectField({}),           
             {
@@ -85,7 +84,6 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                initial: []
             }
          ),
-
          // Spells Field Adjusted to Be Optional
          spells: new fields.ArrayField(
             new fields.ArrayField(

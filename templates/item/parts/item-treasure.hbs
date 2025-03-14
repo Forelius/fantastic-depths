@@ -12,10 +12,10 @@
       <div class='item-name'>
          <div class='item-image'>
             <a data-roll-type='item'>
-               <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+               <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
             </a>
          </div>
-         <a class='item-control item-edit' title='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
+         <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
       </div>
       <div class="item-60px item-prop" data-tooltip="{{localize 'FADE.Item.cost.long'}}"><label>{{item.system.totalCost}}</label></div>
       <div class="item-40px item-prop editable">

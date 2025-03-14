@@ -1,8 +1,9 @@
+import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassItemSheet extends ItemSheet {
+export class ClassItemSheet extends fadeItemSheet {
    /** @override */
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
@@ -13,7 +14,7 @@ export class ClassItemSheet extends ItemSheet {
             {
                navSelector: '.sheet-tabs',
                contentSelector: '.sheet-body',
-               initial: 'levels',
+               initial: 'description',
             },
          ],
       });
@@ -31,38 +32,24 @@ export class ClassItemSheet extends ItemSheet {
       const context = await super.getData();
       const itemData = context.data;
 
-      // Adding a pointer to CONFIG.FADE
-      context.config = CONFIG.FADE;
-
       // Add the item's data for easier access
-      context.system = itemData.system;
-      context.flags = itemData.flags;
+      //context.flags = itemData.flags;
       context.isSpellcaster = itemData.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
+      // Abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Saving throw items
       context.saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
-      // Enrich description info for display
-      // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedDescription = await TextEditor.enrichHTML(
-         this.item.system.description,
-         {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            // Data to fill in for inline rolls
-            rollData: this.item.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.item,
-         }
-      );
+      // Concat logics
+      context.logics = [...CONFIG.FADE.ConcatLogic.map((key) => {
+         return { value: key, text: game.i18n.localize(`FADE.concatLogic.${key}`) }
+      })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;
    }
@@ -80,7 +67,22 @@ export class ClassItemSheet extends ItemSheet {
       // Delete Inventory Item
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
    }
-  
+
+   /**
+   * @override
+   * @param {any} event
+   * @param {any} data
+   * @returns
+   */
+   async _onDropItem(event, data) {
+      const droppedItem = await Item.implementation.fromDropData(data);
+      console.debug(droppedItem, event, data)
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'specialAbility' && droppedItem.system.category === 'class') {
+
+      }      
+   }
+
    /**
    * Handle creating a new child object using initial data defined in the HTML dataset
    * @param {Event} event The originating click event

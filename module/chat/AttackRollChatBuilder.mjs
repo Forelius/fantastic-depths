@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { SocketManager } from '../sys/SocketManager.mjs'
+import { SpecialAbilityItem } from '../item/SpecialAbilityItem.mjs'
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -18,12 +19,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest, options } = this.data;
       const attacker = context;
-      const attackerName = attacker.name;
+      const attackerName = attacker.token?.name ?? attacker.name;
       const targetTokens = Array.from(game.user.targets);
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       const weapon = caller;
       const descData = {
-         attackerid: attacker.id,
          attacker: attackerName,
          attackType: resp.attackType,
          weapon: weapon.system.isIdentified === true ? weapon.name : weapon.system.unidentifiedName
@@ -35,8 +35,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await this.getToHitResults(attacker, caller, targetTokens, roll, resp.attackType);
-      const damageRoll = await caller.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
+      const toHitResult = await this.getToHitResults(attacker, weapon, targetTokens, roll, resp.attackType);
+      const damageRoll = await weapon.getDamageRoll(resp.attackType, resp.attackMode, null, resp.targetWeaponType);
 
       if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
@@ -289,7 +289,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             targetResults: []
          };
          for (let targetToken of targetTokens) {
-            const saveLocalized = game.i18n.localize(`FADE.Actor.Saves.${weapon.system.savingThrow}.abbr`);
+            const saveLocalized = SpecialAbilityItem.getSavingThrow(weapon.system.savingThrow);
             let targetResult = {
                targetid: targetToken.id,
                targetname: targetToken.name,

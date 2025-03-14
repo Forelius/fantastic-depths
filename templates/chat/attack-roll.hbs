@@ -7,14 +7,14 @@
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
       <img class="item-image" src='{{weapon.img}}' />
-      {{#if weapon.system.isIdentified}}
+      {{#if (ne weapon.system.isIdentified false)}}
       <div class="item-name">{{weapon.name}}</div>
       {{else}}
       <div class="item-name">{{weapon.system.unidentifiedName}}</div>
       {{/if}}
    </div>
    <div class="collapsible-content collapsed">
-      {{#if weapon.system.isIdentified}}
+      {{#if (ne weapon.system.isIdentified false)}}
       {{{weapon.system.description}}}
       {{else}}
       {{{weapon.system.unidentifiedDesc}}}
@@ -50,10 +50,9 @@
 </div>
 {{#if weapon.system.savingThrow}}
 <div style="margin-top:6px;">
-   <button class="saving-roll"
-           data-attackerid="{{descData.attackerid}}"
+   <button class="saving-roll"           
            data-type="{{weapon.system.savingThrow}}"
-           data-weaponid="{{weapon.id}}">
+           data-weaponuuid="{{weapon.uuid}}">
       <i class="fa-solid fa-life-ring"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{save.system.shortName}}</span>
    </button>
@@ -67,9 +66,8 @@
            data-attackmode="{{resp.attackMode}}"
            data-label="Damage"
            data-type="damage"
-           data-attackerid="{{descData.attackerid}}"
            data-targetweapontype="{{targetWeaponType}}"
-           data-weaponid="{{weapon.id}}"
+           data-weaponuuid="{{weapon.uuid}}"
            data-tooltip="<b>{{localize 'FADE.Weapon.damage.long'}}:</b> {{damageRoll.formula}}">
       <i class="fa-solid fa-burst"></i>
       <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}}</span> <span class="small-text">{{localize (concat 'FADE.DamageTypes.types.' damageRoll.type)}}</span>

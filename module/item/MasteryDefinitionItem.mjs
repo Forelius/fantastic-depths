@@ -1,4 +1,3 @@
-import { ActorMasteryItem } from "./ActorMasteryItem.mjs";
 import { fadeItem } from "./fadeItem.mjs";
 
 /**

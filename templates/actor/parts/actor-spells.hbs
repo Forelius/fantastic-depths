@@ -1,8 +1,8 @@
-﻿<section name="spellItemsSection" class="items-list">
+﻿<section name="spellItemsSection" class="items-list" style="margin-top:-12px;">
    <div class="item-category-title flexrow" style="line-height: 15px">
       <div class="item-controls">
          <a class="item-control item-reset"
-            title='{{localize "FADE.Spell.resetSlots"}}'
+            data-tooltip='{{localize "FADE.Spell.resetSlots"}}'
             data-action="reset-spells">
             <i class="fas fa-sync"></i>
          </a>
@@ -17,56 +17,52 @@
          </div>
          <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
          <div class="item-80px flexrow">
-            <input type="text"
-                   value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
-                   name="system.spellSlots[{{@index}}].used"
-                   data-dtype="Number"
-                   placeholder="0"
-                   readonly
+            <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
+                   name="system.spellSlots[{{@index}}].used" data-dtype="Number" placeholder="0" readonly
                    data-tooltip="{{localize 'FADE.Spell.usedSlots'}}" />/
-            <input type="text"
-                   value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
-                   name="system.spellSlots[{{@index}}].max"
-                   data-dtype="Number"
-                   placeholder="0"
+            <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
+                   name="system.spellSlots[{{@index}}].max" data-dtype="Number" placeholder="0"
                    data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
          </div>
          <div class='item-controls'>
-            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell'>
+            {{#if @root.isGM}}
+            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell'>
                <i class='fas fa-plus'></i>
                {{localize 'FADE.Spell.AddLVL' level=(add @index 1)}}
             </a>
+            {{/if}}
          </div>
       </li>
-      {{#each slot.spells as |spell id|}}
+      {{#each slot.spells as |item id|}}
       {{! Spell Item }}
-      <li class='item flexrow collapsible-content bottom-border' data-item-id='{{spell._id}}'>
-         <div class='item-name flexrow'>
-            <div class='item-image rollable' data-roll-type='item'>
-               <img src='{{spell.img}}' title='{{spell.name}}' width='24' height='24' />
+      <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+         <div class="flexrow center-vert">
+            <div class='item-name flexrow'>
+               <div class='item-image rollable' data-roll-type='item'>
+                  <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
+               </div>
+               <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>{{spell.name}}</a>
+            <div class="item-40px">{{localize 'FADE.Spell.casts'}}</div>
+            <div class="item-80px flexrow editable">
+               <input type="text" value="{{item.system.cast}}" data-dtype="Number" placeholder="0" data-field="cast"
+                      data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
+               <input type="text"
+                      value="{{item.system.memorized}}" data-field="memorized" data-dtype="Number" placeholder="∞"
+                      data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
+            </div>
+            <div class='item-controls-sm center-vert'>
+               <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>
+                  <i class='fas fa-pencil'></i>
+               </a>
+               {{#if @root.isGM}}
+               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
+                  <i class='fas fa-trash'></i>
+               </a>
+               {{/if}}
+            </div>
          </div>
-         <div class="item-40px">{{localize 'FADE.Spell.casts'}}</div>
-         <div class="item-80px flexrow editable">
-            <input type="text"
-                   value="{{spell.system.cast}}"
-                   data-dtype="Number"
-                   placeholder="0"
-                   data-field="cast"
-                   data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
-            <input type="text"
-                   value="{{spell.system.memorized}}"
-                   data-field="memorized"
-                   data-dtype="Number"
-                   placeholder="∞"
-                   data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
-         </div>
-         <div class='item-controls'>
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
-               <i class='fas fa-trash'></i>
-            </a>
-         </div>
+         <div class='item-description desc-collapsed'></div>
       </li>
       {{/each}}
    </ol>

@@ -3,35 +3,41 @@
    <ol name="class-prime-reqs" class='items-list'>
       <!-- Header Row -->
       <li class='item flexrow items-header collapsible-header'>
-         <div>{{localize 'FADE.Actor.Abilities.long'}}</div>
-         <div>{{localize 'FADE.Actor.XPBonus'}}5</div>
-         <div>{{localize 'FADE.Actor.XPBonus'}}10</div>
+         <div class="align-left" style="min-width: 70px;">{{localize 'FADE.concatLogic.name'}}</div>
+         <div class="align-left" style="min-width: 140px;">{{localize 'FADE.Actor.Abilities.long'}}</div>
+         <div style="min-width: 70px;">{{localize 'FADE.Actor.Min'}}</div>
+         <div style="min-width: 70px;">+%</div>
          <div class='item-controls'>
-            <a class='item-control item-create' title='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq'>
-               <i class='fas fa-plus'></i>               
+            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq'>
+               <i class='fas fa-plus'></i>
             </a>
          </div>
       </li>
       <!-- Prime Requisite Entries -->
       {{#each system.primeReqs as |primeReqData index|}}
-      <li class='item flexrow' data-item-id='{{primeReqData.ability}}'>
-         <div class="align-left">
-            <select name="system.primeReqs.{{index}}.ability">
-               {{selectOptions @root.abilities selected=primeReqData.ability}}
-            </select>
-         </div>
-         <div class="align-left">
-            <input type="number" name="system.primeReqs.{{index}}.xpBonus5" value="{{primeReqData.xpBonus5}}" data-dtype="Number" />
-         </div>
-         <div class="align-left">
-            <input type="number" name="system.primeReqs.{{index}}.xpBonus10" value="{{primeReqData.xpBonus10}}" data-dtype="Number" />
-         </div>
-         <div class='item-controls'>
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq' data-index='{{index}}'>
-               <i class='fas fa-trash'></i>
-            </a>
-         </div>
-      </li>
+   <li class='item flexrow' data-item-id='{{primeReqData.ability}}'>
+      <div class="align-left" style="min-width: 70px;">
+         <select name="system.primeReqs.{{index}}.concatLogic">
+            {{selectOptions @root.logics selected=primeReqData.concatLogic}}
+         </select>
+      </div>
+      <div class="align-left" style="min-width: 140px;">
+         <select name="system.primeReqs.{{index}}.ability">
+            {{selectOptions @root.abilities selected=primeReqData.ability}}
+         </select>
+      </div>
+      <div class="align-left" style="min-width: 70px;">
+         <input type="number" name="system.primeReqs.{{index}}.minScore" value="{{primeReqData.minScore}}" data-dtype="Number" />
+      </div>
+      <div class="align-left" style="min-width: 70px;">
+         <input type="number" name="system.primeReqs.{{index}}.percentage" value="{{primeReqData.percentage}}" data-dtype="Number" />
+      </div>
+      <div class='item-controls'>
+         <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq' data-index='{{index}}'>
+            <i class='fas fa-trash'></i>
+         </a>
+      </div>
+   </li>
       {{/each}}
    </ol>
 </section>

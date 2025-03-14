@@ -10,13 +10,13 @@
                  {{/if}}
                  data-roll-type='item'
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-               <img src='{{item.img}}' title='{{item.name}}' width='24' height='24' />
+               <img src='{{item.img}}' data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}' width='24' height='24' />
             </div>
-            <a class="item-control item-edit" title='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
+            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.name}}</a>
          </div>
          {{#if @root.isGM}}
          <div class='item-controls-sm' style="max-width:32px;">
-            <a class='item-control item-delete' title='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>

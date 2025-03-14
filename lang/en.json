@@ -6,12 +6,14 @@
          "HealthMaxMonster": "Max HP. Set to zero to autocalculate max HP from hit dice.",
          "Max": "Max",
          "Min": "Min",
+         "Mod": "Mod",
          "HealthShort": "HP",
          "HitDice": "Hit Dice",
          "HitDiceShort": "HD",
          "Title": "Title",
          "Alignment": "Alignment",
          "Class": "Class",
+         "ClassHint": "<p>Class can be selected by manually typing the class name or drag/droppping the class item onto the character sheet. It is possible to type any value, but class data will only be synched if the class name matches exactly.</p><p><i>Click label to view class sheet.</i></p>",
          "Species": "Race",
          "Sex": "Sex",
          "Age": "Age",
@@ -40,6 +42,7 @@
          "retainerMoraleHint": "The morale score of this character's retainers. A retainer's morale score indicates their loyalty and courage under this character's leadership.",
          "XPAward": "XP Award",
          "attackRank": "Attack Rank",
+         "rarity": "Rarity",
          "enchanted": {
             "name": "Enchanted",
             "hint": "This enchanted creature can only be hit by magical weapons or spells."
@@ -96,27 +99,7 @@
             "moveTurn": "Base Movement"
          },
          "explore": {
-            "long": "Exploration",
-            "OpenDoor": {
-               "long": "Force open door or lift heavy object.",
-               "short": "Open Door",
-               "abbr": "OD"
-            },
-            "SecretDoor": {
-               "long": "Detect a hidden door or compartment.",
-               "short": "Secret Door",
-               "abbr": "SD"
-            },
-            "ListenDoor": {
-               "long": "Hear a sound through a door or in the distance.",
-               "short": "Listen Door",
-               "abbr": "LD"
-            },
-            "FindTrap": {
-               "long": "Find a concealed medium to large trap or hazard.",
-               "short": "Find Trap",
-               "abbr": "FT"
-            }
+            "long": "Exploration"
          },
          "Saves": {
             "saveAs": {
@@ -136,35 +119,35 @@
                "abbr": "STR",
                "key": "ST",
                "mod": "To-Hit, Damage, Open Doors",
-               "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p</div>"
+               "hint": "<b>Strength (Str) represents a character's physical power.</b><p>It influences the damage dealt with melee weapons like swords and clubs, as well as thrown weapons like spears and knives. It also impacts the character's accuracy when using hand-to-hand weapons and determines their capability for tasks like forcing open locked doors.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "dex": {
                "long": "Dexterity",
                "abbr": "DEX",
                "key": "DX",
                "mod": "Missile To-Hit, AC, Initiative",
-               "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p>"
+               "hint": "<b>Dexterity (Dex) is the character's nimbleness and grace.</b><p>It affects the character's ability to wield missile and thrown weapons (such as bows and throwing knives) and can make it harder for enemies to hit the character.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "int": {
                "long": "Intelligence",
                "abbr": "INT",
                "key": "IN",
                "mod": "Language(s)",
-               "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p>"
+               "hint": "<b>Intelligence (Int) is the character's mental might.</b><p>It affects the number of languages the character can learn.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "wis": {
                "long": "Wisdom",
                "abbr": "WIS",
                "key": "WS",
                "mod": "Saving Throws vs Spells",
-               "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p>"
+               "hint": "<b>Wisdom (Wis) is the character's understanding.</b><p>It affects the character's strength in understanding the world, the way things work, the forces of nature, and so forth, including their natural ability to resist magical spells.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "con": {
                "long": "Constitution",
                "abbr": "CON",
                "key": "CN",
                "mod": "Hit Points/Level",
-               "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p>"
+               "hint": "<b>Constitution (Con) is the character's physical health and vigor.</b><p>It affects the character's hit points score (i.e., his ability to survive being injured).</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             },
             "cha": {
                "long": "Charisma",
@@ -172,7 +155,7 @@
                "key": "CH",
                "mod": "Reactions",
                "retainer": "Retainers",
-               "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p>"
+               "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             }
          },
          "Attacks": {
@@ -256,8 +239,8 @@
          }
       },
       "SheetLabel": {
-         "Character": "Character Sheet (DD)",
-         "Character2": "Character Sheet (Alternate)",
+         "Character": "Character Sheet (tabbed)",
+         "Character2": "Character Sheet",
          "Monster": "Monster Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
@@ -268,7 +251,10 @@
          "SkillItem": "Skill Item Sheet",
          "LightItem": "Light Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
-         "WeaponItem": "Weapon Item Sheet"
+         "WeaponItem": "Weapon Item Sheet",
+         "Treasure": "Treasure Item Sheet",
+         "Condition": "Condition Item Sheet",
+         "Species": "Ancestry Item Sheet"
       },
       "Spell": {
          "casts": "casts",
@@ -443,7 +429,9 @@
       "Skill": {
          "plural": "General Skills",
          "short": "Skill",
-         "long": "General Skill"
+         "long": "General Skill",
+         "bonusHint": "A roll bonus for having the skill.",
+         "penaltyHint": "A roll penalty for not having the skill."
       },
       "Mastery": {
          "plural": "Weapon Masteries",
@@ -479,7 +467,8 @@
          "acBonus": "AC Bonus",
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
-         "specialEffects": "Special Effects"
+         "specialEffects": "Special Effects",
+         "summary": "<p>Weapon Type: {weaponType}<br/>Primary: {primaryType}<br/>Special Effects: {special}<br/>Ranges: {short}/{medium}/{long}<br/>{defense}</p>"
       },
       "SpecialAbility": {
          "plural": "Special Abilities",
@@ -504,6 +493,22 @@
             "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
          }
       },
+      "condition": {
+         "plural": "Conditions",
+         "key": {
+            "hint": "The key used for refering to this item. Can be one or more characters in length and should not include any special characters."
+         },
+         "addStatusEffect": {
+            "name": "Status Effect",
+            "hint": "If checked, the condition will be added as a status effect."
+         }
+      },
+      "species": {
+         "requiredScores": "Required Attribute Scores",
+         "classes": "Classes",
+         "male": "Male",
+         "female": "Female"
+      },
       "Effect": {
          "short": "Effect",
          "Source": "Source",
@@ -514,7 +519,9 @@
       },
       "Tags": {
          "addTags": "Add tags",
-         "desc": "Some tags are used by the system and others are meant for GM or player usage."
+         "desc": "Some tags are used by the system and others are meant for GM or player usage.",
+         "addLanguage": "Add Language",
+         "languageDesc": "Add one or more languages."
       },
       "notification": {
          "selectTarget": "A targetted must first be selected.",
@@ -526,7 +533,7 @@
          "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
          "missingItem2": "{actor} does not have a {type}.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
-         "noAmmo": "{actorName} does not have {weaponName} ammunition.",
+         "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
          "advancedTime": "<div>Time advances {turns} turn(s) {rounds} round(s).</div>",
          "reversedTime": "<div>Time goes back {turns} turn(s) {rounds} round(s).</div>",
          "needRest": "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>",
@@ -582,8 +589,8 @@
          "attackACNone": "<div class='attack-info'>Attack doesn't hit any AC.</div>",
          "attackSuccess": "<div class='attack-success'>Attack hit!</div>",
          "attackFail": "<div class='attack-fail'>Attack missed!</div>",
-         "damageFlavor2": "<div>{weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
-         "healFlavor": "<div>{weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
+         "damageFlavor2": "<div>{attacker}: {weapon} does <span class='damage'>{damage}</span> points of damage.</div>",
+         "healFlavor": "<div>{attacker}: {weapon} restores <span class='damage'>{damage}</span> hit points.</div>",
          "healRoll": "Heal",
          "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery ({masteryName}) bonus. Attacked {attAgainst}/{maxAttAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
@@ -592,7 +599,10 @@
       "apps": {
          "playerCombat": {
             "title": "Player Combat",
-            "prompt": "Select combat manuever for this round. Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker."
+            "prompt": "Select combat manuever for this round.",
+            "instructions": "Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker.",
+            "noCombat": "Combat has not started yet.",
+            "noDeclaredActions": "Fantastic Depths is not configured to use declared actions."
          }
       },
       "dialog": {
@@ -662,7 +672,11 @@
          "applyToPrompt": "Apply to targeted or selected?",
          "targeted": "Targeted",
          "selected": "Selected",
-         "noEquippedWeapons": "The selected actor does not have any weapons equipped."
+         "noEquippedWeapons": "The selected actor does not have any weapons equipped.",
+         "specialAbilities": {
+            "title": "Add special abilities?",
+            "content": "Would you like to automatically add the related special abilities from {type} {name}?"
+         }
       },
       "time": {
          "sessionCount": "Session Count",
@@ -875,6 +889,7 @@
       },
       "Size": "Size",
       "roll": "Roll",
+      "rollWithCtrl": "<p>Roll {name} check.</p><p><i>Click to roll. Ctrl-click to roll without mod.</i></p>",
       "vsMagic": "vs Magic",
       "rollMode": "Roll Mode",
       "operator": "Operator",
@@ -884,13 +899,24 @@
       "category": "Category",
       "name": "Name",
       "bonus": "Bonus",
+      "penalty": "Penalty",
       "shortName": "Short Name",
       "none": "None",
       "unidentified": "Unidentified",
       "identified": "Identified",
       "cursed": "Cursed",
       "rounds": "rounds",
-      "turns": "turns"
+      "turns": "turns",
+      "showResult": {
+         "name": "Result",
+         "hint": "Show the result?"
+      },
+      "concatLogic": {
+         "name": "Logic",
+         "none": "",
+         "and": "and",
+         "or": "or"
+      }
    },
 
    "TYPES": {
@@ -909,7 +935,9 @@
          "specialAbility": "Special Ability",
          "treasure": "Treasure",
          "class": "Character Class",
-         "weaponMastery": "Weapon Mastery Definition"
+         "weaponMastery": "Weapon Mastery Definition",
+         "condition": "Condition",
+         "species": "Ancestry"
       }
    },
 

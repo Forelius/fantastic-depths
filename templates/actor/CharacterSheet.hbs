@@ -1,54 +1,155 @@
 <form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
-
-   <header class="sheet-header">
-      {{> "systems/fantastic-depths/templates/actor/parts/character-header.hbs"}}
-   </header>
-
-   {{!-- Sheet Tab Navigation --}}
-   <nav class="sheet-tabs tabs" data-group="primary">
-      {{!-- Default tab is specified in fadeActorSheet.mjs --}}
-      <a class="item" data-tab="abilities">{{localize 'FADE.tabs.abilities'}}</a>
+   <!-- NAVIGATION TABS -->
+   <div class="nav-tabs-right sheet-tabs tabs" data-group="primary">
+      <div class="nav-tab">
+         <a class="item" data-tab="abilities" data-tooltip="{{localize 'FADE.tabs.abilities'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/big-gear.svg" />
+         </a>
+      </div>
       {{#if isOwner}}
-      <a class="item" data-tab="items">{{localize 'FADE.tabs.items'}}</a>
-      <a class="item" data-tab="skills">{{localize 'FADE.tabs.skills'}}</a>
+      <div class="nav-tab">
+         <a class="item" data-tab="items" data-tooltip="{{localize 'FADE.tabs.items'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/battle-gear.svg" />
+         </a>
+      </div>
+      <div class="nav-tab">
+         <a class="item" data-tab="skills" data-tooltip="{{localize 'FADE.tabs.skills'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/skills.svg" />
+         </a>
+      </div>
       {{#if isSpellcaster}}
-      <a class="item" data-tab="spells">{{localize 'FADE.tabs.spells'}}</a>
+      <div class="nav-tab">
+         <a class="item" data-tab="spells" data-tooltip="{{localize 'FADE.tabs.spells'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/spell-book.svg" />
+         </a>
+      </div>
       {{/if}}
-      <a class="item" data-tab="description">{{localize 'FADE.tabs.description'}}</a>
+      <div class="nav-tab">
+         <a class="item" data-tab="description" data-tooltip="{{localize 'FADE.tabs.description'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/quill-ink.svg" />
+         </a>
+      </div>
       {{/if}}
       {{#if isGM}}
-      <a class="item" data-tab="effects">{{localize 'FADE.tabs.effects'}}</a>
-      <a class='item' data-tab='gm-only'>{{localize 'FADE.tabs.gmOnly'}}</a>
+      <div class="nav-tab">
+         <a class="item" data-tab="effects" data-tooltip="{{localize 'FADE.tabs.effects'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/internal-injury.svg" />
+         </a>
+      </div>
+      <div class="nav-tab">
+         <a class='item' data-tab='gm-only' data-tooltip="{{localize 'FADE.tabs.gmOnly'}}">
+            <img src="/systems/fantastic-depths/assets/img/ui/lock-spy.svg" />
+         </a>
+      </div>
       {{/if}}
-   </nav>
-
+   </div>
    {{!-- Sheet Body --}}
    <section class="sheet-body">
+      <!--<div style="display:flex;">
+         <img src="systems/fantastic-depths/assets/img/ui/leaf-path3.png" style="width:520px;margin:auto;filter:brightness(50%)"/>
+      </div>-->
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
-         {{> "systems/fantastic-depths/templates/actor/parts/character-abilities.hbs"}}
+         {{!-- Sheet Header --}}
+         {{> "systems/fantastic-depths/templates/actor/parts/character-header.hbs"}}
+         <!-- ABILITY SCORES -->
+         {{> "systems/fantastic-depths/templates/actor/parts/ability-scores.hbs"}}
+         <div class="flexrow">
+            <!-- SAVING THROWS -->
+            {{> "systems/fantastic-depths/templates/item/parts/item-saves.hbs"}}
+            <div>
+               <!--HIT POINTS & ARMOR CLASS-->
+               {{> "systems/fantastic-depths/templates/actor/parts/hp-ac.hbs"}}
+               <!-- MOVEMENT -->
+               <div class="bordered text-center" style="height:48%;">
+                  {{> "systems/fantastic-depths/templates/actor/parts/movement.hbs"}}
+               </div>
+            </div>
+            <div>
+               <!-- EXPLORATION -->
+               {{> "systems/fantastic-depths/templates/item/parts/item-exploration.hbs"}}
+            </div>
+         </div>
+         <!-- Equipped Weapons -->
+         <div class="flexrow">
+            <ol name="weaponItems" class='items-list'>
+               <li class='item flexrow items-header collapsible-header'>
+                  <div class='item-name'>{{localize 'FADE.Item.equipped'}} {{localize 'FADE.Weapon.plural'}}</div>
+                  <div class="item-40px">{{localize 'FADE.Weapon.ammo.short'}}</div>
+                  <div class="item-40px">{{localize 'FADE.Weapon.mod.toHit.short'}}</div>
+                  <div class="item-60px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
+                  <div class="item-40px">{{localize 'FADE.Weapon.mod.dmg.short'}}</div>
+                  {{#if showCoinWeight}}
+                  <div class="item-50px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
+                  {{/if}}
+               </li>
+               {{#each equippedWeapons as |item id|}}
+               <li class='item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
+                  <div class="flexrow center-vert">
+                     <div class='item-name'>
+                        <div class='item-image rollable' data-test="attack" data-roll-type='item'>
+                           <img src='{{item.img}}' width='26' height='26' />
+                        </div>
+                        {{#if (or ../isGM item.system.isIdentified)}}
+                        <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
+                        {{else}}
+                        <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.system.unidentifiedName}}</a>
+                        {{/if}}
+                     </div>
+                     <div class="item-40px item-prop"><label>{{item.system.ammo.load}}</label></div>
+                     <div class="item-40px item-prop"><label>{{item.system.mod.toHitText}}</label></div>
+                     <div class="item-60px item-prop"><label>{{item.system.damageRoll}}</label></div>
+                     <div class="item-40px item-prop"><label>{{item.system.mod.dmgText}}</label></div>
+                     {{#if @root.showCoinWeight}}
+                     <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
+                     {{/if}}
+                  </div>
+                  <div class='item-description desc-collapsed'></div>
+               </li>
+               <li class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
+                  {{#if item.system.ammo.maxLoad}}
+                  {{#if (lte item.system.ammo.maxLoad 30)}}
+                  <div class="consumable-counter">
+                     <label style="margin-right:4px;">{{item.system.ammo.type}}</label>
+                     {{#times item.system.ammo.load}}
+                     <div class="full-mark"></div>
+                     {{/times}} {{#times (subtract item.system.ammo.maxLoad item.system.ammo.load)}}
+                     <div class="empty-mark"></div>
+                     {{/times}}
+                  </div>
+                  {{/if}}
+                  {{/if}}
+               </li>
+               {{/each}}
+            </ol>
+         </div>
       </div>
       {{#if isOwner}}
       {{!-- Owned Items Tab --}}
       <div class="tab items" data-group="primary" data-tab="items">
+         <h2>{{localize 'FADE.tabs.items'}}</h2>
          {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
       </div>
       {{!-- Owned Skills Tab --}}
       <div class="tab skills" data-group="primary" data-tab="skills">
+         <h2>{{localize 'FADE.tabs.skills'}}</h2>
          {{> "systems/fantastic-depths/templates/actor/parts/actor-skills.hbs"}}
       </div>
       {{#if isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
+         <h2>{{localize 'FADE.tabs.spells'}}</h2>
          {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
       </div>
       {{/if}}
       {{!-- Active Effects Tab --}}
       <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+         <h2>{{localize 'FADE.tabs.effects'}}</h2>
          {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
       </div>
       {{!-- Description Tab --}}
       <div class="tab biography" data-group="primary" data-tab="description">
+         <h2>{{localize 'FADE.tabs.description'}}</h2>
          {{> "systems/fantastic-depths/templates/actor/parts/character-desc.hbs"}}
       </div>
       {{/if}}

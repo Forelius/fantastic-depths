@@ -2,39 +2,21 @@ import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
+import { ClassItem } from '../item/ClassItem.mjs';
+import { SpeciesItem } from '../item/SpeciesItem.mjs';
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
 export class fadeActorSheet extends ActorSheet {
    /** @override */
-   static get defaultOptions() {
-      const path = 'systems/fantastic-depths/templates/actor';
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'actor'],
-         template: `${path}/CharacterSheet.hbs`,
-         width: 650,
-         height: 540,
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'features',
-            },
-         ],
-      });
-   }
-
-   /** @override */
    async render(force, options = {}) {
       // Call the original render method with modified options
       await super.render(force, options);
-
       // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
       setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
    }
-
-   /* -------------------------------------------- */
 
    /** @override */
    async getData() {
@@ -107,10 +89,9 @@ export class fadeActorSheet extends ActorSheet {
       super.activateListeners(html);
 
       // Render the item sheet for viewing/editing prior to the editable check.
-      html.on('click', '.item-edit', (event) => {
-         const item = this._getItemFromActor(event);
-         item.sheet.render(true);
-      });
+      html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
+      html.on('click', '.class-edit', (event) => ClassItem.getByName(this.actor.system.details.class)?.sheet?.render(true));
+      html.on('click', '.species-edit', (event) => SpeciesItem.getByName(this.actor.system.details.species)?.sheet?.render(true));
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable
@@ -134,7 +115,8 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          // Rollable abilities.
-         html.on('click', '.rollable, .chatable', this._onRoll.bind(this));
+         html.on('click', '.rollable', this._onRoll.bind(this));
+         html.on('click', '.chatable', this._onRoll.bind(this));
 
          // Containers collapse/expand
          html.find(".gear-items .category-caret").click((event) => {
@@ -188,14 +170,17 @@ export class fadeActorSheet extends ActorSheet {
                await this._toggleCollapsibleContent(event);
             }
          });
+
+         // Bind the collapsible functionality to the header click event
+         html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
       }
    }
 
    /**
- * Organize and classify Items for Actor sheets.
- *
- * @param {object} context The context object to mutate
- */
+    * Organize and classify Items for Actor sheets.
+    *
+    * @param {object} context The context object to mutate
+    */
    _prepareItems(context) {
       // Initialize arrays.
       let gear = [];
@@ -209,6 +194,7 @@ export class fadeActorSheet extends ActorSheet {
       const exploration = [];
       const classAbilities = [];
       const savingThrows = [];
+      const conditions = [];
 
       for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
          spellSlots.push({ spells: [] })
@@ -219,7 +205,7 @@ export class fadeActorSheet extends ActorSheet {
          const docItem = context.document.items.get(item._id);
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
-         if (item.type === 'item' || item.type === 'light') {
+         if (item.type === 'item' || item.type === 'light' || item.type === 'treasure') {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
                // Check to see if container still exists.
@@ -231,8 +217,9 @@ export class fadeActorSheet extends ActorSheet {
             } else {
                gear.push(item);
             }
-            // TODO: Remove tag, not localizable.
-            if (item.system.tags.includes("treasure")) {
+            // If this is a treasure item...
+            if (item.type === 'treasure') {
+               // Also add to the treasure array
                treasure.push(item);
             }
          }
@@ -256,6 +243,10 @@ export class fadeActorSheet extends ActorSheet {
          // Append to skills.
          else if (item.type === 'skill') {
             skills.push(item);
+         }
+         // Append to conditions.
+         else if (item.type === 'condition') {
+            conditions.push(item);
          }
          // Append to masteries.
          else if (item.type === 'mastery') {
@@ -302,6 +293,7 @@ export class fadeActorSheet extends ActorSheet {
       context.classAbilities = classAbilities;
       context.exploration = exploration;
       context.savingThrows = savingThrows;
+      context.conditions = conditions;
 
       this._calcCategoryEnc(context);
    }
@@ -315,12 +307,13 @@ export class fadeActorSheet extends ActorSheet {
    _calcCategoryEnc(context) {
       const encSetting = game.settings.get(game.system.id, "encumbrance");
       if (encSetting === 'classic') {
-         context.gearEnc = 80 + context.items.filter(item => item.system.tags.includes("treasure")
+         context.gearEnc = 80 + context.items
+            .filter(item => item.type === 'treasure')
             .reduce((sum, item) => {
                const itemWeight = item.system.weight || 0;
                const itemQuantity = item.system.quantity || 1;
                return sum + (itemWeight * itemQuantity);
-            }, 0));
+            }, 0);
       } else if (encSetting === 'expert') {
          // Gear
          context.gearEnc = context.items
@@ -357,17 +350,16 @@ export class fadeActorSheet extends ActorSheet {
     */
    async _onDropItem(event, data) {
       const targetId = event.target.closest(".item")?.dataset?.itemId;
-      const itemParentid = event.target.closest(".item")?.dataset?.itemParentid;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'weaponMastery') {
          //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
-         const actorMastery = droppedItem.createActorWeaponMastery(this.actor);
+         droppedItem.createActorWeaponMastery(this.actor);
       }
       // If the drop target is a container...
-      else if (droppedItem.type === "item" || droppedItem.type === "light") {
+      else if (droppedItem.type === 'item' || droppedItem.type === 'light' || droppedItem.type === 'treasure') {
          if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
             const itemData = droppedItem.toObject();
             if (droppedItem.actor == null) {
@@ -389,12 +381,17 @@ export class fadeActorSheet extends ActorSheet {
             }
             super._onDropItem(event, data);
          }
-      } else if (droppedItem.type == "class") {
-         await this.actor.update({ "system.details.class": droppedItem.name });
-         if (this.actor.system.details.level === 0) {
-            await this.actor.update({ "system.details.level": 1 });
+      } else if (droppedItem.type === "class") {
+         if (this.actor.type === 'character') {
+            await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
          }
-      } else {
+      } else if (droppedItem.type === "species") {
+         if (this.actor.type === 'character') {
+            await this.actor.update({ "system.details.species": droppedItem.name });
+         }
+      } else if (droppedItem.type === 'effect') {
+      }
+      else {
          super._onDropItem(event, data);
       }
    }
@@ -476,37 +473,41 @@ export class fadeActorSheet extends ActorSheet {
    /**
     * Handle clickable rolls.
     * @param {Event} event   The originating click event
-    * @private
+    * @protected
     */
    async _onRoll(event) {
       event.preventDefault();
       event.stopPropagation();
 
+      //console.debug('_onRoll', event);
+      const ctrlKey = event.originalEvent.ctrlKey;
       const elem = event.currentTarget;
       const dataset = elem.dataset;
       let formula = dataset.formula;
       let chatType = null;
-      let dialogResp;
+      let dialogResp = null;
 
       if (dataset.rollType === 'item') {
          // If clicking an item then have item handle roll.
          const li = $(event.currentTarget).parents('.item');
          const item = this.actor.items.get(li.data('itemId'));
          // Directly roll item and skip the rest
-         if (item) await item.roll(dataset);
+         if (item) await item.roll(dataset, null, event);
       } else if (dataset.test === 'ability') {
          dataset.dialog = dataset.test;
          chatType = CHAT_TYPE.ABILITY_CHECK;
-         try {
+         formula = formula ? formula : '1d20';
+         if (ctrlKey === false) {
             dialogResp = await DialogFactory(dataset, this.actor);
-            formula = dialogResp.resp.mod != 0 ? "1d20-@mod" : "1d20";
-         }
-         // If close button is pressed
-         catch (error) {
-            chatType = null;
+            if (dialogResp?.resp?.rolling === true) {
+               formula = (dialogResp !== null && dialogResp?.resp.mod != 0) ? "1d20-@mod" : "1d20";
+            } else {
+               // This will stop the process below.
+               chatType = null;
+            }
          }
       } else if (dataset.test === 'save') {
-         this.actor.rollSavingThrow(dataset.type);
+         this.actor.rollSavingThrow(dataset.type, event);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
          const title = elem.getAttribute("title");
@@ -514,12 +515,11 @@ export class fadeActorSheet extends ActorSheet {
             dataset.desc = title;
          }
          chatType = CHAT_TYPE.GENERIC_ROLL;
-         try {
-            dialogResp = await DialogFactory(dataset, this.actor);
+         dialogResp = await DialogFactory(dataset, this.actor);
+         if (dialogResp?.resp?.rolling === true) {
             formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`) : formula;
-         }
-         // If close button is pressed
-         catch (error) {
+         } else {
+            // This will stop the process below.
             chatType = null;
          }
       } else {
@@ -535,9 +535,10 @@ export class fadeActorSheet extends ActorSheet {
             caller: this.actor,
             context: this.actor,
             mdata: dataset,
-            roll: rolled,
+            roll: rolled
          };
-         const builder = new ChatFactory(chatType, chatData);
+         const showResult = this.actor._getShowResult(event);
+         const builder = new ChatFactory(chatType, chatData, { showResult });
          return builder.createChatMessage();
       }
 
@@ -747,6 +748,30 @@ export class fadeActorSheet extends ActorSheet {
                   containers.push($subContainer);
                }
             });
+         }
+      }
+   }
+
+   async _onDescriptionExpand(event) {
+      // If not the create item column...
+      const descElem = $(event.target).parents('.item').find('.item-description');
+      if (descElem) {
+         const isCollapsed = $(descElem[0]).hasClass('desc-collapsed');
+         if (isCollapsed === true) {
+            descElem.removeClass('desc-collapsed');
+            const li = $(event.currentTarget).parents('.item');
+            const item = this.actor.items.get(li.data('itemId'));
+            if (item !== null) {
+               const enrichedDesc = await item.getInlineDescription();
+               if (enrichedDesc.startsWith('<') === false) {
+                  descElem.append(enrichedDesc);
+               } else {
+                  descElem.append($(enrichedDesc));
+               }
+            }
+         } else {
+            descElem.addClass('desc-collapsed');
+            descElem.empty();
          }
       }
    }

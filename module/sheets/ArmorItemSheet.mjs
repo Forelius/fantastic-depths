@@ -1,3 +1,4 @@
+import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 
 /**
@@ -38,6 +39,9 @@ export class ArmorItemSheet extends fadeItemSheet {
          encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });
          context.encOptions = encOptions;
       }
+
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
    }

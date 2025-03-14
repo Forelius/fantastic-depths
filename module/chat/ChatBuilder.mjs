@@ -201,6 +201,16 @@ export class ChatBuilder {
       return sum;
    }
 
+   static getModifierSum(roll) {
+      let sum = 0;
+      for (let i = 0; i < roll.terms.length; i++) {
+         if (roll.terms[i].faces === undefined && roll.terms[i].number !== undefined) {
+            sum += roll.terms[i].number;
+         }
+      }
+      return sum;
+   }
+
    /**
     * Move digest info to roll collapsible dice-tooltip area
     * @param {any} content

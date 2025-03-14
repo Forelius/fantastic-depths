@@ -34,7 +34,7 @@ export class SkillItem extends fadeItem {
       let hasDamage = false;
 
       if (isHeal) {
-         let evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
+         const evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
          formula = evaluatedRoll?.formula;
          hasDamage = true;
       }
@@ -53,10 +53,10 @@ export class SkillItem extends fadeItem {
    * @param {Event} event The originating click event
    * @private
    */
-   async roll() {
+   async roll(dataset, dialogResp = null, event = null) {
       const systemData = this.system;
-      const roller = this.actor || this.parent.getActiveTokens()?.[0];
-      const dataset = {
+      const roller = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
+      dataset = {
          rollType: 'item',
          label: this.name,
          dialog: 'generic',
@@ -64,40 +64,50 @@ export class SkillItem extends fadeItem {
       };
       // Retrieve roll data.
       const rollData = this.getRollData();
+      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      let levelMod = Math.max(0, systemData.level - 1) + (systemData.level > 0 ? systemData.skillBonus : systemData.skillPenalty);
+      const bonusOperator = systemData.operator === 'lte' ? '-' : '+';
+      rollData.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
+      let rolling = true;
 
-      // Show the dialog for roll modifier
-      let dialogResp = null;
-      try {
-         dialogResp = await DialogFactory(dataset, this.actor);
-         const levelMod = systemData.level > 1 ? `-${systemData.level-1}` : '';
-         rollData.formula = dialogResp.resp.mod != 0 ? `${systemData.rollFormula}${levelMod}-@mod` : `${systemData.rollFormula}${levelMod}`;
-      }
-      // If close button is pressed
-      catch (error) {
-         // Like Weird Al says, eat it
+      if (ctrlKey === true) {
+         dialogResp = {
+            rolling: true,
+            mod: 0
+         };
+      } else {
+         // Show the dialog for roll modifier
+         const dialog = await DialogFactory(dataset, this.actor);
+         dialogResp = dialog?.resp;
+         rolling = dialogResp.rolling === true;
+         if (dialogResp.mod != 0) {
+            rollData.formula = `${rollData.formula}${bonusOperator}@mod`;
+         }
       }
 
       let result = null;
-      if (dialogResp !== null) {
+      if (rolling === true) {
          // Roll
-         const rollContext = { ...rollData, ...dialogResp?.resp || {} };
-         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const rollContext = { ...rollData, ...dialogResp || {} };
          const targetRoll = await new Roll(systemData.targetFormula, rollContext).evaluate();
+         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
 
          // Show the chat message
          dataset.pass = systemData.operator; // this is a less than or equal to roll
          dataset.target = targetRoll.total; // systemData.rollTarget;
          dataset.rollmode = systemData.rollMode;
+         dataset.autofail = systemData.autoFail;
+         dataset.autosuccess = systemData.autoSuccess;
          const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
-            dialogResp: dialogResp,
             caller: this, // the skill item
             context: roller, // the skill item owner
             mdata: dataset,
             roll: rolled,
          };
-         const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData);
+         const showResult = this._getShowResult(event);
+         const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData, { showResult });
          result = builder.createChatMessage();
       }
 

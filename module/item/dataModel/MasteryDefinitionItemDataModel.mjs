@@ -6,6 +6,7 @@ export class MasteryDefinitionItemDataModel extends foundry.abstract.TypeDataMod
       const { fields } = foundry.data;
       return {
          name: new fields.StringField({ required: true }),
+         weaponType: new fields.StringField({ required: false, initial: "handheld" }),
          primaryType: new fields.StringField({ required: true, initial: "all" }),
          levels: new fields.ArrayField(
             new fields.SchemaField({
@@ -44,6 +45,14 @@ export class MasteryDefinitionItemDataModel extends foundry.abstract.TypeDataMod
 
    /** @override */
    prepareBaseData() {
-      super.prepareBaseData();    
+      super.prepareBaseData();
+   }
+
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      for (const level of this.levels) {
+         level.acBonusType = level.acBonusType !== 'null' ? level.acBonusType : null
+      }
    }
 }

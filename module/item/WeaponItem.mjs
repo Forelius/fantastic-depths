@@ -1,8 +1,8 @@
-import { fadeItem } from './fadeItem.mjs';
+import { GearItem } from './GearItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
-export class WeaponItem extends fadeItem {
+export class WeaponItem extends GearItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -173,7 +173,7 @@ export class WeaponItem extends fadeItem {
    async roll() {
       const systemData = this.system;
       // The selected token, not the actor
-      const attacker = this.actor || canvas.tokens.controlled?.[0];
+      const attacker = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const rollData = this.getRollData();
       let dialogResp;
       let canAttack = true;
@@ -186,34 +186,27 @@ export class WeaponItem extends fadeItem {
       }
       else if (attacker) {
          let ammoItem = this.actor?.getAmmoItem(this);
-         try {
-            const targetTokens = Array.from(game.user.targets);
-            const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
+         const targetTokens = Array.from(game.user.targets);
+         const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-            dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
-            if (dialogResp?.resp) {
-               // If not breath...
-               if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
-                  let rollOptions = {
-                     mod: dialogResp.resp.mod,
-                     target: targetToken?.actor,
-                     ammoItem
-                  };
-                  if (dialogResp.resp.targetWeaponType) {
-                     rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
-                  }
-                  let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
-                  rollData.formula = attackRoll.formula;
-                  digest = attackRoll.digest;
-                  hasRoll = true;
+         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
+         canAttack = dialogResp?.resp?.rolling === true;
+         if (canAttack) {
+            // If not breath...
+            if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
+               let rollOptions = {
+                  mod: dialogResp.resp.mod,
+                  target: targetToken?.actor,
+                  ammoItem
+               };
+               if (dialogResp.resp.targetWeaponType) {
+                  rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                }
-            } else {
-               canAttack = false;
+               let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
+               rollData.formula = attackRoll.formula;
+               digest = attackRoll.digest;
+               hasRoll = true;
             }
-         } catch (error) {
-            // Close button pressed or other error
-            console.error("attack roll error:", error);
-            canAttack = false;
          }
 
          // Check if the attack type is a missile/ranged attack
@@ -221,7 +214,7 @@ export class WeaponItem extends fadeItem {
             await this.#tryUseAmmo();
             canAttack = ammoItem !== null && ammoItem !== undefined;
             // No need to show ammo item if it is also the weapon we are using (thrown).
-            ammoItem = ammoItem.id === this.id ? null : ammoItem;
+            ammoItem = ammoItem?.id === this.id ? null : ammoItem;
          } else {
             ammoItem = null;
          }

@@ -1,5 +1,4 @@
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -7,8 +6,7 @@ import { TagManager } from '../sys/TagManager.mjs';
  */
 export class fadeItem extends Item {
    constructor(data, context) {
-      super(data, context);
-      this.tagManager = new TagManager(this); // Initialize TagManager
+      super(data, context);      
    }
 
    get ownerToken() {
@@ -22,35 +20,19 @@ export class fadeItem extends Item {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
 
-   get totalEnc() {
-      let result = 0;
-      if (this.system.container === true) {
-         result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
-      }
-      const weight = this.system.weight > 0 ? this.system.weight : 0;
-      const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
-      result += weight * quantity;
-      return result;
-   }
-
    /** @override
     * @protected */
    prepareBaseData() {
       super.prepareBaseData();
+      if (this.type === 'treasure') {
+         this.system.quantityMax = 0;
+      }
    }
 
    /** @override
     * @protected */
    prepareDerivedData() {
       super.prepareDerivedData();
-      if (this.system.quantity !== undefined) {
-         const qty = this.system.quantity > 0 ? this.system.quantity : 0;
-         this.system.totalWeight = Math.round((this.system.weight * qty) * 100) / 100;
-         //console.debug(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${qty}x${this.system.weight})`);
-         this.system.totalCost = Math.round((this.system.cost * qty) * 100) / 100;
-      }
-      // This can't be in data model, because name is a property of Item.
-      this.system.unidentifiedName = this.system.unidentifiedName === '' ? this.name : this.system.unidentifiedName;
    }
 
    // Define default icons for various item types using core data paths
@@ -67,7 +49,8 @@ export class fadeItem extends Item {
          container: "icons/svg/chest.svg",
          class: `${fdPath}/class.webp`,
          weaponMastery: "icons/svg/combat.svg",
-         light: "icons/sundries/lights/lantern-iron-lit-yellow.webp"
+         light: "icons/sundries/lights/lantern-iron-lit-yellow.webp",
+         condition: "icons/svg/paralysis.svg"
       };
    }
 
@@ -86,64 +69,29 @@ export class fadeItem extends Item {
    getRollData() {
       // Starts off by populating the roll data with a shallow copy of `this.system`
       const rollData = { ...this.system };
-
       // Quit early if there's no parent actor
       if (this.actor !== null) {
          // If present, add the actor's roll data
          rollData.actor = this.actor.getRollData();
       }
-
       return rollData;
    }
 
-   /**
-    * Process all item active effects that are not set to transfer to the owning actor.
-    * @protected
-    */
-   _processNonTransferActiveEffects() {
-      const data = this.system;
-
-      // Apply Active Effects only if transfer is false
-      const changes = this.effects
-         .filter(effect => !effect.disabled && effect.transfer === false) // Only local effects
-         .flatMap(effect => effect.changes);
-
-      // Process changes
-      for (const change of changes) {
-         if (change.key.startsWith("system.")) {
-            const path = change.key.slice(7); // Strip "system." prefix
-            const currentValue = foundry.utils.getProperty(data, path);
-            const newValue = this._applyEffectChange(change.mode, currentValue, change.value);
-            foundry.utils.setProperty(data, path, newValue);
-         }
+   async getInlineDescription() {
+      let description = await TextEditor.enrichHTML(this.system.description, {
+         // Whether to show secret blocks in the finished html
+         secrets: false,
+         // Necessary in v11, can be removed in v12
+         async: true,
+         // Data to fill in for inline rolls
+         rollData: this.getRollData(),
+         // Relative UUID resolution
+         relativeTo: this.actor,
+      });
+      if (description?.length <= 0) {
+         description = '--';
       }
-   }
-
-   /**
-    * Helper method to process Active Effect changes.
-    * @private
-    * @param {any} mode A valid CONST.ACTIVE_EFFECT_MODES value.
-    * @param {any} currentValue The property's current value/
-    * @param {any} changeValue The value specified in the effect change data.
-    * @returns
-    */
-   _applyEffectChange(mode, currentValue, changeValue) {
-      const value = Number(changeValue) || 0;
-      switch (mode) {
-         case CONST.ACTIVE_EFFECT_MODES.ADD:
-            return (currentValue || 0) + value;
-         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
-            return (currentValue || 1) * value;
-         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
-            return value;
-         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
-            return Math.min(currentValue || Infinity, value); // Set to the lower value
-         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
-            return Math.max(currentValue || -Infinity, value); // Set to the higher value
-         default:
-            console.warn(`Unsupported Active Effect mode: ${mode}`);
-            return currentValue;
-      }
+      return description;
    }
 
    /**
@@ -185,5 +133,70 @@ export class fadeItem extends Item {
 
    async getEvaluatedRollFormula(formula) {
       return await this.getEvaluatedRoll(formula)?.formula;
+   }
+
+   /**
+ * Process all item active effects that are not set to transfer to the owning actor.
+ * @protected
+ */
+   _processNonTransferActiveEffects() {
+      const data = this.system;
+
+      // Apply Active Effects only if transfer is false
+      const changes = this.effects
+         .filter(effect => !effect.disabled && effect.transfer === false) // Only local effects
+         .flatMap(effect => effect.changes);
+
+      // Process changes
+      for (const change of changes) {
+         if (change.key.startsWith("system.")) {
+            const path = change.key.slice(7); // Strip "system." prefix
+            const currentValue = foundry.utils.getProperty(data, path);
+            const newValue = this._applyEffectChange(change.mode, currentValue, change.value);
+            foundry.utils.setProperty(data, path, newValue);
+         }
+      }
+   }
+
+   /**
+    * Helper method to process Active Effect changes.
+    * @protected
+    * @param {any} mode A valid CONST.ACTIVE_EFFECT_MODES value.
+    * @param {any} currentValue The property's current value/
+    * @param {any} changeValue The value specified in the effect change data.
+    * @returns
+    */
+   _applyEffectChange(mode, currentValue, changeValue) {
+      const value = Number(changeValue) || 0;
+      switch (mode) {
+         case CONST.ACTIVE_EFFECT_MODES.ADD:
+            return (currentValue || 0) + value;
+         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+            return (currentValue || 1) * value;
+         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+            return value;
+         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+            return Math.min(currentValue || Infinity, value); // Set to the lower value
+         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+            return Math.max(currentValue || -Infinity, value); // Set to the higher value
+         default:
+            console.warn(`Unsupported Active Effect mode: ${mode}`);
+            return currentValue;
+      }
+   }
+
+   /**
+    * Determines if a roll on an item should show a success/fail result message.
+    * @protected
+    * @param {any} event
+    * @returns True if the results should be shown, otherwise false.
+    */
+   _getShowResult(event) {
+      let result = this.system.showResult ?? true;
+      const shiftKey = event?.originalEvent?.shiftKey ?? false;
+      if (game.user.isGM === true) {
+         result = shiftKey === false && result === true;
+      }
+      return result;
    }
 }

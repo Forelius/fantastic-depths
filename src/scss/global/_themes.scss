@@ -77,7 +77,7 @@
          .items-list {
             color: $lightColor;
 
-            .item-controls {
+            .item-controls, .item-controls-sm {
                .item-unequipped {
                   color: rgba(220, 220, 220, 0.1);
                }
@@ -105,7 +105,7 @@
             }
          }
 
-         .rollable, .chatable {
+         .rollable, .chatable, .open-sheet {
             &:hover,
             &:focus {
                color: $lighterColor;
@@ -129,6 +129,16 @@
       }
 
       .character, .monster {
+         .nav-tabs-right {
+            .nav-tab, .nav-tab-vert {
+               background: url('../assets/img/grunge2.jpg');
+
+               a {
+                  border-color: $darkColor;
+               }
+            }
+         }
+
          .ability-scores {
             .ability {
                border-color: $darkColor;
@@ -231,7 +241,7 @@
          .items-list {
             color: $darkColor;
 
-            .item-controls {
+            .item-controls, .item-controls-sm {
                .item-unequipped {
                   color: rgba(0, 0, 0, 0.2);
                }
@@ -254,7 +264,7 @@
             }
          }
 
-         .rollable, .chatable {
+         .rollable, .chatable, .open-sheet {
             &:hover,
             &:focus {
                color: $darkerColor;
@@ -274,6 +284,16 @@
       }
 
       .character, .monster {
+         .nav-tabs-right {
+            .nav-tab, .nav-tab-vert {
+               background: url('../assets/img/lightgrunge1.jpg');
+
+               a {
+                  border-color: $lightColor;
+               }
+            }
+         }
+
          .ability-scores {
             .ability {
                border-color: $lightColor;

@@ -12,12 +12,12 @@ export class GenericRollChatBuilder extends ChatBuilder {
    }
 
    async createChatMessage() {
-      const { context, mdata, roll, caller } = this.data;
+      const { context, mdata, roll, caller, options } = this.data;
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
 
-      if (roll) {
+      if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
          let targetNumber = Number(mdata.target); // Ensure the target number is a number
 

@@ -1,6 +1,6 @@
 <form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
-      <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' title='{{item.name}}' />
+      <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li class="flex3">
@@ -9,6 +9,13 @@
                </div>
                <label for="name">{{localize 'Name'}}</label>
             </li>
+            <li class="flex2">
+               <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+                  {{selectOptions weaponTypes selected=system.weaponType}}
+               </select>
+               <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
+            </li>
+            <li>
             <li class="flex1">
                <select name="system.level">
                   {{selectOptions masteryLevels selected=system.level}}
@@ -92,7 +99,7 @@
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDescription target='system.description' engine='prosemirror' button=true editable=editable }}
+         {{editor enrichedDesc target='system.description' engine='prosemirror' button=true editable=editable }}
       </div>
       {{#if isGM}}
       {{! Effects Tab }}
