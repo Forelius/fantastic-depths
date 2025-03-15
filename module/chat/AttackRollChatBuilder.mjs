@@ -81,15 +81,61 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const chatMsg = await ChatMessage.create(chatMessageData);
    }
 
+   getDarkDungeonsToHitTable(thac0, repeater = 0) {
+      const toHitTable = [];
+      repeater = Math.max(repeater, 0);
+      let toHit = thac0;
+      const repeatMax = 2;
+      for (let ac = 0; ac <= 20; ac++) {
+         if (toHit < 0) {
+            if (repeater < repeatMax) {
+               repeater++;
+               toHitTable.push({ ac, toHit });
+            } else {
+               repeater = 1;
+               toHit -= 1;
+               toHitTable.push({ ac, toHit });
+            }
+         } else {
+            repeater = 0;
+            toHitTable.push({ ac, toHit });
+            toHit -= 1;
+         }
+      }
+
+      repeater = thac0 == 20 ? 1 : 0;
+      toHit = thac0 == 20 ? 20 : thac0 + 1;
+      // Loop through AC values from -1 down to -99
+      for (let ac = -1; ac >= -99; ac--) {
+         if (toHit < 0) {
+            if (repeater < repeatMax) {
+               repeater++;
+               toHitTable.push({ ac, toHit });
+            } else {
+               repeater = 0;
+               toHit += 1;
+               toHitTable.push({ ac, toHit });
+               toHit += 1;
+            }
+         } else {
+            repeater = 0;
+            toHitTable.push({ ac, toHit });
+            toHit += 1;
+         }
+      }
+      return toHitTable;
+   }
+
    getHeroicToHitTable(thac0, repeater = 0) {
       const toHitTable = [];
+      const repeatMax = 5;
       // Loop through AC values from 0 down to 20
       repeater = Math.max(repeater, 0);
       let repeatOn = [-10, 2, 30];
       let toHit = thac0;
       for (let ac = 0; ac < 20; ac++) {
          if (repeatOn.includes(toHit)) {
-            if (repeater < 5) {
+            if (repeater < repeatMax) {
                repeater++;
                toHitTable.push({ ac, toHit });
             } else {
@@ -111,7 +157,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       // Loop through AC values from -1 down to -99
       for (let ac = -1; ac >= -99; ac--) {
          if (repeatOn.includes(toHit)) {
-            if (repeater < 5) {
+            if (repeater < repeatMax) {
                repeater++;
                toHitTable.push({ ac, toHit });
             } else {
@@ -130,6 +176,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       return toHitTable;
    }
 
+   // Basic/Expert style to-hit table.
    getClassicToHitTable(thac0) {
       const tableRow = [];
       for (let ac = -19; ac <= 19; ac++) {
@@ -177,7 +224,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
          }
          case "darkdungeons": {
             if (roll === 1) {
-               result = null;  // Natural 1 always misses
+               result = null; // Natural 1 always misses
+            } else if (roll === 20) {
+               result = -999; // Natural 20 always hits
             } else {
                toHitTable = this.getHeroicToHitTable(thac0);
                // Filter all entries that the rollTotal can hit
