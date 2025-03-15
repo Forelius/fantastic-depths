@@ -3,15 +3,15 @@
       <div class='item-name'>{{localize 'FADE.SpecialAbility.categories.class'}}</div>
    </li>
    {{#each classAbilities as |item id|}}
-   <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+   <li class='item collapsible-content{{#unless item.system.quantityMax }} bottom-border{{/unless}}{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="flexrow">
          <div class='item-name'>
             <div class="item-image rollable"
                  data-roll-type='item'
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
-               <img src='{{item.img}}' 
+               <img src='{{item.img}}'
                     {{#if (or (eq item.system.rollFormula null) (eq item.system.rollFormula ''))}}
-                    data-tooltip='{{item.name}}' 
+                    data-tooltip='{{item.name}}'
                     {{else}}
                     data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}'
                     {{/if}}
@@ -32,5 +32,17 @@
       </div>
       <div class='item-description desc-collapsed'></div>
    </li>
+   {{#if item.system.quantityMax }}
+   <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+      <div class="consumable-counter">
+         <label>{{localize 'FADE.Item.uses'}}</label>
+         {{#times item.system.quantity}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
+   </li>
+   {{/if}}
    {{/each}}
 </ol>

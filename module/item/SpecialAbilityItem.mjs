@@ -58,9 +58,11 @@ export class SpecialAbilityItem extends fadeItem {
       const rollData = this.getRollData();
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
-
       let rolled = null;
-      if (hasRoll === true) {
+
+      if (await this.#tryUseUsage(true) === false) {
+         canProceed = false;
+      } else if (hasRoll === true) {
          // Retrieve roll data.
          dataset.dialog = "generic";
          dataset.rollmode = systemData.rollMode;
@@ -91,6 +93,10 @@ export class SpecialAbilityItem extends fadeItem {
       }
 
       if (canProceed === true) {
+         canProceed = await this.#tryUseUsage();
+      }
+
+      if (canProceed === true) {
          const chatData = {
             caller: this,
             resp: dialogResp,
@@ -109,5 +115,31 @@ export class SpecialAbilityItem extends fadeItem {
       //desc.replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div>')
       const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : '';
       return `${summary}${description}`;
+   }
+
+   /**
+    * Determines if any uses are available and if so decrements quantity by one
+    * @private
+    * @param {any} getOnly If true, does not use, just gets.
+    * @returns True if quantity is above zero.
+    */
+   async #tryUseUsage(getOnly = false) {
+      let hasUse = this.system.quantity > 0;
+
+      if (getOnly !== true) {
+         // Deduct 1 if not infinite and not zero
+         if (hasUse === true && this.system.quantityMax !== null && this.system.quantityMax > 0) {
+            const newQuantity = Math.max(0, this.system.quantity - 1);
+            await this.update({ "system.quantity": newQuantity });
+         }
+      }
+      // If there are no usages remaining, show a UI notification
+      if (hasUse === false) {
+         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
+      }
+
+      return hasUse;
    }
 }
