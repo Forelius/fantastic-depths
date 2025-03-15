@@ -34,6 +34,8 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          customSaveCode: new fields.StringField({ required: false, nullable: true, initial: null }),
          classKey: new fields.StringField({ required: false, nullable: true, initial: null }),
          showResult: new fields.BooleanField({ required: false, initial: true }),
+         quantity: new fields.NumberField({ required: false, initial: 1, nullable: true }),
+         quantityMax: new fields.NumberField({ required: false, initial: null, nullable: true }),
       };
    }
 

@@ -36,6 +36,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          unidentifiedDesc: new fields.StringField({ required: false, initial: "" }),
          isIdentified: new fields.BooleanField({ required: false, initial: true }),
          isCursed: new fields.BooleanField({ required: false, initial: false }),
+         isCarried: new fields.BooleanField({ required: true, initial: true }),
       };
    }
 
