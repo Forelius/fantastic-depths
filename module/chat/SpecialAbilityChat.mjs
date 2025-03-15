@@ -37,7 +37,7 @@ export class SpecialAbilityChat extends ChatBuilder {
 
       let save = null;
       if (specAbility.system.savingThrow?.length > 0) {
-         save = fadeFinder.getSavingThrow(specAbility.system.savingThrow);
+         save = await fadeFinder.getSavingThrow(specAbility.system.savingThrow);
       }
 
       // Prepare data for the chat template

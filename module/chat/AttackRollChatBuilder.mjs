@@ -46,7 +46,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       let save = null;
       if (weapon.system.savingThrow?.length > 0) {
-         save = fadeFinder.getSavingThrow(weapon.system.savingThrow);
+         save = await fadeFinder.getSavingThrow(weapon.system.savingThrow);
       }
 
       const chatData = {
@@ -290,7 +290,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
             targetResults: []
          };
          for (let targetToken of targetTokens) {
-            const saveLocalized = fadeFinder.getSavingThrow(weapon.system.savingThrow)?.name;
+            const saveLocalized = (await fadeFinder.getSavingThrow(weapon.system.savingThrow))?.name;
             let targetResult = {
                targetid: targetToken.id,
                targetname: targetToken.name,

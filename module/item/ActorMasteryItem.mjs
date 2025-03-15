@@ -15,8 +15,9 @@ export class ActorMasteryItem extends fadeItem {
    }
 
    /** Update item properties based on FADE.WeaponMastery */
-   _updatePropertiesFromMastery() {
-      const { masteryItem, masteryLevel } = this.getMastery(this.name, this.system.level);
+   async _updatePropertiesFromMastery() {
+      // TODO: This needs to be synchronous or prepareBaseData can't call reliably.
+      const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.level);
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 
       // Update the mastery fields with data from the specified level in FADE.WeaponMastery
@@ -37,9 +38,9 @@ export class ActorMasteryItem extends fadeItem {
       this.system.sToHit = masteryLevel.sToHit;
    }
 
-   getMastery(masteryName, level) {
+   async getMastery(masteryName, level) {
       let result = null;
-      const masteryItem = fadeFinder.getWeaponMastery(masteryName);
+      const masteryItem = await fadeFinder.getWeaponMastery(masteryName);
       // If item is found...
       if (masteryItem != null) {
          result = masteryItem.system.levels.find(md => md.name === level)

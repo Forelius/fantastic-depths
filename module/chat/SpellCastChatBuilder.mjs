@@ -47,7 +47,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
 
       let save = null;
       if (spellItem.system.savingThrow?.length > 0) {
-         save = fadeFinder.getSavingThrow(spellItem.system.savingThrow);
+         save = await fadeFinder.getSavingThrow(spellItem.system.savingThrow);
       }
 
       // Prepare data for the chat template

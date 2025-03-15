@@ -33,7 +33,7 @@ export class MonsterActor extends fadeActor {
       super.onUpdateActor(updateData, options, userId);
       // If classAbilityAs updated...
       if (this.system?.details?.classAbilityAs?.length > 0) {
-         const result = ClassItem.getClassAbilitiesByCode(this.system?.details?.classAbilityAs, this);
+         const result = await ClassItem.getClassAbilitiesByCode(this.system?.details?.classAbilityAs, this);
          if (result.classAbilityData) {
             await this._setupSpecialAbilities(result.classKey, result.classAbilityData);
          }
@@ -62,7 +62,7 @@ export class MonsterActor extends fadeActor {
       if (this.id) {
          const saveAs = this.system.details.saveAs ?? null;
          if (saveAs) {
-            const savesData = ClassItem.getClassSavesByCode(saveAs, this);
+            const savesData = await ClassItem.getClassSavesByCode(saveAs, this);
             if (savesData) {
                await this._setupSavingThrows(savesData);
             } else {

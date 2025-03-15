@@ -133,7 +133,7 @@ export class CharacterActor extends fadeActor {
 
       // Replace hyphen with underscore for "Magic-User"
       const nameInput = this.system.details.class?.toLowerCase();
-      const classItem = fadeFinder.getClass(nameInput);
+      const classItem = await fadeFinder.getClass(nameInput);
       if (!classItem) {
          if (nameInput !== null && nameInput !== '') {
             console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
@@ -198,8 +198,8 @@ export class CharacterActor extends fadeActor {
     * @protected
     */
    async _updateLevelClass() {
-      const nameInput = this.system.details.class?.toLowerCase();
-      const classItem = fadeFinder.getClass(nameInput);
+      const className = this.system.details.class?.toLowerCase();
+      const classItem = await fadeFinder.getClass(className);
       if (classItem) {
          // Get the class data for the character's current level.
          const currentLevel = Math.min(classItem.system.maxLevel, Math.max(classItem.system.firstLevel, this.system.details.level));
@@ -207,14 +207,15 @@ export class CharacterActor extends fadeActor {
          this.system.thbonus = currentLevel.thbonus;
 
          // Saving throws
-         const savesData = ClassItem.getClassSaves(nameInput, currentLevel);
+         const savesData = await ClassItem.getClassSaves(className, currentLevel);
          if (savesData) {
             await this._setupSavingThrows(savesData);
          }
 
          // Class special abilities
-         const abilitiesData = ClassItem.getClassAbilities(nameInput, currentLevel);
-         if (abilitiesData) {
+         const abilityNames = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.name);
+         const abilitiesData = (await ClassItem.getClassAbilities(className, currentLevel))?.filter(item => abilityNames.includes(item.name) === false);
+         if (abilitiesData && abilitiesData.length > 0) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
                title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
@@ -239,7 +240,7 @@ export class CharacterActor extends fadeActor {
     */
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
-      const worldItem = fadeFinder.getSpecies(nameInput);
+      const worldItem = await fadeFinder.getSpecies(nameInput);
       const actorItem = this.items.find(item => item.type === 'species');
 
       if (!worldItem) {
@@ -255,7 +256,8 @@ export class CharacterActor extends fadeActor {
       await this.createEmbeddedDocuments("Item", itemData);
 
       // Class special abilities
-      const abilitiesData = SpeciesItem.getSpecialAbilities(nameInput);
+      const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item=>item.id);
+      const abilitiesData = (await SpeciesItem.getSpecialAbilities(nameInput))?.filter(item =>abilityIds.includes(item.id)===false);
       if (abilitiesData) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
