@@ -34,8 +34,8 @@ export class SpeciesItem extends fadeItem {
       await this.update({ "system.classes": item });
    }
 
-   static getSpecialAbilities(name) {
-      const theItem = fadeFinder.getSpecies(name);
+   static async getSpecialAbilities(name) {
+      const theItem = await fadeFinder.getSpecies(name);
       let result;
       if (theItem) {
          result = theItem.system.specialAbilities.reduce((acc, a) => ((acc[a.name] = !acc[a.name] ? a : acc[a.name]), acc), {});

@@ -112,15 +112,6 @@ export class fadeActor extends Actor {
       } else {
          //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
       }
-      // TODO: This is the incorrect way to do this, it causes recursion through the call to setActiveLight.
-      //if (this.system.activeLight?.length > 0) {
-      //   const lightItem = this.items.get(this.system.activeLight);
-      //   if (!lightItem) {
-      //      console.log(`Deactivating light for ${this.name} due to missing light item.`);
-      //      this.setActiveLight(null);
-      //      this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
-      //   }
-      //}
    }
 
    /**
@@ -730,7 +721,7 @@ export class fadeActor extends Actor {
       }
 
       if (this.system.mod.baseAc != 0) {
-         ac.total -= this.system.mod.baseAc;
+         //ac.total -= this.system.mod.baseAc;
          acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.baseAc}`);
       }
 
@@ -784,7 +775,7 @@ export class fadeActor extends Actor {
             && addItems.find(item => item.name === abilityData.name) === undefined) {
             //const itemData = worldAbilities.find(item => item.name === abilityData.name);
             classKey = classKey ? classKey : abilityData.classKey;
-            const itemData = fadeFinder.getClassAbility(abilityData.name, classKey);
+            const itemData = await fadeFinder.getClassAbility(abilityData.name, classKey);
             if (itemData) {
                const newAbility = itemData.toObject();
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
@@ -819,7 +810,7 @@ export class fadeActor extends Actor {
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      const worldSavingThrows = fadeFinder.getSavingThrows();
+      const worldSavingThrows = await fadeFinder.getSavingThrows();
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
       const addItems = [];

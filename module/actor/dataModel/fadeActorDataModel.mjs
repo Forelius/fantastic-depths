@@ -126,8 +126,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
 
    /** @override */
    prepareBaseData() {
-      this._prepareMods();
       super.prepareBaseData();
+      this._prepareMods();
       this._prepareSpells();
    }
 
@@ -153,9 +153,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /**
     * @protected
     */
-   _prepareMods() {
-      this.mod.ac = 0;
-      this.mod.baseAc = 0;
+   async _prepareMods() {
       this.mod.ac = 0;
       this.mod.baseAc = 0;
       this.mod.upgradeAc = null;
@@ -175,12 +173,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.combat.selfToHitRanged = 0;
       // Saving throw mods
       this.mod.save = {};
-      this.mod.save.all = 0;
-      // Create the saving throw member variables dynamically from the world's save items.
-      const saves = fadeFinder.getSavingThrows().map(item => item.system.customSaveCode);
-      for (let save of saves) {
-         this.mod.save[save] = 0;
-      }
+      this.mod.save.all = 0;      
    }
       
    /**

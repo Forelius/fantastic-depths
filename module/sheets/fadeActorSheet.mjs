@@ -89,8 +89,8 @@ export class fadeActorSheet extends ActorSheet {
 
       // Render the item sheet for viewing/editing prior to the editable check.
       html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
-      html.on('click', '.class-edit', (event) => fadeFinder.getClass(this.actor.system.details.class)?.sheet?.render(true));
-      html.on('click', '.species-edit', (event) => fadeFinder.getSpecies(this.actor.system.details.species)?.sheet?.render(true));
+      html.on('click', '.class-edit', async (event) => (await fadeFinder.getClass(this.actor.system.details.class)?.sheet)?.render(true));
+      html.on('click', '.species-edit', async (event) => (await fadeFinder.getSpecies(this.actor.system.details.species))?.sheet?.render(true));
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable

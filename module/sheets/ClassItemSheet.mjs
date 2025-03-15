@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -45,7 +46,7 @@ export class ClassItemSheet extends fadeItemSheet {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Saving throw items
-      context.saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      context.saves = await fadeFinder.getSavingThrows();
       // Concat logics
       context.logics = [...CONFIG.FADE.ConcatLogic.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.concatLogic.${key}`) }
