@@ -221,8 +221,8 @@
       }
    }
 
-   .consumable-counter {
-      height: 14px;
+   .consumable-counter, .charges-counter {
+      height: 16px;
       display: flex;
       flex-wrap: wrap;
       line-height: 14px;
@@ -237,8 +237,9 @@
       .empty-mark {
          cursor: pointer;
          flex: 0 8px;
-         margin: 1px;
+         margin: 0 1px;
          box-shadow: inset 0 0 3px $colorTan;
+         height:12px;
 
          &:hover {
             background: $colorTan;

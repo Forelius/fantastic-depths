@@ -27,7 +27,7 @@
             {{#if item.system.equippable}}
             <a class="item-control item-toggle {{#unless item.system.equipped}}item-unequipped{{/unless}}"
                data-tooltip="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
-               <i class="fas fa-tshirt"></i>
+               <i class="fas{{#if item.system.isAmmo}} fa-hand{{else}} fa-tshirt{{/if}}"></i>
             </a>
             {{/if}}
             <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.item")}}'>
@@ -47,15 +47,27 @@
 {{/each}}
 {{/if}}
 {{#unless item.system.container}}
-<li class='flexrow item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+<li class='item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
    {{#if item.system.quantityMax}}
-   <div class="consumable-counter contained">
+   <div class="flexrow consumable-counter contained">
       <label>{{localize 'FADE.Item.uses'}}</label>
       {{#times item.system.quantity}}
       <div class="full-mark"></div>
       {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
       <div class="empty-mark"></div>
       {{/times}}
+   </div>
+   {{/if}}
+   {{#if item.system.chargesMax}}
+   <div class='flexrow item collapsible-content contained-item{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+      <div class="charges-counter contained">
+         <label>{{localize 'FADE.Item.charges.long'}}</label>
+         {{#times item.system.charges}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.chargesMax item.system.charges)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
    </div>
    {{/if}}
 </li>

@@ -67,7 +67,9 @@ export class GearItem extends fadeItem {
       let isUsing = false;
 
       if (this.system.isUsable === true) {
-         if ((await this.#tryUseUsage(true)) === true) {
+         // If this item has a quantity and either has charges or doesn't use charges...
+         if ((await this.#tryUseUsage(true)) === true
+            && (this.#usesCharge() === false || await this.#tryUseCharge(true))) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
                title: game.i18n.localize('FADE.dialog.useItem.title'),
@@ -77,8 +79,12 @@ export class GearItem extends fadeItem {
                defaultChoice: "yes"
             }, this.actor);
             if (dialogResp?.resp?.result === true) {
-               isUsing = true;
-               await this.#tryUseUsage();
+               isUsing = true;               
+               if (this.#usesCharge()) {
+                  await this.#tryUseCharge();
+               } else {
+                  await this.#tryUseUsage();
+               }
             }
          }
       }
@@ -183,5 +189,36 @@ export class GearItem extends fadeItem {
       }
 
       return hasUse;
+   }
+
+   /**
+    * Determines if any charges are available and if so decrements charges by one
+    * @private
+    * @param {any} getOnly If true, does not use, just gets.
+    * @returns True if quantity is above zero.
+    */
+   async #tryUseCharge(getOnly = false) {
+      let hasCharge = this.system.charges > 0;
+
+      if (getOnly !== true) {
+         // Deduct 1 if not infinite and not zero
+         if (hasCharge === true && this.system.chargesMax !== null) {
+            const newCharges = Math.max(0, this.system.charges - 1);
+            await this.update({ "system.charges": newCharges });
+         }
+      }
+      // If there are no charges remaining, show a UI notification
+      if (hasCharge === false) {
+         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
+      }
+
+      return hasCharge;
+   }
+
+   #usesCharge() {
+      // Item uses charges if there are any charges or if charges max is greater than zero or charges max is infinite.
+      return this.system.charges > 1 || this.system.chargesMax > 0 || this.system.chargesMax === null;
    }
 }

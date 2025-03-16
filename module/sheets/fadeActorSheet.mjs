@@ -143,6 +143,14 @@ export class fadeActorSheet extends ActorSheet {
             await this._useConsumable(event, false);
          });
 
+         // Charges
+         html.find(".charges-counter .full-mark").click(async (event) => {
+            await this._useCharge(event, true);
+         });
+         html.find(".charges-counter .empty-mark").click(async (event) => {
+            await this._useCharge(event, false);
+         });
+
          // Editable
          html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
 
@@ -422,13 +430,28 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
-  * @param event
-  * @param {bool} decrement
-  */
+     * @param event
+     * @param {bool} decrement
+     */
    async _useConsumable(event, decrement) {
       const item = this._getItemFromActor(event);
       let quantity = item.system.quantity;
       await item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+   }
+
+   /**
+     * @param event
+     * @param {bool} decrement
+     */
+   async _useCharge(event, decrement) {
+      const item = this._getItemFromActor(event);
+      let charges = item.system.charges;
+      // Only allow GM to increase charges
+      if (game.user.isGM === true) {
+         await item.update({ "system.charges": decrement ? --charges : ++charges, });
+      } else if (decrement === false) {
+         await item.update({ "system.charges": --charges });
+      }
    }
 
    /**

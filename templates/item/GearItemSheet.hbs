@@ -5,7 +5,7 @@
          <ul class="summary flexrow">
             <li>
                {{#if (or isGM system.isIdentified)}}
-               <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}}readonly{{/unless}}/>
+               <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
                {{else}}
                <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
                {{/if}}
@@ -13,23 +13,31 @@
          </ul>
          <ul class="summary flexrow">
             <li class="flex1">
-               <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}}readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+               <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
                <label for="system.quantity">{{localize 'FADE.Item.quantity.long'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}}readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+               <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
                <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxLong'}}</label>
             </li>
             <li class="flex1">
+               <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
+               <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
+            </li>
+            <li class="flex1">
+               <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
+               <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
+            </li>
+            <li class="flex1">
                {{#if (or isGM system.isIdentified)}}
-               <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
+               <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
                {{else}}
-               <input type='text' value='?' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
+               <input type='text' value='?' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
                {{/if}}
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
+               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
                <label for="system.weight" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</label>
             </li>
          </ul>
@@ -153,28 +161,28 @@
             </ul>
             {{/if}}
             {{else}}
-         <ul class="summary flexrow">
-            <li class="flex1">
-               <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
-               <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
-            </li>
-            <li class="flex1">
-               <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
-               <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
-            </li>
-            <li class="flex1">
-               <input type="checkbox" name="system.isUsable" data-dtype="Boolean" {{#if system.isUsable}} checked{{/if}}/>
-               <label for="system.isUsable">{{localize "FADE.Item.isUsable"}}</label>
-            </li>
-            <li class="flex1">
-               <input name="system.fuelType" type="text" data-dtype="String" value="{{system.fuelType}}" />
-               <label for="system.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
-            </li>
-            <li class="flex1">
-               <input name="system.ammoType" type="text" data-dtype="String" value="{{system.ammoType}}" />
-               <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
-            </li>
-         </ul>
+            <ul class="summary flexrow">
+               <li style="max-width: 60px;">
+                  <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
+                  <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+               </li>
+               <li style="max-width: 60px;">
+                  <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
+                  <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
+               </li>
+               <li style="max-width: 60px;">
+                  <input type="checkbox" name="system.isUsable" data-dtype="Boolean" {{#if system.isUsable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isUsable.hint"}}"/>
+                  <label for="system.isUsable" data-tooltip="{{localize "FADE.Item.isUsable.hint"}}">{{localize "FADE.Item.isUsable.name"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.fuelType" type="text" data-dtype="String" value="{{system.fuelType}}" />
+                  <label for="system.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
+               </li>
+               <li class="flex1">
+                  <input name="system.ammoType" type="text" data-dtype="String" value="{{system.ammoType}}" />
+                  <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+               </li>
+            </ul>
             <ul class="summary flexrow">
                <li class="flex1">
                   <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
@@ -200,7 +208,6 @@
             {{/if}}
          </div>
          {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
-
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>

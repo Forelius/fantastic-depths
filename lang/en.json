@@ -284,7 +284,10 @@
          "equipped": "Equipped",
          "unequip": "Unequip",
          "isEquippable": "Equippable",
-         "isUsable": "Usable",
+         "isUsable": {
+            "name": "Usable",
+            "hint": "Specify if item can be used, which will also enable usage tracking for the item."
+         },
          "isContainer": "Container",
          "quantity": {
             "long": "Quantity",
@@ -292,6 +295,10 @@
             "abbr": "Qty",
             "maxAbbr": "Max Qty",
             "abbr2": "#"
+         },
+         "charges": {
+            "long": "Charges",
+            "maxLong": "Max. Charges"
          },
          "weight": {
             "short": "Enc (cn)",
