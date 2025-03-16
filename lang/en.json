@@ -284,6 +284,7 @@
          "equipped": "Equipped",
          "unequip": "Unequip",
          "isEquippable": "Equippable",
+         "isUsable": "Usable",
          "isContainer": "Container",
          "quantity": {
             "long": "Quantity",
@@ -647,9 +648,14 @@
          "skillCheck": "Skill Check",
          "spellcast": {
             "title": "Cast Spell?",
-            "content": "Do you want to cast the spell or view its description?",
+            "content": "Do you want to cast the spell or only view its description?",
             "yesLabel": "Cast Spell",
             "noLabel": "View Description"
+         },
+         "useItem": {
+            "title": "Use item?",
+            "content": "Do you want to use the item or only view its description?",
+            "yesLabel": "Use Item"
          },
          "attackMode": {
             "name": "Attack Mode",

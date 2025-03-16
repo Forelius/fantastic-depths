@@ -4,23 +4,23 @@
 {{#if mdata.label}}
 <div>{{mdata.label}}{{#if mdata.target}} ({{mdata.target}}){{/if}}</div>
 {{/if}}
-{{#if caller}}
+{{#if item}}
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
-      <img class="item-image" src='{{caller.img}}'/>
+      <img class="item-image" src='{{item.img}}' />
       <div class="item-name">
-         {{#if (ne caller.system.isIdentified false)}}
-         {{caller.name}}
+         {{#if (ne item.system.isIdentified false)}}
+         {{item.name}}
          {{else}}
-         {{caller.system.unidentifiedName}}
+         {{item.system.unidentifiedName}}
          {{/if}}
       </div>
    </div>
    <div class="collapsible-content collapsed">
-      {{#if (ne caller.system.isIdentified false)}}
-      {{{caller.system.description}}}
+      {{#if (ne item.system.isIdentified false)}}
+      {{{item.system.description}}}
       {{else}}
-      {{{caller.system.unidentifiedDesc}}}
+      {{{item.system.unidentifiedDesc}}}
       {{/if}}
    </div>
 </div>
@@ -31,6 +31,9 @@
 {{#if resultString}}
 {{{resultString}}}
 {{/if}}
-{{#if rollContent}}
 {{{rollContent}}}
+{{#if item}}
+   {{#if (eq item.system.isIdentified true)}}
+   {{> "systems/fantastic-depths/templates/chat/save-heal-dmg.hbs"}}
+   {{/if}}
 {{/if}}

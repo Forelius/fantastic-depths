@@ -1,4 +1,5 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 export class GenericRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/generic-roll.hbs';
@@ -16,11 +17,17 @@ export class GenericRollChatBuilder extends ChatBuilder {
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
+      const item = caller.type === "character" || caller.type === "monster" ? null : caller;
+      let damageRoll = { hasDamage: false };
+
+      if (item?.getDamageRoll && options?.isUsing === true) {
+         damageRoll = await item?.getDamageRoll(null);
+      }
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
-         let targetNumber = Number(mdata.target); // Ensure the target number is a number
-
+         // Ensure the target number is a number
+         const targetNumber = Number(mdata.target);
          // Determine the roll result based on the provided data
          resultString = this.getResultString(mdata, roll, targetNumber);
       }
@@ -35,16 +42,24 @@ export class GenericRollChatBuilder extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
+      let save = null;
+      if (item.system.savingThrow?.length > 0 && options?.isUsing === true) {
+         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
+      }
+
       // Prepare data for the chat template
       const chatData = {
          // Only specify caller if an item.
-         caller: caller.type === "character" || caller.type === "monster" ? null : caller,
+         item,
          rollContent,
          mdata,
          resultString,
          actorName,
          userName,
-         isGM: game.user.isGM
+         isGM: game.user.isGM,
+         isHeal: damageRoll.type === "heal",
+         damageRoll,
+         save
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);

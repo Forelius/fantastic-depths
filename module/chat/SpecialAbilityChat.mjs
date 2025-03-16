@@ -1,5 +1,5 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
