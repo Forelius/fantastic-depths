@@ -14,6 +14,12 @@ export class fadeFinder {
       return await fadeFinder._getItemPack()?.getDocuments({ type });
    }
 
+   /**
+    * Get the item source from world items.
+    * @private
+    * @param {any} type
+    * @returns
+    */
    static _getWorldSource(type) {
       return game.items.filter(item => item.type === type);
    }
