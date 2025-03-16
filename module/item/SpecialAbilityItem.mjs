@@ -25,6 +25,7 @@ export class SpecialAbilityItem extends fadeItem {
       let digest = [];
       let modifier = 0;
       let hasDamage = true;
+      const type = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);
 
       if (resp?.mod && resp?.mod !== 0) {
          formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
@@ -35,10 +36,10 @@ export class SpecialAbilityItem extends fadeItem {
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
          hasDamage = false;
       }
-
+      
       return {
          formula,
-         type: isHeal ? "heal" : this.system.damageType,
+         type,
          digest,
          hasDamage
       };

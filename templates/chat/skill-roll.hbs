@@ -2,28 +2,15 @@
 <div><strong>{{mdata.label}}:</strong> {{mdata.desc}}</div>
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
-      <img class="item-image" src='{{skillItem.img}}' data-tooltip='{{skillItem.name}}' />
-      <div class="item-name">{{skillItem.name}}</div>
+      <img class="item-image" src='{{item.img}}' data-tooltip='{{item.name}}' />
+      <div class="item-name">{{item.name}}</div>
    </div>
    <div class="collapsible-content collapsed">
-      {{{skillItem.system.description}}}
+      {{{item.system.description}}}
    </div>
 </div>
 <div>
    {{{resultString}}}
 </div>
 {{{rollContent}}}
-{{#if isHeal}}
-<div style="margin-top:8px;">
-   <button class="heal-roll"
-           data-damagetype="{{damageRoll.type}}"
-           data-attacktype="skill"
-           data-label="Heal"
-           data-type="heal"
-           data-weaponuuid="{{skillItem.uuid}}"
-           data-tooltip="<b>{{localize 'FADE.Spell.healFormula'}}:</b> {{damageRoll.formula}}">
-      <i class="fa-solid fa-heart"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}}</span>
-   </button>
-</div>
-{{/if}}
+{{> "systems/fantastic-depths/templates/chat/save-heal-dmg.hbs"}}

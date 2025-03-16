@@ -7,8 +7,8 @@ export class SpecialAbilityChat extends ChatBuilder {
    async createChatMessage() {
       const { context, caller, roll, options } = this.data;
       const targetTokens = Array.from(game.user.targets);
-      const specAbility = caller;
-      const damageRoll = await caller.getDamageRoll(null);
+      const item = caller;
+      const damageRoll = await item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "" };
       let description = '?';
@@ -16,28 +16,28 @@ export class SpecialAbilityChat extends ChatBuilder {
       if (roll) {
          rollContent = await roll.render();
          // Determine the roll result based on the provided data
-         rollResult = await this.#getRollResult(specAbility, roll);
+         rollResult = await this.#getRollResult(item, roll);
          if (options.showResult === false) {
             delete rollResult.message;
          }
          description = game.i18n.format('FADE.Chat.useWithTarget', {
             owner: context.name, // The item's owning token or actor
-            used: specAbility.name,
+            used: item.name,
             target: rollResult.target,
             operator: CONFIG.FADE.Operators[rollResult.operator]
          });
       } else {
-         description = game.i18n.format('FADE.Chat.useSpecAbility', { owner: context.name, specAbility: specAbility.name });
+         description = game.i18n.format('FADE.Chat.useSpecAbility', { owner: context.name, specAbility: item.name });
       }
 
       if (game.fade.toastManager) {
          let toast = `${description}${rollResult.message}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", specAbility.system.rollMode);
+         game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
       let save = null;
-      if (specAbility.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(specAbility.system.savingThrow);
+      if (item.system.savingThrow?.length > 0) {
+         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
       }
 
       // Prepare data for the chat template
@@ -45,13 +45,14 @@ export class SpecialAbilityChat extends ChatBuilder {
          context,
          rollContent,
          rollResult,
-         specAbility,
+         item,
          description,
          isHeal: damageRoll.type === "heal",
          damageRoll,
          targets: targetTokens,
          showTargets: !roll,
-         save
+         save,
+         attackType: 'specialAbility'
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
@@ -61,7 +62,7 @@ export class SpecialAbilityChat extends ChatBuilder {
       const chatMessageData = this.getChatMessageData({
          content,
          rolls,
-         rollMode: specAbility.system.rollMode, // Pass the determined rollMode
+         rollMode: item.system.rollMode, // Pass the determined rollMode
       });
       // Create the chat message
       await ChatMessage.create(chatMessageData);

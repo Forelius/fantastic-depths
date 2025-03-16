@@ -10,7 +10,8 @@
       </label>
       <div class="collapsible-content">
          <div class="flexrow">
-            <button style="margin-right:4px;max-width:40px;" type="button" 
+            {{! Damage or Heals /2 }}
+            <button style="margin-right:4px;max-width:40px;" type="button"
                     {{#if (eq attackData.mdata.type 'heal')}} class="apply-heal" data-tooltip="{{localize 'FADE.Chat.applyHealingDesc'}} ({{attackData.damage}})"
                     {{else}} class="apply-damage" data-tooltip="{{localize 'FADE.Chat.applyDamageDesc'}} ({{attackData.damage}})" {{/if}}
                     data-attacktype="{{attackData.mdata.attacktype}}"
@@ -34,6 +35,7 @@
                <i class="fa-solid fa-reply-all fa-flip-horizontal"></i>
                <span style="margin-left:2px;">{{localize 'FADE.Chat.apply'}}</span>
             </button>
+            {{! Damage or Heals *2 }}
             <button style="margin-left:4px;max-width:40px;" type="button" {{#if (eq attackData.mdata.type 'heal')}} class="apply-heal" data-tooltip="{{localize 'FADE.Chat.applyHealingDesc'}} ({{attackData.damage}})"
                     {{else}} class="apply-damage" data-tooltip="{{localize 'FADE.Chat.applyDamageDesc'}} ({{attackData.damage}})" {{/if}}
                     data-attacktype="{{attackData.mdata.attacktype}}"
