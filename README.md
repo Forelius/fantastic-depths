@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/14893284-d6e9-4603-acff-f3179b80cb4c)
+![image](./assets/img/banner.jpg)
 
 ## Fantastic Depths - Foundry VTT System
 ![Foundry v11](https://img.shields.io/badge/foundry-v11-green)![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
