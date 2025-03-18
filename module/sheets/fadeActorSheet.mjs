@@ -209,7 +209,6 @@ export class fadeActorSheet extends ActorSheet {
 
       // Iterate through items, allocating to arrays
       for (let item of context.items) {
-         const docItem = context.document.items.get(item._id);
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === 'item' || item.type === 'light' || item.type === 'treasure') {

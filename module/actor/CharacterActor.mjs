@@ -136,7 +136,7 @@ export class CharacterActor extends fadeActor {
       const classItem = await fadeFinder.getClass(nameInput);
       if (!classItem) {
          if (nameInput !== null && nameInput !== '') {
-            console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
+            console.warn(`Class not found ${this.system.details.class}.`);
          }
          return;
       }

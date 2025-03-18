@@ -173,9 +173,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.combat.selfToHitRanged = 0;
       // Saving throw mods
       this.mod.save = {};
-      this.mod.save.all = 0;      
+      this.mod.save.all = 0;
    }
-      
+
    /**
     * Prepares the spell slots used and max values.
     * @protected
@@ -185,7 +185,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
             spellLevel: index + 1,
             used: 0,
-            max: 0
+            max: this.spellSlots?.[index]?.max ?? 0
          }));
       } else {
          this.spellSlots = [];
