@@ -100,25 +100,21 @@
          .item-image {
             flex: 0 0 30px;
             height: 30px;
-            background-size: contain; /* Ensures the d20 icon is properly sized */
+            background-size: 85%; /* Ensures the d20 icon is properly sized */
             background-repeat: no-repeat;
-            background-position: center;
+            background-position: 0 0;
             border: none;
             margin-right: 2px;
             position: relative;
             top: 2px;
          }
 
-         .rollable:hover img {
-            opacity: 0; /* Or use display: none; */
+         .rollable:hover img, .chatable:hover img {
+            opacity: 0; /* Or use display: none; */            
          }
 
          .rollable:hover {
             background-image: url('/icons/svg/d20-highlight.svg');
-         }
-
-         .chatable:hover img {
-            opacity: 0; /* Or use display: none; */
          }
 
          .chatable:hover {
@@ -190,7 +186,7 @@
 
       .align-left {
          text-align: left;
-         padding-left:6px;
+         padding-left: 6px;
       }
 
       .item-name {
@@ -239,7 +235,7 @@
          flex: 0 8px;
          margin: 0 1px;
          box-shadow: inset 0 0 3px $colorTan;
-         height:12px;
+         height: 12px;
 
          &:hover {
             background: $colorTan;

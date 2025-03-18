@@ -52,23 +52,6 @@
       max-width: 200px;
    }
 
-   .ability-vert {
-      border-bottom-style: solid;
-      border-bottom-width: 1px;
-
-      input {
-         margin-right: 4px;
-      }
-
-      .ability-mod {
-         margin-left: 6px;
-      }
-   }
-
-   .ability-vert:last-child {
-      border-bottom: none;
-   }
-
    .ability-horz {
       border-right-style: solid;
       border-right-width: 1px;
