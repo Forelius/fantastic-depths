@@ -3,32 +3,28 @@
 ## Fantastic Depths - Foundry VTT System
 ![Foundry v11](https://img.shields.io/badge/foundry-v11-green)![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
 
-This Foundry VTT system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
+This [Foundry Virtual Tabletop](https://foundryvtt.com/packages/fantastic-depths) system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
 
 The system comes with two themes, which are a light mode and a dark mode.
 
 ---
 
-Manual install (Stable): 
-https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json
+Fantastic Depths is on [Discord](https://discord.gg/6nCTfKun9d).
 
-Manual install (Pre-Release): 
-https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
-
----
-
-We are on Discord: https://discord.gg/6nCTfKun9d
-
-Compendiums are available as a separate module: https://github.com/Forelius/fade-compendiums
+Compendiums are available as a [separate module](https://github.com/Forelius/fade-compendiums).
 
 WIKI: https://github.com/Forelius/fantastic-depths/wiki
 
-Italiano localization by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
-
-**Thanks to the testers:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
-FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin and Herrenlosigkeit.
+[Italian localization](https://github.com/fvtt-italian-translations/fade-lang-it) availble by FR4NC35C0, N1xx1 and Wingfireblade(Paolo).
 
 If you wish to send me a financial gift, you can do so on Ko-Fi: https://ko-fi.com/forelius
+
+Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json
+
+Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
+
+**Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
+FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin and Herrenlosigkeit.
 
 ---
 
