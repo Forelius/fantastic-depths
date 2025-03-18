@@ -26,12 +26,17 @@ export class fadeCombat extends Combat {
    }
 
    _initVariables() {
-      this.groupModifier = game.settings.get(game.system.id, "groupInitiativeModifier");
       this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
       this.initiativeMode = game.settings.get(game.system.id, "initiativeMode");
       this.nextRoundMode = game.settings.get(game.system.id, "nextRound");
       this.declaredActions = game.settings.get(game.system.id, "declaredActions");
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases);
+      //this.groups = {
+      //   friendly: new combatGroup(CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      //   nuetral: new combatGroup(CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+      //   hostile: new combatGroup(CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      //   secret: new combatGroup(CONST.TOKEN_DISPOSITIONS.SECRET)
+      //};
    }
 
    /**
@@ -39,14 +44,13 @@ export class fadeCombat extends Combat {
     * @returns Combatant[]
     */
    setupTurns() {
-      // console.debug("setupTurns sorting...");
-      //let turns = super.setupTurns();
+      console.debug("setupTurns sorting...");
 
       // Check to make sure all combatants still exist.
       const turns = this.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
 
       if (turns.length > 0) {
-         if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+         if (this.initiativeMode === "group") {
             turns.sort((a, b) => this.sortCombatantsGroup(a, b));
          } else {
             turns.sort((a, b) => this.sortCombatantsIndividual(a, b));
@@ -81,7 +85,7 @@ export class fadeCombat extends Combat {
    * @returns {Promise<Combat>}       A promise which resolves to the updated Combat document once updates are complete.
     */
    async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
-      if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+      if (this.initiativeMode === "group") {
          // Get all combatants and group them by disposition
          let groups = messageOptions?.group ? [messageOptions?.group] : [];
          if (groups.length === 0 && ids.length > 0) {
@@ -123,7 +127,7 @@ export class fadeCombat extends Combat {
       let result = super.startCombat();
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
       if (game.user.isGM) {
-         //this.#resetCombatants();
+         this.#resetCombatants();
          // Send a chat message when combat officially begins (round 1)
          ChatMessage.create({
             speaker: speaker,
@@ -230,8 +234,8 @@ export class fadeCombat extends Combat {
          if (result === 0 && this.initiativeMode !== "simpleIndividual") {
             let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
             let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-            let aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
-            let bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
+            let aSlowEquipped = aWeapon?.system.isSlow;
+            let bSlowEquipped = bWeapon?.system.isSlow;
             // Compare slowEquipped, true comes after false
             if (aSlowEquipped !== bSlowEquipped) {
                result = aSlowEquipped ? 1 : -1;
@@ -268,16 +272,10 @@ export class fadeCombat extends Combat {
       const bActor = b.actor;
       const aGroup = a.token.disposition;
       const bGroup = b.token.disposition;
+      let aIsSlow = false;
 
-      if (this.initiativeMode === "groupHybrid") {
-         const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-         const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-         // Compare slowEquipped, true comes before false
-         const aSlowEquipped = aWeapon?.system.tags?.includes("slow") ?? false;
-         const bSlowEquipped = bWeapon?.system.tags?.includes("slow") ?? false;
-         if (aGroup === bGroup && aSlowEquipped !== bSlowEquipped) {
-            result = aSlowEquipped ? 1 : -1;
-         }
+      if (a.isSlowed !== b.isSlowed) {
+         result = a.isSlowed ? 1 : -1;
       }
 
       // Use combat phases order
@@ -419,6 +417,10 @@ export class fadeCombat extends Combat {
       for (let combatant of this.combatants) {
          combatant.roundReset();
       }
+      this.groups.friendly.initiative = null;
+      this.groups.neutral.initiative = null;
+      this.groups.hostile.initiative = null;
+      this.groups.secret.initiative = null;
    }
 
    // Function to handle group-based initiative
@@ -426,21 +428,10 @@ export class fadeCombat extends Combat {
       let rollData = {};
       let result = null;
       let usedMod = 0; // Track the modifier used for this group
+      const updates = [];
 
-      // Apply the group modifier
-      if (this.groupModifier === "none") {
-         rollData = { mod: 0 };
-         usedMod = 0;
-      } else if (this.groupModifier === "average") {
-         // Average Dexterity modifier
-         const averageMod = group.reduce((sum, c) => sum + this.#getInitiativeMod(c.actor), 0) / group.length;
-         usedMod = Math.floor(averageMod);
-         rollData = { mod: usedMod };
-      } else if (this.groupModifier === "highest") {
-         // Highest Dexterity modifier
-         usedMod = Math.max(...group.map(c => this.#getInitiativeMod(c.actor)));
-         rollData = { mod: usedMod };
-      }
+      rollData = { mod: 0 };
+      usedMod = 0;
 
       // Perform the roll using the initiative formula
       const roll = new Roll(this.initiativeFormula, rollData);
@@ -448,13 +439,16 @@ export class fadeCombat extends Combat {
 
       // Apply the same initiative result to all combatants in the group
       for (const combatant of group) {
-         await combatant.update({ initiative: rolled.total });
+         updates.push({ _id: combatant.id, initiative: rolled.total });
       }
 
       // Return the roll result for the digest message, including the used modifier
       if (group.length > 0) {
          const modText = usedMod !== 0 ? `(${usedMod > 0 ? '+' : ''}${usedMod})` : '';
-         result = game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: groupName, roll: rolled.total, mod: modText });
+         result = {
+            message: game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: groupName, roll: rolled.total, mod: modText }),
+            updates
+         }
       }
 
       return result;
@@ -462,13 +456,10 @@ export class fadeCombat extends Combat {
 
    #getInitiativeMod(actor) {
       let result = 0;
-
       result += actor.system?.initiative?.mod || 0;
-
       if (actor.type !== 'monster') {
          result += actor.system?.abilities?.dex?.mod || 0;
       }
-
       return result;
    }
 
@@ -481,7 +472,7 @@ export class fadeCombat extends Combat {
       let rollResults = [];
 
       // Handle group-based initiative by disposition
-      if (this.initiativeMode === "group" || this.initiativeMode === "groupHybrid") {
+      if (this.initiativeMode === "group") {
          // Get all combatants and group them by disposition         
          this.groups = this.#groupCombatantsByDisposition(combatants);
 
@@ -513,6 +504,7 @@ export class fadeCombat extends Combat {
          }))];
 
          for (let combatant of combatants) {
+            const updates = [];
             const rollData = combatant.actor.getRollData();
             const mod = this.#getInitiativeMod(combatant.actor); // Get the initiative modifier
             rollData.mod = mod;
@@ -522,11 +514,14 @@ export class fadeCombat extends Combat {
             const rolled = await roll.evaluate();
 
             // Update the combatant's initiative with the roll result
-            await combatant.update({ initiative: rolled.total });
+            updates.push({ _id: combatant.id, initiative: rolled.total });
 
             // Accumulate the roll result for the digest message, showing mod only if it's not 0
             const modText = mod !== 0 ? `(mod ${mod > 0 ? '+' : ''}${mod})` : '';
-            rollResults.push(game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: combatant.name, roll: rolled.total, mod: modText }));
+            rollResults.push({
+               message: game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: combatant.name, roll: rolled.total, mod: modText }),
+               updates
+            });
          }
       }
 
@@ -538,9 +533,15 @@ export class fadeCombat extends Combat {
          const speaker = { alias: game.user.name }; // Use the player's name as the speaker
          ChatMessage.create({
             speaker: speaker,
-            content: rollResults.join('<br>'),  // Combine all roll results into one message with line breaks
+            content: rollResults.map(item => item.message).join('<br>'),  // Combine all roll results into one message with line breaks
             flavor: flavorText
          });
+
+         const updates = rollResults.reduce((a, b) => [...a, ...b.updates], []);
+         if (updates.length > 0) {
+            // Update multiple combatants
+            await this.updateEmbeddedDocuments("Combatant", updates);
+         }
       }
    }
 

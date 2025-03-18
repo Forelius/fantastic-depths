@@ -17,7 +17,6 @@ export class fadeCombatant extends Combatant {
    get canChangeAction() {
       return game.user.isGM === true || this.initiative === null;
    }
-
    get group() {
       const disposition = this.token.disposition;
       let result = null;
@@ -32,11 +31,6 @@ export class fadeCombatant extends Combatant {
       }
       return result;
    }
-
-   get isFriendly() {
-      return this.token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY;
-   }
-
    get availableActions() {
       const actions = this.actor.getAvailableActions();
       return Object.entries(CONFIG.FADE.CombatManeuvers)
@@ -47,6 +41,25 @@ export class fadeCombatant extends Combatant {
          }))
          .sort((a, b) => a.text.localeCompare(b.text))
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {}); // Sort by the `text` property
+   }
+
+   /**
+    * Is the actor slowed. This only works correctly if declared actions are being used.
+    */
+   get isSlowed() {
+      let result = false;
+      const declaredAction = this.declaredAction;
+      if (declaredAction) {
+         const phase = declaredAction ? CONFIG.FADE.CombatManeuvers[declaredAction].phase : null;
+         if (phase === 'melee' || phase === 'missile') {
+            const weapon = this.actor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+            result = weapon?.system.isSlow ?? false;
+         }
+      }
+      else {
+         result = true;
+      }
+      return result;
    }
 
    async roundReset() {
