@@ -43,8 +43,8 @@ export class CharacterSheet2 extends fadeActorSheet {
    }
 
    /**
- * @override
- */
+    * @override
+    */
    activateListeners(html) {
       super.activateListeners(html);
       html.on('click', '.edit-scores', async (event) => {
