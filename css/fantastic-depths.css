@@ -466,7 +466,13 @@ h1, h2, h3, h4 {
   border-color: #4b4a44;
 }
 .dark-mode .item-piles-chat-card ul {
-  color: black;
+  color: #efefef;
+}
+.dark-mode .item-piles-chat-card li:nth-child(odd) {
+  background-color: rgba(250, 250, 250, 0.2);
+}
+.dark-mode .item-piles-chat-card li:nth-child(even) {
+  background-color: rgba(250, 250, 250, 0.05);
 }
 .dark-mode .fantastic-depths .window-content {
   background: url("../assets/img/grunge2.jpg");
