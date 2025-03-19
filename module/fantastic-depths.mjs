@@ -1,6 +1,7 @@
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
+import { AddonIntegration } from './sys/addonIntegration.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
@@ -264,9 +265,10 @@ Hooks.once('ready', async function () {
    }
 });
 
+AddonIntegration.setupItemPiles();
 fadeHandlebars.registerHelpers();
-
 fadeCombat.initialize();
+
 /**
  * Hook for time advancement.
  */

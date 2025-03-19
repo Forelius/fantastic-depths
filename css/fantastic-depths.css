@@ -465,6 +465,9 @@ h1, h2, h3, h4 {
 .dark-mode .bordered {
   border-color: #4b4a44;
 }
+.dark-mode .item-piles-chat-card ul {
+  color: black;
+}
 .dark-mode .fantastic-depths .window-content {
   background: url("../assets/img/grunge2.jpg");
   color: #ebeae4;
