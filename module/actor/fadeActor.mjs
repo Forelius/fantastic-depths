@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
@@ -111,15 +112,6 @@ export class fadeActor extends Actor {
       } else {
          //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
       }
-      // TODO: This is the incorrect way to do this, it causes recursion through the call to setActiveLight.
-      //if (this.system.activeLight?.length > 0) {
-      //   const lightItem = this.items.get(this.system.activeLight);
-      //   if (!lightItem) {
-      //      console.log(`Deactivating light for ${this.name} due to missing light item.`);
-      //      this.setActiveLight(null);
-      //      this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
-      //   }
-      //}
    }
 
    /**
@@ -429,8 +421,6 @@ export class fadeActor extends Actor {
     * @param {any} event
     */
    static async handleSavingThrowRequest(event) {
-      // Not sure why this is here, because this is a static method and 'this' is not the actor.
-      //if (this.testUserPermission(game.user, "OWNER") === false) return;
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
@@ -731,7 +721,7 @@ export class fadeActor extends Actor {
       }
 
       if (this.system.mod.baseAc != 0) {
-         ac.total -= this.system.mod.baseAc;
+         //ac.total -= this.system.mod.baseAc;
          acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.baseAc}`);
       }
 
@@ -785,7 +775,7 @@ export class fadeActor extends Actor {
             && addItems.find(item => item.name === abilityData.name) === undefined) {
             //const itemData = worldAbilities.find(item => item.name === abilityData.name);
             classKey = classKey ? classKey : abilityData.classKey;
-            const itemData = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'class' && item.name === abilityData.name && item.system.classKey === classKey);
+            const itemData = await fadeFinder.getClassAbility(abilityData.name, classKey);
             if (itemData) {
                const newAbility = itemData.toObject();
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
@@ -820,7 +810,7 @@ export class fadeActor extends Actor {
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      const worldSavingThrows = game.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      const worldSavingThrows = await fadeFinder.getSavingThrows();
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
       const addItems = [];

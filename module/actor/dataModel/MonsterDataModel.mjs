@@ -51,9 +51,6 @@ export class MonsterDataModel extends fadeActorDataModel {
    /** @override */
    prepareDerivedData() {
       // Extract class identifier and level from the input
-      const match = this.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
-      this.level = parsed?.classLevel ?? 1;
       super.prepareDerivedData();
    }
 
@@ -108,5 +105,5 @@ export class MonsterDataModel extends fadeActorDataModel {
          const thac0Calc = new MonsterTHAC0Calculator();
          this.thac0.value = thac0Calc.getTHAC0(this.hp.hd);
       }
-   }
+   }   
 }

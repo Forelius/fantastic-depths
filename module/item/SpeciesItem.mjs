@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeItem } from './fadeItem.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
@@ -33,22 +34,8 @@ export class SpeciesItem extends fadeItem {
       await this.update({ "system.classes": item });
    }
 
-   /**
-    * Retrieves the specified class item, if it exists.
-    * @param {any} name The class item's full and case-sensitive name.
-    * @returns The specified class item or undefined if not found.
-    */
-   static getByName(name) {
-      if (name === null || name === undefined || name === '') return;
-      const result = game.items.find(item => item.name.toLowerCase() == name.toLowerCase() && item.type === 'species');
-      if (!result) {
-         console.warn(`Species item not found ${name}.`);
-      }
-      return result;
-   }
-
-   static getSpecialAbilities(name) {
-      const theItem = SpeciesItem.getByName(name);
+   static async getSpecialAbilities(name) {
+      const theItem = await fadeFinder.getSpecies(name);
       let result;
       if (theItem) {
          result = theItem.system.specialAbilities.reduce((acc, a) => ((acc[a.name] = !acc[a.name] ? a : acc[a.name]), acc), {});

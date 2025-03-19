@@ -2,8 +2,7 @@ import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { fadeItem } from '../item/fadeItem.mjs';
-import { ClassItem } from '../item/ClassItem.mjs';
-import { SpeciesItem } from '../item/SpeciesItem.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -90,8 +89,8 @@ export class fadeActorSheet extends ActorSheet {
 
       // Render the item sheet for viewing/editing prior to the editable check.
       html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
-      html.on('click', '.class-edit', (event) => ClassItem.getByName(this.actor.system.details.class)?.sheet?.render(true));
-      html.on('click', '.species-edit', (event) => SpeciesItem.getByName(this.actor.system.details.species)?.sheet?.render(true));
+      html.on('click', '.class-edit', async (event) => (await fadeFinder.getClass(this.actor.system.details.class))?.sheet?.render(true));
+      html.on('click', '.species-edit', async (event) => (await fadeFinder.getSpecies(this.actor.system.details.species))?.sheet?.render(true));
 
       // -------------------------------------------------------------
       // Everything below here is only needed if the sheet is editable
@@ -142,6 +141,14 @@ export class fadeActorSheet extends ActorSheet {
          });
          html.find(".consumable-counter .empty-mark").click(async (event) => {
             await this._useConsumable(event, false);
+         });
+
+         // Charges
+         html.find(".charges-counter .full-mark").click(async (event) => {
+            await this._useCharge(event, true);
+         });
+         html.find(".charges-counter .empty-mark").click(async (event) => {
+            await this._useCharge(event, false);
          });
 
          // Editable
@@ -202,7 +209,6 @@ export class fadeActorSheet extends ActorSheet {
 
       // Iterate through items, allocating to arrays
       for (let item of context.items) {
-         const docItem = context.document.items.get(item._id);
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === 'item' || item.type === 'light' || item.type === 'treasure') {
@@ -423,13 +429,28 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
-  * @param event
-  * @param {bool} decrement
-  */
+     * @param event
+     * @param {bool} decrement
+     */
    async _useConsumable(event, decrement) {
       const item = this._getItemFromActor(event);
       let quantity = item.system.quantity;
       await item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+   }
+
+   /**
+     * @param event
+     * @param {bool} decrement
+     */
+   async _useCharge(event, decrement) {
+      const item = this._getItemFromActor(event);
+      let charges = item.system.charges;
+      // Only allow GM to increase charges
+      if (game.user.isGM === true) {
+         await item.update({ "system.charges": decrement ? --charges : ++charges, });
+      } else if (decrement === false) {
+         await item.update({ "system.charges": --charges });
+      }
    }
 
    /**

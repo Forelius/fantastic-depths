@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
 export class ActorMasteryItem extends fadeItem {
@@ -14,8 +15,9 @@ export class ActorMasteryItem extends fadeItem {
    }
 
    /** Update item properties based on FADE.WeaponMastery */
-   _updatePropertiesFromMastery() {
-      const { masteryItem, masteryLevel } = this.getMastery(this.name, this.system.level);
+   async _updatePropertiesFromMastery() {
+      // TODO: This needs to be synchronous or prepareBaseData can't call reliably.
+      const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.level);
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 
       // Update the mastery fields with data from the specified level in FADE.WeaponMastery
@@ -36,22 +38,19 @@ export class ActorMasteryItem extends fadeItem {
       this.system.sToHit = masteryLevel.sToHit;
    }
 
-   getMastery(masteryName, level) {
+   async getMastery(masteryName, level) {
       let result = null;
-      // Try to find class item for this class.
-      let masteryItem = game.items.find(item => item.name.toLowerCase() == masteryName.toLowerCase() && item.type === 'weaponMastery');
-      // If class item is found...
+      const masteryItem = await fadeFinder.getWeaponMastery(masteryName);
+      // If item is found...
       if (masteryItem != null) {
          result = masteryItem.system.levels.find(md => md.name === level)
       } else {
          console.warn(`Mastery data not found for ${masteryName}. Owner: ${this.parent?.name}.`);
       }
-
       return { masteryItem, masteryLevel: result };
    }
 
    async getInlineDescription() {
-      //desc.replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div>')
       let description = game.i18n.format('FADE.Mastery.summary', {
          weaponType: this.system.weaponType ? game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.weaponType}.long`) : '--',
          primaryType: game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.primaryType}.long`) ,
@@ -60,16 +59,10 @@ export class ActorMasteryItem extends fadeItem {
          medium: this.system.range.medium ?? '--',
          long: this.system.range.long ?? '--',
          defense: this.system.acBonusType ? `Defense vs. ${this.system.acBonusType}: ${this.system.acBonus ?? '--'}/${this.system.acBonusAT ?? '--'}` : 'No defense bonus'
-         //defType: this.system.acBonusType ?? '--',
-         //acBonus: this.system.acBonus ?? '--',
-         //acBonusAT: this.system.acBonusAT ?? '--',
       });
       if (description?.length <= 0) {
          description = '--';
       }
-      //if (description.startsWith('<p>') === false) {
-      //   description = `<p>${description}</p>`;
-      //}
       return description;
    }
 }

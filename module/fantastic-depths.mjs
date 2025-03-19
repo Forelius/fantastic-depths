@@ -1,12 +1,11 @@
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
+import { AddonIntegration } from './sys/addonIntegration.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { fadeActor } from './actor/fadeActor.mjs';
-import { CharacterActor } from './actor/CharacterActor.mjs';
-import { MonsterActor } from './actor/MonsterActor.mjs';
 import { CharacterSheet } from './sheets/CharacterSheet.mjs';
 import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
@@ -23,10 +22,8 @@ import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
 import { SpeciesItemDataModel } from './item/dataModel/SpeciesItemDataModel.mjs';
-import { ArmorItem } from './item/ArmorItem.mjs';
 import { GearItemSheet } from './sheets/GearItemSheet.mjs';
 import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
-import { WeaponItem } from './item/WeaponItem.mjs';
 import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
 import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
 import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
@@ -70,11 +67,6 @@ Hooks.once('init', async function () {
    // Add utility classes to the global game object so that they're more easily
    // accessible in global contexts.
    game.fade = {
-      fadeActor,
-      CharacterActor,
-      MonsterActor,
-      ArmorItem,
-      WeaponItem,
       MacroManager,
       LightManager,
       TurnTrackerForm,
@@ -273,9 +265,10 @@ Hooks.once('ready', async function () {
    }
 });
 
+AddonIntegration.setupItemPiles();
 fadeHandlebars.registerHelpers();
-
 fadeCombat.initialize();
+
 /**
  * Hook for time advancement.
  */
@@ -324,5 +317,15 @@ Hooks.on("deleteItem", (item, options, userId) => {
    if (game.user.isGM) {
       const actor = item.parent; // The actor the item belongs to
       actor?.onDeleteActorItem(item, options, userId);
+   }
+});
+
+// License info
+Hooks.on("renderSidebarTab", async (object, html) => {
+   if (object instanceof Settings) {
+      const gamesystem = html.find("#game-details");
+      const template = `/systems/fantastic-depths/templates/sidebar/general-info.hbs`;
+      const rendered = await renderTemplate(template);
+      gamesystem.find(".system").after(rendered);
    }
 });

@@ -12,10 +12,10 @@
             </div>
             <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.system.shortName}}</a>
          </div>
-         <div class="editable">
-            <input style="max-width:40px;" type="text" value="{{item.system.target}}" data-field="target" data-dtype="Number" />
+         <div class="editable" style="max-width:30px;">
+            <input type="text" value="{{item.system.target}}" data-field="target" data-dtype="Number" />
          </div>
-         <div class='item-controls' style="max-width:32px;">
+         <div class='item-controls' style="max-width:20px;">
             {{#if @root.isGM}}
             <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>

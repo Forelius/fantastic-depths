@@ -464,6 +464,9 @@ h1, h2, h3, h4 {
 .dark-mode .bordered {
   border-color: #4b4a44;
 }
+.dark-mode .item-piles-chat-card ul {
+  color: black;
+}
 .dark-mode .fantastic-depths .window-content {
   background: url("../assets/img/grunge2.jpg");
   color: #ebeae4;
@@ -873,19 +876,6 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .character .ability-scores, .fantastic-depths .monster .ability-scores {
   max-width: 200px;
-}
-.fantastic-depths .character .ability-vert, .fantastic-depths .monster .ability-vert {
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-.fantastic-depths .character .ability-vert input, .fantastic-depths .monster .ability-vert input {
-  margin-right: 4px;
-}
-.fantastic-depths .character .ability-vert .ability-mod, .fantastic-depths .monster .ability-vert .ability-mod {
-  margin-left: 6px;
-}
-.fantastic-depths .character .ability-vert:last-child, .fantastic-depths .monster .ability-vert:last-child {
-  border-bottom: none;
 }
 .fantastic-depths .character .ability-horz, .fantastic-depths .monster .ability-horz {
   border-right-style: solid;
@@ -1324,22 +1314,19 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;
   height: 30px;
-  background-size: contain; /* Ensures the d20 icon is properly sized */
+  background-size: 85%; /* Ensures the d20 icon is properly sized */
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: 0 0;
   border: none;
   margin-right: 2px;
   position: relative;
   top: 2px;
 }
-.fantastic-depths .items-list .item .item-name .rollable:hover img {
+.fantastic-depths .items-list .item .item-name .rollable:hover img, .fantastic-depths .items-list .item .item-name .chatable:hover img {
   opacity: 0; /* Or use display: none; */
 }
 .fantastic-depths .items-list .item .item-name .rollable:hover {
   background-image: url("/icons/svg/d20-highlight.svg");
-}
-.fantastic-depths .items-list .item .item-name .chatable:hover img {
-  opacity: 0; /* Or use display: none; */
 }
 .fantastic-depths .items-list .item .item-name .chatable:hover {
   background-image: url("/icons/svg/book.svg");
@@ -1421,29 +1408,32 @@ h1, h2, h3, h4 {
   padding-left: 3px;
   text-align: left;
 }
-.fantastic-depths .items-list .consumable-counter {
-  height: 14px;
+.fantastic-depths .items-list .consumable-counter, .fantastic-depths .items-list .charges-counter {
+  height: 16px;
   display: flex;
   flex-wrap: wrap;
   line-height: 14px;
 }
-.fantastic-depths .items-list .consumable-counter label {
+.fantastic-depths .items-list .consumable-counter label, .fantastic-depths .items-list .charges-counter label {
   flex: 0 30px;
   font-size: 11px;
   text-indent: 3px;
 }
 .fantastic-depths .items-list .consumable-counter .full-mark,
-.fantastic-depths .items-list .consumable-counter .empty-mark {
+.fantastic-depths .items-list .consumable-counter .empty-mark, .fantastic-depths .items-list .charges-counter .full-mark,
+.fantastic-depths .items-list .charges-counter .empty-mark {
   cursor: pointer;
   flex: 0 8px;
-  margin: 1px;
+  margin: 0 1px;
   box-shadow: inset 0 0 3px #7a7971;
+  height: 12px;
 }
 .fantastic-depths .items-list .consumable-counter .full-mark:hover,
-.fantastic-depths .items-list .consumable-counter .empty-mark:hover {
+.fantastic-depths .items-list .consumable-counter .empty-mark:hover, .fantastic-depths .items-list .charges-counter .full-mark:hover,
+.fantastic-depths .items-list .charges-counter .empty-mark:hover {
   background: #7a7971;
 }
-.fantastic-depths .items-list .consumable-counter .full-mark {
+.fantastic-depths .items-list .consumable-counter .full-mark, .fantastic-depths .items-list .charges-counter .full-mark {
   background: #808080;
   border: 1px inset #7a7971;
 }

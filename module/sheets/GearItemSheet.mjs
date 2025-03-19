@@ -1,5 +1,6 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 export class GearItemSheet extends fadeItemSheet {
    /** @override */
@@ -40,6 +41,22 @@ export class GearItemSheet extends fadeItemSheet {
          const stTurnsRemaining = (lightData.secondsRemain > 0 || this.item.system.light.enabled) ? (turnsRemaining).toFixed(1) : '-';
          context.turnsRemaining = `${stTurnsRemaining}`;
       }
+
+      // Damage types
+      const damageTypes = []
+      damageTypes.push({ value: "", text: game.i18n.localize('None') });
+      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
+         return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
+      }));
+      context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      // Saving throws
+      const saves = [];
+      saves.push({ value: "", text: game.i18n.localize('None') });
+      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName));
+      saves.push(...saveItems.map((save) => {
+         return { value: save.system.customSaveCode, text: save.system.shortName }
+      }));
+      context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);

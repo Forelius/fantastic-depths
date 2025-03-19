@@ -6,11 +6,11 @@
 </div>
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
-      <img class="item-image" src='{{spellItem.img}}' data-tooltip='{{spellItem.name}}' />
-      <div class="item-name">{{spellItem.name}}</div>
+      <img class="item-image" src='{{item.img}}' data-tooltip='{{item.name}}' />
+      <div class="item-name">{{item.name}}</div>
    </div>
    <div class="collapsible-content collapsed">
-      {{{spellItem.system.description}}}
+      {{{item.system.description}}}
    </div>
 </div>
 <div class="spell-duration" style="margin-bottom:2px;">
@@ -24,43 +24,7 @@
    <div>{{ditem}}</div>
    {{/each}}
 </div>
-{{#if spellItem.system.savingThrow}}
-<div style="margin-top:6px;">
-   <button class="saving-roll"
-           data-type="{{spellItem.system.savingThrow}}"
-           data-weaponuuid="{{spellItem.uuid}}">
-      <i class="fa-solid fa-life-ring"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{save.system.shortName}}</span>
-   </button>
-</div>
-{{/if}}
-{{#if damageRoll.hasDamage}}
-<div style="margin-top:8px;">
-   {{#if isHeal}}
-   <button class="heal-roll"
-           data-damagetype="{{damageRoll.type}}"
-           data-attacktype="spell"
-           data-label="Heal"
-           data-type="heal"
-           data-weaponuuid="{{spellItem.uuid}}"
-           data-tooltip="<b>{{localize 'FADE.Spell.healFormula'}}:</b> {{damageRoll.formula}}">
-      <i class="fa-solid fa-heart"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Chat.healRoll'}}</span>
-   </button>
-   {{else}}
-   <button class="damage-roll"
-           data-damagetype="{{damageRoll.type}}"
-           data-attacktype="spell"
-           data-label="Damage"
-           data-type="damage"
-           data-weaponuuid="{{spellItem.uuid}}"
-           data-tooltip="<b>{{localize 'FADE.Weapon.damage.long'}}:</b> {{damageRoll.formula}}">
-      <i class="fa-solid fa-burst"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}}</span> <span class="small-text">{{localize (concat 'FADE.DamageTypes.types.' damageRoll.type)}}</span>
-   </button>
-   {{/if}}
-</div>
-{{/if}}
+{{> "systems/fantastic-depths/templates/chat/save-heal-dmg.hbs"}}
 {{#if roll}}
 <div class="card-tray">
    <label class="collapser">

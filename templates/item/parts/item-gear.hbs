@@ -1,7 +1,7 @@
-<li class='item collapsible-content{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}{{#unless item.system.quantityMax }} bottom-border{{/unless}}' data-item-id='{{item._id}}'>
+<li class='item collapsible-content{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}{{#unless (or item.system.quantityMax item.system.chargesMax)}} bottom-border{{/unless}}' data-item-id='{{item._id}}'>
    <div class="flexrow center-vert">
       <div class='item-name'>
-         <div class='item-image chatable' data-roll-type='item'>
+         <div class='item-image {{#if item.system.isUsable}}rollable{{else}}chatable{{/if}}' data-roll-type='item'>
             <img src='{{item.img}}' width='24' height='24' />
          </div>
          {{#if item.system.container}}
@@ -45,16 +45,28 @@
 {{/each}}
 {{/if}}
 {{#unless item.system.container}}
-{{#if item.system.quantityMax }}
-<li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
-   <div class="consumable-counter">
-      <label>{{localize 'FADE.Item.uses'}}</label>
-      {{#times item.system.quantity}}
-      <div class="full-mark"></div>
-      {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
-      <div class="empty-mark"></div>
-      {{/times}}
-   </div>
-</li>
-{{/if}}
+   {{#if item.system.quantityMax}}
+   <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+      <div class="consumable-counter">
+         <label>{{localize 'FADE.Item.uses'}}</label>
+         {{#times item.system.quantity}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
+   </li>
+   {{/if}}
+   {{#if item.system.chargesMax}}
+   <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+      <div class="charges-counter">
+         <label>{{localize 'FADE.Item.charges.long'}}</label>
+         {{#times item.system.charges}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.chargesMax item.system.charges)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
+   </li>
+   {{/if}}
 {{/unless}}

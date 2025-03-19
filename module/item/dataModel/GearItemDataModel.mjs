@@ -13,11 +13,12 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          gm: new fields.SchemaField({
             notes: new fields.StringField({ required: false, initial: "" })
          }),
-         charges: new fields.NumberField({ required: false, initial: null, nullable: true }),
-         maxCharges: new fields.NumberField({ required: false, initial: null, nullable: true }),
          // Fields from the "physical" template
-         quantity: new fields.NumberField({ required: false, initial: 1, nullable: true }),
+         quantity: new fields.NumberField({ required: true, initial: 1 }),
          quantityMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
+         // Some items can be used multiple times and it doesn't effect the total weight or cost
+         charges: new fields.NumberField({ required: true, initial: 0}),
+         chargesMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
          weight: new fields.NumberField({ required: false, initial: 1 }),
          cost: new fields.NumberField({ required: false, initial: 0 }),
          totalWeight: new fields.NumberField({ required: false, initial: 0 }),
@@ -36,6 +37,13 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          unidentifiedDesc: new fields.StringField({ required: false, initial: "" }),
          isIdentified: new fields.BooleanField({ required: false, initial: true }),
          isCursed: new fields.BooleanField({ required: false, initial: false }),
+         isCarried: new fields.BooleanField({ required: true, initial: true }),
+         // Items with associated actions
+         savingThrow: new fields.StringField({ nullable: true, initial: null }),
+         dmgFormula: new fields.StringField({ nullable: true, initial: null }),
+         healFormula: new fields.StringField({ nullable: true, initial: null }),
+         damageType: new fields.StringField({ required: false, initial: "" }),
+         isUsable: new fields.BooleanField({ required: true, initial: false }),
       };
    }
 
@@ -51,5 +59,15 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       if (this.quantity === 0) {
          this.equipped = false;
       }
+
+      if (this.chargesMax === null) {
+         this.charges = 1;
+      } else {
+         this.charges = Math.min(this.charges, this.chargesMax);
+      }
+
+      // This allows for items to be usable even if there is no saving throw, damage formula or healing formula specified.
+      // The purpose for making an item usable anyways, is that the usage would be tracked.
+      this.isUsable = this.isUsable ||  (this.savingThrow || this.dmgFormula || this.healFormula)?.length > 0 || this.chargesMax > 0 || this.chargesMax === null;
    }  
 }

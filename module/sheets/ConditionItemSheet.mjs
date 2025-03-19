@@ -6,7 +6,7 @@ import { fadeItemSheet } from './fadeItemSheet.mjs';
  */
 export class ConditionItemSheet extends fadeItemSheet {
    /**
-    * Get the default options for the SkillItem sheet.
+    * Get the default options for the item sheet.
     */
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {

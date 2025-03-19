@@ -1,3 +1,5 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+
 export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
@@ -124,8 +126,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
 
    /** @override */
    prepareBaseData() {
-      this._prepareMods();
       super.prepareBaseData();
+      this._prepareMods();
       this._prepareSpells();
    }
 
@@ -151,9 +153,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /**
     * @protected
     */
-   _prepareMods() {
-      this.mod.ac = 0;
-      this.mod.baseAc = 0;
+   async _prepareMods() {
       this.mod.ac = 0;
       this.mod.baseAc = 0;
       this.mod.upgradeAc = null;
@@ -174,14 +174,8 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       // Saving throw mods
       this.mod.save = {};
       this.mod.save.all = 0;
-      // Create the saving throw member variables dynamically from the world's save items.
-      const saves = game.items?.filter(item => item.type === 'specialAbility' && item.system.category === 'save')
-         .map(item => item.system.customSaveCode);
-      for (let save of saves) {
-         this.mod.save[save] = 0;
-      }
    }
-      
+
    /**
     * Prepares the spell slots used and max values.
     * @protected
@@ -191,7 +185,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
             spellLevel: index + 1,
             used: 0,
-            max: 0
+            max: this.spellSlots?.[index]?.max ?? 0
          }));
       } else {
          this.spellSlots = [];

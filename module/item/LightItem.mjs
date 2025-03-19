@@ -50,20 +50,7 @@ export class LightItem extends GearItem {
 
    /** @override */
    prepareDerivedData() {
-      super.prepareDerivedData();
-      // TODO: Move this elsewhere, because this gets called multiple times when light enabled or disabled.
-      //if (this.actor) {
-      //   const token = this.ownerToken;
-      //   if (token) {
-      //      const lightSettings = this.system.getLightSettings();
-      //      // If this item owner's token is currently a light source...
-      //      if (token.light.dim > 0) {
-      //         //console.debug(`Updating ${this.name} for ${token.name}:`, this.system.light, lightSettings);
-      //         token.update({ light: lightSettings });
-      //      }
-      //   }
-      //}
-      //console.log(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${this.system.quantity}x${this.system.weight}) - LightItem.prepareDerivedData`);
+      super.prepareDerivedData();    
    }
 
    async enableLight() {

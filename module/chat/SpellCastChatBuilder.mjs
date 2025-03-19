@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 
@@ -17,9 +18,9 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
-      const spellItem = caller;
+      const item = caller;
 
-      const descData = { caster: caster.name, spell: spellItem.name };
+      const descData = { caster: caster.name, spell: item.name };
       const description = game.i18n.format('FADE.Chat.spellCast', descData);
 
       let rollContent = null;
@@ -27,7 +28,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
       if (roll) {
          rollContent = await roll.render();
          const attackRollChatBuilder = new AttackRollChatBuilder({}, {});
-         toHitResult = await attackRollChatBuilder.getToHitResults(caster, spellItem, targetTokens, roll);
+         toHitResult = await attackRollChatBuilder.getToHitResults(caster, item, targetTokens, roll);
       } else {
          // Add targets for DM chat message
          toHitResult = { targetResults: [], message: '' };
@@ -45,8 +46,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
       }
 
       let save = null;
-      if (spellItem.system.savingThrow?.length > 0) {
-         save = game.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && spellItem.system.savingThrow === item.system.customSaveCode);
+      if (item.system.savingThrow?.length > 0) {
+         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
       }
 
       // Prepare data for the chat template
@@ -54,7 +55,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
          context, // the caster/instigator
          rollContent,
          toHitResult,
-         spellItem, // spell item
+         item, // spell item
+         attackType: 'spell',
          caster,
          damageRoll,
          isHeal: damageRoll.type === "heal",

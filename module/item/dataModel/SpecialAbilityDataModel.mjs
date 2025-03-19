@@ -11,17 +11,15 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          gm: new fields.SchemaField({
             notes: new fields.StringField({ required: false, initial: "" })
          }),
-         // Fields from the "rollable" template
          rollFormula: new fields.StringField({ required: false, initial: "" }),
          operator: new fields.StringField({ required: false, initial: "" }),
-         //target: new fields.NumberField({ required: false, initial: 0 }),
          target: new fields.StringField({ required: false, initial: "" }),
          rollMode: new fields.StringField({ required: false, initial: "publicroll" }),
-         savingThrow: new fields.StringField({ nullable: true, initial: null }),
          autoSuccess: new fields.NumberField({ required: false, initial: null, nullable: true }),
          autoFail: new fields.NumberField({ required: false, initial: null, nullable: true }),
          abilityMod: new fields.StringField({ required: false, initial: "" }),
          // Fields specific to the "specialAbility" template
+         savingThrow: new fields.StringField({ nullable: true, initial: null }),
          dmgFormula: new fields.StringField({ nullable: true, initial: null }),
          healFormula: new fields.StringField({ nullable: true, initial: null }),
          damageType: new fields.StringField({ required: false, initial: "" }),
@@ -34,6 +32,8 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          customSaveCode: new fields.StringField({ required: false, nullable: true, initial: null }),
          classKey: new fields.StringField({ required: false, nullable: true, initial: null }),
          showResult: new fields.BooleanField({ required: false, initial: true }),
+         quantity: new fields.NumberField({ required: false, initial: 1, nullable: true }),
+         quantityMax: new fields.NumberField({ required: false, initial: null, nullable: true }),
       };
    }
 

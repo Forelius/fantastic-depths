@@ -11,7 +11,7 @@
       </div>
    </li>
    {{#each specialAbilities as |item id|}}
-   <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+   <li class='item collapsible-content{{#unless item.system.quantityMax }} bottom-border{{/unless}}{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="flexrow">
          <div class='item-name'>
             <div class="item-image rollable"
@@ -40,5 +40,17 @@
       </div>
       <div class='item-description desc-collapsed'></div>
    </li>
+   {{#if item.system.quantityMax }}
+   <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+      <div class="consumable-counter">
+         <label>{{localize 'FADE.Item.uses'}}</label>
+         {{#times item.system.quantity}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
+   </li>
+   {{/if}}
    {{/each}}
 </ol>
