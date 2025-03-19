@@ -1003,7 +1003,7 @@
          },
          "mode": {
             "name": "Initiative Mode",
-            "hint": "Choose between group-based or individual-based initiative. Individual (simplified) mode orders solely by initiative roll plus any modifiers. Individual mode adds the 2-handed weapon rule, making 2-handed weapon users lose initiative. Individual (combat checklist) mode combines individual initiative with the combat checklist order when declared actions are enabled. Group (combat checklist) mode groups combatants by token disposition and also sorts within a group by the declared action, if declared actions are enabled. Group (slow weapons) mode is like the group mode, but adds the slow weapon rule.",
+            "hint": "Choose between group-based or individual-based initiative. Individual (simplified) mode orders solely by initiative roll plus any modifiers. Individual mode adds the 2-handed weapon rule, making 2-handed weapon users lose initiative. Individual (combat checklist) mode combines individual initiative with the combat checklist order when declared actions are enabled. Group (combat checklist) mode groups combatants by token disposition and also sorts within a group by the declared action, if declared actions are enabled.",
             "choices": {
                "simpleIndividual": "Individual (simplified)",
                "individual": "Individual",
