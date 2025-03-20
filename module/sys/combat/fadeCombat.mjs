@@ -272,7 +272,6 @@ export class fadeCombat extends Combat {
       const bActor = b.actor;
       const aGroup = a.token.disposition;
       const bGroup = b.token.disposition;
-      let aIsSlow = false;
 
       if (a.isSlowed !== b.isSlowed) {
          result = a.isSlowed ? 1 : -1;
@@ -417,10 +416,6 @@ export class fadeCombat extends Combat {
       for (let combatant of this.combatants) {
          combatant.roundReset();
       }
-      this.groups.friendly.initiative = null;
-      this.groups.neutral.initiative = null;
-      this.groups.hostile.initiative = null;
-      this.groups.secret.initiative = null;
    }
 
    // Function to handle group-based initiative
