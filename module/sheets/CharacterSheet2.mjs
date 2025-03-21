@@ -36,7 +36,7 @@ export class CharacterSheet2 extends fadeActorSheet {
    /** @inheritDoc */
    async _renderOuter() {
       const html = await super._renderOuter();
-      if (this.system.details.level > 0) {
+      if (this.actor.system.details?.level > 0) {
          const header = html[0].querySelector(".window-title");
          const actorData = this.document.toObject(false);
          const level = game.i18n.localize('FADE.Actor.Level');
