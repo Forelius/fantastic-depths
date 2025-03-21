@@ -43,7 +43,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       }
 
       let save = null;
-      if (item.system.savingThrow?.length > 0 && options?.isUsing === true) {
+      if (item?.system.savingThrow?.length > 0 && options?.isUsing === true) {
          save = await fadeFinder.getSavingThrow(item.system.savingThrow);
       }
 

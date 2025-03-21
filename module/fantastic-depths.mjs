@@ -116,7 +116,7 @@ Hooks.once('init', async function () {
    // but will still apply to the Actor from within the Item
    // if the transfer property on the Active Effect is true.
    CONFIG.ActiveEffect.legacyTransferral = false;
-
+   
    registerSheets();
 
    await handleAsyncInit();

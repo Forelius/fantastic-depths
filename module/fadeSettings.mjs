@@ -179,6 +179,21 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+      // Attribute modifier system
+      game.settings.register(game.system.id, "abilityScoreModSystem", {
+         name: "SETTINGS.abilityScoreModSystem.name",
+         hint: "SETTINGS.abilityScoreModSystem.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            "simple": "SETTINGS.abilityScoreModSystem.choices.simple",
+            "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
+         },
+         default: "darkdungeons",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
    async #registerNonConfigSettings() {

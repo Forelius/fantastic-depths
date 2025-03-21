@@ -25,7 +25,7 @@
          <input type="text" name="system.retainer.loyalty" value="{{system.retainer.loyalty}}" data-dtype="String" />
          <label class="rollable" for="system.retainer.loyalty"
                 data-test="generic"
-                data-formula="2d6"
+                data-formula="{{loyaltyFormula}}"
                 data-pass="lte"
                 data-target="{{system.retainer.loyalty}}"
                 data-label="{{localize 'FADE.Actor.retainerMorale'}}"
@@ -39,7 +39,7 @@
       <li style="max-width:60px;">
          <label class="rollable" for="system.retainer.morale"
                 data-test="generic"
-                data-formula="2d6"
+                data-formula="{{loyaltyFormula}}"
                 data-pass="lte"
                 data-target="{{system.retainer.morale}}"
                 data-label="{{localize 'FADE.Actor.retainerMorale'}}"

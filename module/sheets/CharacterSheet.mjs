@@ -26,6 +26,14 @@ export class CharacterSheet extends fadeActorSheet {
    /** @override */
    async getData() {
       const context = await super.getData();
+      // Loyalty
+      const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
+      const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem];
+      const cha = this.actor.system.abilities.cha;
+      context.loyaltyFormula = adjustments.formula;
+      if (cha.mod != 0 && cha.loyaltyMod != 0) {
+         context.loyaltyFormula = `${context.loyaltyFormula}${cha.loyaltyMod > 0 ? "+" : "-"}${cha.loyaltyMod}`;
+      }
       return context;
    }
 
@@ -42,10 +50,12 @@ export class CharacterSheet extends fadeActorSheet {
    /** @inheritDoc */
    async _renderOuter() {
       const html = await super._renderOuter();
-      const header = html[0].querySelector(".window-title");
-      const actorData = this.document.toObject(false);
-      const level = game.i18n.localize('FADE.Actor.Level');
-      header.append(`(${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`);
+      if (this.actor.system.details?.level > 0) {
+         const header = html[0].querySelector(".window-title");
+         const actorData = this.document.toObject(false);
+         const level = game.i18n.localize('FADE.Actor.Level');
+         header.append(`(${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`);
+      }
       return html;
    }
 }

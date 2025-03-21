@@ -57,6 +57,7 @@ export class CharacterDataModel extends fadeActorDataModel {
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
+               loyaltyMod: new fields.NumberField({ initial: 0 }),
             }),
          }),
          retainer: new fields.SchemaField({
@@ -85,18 +86,20 @@ export class CharacterDataModel extends fadeActorDataModel {
    }
 
    _prepareDerivedAbilities() {
-      // Initialize abilities if missing
-      const adjustments = CONFIG.FADE.AdjustmentTableDD;
+      // Initialize ability score modifiers
+      const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
+      const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
       for (let [key, ability] of Object.entries(this.abilities)) {
          let adjustment = adjustments.find(item => ability.total <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;
+         ability.loyaltyMod = adjustment?.loyaltyMod ? adjustment.loyaltyMod : 0;
       }
 
       // Retainer
       let charisma = this.abilities.cha.value;
       let adjustment = adjustments.find(item => charisma <= item.max);
-      this.retainer.max = adjustment.maxRetainers;
-      this.retainer.morale = adjustment.retainerMorale;
+      this.retainer.max = this.retainer.max > 0 ? this.retainer.max : adjustment.maxRetainers;
+      this.retainer.morale = this.retainer.morale > 0 ? this.retainer.morale : (adjustment.retainerMorale ?? 10);
    }
 
    _prepareWrestling() {
