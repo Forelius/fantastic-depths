@@ -32,6 +32,8 @@ export class fadeActorSheet extends ActorSheet {
       context.system = actorData.system;
       context.flags = actorData.flags;
       context.isSpellcaster = actorData.system.config.maxSpellLevel > 0;
+      context.isGM = game.user.isGM;
+      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
 
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
@@ -64,16 +66,20 @@ export class fadeActorSheet extends ActorSheet {
             relativeTo: this.actor,
          }
       );
-
       // Prepare active effects
       // A generator that returns all effects stored on the actor as well as any items
       context.effects = EffectManager.prepareActiveEffectCategories(
          this.actor.allApplicableEffects()
-         //this.actor.effects
       );
-
-      context.isGM = game.user.isGM;
-      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
+      // Equipped Weapons
+      const equippedWeapons = [];
+      for (let item of context.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         if (item.type === 'weapon' && item.system.equipped === true) {
+            equippedWeapons.push(item);
+         }
+      }
+      context.equippedWeapons = equippedWeapons;
 
       return context;
    }

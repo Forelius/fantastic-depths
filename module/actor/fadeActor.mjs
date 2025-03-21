@@ -207,7 +207,7 @@ export class fadeActor extends Actor {
          modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData, options?.ammo);
       }
 
-      if (masteryEnabled && weaponData.mastery !== "") {
+      if (masteryEnabled && weaponData.mastery !== "" && weaponData.mastery !== null) {
          modifier += this.#getMasteryAttackRollMods(weaponData, options, digest, attackType);
       }
 

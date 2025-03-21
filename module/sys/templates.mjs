@@ -14,6 +14,7 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/actor/parts/actor-spells.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-skills.hbs',
       'systems/fantastic-depths/templates/actor/parts/actor-effects.hbs',
+      'systems/fantastic-depths/templates/actor/parts/monster-skills.hbs',
       'systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs',
       'systems/fantastic-depths/templates/actor/parts/character-abilities.hbs',
       'systems/fantastic-depths/templates/actor/parts/character-desc.hbs',
@@ -21,6 +22,7 @@ export const preloadHandlebarsTemplates = async function () {
       'systems/fantastic-depths/templates/actor/parts/monster-header.hbs',
       "systems/fantastic-depths/templates/actor/parts/actor-gm-only.hbs",
       "systems/fantastic-depths/templates/actor/parts/monster-gm-only.hbs",
+      "systems/fantastic-depths/templates/actor/parts/equipped-weapons.hbs",
       // Item partials
       'systems/fantastic-depths/templates/item/parts/item-effects.hbs',
       'systems/fantastic-depths/templates/item/parts/item-weapons.hbs',

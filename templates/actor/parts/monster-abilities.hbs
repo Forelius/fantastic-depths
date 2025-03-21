@@ -22,12 +22,10 @@
    </section>
    <section class="flex2">
       <div class="bordered">
-         {{> "systems/fantastic-depths/templates/item/parts/item-weapons.hbs"}}
+         <!-- Equipped Weapons -->
+         {{> "systems/fantastic-depths/templates/actor/parts/equipped-weapons.hbs"}}
+         {{!-- Special Abilities --}}
          {{> "systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/item-armor.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/item-gear-list.hbs"}}
-         {{> "systems/fantastic-depths/templates/item/parts/item-treasure.hbs"}}
       </div>
       {{#if system.encumbrance.max}}
       <div class="flexrow flex-group-center bordered" style="margin-top:10px;">

@@ -25,20 +25,7 @@ export class CharacterSheet extends fadeActorSheet {
 
    /** @override */
    async getData() {
-      // Retrieve the data structure from the base sheet. You can inspect or log
-      // the context variable to see the structure, but some key properties for
-      // sheets are the actor object, the data object, whether or not it's
-      // editable, the items array, and the effects array.
       const context = await super.getData();
-      const equippedWeapons = [];
-      // Iterate through items, allocating to arrays
-      for (let item of context.items) {
-         item.img = item.img || Item.DEFAULT_ICON;
-         if (item.type === 'weapon' && item.system.equipped === true) {
-            equippedWeapons.push(item);
-         }
-      }
-      context.equippedWeapons = equippedWeapons;
       return context;
    }
 
