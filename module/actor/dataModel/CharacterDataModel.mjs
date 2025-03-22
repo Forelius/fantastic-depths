@@ -92,7 +92,6 @@ export class CharacterDataModel extends fadeActorDataModel {
       for (let [key, ability] of Object.entries(this.abilities)) {
          let adjustment = adjustments.find(item => ability.total <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;
-         ability.loyaltyMod = adjustment?.loyaltyMod ? adjustment.loyaltyMod : 0;
       }
 
       // Retainer

@@ -1063,7 +1063,6 @@
          "name": "Ability Score Modifier System",
          "hint": "The Ability Score Modifier System determines how ability score modifiers are calculated. Dark Dungeons is going to be compatible with many 'Basic/Expert' game system and is the default. Simple provides a simple +1 bonus on scores 15 and above while applying a -1 penalty on scores at or below 6.",
          "choices": {
-            "simple": "Simple",
             "darkdungeons": "Dark Dungeons"
          }
       },

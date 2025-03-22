@@ -84,7 +84,7 @@ Hooks.once('init', async function () {
       registry: new fadeRegistry()
    };
 
-   CONFIG.time.roundTime = 10;
+   Hooks.call("beforeFadeInit", game.fadeRegistry);
 
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;

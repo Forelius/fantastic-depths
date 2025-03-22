@@ -211,7 +211,7 @@ export class fadeSettings {
          config: true,
          type: String,
          choices: {
-            "simple": "SETTINGS.abilityScoreModSystem.choices.simple",
+            //"simple": "SETTINGS.abilityScoreModSystem.choices.simple",
             "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
          },
          default: "darkdungeons",

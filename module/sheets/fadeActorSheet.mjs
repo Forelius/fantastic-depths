@@ -506,8 +506,6 @@ export class fadeActorSheet extends ActorSheet {
       event.preventDefault();
       event.stopPropagation();
 
-      //console.debug('_onRoll', event);
-      const ctrlKey = event.originalEvent.ctrlKey;
       const elem = event.currentTarget;
       const dataset = elem.dataset;
       let formula = dataset.formula;
