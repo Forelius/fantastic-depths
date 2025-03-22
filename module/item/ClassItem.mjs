@@ -3,6 +3,14 @@ import { SavingThrowsData } from './dataModel/ClassItemDataModel.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
 export class ClassItem extends fadeItem {
+   /** @override
+  * @protected */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      this.system.classAbilities = this.system.classAbilities.sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
+      this.system.saves = this.system.saves.sort((a, b) => (a.level - b.level));
+   }
+
    async createClassSave() {
       // Retrieve the saves array from the item's data
       const saves = this.system.saves || [];

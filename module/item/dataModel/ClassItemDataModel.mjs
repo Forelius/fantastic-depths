@@ -66,7 +66,7 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                required: true,
                initial: Array.from({ length: this.maxLevel }, (_, index) => {
                   const newLevel = new ClassLevelData();
-                  newLevel.level = index + 1;
+                  newLevel.level = index + this.firstLevel;
                   return newLevel;
                })
             }
@@ -122,7 +122,9 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          // Try to preserve existing levels
          if (this.levels && this.levels.length > 0) {
             for (let i = 0; i < this.levels.length && i < newLevels.length; i++) {
-               newLevels[i] = this.levels[i];
+               if (newLevels[i].level === this.levels[i].level) {
+                  newLevels[i] = this.levels[i];
+               }
             }
          }
          this.levels = [...newLevels];
