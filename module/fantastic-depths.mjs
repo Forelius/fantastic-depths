@@ -113,7 +113,7 @@ Hooks.once('init', async function () {
       specialAbility: SpecialAbilityDataModel,
       condition: ConditionItemDataModel,
       species: SpeciesItemDataModel
-   }
+   };
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item

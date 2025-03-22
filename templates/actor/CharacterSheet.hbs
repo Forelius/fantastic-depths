@@ -51,18 +51,18 @@
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
          {{!-- Sheet Header --}}
-         {{> "systems/fantastic-depths/templates/actor/parts/character-header.hbs"}}
+         {{> "characterHeader"}}
          <!-- ABILITY SCORES -->
-         {{> "systems/fantastic-depths/templates/actor/parts/ability-scores.hbs"}}
+         {{> "abilityScores"}}
          <div class="flexrow">
             <!-- SAVING THROWS -->
             {{> "systems/fantastic-depths/templates/item/parts/item-saves.hbs"}}
             <div>
                <!--HIT POINTS & ARMOR CLASS-->
-               {{> "systems/fantastic-depths/templates/actor/parts/hp-ac.hbs"}}
+               {{> "actorHpAc"}}
                <!-- MOVEMENT -->
                <div class="bordered text-center" style="height:48%;">
-                  {{> "systems/fantastic-depths/templates/actor/parts/movement.hbs"}}
+                  {{> "actorMovement"}}
                </div>
             </div>
             <div>
@@ -72,42 +72,42 @@
          </div>
          <!-- Equipped Weapons -->
          <div class="flexrow">
-            {{> "systems/fantastic-depths/templates/item/parts/equipped-weapons.hbs"}}
+            {{> "actorEquippedWeapons"}}
          </div>
       </div>
       {{#if isOwner}}
       {{!-- Owned Items Tab --}}
       <div class="tab items" data-group="primary" data-tab="items">
          <h2>{{localize 'FADE.tabs.items'}}</h2>
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
+         {{> "actorItems"}}
       </div>
       {{!-- Owned Skills Tab --}}
       <div class="tab skills" data-group="primary" data-tab="skills">
          <h2>{{localize 'FADE.tabs.skills'}}</h2>
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-skills.hbs"}}
+         {{> "actorSkills"}}
       </div>
       {{#if isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
          <h2>{{localize 'FADE.tabs.spells'}}</h2>
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
+         {{> "actorSpells"}}
       </div>
       {{/if}}
       {{!-- Active Effects Tab --}}
       <div class="tab effects flexcol" data-group="primary" data-tab="effects">
          <h2>{{localize 'FADE.tabs.effects'}}</h2>
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
+         {{> "actorEffects"}}
       </div>
       {{!-- Description Tab --}}
       <div class="tab biography" data-group="primary" data-tab="description">
          <h2>{{localize 'FADE.tabs.description'}}</h2>
-         {{> "systems/fantastic-depths/templates/actor/parts/character-desc.hbs"}}
+         {{> "characterDesc"}}
       </div>
       {{/if}}
       {{! GM-Only Tab }}
       {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-gm-only.hbs"}}
+         {{> "actorGmOnly"}}
       </div>
       {{/if}}
    </section>

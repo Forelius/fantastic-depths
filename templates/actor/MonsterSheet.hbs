@@ -2,7 +2,7 @@
 
    {{!-- Sheet Header --}}
    <header class="sheet-header">
-      {{> "systems/fantastic-depths/templates/actor/parts/monster-header.hbs"}}
+      {{> "monsterHeader"}}
    </header>
    {{!-- Sheet Tab Navigation --}}
    <nav class="sheet-tabs tabs" data-group="primary">
@@ -23,24 +23,24 @@
    <section class="sheet-body">
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
-         {{> "systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs"}}
+         {{> "monsterAbilities"}}
       </div>
       {{!-- Owned Items Tab --}}
       <div class="tab items" data-group="primary" data-tab="items">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
+         {{> "actorItems"}}
       </div>
       {{!-- Skills tab --}}
       <div class="tab skills" data-group="primary" data-tab="skills">
-         {{> "systems/fantastic-depths/templates/actor/parts/monster-skills.hbs"}}
+         {{> "monsterSkills"}}
       </div>
       {{!-- Active Effects Tab --}}
       <div class="tab effects flexcol" data-group="primary" data-tab="effects">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
+         {{> "actorEffects"}}
       </div>
       {{#if isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
+         {{> "actorSpells"}}
       </div>
       {{/if}}
       {{!-- Description Tab --}}
@@ -51,7 +51,7 @@
       {{! GM-Only Tab }}
       {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         {{> "systems/fantastic-depths/templates/actor/parts/monster-gm-only.hbs"}}
+         {{> "monsterGmOnly"}}
       </div>
       {{/if}}
    </section>
