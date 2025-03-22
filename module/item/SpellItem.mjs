@@ -119,7 +119,8 @@ export class SpellItem extends fadeItem {
    async #getDurationText() {
       let result = `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`;
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
-         const rollEval = await new Roll(this.system.durationFormula).evaluate();
+         const rollData = this.getRollData();
+         const rollEval = await new Roll(this.system.durationFormula, rollData).evaluate();
          result = `${result} (${rollEval.total} ${game.i18n.format('FADE.rounds')})`;
       }
       return result;
