@@ -105,7 +105,6 @@ FADE.Encumbrance = {
 FADE.abilityScoreModSystem = {};
 FADE.abilityScoreModSystem.darkdungeons = {
    key: 'darkdungeons',
-   formula: '2d6',
    mods: [
       { max: 1, value: -4, maxRetainers: 0, retainerMorale: 0 },
       { max: 3, value: -3, maxRetainers: 1, retainerMorale: 4 },
@@ -136,7 +135,6 @@ FADE.abilityScoreModSystem.darkdungeons = {
 };
 FADE.abilityScoreModSystem.simple = {
    key: 'simple',
-   formula: '3d6',
    mods: [
       { max: 4, value: -1, maxRetainers: 1, loyaltyMod: -2 },
       { max: 6, value: -1, maxRetainers: 2, loyaltyMod: -2 },

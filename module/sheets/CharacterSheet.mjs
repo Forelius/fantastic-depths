@@ -25,15 +25,7 @@ export class CharacterSheet extends fadeActorSheet {
 
    /** @override */
    async getData() {
-      const context = await super.getData();
-      // Loyalty
-      const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
-      const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem];
-      const cha = this.actor.system.abilities.cha;
-      context.loyaltyFormula = adjustments.formula;
-      if (cha.mod != 0 && cha.loyaltyMod != 0) {
-         context.loyaltyFormula = `${context.loyaltyFormula}${cha.loyaltyMod > 0 ? "+" : "-"}${cha.loyaltyMod}`;
-      }
+      const context = await super.getData();      
       return context;
    }
 

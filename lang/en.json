@@ -88,13 +88,13 @@
             "abbr": "MV",
             "long": "Movement",
             "turn": "Base",
-            "turnHint": "<b>Feet or yards per 10 minute turn.</b><p>This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.</p>",
+            "turnHint": "<b>Feet or yards per turn.</b><p>This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.</p>",
             "round": "Round",
-            "roundHint": "<b>Feet or yards per 10 second round.</b><p>Used during combat encounters.</p>",
+            "roundHint": "<b>Feet or yards per round.</b><p>Used during combat encounters.</p>",
             "day": "Overland",
             "dayHint": "<b>Miles per day. Overland travel.</b><p>Note that terrain effects this rate.</p>",
             "run": "Run",
-            "runHint": "<b>Feet or yards per 10 second round.</b><p>Used when running or flying at maximum speed during combat encounters. Travel at maximum speed can last for up to 30 rounds (5 minutes) before exhaustion.</p>",
+            "runHint": "<b>Feet or yards per round.</b><p>Used when running or flying at maximum speed during combat encounters.</p>",
             "total": "Total",
             "moveTurn": "Base Movement"
          },
@@ -961,7 +961,7 @@
 
    "SETTINGS": {
       "Encumbrance": {
-         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much. Armor Only determines movement based on armor weight. Dark Dungeons assumes a max load of 2400 coins and five movement rates. Classic assumes a max load of 1600 coins and four movement rates.",
+         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much. Armor Only determines movement based on armor weight. Dark Dungeons assumes a max load of 2400 coins and five movement rates. Classic sets a max load of 1600 coins, tracks armor, weapons and loot weight, assumes 80 coins for adventuring gear and has four movement rates.",
          "Name": "Encumbrance Tracking",
          "None": "None",
          "Basic": "Armor Only",
@@ -1011,7 +1011,7 @@
                "individualChecklist": "Individual (combat checklist)",
                "group": "Group (combat checklist)"
             }
-         },         
+         },
          "nextRound": {
             "name": "Initiative Next Round Mode",
             "hint": "Decide what will occur when the next round is activated in the combat tracker..",
@@ -1034,7 +1034,7 @@
       },
       "declaredActions": {
          "name": "Declared Actions",
-         "hint": "Enable declared actions for encounters."
+         "hint": "Enable declared actions for encounters. Declared actions are recommended if the combat checklist is used in the combat tracker."
       },
       "collapseState": {
          "name": "Remember Collapse State",
@@ -1066,6 +1066,14 @@
             "simple": "Simple",
             "darkdungeons": "Dark Dungeons"
          }
+      },
+      "roundDurationSec": {
+         "name": "Round Duration",
+         "hint": "The number of seconds a round represent in game time."
+      },
+      "turnDurationSec": {
+         "name": "Turn Duration",
+         "hint": "The number of seconds a turn represents in the game. It is utilized by the turn tracker and often represents a duration of ten minutes, although this may vary. It is important to clarify that this definition of a turn is different from the turns tracked in combat."
       }
    }
 }

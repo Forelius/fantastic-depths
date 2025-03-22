@@ -26,7 +26,7 @@ export class GearItemSheet extends fadeItemSheet {
    async getData() {
       // Retrieve base data structure.
       const context = await super.getData();
-
+      const turnDuration = game.settings.get(game.system.id, "turnDurationSec") ?? 10 * 60;
       if (this.item.type === 'light') {
          const lightTypes = [];
          //lightTypes.push({ value: null, text: game.i18n.localize('None') });
@@ -37,7 +37,7 @@ export class GearItemSheet extends fadeItemSheet {
          context.animationTypes = CONFIG.Canvas.lightAnimations;
          const lightData = this.item.system.light;
          context.isCustom = lightData.type === 'custom';
-         const turnsRemaining = (lightData.secondsRemain / 600);
+         const turnsRemaining = (lightData.secondsRemain / turnDuration);
          const stTurnsRemaining = (lightData.secondsRemain > 0 || this.item.system.light.enabled) ? (turnsRemaining).toFixed(1) : '-';
          context.turnsRemaining = `${stTurnsRemaining}`;
       }

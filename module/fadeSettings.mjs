@@ -112,6 +112,30 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
+      // Register duration of a round in seconds.
+      game.settings.register(game.system.id, "roundDurationSec", {
+         name: "SETTINGS.roundDurationSec.name",
+         hint: "SETTINGS.roundDurationSec.hint",
+         scope: "world",
+         config: true,
+         default: 10,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+
+      // Register duration of a turn in seconds.
+      game.settings.register(game.system.id, "turnDurationSec", {
+         name: "SETTINGS.turnDurationSec.name",
+         hint: "SETTINGS.turnDurationSec.hint",
+         scope: "world",
+         config: true,
+         default: 600,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+
       // Register party rest frequency
       game.settings.register(game.system.id, "restFrequency", {
          name: "SETTINGS.rest.name",

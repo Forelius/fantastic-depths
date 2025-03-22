@@ -24,9 +24,7 @@
       <li style="max-width:60px;">
          <input type="text" name="system.retainer.loyalty" value="{{system.retainer.loyalty}}" data-dtype="String" />
          <label class="rollable" for="system.retainer.loyalty"
-                data-test="generic"
-                data-formula="{{loyaltyFormula}}"
-                data-pass="lte"
+                data-test="morale"
                 data-target="{{system.retainer.loyalty}}"
                 data-label="{{localize 'FADE.Actor.retainerMorale'}}"
                 data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">{{localize 'FADE.Actor.morale'}}</label>
@@ -38,9 +36,7 @@
       </li>
       <li style="max-width:60px;">
          <label class="rollable" for="system.retainer.morale"
-                data-test="generic"
-                data-formula="{{loyaltyFormula}}"
-                data-pass="lte"
+                data-test="morale"
                 data-target="{{system.retainer.morale}}"
                 data-label="{{localize 'FADE.Actor.retainerMorale'}}"
                 data-tooltip="{{localize 'FADE.Actor.retainerMoraleHint'}}">
@@ -60,7 +56,7 @@
       <li>
          <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
          <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
-      </li>      
+      </li>
    </ul>
 </section>
 

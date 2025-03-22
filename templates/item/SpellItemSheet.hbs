@@ -18,7 +18,7 @@
          </ul>
          <ul class="summary flexrow">
             <li class="flex3">
-               <input type='text' name='system.duration' value='{{system.duration}}' data-dtype='String' {{#unless isGM}}readonly{{/unless}}/>
+               <input type='text' name='system.duration' value='{{system.duration}}' data-dtype='String' {{#unless isGM}}readonly{{/unless}} data-tooltip="{{system.duration}}"/>
                <label>{{localize 'FADE.Spell.duration'}}</label>
             </li>
             <li class="flex1">
@@ -68,7 +68,7 @@
                <label for="system.maxTargetFormula">{{localize 'FADE.Spell.maxTargetFormula'}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name='system.durationFormula' value='{{system.durationFormula}}' data-dtype='String' placeholder="{{#if (eq system.durationFormula null)}}∞{{/if}}"/>
+               <input type='text' name='system.durationFormula' value='{{system.durationFormula}}' data-tooltip="{{system.durationFormula}}" data-dtype='String' placeholder="{{#if (eq system.durationFormula null)}}∞{{/if}}"/>
                <label for="system.durationFormula" data-tooltip="{{localize 'FADE.Spell.durationFormulaHint'}}">{{localize 'FADE.Spell.durationFormula'}}</label>
             </li>
 

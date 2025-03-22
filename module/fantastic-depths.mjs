@@ -2,6 +2,8 @@ import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
 import { AddonIntegration } from './sys/addonIntegration.mjs'
+import { fadeRegistry } from './sys/fadeRegistry.mjs'
+import { moraleCheck, abilityCheck } from './sys/defaultSystems.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
@@ -78,7 +80,8 @@ Hooks.once('init', async function () {
       Wrestling,
       Shove,
       PlayerCombatForm,
-      fadeTreasure
+      fadeTreasure,
+      registry: new fadeRegistry()
    };
 
    CONFIG.time.roundTime = 10;
@@ -116,14 +119,23 @@ Hooks.once('init', async function () {
    // but will still apply to the Actor from within the Item
    // if the transfer property on the Active Effect is true.
    CONFIG.ActiveEffect.legacyTransferral = false;
-   
+
    registerSheets();
 
    await handleAsyncInit();
 
    // Preload Handlebars templates.
-   return preloadHandlebarsTemplates();
+   await preloadHandlebarsTemplates();
+
+   registerDefaultSystems();
+
+   Hooks.call("afterFadeInit", game.fadeRegistry);
 });
+
+function registerDefaultSystems() {
+   game.fade.registry.registerSystem('moraleCheck', new moraleCheck());
+   game.fade.registry.registerSystem('abilityCheck', new abilityCheck());
+}
 
 function registerSheets() {
    // Register sheet application classes
@@ -250,7 +262,7 @@ Hooks.once('ready', async function () {
          // Ensure that the socket is ready before using it
          game.fade.toastManager = new ToastManager();
          game.fade.SocketManager = new SocketManager();
-         
+
          game.socket.on(`system.${game.system.id}`, (data) => {
             //console.debug("onSocketReceived", data);
             if (data.action === 'showToast') {

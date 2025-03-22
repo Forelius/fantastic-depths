@@ -1,6 +1,13 @@
 class TurnData {
    constructor(data) {
       Object.assign(this, data);
+
+      this.timeSteps = {
+         round: game.settings.get(game.system.id, "roundDurationSec") ?? 10,
+         turn: game.settings.get(game.system.id, "turnDurationSec") ?? 10 * 60,
+         hour: 10 * 60 * 6, // 60 minutes
+         day: 86400
+      };
    }
 
    get sessionTR() {
@@ -18,8 +25,8 @@ class TurnData {
    toTurnsRounds(turns = 0) {
       return {
          turns: Math.floor(turns),
-         rounds: ((Math.abs(turns % 1) * TurnData.timeSteps.turn) / TurnData.timeSteps.round),
-         roundsDisplay: ((Math.abs(turns % 1) * TurnData.timeSteps.turn) / TurnData.timeSteps.round).toFixed(1)
+         rounds: ((Math.abs(turns % 1) * this.timeSteps.turn) / this.timeSteps.round),
+         roundsDisplay: ((Math.abs(turns % 1) * this.timeSteps.turn) / this.timeSteps.round).toFixed(1)
       };
    }
 
@@ -42,7 +49,7 @@ class TurnData {
    }
 
    async updateTime(seconds) {
-      const turns = seconds / TurnData.timeSteps.turn;
+      const turns = seconds / this.timeSteps.turn;
       this.dungeon.session += turns;
       this.dungeon.total += turns;
       this.dungeon.rest += turns;
@@ -50,14 +57,8 @@ class TurnData {
       await game.settings.set(game.system.id, 'turnData', this);
       return turns;
    }
-
-   static timeSteps = {
-      round: 10, // 10 seconds
-      turn: 10 * 60, // 10 minutes
-      hour: 10 * 60 * 6, // 60 minutes
-      day: 86400
-   };
 }
+
 export class TurnTrackerForm extends FormApplication {
    constructor(object = {}, options = {}) {
       super(object, options);
@@ -115,11 +116,11 @@ export class TurnTrackerForm extends FormApplication {
 
       html.find("#advance-turn")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.advanceTime(TurnData.timeSteps.turn);
+         await this.advanceTime(this.timeSteps.turn);
       });
       html.find("#revert-turn")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.advanceTime(-TurnData.timeSteps.turn);
+         await this.advanceTime(-this.timeSteps.turn);
       });
       html.find("#reset-session")[0].addEventListener('click', async (e) => {
          e.preventDefault();
@@ -145,7 +146,7 @@ export class TurnTrackerForm extends FormApplication {
       if (restElem?.length > 0) {
          restElem[0].addEventListener('click', async (e) => {
             e.preventDefault();
-            await this.advanceTime(TurnData.timeSteps.turn);
+            await this.advanceTime(this.timeSteps.turn);
             await this.turnData.rest();
             const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
             ChatMessage.create({
@@ -164,15 +165,15 @@ export class TurnTrackerForm extends FormApplication {
     */
    _updateWorldTime = foundry.utils.debounce(async (worldTime, dt, options, userId) => {
       const seconds = worldTime - this.turnData.worldTime;
-      if (Math.abs(seconds) >= TurnData.timeSteps.round) {
+      if (Math.abs(seconds) >= this.timeSteps.round) {
          const turns = await this.turnData.updateTime(seconds);
          const speaker = { alias: game.user.name };
          let chatContent = "";
          const turnsRounds = this.turnData.toTurnsRounds(Math.abs(turns));
-         //const displayRounds = ((Math.abs(turns % 1) * TurnData.timeSteps.turn) / TurnData.timeSteps.round).toFixed(1);
+         //const displayRounds = ((Math.abs(turns % 1) * this.timeSteps.turn) / this.timeSteps.round).toFixed(1);
          chatContent = (turns > 0)
             ? game.i18n.format("FADE.notification.advancedTime", { turns: turnsRounds.turns, rounds: turnsRounds.roundsDisplay })
-            : game.i18n.format("FADE.notification.reversedTime", { turns: turnsRounds.turns, rounds: turnsRounds.roundsDisplay});
+            : game.i18n.format("FADE.notification.reversedTime", { turns: turnsRounds.turns, rounds: turnsRounds.roundsDisplay });
          // Rest message
          const restFrequency = game.settings.get(game.system.id, "restFrequency");
          if (restFrequency > 0 && this.turnData.dungeon.rest > restFrequency - 1) {

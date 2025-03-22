@@ -521,19 +521,11 @@ export class fadeActorSheet extends ActorSheet {
          // Directly roll item and skip the rest
          if (item) await item.roll(dataset, null, event);
       } else if (dataset.test === 'ability') {
-         dataset.dialog = dataset.test;
-         chatType = CHAT_TYPE.ABILITY_CHECK;
-         formula = formula ? formula : '1d20';
-         if (ctrlKey === false) {
-            dialogResp = await DialogFactory(dataset, this.actor);
-            if (dialogResp?.resp?.rolling === true) {
-               formula = (dialogResp !== null && dialogResp?.resp.mod != 0) ? "1d20-@mod" : "1d20";
-            } else {
-               // This will stop the process below.
-               chatType = null;
-            }
-         }
-      } else if (dataset.test === 'save') {
+         await game.fade.registry.getSystem('abilityCheck').execute({ actor: this.actor, event });
+      } else if (dataset.test === 'morale') {
+         await game.fade.registry.getSystem('moraleCheck').execute({ actor: this.actor, event });
+      }
+      else if (dataset.test === 'save') {
          this.actor.rollSavingThrow(dataset.type, event);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
