@@ -1,5 +1,3 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-
 export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
@@ -134,20 +132,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-   }
-
-   /**
-    * Prepare the actor's movement rate values.
-   */
-   prepareDerivedMovement() {
-      this.movement.turn = this.encumbrance.mv;
-      this.flight.turn = this.encumbrance.fly || 0;
-      this.movement.round = this.movement.turn > 0 ? Math.floor(this.movement.turn / 3) : 0;
-      this.movement.day = this.movement.turn > 0 ? Math.floor(this.movement.turn / 5) : 0;
-      this.movement.run = this.movement.turn;
-      this.flight.round = this.flight.turn > 0 ? Math.floor(this.flight.turn / 3) : 0;
-      this.flight.day = this.flight.turn > 0 ? Math.floor(this.flight.turn / 5) : 0;
-      this.flight.run = this.flight.turn;
    }
 
    /**

@@ -9,7 +9,6 @@ export const preloadHandlebarsTemplates = async function () {
       chatSaveHealDamage: 'systems/fantastic-depths/templates/chat/save-heal-dmg.hbs',
       // Actor partials
       abilityScores: 'systems/fantastic-depths/templates/actor/parts/ability-scores.hbs',
-      characterDesc: 'systems/fantastic-depths/templates/actor/parts/character-desc.hbs',
       actorHpAc:'systems/fantastic-depths/templates/actor/parts/hp-ac.hbs',
       actorMovement: 'systems/fantastic-depths/templates/actor/parts/movement.hbs',
       actorFlight: 'systems/fantastic-depths/templates/actor/parts/flight.hbs',
@@ -35,6 +34,7 @@ export const preloadHandlebarsTemplates = async function () {
       monsterHeader: 'systems/fantastic-depths/templates/actor/parts/monster-header.hbs',
       monsterGmOnly: "systems/fantastic-depths/templates/actor/parts/monster-gm-only.hbs",
       // Character
+      characterDesc: 'systems/fantastic-depths/templates/actor/parts/character-desc.hbs',
       characterAbilities: 'systems/fantastic-depths/templates/actor/parts/character-abilities.hbs',
       characterHeader: 'systems/fantastic-depths/templates/actor/parts/character-header.hbs',
       // Item partials

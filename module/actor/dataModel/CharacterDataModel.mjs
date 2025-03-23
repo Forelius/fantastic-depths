@@ -1,4 +1,4 @@
-import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
+import { fadeActorDataModel } from "/systems/fantastic-depths/module/actor/dataModel/fadeActorDataModel.mjs";
 
 export class CharacterDataModel extends fadeActorDataModel {
    static defineSchema() {

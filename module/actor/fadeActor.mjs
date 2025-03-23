@@ -107,7 +107,7 @@ export class fadeActor extends Actor {
       super.prepareDerivedData();
       if (this.id) {
          this._prepareEncumbrance(this.type);
-         this.system.prepareDerivedMovement();
+         this._prepareDerivedMovement();
          this._prepareArmorClass();
       } else {
          //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
@@ -754,6 +754,20 @@ export class fadeActor extends Actor {
 
       this.system.ac = ac;
       this.system.acDigest = acDigest;
+   }
+
+   /**
+    * Prepare the actor's movement rate values.
+    */
+   _prepareDerivedMovement() {
+      this.system.movement.turn = this.system.encumbrance.mv;
+      this.system.flight.turn = this.system.encumbrance.fly || 0;
+      this.system.movement.round = this.system.movement.turn > 0 ? Math.floor(this.system.movement.turn / 3) : 0;
+      this.system.movement.day = this.system.movement.turn > 0 ? Math.floor(this.system.movement.turn / 5) : 0;
+      this.system.movement.run = this.system.movement.turn;
+      this.system.flight.round = this.system.flight.turn > 0 ? Math.floor(this.system.flight.turn / 3) : 0;
+      this.system.flight.day = this.system.flight.turn > 0 ? Math.floor(this.system.flight.turn / 5) : 0;
+      this.system.flight.run = this.system.flight.turn;
    }
 
    /**
