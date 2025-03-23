@@ -4,6 +4,10 @@ export class fadeFinder {
       return game.packs.get('fade-compendiums.item-compendium');
    }
 
+   static _getRollTablePack() {
+      return game.packs.get('fade-compendiums.roll-table-compendium');
+   }
+
    /**
     * Get the item source. First try world, then try compendiums.
     * @private
@@ -11,7 +15,13 @@ export class fadeFinder {
     * @returns
     */
    static async _getPackSource(type) {
-      return await fadeFinder._getItemPack()?.getDocuments({ type });
+      let result = null;
+      if (type === 'rolltable') {
+         result = await fadeFinder._getRollTablePack()?.getDocuments();
+      } else {
+         result = await fadeFinder._getItemPack()?.getDocuments({ type });
+      }
+      return result;
    }
 
    /**
@@ -21,7 +31,13 @@ export class fadeFinder {
     * @returns
     */
    static _getWorldSource(type) {
-      return game.items.filter(item => item.type === type);
+      let result = null;
+      if (type === 'rolltable') {
+         result = game.tables;
+      } else {
+         result = game.items.filter(item => item.type === type);
+      }
+      return result;
    }
 
    /**
@@ -61,17 +77,6 @@ export class fadeFinder {
       return result
    }
 
-   static async getSavingThrow(customSaveCode) {
-      const type = 'specialAbility';
-      let source = fadeFinder._getWorldSource(type);
-      let result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customSaveCode });
-      if (!result) {
-         source = await fadeFinder._getPackSource(type);
-         result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customSaveCode });
-      }
-      return result;
-   }
-
    static async getSavingThrows() {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
@@ -79,6 +84,40 @@ export class fadeFinder {
       if (result.length === 0) {
          source = await fadeFinder._getPackSource(type);
          result = source?.filter(item => item.system.category === 'save');
+      }
+      return result;
+   }
+
+   static async getRollTables() {
+      const type = 'rolltable';
+      let source = fadeFinder._getWorldSource(type);
+      let result = source;
+      if (result.length === 0) {
+         source = await fadeFinder._getPackSource(type);
+         result = source;
+      }
+      return result;
+   }
+
+   static async getRollTable(name) {
+      const type = 'rolltable'
+      let source = fadeFinder._getWorldSource(type);
+      let result = fadeFinder._getItem(source, name);
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = fadeFinder._getItem(source, name);
+      }
+      return result;
+   }
+
+
+   static async getSavingThrow(customSaveCode) {
+      const type = 'specialAbility';
+      let source = fadeFinder._getWorldSource(type);
+      let result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customSaveCode });
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customSaveCode });
       }
       return result;
    }
@@ -112,10 +151,10 @@ export class fadeFinder {
    static async getSpecies(name) {
       const type = 'species'
       let source = fadeFinder._getWorldSource(type);
-      let result = fadeFinder._getItem(source, name, type);
+      let result = fadeFinder._getItem(source, name);
       if (!result) {
          source = await fadeFinder._getPackSource(type);
-         result = fadeFinder._getItem(source, name, type);
+         result = fadeFinder._getItem(source, name);
       }
       return result;
    }
@@ -123,10 +162,10 @@ export class fadeFinder {
    static async getWeaponMastery(name) {
       const type = 'weaponMastery'
       let source = fadeFinder._getWorldSource(type);
-      let result = fadeFinder._getItem(source, name, type);
+      let result = fadeFinder._getItem(source, name);
       if (!result) {
          source = await fadeFinder._getPackSource(type);
-         result = fadeFinder._getItem(source, name, type);
+         result = fadeFinder._getItem(source, name);
       }
       return result;
    }

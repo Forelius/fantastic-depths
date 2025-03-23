@@ -129,7 +129,7 @@ Hooks.once('init', async function () {
 
    registerDefaultSystems();
 
-   Hooks.call("afterFadeInit", game.fadeRegistry);
+   Hooks.call("afterFadeInit", game.fade.registry);
 });
 
 function registerDefaultSystems() {
@@ -232,6 +232,8 @@ async function handleAsyncInit() {
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 Hooks.once('ready', async function () {
+   Hooks.call("beforeFadeReady", game.fadeRegistry);
+
    const migrator = new DataMigrator();
    await migrator.migrate();
 
@@ -240,10 +242,6 @@ Hooks.once('ready', async function () {
       MacroManager.createItemMacro(data, slot);
       return false;
    });
-
-   if (game.user.isGM) {
-      await MacroManager.createAllMacros();
-   }
 
    LightManager.initialize();
 
@@ -275,6 +273,8 @@ Hooks.once('ready', async function () {
          console.info(`Registered socket listener: system.${game.system.id}`);
       }
    }
+
+   Hooks.call("afterFadeReady", game.fadeRegistry);
 });
 
 AddonIntegration.setupItemPiles();

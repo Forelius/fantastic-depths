@@ -1,12 +1,4 @@
 export class MacroManager {
-   // Method to create all macros if they don't exist
-   static async createAllMacros() {
-      const fdPath = `systems/fantastic-depths/assets/img/`;
-
-      //const gmFolder = await MacroManager.getOrCreateFolder("GM Only");
-      //const miscFolder = await MacroManager.getOrCreateFolder("Misc");           
-   }
-
    // Helper method to get or create a folder
    static async getOrCreateFolder(folderName, parentFolderId = null) {
       // Find the folder by name and type, ignoring parent
