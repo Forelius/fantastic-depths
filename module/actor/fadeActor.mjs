@@ -687,7 +687,7 @@ export class fadeActor extends Actor {
       const equippedShield = this.items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
 
       if (dexMod !== 0) {
-         acDigest.push(`Dexterity bonus: ${dexMod}`);
+         acDigest.push(game.i18n.localize('FADE.Armor.dexterityBonus', { bonus: dexMod }));
       }
 
       // If natural armor
@@ -705,9 +705,8 @@ export class fadeActor extends Actor {
          //this.system.equippedArmor.prepareEffects();
          ac.value = this.system.equippedArmor.system.ac;
          ac.mod += this.system.equippedArmor.system.mod ?? 0;
-         ac.total = this.system.equippedArmor.system.totalAC;
          // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total -= dexMod;
+         ac.total = this.system.equippedArmor.system.totalAC - dexMod;
          acDigest.push(`${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
       }
 
@@ -721,8 +720,11 @@ export class fadeActor extends Actor {
       }
 
       if (this.system.mod.baseAc != 0) {
-         //ac.total -= this.system.mod.baseAc;
-         acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.baseAc}`);
+         acDigest.push(`${game.i18n.localize('FADE.Armor.modBase')}: ${this.system.mod.baseAc}`);
+      }
+      if (this.system.mod.ac != 0) {
+         ac.total -= this.system.mod.ac;
+         acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.ac}`);
       }
 
       ac.nakedRanged = ac.total;
