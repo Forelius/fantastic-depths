@@ -14,7 +14,7 @@ export const preloadHandlebarsTemplates = async function () {
       actorFlight: 'systems/fantastic-depths/templates/actor/parts/flight.hbs',
       actorItems: 'systems/fantastic-depths/templates/actor/parts/actor-items.hbs',
       actorSpells: 'systems/fantastic-depths/templates/actor/parts/actor-spells.hbs',
-      actorSkills: 'systems/fantastic-depths/templates/actor/parts/actor-skills.hbs',
+      actorSkillTab: 'systems/fantastic-depths/templates/actor/parts/actor-skills.hbs',
       actorEffects: 'systems/fantastic-depths/templates/actor/parts/actor-effects.hbs',
       actorGmOnly: "systems/fantastic-depths/templates/actor/parts/actor-gm-only.hbs",
       actorEquippedWeapons: "systems/fantastic-depths/templates/actor/parts/equipped-weapons.hbs",
