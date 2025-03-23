@@ -50,6 +50,11 @@ export class fadeFinder {
       return source?.filter(item => item.name.toLowerCase() === name.toLowerCase())?.[0];
    }
 
+   static _getItemById(source, id) {
+      return source?.filter(item => item.id === id)?.[0];
+   }
+
+
    /**
     * Retrieves a special ability.
     * @private
@@ -88,11 +93,11 @@ export class fadeFinder {
       return result;
    }
 
-   static async getRollTables() {
+   static async getRollTables(compendiumOnly = false) {
       const type = 'rolltable';
       let source = fadeFinder._getWorldSource(type);
       let result = source;
-      if (result.length === 0) {
+      if (result.length === 0 || compendiumOnly === true) {
          source = await fadeFinder._getPackSource(type);
          result = source;
       }
@@ -110,6 +115,16 @@ export class fadeFinder {
       return result;
    }
 
+   static async getRollTableById(id) {
+      const type = 'rolltable'
+      let source = fadeFinder._getWorldSource(type);
+      let result = fadeFinder._getItemById(source, id);
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = fadeFinder._getItemById(source, id);
+      }
+      return result;
+   }
 
    static async getSavingThrow(customSaveCode) {
       const type = 'specialAbility';

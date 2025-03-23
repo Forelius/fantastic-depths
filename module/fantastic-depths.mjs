@@ -1,3 +1,4 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
@@ -81,6 +82,7 @@ Hooks.once('init', async function () {
       Shove,
       PlayerCombatForm,
       fadeTreasure,
+      fadeFinder,
       registry: new fadeRegistry()
    };
 
