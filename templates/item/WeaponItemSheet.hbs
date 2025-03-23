@@ -141,7 +141,7 @@
                </div>
             </div>
          </div>
-         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
+         {{> "itemIdentified"}}
       </div>
       {{/if}}
       {{! Description Tab }}
@@ -155,11 +155,11 @@
       {{#if isGM}}
       {{! Effects Tab }}
       <div class="tab effects" data-group="primary" data-tab="effects">
-         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+         {{> "itemEffects"}}
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+         {{> "itemFlags"}}
          <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
          <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
       </div>

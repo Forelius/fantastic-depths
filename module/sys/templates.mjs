@@ -5,7 +5,9 @@
  */
 export const preloadHandlebarsTemplates = async function () {
    await loadTemplates({
+      // Chat
       chatSaveHealDamage: 'systems/fantastic-depths/templates/chat/save-heal-dmg.hbs',
+      // Actor partials
       abilityScores: 'systems/fantastic-depths/templates/actor/parts/ability-scores.hbs',
       characterDesc: 'systems/fantastic-depths/templates/actor/parts/character-desc.hbs',
       actorHpAc:'systems/fantastic-depths/templates/actor/parts/hp-ac.hbs',
@@ -17,12 +19,6 @@ export const preloadHandlebarsTemplates = async function () {
       actorEffects: 'systems/fantastic-depths/templates/actor/parts/actor-effects.hbs',
       actorGmOnly: "systems/fantastic-depths/templates/actor/parts/actor-gm-only.hbs",
       actorEquippedWeapons: "systems/fantastic-depths/templates/actor/parts/equipped-weapons.hbs",
-      monsterSkills: 'systems/fantastic-depths/templates/actor/parts/monster-skills.hbs',
-      monsterAbilities: 'systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs',
-      monsterHeader: 'systems/fantastic-depths/templates/actor/parts/monster-header.hbs',
-      monsterGmOnly: "systems/fantastic-depths/templates/actor/parts/monster-gm-only.hbs",
-      characterAbilities: 'systems/fantastic-depths/templates/actor/parts/character-abilities.hbs',
-      characterHeader: 'systems/fantastic-depths/templates/actor/parts/character-header.hbs',
       actorSpecialAbilities: 'systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs',
       actorWeapons: 'systems/fantastic-depths/templates/item/parts/item-weapons.hbs',
       actorSkills: 'systems/fantastic-depths/templates/item/parts/item-skills.hbs',
@@ -30,23 +26,27 @@ export const preloadHandlebarsTemplates = async function () {
       actorArmor: 'systems/fantastic-depths/templates/item/parts/item-armor.hbs',
       actorMasteries: 'systems/fantastic-depths/templates/item/parts/item-masteries.hbs',
       actorTreasure: 'systems/fantastic-depths/templates/item/parts/item-treasure.hbs',
-   });
-
-   return loadTemplates([      
+      actorExploration: 'systems/fantastic-depths/templates/item/parts/item-exploration.hbs',
+      actorClassAbilities: 'systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs',
+      actorSaves: 'systems/fantastic-depths/templates/item/parts/item-saves.hbs',
+      // Monster
+      monsterSkills: 'systems/fantastic-depths/templates/actor/parts/monster-skills.hbs',
+      monsterAbilities: 'systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs',
+      monsterHeader: 'systems/fantastic-depths/templates/actor/parts/monster-header.hbs',
+      monsterGmOnly: "systems/fantastic-depths/templates/actor/parts/monster-gm-only.hbs",
+      // Character
+      characterAbilities: 'systems/fantastic-depths/templates/actor/parts/character-abilities.hbs',
+      characterHeader: 'systems/fantastic-depths/templates/actor/parts/character-header.hbs',
       // Item partials
-      'systems/fantastic-depths/templates/item/parts/item-effects.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-contained.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-gear.hbs',             
-      'systems/fantastic-depths/templates/item/parts/weapon-attributes.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-flags.hbs',
-      'systems/fantastic-depths/templates/item/parts/class-levels.hbs',
-      'systems/fantastic-depths/templates/item/parts/class-saves.hbs',
-      'systems/fantastic-depths/templates/item/parts/class-primereqs.hbs',
-      'systems/fantastic-depths/templates/item/parts/class-spells.hbs',
-      'systems/fantastic-depths/templates/item/parts/class-abilities.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-exploration.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-saves.hbs',
-      'systems/fantastic-depths/templates/item/parts/item-identified.hbs',      
-   ]);
+      itemEffects: 'systems/fantastic-depths/templates/item/parts/item-effects.hbs',
+      itemContained: 'systems/fantastic-depths/templates/item/parts/item-contained.hbs',
+      itemGear: 'systems/fantastic-depths/templates/item/parts/item-gear.hbs',
+      itemFlags: 'systems/fantastic-depths/templates/item/parts/item-flags.hbs',
+      itemIdentified: 'systems/fantastic-depths/templates/item/parts/item-identified.hbs',
+      classLevels: 'systems/fantastic-depths/templates/item/parts/class-levels.hbs',
+      classSaves: 'systems/fantastic-depths/templates/item/parts/class-saves.hbs',
+      classPrimeReqs: 'systems/fantastic-depths/templates/item/parts/class-primereqs.hbs',
+      classSpells: 'systems/fantastic-depths/templates/item/parts/class-spells.hbs',
+      classAbilities: 'systems/fantastic-depths/templates/item/parts/class-abilities.hbs',
+   });
 };

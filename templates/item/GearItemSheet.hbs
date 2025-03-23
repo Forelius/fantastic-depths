@@ -67,12 +67,12 @@
       {{#if isGM}}
       {{! Effects Tab }}
       <div class="tab effects" data-group="primary" data-tab="effects">
-         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+         {{> "itemEffects"}}
       </div>
       {{! Attributes Tab }}
       <div class='tab' data-group='primary' data-tab='attributes'>
          <div>
-            {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+            {{> "itemFlags"}}
          </div>
          <div class="bordered">
             {{#if system.isLight}}
@@ -207,7 +207,7 @@
             </ul>
             {{/if}}
          </div>
-         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
+         {{> "itemIdentified"}}
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>

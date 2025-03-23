@@ -43,7 +43,7 @@
 </li>
 {{#if item.system.container}}
 {{#each item.contained as |childItem|}}
-{{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
+{{> "itemContained" parentItem=../item item=childItem rootobj=../rootobj}}
 {{/each}}
 {{/if}}
 {{#unless item.system.container}}
