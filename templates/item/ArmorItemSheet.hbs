@@ -1,38 +1,38 @@
-<form class='{{cssClass}}' autocomplete='off'>
+﻿<form class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' />
       <div class='header-fields'>
-         <ul class="summary flexrow">
-            <li class="flex3">
+         <div class="summary flexrow">
+            <div class="flex3">
                {{#if (or isGM system.isIdentified)}}
                <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}}readonly{{/unless}}/>
                {{else}}
                <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' {{#unless isGM}}readonly{{/unless}}/>
                {{/if}}
-            </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex2">
+            </div>
+         </div>
+         <div class="summary flexrow">
+            <div class="flex2">
                <input type='text' name='system.ac' value='{{system.ac}}' data-dtype='Number'{{#unless isGM}}readonly{{/unless}} />
                <label for="system.ac" data-tooltip="{{localize 'FADE.Armor.hintBase'}}">{{localize 'FADE.Armor.long'}}</label>
-            </li>
-            <li class="flex1">
+            </div>
+            <div class="flex1">
                <input type="checkbox" name="system.isShield" data-dtype="Boolean" {{#if system.isShield}}checked{{/if}} {{#unless isGM}}readonly{{/unless}}/>
                <label for="system.isShield">{{localize "FADE.Armor.shield.short"}}</label>
-            </li>
-            <li class="flex1">
+            </div>
+            <div class="flex1">
                <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}}checked{{/if}} data-tooltip="{{localize "FADE.Armor.natural.desc"}}" {{#unless isGM}}readonly{{/unless}}/>
                <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
-            </li>
-            <li class="flex2">
+            </div>
+            <div class="flex2">
                {{#if (or isGM system.isIdentified)}}
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
                {{else}}
                <input type='text' value='?' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
                {{/if}}
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
-            </li>
-            <li class="flex2">
+            </div>
+            <div class="flex2">
                {{#if isBasicEnc}}
                <select name="system.armorWeight" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions encOptions selected=system.armorWeight}}
@@ -42,8 +42,8 @@
                <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
                <label for="system.weight">{{localize 'FADE.Item.weight.short'}}</label>
                {{/if}}
-            </li>
-         </ul>
+            </div>
+         </div>
       </div>
    </header>
 
@@ -61,6 +61,18 @@
    <section class='sheet-body'>
       {{#if isGM}}
       <div class='tab' data-group='primary' data-tab='attributes'>
+         <div class="bordered">
+            <div class="summary flexrow">               
+               <div style="max-width:70px;">
+                  <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
+                  <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
+               </div>
+               <div style="max-width:70px;">
+                  <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
+                  <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
+               </div>
+            </div>
+         </div>
          {{> "itemIdentified"}}
       </div>
       {{/if}}
