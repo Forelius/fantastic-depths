@@ -91,7 +91,7 @@ Hooks.once('init', async function () {
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
 
-   CONFIG.ActiveEffect.documentClass = fadeEffect;
+   CONFIG.ActiveEffect.documentClass = fadeEffect;   
    CONFIG.Combat.documentClass = fadeCombat;
    CONFIG.Combatant.documentClass = fadeCombatant;
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
