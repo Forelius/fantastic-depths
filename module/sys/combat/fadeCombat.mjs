@@ -385,6 +385,12 @@ export class fadeCombat extends Combat {
       }
    }
 
+   async #activateCombatant(turn) {
+      if (game.user.isGM) {
+         await game.combat.update({ turn });
+      }
+   }
+
    /**
     * Determines if any of the specified combatants have their declared action set to 'nothing'
     * @param {any} combatants an array of combatants.
@@ -522,21 +528,23 @@ export class fadeCombat extends Combat {
 
       // Create a single chat message for all rolls
       if (rollResults.length > 0) {
-         // Store the base formula without the mod for flavor text
-         const baseFormula = this.initiativeFormula.replace(/\+?\s*@mod/, '').trim();
-         const flavorText = game.i18n.format(`FADE.Chat.combatTracker.rollFormula`, { formula: baseFormula });
-         const speaker = { alias: game.user.name }; // Use the player's name as the speaker
-         ChatMessage.create({
-            speaker: speaker,
-            content: rollResults.map(item => item.message).join('<br>'),  // Combine all roll results into one message with line breaks
-            flavor: flavorText
-         });
+         //// Store the base formula without the mod for flavor text
+         //const baseFormula = this.initiativeFormula.replace(/\+?\s*@mod/, '').trim();
+         //const flavorText = game.i18n.format(`FADE.Chat.combatTracker.rollFormula`, { formula: baseFormula });
+         //const speaker = { alias: game.user.name }; // Use the player's name as the speaker
+         //ChatMessage.create({
+         //   speaker: speaker,
+         //   content: rollResults.map(item => item.message).join('<br>'),  // Combine all roll results into one message with line breaks
+         //   flavor: flavorText
+         //});
 
          const updates = rollResults.reduce((a, b) => [...a, ...b.updates], []);
          if (updates.length > 0) {
             // Update multiple combatants
             await this.updateEmbeddedDocuments("Combatant", updates);
          }
+
+         this.#activateCombatant(0);
       }
    }
 
