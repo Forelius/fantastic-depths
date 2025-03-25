@@ -776,7 +776,7 @@ export class fadeActor extends Actor {
     * @param {any} abilitiesData The class ability array for the desired level.
     * @returns
     */
-   async _setupSpecialAbilities(classKey, abilitiesData) {
+   async _setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false) return;
       const promises = [];
       // Get this actor's class ability items.
@@ -787,15 +787,13 @@ export class fadeActor extends Actor {
       for (const abilityData of abilitiesData) {
          if (specialAbilities.find(item => item.name === abilityData.name) === undefined
             && addItems.find(item => item.name === abilityData.name) === undefined) {
-            //const itemData = worldAbilities.find(item => item.name === abilityData.name);
-            classKey = classKey ? classKey : abilityData.classKey;
-            const itemData = await fadeFinder.getClassAbility(abilityData.name, classKey);
+            const itemData = await fadeFinder.getClassAbility(abilityData.name, abilityData.classKey);
             if (itemData) {
                const newAbility = itemData.toObject();
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                addItems.push(newAbility);
             } else {
-               console.warn(`The special ability (${abilityData.name}) does not exist as a world item.`);
+               console.warn(`The special ability ${abilityData.name}(${abilityData.classKey}) does not exist as a world item or in the fade compendiums.`);
             }
          }
       }
@@ -824,7 +822,7 @@ export class fadeActor extends Actor {
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      const worldSavingThrows = await fadeFinder.getSavingThrows();
+      const savingThrowItems = await fadeFinder.getSavingThrows();
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
       const addItems = [];
@@ -832,7 +830,7 @@ export class fadeActor extends Actor {
          const stName = saveData[0];
          if (stName !== 'level' && savingThrows.find(item => item.system.customSaveCode === stName) === undefined
             && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
-            const saveItem = worldSavingThrows.find(item => item.system.customSaveCode === stName);
+            const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
             if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
                const newSave = saveItem.toObject();
                const saveTarget = savesData[newSave.system.customSaveCode];

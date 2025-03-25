@@ -13,6 +13,9 @@ export class SpeciesItemSheet extends fadeItemSheet {
          classes: ['fantastic-depths', 'sheet', 'item'],
          width: 500,
          height: 400,
+         dragDrop: [
+            { dragSelector: "[data-document-id]", dropSelector: "form" }
+         ],
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -72,6 +75,19 @@ export class SpeciesItemSheet extends fadeItemSheet {
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
 
       html.on('click', '.rollable', this._onRoll.bind(this));
+   }
+
+   /** @inheritdoc */
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
+      console.debug(droppedItem, event, data);
+
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'specialAbility') {
+         this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
+      }
    }
 
    /**

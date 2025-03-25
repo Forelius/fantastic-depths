@@ -1,6 +1,5 @@
 ﻿import Formatter from '../utils/Formatter.mjs';
 import { fadeActor } from './fadeActor.mjs';
-import { ClassItem } from "../item/ClassItem.mjs";
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
@@ -207,14 +206,14 @@ export class CharacterActor extends fadeActor {
          this.system.thbonus = currentLevel.thbonus;
 
          // Saving throws
-         const savesData = await ClassItem.getClassSaves(className, currentLevel);
+         const savesData = await fadeFinder.getClassSaves(className, currentLevel);
          if (savesData) {
             await this._setupSavingThrows(savesData);
          }
 
          // Class special abilities
          const abilityNames = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.name);
-         const abilitiesData = (await ClassItem.getClassAbilities(className, currentLevel))?.filter(item => abilityNames.includes(item.name) === false);
+         const abilitiesData = (await fadeFinder.getClassAbilities(className, currentLevel))?.filter(item => abilityNames.includes(item.name) === false);
          if (abilitiesData && abilitiesData.length > 0) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
@@ -229,7 +228,7 @@ export class CharacterActor extends fadeActor {
             }, this.actor);
 
             if (dialogResp?.resp?.result === true) {
-               await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
+               await this._setupSpecialAbilities(abilitiesData);
             }
          }
       }
@@ -240,10 +239,10 @@ export class CharacterActor extends fadeActor {
     */
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
-      const worldItem = await fadeFinder.getSpecies(nameInput);
+      const speciesItem = await fadeFinder.getSpecies(nameInput);
       const actorItem = this.items.find(item => item.type === 'species');
 
-      if (!worldItem) {
+      if (!speciesItem) {
          //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
          return;
       }
@@ -252,7 +251,7 @@ export class CharacterActor extends fadeActor {
       if (actorItem) {
          actorItem.delete();
       }
-      const itemData = [worldItem.toObject()];
+      const itemData = [speciesItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
 
       // Class special abilities
@@ -272,7 +271,7 @@ export class CharacterActor extends fadeActor {
          }, this.actor);
 
          if (dialogResp?.resp?.result === true) {
-            await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+            await this._setupSpecialAbilities(abilitiesData);
          }
       }
    }

@@ -8,13 +8,15 @@ export class SpeciesItem extends fadeItem {
       this.languageManager = new TagManager(this, 'languages'); // Initialize TagManager
    }
 
-   async createSpecialAbility() {
+   async createSpecialAbility(name = "", classKey = null) {
       // Retrieve the array
       const item = this.system.specialAbilities || [];
       // Define the new data
       const newItem = {
-         name: "",
-         target: 0
+         level: 1,
+         name,
+         target: 0,
+         classKey: classKey || this.system.key
       };
       // Add the new item to the array
       item.push(newItem);

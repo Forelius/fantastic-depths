@@ -11,6 +11,9 @@ export class ClassItemSheet extends fadeItemSheet {
          classes: ['fantastic-depths', 'sheet', 'item'],
          width: 650,
          height: 480,
+         dragDrop: [
+            { dragSelector: "[data-document-id]", dropSelector: "form" }
+         ],
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -41,7 +44,7 @@ export class ClassItemSheet extends fadeItemSheet {
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
-      // Abilities
+      // Ability score abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
@@ -69,18 +72,16 @@ export class ClassItemSheet extends fadeItemSheet {
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
    }
 
-   /**
-   * @override
-   * @param {any} event
-   * @param {any} data
-   * @returns
-   */
-   async _onDropItem(event, data) {
+   /** @inheritdoc */
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-      console.debug(droppedItem, event, data)
-      // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === 'specialAbility' && droppedItem.system.category === 'class') {
+      console.debug(droppedItem, event, data);
 
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'specialAbility') {
+         this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
       }      
    }
 

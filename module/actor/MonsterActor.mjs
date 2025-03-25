@@ -1,5 +1,4 @@
 // actor-character.mjs
-import { ClassItem } from "../item/ClassItem.mjs";
 import { fadeActor } from './fadeActor.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
@@ -34,9 +33,9 @@ export class MonsterActor extends fadeActor {
       await super.onUpdateActor(updateData, options, userId);
       // If classAbilityAs updated...
       if (updateData.system?.details?.classAbilityAs?.length > 0) {
-         const result = await ClassItem.getClassAbilitiesByCode(this.system?.details?.classAbilityAs, this);
+         const result = await fadeFinder.getClassAbilitiesByCode(this.system?.details?.classAbilityAs, this);
          if (result.classAbilityData) {
-            await this._setupSpecialAbilities(result.classKey, result.classAbilityData);
+            await this._setupSpecialAbilities(result.classAbilityData);
          }
       }
       if (updateData.system?.details?.castAs?.length > 0) {
@@ -66,7 +65,7 @@ export class MonsterActor extends fadeActor {
       if (this.id) {
          const saveAs = this.system.details.saveAs ?? null;
          if (saveAs) {
-            const savesData = await ClassItem.getClassSavesByCode(saveAs, this);
+            const savesData = await fadeFinder.getClassSavesByCode(saveAs, this);
             if (savesData) {
                await this._setupSavingThrows(savesData);
             } else {

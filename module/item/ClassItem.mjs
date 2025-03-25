@@ -4,7 +4,8 @@ import { fadeItem } from './fadeItem.mjs';
 
 export class ClassItem extends fadeItem {
    /** @override
-  * @protected */
+    * @protected 
+    */
    prepareDerivedData() {
       super.prepareDerivedData();
       this.system.classAbilities = this.system.classAbilities.sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
@@ -49,15 +50,16 @@ export class ClassItem extends fadeItem {
       await this.update({ "system.primeReqs": primeReqs });
    }
 
-   async createClassAbility() {
+   async createClassAbility(name="", classKey = null) {
       // Retrieve the primeReqs array
       const classAbilities = this.system.classAbilities || [];
 
       // Define the new primeReq data
       const newClassAbility = {
          level: 1,
-         name: "",
-         target: 0
+         name,
+         target: 0,
+         classKey: classKey || this.system.key
       };
 
       // Add the new primeReq to the array
@@ -85,72 +87,5 @@ export class ClassItem extends fadeItem {
          highest = isQualified && currentPerc > highest ? currentPerc : highest;
       }
       return highest;
-   }
-
-   static async getClassAbilitiesByCode(key, owner) {
-      // Extract class identifier and level from the input
-      let match = key.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
-      let result;
-      if (parsed) {
-         const classItem = await fadeFinder.getClass(null, parsed.classKey);
-         if (!classItem) {
-            console.warn(`Class item not found ${key}.`);
-         } else {
-            result = await ClassItem.getClassAbilities(classItem.name, parsed.classLevel)
-         }
-      } else {
-         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
-      }
-      return { classAbilityData: result, classKey: parsed?.classKey, classLevel: parsed?.classLevel };
-   }
-
-   static async getClassAbilities(className, classLevel) {
-      const classItem = await fadeFinder.getClass(className);
-      let result;
-      if (classItem) {
-         result = classItem.system.classAbilities.filter(a => a.level <= classLevel)
-            .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
-         result = result ? Object.values(result) : null;
-      }
-      return result?.length > 0 ? result : undefined;
-   }
-
-   /**
-    * Gets the class saving throw data for the specified level.
-    * @param {any} className The class item's full and case-sensitive name.
-    * @param {any} classLevel The class level
-    * @returns The saving throw data for the specified class and level, otherwise undefined
-    */
-   static async getClassSaves(className, classLevel) {
-      const classItem = await fadeFinder.getClass(className);
-      let result;
-      if (classItem) {
-         result = classItem.system.saves.find(save => classLevel <= save.level);
-      }
-      return result;
-   }
-
-   /**
-    * Gets the class saving throw data by code. 
-    * @param {any} key Format is a character/word followed by a number, no spaces. F1, C2, BA4
-    * @returns The saving throw data for the specified class and level, otherwise undefined.
-    */
-   static async getClassSavesByCode(key, owner) {
-      // Extract class identifier and level from the input
-      const match = key.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
-      let result;
-      if (parsed) {
-         const classItem = await fadeFinder.getClass(null, parsed.classKey);
-         if (!classItem) {
-            console.warn(`Class item not found ${key}.`);
-         } else {
-            result = classItem.system.saves.find(save => parsed.classLevel <= save.level);
-         }
-      } else {
-         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
-      }
-      return result;
    }
 }

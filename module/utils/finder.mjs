@@ -58,9 +58,9 @@ export class fadeFinder {
    /**
     * Retrieves a special ability.
     * @private
-    * @param {any} name
-    * @param {any} options
-    * @returns
+    * @param {any} name The special ability's name.
+    * @param {any} options Additional options for matching fields (category, customSaveCode).
+    * @returns The requested special ability, otherwise undefined.
     */
    static _getSpecialAbility(source, name, options) {
       let result;
@@ -104,6 +104,85 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve the class abilities from the specified class and for the specified level.
+    * @param {any} className The class name.
+    * @param {any} classLevel The level to retrieve abilities for.
+    * @returns An array or undefined.
+    */
+   static async getClassAbilities(className, classLevel) {
+      const classItem = await fadeFinder.getClass(className);
+      let result;
+      if (classItem) {
+         result = classItem.system.classAbilities.filter(a => a.level <= classLevel)
+            .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+         result = result ? Object.values(result) : null;
+      }
+      return result?.length > 0 ? result : undefined;
+   }
+
+   /**
+    * Retrieves a class's class abilities. This is not an array of the specialAbilities.
+    * @param {any} key The class key.
+    * @param {any} owner For debugging purpose, the requesting actor.
+    * @returns An object containing classAbilityData, classKey and classLevel properties.
+    */
+   static async getClassAbilitiesByCode(key, owner) {
+      // Extract class identifier and level from the input
+      let match = key.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
+      let result;
+      if (parsed) {
+         const classItem = await fadeFinder.getClass(null, parsed.classKey);
+         if (!classItem) {
+            console.warn(`Class item not found ${key}.`);
+         } else {
+            result = await fadeFinder.getClassAbilities(classItem.name, parsed.classLevel)
+         }
+      } else {
+         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
+      }
+      return { classAbilityData: result, classKey: parsed?.classKey, classLevel: parsed?.classLevel };
+   }
+
+   /**
+    * Gets the class saving throw data for the specified level.
+    * @param {any} className The class item's full and case-sensitive name.
+    * @param {any} classLevel The class level
+    * @returns The saving throw data for the specified class and level, otherwise undefined
+    */
+   static async getClassSaves(className, classLevel) {
+      const classItem = await fadeFinder.getClass(className);
+      let result;
+      if (classItem) {
+         result = classItem.system.saves.find(save => classLevel <= save.level);
+      }
+      return result;
+   }
+
+   /**
+    * Gets the class saving throw data by code. 
+    * @param {any} key Format is a character/word followed by a number, no spaces. F1, C2, BA4
+    * @returns The saving throw data for the specified class and level, otherwise undefined.
+    */
+   static async getClassSavesByCode(key, owner) {
+      // Extract class identifier and level from the input
+      const match = key.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
+      let result;
+      if (parsed) {
+         const classItem = await fadeFinder.getClass(null, parsed.classKey);
+         if (!classItem) {
+            console.warn(`Class item not found ${key}.`);
+         } else {
+            result = classItem.system.saves.find(save => parsed.classLevel <= save.level);
+         }
+      } else {
+         console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
+      }
+      return result;
+   }
+
    static async getRollTable(name) {
       const type = 'rolltable'
       let source = fadeFinder._getWorldSource(type);
@@ -137,6 +216,12 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve the specialAbility document from either the world or compendiums.
+    * @param {any} name The name of the special ability.
+    * @param {any} classKey The classKey of the special ability.
+    * @returns
+    */
    static async getClassAbility(name, classKey) {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);

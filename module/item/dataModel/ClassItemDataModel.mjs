@@ -72,7 +72,7 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             }
          ),
          saves: new fields.ArrayField(
-            new fields.ObjectField({}),           
+            new fields.ObjectField({}),
             {
                required: true,
                initial: []
@@ -94,10 +94,42 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                name: new fields.StringField({ required: true, initial: '' }),
                level: new fields.NumberField({ required: true }),
                target: new fields.NumberField({ required: true, nullable: true }),
-            }), {
-            required: false,
-         })
+               classKey: new fields.StringField({ nullable: true, initial: this.classKey }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
+         classItems: new fields.ArrayField(
+            new fields.SchemaField({
+               name: new fields.StringField({ required: true, initial: '' }),
+               level: new fields.NumberField({ required: true, nullable: false }),
+               autoRemove: new fields.BooleanField({ required: true, nullable: false, initial: true }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
       };
+   }
+
+   /**
+   * Migrate source data from some prior format into a new specification.
+   * The source parameter is either original data retrieved from disk or provided by an update operation.
+   * @inheritDoc
+   */
+   static migrateData(source) {
+      let classAbilities = source.classAbilities ?? [];
+      if (Array.isArray(classAbilities) === false) {
+         classAbilities = Object.values(classAbilities);
+      }
+      for (let classAbility of classAbilities) {
+         if (classAbility.classKey === null || classAbility.classKey === undefined) {
+            console.log(`Setting default for ${classAbility.name} to ${source.key}, was ${classAbility.classKey}.`);
+            classAbility.classKey = source.key;
+         }
+      }
+      return super.migrateData(source);
    }
 
    /** @override */
