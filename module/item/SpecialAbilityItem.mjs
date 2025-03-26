@@ -113,7 +113,6 @@ export class SpecialAbilityItem extends fadeItem {
 
    async getInlineDescription() {
       const description = await super.getInlineDescription();
-      //desc.replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div>')
       const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : '';
       return `${summary}${description}`;
    }

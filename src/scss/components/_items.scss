@@ -110,7 +110,7 @@
          }
 
          .rollable:hover img, .chatable:hover img {
-            opacity: 0; /* Or use display: none; */            
+            opacity: 0; /* Or use display: none; */
          }
 
          .rollable:hover {
@@ -127,13 +127,11 @@
       }
 
       .item-description {
-         padding: 0 2px;
+         margin: -3px 0 4px 0;
+         padding: 0 8px;
          display: block;
          flex: auto;
-
-         p {
-            margin-top: -6px;
-         }
+         text-align: justify;
       }
 
       .desc-collapsed {

@@ -81,8 +81,9 @@
             "abbr": "WR"
          },
          "Flight": {
-            "abbr": "FLY",
-            "long": "Flight"
+            "abbr": "Sec.",
+            "long": "Secondary",
+            "hint": "Secondary movement can be any other type of movement the creature is capable of besides ground movement."
          },
          "Movement": {
             "abbr": "MV",
@@ -94,7 +95,7 @@
             "day": "Overland",
             "dayHint": "<b>Miles per day. Overland travel.</b><p>Note that terrain effects this rate.</p>",
             "run": "Run",
-            "runHint": "<b>Feet or yards per round.</b><p>Used when running or flying at maximum speed during combat encounters.</p>",
+            "runHint": "<b>Feet or yards per round.</b><p>Used when moving at maximum speed during combat encounters.</p>",
             "total": "Total",
             "moveTurn": "Base Movement"
          },
@@ -991,8 +992,8 @@
             "hint": "<b>Max ground speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          },
          "maxFlight": {
-            "name": "Max. Flight Speed",
-            "hint": "<b>Max flying speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
+            "name": "Max. Secondary Speed",
+            "hint": "<b>Max secondary movement speed per turn.</b><p> Secondary movement can be any other type of movement the creature is capable of besides ground movement. Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          }
       },
       "rest": {
