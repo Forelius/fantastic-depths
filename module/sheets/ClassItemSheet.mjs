@@ -81,7 +81,10 @@ export class ClassItemSheet extends fadeItemSheet {
 
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'specialAbility') {
-         this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
+         if (droppedItem.system.category === 'save') {
+         } else {
+            this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
+         }
       }      
    }
 

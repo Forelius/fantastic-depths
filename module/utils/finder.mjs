@@ -74,6 +74,9 @@ export class fadeFinder {
             result = source.filter(item => item.type === type && item.system.category === options.category
                && (name === null || item.name.toLowerCase() === name.toLowerCase())
                && item.system.customSaveCode === options.customSaveCode)?.[0];
+         } else if (options?.categoryNEQ === 'save') {
+            result = source.filter(item => item.type === type && item.system.category !== options.categoryNEQ
+               && (name === null || item.name.toLowerCase() === name.toLowerCase()))?.[0];
          } else {
             result = source.filter(item => item.type === type && item.system.category === options?.category
                && item.name.toLowerCase() === name.toLowerCase())?.[0];
@@ -225,10 +228,10 @@ export class fadeFinder {
    static async getClassAbility(name, classKey) {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
-      let result = fadeFinder._getSpecialAbility(source, name, { category: 'class', classKey });
+      let result = fadeFinder._getSpecialAbility(source, name, { categoryNEQ: 'save', classKey });
       if (!result) {
          source = await fadeFinder._getPackSource(type);
-         result = fadeFinder._getSpecialAbility(source, name, { category: 'class', classKey });
+         result = fadeFinder._getSpecialAbility(source, name, { categoryNEQ: 'save', classKey });
       }
       return result;
    }

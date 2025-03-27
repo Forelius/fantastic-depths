@@ -780,7 +780,7 @@ export class fadeActor extends Actor {
       if (game.user.isGM === false) return;
       const promises = [];
       // Get this actor's class ability items.
-      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
 
       // Determine which special abilities are missing and need to be added.
       const addItems = [];
@@ -793,7 +793,7 @@ export class fadeActor extends Actor {
                newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                addItems.push(newAbility);
             } else {
-               console.warn(`The special ability ${abilityData.name}(${abilityData.classKey}) does not exist as a world item or in the fade compendiums.`);
+               console.warn(`The special ability ${abilityData.name} does not exist as a world item or in the fade compendiums.`);
             }
          }
       }

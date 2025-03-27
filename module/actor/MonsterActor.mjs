@@ -17,11 +17,6 @@ export class MonsterActor extends fadeActor {
       this._prepareWrestling();
    }
 
-   /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-   }
-
    /**
     * Intercept updateActor method call to log changes.
     * @override
