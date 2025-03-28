@@ -33,13 +33,13 @@ export class fadeActor extends Actor {
    /**
     * Pre-create method. Being used to set some defaults on the prototype token.
     * @override
-    * @param {any} data
-    * @param {any} options
-    * @param {any} userId
-    * @returns
+    * @param {any} documents Pending document instances to be created
+    * @param {any} operation Parameters of the database creation operation
+    * @param {any} user The User requesting the creation operation
+    * @returns Return false to cancel the creation operation entirely
     */
-   async _preCreate(data, options, userId) {
-      const allowed = await super._preCreate(data, options, userId);
+   async _preCreate(documents, operation, user) {
+      const allowed = await super._preCreate(documents, operation, user);
       const fdPath = `systems/fantastic-depths/assets/img/actor`;
       const changeData = {};
 
@@ -65,20 +65,20 @@ export class fadeActor extends Actor {
                "prototypeToken.sight.enabled": true,
                "prototypeToken.sight.visionMode": "basic"
             });
-            assignIfUndefined(data, changeData, "img", `${fdPath}/fighter1.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.texture.src", `${fdPath}/fighter1a.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.FRIENDLY);
-            assignIfUndefined(data, changeData, "prototypeToken.actorLink", true);
-            assignIfUndefined(data, changeData, "prototypeToken.scale", 0.9);
-            assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
+            assignIfUndefined(documents, changeData, "img", `${fdPath}/fighter1.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.texture.src", `${fdPath}/fighter1a.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.FRIENDLY);
+            assignIfUndefined(documents, changeData, "prototypeToken.actorLink", true);
+            assignIfUndefined(documents, changeData, "prototypeToken.scale", 0.9);
+            assignIfUndefined(documents, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
             break;
          case "monster":
-            assignIfUndefined(data, changeData, "img", `${fdPath}/monster1.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.texture.src", `${fdPath}/monster1a.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER);
-            assignIfUndefined(data, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.HOSTILE);
-            assignIfUndefined(data, changeData, "prototypeToken.actorLink", false);
-            assignIfUndefined(data, changeData, "prototypeToken.scale", 1);
+            assignIfUndefined(documents, changeData, "img", `${fdPath}/monster1.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.texture.src", `${fdPath}/monster1a.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER);
+            assignIfUndefined(documents, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.HOSTILE);
+            assignIfUndefined(documents, changeData, "prototypeToken.actorLink", false);
+            assignIfUndefined(documents, changeData, "prototypeToken.scale", 1);
             break;
       }
 
@@ -108,7 +108,7 @@ export class fadeActor extends Actor {
       if (this.id) {
          this._prepareEncumbrance(this.type);
          this._prepareDerivedMovement();
-         this._prepareArmorClass();
+         game.fade.registry.getSystem('actorArmor').prepareDerivedData(this);
       } else {
          //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
       }
@@ -524,7 +524,6 @@ export class fadeActor extends Actor {
       });
    }
 
-
    /**
     * Get this actor's defense masteries for all equipped weapons.
     * @public
@@ -664,98 +663,7 @@ export class fadeActor extends Actor {
       }
       systemData.spellSlots = spellSlots;
    }
-
-   /**
-    * @protected
-    * Prepare derived armor class values.
-    */
-   _prepareArmorClass() {
-      const acDigest = [];
-      const dexMod = (this.system.abilities?.dex.mod ?? 0);
-      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.system.mod.baseAc;
-      let ac = {};
-      ac.nakedAAC = 19 - baseAC;
-      ac.naked = baseAC;
-      // AC value is used for wrestling rating and should not include Dexterity bonus.
-      ac.value = CONFIG.FADE.Armor.acNaked;
-      ac.total = baseAC;
-      ac.mod = 0;
-      ac.shield = 0;
-
-      const naturalArmor = this.items.find(item => item.type === 'armor' && item.system.natural);
-      this.system.equippedArmor = this.items.find(item => item.type === 'armor' && item.system.equipped && !item.system.isShield);
-      const equippedShield = this.items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
-
-      if (dexMod !== 0) {
-         acDigest.push(game.i18n.localize('FADE.Armor.dexterityBonus', { bonus: dexMod }));
-      }
-
-      // If natural armor
-      if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
-         ac.naked = naturalArmor.system.totalAC - dexMod;
-         ac.value = ac.naked;
-         ac.total = ac.naked;
-         naturalArmor.system.equipped = true;
-         acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
-      }
-
-      // If an equipped armor is found...
-      if (this.system.equippedArmor) {
-         ac.value = this.system.equippedArmor.system.ac;
-         // What was ac.mod for??
-         ac.mod += this.system.equippedArmor.system.mod ?? 0;
-         // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total = this.system.equippedArmor.system.totalAC - dexMod;
-         acDigest.push(`${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
-      }
-
-      // If a shield is equipped...
-      if (equippedShield) {
-         ac.value -= equippedShield.system.ac;
-         ac.shield = equippedShield.system.totalAC;
-         ac.total -= equippedShield.system.totalAC;
-         acDigest.push(`${equippedShield.name}: ${equippedShield.system.totalAC}`);
-      }
-
-      if (this.system.mod.baseAc != 0) {
-         acDigest.push(`${game.i18n.localize('FADE.Armor.modBase')}: ${this.system.mod.baseAc}`);
-      }
-      if (this.system.mod.ac != 0) {
-         ac.total -= this.system.mod.ac;
-         acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.ac}`);
-      }
-
-      ac.nakedRanged = ac.total;
-      ac.totalRanged = ac.total;
-      // Normal Calcs done at this point --------------------------------
-
-      if (this.system.mod.upgradeAc && this.system.mod.upgradeAc < ac.total) {
-         ac.total = this.system.mod.upgradeAc;
-         ac.naked = this.system.mod.upgradeAc;
-         acDigest.push(`AC upgraded to ${this.system.mod.upgradeAc}`);
-      }
-      if (this.system.mod.upgradeRangedAc && this.system.mod.upgradeRangedAc < ac.totalRanged) {
-         ac.totalRanged = this.system.mod.upgradeRangedAc;
-         ac.nakedRanged = this.system.mod.upgradeRangedAc;
-         acDigest.push(`Ranged AC upgraded to ${this.system.mod.upgradeRangedAc}`);
-      }
-
-      // Now other mods. Dexterity bonus already applied above.
-      ac.nakedAAC = 19 - ac.naked;
-      ac.totalAAC = 19 - ac.total;
-      ac.totalRangedAAC = 19 - ac.totalRanged;
-      ac.nakedRangedAAC = 19 - ac.nakedRanged;
-
-      // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (masteryEnabled) {
-         ac.mastery = this.getDefenseMasteries(ac);
-      }
-
-      this.system.ac = ac;
-      this.system.acDigest = acDigest;
-   }
-
+   
    /**
     * Prepare the actor's movement rate values.
     */

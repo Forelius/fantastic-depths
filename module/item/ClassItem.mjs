@@ -51,20 +51,37 @@ export class ClassItem extends fadeItem {
    }
 
    async createClassAbility(name="", classKey = null) {
-      // Retrieve the primeReqs array
+      // Retrieve the array
       const classAbilities = this.system.classAbilities || [];
 
-      // Define the new primeReq data
-      const newClassAbility = {
+      // Define the new data
+      const newItem = {
          level: 1,
          name,
          target: 0,
          classKey: classKey || this.system.key
       };
 
-      // Add the new primeReq to the array
-      classAbilities.push(newClassAbility);
+      // Add the new item to the array
+      classAbilities.push(newItem);
       await this.update({ "system.classAbilities": classAbilities });
+   }
+
+   async createClassItem(name="", type=null) {
+      // Retrieve the array
+      const items = this.system.classItems || [];
+
+      // Define the new data
+      const newItem = {
+         level: 1,
+         name,
+         type,
+         changes: []
+      };
+
+      // Add the new item to the array
+      items.push(newItem);
+      await this.update({ "system.classItems": items });
    }
 
    getXPBonus(abilities) {

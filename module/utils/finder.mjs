@@ -54,7 +54,6 @@ export class fadeFinder {
       return source?.filter(item => item.id === id)?.[0];
    }
 
-
    /**
     * Retrieves a special ability.
     * @private

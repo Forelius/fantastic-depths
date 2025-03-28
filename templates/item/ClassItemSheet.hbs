@@ -59,6 +59,7 @@
    <a class='item' data-tab='saves'>{{localize 'FADE.Actor.Saves.long'}}</a>
    <a class='item' data-tab='primeReqs'>{{localize 'FADE.tabs.primeRequisites'}}</a>
    <a class='item' data-tab='classAbilities'>{{localize 'FADE.SpecialAbility.plural'}}</a>
+   <a class='item' data-tab='classItems'>{{localize 'FADE.items'}}</a>
    {{#if isSpellcaster}}
    <a class='item' data-tab='spells'>{{localize 'FADE.tabs.spells'}}</a>
    {{/if}}
@@ -78,6 +79,9 @@
    </div>
    <div class='tab' data-group='primary' data-tab='classAbilities'>
       {{> "classAbilities"}}
+   </div>
+   <div class='tab' data-group='primary' data-tab='classItems'>
+      {{> "classItems"}}
    </div>
    {{#if isSpellcaster}}
    <div class='tab' data-group='primary' data-tab='spells'>

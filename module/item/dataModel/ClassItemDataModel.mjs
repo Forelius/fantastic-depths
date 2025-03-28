@@ -102,9 +102,10 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             }),
          classItems: new fields.ArrayField(
             new fields.SchemaField({
-               name: new fields.StringField({ required: true, initial: '' }),
                level: new fields.NumberField({ required: true, nullable: false }),
-               autoRemove: new fields.BooleanField({ required: true, nullable: false, initial: true }),
+               name: new fields.StringField({ required: true, initial: '' }),
+               type: new fields.StringField({ required: true, initial: '' }),
+               changes: new fields.StringField({ required: true, initial: '' }),
             }),
             {
                required: false,

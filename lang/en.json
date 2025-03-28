@@ -720,7 +720,7 @@
          "description": "Description",
          "gmOnly": "GM Only",
          "levels": "Levels",
-         "primeRequisites": "Prime Requisites",
+         "primeRequisites": "Prime Reqs",
          "attributes": "Attributes"
       },
       "AttackTypes": {
@@ -928,6 +928,9 @@
       "cursed": "Cursed",
       "rounds": "rounds",
       "turns": "turns",
+      "items": "Items",
+      "type": "Type",
+      "changes": "Changes",
       "showResult": {
          "name": "Result",
          "hint": "Show the result?"

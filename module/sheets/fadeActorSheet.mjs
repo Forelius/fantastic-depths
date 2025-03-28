@@ -521,7 +521,7 @@ export class fadeActorSheet extends ActorSheet {
       } else if (dataset.test === 'ability') {
          await game.fade.registry.getSystem('abilityCheck').execute({ actor: this.actor, event });
       } else if (dataset.test === 'morale') {
-         await game.fade.registry.getSystem('moraleCheck').execute({ actor: this.actor, event });
+         await game.fade.registry.getSystem('MoraleCheck').execute({ actor: this.actor, event });
       }
       else if (dataset.test === 'save') {
          this.actor.rollSavingThrow(dataset.type, event);

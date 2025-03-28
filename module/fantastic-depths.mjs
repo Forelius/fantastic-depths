@@ -3,8 +3,7 @@ import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
 import { AddonIntegration } from './sys/addonIntegration.mjs'
-import { fadeRegistry } from './sys/fadeRegistry.mjs'
-import { moraleCheck, abilityCheck } from './sys/defaultSystems.mjs'
+import { fadeRegistry } from './sys/registry/fadeRegistry.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
@@ -126,18 +125,8 @@ Hooks.once('init', async function () {
 
    await handleAsyncInit();
 
-   // Preload Handlebars templates.
-   await preloadHandlebarsTemplates();
-
-   registerDefaultSystems();
-
    Hooks.call("afterFadeInit", game.fade.registry);
 });
-
-function registerDefaultSystems() {
-   game.fade.registry.registerSystem('moraleCheck', new moraleCheck());
-   game.fade.registry.registerSystem('abilityCheck', new abilityCheck());
-}
 
 function registerSheets() {
    // Register sheet application classes
@@ -228,6 +217,11 @@ async function handleAsyncInit() {
    Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
    const fxMgr = new EffectManager();
    await fxMgr.OnGameInit();
+
+   // Preload Handlebars templates.
+   await preloadHandlebarsTemplates();
+
+   await game.fade.registry.registerDefaultSystems();
 }
 
 /* -------------------------------------------- */

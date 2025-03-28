@@ -48,5 +48,6 @@ export const preloadHandlebarsTemplates = async function () {
       classPrimeReqs: 'systems/fantastic-depths/templates/item/parts/class-primereqs.hbs',
       classSpells: 'systems/fantastic-depths/templates/item/parts/class-spells.hbs',
       classAbilities: 'systems/fantastic-depths/templates/item/parts/class-abilities.hbs',
+      classItems: 'systems/fantastic-depths/templates/item/parts/class-items.hbs',
    });
 };

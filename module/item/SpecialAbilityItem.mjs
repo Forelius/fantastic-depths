@@ -59,8 +59,8 @@ export class SpecialAbilityItem extends fadeItem {
       const rollData = this.getRollData();
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
-      let rolled = null;
-
+      //let rolled = null;
+      let roll = null;
       if (await this.#tryUseUsage(true) === false) {
          canProceed = false;
       } else if (hasRoll === true) {
@@ -90,7 +90,8 @@ export class SpecialAbilityItem extends fadeItem {
          }
          rollData.formula = dialogResp?.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
          const rollContext = { ...rollData, ...dialogResp || {} };
-         rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         //rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         roll = await new Roll(rollData.formula, rollContext);
       }
 
       if (canProceed === true) {
@@ -102,7 +103,7 @@ export class SpecialAbilityItem extends fadeItem {
             caller: this,
             resp: dialogResp,
             context: instigator,
-            roll: rolled,
+            roll
          };
          const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
          result = builder.createChatMessage();

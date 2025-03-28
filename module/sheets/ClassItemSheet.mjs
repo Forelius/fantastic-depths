@@ -1,5 +1,5 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs'; 
+import { fadeItemSheet } from './fadeItemSheet.mjs';
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
@@ -77,7 +77,7 @@ export class ClassItemSheet extends fadeItemSheet {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-      console.debug(droppedItem, event, data);
+      const validItemTypes = ['item', 'weapon', 'armor'];
 
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'specialAbility') {
@@ -85,7 +85,9 @@ export class ClassItemSheet extends fadeItemSheet {
          } else {
             this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
          }
-      }      
+      } else if (validItemTypes.includes(droppedItem.type)) {
+         this.item.createClassItem(droppedItem.name, droppedItem.type);
+      }
    }
 
    /**
@@ -97,12 +99,16 @@ export class ClassItemSheet extends fadeItemSheet {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type;
+      const validItemTypes = ['item', 'weapon', 'armor'];
+
       if (type === 'classSave') {
          this.item.createClassSave();
       } else if (type === 'primeReq') {
          this.item.createPrimeReq();
       } else if (type === 'classAbility') {
          this.item.createClassAbility();
+      } else if (validItemTypes.includes(type)) {
+         this.item.createClassItem();
       }
       this.render();
    }
