@@ -47,6 +47,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          rollResult,
          item,
          description,
+         itemDescription: await item.getInlineDescription(),
          isHeal: damageRoll.type === "heal",
          damageRoll,
          targets: targetTokens,
