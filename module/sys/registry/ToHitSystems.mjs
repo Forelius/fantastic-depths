@@ -9,6 +9,55 @@ export class ToHitSystemBase {
    }
 
    /**
+    * Get the attack roll formula for the specified weapon, attack type, mod and target.
+    * @public
+    * @param {any} weapon The weapon being used to attack with.
+    * @param {any} attackType The type of attack. Values are melee, missile, breath and save.
+    * @param {any} options An object containing one or more of the following:
+    *    mod - A manual modifier entered by the user.
+    *    target - This doesn't work when there are multiple targets.
+    *    targetWeaponType - For weapon mastery system, the type of weapon the target is using (monster or handheld).
+    * @returns
+    */
+   getAttackRoll(actor, weapon, attackType, options = {}) {
+      const weaponData = weapon.system;
+      const targetData = options.target?.system;
+      let formula = '1d20';
+      let digest = [];
+      let modifier = 0;
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+
+      if (options.mod && options.mod !== 0) {
+         modifier += options.mod;
+         //formula = `${formula}+@mod`; 
+         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: options.mod }));
+      }
+
+      if (toHitSystem === 'aac' && actor.system.thbonus !== 0) {
+         modifier += actor.system.thbonus;
+         digest.push(`${game.i18n.localize('FADE.Actor.THBonus')}: ${actor.system.thbonus}`);
+      }
+
+      if (attackType === "melee") {
+         modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, targetData);
+      } else {
+         // Missile attack
+         modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammo);
+      }
+
+      if (masteryEnabled && weaponData.mastery !== "" && weaponData.mastery !== null) {
+         modifier += this.#getMasteryAttackRollMods(actor, weaponData, options, digest, attackType);
+      }
+
+      if (modifier !== 0) {
+         formula = `${formula}+${modifier}`;
+      }
+
+      return { formula, digest };
+   }
+
+   /**
     * @param {any} attacker normally the attacking token, but could also be an actor.
     * @param {any} weapon the weapon item used for the attack
     * @param {any} targetTokens an array of target tokens, if any.
@@ -121,6 +170,83 @@ export class ToHitSystemBase {
          return sum;
       }
 
+
+   #getMasteryAttackRollMods(actor, weaponData, options, digest, attackType) {
+      let result = 0;
+      const attackerMastery = actor.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
+      if (attackerMastery) {
+         const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
+         // Get the to hit bonus, if any.
+         const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
+         if (toHitMod > 0) {
+            result += toHitMod;
+            const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
+            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
+         }
+      } else if (attackType === "missile" && actor.type === "character" && actor.system.details.species === "Human") {
+         // Unskilled use for humans
+         result -= 1;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
+      }
+      return result;
+   }
+
+   #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammo) {
+      let result = 0;
+      const systemData = actor.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
+         result += weaponData.mod.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
+      }
+      if (systemData.mod.combat?.toHitRanged !== 0) {
+         result += systemData.mod.combat.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
+         result += systemData.abilities.str.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+      } else if (systemData.abilities && systemData.abilities.dex.mod) {
+         result += systemData.abilities.dex.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
+      }
+      if (targetMods && targetMods.selfToHitRanged !== 0) {
+         result += targetMods.selfToHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
+      }
+      return result;
+   }
+
+   #getMeleeAttackRollMods(actor, weaponData, digest, targetData) {
+      let result = 0;
+      const systemData = actor.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
+         result += weaponData.mod.toHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
+      }
+      if (systemData.mod?.combat.toHit !== 0) {
+         result += systemData.mod.combat.toHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
+         result += systemData.abilities.str.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+      }
+      if (targetMods && targetMods.selfToHit !== 0) {
+         result += targetMods.selfToHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
+      }
+
+      return result;
+   }
+
    /**
     * Calculate the AC based on weapon mastery rules.
     * @private
@@ -131,7 +257,7 @@ export class ToHitSystemBase {
     * @returns
     */
    #calcMasteryDefenseAC(attackerWeaponType, targetResult, targetToken, ac, attackType) {
-      const defenseMastery = targetToken.actor.getBestDefenseMastery(attackerWeaponType);
+      const defenseMastery = this.#getBestDefenseMastery(targetToken.actor, attackerWeaponType);
       if (defenseMastery && defenseMastery.acBonus !== Infinity) {
          // Get the appropriate attacks against weapon type.
          const attAgainst = attackerWeaponType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM;
@@ -189,6 +315,58 @@ export class ToHitSystemBase {
          maxAttAgainst: defenseMastery.acBonusAT,
          defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total,
          masteryName: defenseMastery.name
+      });
+   }
+
+
+   /**
+    * Finds the best defense mastery for the specified attacker weapon type,
+    * taking into account the number of times the actor has been attacked this round,
+    * and the fact that the AC bonus only applies a limited number of times per round.
+    *
+    * The actor’s combat object contains:
+    *   - system.combat.attAgainstH: number of handheld attacks this round
+    *   - system.combat.attAgainstM: number of monster attacks this round
+    *
+    * Each mastery in system.ac.mastery has the following properties:
+    *   - acBonus:      the AC bonus value.
+    *   - acBonusType:  indicates which attack types the bonus applies to:
+    *                   "handheld", "monster", or "all" (applies to both).
+    *   - acBonusAT:    the maximum number of attacks per round for which this bonus applies.
+    *
+    * @public
+    * @param {string} attackerWeaponType - "handheld" or "monster"
+    * @param {string} attackDirection - "front" or "rear"
+    * @returns {object|null} The best defense mastery, or null if none qualifies.
+    */
+   #getBestDefenseMastery(actor, attackerWeaponType, attackDirection = 'front') {
+      const defenseMasteries = actor.system.ac.mastery;
+      if (!defenseMasteries || defenseMasteries.length === 0) {
+         return null;
+      }
+
+      // Determine how many attacks of this type have been made this round.
+      // (For "handheld" attacks use attAgainstH; for "monster" attacks use attAgainstM)
+      const attackCount = attackerWeaponType === 'handheld'
+         ? (actor.system.combat.attAgainstH || 0)
+         : (actor.system.combat.attAgainstM || 0);
+
+      // Filter masteries to those that:
+      //   1. Apply to this weapon type (or all types).
+      //   2. Still have their bonus available (i.e. current attackCount is less than acBonusAT).
+      const applicableMasteries = defenseMasteries.filter(mastery => {
+         const typeMatches = (mastery.acBonusType === attackerWeaponType || mastery.acBonusType === 'all');
+         const bonusAvailable = attackCount < mastery.acBonusAT || mastery.acBonusAT === null;
+         return typeMatches && bonusAvailable;
+      });
+
+      if (applicableMasteries.length === 0) {
+         return null;
+      }
+
+      // Choose the mastery with the best (lowest) AC bonus.
+      return applicableMasteries.reduce((best, current) => {
+         return (current.acBonus < best.acBonus) ? current : best;
       });
    }
 }

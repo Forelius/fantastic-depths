@@ -3,6 +3,7 @@ import { fadeActor } from './fadeActor.mjs';
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { ClassItem } from '/systems/fantastic-depths/module/item/ClassItem.mjs';
 
 export class CharacterActor extends fadeActor {
 
@@ -222,8 +223,12 @@ export class CharacterActor extends fadeActor {
 
          // Class special abilities
          const abilityNames = this.items.filter(item => item.type === 'specialAbility').map(item => item.name);
-         const abilitiesData = (await fadeFinder.getClassAbilities(className, currentLevel))?.filter(item => abilityNames.includes(item.name) === false);
-         if (abilitiesData && abilitiesData.length > 0) {
+         const validItemTypes = ClassItem.ValidItemTypes;
+         const itemNames = this.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
+         const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
+         const itemsData = await fadeFinder.getClassItems(className, currentLevel);
+         if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
+            || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
                title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
@@ -238,7 +243,11 @@ export class CharacterActor extends fadeActor {
 
             if (dialogResp?.resp?.result === true) {
                await this._setupSpecialAbilities(abilitiesData);
+               await this._setupItems(itemsData);
             }
+         } else {
+            await this._setupSpecialAbilities(abilitiesData);
+            await this._setupItems(itemsData);
          }
       }
    }

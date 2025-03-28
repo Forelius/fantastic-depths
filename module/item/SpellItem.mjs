@@ -150,7 +150,7 @@ export class SpellItem extends fadeItem {
             label: "Attack",
             rollMode
          };
-         dialogResp = await DialogFactory(dataset, casterActor, { targetToken: targetToken });
+         dialogResp = await DialogFactory(dataset, casterActor, { targetToken });
          if (dialogResp?.resp) {
             const rollOptions = {
                mod: dialogResp.resp.mod,
@@ -159,7 +159,8 @@ export class SpellItem extends fadeItem {
             if (dialogResp.resp.targetWeaponType) {
                rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
             }
-            const rollInfo = casterActor.getAttackRoll(this, this.system.attackType, rollOptions);
+
+            const rollInfo = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, this.system.attackType, rollOptions);
             rollData.formula = rollInfo.formula;
             digest = rollInfo.digest;
             const rollContext = { ...rollData };

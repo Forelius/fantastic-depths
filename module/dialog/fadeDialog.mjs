@@ -62,12 +62,14 @@ export class fadeDialog {
       return result;
    }
 
-   static async getSpellAttackDialog(dataset, caller) {
+   static async getSpellAttackDialog(dataset, caller, opt) {
       const dialogData = {};
       const dialogResp = { caller };
 
       dialogData.label = dataset.label;
       dialogData.targetWeaponTypes = fadeDialog.getWeaponTypes("spell", caller, dialogData);
+      // Determines which target weapon type to pick by default.
+      dialogData.selectedWeaponType = opt.targetToken?.actor.getWeaponType();
 
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/spell-attack-roll.hbs';

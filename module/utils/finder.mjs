@@ -18,6 +18,8 @@ export class fadeFinder {
       let result = null;
       if (type === 'rolltable') {
          result = await fadeFinder._getRollTablePack()?.getDocuments();
+      } else if (type === 'anyItem') {
+         result = await fadeFinder._getItemPack()?.getDocuments();
       } else {
          result = await fadeFinder._getItemPack()?.getDocuments({ type });
       }
@@ -34,6 +36,8 @@ export class fadeFinder {
       let result = null;
       if (type === 'rolltable') {
          result = game.tables;
+      } else if (type === 'anyItem') {
+         result = game.items;
       } else {
          result = game.items.filter(item => item.type === type);
       }
@@ -148,6 +152,23 @@ export class fadeFinder {
    }
 
    /**
+    * Retrieves class items from the class. This is not an array of items, just the data from the class.
+    * @param {any} className The class name.
+    * @param {any} classLevel The level to retrieve abilities for.
+    * @returns An array or undefined.
+    */
+   static async getClassItems(className, classLevel) {
+      const classItem = await fadeFinder.getClass(className);
+      let result;
+      if (classItem) {
+         result = classItem.system.classItems.filter(a => a.level <= classLevel)
+            .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+         result = result ? Object.values(result) : null;
+      }
+      return result?.length > 0 ? result : undefined;
+   }
+
+   /**
     * Gets the class saving throw data for the specified level.
     * @param {any} className The class item's full and case-sensitive name.
     * @param {any} classLevel The class level
@@ -231,6 +252,23 @@ export class fadeFinder {
       if (!result) {
          source = await fadeFinder._getPackSource(type);
          result = fadeFinder._getSpecialAbility(source, name, { categoryNEQ: 'save', classKey });
+      }
+      return result;
+   }
+
+   /**
+    * Retrieve the item document from either the world or compendiums.
+    * @param {any} name The name of the item.
+    * @param {*} types An array strings representing the item types
+    * @returns
+    */
+   static async getItem(name, types) {
+      const type = 'anyItem';
+      let source = fadeFinder._getWorldSource(type);
+      let result = source.filter(item => types.includes(item.type) && (name === null || item.name.toLowerCase() === name.toLowerCase()))?.[0];
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = source.filter(item => types.includes(item.type) && (name === null || item.name.toLowerCase() === name.toLowerCase()))?.[0];
       }
       return result;
    }

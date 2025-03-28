@@ -3,6 +3,8 @@ import { SavingThrowsData } from './dataModel/ClassItemDataModel.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
 export class ClassItem extends fadeItem {
+   static ValidItemTypes = ['item', 'weapon', 'armor'];
+
    /** @override
     * @protected 
     */
@@ -76,7 +78,7 @@ export class ClassItem extends fadeItem {
          level: 1,
          name,
          type,
-         changes: []
+         changes: ""
       };
 
       // Add the new item to the array

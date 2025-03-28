@@ -77,7 +77,6 @@ export class ClassItemSheet extends fadeItemSheet {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-      const validItemTypes = ['item', 'weapon', 'armor'];
 
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'specialAbility') {
@@ -85,7 +84,7 @@ export class ClassItemSheet extends fadeItemSheet {
          } else {
             this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
          }
-      } else if (validItemTypes.includes(droppedItem.type)) {
+      } else if (ClassItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createClassItem(droppedItem.name, droppedItem.type);
       }
    }
@@ -99,7 +98,6 @@ export class ClassItemSheet extends fadeItemSheet {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type;
-      const validItemTypes = ['item', 'weapon', 'armor'];
 
       if (type === 'classSave') {
          this.item.createClassSave();
@@ -107,7 +105,7 @@ export class ClassItemSheet extends fadeItemSheet {
          this.item.createPrimeReq();
       } else if (type === 'classAbility') {
          this.item.createClassAbility();
-      } else if (validItemTypes.includes(type)) {
+      } else if (ClassItem.ValidItemTypes.includes(type)) {
          this.item.createClassItem();
       }
       this.render();

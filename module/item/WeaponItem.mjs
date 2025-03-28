@@ -154,7 +154,7 @@ export class WeaponItem extends GearItem {
          const targetTokens = Array.from(game.user.targets);
          const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
+         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken });
          canAttack = dialogResp?.resp?.rolling === true;
          if (canAttack) {
             // If not breath...
@@ -167,7 +167,8 @@ export class WeaponItem extends GearItem {
                if (dialogResp.resp.targetWeaponType) {
                   rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                }
-               let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
+
+               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, dialogResp.resp.attackType, rollOptions);
                rollData.formula = attackRoll.formula;
                digest = attackRoll.digest;
                hasRoll = true;
