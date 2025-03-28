@@ -498,7 +498,7 @@ export class ToHitDarkDungeons extends ToHitSystemBase {
    }
 }
 
-export class ToHitHeroic {
+export class ToHitHeroic extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} rollTotal The attack roll total
