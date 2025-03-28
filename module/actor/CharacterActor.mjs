@@ -214,8 +214,8 @@ export class CharacterActor extends fadeActor {
 
          // Class special abilities
          const abilityNames = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.name);
-         const abilitiesData = (await ClassItem.getClassAbilities(className, currentLevel))?.filter(item => abilityNames.includes(item.name) === false);
-         if (abilitiesData && abilitiesData.length > 0) {
+         const abilitiesData = await ClassItem.getClassAbilities(className, currentLevel);
+         if (abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
                title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
