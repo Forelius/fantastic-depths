@@ -1,6 +1,6 @@
 import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './toHitSystems.mjs';
 import { MoraleCheck, AbilityCheck, ActorArmor } from './defaultSystems.mjs'
-import { EncumbranceSystem } from './encumbranceSystem.mjs';
+import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './encumbranceSystem.mjs';
 
 export class fadeRegistry {
    constructor() {
@@ -12,7 +12,6 @@ export class fadeRegistry {
       this.registerSystem('moraleCheck', new MoraleCheck());
       this.registerSystem('abilityCheck', new AbilityCheck());
       this.registerSystem('actorArmor', new ActorArmor());
-      this.registerSystem('encumbranceSystem', new EncumbranceSystem());
 
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       if (toHitSystem === 'thac0') {
@@ -25,6 +24,15 @@ export class fadeRegistry {
          this.registerSystem('toHitSystem', new ToHitDarkDungeons());
       } else if (toHitSystem === 'heroic') {
          this.registerSystem('toHitSystem', new ToHitHeroic());
+      }
+
+      const encSetting = game.settings.get(game.system.id, "encumbrance");
+      if (encSetting === 'classic') {
+         this.registerSystem('encumbranceSystem', new ClassicEncumbrance());
+      } else if (encSetting === 'expert') {
+         this.registerSystem('encumbranceSystem', new ExpertEncumbrance());
+      } else {
+         this.registerSystem('encumbranceSystem', new BasicEncumbrance({ encSetting }));
       }
    }
 

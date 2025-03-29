@@ -1,6 +1,5 @@
 export const SYSTEM_ID = "fantastic-depths";
 export const FADE = {};
-const path = 'systems/fantastic-depths/assets/';
 
 /**
  * The set of Ability Scores used within the system.
@@ -73,35 +72,6 @@ FADE.Operators = {
    gte: ">=",
    lte: "<="
 }
-FADE.Encumbrance = {
-   armorChoices: {
-      none: "none",
-      light: "light",
-      heavy: "heavy"
-   },
-   maxMove: 120, // The default maximum movement rate per turn for an unencumbered character.
-   maxLoad: 2400, // The default maximum load (cn) that a character can carry.
-   classicPC: [
-      { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
-      { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
-      { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
-      { wtPortion: 1, mvFactor: 0.25, name: "encumbered" },
-      { wtPortion: 0, mvFactor: 0, name: "over" },
-   ],
-   expertPC: [
-      { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
-      { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
-      { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
-      { wtPortion: 1.5, mvFactor: 0.25, name: "encumbered" },
-      { wtPortion: 1, mvFactor: 0.125, name: "heavily" },
-      { wtPortion: 0, mvFactor: 0, name: "over" },
-   ],
-   monster: [
-      { wtPortion: 2, mvFactor: 1.0, name: "unencumbered" },
-      { wtPortion: 1, mvFactor: 0.5, name: "moderately" },
-      { wtPortion: 0, mvFactor: 0, name: "over" },
-   ]
-};
 FADE.abilityScoreModSystem = {};
 FADE.abilityScoreModSystem.darkdungeons = {
    key: 'darkdungeons',
@@ -133,19 +103,6 @@ FADE.abilityScoreModSystem.darkdungeons = {
       { max: 100, value: 20 }
    ]
 };
-//FADE.abilityScoreModSystem.simple = {
-//   key: 'simple',
-//   mods: [
-//      { max: 4, value: -1, maxRetainers: 1, loyaltyMod: -2 },
-//      { max: 6, value: -1, maxRetainers: 2, loyaltyMod: -2 },
-//      { max: 8, value: 0, maxRetainers: 3, loyaltyMod: -1 },
-//      { max: 12, value: 0, maxRetainers: 4, loyaltyMod: 0 },
-//      { max: 14, value: 0, maxRetainers: 5, loyaltyMod: 1 },
-//      { max: 15, value: 1, maxRetainers: 5, loyaltyMod: 1 },
-//      { max: 17, value: 1, maxRetainers: 6, loyaltyMod: 2 },
-//      { max: 18, value: 1, maxRetainers: 7, loyaltyMod: 2 }
-//   ]
-//};
 FADE.Actions = [
    {
       id: "attack",

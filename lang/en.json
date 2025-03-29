@@ -967,7 +967,7 @@
 
    "SETTINGS": {
       "Encumbrance": {
-         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much. Armor Only determines movement based on armor weight. Dark Dungeons assumes a max load of 2400 coins and five movement rates. Classic sets a max load of 1600 coins, tracks armor, weapons and loot weight, assumes 80 coins for adventuring gear and has four movement rates.",
+         "Hint": "Enable automatic tracking of encumbrance and the calculation of movement rates. The Armor Only setting calculates movement based on armor weight. Classic sets a max load of 1,600 coins, tracks armor, weapons and loot weight, while adding 80 coins for adventuring gear and having four movement rates. Dark Dungeons assumes a max load of 2,400 coins, tracks weight of all items carried and has five movement rates.",
          "Name": "Encumbrance Tracking",
          "None": "None",
          "Basic": "Armor Only",

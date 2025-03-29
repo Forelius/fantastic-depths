@@ -75,7 +75,7 @@ export class CharacterDataModel extends fadeActorDataModel {
       for (let [key, ability] of Object.entries(this.abilities)) {         
          ability.total = ability.value;
       }
-      this.encumbrance.max = this.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
+      this.encumbrance.max = this.encumbrance.max || game.fade.registry.getSystem("encumbranceSystem").CONFIG.maxLoad;
    }
 
    /** @override */

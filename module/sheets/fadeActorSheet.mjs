@@ -307,52 +307,10 @@ export class fadeActorSheet extends ActorSheet {
       context.savingThrows = savingThrows;
       context.conditions = conditions;
 
-      this._calcCategoryEnc(context);
+      Object.assign(context, game.fade.registry.getSystem('encumbranceSystem').calcCategoryEnc(context.items));
    }
 
    /* -------------------------------------------- */
-
-   /**
-    * Calculate encumbrance for different categories.
-    * @param {any} context
-    */
-   _calcCategoryEnc(context) {
-      const encSetting = game.settings.get(game.system.id, "encumbrance");
-      if (encSetting === 'classic') {
-         context.gearEnc = 80 + context.items
-            .filter(item => item.type === 'treasure')
-            .reduce((sum, item) => {
-               const itemWeight = item.system.weight || 0;
-               const itemQuantity = item.system.quantity || 1;
-               return sum + (itemWeight * itemQuantity);
-            }, 0);
-      } else if (encSetting === 'expert') {
-         // Gear
-         context.gearEnc = context.items
-            .filter(item => item.type === 'item' || item.type === 'light')
-            .reduce((sum, item) => {
-               const itemWeight = item.system.weight || 0;
-               const itemQuantity = item.system.quantity || 1;
-               //const citem = context.document.items.get(item._id);
-               //console.debug(item.name, citem.totalEnc);
-               return sum + (itemWeight * itemQuantity);
-            }, 0);
-      }
-      if (encSetting === 'expert' || encSetting === 'classic') {
-         // Weapons
-         context.weaponsEnc = context.items
-            .filter(item => item.type === 'weapon')
-            .reduce((sum, item) => {
-               return sum + (item.system.weight || 0);
-            }, 0);
-         // Armor
-         context.armorEnc = context.items
-            .filter(item => item.type === 'armor')
-            .reduce((sum, item) => {
-               return sum + (item.system.weight || 0);
-            }, 0);
-      }
-   }
 
    /**
     * @override
