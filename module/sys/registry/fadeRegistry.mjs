@@ -1,6 +1,6 @@
-import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './toHitSystems.mjs';
-import { MoraleCheck, AbilityCheck, ActorArmor } from './defaultSystems.mjs'
-import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './encumbranceSystem.mjs';
+import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './ToHitSystems.mjs';
+import { MoraleCheck, AbilityCheck, ActorArmor } from './DefaultSystems.mjs'
+import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncumbranceSystem.mjs';
 
 export class fadeRegistry {
    constructor() {
