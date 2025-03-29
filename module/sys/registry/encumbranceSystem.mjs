@@ -32,7 +32,7 @@ export class EncumbranceSystem {
          encumbrance.mv = actor.system.movement.max;
          encumbrance.fly = actor.system.flight.max;
       } else {
-         this._calculateEncMovement(actor, enc, encumbrance, encSetting);
+         this.#calculateEncMovement(actor, enc, encumbrance, encSetting);
       }
 
       actor.system.encumbrance = encumbrance;
@@ -46,7 +46,7 @@ export class EncumbranceSystem {
     * @param {any} encumbrance The encumbrance object to set.
     * @param {encSetting} The current encumbrance setting.
     */
-   _calculateEncMovement(actor, enc, encumbrance, encSetting) {
+   #calculateEncMovement(actor, enc, encumbrance, encSetting) {
       let weightPortion = actor.system.encumbrance.max / enc;
       let table = [];
       switch (actor.type) {
