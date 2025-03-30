@@ -1,9 +1,8 @@
 import { DialogFactory } from '../../dialog/DialogFactory.mjs';
+import { SocketManager } from '../SocketManager.mjs'
 
-export class initiativeGroup {
-   constructor(combat) {
-      this.combat = combat;
-      this.combatants = combat.combatants;
+export class GroupInit {
+   constructor() {
       this.declaredActions = game.settings.get(game.system.id, "declaredActions");
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases);
       this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
@@ -13,13 +12,13 @@ export class initiativeGroup {
     * @override
     * @returns Combatant[]
     */
-   setupTurns() {
-      const turns = this.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
+   setupTurns(combat) {
+      const turns = combat.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
       if (turns.length > 0) {
          turns.sort((a, b) => this.#sortCombatants(a, b));
       }
 
-      return this.combat.updateStateTracking(turns);
+      return combat.updateStateTracking(turns);
    }
 
    /**
@@ -34,29 +33,29 @@ export class initiativeGroup {
    * @param {object} [options.messageOptions={}]    Additional options with which to customize created Chat Messages
    * @returns {Promise<Combat>}       A promise which resolves to the updated Combat document once updates are complete.
     */
-   async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+   async rollInitiative(combat, ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
       // Get all combatants and group them by disposition
       let groups = messageOptions?.group ? [messageOptions?.group] : [];
       if (groups.length === 0 && ids.length > 0) {
-         const rollingCombatants = this.combatants.filter(combatant => ids?.includes(combatant.id));
+         const rollingCombatants = combat.combatants.filter(combatant => ids?.includes(combatant.id));
          groups = [...new Set(rollingCombatants.map(combatant => combatant.group))];
       }
       if (game.user.isGM === true) {
          for (const group of groups) {
-            await this.#doInitiativeRoll(this.combatants, group);  // Use the custom initiative function
+            await this.#doInitiativeRoll(combat, combat.combatants, group);  // Use the custom initiative function
          }
       } else {
          let bRolling = true;
          // If friendly rolling, declared actions enabled...
          if (groups.includes('friendly') && this.declaredActions === true) {
             // combatant declared action is 'nothing'...
-            const friendly = this.#getCombatantsForDisposition(CONST.TOKEN_DISPOSITIONS.FRIENDLY);
+            const friendly = this.#getCombatantsForDisposition(combat, CONST.TOKEN_DISPOSITIONS.FRIENDLY);
             if (this.#hasDeclaredAction(friendly, 'nothing') === true) {
                bRolling = await this.#promptUserRoll();
             }
          }
          if (bRolling === true) {
-            SocketManager.sendToGM("rollGroupInitiative", { combatid: this.combat.id });
+            SocketManager.sendToGM("rollGroupInitiative", { combatid: combat.id });
          }
       }
 
@@ -110,7 +109,7 @@ export class initiativeGroup {
     * The custom rollInitiative function
     * @param {any} combat
     */
-   async #doInitiativeRoll(combatants, group = null) {
+   async #doInitiativeRoll(combat, combatants, group = null) {
       // Array to accumulate roll results for the digest message
       let rollResults = [];
 
@@ -140,10 +139,10 @@ export class initiativeGroup {
          const updates = rollResults.reduce((a, b) => [...a, ...b.updates], []);
          if (updates.length > 0) {
             // Update multiple combatants
-            await this.combat.updateEmbeddedDocuments("Combatant", updates);
+            await combat.updateEmbeddedDocuments("Combatant", updates);
          }
 
-         this.combat._activateCombatant(0);
+         combat._activateCombatant(0);
       }
    }
 
@@ -219,8 +218,8 @@ export class initiativeGroup {
       return result;
    }
 
-   #getCombatantsForDisposition(disposition) {
-      return this.combatants.filter(combatant => combatant.token.disposition === disposition);
+   #getCombatantsForDisposition(combat, disposition) {
+      return combat.combatants.filter(combatant => combatant.token.disposition === disposition);
    }
 
    async #promptUserRoll() {

@@ -1,6 +1,8 @@
 import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './ToHitSystem.mjs';
 import { MoraleCheck, AbilityCheck, ActorArmor } from './DefaultSystem.mjs'
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
+import { IndivInit } from './IndivInit.mjs';
+import { GroupInit } from './GroupInit.mjs';
 
 export class fadeRegistry {
    constructor() {
@@ -33,6 +35,13 @@ export class fadeRegistry {
          this.registerSystem('encumbranceSystem', new ExpertEncumbrance());
       } else {
          this.registerSystem('encumbranceSystem', new BasicEncumbrance({ encSetting }));
+      }
+
+      const initiativeMode = game.settings.get(game.system.id, "initiativeMode");
+      if (initiativeMode === 'group') {
+         this.registerSystem('initiativeSystem', new GroupInit());
+      } else {
+         this.registerSystem('initiativeSystem', new IndivInit());
       }
    }
 

@@ -1,7 +1,5 @@
 // fadeCombat.mjs
 import { SocketManager } from '../SocketManager.mjs'
-import { initiativeIndividual } from './initiativeIndividual.mjs'
-import { initiativeGroup } from './initiativeGroup.mjs'
 
 // Custom Combat class
 export class fadeCombat extends Combat {
@@ -23,10 +21,9 @@ export class fadeCombat extends Combat {
    /**@override */
    prepareBaseData() {
       super.prepareBaseData();
-      this.initiativeMode = game.settings.get(game.system.id, "initiativeMode");
       this.nextRoundMode = game.settings.get(game.system.id, "nextRound");
       this.declaredActions = game.settings.get(game.system.id, "declaredActions");
-      this.initiativeSystem = this.initiativeMode === 'group' ? new initiativeGroup(this) : new initiativeIndividual(this);
+      this.initiativeSystem = game.fade.registry.getSystem('initiativeSystem');
    }
 
    /**
@@ -34,11 +31,11 @@ export class fadeCombat extends Combat {
    * @returns Combatant[]
    */
    setupTurns() {
-      return this.initiativeSystem.setupTurns();
+      return this.initiativeSystem.setupTurns(this);
    }
 
    async rollInitiative(ids, options) {
-      return await this.initiativeSystem.rollInitiative(ids, options);
+      return await this.initiativeSystem.rollInitiative(this, ids, options);
    }
 
    updateStateTracking(turns) {

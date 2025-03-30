@@ -1,8 +1,6 @@
 
-export class initiativeIndividual{
-   constructor(combat) {
-      this.combat = combat;
-      this.combatants = combat.combatants;
+export class IndivInit{
+   constructor() {
       this.declaredActions = game.settings.get(game.system.id, "declaredActions");
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases);
       this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
@@ -12,30 +10,29 @@ export class initiativeIndividual{
     * @override
     * @returns Combatant[]
     */
-   setupTurns() {
-      const turns = this.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
+   setupTurns(combat) {
+      const turns = combat.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
       if (turns.length > 0) {
          turns.sort((a, b) => this.#sortCombatants(a, b));
       }
 
-      return this.combat.updateStateTracking(turns);
+      return combat.updateStateTracking(turns);
    }
 
    /**
    * Roll initiative for one or multiple Combatants within the Combat document
    * @override
-   * @param {string|string[]} ids     A Combatant id or Array of ids for which to roll
-   * @param {object} [options={}]     Additional options which modify how initiative rolls are created or presented.
-   * @param {string|null} [options.formula]         A non-default initiative formula to roll. Otherwise, the system
-   *                                                default is used.
-   * @param {boolean} [options.updateTurn=true]     Update the Combat turn after adding new initiative scores to
-   *                                                keep the turn on the same Combatant.
-   * @param {object} [options.messageOptions={}]    Additional options with which to customize created Chat Messages
-   * @returns {Promise<Combat>}       A promise which resolves to the updated Combat document once updates are complete.
+   * @param {object} combat The combat instance
+   * @param {string|string[]} ids A Combatant id or Array of ids for which to roll
+   * @param {object} [options={}] Additional options which modify how initiative rolls are created or presented.
+   * @param {string|null} [options.formula] A non-default initiative formula to roll. Otherwise, the system default is used.
+   * @param {boolean} [options.updateTurn=true] Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
+   * @param {object} [options.messageOptions={}] Additional options with which to customize created Chat Messages
+   * @returns {Promise<Combat>} A promise which resolves to the updated Combat document once updates are complete.
    */
-   async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
-      const combatants = this.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
-      await this.#doInitiativeRoll(combatants);  // Use the custom initiative function
+   async rollInitiative(combat, ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+      const combatants = combat.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
+      await this.#doInitiativeRoll(combat, combatants);  // Use the custom initiative function
       return this;
    }
 
@@ -101,7 +98,7 @@ export class initiativeIndividual{
     * The custom rollInitiative function
     * @param {any} combat
     */
-   async #doInitiativeRoll(combatants, group = null) {
+   async #doInitiativeRoll(combat, combatants) {
       // Array to accumulate roll results for the digest message
       let rollResults = [];
 
@@ -140,10 +137,10 @@ export class initiativeIndividual{
          const updates = rollResults.reduce((a, b) => [...a, ...b.updates], []);
          if (updates.length > 0) {
             // Update multiple combatants
-            await this.combat.updateEmbeddedDocuments("Combatant", updates);
+            await combat.updateEmbeddedDocuments("Combatant", updates);
          }
 
-         this.combat._activateCombatant(0);
+         combat._activateCombatant(0);
       }
    }
 
