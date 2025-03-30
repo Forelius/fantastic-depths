@@ -1,21 +1,35 @@
 <div>
-   <section class="flexrow bordered" style="margin-top: 10px;">
-      <div class="form-group">
-         <label>{{localize 'FADE.time.sessionCount'}}: </label>
-         <span>{{turnData.sessionTR.turns}}</span>{{#if turnData.sessionTR.rounds}} / <span>{{turnData.sessionTR.roundsDisplay}}</span>{{/if}}
-      </div>
-      <div class="form-group">
-         <label>{{localize 'FADE.time.totalCount'}}: </label>
-         <span>{{turnData.totalTR.turns}}</span>{{#if turnData.totalTR.rounds}} / <span>{{turnData.totalTR.roundsDisplay}}</span>{{/if}}
-      </div>
-      {{#if restFrequency}}
-   <div class="form-group">
-      <label>{{localize 'FADE.time.sinceRest'}}: </label>
-      <span>{{turnData.restTR.rounds}}</span>{{#if turnData.restTR.rounds}} / <span>{{turnData.restTR.roundsDisplay}}</span>{{/if}}
-   </div>
-      {{/if}}
+   <section>
+      <table style="text-align:center;">
+         <thead>
+            <tr>
+               <th style="width:120px;"></th>
+               <th>{{camelize (localize 'FADE.turns')}}</th>
+               <th>{{camelize (localize 'FADE.rounds')}}</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td style="text-align:right;"><label>{{localize 'FADE.time.sessionCount'}}:</label></td>
+               <td><span>{{turnData.sessionTR.turns}}</span></td>
+               <td><span>{{turnData.sessionTR.roundsDisplay}}</span></td>
+            </tr>
+            <tr>
+               <td style="text-align:right;"><label>{{localize 'FADE.time.totalCount'}}:</label></td>
+               <td><span>{{turnData.totalTR.turns}}</span></td>
+               <td><span>{{turnData.totalTR.roundsDisplay}}</span></td>
+            </tr>
+            {{#if restFrequency}}
+            <tr>
+               <td style="text-align:right;"><label>{{localize 'FADE.time.sinceRest'}}:</label></td>
+               <td><span>{{turnData.restTR.turns}}</span></td>
+               <td><span>{{turnData.restTR.roundsDisplay}}</span></td>
+            </tr>
+            {{/if}}
+         </tbody>
+      </table>
    </section>
-   <section class="flexrow" style="margin-top: 10px;">
+   <section class="flexrow">
       <button id="revert-turn" type="button" data-tooltip="{{localize 'FADE.time.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.time.prev'}}</button>
       <button id="advance-turn" type="button" data-tooltip="{{localize 'FADE.time.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.time.next'}}</button>
       {{#if restFrequency}}

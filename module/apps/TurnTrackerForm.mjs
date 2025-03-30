@@ -64,6 +64,7 @@ export class TurnTrackerForm extends FormApplication {
       super(object, options);
       this.isGM = game.user.isGM;
       this.settingsChanged = false;
+      this.restFrequency = game.settings.get(game.system.id, "restFrequency");
       const turnData = game.settings.get(game.system.id, 'turnData');
       // Only keep necessary properties
       this.turnData = new TurnData({
@@ -80,8 +81,8 @@ export class TurnTrackerForm extends FormApplication {
       const options = super.defaultOptions;
       options.id = "turn-tracker-form";
       options.template = `systems/${game.system.id}/templates/apps/turn-tracker.hbs`;  // Dynamic path
-      options.width = 400;
-      options.height = 200;
+      options.width = 320;
+      options.height = 225;
       options.title = "Turn Tracker";
       options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
       return options;
@@ -93,7 +94,7 @@ export class TurnTrackerForm extends FormApplication {
    async getData() {
       const context = await super.getData();
       context.turnData = this.turnData;
-      context.restFrequency = game.settings.get(game.system.id, "restFrequency");
+      context.restFrequency = this.restFrequency;
       return context;
    }
 
@@ -113,14 +114,15 @@ export class TurnTrackerForm extends FormApplication {
       super.activateListeners(html);
 
       if (game.user.isGM == false) return;
+      const timeSteps = this.turnData.timeSteps;
 
       html.find("#advance-turn")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.advanceTime(this.timeSteps.turn);
+         await this.advanceTime(timeSteps.turn);
       });
       html.find("#revert-turn")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.advanceTime(-this.timeSteps.turn);
+         await this.advanceTime(-timeSteps.turn);
       });
       html.find("#reset-session")[0].addEventListener('click', async (e) => {
          e.preventDefault();
@@ -146,7 +148,7 @@ export class TurnTrackerForm extends FormApplication {
       if (restElem?.length > 0) {
          restElem[0].addEventListener('click', async (e) => {
             e.preventDefault();
-            await this.advanceTime(this.timeSteps.turn);
+            await this.advanceTime(timeSteps.turn);
             await this.turnData.rest();
             const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
             ChatMessage.create({
@@ -164,19 +166,18 @@ export class TurnTrackerForm extends FormApplication {
     * Handle the updateWorldTime event.
     */
    _updateWorldTime = foundry.utils.debounce(async (worldTime, dt, options, userId) => {
+      const timeSteps = this.turnData.timeSteps;
       const seconds = worldTime - this.turnData.worldTime;
-      if (Math.abs(seconds) >= this.timeSteps.round) {
+      if (Math.abs(seconds) >= timeSteps.round) {
          const turns = await this.turnData.updateTime(seconds);
          const speaker = { alias: game.user.name };
          let chatContent = "";
          const turnsRounds = this.turnData.toTurnsRounds(Math.abs(turns));
-         //const displayRounds = ((Math.abs(turns % 1) * this.timeSteps.turn) / this.timeSteps.round).toFixed(1);
          chatContent = (turns > 0)
             ? game.i18n.format("FADE.notification.advancedTime", { turns: turnsRounds.turns, rounds: turnsRounds.roundsDisplay })
             : game.i18n.format("FADE.notification.reversedTime", { turns: turnsRounds.turns, rounds: turnsRounds.roundsDisplay });
-         // Rest message
-         const restFrequency = game.settings.get(game.system.id, "restFrequency");
-         if (restFrequency > 0 && this.turnData.dungeon.rest > restFrequency - 1) {
+         // Rest message         
+         if (this.restFrequency > 0 && this.turnData.dungeon.rest > this.restFrequency - 1) {
             chatContent += game.i18n.localize("FADE.notification.needRest");
          }
          if (chatContent.length > 0) {

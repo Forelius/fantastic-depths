@@ -121,7 +121,7 @@ export class SpellItem extends fadeItem {
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
          const rollData = this.getRollData();
          const rollEval = await new Roll(this.system.durationFormula, rollData).evaluate();
-         result = `${result} (${rollEval.total} ${game.i18n.format('FADE.rounds')})`;
+         result = `${result} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
       }
       return result;
    }

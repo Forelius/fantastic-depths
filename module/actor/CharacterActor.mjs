@@ -1,4 +1,4 @@
-﻿import Formatter from '../utils/Formatter.mjs';
+﻿import { Formatter } from '../utils/Formatter.mjs';
 import { fadeActor } from './fadeActor.mjs';
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
