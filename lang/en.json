@@ -290,6 +290,9 @@
             "name": "Usable",
             "hint": "Specify if item can be used, which will also enable usage tracking for the item."
          },
+         "isTreasure": {
+            "hint": "Specify if the item counts as treasure when calculating encumbrance."
+         },
          "isContainer": "Container",
          "quantity": {
             "long": "Quantity",

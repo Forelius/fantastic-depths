@@ -110,7 +110,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
       const results = {};
 
       // Gear
-      results.gearEnc = 80 + items.filter(item => item.type === 'treasure').reduce((sum, item) => {
+      results.gearEnc = 80 + items.filter(item => item.type === 'treasure' || item.system.isTreasure === true).reduce((sum, item) => {
          const itemWeight = item.system.weight || 0;
          const itemQuantity = item.system.quantity || 1;
          return sum + (itemWeight * itemQuantity);
@@ -128,7 +128,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
    }
 
    _getTotalEnc(actor) {
-      return actor.items.filter(item => ['weapon', 'armor', 'treasure'].includes(item.type))
+      return actor.items.filter(item => ['weapon', 'armor', 'treasure'].includes(item.type) || item.system.isTreasure === true)
          .reduce((sum, item) => {
             const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
             const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
@@ -170,7 +170,8 @@ export class ExpertEncumbrance extends ClassicEncumbrance {
       const results = super.calcCategoryEnc(items);
 
       // Gear
-      results.gearEnc = items.filter(item => item.type === 'item' || item.type === 'light')
+      const itemTypes = ['item', 'light', 'treasure']
+      results.gearEnc = items.filter(item => itemTypes.includes(item.type))
          .reduce((sum, item) => {
             const itemWeight = item.system.weight || 0;
             const itemQuantity = item.system.quantity || 1;

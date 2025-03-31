@@ -44,6 +44,9 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          healFormula: new fields.StringField({ nullable: true, initial: null }),
          damageType: new fields.StringField({ required: false, initial: "" }),
          isUsable: new fields.BooleanField({ required: true, initial: false }),
+         // Is the item considered to be treasure when calculating encumbrance.
+         // Yes, even though not item.type='treasure'.
+         isTreasure: new fields.BooleanField({ required: true, initial: false }),
       };
    }
 
