@@ -28,6 +28,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          equipped: new fields.BooleanField({ required: false, initial: false }),
          // Additional properties specific to the "item" type
          container: new fields.BooleanField({ required: false, initial: false }),
+         isOpen: new fields.BooleanField({ required: false, initial: false }),
          equippable: new fields.BooleanField({ required: false, initial: false }),
          // Indicates why type of fuel this item is, if any.
          fuelType: new fields.StringField({ required: false, initial: "" }),
