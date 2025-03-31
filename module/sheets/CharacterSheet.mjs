@@ -25,7 +25,8 @@ export class CharacterSheet extends fadeActorSheet {
 
    /** @override */
    async getData() {
-      const context = await super.getData();      
+      const context = await super.getData();
+      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       return context;
    }
 

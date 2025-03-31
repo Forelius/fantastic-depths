@@ -166,7 +166,6 @@ export class fadeSettings {
          default: false,
          restricted: true // Only the GM can change this setting
       });
-
       game.settings.register(game.system.id, "toasts", {
          name: "SETTINGS.toasts.name",
          hint: "SETTINGS.toasts.hint",
@@ -217,6 +216,15 @@ export class fadeSettings {
          default: "darkdungeons",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
+      });
+      game.settings.register(game.system.id, "showExplorationTarget", {
+         name: "SETTINGS.showExplorationTarget.name",
+         hint: "SETTINGS.showExplorationTarget.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: true,
+         restricted: false
       });
    }
 

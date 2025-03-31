@@ -265,8 +265,15 @@ export class fadeActorSheet extends ActorSheet {
             masteries.push(item);
          }// Append to specialAbility.
          else if (item.type === 'specialAbility') {
+            const operators = {
+               eq: '=',
+               gt: '&gt;',
+               lt: '&lt;',
+               gte: '&gt;=',
+               lte: '&lt;='
+            };
             if (item.system.category === "explore") {
-               exploration.push(item);
+               exploration.push({ item, op: operators[item.system.operator] });
             } else if (item.system.category === "class") {
                classAbilities.push(item);
             } else if (item.system.category === "save") {

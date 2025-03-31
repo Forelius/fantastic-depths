@@ -1079,6 +1079,10 @@
       "turnDurationSec": {
          "name": "Turn Duration",
          "hint": "The number of seconds a turn represents in the game. It is utilized by the turn tracker and often represents a duration of ten minutes, although this may vary. It is important to clarify that this definition of a turn is different from the turns tracked in combat."
+      },
+      "showExplorationTarget": {
+         "name": "Show Exploration Target",
+         "hint": "Shows the target roll value on the character sheet if enabled."
       }
    }
 }
