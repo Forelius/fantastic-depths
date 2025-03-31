@@ -6,7 +6,7 @@
                <a data-roll-type='item'><img src='{{item.img}}' width='24' height='24' /></a>
             </div>
             {{#if item.system.container}}
-            <div class="category-caret"><i class="fas fa-caret-down"></i></div>
+            <div class="category-caret"><i class="fas {{#if item.system.isOpen}}fa-caret-down{{else}}fa-caret-right{{/if}}"></i></div>
             {{/if}}
             <a class='item-control description-expand' data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
                {{#if (or @root.isGM item.system.isIdentified)}}
@@ -41,7 +41,7 @@
    </div>
    <div class='item-description desc-collapsed bordered'></div>
 </li>
-{{#if item.system.container}}
+{{#if (and item.system.container item.system.isOpen)}}
 {{#each item.contained as |childItem|}}
 {{> "itemContained" parentItem=../item item=childItem rootobj=../rootobj}}
 {{/each}}

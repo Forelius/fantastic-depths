@@ -124,8 +124,8 @@ export class fadeActorSheet extends ActorSheet {
          html.on('click', '.chatable', this._onRoll.bind(this));
 
          // Containers collapse/expand
-         html.find(".gear-items .category-caret").click((event) => {
-            this._toggleContainedItems(event);
+         html.find(".gear-items .category-caret").click(async (event) => {
+            await this._toggleContainedItems(event);
          });
 
          // Drag events for macros.
@@ -645,6 +645,11 @@ export class fadeActorSheet extends ActorSheet {
                console.warn("Removed invalid flag: collapsed-undefined");
             }
          });
+
+         const collapsedContainers = this.actor.items.filter(item => item.system.isOpen === false);
+         for(let collapsed of collapsedContainers){
+            //const target = document.querySelector(`[data-]`);
+         }
       }
    }
 
@@ -677,61 +682,46 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
- * Handler for clicking on a container item's collapse/expand icon.
- * @param {MouseEvent} event
- */
-   _toggleContainedItems(event) {
+    * Handler for clicking on a container item's collapse/expand icon.
+    * @param {MouseEvent} event
+    */
+   async _toggleContainedItems(event) {
       event.preventDefault();
 
       // The stack of jQuery elements we need to process
       const containers = [$(event.target).closest(".item")];
       const isExpanding = event.target.classList.contains("fa-caret-right");
       const handledIds = [];
+      const updates = [];
 
       while (containers.length > 0) {
          // Pop the top jQuery element
          const toggledItem = containers.pop();
+
          const parentId = toggledItem.data("itemId");
-
-         // Get all immediate sibling items that are contained by this parent
-         const containedItems = toggledItem
-            .siblings(`[data-item-parentid="${parentId}"]`);
-
-         // Toggle the icon on the parent container
-         if (isExpanding) {
-            toggledItem
-               .find(".fas.fa-caret-right")
-               .first()
-               .removeClass("fa-caret-right")
-               .addClass("fa-caret-down");
-            containedItems.slideDown(200);
-         } else {
-            toggledItem
-               .find(".fas.fa-caret-down")
-               .first()
-               .removeClass("fa-caret-down")
-               .addClass("fa-caret-right");
-            containedItems.slideUp(200);
-         }
-
+         const containedItems = toggledItem.siblings(`[data-item-parentid="${parentId}"]`);
          // Avoid reprocessing the same container
          handledIds.push(parentId);
+         updates.push({ _id: parentId, "system.isOpen": isExpanding });
 
          // If we are collapsing, we want to recursively collapse any sub-containers
-         if (!isExpanding) {
+         if (isExpanding === false) {
             // Find each sibling container under these items (the next nesting level)
             const subContainers = containedItems.filter(".item-container");
-
             // For each container, push the jQuery-wrapped element to the stack
             subContainers.each((i, el) => {
                const $subContainer = $(el);
                const nextParentId = $subContainer.data("itemId");
-               if (!handledIds.includes(nextParentId)) {
+               if (handledIds.includes(nextParentId) === false) {
+                  updates.push({ _id: nextParentId, "system.isOpen": isExpanding });
+                  // Push this sub-container onto the stack of containers to collapse.
                   containers.push($subContainer);
                }
             });
          }
       }
+
+      this.actor.updateEmbeddedDocuments("Item", updates);
    }
 
    async _onDescriptionExpand(event) {
@@ -757,4 +747,3 @@ export class fadeActorSheet extends ActorSheet {
          }
       }
    }
-}
