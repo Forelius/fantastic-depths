@@ -207,24 +207,6 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * Attemtps to determine the weapon type of this actor.
-    * @public
-    * @returns The weapon type of this actor or 'monster' if it can't be determined.
-    */
-   getWeaponType() {
-      let result = 'monster';
-      const weapons = this.items.filter(item => item.type === 'weapon');
-      const equippedWeapons = weapons?.filter(item => item.system.equipped === true && item.system.quantity > 0);
-      if (equippedWeapons && equippedWeapons.length > 0) {
-         result = equippedWeapons[0].system.weaponType;
-      } else if (weapons && weapons.length > 0) {
-         result = 'monster';
-         console.warn(`${this.name} has weapons, but none are equipped or the quantity is zero.`)
-      }
-      return result;
-   }
-
-   /**
     * Applies damage or healing to the actor.
     * @public
     * @param {any} amount

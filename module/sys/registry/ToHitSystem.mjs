@@ -4,8 +4,8 @@ import { SocketManager } from '/systems/fantastic-depths/module/sys/SocketManage
 export class ToHitSystemBase {
    constructor() {
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
-      this.isAAC = this.toHitSystem === 'aac';      
-      this.masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      this.isAAC = this.toHitSystem === 'aac';
+      this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
    }
 
    /**
@@ -25,7 +25,6 @@ export class ToHitSystemBase {
       let formula = '1d20';
       let digest = [];
       let modifier = 0;
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
 
       if (options.mod && options.mod !== 0) {
@@ -46,8 +45,17 @@ export class ToHitSystemBase {
          modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammo);
       }
 
-      if (masteryEnabled && weaponData.mastery !== "" && weaponData.mastery !== null) {
-         modifier += this.#getMasteryAttackRollMods(actor, weaponData, options, digest, attackType);
+      // If there is a registered weapon mastery system...
+      if (this.masterySystem) {
+         const wmResult = this.masterySystem.getAttackRollMod(actor, weapon, {
+            target: options.target,
+            targetWeaponType: options.targetWeaponType,
+            attackType
+         });
+         if (wmResult) {
+            modifier += wmResult.mod;
+            digest = [...digest, ...wmResult.digest];
+         }
       }
 
       if (modifier !== 0) {
@@ -104,8 +112,12 @@ export class ToHitSystemBase {
             let aac = targetActor.system.ac?.totalAAC;
 
             // If weapon mastery system is enabled...
-            if (this.masteryEnabled === true) {
-               ac = this.#calcMasteryDefenseAC(attackerWeaponType, targetResult, targetToken, ac, attackType);
+            if (this.masterySystem) {
+               const wmResult = this.masterySystem.getDefenseACMod(attackerWeaponType, targetToken, attackType);
+               if (wmResult) {
+                  ac = wmResult.ac != null ? wmResult.ac : ac;
+                  targetResult.targetac = wmResult.targetac != null ? wmResult.targetac : targetResult.targetac;
+               }
             }
 
             if (hitAC !== null) { // null if rolled a natural 1
@@ -160,35 +172,14 @@ export class ToHitSystemBase {
     * @param {Roll} roll - The Roll object containing the dice and other terms.
     * @returns {number} The sum of the dice rolled.
     */
-      getDiceSum(roll) {
-         let sum = 0;
-         for (let i = 0; i < roll.terms.length; i++) {
-            for (let j = 0; j < roll.terms[i]?.results?.length; j++) {
-               sum += roll.terms[i].results[j].result;
-            }
+   getDiceSum(roll) {
+      let sum = 0;
+      for (let i = 0; i < roll.terms.length; i++) {
+         for (let j = 0; j < roll.terms[i]?.results?.length; j++) {
+            sum += roll.terms[i].results[j].result;
          }
-         return sum;
       }
-
-
-   #getMasteryAttackRollMods(actor, weaponData, options, digest, attackType) {
-      let result = 0;
-      const attackerMastery = actor.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
-      if (attackerMastery) {
-         const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
-         // Get the to hit bonus, if any.
-         const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
-         if (toHitMod > 0) {
-            result += toHitMod;
-            const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
-            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
-         }
-      } else if (attackType === "missile" && actor.type === "character" && actor.system.details.species === "Human") {
-         // Unskilled use for humans
-         result -= 1;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
-      }
-      return result;
+      return sum;
    }
 
    #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammo) {
@@ -248,32 +239,6 @@ export class ToHitSystemBase {
    }
 
    /**
-    * Calculate the AC based on weapon mastery rules.
-    * @private
-    * @param {any} attackerWeaponType
-    * @param {any} targetResult
-    * @param {any} targetToken
-    * @param {any} ac The effective AC for this attack.
-    * @returns
-    */
-   #calcMasteryDefenseAC(attackerWeaponType, targetResult, targetToken, ac, attackType) {
-      const defenseMastery = this.#getBestDefenseMastery(targetToken.actor, attackerWeaponType);
-      if (defenseMastery && defenseMastery.acBonus !== Infinity) {
-         // Get the appropriate attacks against weapon type.
-         const attAgainst = attackerWeaponType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM;
-         // Get the appropriate total AC based on attack type.
-         const totalAC = attackType === 'melee' ? targetToken.actor.system.ac?.total : targetToken.actor.system.ac?.totalRanged;
-         // Normal AC/Mastery Def. AC
-         const useMasteryAC = (defenseMastery.acBonusAT === null || attAgainst < defenseMastery.acBonusAT) && totalAC > defenseMastery.total;
-         targetResult.targetac = this.#getMasteryDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType);
-         if (useMasteryAC) {
-            ac = defenseMastery.total;
-         }
-      }
-      return ac;
-   }
-
-   /**
     * Creates the DM's view of an attack result for the specified target.
     * Use this when not using weapon mastery rules.
     * @param {any} targetToken
@@ -290,83 +255,6 @@ export class ToHitSystemBase {
                cssClass: attackType === 'missile' ? "style='color:green'" : ""
             })
             : ""
-      });
-   }
-
-   /**
-    * Creates the DM's view of an attack result for the specified target. Also indicates how weapon mastery factored into AC calculation.
-    * @param {any} useMasteryAC Whether the system determined the weapon mastery defense bonus applied to this attack or not.
-    * @param {any} targetToken The token being attacked.
-    * @param {any} defenseMastery The token actor's most applicable defense mastery.
-    * @returns Localized html message;
-    */
-   #getMasteryDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType) {
-      return game.i18n.format('FADE.Chat.targetACDefMastery', {
-         cssClass: (useMasteryAC === false && attackType === 'melee' ? "style='color:green'" : ""),
-         cssClassMastery: (useMasteryAC ? "style='color:green'" : ""),
-         acTotal: this.isAAC ? targetToken.actor.system.ac?.totalAAC : targetToken.actor.system.ac?.total,
-         targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
-            ? game.i18n.format('FADE.Chat.targetRangedAC', {
-               acTotal: this.isAAC ? targetToken.actor.system.ac?.totalRangedAAC : targetToken.actor.system.ac?.totalRanged,
-               cssClass: (!useMasteryAC && attackType === 'missile' ? "style='color:green'" : "")
-            })
-            : "",
-         attAgainst: attackType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM,
-         maxAttAgainst: defenseMastery.acBonusAT,
-         defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total,
-         masteryName: defenseMastery.name
-      });
-   }
-
-
-   /**
-    * Finds the best defense mastery for the specified attacker weapon type,
-    * taking into account the number of times the actor has been attacked this round,
-    * and the fact that the AC bonus only applies a limited number of times per round.
-    *
-    * The actor’s combat object contains:
-    *   - system.combat.attAgainstH: number of handheld attacks this round
-    *   - system.combat.attAgainstM: number of monster attacks this round
-    *
-    * Each mastery in system.ac.mastery has the following properties:
-    *   - acBonus:      the AC bonus value.
-    *   - acBonusType:  indicates which attack types the bonus applies to:
-    *                   "handheld", "monster", or "all" (applies to both).
-    *   - acBonusAT:    the maximum number of attacks per round for which this bonus applies.
-    *
-    * @public
-    * @param {string} attackerWeaponType - "handheld" or "monster"
-    * @param {string} attackDirection - "front" or "rear"
-    * @returns {object|null} The best defense mastery, or null if none qualifies.
-    */
-   #getBestDefenseMastery(actor, attackerWeaponType, attackDirection = 'front') {
-      const defenseMasteries = actor.system.ac.mastery;
-      if (!defenseMasteries || defenseMasteries.length === 0) {
-         return null;
-      }
-
-      // Determine how many attacks of this type have been made this round.
-      // (For "handheld" attacks use attAgainstH; for "monster" attacks use attAgainstM)
-      const attackCount = attackerWeaponType === 'handheld'
-         ? (actor.system.combat.attAgainstH || 0)
-         : (actor.system.combat.attAgainstM || 0);
-
-      // Filter masteries to those that:
-      //   1. Apply to this weapon type (or all types).
-      //   2. Still have their bonus available (i.e. current attackCount is less than acBonusAT).
-      const applicableMasteries = defenseMasteries.filter(mastery => {
-         const typeMatches = (mastery.acBonusType === attackerWeaponType || mastery.acBonusType === 'all');
-         const bonusAvailable = attackCount < mastery.acBonusAT || mastery.acBonusAT === null;
-         return typeMatches && bonusAvailable;
-      });
-
-      if (applicableMasteries.length === 0) {
-         return null;
-      }
-
-      // Choose the mastery with the best (lowest) AC bonus.
-      return applicableMasteries.reduce((best, current) => {
-         return (current.acBonus < best.acBonus) ? current : best;
       });
    }
 }

@@ -149,46 +149,12 @@ export class ActorArmor {
       ac.nakedRangedAAC = 19 - ac.nakedRanged;
 
       // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (masteryEnabled) {
-         ac.mastery = this.#getDefenseMasteries(actor, ac);
+      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      if (weaponMasterySystem) {
+         ac.mastery = weaponMasterySystem.getDefenseMasteries(actor, ac);
       }
 
       actor.system.ac = ac;
       actor.system.acDigest = acDigest;
-   }
-
-   /**
-    * Get this actor's defense masteries for all equipped weapons.
-    * @public
-    * @param {any} ac
-    * @returns
-    */
-   #getDefenseMasteries(actor, ac) {
-      const results = [];
-      const masteries = actor.items.filter(item => item.type === "mastery");
-      const equippedWeapons = actor.items.filter((item) => item.type === "weapon" && item.system.equipped);
-      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
-      if (masteries?.length > 0 && equippedWeapons?.length > 0) {
-         for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => mastery.name === weapon.system.mastery);
-            if (weaponMastery) {
-               results.push({
-                  // The type(s) of attack the AC bonus applies to.
-                  acBonusType: weaponMastery.system.acBonusType,
-                  // The AC bonus itself, specified as a negative number for better AC.
-                  acBonus: weaponMastery.system.acBonus || 0,
-                  // The total of the AC with the mastery AC bonus.
-                  total: ac.total + (weaponMastery.system.acBonus || 0),
-                  // The total of the AAC with the mastery AC bonus.
-                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
-                  // The number of attacks that this bonus applies to per round.
-                  acBonusAT: weaponMastery.system.acBonusAT,
-                  name: weaponMastery.name
-               });
-            }
-         }
-      }
-      return results;
    }
 }

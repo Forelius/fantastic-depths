@@ -3,6 +3,7 @@ import { MoraleCheck, AbilityCheck, ActorArmor } from './DefaultSystem.mjs'
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
 import { IndivInit } from './IndivInit.mjs';
 import { GroupInit } from './GroupInit.mjs';
+import { WeaponMasterySystem } from './WeaponMastery.mjs';
 
 export class fadeRegistry {
    constructor() {
@@ -14,6 +15,11 @@ export class fadeRegistry {
       this.registerSystem('moraleCheck', new MoraleCheck());
       this.registerSystem('abilityCheck', new AbilityCheck());
       this.registerSystem('actorArmor', new ActorArmor());
+
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      if (masteryEnabled) {
+         this.registerSystem('weaponMasterySystem', new WeaponMasterySystem());
+      }
 
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       if (toHitSystem === 'thac0') {
