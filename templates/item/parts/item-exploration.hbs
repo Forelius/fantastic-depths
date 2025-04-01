@@ -14,7 +14,7 @@
             </div>
             <a class="item-control item-edit" style="font-size:13px;" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.item.name}}</a>
          </div>
-         {{#if showExplTarget}}
+         {{#if @root.showExplTarget}}
          <div style="max-width:26px;">
             <span style="font-size:9px">{{{item.op}}}</span> {{item.item.system.target}}
          </div>
