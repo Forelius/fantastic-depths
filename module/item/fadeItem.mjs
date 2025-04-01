@@ -136,9 +136,9 @@ export class fadeItem extends Item {
    }
 
    /**
- * Process all item active effects that are not set to transfer to the owning actor.
- * @protected
- */
+    * Process all item active effects that are not set to transfer to the owning actor.
+    * @protected
+    */
    _processNonTransferActiveEffects() {
       const data = this.system;
 

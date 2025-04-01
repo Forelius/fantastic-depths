@@ -1,3 +1,4 @@
+import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs'; 
 /**
  * Sheet class for SkillItem.
@@ -28,6 +29,9 @@ export class SkillItemSheet extends fadeItemSheet {
     */
    async getData(options) {
       const context = await super.getData(options);
+
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
