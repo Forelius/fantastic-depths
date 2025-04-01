@@ -56,7 +56,7 @@ export class fadeTreasure {
    }
 
    async #rollWorldTableMulti(tableName, rollFormula) {
-      const table = fadeFinder.getRollTable(tableName);
+      const table = await fadeFinder.getRollTable(tableName);
       if (!table) {
          console.error(`No RollTable named "${tableName}" found!`);
          return;
@@ -154,9 +154,9 @@ export class fadeTreasure {
          if (jewelryValue) {
             const rollTableConfig = CONFIG.FADE.TreasureTypes.jewelry.rollTables.find(item => jewelryValue.value >= item.min && jewelryValue.value <= item.max);
             // Find the roll table by name
-            const table = fadeFinder.getRollTable(rollTableConfig.table);
+            const table = await fadeFinder.getRollTable(rollTableConfig.table);
             if (table) {
-               // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
+               // Draw once. Set displayChat to false to avoid too numerous chat messages for each draw
                const draw = await table.draw({ displayChat: false });
                let resultText = draw.results.map(r => r.getChatText());
                resultText = resultText.length > 0 ? resultText : resultText[0];
