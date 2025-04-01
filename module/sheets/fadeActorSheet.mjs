@@ -564,9 +564,9 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
- * Handles the click event for toggling collapsible sections.
- * @param {Event} event - The click event on the collapsible header
- */
+    * Handles the click event for toggling collapsible sections.
+    * @param {Event} event - The click event on the collapsible header
+    */
    async _toggleCollapsibleContent(event) {
       await this._toggleContent($(event.currentTarget));
    }

@@ -6,7 +6,6 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ClassItem } from '/systems/fantastic-depths/module/item/ClassItem.mjs';
 
 export class CharacterActor extends fadeActor {
-
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -171,7 +170,7 @@ export class CharacterActor extends fadeActor {
          }
       }
       if (nextLevelData) {
-         update.details.xp = { next: nextLevelData.xp };
+         update.details.xp.next = nextLevelData.xp;
       }
       update.details.species = this.system.details.species == "" || this.system.details.species == null ? classData.species : this.system.details.species;
       update.config = { maxSpellLevel: classData.maxSpellLevel };
@@ -200,7 +199,7 @@ export class CharacterActor extends fadeActor {
             }
          }
       }
-      await this.update({ "system": update });
+      await this.update({ system: update });
    }
 
    /**
