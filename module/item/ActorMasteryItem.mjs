@@ -28,7 +28,6 @@ export class ActorMasteryItem extends fadeItem {
 
    /** Update item properties based on FADE.WeaponMastery */
    async _updatePropertiesFromMastery() {
-      // TODO: This needs to be synchronous or prepareBaseData can't call reliably.
       const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.level);
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 

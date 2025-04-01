@@ -593,10 +593,6 @@ export class fadeActor extends Actor {
             const theItem = await fadeFinder.getItem(itemData.name, ClassItem.ValidItemTypes);
             if (theItem) {
                const newItem = theItem.toObject();
-               //const parsedJson = JSON.parse(itemData.changes);
-               //if (parsedJson) {
-               //   Object.assign(newItem, parsedJson);
-               //}
                addItems.push(newItem);
             } else {
                console.warn(`The class-given item ${itemData.name} does not exist as a world item or in the fade compendiums.`);
