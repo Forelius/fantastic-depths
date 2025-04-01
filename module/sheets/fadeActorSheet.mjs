@@ -647,7 +647,7 @@ export class fadeActorSheet extends ActorSheet {
          });
 
          const collapsedContainers = this.actor.items.filter(item => item.system.isOpen === false);
-         for(let collapsed of collapsedContainers){
+         for (let collapsed of collapsedContainers) {
             //const target = document.querySelector(`[data-]`);
          }
       }
@@ -747,3 +747,4 @@ export class fadeActorSheet extends ActorSheet {
          }
       }
    }
+}
