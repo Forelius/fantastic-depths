@@ -33,18 +33,18 @@ export class Shove {
       let outcome = "";
 
       if (rollResult >= resistValue) {
-         outcome = `<div class='attack-result attack-success'>Success!</div>`;
+         outcome = `<div class='attack-result attack-success'>${game.i18n.localize("FADE.Chat.pass")}</div>`;
          if (rollResult >= resistValue * 4) {
-            outcome += `<div>The defender is shoved 15 feet and must save vs. Paralysis at -4 or fall prone.</div>`;
+            outcome += game.i18n.localize("FADE.dialog.shove.result15");
          }
          else if (rollResult >= resistValue * 2) {
-            outcome += `<div>The defender is shoved 10 feet and must save vs. Paralysis at -2 or fall prone.</div>`;
+            outcome += game.i18n.localize("FADE.dialog.shove.result10");
          }
          else {
-            outcome += `<div>The defender is shoved 5 feet back.</div>`;
+            outcome += game.i18n.localize("FADE.dialog.shove.result10");
          }
       } else {
-         outcome = `<div class='attack-result attack-fail'>Failure</div><div>The shove attempt failed.</div>`;
+         outcome = `<div class='attack-result attack-fail'>${game.i18n.localize("FADE.Chat.fail")}</div><div>${game.i18n.localize("FADE.dialog.shove.failed")}</div>`;
       }
 
       // Output results to chat
@@ -76,11 +76,11 @@ export class Shove {
 
       return await new Promise((resolve) => {
          new Dialog({
-            title: "Shove - Defender Resist Value",
+            title: game.i18n.localize("FADE.dialog.shove.title"),
             content,
             buttons: {
                ok: {
-                  label: "Calculate",
+                  label: game.i18n.localize("FADE.dialog.shove.calculate"),
                   callback: (html) => {
                      resolve({
                         attsize: html.find("#attsize").val(),
@@ -92,7 +92,7 @@ export class Shove {
                   },
                },
                cancel: {
-                  label: "Cancel",
+                  label: game.i18n.localize("FADE.dialog.cancel"),
                   callback: () => resolve(null),
                },
             },

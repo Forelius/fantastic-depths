@@ -628,7 +628,13 @@
          "shove": {
             "resultsLabel": "Shove Results",
             "attackerRoll": "{attacker} Roll",
-            "defenderResist": "{defender} Resist"
+            "defenderResist": "{defender} Resist",
+            "result15": "<div>The defender is shoved 15 feet and must save vs. Paralysis at -4 or fall prone.</div>",
+            "result10": "<div>The defender is shoved 10 feet and must save vs. Paralysis at -2 or fall prone.</div>",
+            "result5": "<div>The defender is shoved 5 feet back.</div>",
+            "failed": "The shove attempt failed.",
+            "title": "Shove - Defender Resist Value",
+            "calculate": "Calculate"
          },
          "wrestling": {
             "attacker": "Attacker",
@@ -687,6 +693,7 @@
             "melee": "Melee"
          },
          "close": "Close",
+         "cancel": "Cancel",
          "selectAttack": "Select What to Attack With",
          "selectSpell": "Select spell to cast",
          "confirm": "Are you sure?",
