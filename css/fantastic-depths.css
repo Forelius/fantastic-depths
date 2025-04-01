@@ -1318,6 +1318,9 @@ h1, h2, h3, h4 {
 .fantastic-depths .items-list .item .contained3 {
   padding-left: 30px;
 }
+.fantastic-depths .items-list .item .item-name img {
+  border: none;
+}
 .fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;
   height: 30px;
@@ -1461,5 +1464,3 @@ h1, h2, h3, h4 {
 .fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

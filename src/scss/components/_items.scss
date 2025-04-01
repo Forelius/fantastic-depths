@@ -97,6 +97,9 @@
       }
 
       .item-name {
+         img{
+            border:none;
+         }
          .item-image {
             flex: 0 0 30px;
             height: 30px;
