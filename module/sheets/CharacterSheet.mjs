@@ -23,10 +23,16 @@ export class CharacterSheet extends fadeActorSheet {
       });
    }
 
+   constructor(object, options = {}) {
+      super(object, options);
+      this.editScores = false;
+   }
+
    /** @override */
    async getData() {
       const context = await super.getData();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
+      context.editScores = this.editScores;
       return context;
    }
 
@@ -36,6 +42,7 @@ export class CharacterSheet extends fadeActorSheet {
    activateListeners(html) {
       super.activateListeners(html);
       html.on('click', '.edit-scores', async (event) => {
+         this.editScores = !this.editScores;
          html.find('.ability-score-input, .ability-score').toggle();
       });
    }
