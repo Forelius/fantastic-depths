@@ -32,12 +32,13 @@ export class BasicEncumbrance {
     * @param {any} actor The actor who's encumbrance is being prepared
     */
    prepareDerivedData(actor) {
-      let encumbrance = {
+      let encumbrance = {};
+      Object.assign(encumbrance, actor.system.encumbrance);
+      Object.assign(encumbrance, {
          mv: actor.system.movement.max,
          fly: actor.system.flight.max
-      };
+      });
 
-      Object.assign(encumbrance, actor.system.encumbrance);
       // Recalc total encumbrance
       encumbrance.value = this._getTotalEnc(actor);
 
