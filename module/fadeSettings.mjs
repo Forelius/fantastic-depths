@@ -38,6 +38,30 @@ export class fadeSettings {
          default: "dark",
          onChange: value => this.applyTheme(value)
       });
+      // Ability score modifier system
+      game.settings.register(game.system.id, "abilityScoreModSystem", {
+         name: "SETTINGS.abilityScoreModSystem.name",
+         hint: "SETTINGS.abilityScoreModSystem.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            //"simple": "SETTINGS.abilityScoreModSystem.choices.simple",
+            "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
+         },
+         default: "darkdungeons",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      game.settings.register(game.system.id, "abilityCheckFormula", {
+         name: "SETTINGS.abilityCheckFormula.name",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "1d20",  // Default formula, using DEX modifier
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
       game.settings.register(game.system.id, "abilityAbbr", {
          name: "SETTINGS.display.abilities.name",
          hint: "SETTINGS.display.abilities.hint",
@@ -199,21 +223,6 @@ export class fadeSettings {
             "aac": "SETTINGS.toHitSystem.choices.aac"
          },
          default: "heroic",
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      // Attribute modifier system
-      game.settings.register(game.system.id, "abilityScoreModSystem", {
-         name: "SETTINGS.abilityScoreModSystem.name",
-         hint: "SETTINGS.abilityScoreModSystem.hint",
-         scope: "world",
-         config: true,
-         type: String,
-         choices: {
-            //"simple": "SETTINGS.abilityScoreModSystem.choices.simple",
-            "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
-         },
-         default: "darkdungeons",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });

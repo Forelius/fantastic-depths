@@ -941,6 +941,7 @@
       "items": "Items",
       "type": "Type",
       "changes": "Changes",
+      "rollFormula": "Roll Formula",
       "showResult": {
          "name": "Result",
          "hint": "Show the result?"
@@ -1081,6 +1082,9 @@
          "choices": {
             "darkdungeons": "Dark Dungeons"
          }
+      },
+      "abilityCheckFormula": {
+         "name": "Ability Check Roll Formula"
       },
       "roundDurationSec": {
          "name": "Round Duration",

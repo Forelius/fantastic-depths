@@ -150,6 +150,7 @@ export class fadeDialog {
       const dialogResp = { caller };
 
       dialogData.ability = dataset.ability;
+      dialogData.formula = dataset.formula;
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
       const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/ability-roll.hbs';
@@ -165,6 +166,7 @@ export class fadeDialog {
                callback: () => ({
                   rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
+                  formula: document.getElementById('formula').value || "1d20",
                }),
             },
          },
