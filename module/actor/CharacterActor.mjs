@@ -3,7 +3,7 @@ import { fadeActor } from './fadeActor.mjs';
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { ClassItem } from '/systems/fantastic-depths/module/item/ClassItem.mjs';
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 
 export class CharacterActor extends fadeActor {
    constructor(data, context) {
@@ -220,7 +220,7 @@ export class CharacterActor extends fadeActor {
 
          // Class special abilities
          const abilityNames = this.items.filter(item => item.type === 'specialAbility').map(item => item.name);
-         const validItemTypes = ClassItem.ValidItemTypes;
+         const validItemTypes = ClassDefinitionItem.ValidItemTypes;
          const itemNames = this.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
          const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
          const itemsData = await fadeFinder.getClassItems(className, currentLevel);

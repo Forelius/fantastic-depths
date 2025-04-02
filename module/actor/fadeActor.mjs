@@ -1,5 +1,5 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { ClassItem } from '/systems/fantastic-depths/module/item/ClassItem.mjs';
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
@@ -21,14 +21,8 @@ export class fadeActor extends Actor {
    }
 
    get currentActiveToken() {
-      let result = null;
-      if (this.isToken === true) {
-         result = canvas.tokens?.placeables?.find(token => token.id === this.token.id).document;
-      } else {
-         result = canvas.tokens?.placeables?.find(token => token.actor.id === this.id).document;
-      }
-      //console.debug(`Get currentActiveToken for ${this.name} (${result?.name}). ${result?.id}`, this);
-      return result;
+      // Get the first active token.
+      return this.getActiveTokens()?.[0].document;
    }
 
    /**
@@ -622,14 +616,14 @@ export class fadeActor extends Actor {
       if (game.user.isGM === false || itemsData == null || itemsData?.length == 0) return;
       const promises = [];
       // Get this actor's class ability items.
-      let actorItems = this.items.filter(item => ClassItem.ValidItemTypes.includes(item.type));
+      let actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
 
       // Determine which special abilities are missing and need to be added.
       const addItems = [];
       for (const itemData of itemsData) {
          if (actorItems.find(item => item.name === itemData.name) === undefined
             && addItems.find(item => item.name === itemData.name) === undefined) {
-            const theItem = await fadeFinder.getItem(itemData.name, ClassItem.ValidItemTypes);
+            const theItem = await fadeFinder.getItem(itemData.name, ClassDefinitionItem.ValidItemTypes);
             if (theItem) {
                const newItem = theItem.toObject();
                addItems.push(newItem);
@@ -644,7 +638,7 @@ export class fadeActor extends Actor {
          await this.createEmbeddedDocuments("Item", addItems);
       }
 
-      actorItems = this.items.filter(item => ClassItem.ValidItemTypes.includes(item.type));
+      actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
 
       // Iterate over ability items and set each one.
       for (const actorItem of actorItems) {

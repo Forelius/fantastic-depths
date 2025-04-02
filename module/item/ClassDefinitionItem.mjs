@@ -1,8 +1,8 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { SavingThrowsData } from './dataModel/ClassItemDataModel.mjs';
+import { SavingThrowsData } from './dataModel/ClassDefinitionDataModel.mjs';
 import { fadeItem } from './fadeItem.mjs';
 
-export class ClassItem extends fadeItem {
+export class ClassDefinitionItem extends fadeItem {
    static ValidItemTypes = ['item', 'weapon', 'armor'];
 
    /** @override

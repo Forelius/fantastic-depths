@@ -246,7 +246,7 @@
          "Monster": "Monster Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
-         "ClassItem": "Class Item Sheet",
+         "ClassDefinitionItem": "Class Definition Item Sheet",
          "Item": "Gear Item Sheet",
          "MasteryDefinitionItem": "Weapon Mastery Definition Item Sheet",
          "SpellItem": "Spell Item Sheet",

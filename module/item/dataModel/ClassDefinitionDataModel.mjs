@@ -18,7 +18,7 @@ export class SavingThrowsData {
    }
 }
 
-export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
+export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
 

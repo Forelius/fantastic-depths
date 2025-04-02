@@ -4,7 +4,7 @@ import { fadeItemSheet } from './fadeItemSheet.mjs';
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassItemSheet extends fadeItemSheet {
+export class ClassDefinitionItemSheet extends fadeItemSheet {
    /** @override */
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
@@ -27,7 +27,7 @@ export class ClassItemSheet extends fadeItemSheet {
    /** @override */
    get template() {
       const path = 'systems/fantastic-depths/templates/item';
-      return `${path}/ClassItemSheet.hbs`;
+      return `${path}/ClassDefinitionItemSheet.hbs`;
    }
 
    /** @override */
@@ -84,7 +84,7 @@ export class ClassItemSheet extends fadeItemSheet {
          } else {
             this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
          }
-      } else if (ClassItem.ValidItemTypes.includes(droppedItem.type)) {
+      } else if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createClassItem(droppedItem.name, droppedItem.type);
       }
    }
@@ -105,7 +105,7 @@ export class ClassItemSheet extends fadeItemSheet {
          this.item.createPrimeReq();
       } else if (type === 'classAbility') {
          this.item.createClassAbility();
-      } else if (ClassItem.ValidItemTypes.includes(type)) {
+      } else if (ClassDefinitionItem.ValidItemTypes.includes(type)) {
          this.item.createClassItem();
       }
       this.render();

@@ -13,7 +13,7 @@ import { CharacterSheet } from './sheets/CharacterSheet.mjs';
 import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
-import { ClassItemDataModel } from './item/dataModel/ClassItemDataModel.mjs';
+import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
 import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
 import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
 import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
@@ -29,7 +29,7 @@ import { GearItemSheet } from './sheets/GearItemSheet.mjs';
 import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
 import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
 import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
-import { ClassItemSheet } from './sheets/ClassItemSheet.mjs';
+import { ClassDefinitionItemSheet } from './sheets/ClassDefinitionItemSheet.mjs';
 import { MasteryDefinitionSheet } from './sheets/MasteryDefinitionSheet.mjs';
 import { SkillItemSheet } from './sheets/SkillItemSheet.mjs';
 import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
@@ -108,7 +108,7 @@ Hooks.once('init', async function () {
       spell: SpellItemDataModel,
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDataModel,
-      class: ClassItemDataModel,
+      class: ClassDefinitionDataModel,
       weaponMastery: MasteryDefinitionItemDataModel,
       specialAbility: SpecialAbilityDataModel,
       condition: ConditionItemDataModel,
@@ -167,8 +167,8 @@ function registerSheets() {
       types: ['armor'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', ClassItemSheet, {
-      label: 'FADE.SheetLabel.ClassItem',
+   Items.registerSheet('fantastic-depths', ClassDefinitionItemSheet, {
+      label: 'FADE.SheetLabel.ClassDefinitionItem',
       types: ['class'],
       makeDefault: true
    });
