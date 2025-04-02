@@ -79,7 +79,8 @@ export class fadeFinder {
                && item.system.customSaveCode === options.customSaveCode)?.[0];
          } else if (options?.categoryNEQ === 'save') {
             result = source.filter(item => item.type === type && item.system.category !== options.categoryNEQ
-               && (name === null || item.name.toLowerCase() === name.toLowerCase()))?.[0];
+               && (name === null || item.name.toLowerCase() === name.toLowerCase())
+               && item.system.classKey === options.classKey)?.[0];
          } else {
             result = source.filter(item => item.type === type && item.system.category === options?.category
                && item.name.toLowerCase() === name.toLowerCase())?.[0];
