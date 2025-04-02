@@ -4,6 +4,7 @@ import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';
 import { AddonIntegration } from './sys/addonIntegration.mjs'
 import { fadeRegistry } from './sys/registry/fadeRegistry.mjs'
+import { fadeCompendium } from './sys/fadeCompendium.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
@@ -40,7 +41,6 @@ import { SpeciesItemSheet } from './sheets/SpeciesItemSheet.mjs';
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
 import { PlayerCombatForm } from './apps/PlayerCombatForm.mjs';
-import { EffectLibraryForm } from './apps/EffectLibraryForm.mjs';
 import { preloadHandlebarsTemplates } from './sys/templates.mjs';
 import { FADE } from './sys/config.mjs';
 import { fadeCombat } from './sys/combat/fadeCombat.mjs'
@@ -73,7 +73,6 @@ Hooks.once('init', async function () {
       LightManager,
       TurnTrackerForm,
       PartyTrackerForm,
-      EffectLibraryForm,
       AttackRollChatBuilder,
       fadeDialog,
       DataMigrator,
@@ -90,7 +89,7 @@ Hooks.once('init', async function () {
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
 
-   CONFIG.ActiveEffect.documentClass = fadeEffect;   
+   CONFIG.ActiveEffect.documentClass = fadeEffect;
    CONFIG.Combat.documentClass = fadeCombat;
    CONFIG.Combatant.documentClass = fadeCombatant;
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
@@ -115,6 +114,7 @@ Hooks.once('init', async function () {
       condition: ConditionItemDataModel,
       species: SpeciesItemDataModel
    };
+   //CONFIG.Item.compendiumIndexFields.push("system.cost");
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item
@@ -224,6 +224,12 @@ async function handleAsyncInit() {
    await game.fade.registry.registerDefaultSystems();
 }
 
+Hooks.once("setup", function () {
+   // Apply custom item compendium
+   game.packs.filter(p => p.metadata.type === "Item")
+      .forEach(p => p.applicationClass = fadeCompendium);
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
@@ -305,18 +311,18 @@ Hooks.on("updateActor", async (actor, updateData, options, userId) => {
 });
 
 // Hook into item creation (added to the actor)
-Hooks.on("createItem", (item, options, userId) => {
+Hooks.on("createItem", async (item, options, userId) => {
    if (game.user.isGM) {
       const actor = item.parent; // The actor the item belongs to
-      actor?.onCreateActorItem(item, options, userId);
+      await actor?.onCreateActorItem(item, options, userId);
    }
 });
 
 // Hook into item updates (e.g., changes to an existing item)
-Hooks.on("updateItem", (item, updateData, options, userId) => {
+Hooks.on("updateItem", async (item, updateData, options, userId) => {
    if (game.user.isGM) {
       const actor = item.parent; // The actor the item belongs to
-      actor?.onUpdateActorItem(item, updateData, options, userId);
+      await actor?.onUpdateActorItem(item, updateData, options, userId);
    }
 });
 

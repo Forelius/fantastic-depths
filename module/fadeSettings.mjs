@@ -8,6 +8,21 @@ export class fadeSettings {
    }
 
    async #registerConfigSettings() {
+      // Theme
+      game.settings.register(game.system.id, "theme", {
+         name: "SETTINGS.Theme.Name",
+         hint: "SETTINGS.Theme.Hint",
+         scope: "client",
+         config: true,
+         type: String,
+         requiresReload: true,
+         choices: {
+            "light": "SETTINGS.Theme.Light",
+            "dark": "SETTINGS.Theme.Dark"
+         },
+         default: "dark",
+         onChange: value => this.applyTheme(value)
+      });
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
          name: "SETTINGS.Encumbrance.Name",
@@ -24,19 +39,6 @@ export class fadeSettings {
             expert: "SETTINGS.Encumbrance.Expert",
          },
          restricted: true // Only the GM can change this setting         
-      });
-      game.settings.register(game.system.id, "theme", {
-         name: "SETTINGS.Theme.Name",
-         hint: "SETTINGS.Theme.Hint",
-         scope: "client",
-         config: true,
-         type: String,
-         choices: {
-            "light": "SETTINGS.Theme.Light",
-            "dark": "SETTINGS.Theme.Dark"
-         },
-         default: "dark",
-         onChange: value => this.applyTheme(value)
       });
       // Ability score modifier system
       game.settings.register(game.system.id, "abilityScoreModSystem", {

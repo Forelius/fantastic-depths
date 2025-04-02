@@ -132,21 +132,24 @@ export class fadeActor extends Actor {
       }
    }
 
-   onUpdateActorItem(item, updateData, options, userId) {
+   async onUpdateActorItem(item, updateData, options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this instanceof CharacterActor)) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
          // Log the item update and notify the GM
          console.log(`Item updated: ${this.name} ${item.name} by ${user.name}`, updateData?.system);
       }
    }
 
-   onCreateActorItem(item, options, userId) {
+   async onCreateActorItem(item, options, userId) {
       const user = game.users.get(userId);
+      if (item.type === 'mastery') {
+         await item.updatePropertiesFromMastery();
+      }
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this instanceof CharacterActor)) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
          this.logActorChanges(item, null, user, "addItem");
       }
    }
@@ -155,7 +158,7 @@ export class fadeActor extends Actor {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this instanceof CharacterActor)) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
          // Log the item removal and notify the GM
          console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
          this.logActorChanges(item, null, user, "deleteItem");

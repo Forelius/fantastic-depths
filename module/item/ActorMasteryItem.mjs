@@ -22,12 +22,12 @@ export class ActorMasteryItem extends fadeItem {
       super._onUpdate(changed, options, userId);
       if (changed.system?.level !== undefined) {
          // This is an async method
-         this._updatePropertiesFromMastery();
+         this.updatePropertiesFromMastery();
       }
    }
 
    /** Update item properties based on FADE.WeaponMastery */
-   async _updatePropertiesFromMastery() {
+   async updatePropertiesFromMastery() {
       const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.level);
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 

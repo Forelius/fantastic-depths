@@ -41,7 +41,9 @@ export class CharacterActor extends fadeActor {
       }
       // Class or level updated.
       if (this.id) {
-         if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
+         if (updateData.system?.details?.class !== undefined
+            || updateData.system?.details?.level !== undefined
+            || updateData.system?.abilities !== undefined) {
             await this._prepareClassInfo();
             await this._updateLevelClass();
          }
@@ -61,10 +63,8 @@ export class CharacterActor extends fadeActor {
     */
    logActorChanges(updateData, oldData, user, type, parentKey = '') {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
-
       let changes = [];
       const ignore = ["_stats", "_id", "flags"];
-
       if (type === "property") {
          for (let key in updateData) {
             const fullKey = parentKey ? `${parentKey}.${key}` : key;
@@ -83,11 +83,9 @@ export class CharacterActor extends fadeActor {
       } else {
          changes.push(updateData);
       }
-
       if (changes.length > 0) {
          this._sendChangeMessageToGM(changes, user, type);
       }
-
       return changes;  // This allows recursion to accumulate changes
    }
 
