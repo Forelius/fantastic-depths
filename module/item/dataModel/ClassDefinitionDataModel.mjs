@@ -95,6 +95,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                level: new fields.NumberField({ required: true }),
                target: new fields.NumberField({ required: true, nullable: true }),
                classKey: new fields.StringField({ nullable: true, initial: this.classKey }),
+               changes: new fields.StringField({ required: true, initial: '' }),
             }),
             {
                required: false,

@@ -61,6 +61,7 @@ export class ClassDefinitionItem extends fadeItem {
          level: 1,
          name,
          target: 0,
+         changes: "",
          classKey: classKey || this.system.key
       };
 

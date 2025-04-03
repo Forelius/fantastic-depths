@@ -459,9 +459,7 @@ export class fadeActor extends Actor {
    async clearClassData(className) {
       const classItem = await fadeFinder.getClass(className?.toLowerCase());
       if (!classItem) {
-         if (nameInput !== null && nameInput !== '') {
-            console.warn(`Class not found ${this.system.details.class}.`);
-         }
+         console.warn(`Class not found ${className}.`);
          return;
       }
       const update = {
@@ -596,9 +594,19 @@ export class fadeActor extends Actor {
 
       // Iterate over ability items and set each one.
       for (const specialAbility of actorAbilities) {
-         const target = abilitiesData.find(item => item.name === specialAbility.name)?.target;
+         const abilityData = abilitiesData.find(item => item.name === specialAbility.name);
+         const target = abilityData?.target;
          if (target) {
             promises.push(specialAbility.update({ "system.target": target }));
+         }
+         let changes = abilityData?.changes;
+         if (changes) {
+            try {
+               promises.push(specialAbility.update(JSON.parse(changes)));
+            }
+            catch (err) {
+               console.error(`Invalid class ability changes specified for ${specialAbility.name}.`);
+            }
          }
       }
       if (promises.length > 0) {
@@ -644,7 +652,12 @@ export class fadeActor extends Actor {
       for (const actorItem of actorItems) {
          let changes = itemsData.find(item => item.name === actorItem.name)?.changes;
          if (changes) {
-            promises.push(actorItem.update(JSON.parse(changes)));
+            try {
+               promises.push(actorItem.update(JSON.parse(changes)));
+            }
+            catch (err) {
+               console.error(`Invalid class item changes specified for ${actorItem.name}.`);
+            }
          }
       }
       if (promises.length > 0) {
