@@ -23,7 +23,7 @@ export class SkillItem extends fadeItem {
       super.prepareDerivedData();
       const systemData = this.system;
       if (this.actor) {
-         systemData.rollTarget = this.actor.system.abilities[systemData.ability].value;
+         systemData.rollTarget = this.actor.system.abilities[systemData.ability].total;
       }
    }
 

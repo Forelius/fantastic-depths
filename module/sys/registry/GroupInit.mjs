@@ -96,8 +96,8 @@ export class GroupInit {
       }
 
       // Compare dexterity, descending order; treat null/undefined as last
-      const aDex = aActor.system.abilities?.dex.value ?? 0;
-      const bDex = bActor.system.abilities?.dex.value ?? 0;
+      const aDex = aActor.system.abilities?.dex.total ?? 0;
+      const bDex = bActor.system.abilities?.dex.total ?? 0;
       if (result === 0) {
          result = bDex - aDex;
       }

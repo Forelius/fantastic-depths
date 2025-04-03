@@ -76,8 +76,8 @@ export class IndivInit{
          }
 
          // Compare dexterity, descending order; treat null/undefined as last
-         let aDex = aActor.system.abilities?.dex.val;
-         let bDex = bActor.system.abilities?.dex.val;
+         let aDex = aActor.system.abilities?.dex.total;
+         let bDex = bActor.system.abilities?.dex.total;
          if (result === 0) {
             if (!aDex) {
                if (bDex) {
@@ -101,16 +101,7 @@ export class IndivInit{
    async #doInitiativeRoll(combat, combatants) {
       // Array to accumulate roll results for the digest message
       let rollResults = [];
-
-      // Individual-based initiative  
-      const userIds = [...new Set(combatants.flatMap(c => {
-         const actor = c.actor;
-         if (!actor) return [];
-         return Object.keys(actor.ownership).filter(userId =>
-            actor.ownership[userId] === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
-         );
-      }))];
-
+      
       for (let combatant of combatants) {
          const updates = [];
          const rollData = combatant.actor.getRollData();

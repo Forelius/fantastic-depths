@@ -523,7 +523,7 @@
          }
       },
       "species": {
-         "requiredScores": "Required Attribute Scores",
+         "requiredScores": "Required Ability Scores",
          "classes": "Classes",
          "male": "Male",
          "female": "Female"

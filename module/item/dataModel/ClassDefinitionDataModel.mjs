@@ -31,11 +31,28 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
-         minCon: new fields.NumberField({ required: false, nullable: true }),
-         minInt: new fields.NumberField({ required: false, nullable: true }),
-         minDex: new fields.NumberField({ required: false, nullable: true }),
-         minWis: new fields.NumberField({ required: false, nullable: true }),
          description: new fields.StringField({ required: false, initial: "" }),
+         // Ability scores
+         abilities: new fields.SchemaField({
+            str: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            int: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            wis: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            dex: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            con: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            cha: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            })
+         }),
          primeReqs: new fields.ArrayField(
             new fields.SchemaField({
                concatLogic: new fields.StringField({ required: true }),
@@ -131,6 +148,15 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
             classAbility.classKey = source.key;
          }
       }
+
+      const abilityScores = source.abilities ?? {
+         con: {}, wis: {}, int: {}, dex: {}
+      };
+      abilityScores.con.min = abilityScores.con.min ?? source.minCon;
+      abilityScores.wis.min = abilityScores.wis.min ?? source.minWis;
+      abilityScores.int.min = abilityScores.int.min ?? source.minInt;
+      abilityScores.dex.min = abilityScores.dex.min ?? source.minDex;
+
       return super.migrateData(source);
    }
 

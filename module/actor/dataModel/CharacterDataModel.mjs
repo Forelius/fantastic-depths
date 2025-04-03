@@ -95,7 +95,7 @@ export class CharacterDataModel extends fadeActorDataModel {
       }
 
       // Retainer
-      let charisma = this.abilities.cha.value;
+      let charisma = this.abilities.cha.total;
       let adjustment = adjustments.find(item => charisma <= item.max);
       this.retainer.max = this.retainer.max > 0 ? this.retainer.max : adjustment.maxRetainers;
       this.retainer.morale = this.retainer.morale > 0 ? this.retainer.morale : (adjustment.retainerMorale ?? 10);
