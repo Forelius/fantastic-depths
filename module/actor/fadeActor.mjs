@@ -579,7 +579,9 @@ export class fadeActor extends Actor {
             if (theItem) {
                const newAbility = theItem.toObject();
                //newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
-               newAbility.system.target = abilityData.target;
+               if (abilityData.target != null) {
+                  newAbility.system.target = abilityData.target;
+               }
                addItems.push(newAbility);
             } else {
                console.warn(`The special ability ${abilityData.name} does not exist as a world item or in the fade compendiums.`);

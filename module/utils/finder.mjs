@@ -39,7 +39,7 @@ export class fadeFinder {
       } else if (type === 'anyItem') {
          result = game.items;
       } else {
-         result = game.items.filter(item => item.type === type);
+         result = game.items.filter(item => item.type == type);
       }
       return result;
    }
@@ -51,7 +51,7 @@ export class fadeFinder {
     * @param {any} name The name of the item to get.
     */
    static _getItem(source, name) {
-      return source?.filter(item => item.name.toLowerCase() === name.toLowerCase())?.[0];
+      return source?.filter(item => item.name.toLowerCase() == name.toLowerCase())?.[0];
    }
 
    static _getItemById(source, id) {
@@ -69,21 +69,21 @@ export class fadeFinder {
       let result;
       const type = 'specialAbility';
       if (source) {
-         if (options?.category === 'class') {
-            result = source.filter(item => item.type === type && item.system.category === options.category
-               && (name === null || item.name.toLowerCase() === name.toLowerCase())
-               && item.system.classKey === options.classKey)?.[0];
+         if (options?.category === 'class') {            
+            result = source.filter(item => item.type == type && item.system.category == options.category
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
          } else if (options?.category === 'save') {
-            result = source.filter(item => item.type === type && item.system.category === options.category
-               && (name === null || item.name.toLowerCase() === name.toLowerCase())
-               && item.system.customSaveCode === options.customSaveCode)?.[0];
+            result = source.filter(item => item.type == type && item.system.category == options.category
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && item.system.customSaveCode == options.customSaveCode)?.[0];
          } else if (options?.categoryNEQ === 'save') {
-            result = source.filter(item => item.type === type && item.system.category !== options.categoryNEQ
-               && (name === null || item.name.toLowerCase() === name.toLowerCase())
-               && item.system.classKey === options.classKey)?.[0];
+            result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && ((!options.classKey && !item.system.classKey)|| item.system.classKey == options.classKey))?.[0];
          } else {
-            result = source.filter(item => item.type === type && item.system.category === options?.category
-               && item.name.toLowerCase() === name.toLowerCase())?.[0];
+            result = source.filter(item => item.type == type && item.system.category == options?.category
+               && item.name.toLowerCase() == name.toLowerCase())?.[0];
          }
       }
       return result
@@ -266,10 +266,10 @@ export class fadeFinder {
    static async getItem(name, types) {
       const type = 'anyItem';
       let source = fadeFinder._getWorldSource(type);
-      let result = source.filter(item => types.includes(item.type) && (name === null || item.name.toLowerCase() === name.toLowerCase()))?.[0];
+      let result = source.filter(item => types.includes(item.type) && (!name || item.name.toLowerCase() == name.toLowerCase()))?.[0];
       if (!result) {
          source = await fadeFinder._getPackSource(type);
-         result = source.filter(item => types.includes(item.type) && (name === null || item.name.toLowerCase() === name.toLowerCase()))?.[0];
+         result = source.filter(item => types.includes(item.type) && (!name || item.name.toLowerCase() == name.toLowerCase()))?.[0];
       }
       return result;
    }
@@ -277,8 +277,8 @@ export class fadeFinder {
    static async getClass(name, key) {
       const type = 'class';
       function doFind(source, name, key) {
-         if (name) return source?.filter(item => item.name.toLowerCase() === name.toLowerCase())?.[0];
-         else return source?.filter(item => item.system.key === key)?.[0];
+         if (name) return source?.filter(item => item.name.toLowerCase() == name.toLowerCase())?.[0];
+         else return source?.filter(item => item.system.key == key)?.[0];
       }
       let source = fadeFinder._getWorldSource(type);
       let result = doFind(source, name, key);

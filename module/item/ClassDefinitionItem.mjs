@@ -62,7 +62,7 @@ export class ClassDefinitionItem extends fadeItem {
          name,
          target: 0,
          changes: "",
-         classKey: classKey || this.system.key
+         classKey: classKey
       };
 
       // Add the new item to the array

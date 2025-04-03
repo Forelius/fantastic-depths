@@ -111,7 +111,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                name: new fields.StringField({ required: true, initial: '' }),
                level: new fields.NumberField({ required: true }),
                target: new fields.NumberField({ required: true, nullable: true }),
-               classKey: new fields.StringField({ nullable: true, initial: this.classKey }),
+               classKey: new fields.StringField({ nullable: true, initial: null }),
                changes: new fields.StringField({ required: true, initial: '' }),
             }),
             {
@@ -138,25 +138,20 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    * @inheritDoc
    */
    static migrateData(source) {
-      let classAbilities = source.classAbilities ?? [];
-      if (Array.isArray(classAbilities) === false) {
-         classAbilities = Object.values(classAbilities);
-      }
-      for (let classAbility of classAbilities) {
-         if (classAbility.classKey === null || classAbility.classKey === undefined) {
-            console.log(`Setting default for ${classAbility.name} to ${source.key}, was ${classAbility.classKey}.`);
-            classAbility.classKey = source.key;
+      const abilityScores = {
+         con: { min: null }, wis: { min: null }, int: { min: null }, dex: { min: null }
+      };
+      Object.assign(abilityScores, source.abilities);
+      abilityScores.con.min = abilityScores.con?.min ?? source.minCon ?? null;
+      abilityScores.wis.min = abilityScores.wis?.min ?? source.minWis ?? null;
+      abilityScores.int.min = abilityScores.int?.min ?? source.minInt ?? null;
+      abilityScores.dex.min = abilityScores.dex?.min ?? source.minDex ?? null;
+      source.abilities = abilityScores;
+      for (let classAbility of source.classAbilities) {
+         if (classAbility.classKey == "") {
+            classAbility.classKey = null;
          }
       }
-
-      const abilityScores = source.abilities ?? {
-         con: {}, wis: {}, int: {}, dex: {}
-      };
-      abilityScores.con.min = abilityScores.con.min ?? source.minCon;
-      abilityScores.wis.min = abilityScores.wis.min ?? source.minWis;
-      abilityScores.int.min = abilityScores.int.min ?? source.minInt;
-      abilityScores.dex.min = abilityScores.dex.min ?? source.minDex;
-
       return super.migrateData(source);
    }
 
