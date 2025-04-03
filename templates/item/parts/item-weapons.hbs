@@ -63,7 +63,7 @@
       </div>
    </li>
    {{/if}}
-   {{#if item.system.chargesMax}}
+   {{#if (and item.system.chargesMax @root.isGM)}}
    <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="charges-counter">
          <label>{{localize 'FADE.Item.charges.long'}}</label>

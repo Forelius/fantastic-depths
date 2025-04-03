@@ -21,18 +21,26 @@
                <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxLong'}}</label>
             </li>
             <li class="flex1">
+               {{#if isGM}}
                <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
+               {{else}}
+               <input type='text' value='?' data-dtype='Number' readonly/>
+               {{/if}}
                <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
             </li>
             <li class="flex1">
+               {{#if isGM}}
                <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
+               {{else}}
+               <input type='text' value='?' data-dtype='Number' readonly />
+               {{/if}}
                <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
             </li>
             <li class="flex1">
                {{#if (or isGM system.isIdentified)}}
                <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
                {{else}}
-               <input type='text' value='?' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               <input type='text' value='?' data-dtype='Number' readonly />
                {{/if}}
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>

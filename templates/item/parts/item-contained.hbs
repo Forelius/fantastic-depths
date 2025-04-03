@@ -58,7 +58,7 @@
       {{/times}}
    </div>
    {{/if}}
-   {{#if item.system.chargesMax}}
+   {{#if (and item.system.chargesMax @root.isGM)}}
    <div class='flexrow item collapsible-content contained-item{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
       <div class="charges-counter contained">
          <label>{{localize 'FADE.Item.charges.long'}}</label>
