@@ -366,6 +366,7 @@
          },
          "grip": {
             "label": "Grip",
+            "hint": "How many hands are used to attack with the weapon.",
             "one": "1-Handed",
             "oneAbbr": "1H",
             "two": "2-Handed",

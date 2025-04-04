@@ -60,10 +60,10 @@ export class IndivInit{
          }
 
          if (result === 0 && this.initiativeMode !== "simpleIndividual") {
-            let aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-            let bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-            let aSlowEquipped = aWeapon?.system.isSlow;
-            let bSlowEquipped = bWeapon?.system.isSlow;
+            const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+            const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+            const aSlowEquipped = aWeapon?.system.isSlow;
+            const bSlowEquipped = bWeapon?.system.isSlow;
             // Compare slowEquipped, true comes after false
             if (aSlowEquipped !== bSlowEquipped) {
                result = aSlowEquipped ? 1 : -1;
@@ -76,8 +76,8 @@ export class IndivInit{
          }
 
          // Compare dexterity, descending order; treat null/undefined as last
-         let aDex = aActor.system.abilities?.dex.total;
-         let bDex = bActor.system.abilities?.dex.total;
+         const aDex = aActor.system.abilities?.dex.total;
+         const bDex = bActor.system.abilities?.dex.total;
          if (result === 0) {
             if (!aDex) {
                if (bDex) {

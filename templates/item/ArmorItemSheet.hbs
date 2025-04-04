@@ -39,7 +39,7 @@
                </select>
                <label for="system.armorWeight">{{localize 'FADE.Armor.armorWeight.short'}}</label>
                {{else}}
-               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}} />
+               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless item.isOwner}}readonly{{/unless}} />
                <label for="system.weight">{{localize 'FADE.Item.weight.short'}}</label>
                {{/if}}
             </div>
