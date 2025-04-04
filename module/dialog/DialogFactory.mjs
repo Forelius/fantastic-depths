@@ -1,4 +1,8 @@
 import { fadeDialog } from './fadeDialog.mjs';
+import { AttackDialog } from './AttackDialog.mjs'
+import { SavingThrowDialog } from './SavingThrowDialog.mjs'
+import { AbilityCheckDialog } from './AbilityCheckDialog.mjs'
+import { LightMgrDialog } from './LightMgrDialog.mjs'
 
 /**
  * Create a type of dialog to be used.
@@ -10,19 +14,19 @@ import { fadeDialog } from './fadeDialog.mjs';
 export const DialogFactory = (dataset = null, caller = null, opt = {}) => {
    let result;
    if (dataset.dialog === 'ability') {
-      result = fadeDialog.getAbilityDialog(dataset, caller);
+      result = AbilityCheckDialog.getDialog(dataset, caller);
    } else if (dataset.dialog === 'generic') {
       result = fadeDialog.getGenericDialog(dataset, caller);
    } else if (dataset.dialog === 'attack') {
-      result = fadeDialog.getAttackDialog(opt.weapon, caller, opt);
+      result = AttackDialog.getDialog(opt.weapon, caller, opt);
    } else if (dataset.dialog === 'spellattack') {
-      result = fadeDialog.getSpellAttackDialog(dataset, caller, opt);
+      result = AttackDialog.getForSpellsDialog(dataset, caller, opt);
    } else if (dataset.dialog === 'lightmgr') {
-      result = fadeDialog.getLightMgrDialog(dataset, caller, opt);
+      result = LightMgrDialog.getDialog(dataset, caller, opt);
    } else if (dataset.dialog === 'yesno') {
       result = fadeDialog.getYesNoDialog(dataset);
    } else if (dataset.dialog === 'save') {
-      result = fadeDialog.getSavingThrowDialog(dataset, caller);
+      result = SavingThrowDialog.getDialog(dataset, caller);
    } 
    return result;
 };
