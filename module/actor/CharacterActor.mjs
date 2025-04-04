@@ -61,7 +61,7 @@ export class CharacterActor extends fadeActor {
     * @param {any} parentKey
     * @returns
     */
-   logActorChanges(updateData, oldData, user, type, parentKey = '') {
+   logActorChanges(updateData, oldData, user, type, parentKey = '', recursionLevel = 1) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
       let changes = [];
       const ignore = ["_stats", "_id", "flags"];
@@ -74,7 +74,7 @@ export class CharacterActor extends fadeActor {
                const newValue = foundry.utils.getProperty(updateData, key);
                if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
                   // Recursively log changes for nested objects
-                  this.logActorChanges(newValue, oldData, user, type, fullKey);
+                  changes = [...changes, ...this.logActorChanges(newValue, oldData, user, type, fullKey, recursionLevel+1)];
                } else if (oldValue) {
                   changes.push({ field: fullKey, oldValue: oldValue, newValue: newValue });
                }
@@ -83,7 +83,7 @@ export class CharacterActor extends fadeActor {
       } else {
          changes.push(updateData);
       }
-      if (changes.length > 0) {
+      if (recursionLevel === 1 && changes.length > 0) {
          this._sendChangeMessageToGM(changes, user, type);
       }
       return changes;  // This allows recursion to accumulate changes
