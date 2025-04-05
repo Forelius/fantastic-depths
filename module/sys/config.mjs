@@ -26,6 +26,7 @@ FADE.DamageTypes = [
    "frost",
    "magic",
    "poison",
+   "acid",
    "heal",
    "hull"
 ]

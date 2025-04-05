@@ -753,6 +753,7 @@
             "frost": "Frost",
             "magic": "Magic",
             "poison": "Poison",
+            "acid": "Acid",
             "heal": "Healing",
             "hull": "Hull"
          }
