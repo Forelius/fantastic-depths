@@ -20,7 +20,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const weapon = caller;
       const descData = {
          attacker: attackerName,
-         attackType: resp.attackType,
+         attackType: game.i18n.localize(`FADE.dialog.attackType.${resp.attackType}`).toLowerCase(),
          weapon: weapon.system.isIdentified === true ? weapon.name : weapon.system.unidentifiedName
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
