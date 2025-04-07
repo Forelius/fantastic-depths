@@ -682,12 +682,6 @@
             "content": "Do you want to use the item or only view its description?",
             "yesLabel": "Use Item"
          },
-         "attackMode": {
-            "name": "Attack Mode",
-            "natural": "Natural",
-            "2hand": "Two-Handed",
-            "1hand": "One-Handed"
-         },
          "attackType": {
             "breath": "Breath",
             "missile": "Missile",

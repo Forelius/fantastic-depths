@@ -21,7 +21,7 @@ export class WeaponItem extends GearItem {
       this._prepareDamageRollLabel();
    }
 
-   async getDamageRoll(attackType, attackMode, resp, targetWeaponType) {
+   async getDamageRoll(attackType, resp, targetWeaponType) {
       const weaponData = this.system;
       const attackerData = this.parent.system;
       const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
@@ -82,26 +82,6 @@ export class WeaponItem extends GearItem {
       }
 
       return { formula, type: weaponData.damageType, digest, hasDamage };
-   }
-
-   /**
-    * Attack modes are things like one-handed, offhand and two-handed
-    */
-   getAttackModes() {
-      let result = [];
-      const twoHand = this.system.grip === '2H';
-      const breath = this.system.breath?.length > 0;
-      const natural = this.system.natural === true;
-
-      if (natural || breath) {
-         result.push({ text: game.i18n.format('FADE.dialog.attackMode.natural'), value: "natural" });
-      } else if (twoHand) {
-         result.push({ text: game.i18n.format('FADE.dialog.attackMode.2hand'), value: "2hand" });
-      } else {
-         result.push({ text: game.i18n.format('FADE.dialog.attackMode.1hand'), value: "1hand" });
-      }
-
-      return result;
    }
 
    /**
