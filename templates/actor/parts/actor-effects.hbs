@@ -1,12 +1,8 @@
 <div class="items-list">
-   <div class="flexrow item items-header">
+   <div class="flexrow items-header">
       <div class="item-name">{{localize 'FADE.condition.plural'}}</div>
-      <div>{{localize "EFFECT.TabDuration"}}</div>
       <div class='item-controls'>
-         <!--<a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.condition")}}' data-type='condition'>
-            <i class='fas fa-plus'></i>
             {{localize 'TYPES.Item.condition'}}
-         </a>-->
       </div>
    </div>
    {{#each conditions as |item|}}
@@ -16,10 +12,7 @@
             <img src='{{item.img}}' width='26' height='26' />
          </div>
          <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.condition")}}'>{{item.name}}</a>
-      </div>
-      <div class="item-140px item-prop">
-         <label>{{item.duration}}</label>
-      </div>
+      </div>      
       <div class='item-controls item-prop'>
          <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.condition")}}'>
             <i class='fas fa-trash'></i>
@@ -31,8 +24,8 @@
 {{#if isGM}}
 <ol class="items-list effects-list">
    {{#each effects as |section sid|}}
-   <li class="items-header flexrow collapsible-header" data-effect-type="{{section.type}}" data-parent-id="{{@root.actor.id}}">
-      <h3 class="item-name effect-name flexrow">{{localize section.label}}</h3>
+   <li class="flexrow items-header collapsible-header" data-effect-type="{{section.type}}" data-parent-id="{{@root.actor.id}}">
+      <div class="item-name">{{localize section.label}}</div>
       <div class="effect-source">{{localize "FADE.Effect.Source"}}</div>
       <div class="effect-source">{{localize "EFFECT.TabDuration"}}</div>
       <div class="item-controls effect-controls flexrow">
