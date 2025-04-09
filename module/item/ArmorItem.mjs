@@ -28,7 +28,7 @@ export class ArmorItem extends GearItem {
          data.totalAAC = data.totalAC;
       } else {
          data.totalAC = data.ac - data.mod;
-         data.totalAAC = data.isShield ? data.totalAC : 19 - data.totalAC;
+         data.totalAAC = data.isShield ? data.totalAC : CONFIG.FADE.ToHit.BaseTHAC0 - data.totalAC;
       }
    }
 }

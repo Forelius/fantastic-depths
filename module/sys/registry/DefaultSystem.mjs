@@ -33,6 +33,7 @@ export class MoraleCheck {
    }
 }
 
+/** Ability checks are often implemented differently for different systems. */
 export class AbilityCheck {
    async execute(data) {
       const { actor, event } = data;
@@ -65,6 +66,7 @@ export class AbilityCheck {
    }
 }
 
+/** Not sure where this is going yet, but breaking into own system. */
 export class ActorArmor {
 
    /**
@@ -75,7 +77,7 @@ export class ActorArmor {
       const dexMod = (actor.system.abilities?.dex.mod ?? 0);
       const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - actor.system.mod.baseAc;
       let ac = {};
-      ac.nakedAAC = 19 - baseAC;
+      ac.nakedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - baseAC;
       ac.naked = baseAC;
       // AC value is used for wrestling rating and should not include Dexterity bonus.
       ac.value = CONFIG.FADE.Armor.acNaked;
@@ -142,10 +144,10 @@ export class ActorArmor {
       }
 
       // Now other mods. Dexterity bonus already applied above.
-      ac.nakedAAC = 19 - ac.naked;
-      ac.totalAAC = 19 - ac.total;
-      ac.totalRangedAAC = 19 - ac.totalRanged;
-      ac.nakedRangedAAC = 19 - ac.nakedRanged;
+      ac.nakedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.naked;
+      ac.totalAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.total;
+      ac.totalRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.totalRanged;
+      ac.nakedRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.nakedRanged;
 
       // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
       const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');

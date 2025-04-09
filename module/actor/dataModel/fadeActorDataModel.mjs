@@ -61,7 +61,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }),
          initiative: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
-            mod: new fields.NumberField({ initial: 0 }),
          }),
          languages: new fields.StringField({ initial: "" }),
          combat: new fields.SchemaField({
@@ -136,6 +135,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.baseAc = 0;
       this.mod.upgradeAc = null;
       this.mod.upgradeRangedAc = null;
+      this.mod.acVsLarge = 0;
       this.mod.initiative = 0;
       this.mod.combat.toHit = 0;
       this.mod.combat.dmg = 0;

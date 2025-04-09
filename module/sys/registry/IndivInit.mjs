@@ -131,13 +131,14 @@ export class IndivInit{
             await combat.updateEmbeddedDocuments("Combatant", updates);
          }
 
+         console.log("Initiative roll details:", rollResults);
          combat._activateCombatant(0);
       }
    }
 
    #getInitiativeMod(actor) {
       let result = 0;
-      result += actor.system?.initiative?.mod || 0;
+      result += actor.system?.mod.initiative || 0;
       if (actor.type !== 'monster') {
          result += actor.system?.abilities?.dex?.mod || 0;
       }

@@ -71,7 +71,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
             new fields.SchemaField({
                level: new fields.NumberField({ required: true }),
                xp: new fields.NumberField({ required: true, initial: 5 }),
-               thac0: new fields.NumberField({ required: true, initial: 19 }),
+               thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
                thbonus: new fields.NumberField({ required: true, initial: 0 }),
                hd: new fields.StringField({ required: true, initial: '' }),
                hdcon: new fields.BooleanField({ required: true, initial: true }),
@@ -147,9 +147,12 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
       abilityScores.int.min = abilityScores.int?.min ?? source.minInt ?? null;
       abilityScores.dex.min = abilityScores.dex?.min ?? source.minDex ?? null;
       source.abilities = abilityScores;
-      for (let classAbility of source.classAbilities) {
-         if (classAbility.classKey == "") {
-            classAbility.classKey = null;
+      if (source.classAbilities) {
+         const classAbilities = Array.isArray(source.classAbilities) ? source.classAbilities : Object.values(source.classAbilities);
+         for (let classAbility of classAbilities) {
+            if (classAbility.classKey == "") {
+               classAbility.classKey = null;
+            }
          }
       }
       return super.migrateData(source);

@@ -142,6 +142,7 @@ export class GroupInit {
             await combat.updateEmbeddedDocuments("Combatant", updates);
          }
 
+         console.log("Initiative roll details:", rollResults);
          combat._activateCombatant(0);
       }
    }

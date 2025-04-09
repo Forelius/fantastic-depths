@@ -217,3 +217,7 @@ FADE.TreasureTypes = {
       ]
    }
 };
+FADE.ToHit = {
+   /** Represents THAC0 for Normal Man */
+   BaseTHAC0: 19
+}

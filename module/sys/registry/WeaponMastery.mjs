@@ -187,7 +187,7 @@ export class WeaponMasterySystem {
                   // The total of the AC with the mastery AC bonus.
                   total: ac.total + (weaponMastery.system.acBonus || 0),
                   // The total of the AAC with the mastery AC bonus.
-                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
+                  totalAAC: CONFIG.FADE.ToHit.BaseTHAC0 - ac.total + (weaponMastery.system.acBonus || 0),
                   // The number of attacks that this bonus applies to per round.
                   acBonusAT: weaponMastery.system.acBonusAT,
                   name: weaponMastery.name
@@ -218,7 +218,7 @@ export class WeaponMasterySystem {
             : "",
          attAgainst: attackType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM,
          maxAttAgainst: defenseMastery.acBonusAT,
-         defenseMasteryTotal: this.isAAC ? (19 - defenseMastery.total) : defenseMastery.total,
+         defenseMasteryTotal: this.isAAC ? (CONFIG.FADE.ToHit.BaseTHAC0 - defenseMastery.total) : defenseMastery.total,
          masteryName: defenseMastery.name
       });
    }
