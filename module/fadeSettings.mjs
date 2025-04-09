@@ -162,17 +162,29 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
-      // Register party rest frequency
-      game.settings.register(game.system.id, "restFrequency", {
-         name: "SETTINGS.rest.name",
-         hint: "SETTINGS.rest.hint",
-         scope: "world",
-         config: true,
-         default: 0,  // Default is 0, no rest
-         type: Number,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
+      //// Register party rest frequency
+      //game.settings.register(game.system.id, "restFrequency", {
+      //   name: "SETTINGS.rest.turnsName",
+      //   hint: "SETTINGS.rest.turnsNHint",
+      //   scope: "world",
+      //   config: true,
+      //   default: 0,  // Default is 0, no rest
+      //   type: Number,
+      //   requiresReload: true,
+      //   restricted: true // Only the GM can change this setting
+      //});
+
+      //// Register party rest frequency
+      //game.settings.register(game.system.id, "restCondition", {
+      //   name: "SETTINGS.rest.conditionName",
+      //   hint: "SETTINGS.rest.conditionHint",
+      //   scope: "world",
+      //   config: true,
+      //   default: "",  // Default is 0, no rest
+      //   type: String,
+      //   requiresReload: true,
+      //   restricted: true // Only the GM can change this setting
+      //});
 
       game.settings.register(game.system.id, "rememberCollapsedState", {
          name: "SETTINGS.collapseState.name",

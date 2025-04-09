@@ -554,9 +554,10 @@
          "missingItem2": "{actor} does not have a {type}.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
-         "advancedTime": "<div>Time advances.<br/>Turns: {turns}<br/>Rounds: {rounds}</div>",
-         "reversedTime": "<div>Time reverses.<br/>Turns: {turns}<br/>Rounds: {rounds}</div>",
-         "needRest": "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>",
+         "advancedTime": "<div>Time advances {turns} turn(s), {rounds} round(s).</div>",
+         "reversedTime": "<div>Time reverses {turns} turn(s), {rounds} round(s).</div>",
+         "needRest": "<div class='warning'>The party is tired and needs to rest.</div>",
+         "needRestSoon": "<div class='warning'>The party will need to rest next turn, or their attack and damage rolls may be penalized until they do.</div>",
          "timeReset1": "Resetting session turn count to zero.",
          "timeReset2": "Resetting global turn count to zero.",
          "partyRests": "The party rests."
@@ -623,6 +624,23 @@
             "instructions": "Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker.",
             "noCombat": "Combat has not started yet.",
             "noDeclaredActions": "Fantastic Depths is not configured to use declared actions."
+         },
+         "turnTracker": {
+            "sessionCount": "Session Count",
+            "totalCount": "Total Count",
+            "sinceRest": "Since Rest",
+            "rest": "Rest",
+            "next": "Next",
+            "nextDesc": "Advance Turn",
+            "prev": "Previous",
+            "prevDesc": "Revert Turn",
+            "resetSession": "Reset Session",
+            "resetTotal": "Reset Total",
+            "conditionName": "Needs Rest Condition",
+            "conditionHint": "When the party needs rest, they will be given the specified condition. The condition will be removed upon resting. This requires that all party members be added to the party tracker, otherwise the system can't determine which characters to apply the condition to.",
+            "turnsName": "Rest Turns",
+            "turnsHint": "Configure how often a party must rest while exploring. A value of 6 would mean the party must rest once every six turns. Set to 0 for no resting required.",
+            "saveConfig": "Save Configuration"
          }
       },
       "dialog": {
@@ -704,18 +722,6 @@
             "content": "Would you like to automatically add the related special abilities from {type} {name}?"
          }
       },
-      "time": {
-         "sessionCount": "Session Count",
-         "totalCount": "Total Count",
-         "sinceRest": "Since Rest",
-         "rest": "Rest",
-         "next": "Next",
-         "nextDesc": "Advance Turn",
-         "prev": "Previous",
-         "prevDesc": "Revert Turn",
-         "resetSession": "Reset Session",
-         "resetTotal": "Reset Total"
-      },
       "tabs": {
          "abilities": "Abilities",
          "items": "Equipment",
@@ -726,7 +732,9 @@
          "gmOnly": "GM Only",
          "levels": "Levels",
          "primeRequisites": "Prime Reqs",
-         "attributes": "Attributes"
+         "attributes": "Attributes",
+         "tracker": "Tracker",
+         "config":  "Config."
       },
       "AttackTypes": {
          "name": "Attack Type",
@@ -1005,10 +1013,6 @@
             "name": "Max. Secondary Speed",
             "hint": "<b>Max secondary movement speed per turn.</b><p> Secondary movement can be any other type of movement the creature is capable of besides ground movement. Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          }
-      },
-      "rest": {
-         "name": "Rest Turns",
-         "hint": "Configure how often a party must rest while exploring. A value of 6 would mean the party must rest once every six turns. Set to 0 for no resting required."
       },
       "initiative": {
          "formula": {

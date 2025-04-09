@@ -69,7 +69,7 @@ export class fadeFinder {
       let result;
       const type = 'specialAbility';
       if (source) {
-         if (options?.category === 'class') {            
+         if (options?.category === 'class') {
             result = source.filter(item => item.type == type && item.system.category == options.category
                && (!name || item.name.toLowerCase() == name.toLowerCase())
                && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
@@ -80,7 +80,7 @@ export class fadeFinder {
          } else if (options?.categoryNEQ === 'save') {
             result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
                && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && ((!options.classKey && !item.system.classKey)|| item.system.classKey == options.classKey))?.[0];
+               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
          } else {
             result = source.filter(item => item.type == type && item.system.category == options?.category
                && item.name.toLowerCase() == name.toLowerCase())?.[0];
@@ -102,12 +102,21 @@ export class fadeFinder {
 
    static async getRollTables(compendiumOnly = false) {
       const type = 'rolltable';
-      let source = fadeFinder._getWorldSource(type);
-      let result = source;
-      if (result.length === 0 || compendiumOnly === true) {
-         source = await fadeFinder._getPackSource(type);
-         result = source;
+      let result;
+      if (compendiumOnly !== true) {
+         result = fadeFinder._getWorldSource(type);
       }
+      result = [...result, ...(await fadeFinder._getPackSource(type))];
+      return result;
+   }
+
+   static async getConditions(compendiumOnly = false) {
+      const type = 'condition';
+      let result;
+      if (compendiumOnly !== true) {
+         result = fadeFinder._getWorldSource(type);
+      }
+      result = [...result, ...(await fadeFinder._getPackSource(type))];
       return result;
    }
 

@@ -170,28 +170,31 @@ export class fadeActor extends Actor {
       if (!canvas?.scene) return;
 
       // Active effects
-      if (this.effects.size > 0) {
-         // Ensure the actor has active effects to update
-         for (let effect of this.effects) {
-            if (effect.isTemporary && effect.duration?.type !== "none") {
-               effect.updateDuration();
-               // Adjust the duration based on the time passed
-               if (effect.duration.remaining <= 0) {
+      // Ensure the actor has active effects to update
+      for (let effect of this.allApplicableEffects()) {
+         if (effect.isTemporary && effect.duration?.type !== "none") {
+            effect.updateDuration();
+            // Adjust the duration based on the time passed
+            if (effect.duration.remaining <= 0) {
+               if (effect.parent && effect.parent.type === "condition") {
+                  // Condition expired
+                  effect.parent.delete();
+               } else {
                   // Effect expired
                   effect.delete();
-
-                  // Notify chat.
-                  const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-                  let chatContent = game.i18n.format('FADE.Chat.effectEnds', { effectName: effect.name, actorName: this.name });
-                  ChatMessage.create({ speaker: speaker, content: chatContent });
                }
+
+               // Notify chat.
+               const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
+               let chatContent = game.i18n.format('FADE.Chat.effectEnds', { effectName: effect.name, actorName: this.name });
+               ChatMessage.create({ speaker: speaker, content: chatContent });
             }
          }
+      }
 
-         // Only re-render the sheet if it's already rendered
-         if (this.sheet && this.sheet.rendered) {
-            this.sheet.render(true);  // Force a re-render of the actor sheet
-         }
+      // Only re-render the sheet if it's already rendered
+      if (this.sheet && this.sheet.rendered) {
+         this.sheet.render(true);  // Force a re-render of the actor sheet
       }
    }
 
@@ -464,7 +467,7 @@ export class fadeActor extends Actor {
       }
       const update = {
          details: {
-            title:"",
+            title: "",
             class: "",
             xp: {
                bonus: null,
