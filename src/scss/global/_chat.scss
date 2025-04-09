@@ -2,6 +2,10 @@
    padding: 3px 4px 3px 4px;
 
    .message-content {
+      img {
+         border: none;
+      }
+
       padding: 1px 5px 4px 5px;
 
       button {
@@ -11,7 +15,6 @@
       .digest {
          margin-bottom: 6px;
       }
-
       /*.collapser {
          margin-bottom: 4px;
       }*/

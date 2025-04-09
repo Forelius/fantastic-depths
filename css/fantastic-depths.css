@@ -718,6 +718,9 @@ h1, h2, h3, h4 {
      margin-bottom: 4px;
   }*/
 }
+.chat-message .message-content img {
+  border: none;
+}
 .chat-message .message-content button {
   margin: 0;
 }
