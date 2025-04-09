@@ -1,4 +1,5 @@
-﻿import { MonsterXPCalculator } from './utils/MonsterXPCalculator.mjs'
+﻿import { Formatter } from './utils/Formatter.mjs';
+import { MonsterXPCalculator } from './utils/MonsterXPCalculator.mjs'
 
 export class fadeHandlebars {
    static clamp(value, min, max) {
@@ -6,7 +7,7 @@ export class fadeHandlebars {
    }
 
    static registerHelpers() {
-      Handlebars.registerHelper("")
+      Handlebars.registerHelper("camelize", str => Formatter.camelize(str));
       Handlebars.registerHelper("infinity", (value) => value ?? "∞");
       Handlebars.registerHelper('uppercase', (str) => str.toUpperCase());
       Handlebars.registerHelper('lowercase', (str) => str.toLowerCase());

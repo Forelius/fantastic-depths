@@ -56,22 +56,28 @@ export class LightItem extends GearItem {
    async enableLight() {
       const token = this.ownerToken;
       if (token === null || token === undefined) {
-         this.notify(game.i18n.localize('FADE.notification.noTokenWarning2'), 'warn');
+         const warnMsg = game.i18n.localize('FADE.notification.noTokenWarning2');
+         this.notify(warnMsg, 'warn');
+         console.warn(warnMsg);
       } else {
          // If the light item's quantity is zero...
          if (this.system.quantity === 0) {
-            this.notify(game.i18n.format('FADE.Item.light.noMoreItem', {
-               actor: token.name,
-               item: this.name
-            }), 'error');
+            const warningMsg = game.i18n.format('FADE.Item.light.noMoreItem', { actor: token.name, item: this.name });
+            this.notify(warningMsg, 'error');
+            console.warn(warningMsg);
          }
          else {
+            // If current fuel empty, is not self-fueling and has more fuel...
             if (this.hasFuel === false && this.nextFuelItem && this.usesExternalFuel === true) {
                // Consume fuel
                await this.consumeFuel();
-            } else if (this.usesExternalFuel === false && this.system.light.secondsRemain === 0) {
+            }
+            // else if self-fueling and current remaining seconds is zero...
+            else if (this.usesExternalFuel === false && this.system.light.secondsRemain === 0) {
+               // Set the duration.
                await this.update({ "system.light.secondsRemain": (this.system.light.duration * 600) });
             }
+            // With all of that taken care of, if we have fuel for the light source...
             if (this.hasFuel === true) {
                const lightSettings = this.system.getLightSettings();
                await this.actor.setActiveLight(this.id);

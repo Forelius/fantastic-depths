@@ -1,16 +1,19 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs'; 
+import { fadeItemSheet } from './fadeItemSheet.mjs';
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassItemSheet extends fadeItemSheet {
+export class ClassDefinitionItemSheet extends fadeItemSheet {
    /** @override */
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'item'],
          width: 650,
          height: 480,
+         dragDrop: [
+            { dragSelector: "[data-document-id]", dropSelector: "form" }
+         ],
          tabs: [
             {
                navSelector: '.sheet-tabs',
@@ -24,7 +27,7 @@ export class ClassItemSheet extends fadeItemSheet {
    /** @override */
    get template() {
       const path = 'systems/fantastic-depths/templates/item';
-      return `${path}/ClassItemSheet.hbs`;
+      return `${path}/ClassDefinitionItemSheet.hbs`;
    }
 
    /** @override */
@@ -41,7 +44,7 @@ export class ClassItemSheet extends fadeItemSheet {
       for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
-      // Abilities
+      // Ability score abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
@@ -69,19 +72,21 @@ export class ClassItemSheet extends fadeItemSheet {
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
    }
 
-   /**
-   * @override
-   * @param {any} event
-   * @param {any} data
-   * @returns
-   */
-   async _onDropItem(event, data) {
+   /** @inheritdoc */
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-      console.debug(droppedItem, event, data)
-      // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === 'specialAbility' && droppedItem.system.category === 'class') {
 
-      }      
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'specialAbility') {
+         if (droppedItem.system.category === 'save') {
+         } else {
+            this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
+         }
+      } else if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
+         this.item.createClassItem(droppedItem.name, droppedItem.type);
+      }
    }
 
    /**
@@ -93,12 +98,15 @@ export class ClassItemSheet extends fadeItemSheet {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type;
+
       if (type === 'classSave') {
          this.item.createClassSave();
       } else if (type === 'primeReq') {
          this.item.createPrimeReq();
       } else if (type === 'classAbility') {
          this.item.createClassAbility();
+      } else if (ClassDefinitionItem.ValidItemTypes.includes(type)) {
+         this.item.createClassItem();
       }
       this.render();
    }

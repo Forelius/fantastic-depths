@@ -1,7 +1,7 @@
 <form class="{{cssClass}} character flexcol" autocomplete="off">
 
    <header class="sheet-header">
-      {{> "systems/fantastic-depths/templates/actor/parts/character-header.hbs"}}
+      {{> "characterHeader"}}
    </header>
 
    {{!-- Sheet Tab Navigation --}}
@@ -24,7 +24,7 @@
    <section class="sheet-body">
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
-         {{> "systems/fantastic-depths/templates/actor/parts/character-abilities.hbs"}}
+         {{> "characterAbilities"}}
       </div>
       {{!-- Description Tab --}}
       <div class="tab biography" data-group="primary" data-tab="description">
@@ -32,26 +32,26 @@
       </div>
       {{!-- Owned Items Tab --}}
       <div class="tab items" data-group="primary" data-tab="items">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-items.hbs"}}
+         {{> "actorItems"}}
       </div>
       {{#if isSpellcaster}}
       {{!-- Owned Spells Tab --}}
       <div class="tab spells" data-group="primary" data-tab="spells">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-spells.hbs"}}
+         {{> "actorSpells"}}
       </div>
       {{/if}}
       {{!-- Owned Skills Tab --}}
       <div class="tab skills" data-group="primary" data-tab="skills">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-skills.hbs"}}
+         {{> "actorSkills"}}
       </div>
       {{! GM-Only Tab }}
       {{#if isGM}}
       {{!-- Active Effects Tab --}}
       <div class="tab effects flexcol" data-group="primary" data-tab="effects">
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-effects.hbs"}}
+         {{> "actorEffects"}}
       </div>
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         {{> "systems/fantastic-depths/templates/actor/parts/actor-gm-only.hbs"}}
+         {{> "actorGmOnly"}}
       </div>
       {{/if}}
    </section>

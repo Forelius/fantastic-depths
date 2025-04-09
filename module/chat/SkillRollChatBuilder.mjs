@@ -39,6 +39,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
          userName,
          context, // the skill's owning actor
          item: caller,
+         itemDescription: await caller.getInlineDescription(),
          attackType: 'skill'
       };
       // Render the content using the template

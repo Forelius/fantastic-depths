@@ -81,20 +81,21 @@
             "abbr": "WR"
          },
          "Flight": {
-            "abbr": "FLY",
-            "long": "Flight"
+            "abbr": "Sec.",
+            "long": "Secondary",
+            "hint": "Secondary movement can be any other type of movement the creature is capable of besides ground movement."
          },
          "Movement": {
             "abbr": "MV",
             "long": "Movement",
             "turn": "Base",
-            "turnHint": "<b>Feet or yards per 10 minute turn.</b><p>This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.</p>",
+            "turnHint": "<b>Feet or yards per turn.</b><p>This rate includes many assumed actions such as mapping, peeking around corners, resting, and so forth.</p>",
             "round": "Round",
-            "roundHint": "<b>Feet or yards per 10 second round.</b><p>Used during combat encounters.</p>",
+            "roundHint": "<b>Feet or yards per round.</b><p>Used during combat encounters.</p>",
             "day": "Overland",
             "dayHint": "<b>Miles per day. Overland travel.</b><p>Note that terrain effects this rate.</p>",
             "run": "Run",
-            "runHint": "<b>Feet or yards per 10 second round.</b><p>Used when running or flying at maximum speed during combat encounters. Travel at maximum speed can last for up to 30 rounds (5 minutes) before exhaustion.</p>",
+            "runHint": "<b>Feet or yards per round.</b><p>Used when moving at maximum speed during combat encounters.</p>",
             "total": "Total",
             "moveTurn": "Base Movement"
          },
@@ -114,6 +115,7 @@
             "score": "Score",
             "long": "Ability",
             "plural": "Abilities",
+
             "str": {
                "long": "Strength",
                "abbr": "STR",
@@ -244,7 +246,7 @@
          "Monster": "Monster Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
-         "ClassItem": "Class Item Sheet",
+         "ClassDefinitionItem": "Class Definition Item Sheet",
          "Item": "Gear Item Sheet",
          "MasteryDefinitionItem": "Weapon Mastery Definition Item Sheet",
          "SpellItem": "Spell Item Sheet",
@@ -287,6 +289,9 @@
          "isUsable": {
             "name": "Usable",
             "hint": "Specify if item can be used, which will also enable usage tracking for the item."
+         },
+         "isTreasure": {
+            "hint": "Specify if the item counts as treasure when calculating encumbrance."
          },
          "isContainer": "Container",
          "quantity": {
@@ -361,6 +366,7 @@
          },
          "grip": {
             "label": "Grip",
+            "hint": "How many hands are used to attack with the weapon.",
             "one": "1-Handed",
             "oneAbbr": "1H",
             "two": "2-Handed",
@@ -518,7 +524,7 @@
          }
       },
       "species": {
-         "requiredScores": "Required Attribute Scores",
+         "requiredScores": "Required Ability Scores",
          "classes": "Classes",
          "male": "Male",
          "female": "Female"
@@ -548,9 +554,10 @@
          "missingItem2": "{actor} does not have a {type}.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
-         "advancedTime": "<div>Time advances {turns} turn(s) {rounds} round(s).</div>",
-         "reversedTime": "<div>Time goes back {turns} turn(s) {rounds} round(s).</div>",
-         "needRest": "<div class='warning'>The party is tired and needs to rest.</div><div>Attack and damage rolls should have a -1 penatly until party rests.</div>",
+         "advancedTime": "<div>Time advances {turns} turn(s), {rounds} round(s).</div>",
+         "reversedTime": "<div>Time reverses {turns} turn(s), {rounds} round(s).</div>",
+         "needRest": "<div class='warning'>The party is tired and needs to rest.</div>",
+         "needRestSoon": "<div class='warning'>The party will need to rest next turn, or their attack and damage rolls may be penalized until they do.</div>",
          "timeReset1": "Resetting session turn count to zero.",
          "timeReset2": "Resetting global turn count to zero.",
          "partyRests": "The party rests."
@@ -617,13 +624,36 @@
             "instructions": "Input will be disabled if character rolls initiative. This form will close automatically when combat is ended or user's combatant is removed from the combat tracker.",
             "noCombat": "Combat has not started yet.",
             "noDeclaredActions": "Fantastic Depths is not configured to use declared actions."
+         },
+         "turnTracker": {
+            "sessionCount": "Session Count",
+            "totalCount": "Total Count",
+            "sinceRest": "Since Rest",
+            "rest": "Rest",
+            "next": "Next",
+            "nextDesc": "Advance Turn",
+            "prev": "Previous",
+            "prevDesc": "Revert Turn",
+            "resetSession": "Reset Session",
+            "resetTotal": "Reset Total",
+            "conditionName": "Needs Rest Condition",
+            "conditionHint": "When the party needs rest, they will be given the specified condition. The condition will be removed upon resting. This requires that all party members be added to the party tracker, otherwise the system can't determine which characters to apply the condition to.",
+            "turnsName": "Rest Turns",
+            "turnsHint": "Configure how often a party must rest while exploring. A value of 6 would mean the party must rest once every six turns. Set to 0 for no resting required.",
+            "saveConfig": "Save Configuration"
          }
       },
       "dialog": {
          "shove": {
             "resultsLabel": "Shove Results",
             "attackerRoll": "{attacker} Roll",
-            "defenderResist": "{defender} Resist"
+            "defenderResist": "{defender} Resist",
+            "result15": "<div>The defender is shoved 15 feet and must save vs. Paralysis at -4 or fall prone.</div>",
+            "result10": "<div>The defender is shoved 10 feet and must save vs. Paralysis at -2 or fall prone.</div>",
+            "result5": "<div>The defender is shoved 5 feet back.</div>",
+            "failed": "The shove attempt failed.",
+            "title": "Shove - Defender Resist Value",
+            "calculate": "Calculate"
          },
          "wrestling": {
             "attacker": "Attacker",
@@ -670,18 +700,13 @@
             "content": "Do you want to use the item or only view its description?",
             "yesLabel": "Use Item"
          },
-         "attackMode": {
-            "name": "Attack Mode",
-            "natural": "Natural",
-            "2hand": "Two-Handed",
-            "1hand": "One-Handed"
-         },
          "attackType": {
             "breath": "Breath",
             "missile": "Missile",
             "melee": "Melee"
          },
          "close": "Close",
+         "cancel": "Cancel",
          "selectAttack": "Select What to Attack With",
          "selectSpell": "Select spell to cast",
          "confirm": "Are you sure?",
@@ -697,18 +722,6 @@
             "content": "Would you like to automatically add the related special abilities from {type} {name}?"
          }
       },
-      "time": {
-         "sessionCount": "Session Count",
-         "totalCount": "Total Count",
-         "sinceRest": "Since Rest",
-         "rest": "Rest",
-         "next": "Next",
-         "nextDesc": "Advance Turn",
-         "prev": "Previous",
-         "prevDesc": "Revert Turn",
-         "resetSession": "Reset Session",
-         "resetTotal": "Reset Total"
-      },
       "tabs": {
          "abilities": "Abilities",
          "items": "Equipment",
@@ -718,8 +731,10 @@
          "description": "Description",
          "gmOnly": "GM Only",
          "levels": "Levels",
-         "primeRequisites": "Prime Requisites",
-         "attributes": "Attributes"
+         "primeRequisites": "Prime Reqs",
+         "attributes": "Attributes",
+         "tracker": "Tracker",
+         "config":  "Config."
       },
       "AttackTypes": {
          "name": "Attack Type",
@@ -740,6 +755,7 @@
             "frost": "Frost",
             "magic": "Magic",
             "poison": "Poison",
+            "acid": "Acid",
             "heal": "Healing",
             "hull": "Hull"
          }
@@ -926,6 +942,10 @@
       "cursed": "Cursed",
       "rounds": "rounds",
       "turns": "turns",
+      "items": "Items",
+      "type": "Type",
+      "changes": "Changes",
+      "rollFormula": "Roll Formula",
       "showResult": {
          "name": "Result",
          "hint": "Show the result?"
@@ -962,7 +982,7 @@
 
    "SETTINGS": {
       "Encumbrance": {
-         "Hint": "Enable automatic tracking of encumbrance and the application of status effects for characters carrying too much. Armor Only determines movement based on armor weight. Dark Dungeons assumes a max load of 2400 coins and five movement rates. Classic assumes a max load of 1600 coins and four movement rates.",
+         "Hint": "Enable automatic tracking of encumbrance and the calculation of movement rates. The Armor Only setting calculates movement based on armor weight. Classic sets a max load of 1,600 coins, tracks armor, weapons and loot weight, while adding 80 coins for adventuring gear and having four movement rates. Dark Dungeons assumes a max load of 2,400 coins, tracks weight of all items carried and has five movement rates.",
          "Name": "Encumbrance Tracking",
          "None": "None",
          "Basic": "Armor Only",
@@ -990,13 +1010,9 @@
             "hint": "<b>Max ground speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          },
          "maxFlight": {
-            "name": "Max. Flight Speed",
-            "hint": "<b>Max flying speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
+            "name": "Max. Secondary Speed",
+            "hint": "<b>Max secondary movement speed per turn.</b><p> Secondary movement can be any other type of movement the creature is capable of besides ground movement. Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          }
-      },
-      "rest": {
-         "name": "Rest Turns",
-         "hint": "Configure how often a party must rest while exploring. A value of 6 would mean the party must rest once every six turns. Set to 0 for no resting required."
       },
       "initiative": {
          "formula": {
@@ -1012,7 +1028,7 @@
                "individualChecklist": "Individual (combat checklist)",
                "group": "Group (combat checklist)"
             }
-         },         
+         },
          "nextRound": {
             "name": "Initiative Next Round Mode",
             "hint": "Decide what will occur when the next round is activated in the combat tracker..",
@@ -1035,7 +1051,7 @@
       },
       "declaredActions": {
          "name": "Declared Actions",
-         "hint": "Enable declared actions for encounters."
+         "hint": "Enable declared actions for encounters. Declared actions are recommended if the combat checklist is used in the combat tracker."
       },
       "collapseState": {
          "name": "Remember Collapse State",
@@ -1050,8 +1066,8 @@
          "hint": "If enabled, weapon mastery rules will be used."
       },
       "toHitSystem": {
-         "name": "To-Hit System (Work-in-progress)",
-         "hint": "The to-hit system determines how attack rolls are handled and also what armor class system is used (AC vs AAC). THAC0 Only system does not use an attack matrix, but instead a simple calculation of the THAC0 value minus the target's AC. Classic system makes use of an attack matrix and THAC0 supporting up to level 25 and AC ranged from -19 to 19. Classic treats natural 1s as fails and 20s as hits, regardless of modifiers AC. Heroic Combat Matrix harkens back to RPGS of the 90s and scales up to level 36 and AC ranged from -99 to 19. Dark Dungeons uses the system from the Dark Dungeons game. AAC and Attack Bonus is similar to THAC0, but features ascending armor class where the higher the AC value, the greater the defensive capability.",
+         "name": "To-Hit System",
+         "hint": "The To-Hit System determines how attack rolls are handled and also what armor class system is used (AC vs AAC). THAC0 Only system does not use an attack matrix, but instead a simple calculation of the THAC0 value minus the target's AC. Classic system makes use of an attack matrix and THAC0 supporting up to level 25 and AC ranged from -19 to 19. Classic treats natural 1s as fails and 20s as hits, regardless of modifiers AC. Heroic Combat Matrix harkens back to RPGS of the 90s and scales up to level 36 and AC ranged from -99 to 19. Dark Dungeons uses the system from the Dark Dungeons game. AAC and Attack Bonus is similar to THAC0, but features ascending armor class where the higher the AC value, the greater the defensive capability.",
          "choices": {
             "thac0": "THAC0 Only (no attack matrix)",
             "classic": "Classic",
@@ -1059,6 +1075,28 @@
             "darkdungeons": "Dark Dungeons",
             "aac": "AAC and Attack Bonus"
          }
+      },
+      "abilityScoreModSystem": {
+         "name": "Ability Score Modifier System",
+         "hint": "The Ability Score Modifier System determines how ability score modifiers are calculated. Dark Dungeons is going to be compatible with many 'Basic/Expert' game system and is the default. Simple provides a simple +1 bonus on scores 15 and above while applying a -1 penalty on scores at or below 6.",
+         "choices": {
+            "darkdungeons": "Dark Dungeons"
+         }
+      },
+      "abilityCheckFormula": {
+         "name": "Ability Check Roll Formula"
+      },
+      "roundDurationSec": {
+         "name": "Round Duration",
+         "hint": "The number of seconds a round represent in game time."
+      },
+      "turnDurationSec": {
+         "name": "Turn Duration",
+         "hint": "The number of seconds a turn represents in the game. It is utilized by the turn tracker and often represents a duration of ten minutes, although this may vary. It is important to clarify that this definition of a turn is different from the turns tracked in combat."
+      },
+      "showExplorationTarget": {
+         "name": "Show Exploration Target",
+         "hint": "Shows the target roll value on the character sheet if enabled."
       }
    }
 }

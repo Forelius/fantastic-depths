@@ -21,7 +21,7 @@
                <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
             </li>
             <li style="max-width:50px;">
-               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless isGM}}readonly{{/unless}}/>
+               <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless item.isOwner}}readonly{{/unless}}/>
                <label for="system.weight" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</label>
             </li>
          </ul>
@@ -72,7 +72,7 @@
          <div class="bordered">
             <div class="summary flexrow">
                <div style="max-width:90px;">
-                  <select name="system.size" >
+                  <select name="system.size">
                      {{selectOptions weaponSizes selected=system.size}}
                   </select>
                   <label for="system.size">{{localize 'FADE.Size'}}</label>
@@ -81,7 +81,7 @@
                   <select name="system.grip">
                      {{selectOptions weaponGrips selected=system.grip}}
                   </select>
-                  <label for="system.grip">{{localize 'FADE.Weapon.grip.label'}}</label>
+                  <label for="system.grip" data-tooltip="{{localize 'FADE.Weapon.grip.hint'}}">{{localize 'FADE.Weapon.grip.label'}}</label>
                </div>
                <div class="flex2">
                   <input type='text' name="system.mastery" value='{{system.mastery}}' data-dtype='String' />
@@ -92,14 +92,6 @@
                      {{selectOptions weaponTypes selected=system.weaponType}}
                   </select>
                   <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
-               </div>
-               <div>
-                  <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
-                  <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
-               </div>
-               <div>
-                  <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
-                  <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
                </div>
             </div>
             <div class="summary flexrow">
@@ -140,8 +132,26 @@
                   <label for="system.isSlow" data-tooltip="{{localize "FADE.Weapon.isSlow.desc"}}">{{localize "FADE.Weapon.isSlow.label"}}</label>
                </div>
             </div>
+            <div class="summary flexrow">
+               <div style="max-width:70px;">
+                  <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+                  <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
+               </div>
+               <div style="max-width:70px;">
+                  <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+                  <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
+               </div>
+               <div style="max-width:70px;">
+                  <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
+                  <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
+               </div>
+               <div style="max-width:70px;">
+                  <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
+                  <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
+               </div>
+            </div>
          </div>
-         {{> "systems/fantastic-depths/templates/item/parts/item-identified.hbs"}}
+         {{> "itemIdentified"}}
       </div>
       {{/if}}
       {{! Description Tab }}
@@ -155,11 +165,11 @@
       {{#if isGM}}
       {{! Effects Tab }}
       <div class="tab effects" data-group="primary" data-tab="effects">
-         {{> "systems/fantastic-depths/templates/item/parts/item-effects.hbs"}}
+         {{> "itemEffects"}}
       </div>
       {{! GM-Only Tab }}
       <div class='tab' data-group='primary' data-tab='gm-only'>
-         {{> "systems/fantastic-depths/templates/item/parts/item-flags.hbs"}}
+         {{> "itemFlags"}}
          <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
          <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
       </div>

@@ -10,7 +10,13 @@
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
                <img src='{{item.img}}' data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}' width='24' height='24' />
             </div>
-            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>{{item.system.shortName}}</a>
+            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
+               {{#if saveAbbr}}
+               {{item.system.shortName}}
+               {{else}}
+               {{item.name}}
+               {{/if}}
+            </a>
          </div>
          <div class="editable" style="max-width:30px;">
             <input type="text" value="{{item.system.target}}" data-field="target" data-dtype="Number" />

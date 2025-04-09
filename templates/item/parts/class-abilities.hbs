@@ -1,19 +1,21 @@
-<section name="classAbilitiesSection" class="items-list">
-   <ol name="class-abilities" class='items-list'>
-      <!-- Header Row -->
-      <li class='item flexrow items-header collapsible-header'>
-         <div style="max-width:50px">{{localize 'FADE.Actor.Level'}}</div>
-         <div>{{localize 'FADE.name'}}</div>
-         <div style="max-width:60px">{{localize 'FADE.target'}}</div>
-         <div class='item-controls'>
-            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}' data-type='classAbility'>
-               <i class='fas fa-plus'></i>
-               {{localize 'FADE.SpecialAbility.short'}}
-            </a>
-         </div>
-      </li>
-      <!-- Class Ability Entries -->
-      {{#each system.classAbilities as |item index|}}
+<div class="flexrow">
+   <div style="padding:0 2px;">
+      <ol name="class-abilities" class='items-list'>
+         <!-- Header Row -->
+         <li class='item flexrow items-header collapsible-header'>
+            <div style="max-width:50px">{{localize 'FADE.Actor.Level'}}</div>
+            <div>{{localize 'FADE.name'}}</div>
+            <div style="max-width:50px">{{localize 'FADE.target'}}</div>
+            <div>{{localize 'FADE.changes'}}</div>
+            <div style="max-width:50px">{{localize 'FADE.class.key.name'}}</div>
+            <div class='item-controls' style="max-width:30px;">
+               <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}' data-type='classAbility'>
+                  <i class='fas fa-plus'></i>
+               </a>
+            </div>
+         </li>
+         <!-- Class Ability Entries -->
+         {{#each system.classAbilities as |item index|}}
       <li class='item flexrow' data-item-id='{{item.level}}'>
          <div style="max-width:50px">
             <input type="number" name="system.classAbilities.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
@@ -21,15 +23,27 @@
          <div>
             <input type="text" style="text-align:left;" name="system.classAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
          </div>
-         <div style="max-width:60px">
+         <div style="max-width:50px">
             <input type="number" name="system.classAbilities.{{index}}.target" value="{{item.target}}" data-dtype="Number" />
          </div>
-         <div class='item-controls'>
+         <div>
+            <input type="text" style="text-align:left;" name="system.classAbilities.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
+         </div>
+         <div style="max-width:50px">
+            <input type="text" name='system.classAbilities.{{index}}.classKey' value="{{item.classKey}}" data-type="String" />
+         </div>
+         <div class='item-controls' style="max-width:30px;">
             <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}' data-type='classAbility' data-index='{{index}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>
       </li>
-      {{/each}}
-   </ol>
-</section>
+         {{/each}}
+      </ol>
+   </div>
+   <!--<div style="padding:0 2px;">
+      <div class="items-list">-->
+   <!-- Header Row -->
+   <!--</div>
+   </div>-->
+</div>

@@ -1,6 +1,5 @@
 export const SYSTEM_ID = "fantastic-depths";
 export const FADE = {};
-const path = 'systems/fantastic-depths/assets/';
 
 /**
  * The set of Ability Scores used within the system.
@@ -27,6 +26,7 @@ FADE.DamageTypes = [
    "frost",
    "magic",
    "poison",
+   "acid",
    "heal",
    "hull"
 ]
@@ -73,62 +73,37 @@ FADE.Operators = {
    gte: ">=",
    lte: "<="
 }
-FADE.Encumbrance = {
-   armorChoices: {
-      none: "none",
-      light: "light",
-      heavy: "heavy"
-   },
-   maxMove: 120, // The default maximum movement rate per turn for an unencumbered character.
-   maxLoad: 2400, // The default maximum load (cn) that a character can carry.
-   classicPC: [
-      { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
-      { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
-      { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
-      { wtPortion: 1, mvFactor: 0.25, name: "encumbered" },
-      { wtPortion: 0, mvFactor: 0, name: "over" },
-   ],
-   expertPC: [
-      { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
-      { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
-      { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
-      { wtPortion: 1.5, mvFactor: 0.25, name: "encumbered" },
-      { wtPortion: 1, mvFactor: 0.125, name: "heavily" },
-      { wtPortion: 0, mvFactor: 0, name: "over" },
-   ],
-   monster: [
-      { wtPortion: 2, mvFactor: 1.0, name: "unencumbered" },
-      { wtPortion: 1, mvFactor: 0.5, name: "moderately" },
-      { wtPortion: 0, mvFactor: 0, name: "over" },
+FADE.abilityScoreModSystem = {};
+FADE.abilityScoreModSystem.darkdungeons = {
+   key: 'darkdungeons',
+   mods: [
+      { max: 1, value: -4, maxRetainers: 0, retainerMorale: 0 },
+      { max: 3, value: -3, maxRetainers: 1, retainerMorale: 4 },
+      { max: 5, value: -2, maxRetainers: 2, retainerMorale: 5 },
+      { max: 8, value: -1, maxRetainers: 3, retainerMorale: 6 },
+      { max: 12, value: 0, maxRetainers: 4, retainerMorale: 7 },
+      { max: 15, value: 1, maxRetainers: 5, retainerMorale: 8 },
+      { max: 17, value: 2, maxRetainers: 6, retainerMorale: 9 },
+      { max: 19, value: 3, maxRetainers: 7, retainerMorale: 10 },
+      { max: 21, value: 4, maxRetainers: 8, retainerMorale: 11 },
+      { max: 23, value: 5, maxRetainers: 9, retainerMorale: 12 },
+      { max: 27, value: 6, maxRetainers: 10, retainerMorale: 13 },
+      { max: 32, value: 7, maxRetainers: 11, retainerMorale: 14 },
+      { max: 38, value: 8, maxRetainers: 12, retainerMorale: 15 },
+      { max: 45, value: 9, maxRetainers: 13, retainerMorale: 16 },
+      { max: 53, value: 10 },
+      { max: 62, value: 11 },
+      { max: 70, value: 12 },
+      { max: 77, value: 13 },
+      { max: 83, value: 14 },
+      { max: 88, value: 15 },
+      { max: 93, value: 16 },
+      { max: 96, value: 17 },
+      { max: 98, value: 18 },
+      { max: 99, value: 19 },
+      { max: 100, value: 20 }
    ]
 };
-FADE.AdjustmentTableDD = [
-   { max: 1, value: -4, maxRetainers: 0, retainerMorale: 0 },
-   { max: 3, value: -3, maxRetainers: 1, retainerMorale: 4 },
-   { max: 5, value: -2, maxRetainers: 2, retainerMorale: 5 },
-   { max: 8, value: -1, maxRetainers: 3, retainerMorale: 6 },
-   { max: 12, value: 0, maxRetainers: 4, retainerMorale: 7 },
-   { max: 15, value: 1, maxRetainers: 5, retainerMorale: 8 },
-   { max: 17, value: 2, maxRetainers: 6, retainerMorale: 9 },
-   { max: 19, value: 3, maxRetainers: 7, retainerMorale: 10 },
-   { max: 21, value: 4, maxRetainers: 8, retainerMorale: 11 },
-   { max: 23, value: 5, maxRetainers: 9, retainerMorale: 12 },
-   { max: 27, value: 6, maxRetainers: 10, retainerMorale: 13 },
-   { max: 32, value: 7, maxRetainers: 11, retainerMorale: 14 },
-   { max: 38, value: 8, maxRetainers: 12, retainerMorale: 15 },
-   { max: 45, value: 9, maxRetainers: 13, retainerMorale: 16 },
-   { max: 53, value: 10 },
-   { max: 62, value: 11 },
-   { max: 70, value: 12 },
-   { max: 77, value: 13 },
-   { max: 83, value: 14 },
-   { max: 88, value: 15 },
-   { max: 93, value: 16 },
-   { max: 96, value: 17 },
-   { max: 98, value: 18 },
-   { max: 99, value: 19 },
-   { max: 100, value: 20 }
-];
 FADE.Actions = [
    {
       id: "attack",
@@ -242,3 +217,7 @@ FADE.TreasureTypes = {
       ]
    }
 };
+FADE.ToHit = {
+   /** Represents THAC0 for Normal Man */
+   BaseTHAC0: 19
+}

@@ -3,7 +3,7 @@
    <div class="form-group">
       <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
       <select id="targetWeaponType" class="form-control">
-         {{selectOptions targetWeaponTypes}}
+         {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
       </select>
    </div>
    {{/if}}

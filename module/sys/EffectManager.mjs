@@ -172,7 +172,7 @@ export class EffectManager {
       for (const effect of effects) {
          // Fix for unknown source
          effect.sourceNameFix = effect.sourceName;
-         if (effect.sourceName === "Unknown" && effect.parent) {
+         if ((effect.sourceName === "Unknown" || effect.sourceName === "None") && effect.parent) {
             effect.sourceNameFix = effect.parent.name ?? effect.sourceName;
          }
 

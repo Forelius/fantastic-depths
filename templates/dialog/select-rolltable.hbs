@@ -1,0 +1,24 @@
+<form>
+   <div class="form-group">
+      <label>Folder:</label>
+      <select name="folder" id="folder-select">
+         {{folderOptions}}
+      </select>
+   </div>
+   <div class="form-group">
+      <label for="rollTableSelect">Select Roll Table:</label>
+      <select name="table" id="table-select">
+         {{tableOptions}}
+      </select>
+   </div>
+   <div class="form-group">
+      <label for="modifierInput">Modifier:</label>
+      <input type="number" id="modifierInput" name="modifierInput" value="0" />
+   </div>
+   <div class="form-group">
+      <label for="rollModeSelect">Select Roll Mode:</label>
+      <select id="rollModeSelect" name="rollModeSelect">
+         {{rollModes}}
+      </select>
+   </div>
+</form>

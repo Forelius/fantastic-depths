@@ -21,10 +21,10 @@ export class WeaponItem extends GearItem {
       this._prepareDamageRollLabel();
    }
 
-   async getDamageRoll(attackType, attackMode, resp, targetWeaponType) {
+   async getDamageRoll(attackType, resp, targetWeaponType) {
       const weaponData = this.system;
-      const attacker = this.parent;
       const attackerData = this.parent.system;
+      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
       let evaluatedRoll = await this.getEvaluatedRoll(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
       let digest = [];
@@ -73,66 +73,15 @@ export class WeaponItem extends GearItem {
       }
 
       // Check weapon mastery
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (hasDamage && masteryEnabled && (weaponData.mastery !== "" || weaponData.natural)) {
-         let attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery);
-         if (attackerMastery === undefined && attacker.type === 'monster') {
-            attackerMastery = {
-               system: {
-                  primaryType: 'all',
-                  pDmgFormula: this.system.damageRoll
-               }
-            };
-         }
-         if (attackerMastery) {
-            // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
-            if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
-               formula = attackerMastery.system.pDmgFormula;
-               digest.push(game.i18n.format('FADE.Chat.rollMods.masteryPrimDmg'));
-            }
-            // Else if the secondary damage is specified...
-            else if (attackerMastery.system.sDmgFormula) {
-               formula = attackerMastery.system.sDmgFormula;
-               digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
-            }
-            else {
-               // Else use primary damage type.
-               formula = attackerMastery.system.pDmgFormula;
-               digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
-            }
-         } else {
-            // Half damage if unskilled use.
-            formula = `floor(${formula}/2)`;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
-         }
-
-         // This is where the modifiers are applied to the formula. It only supports addition mode.
-         if (modifier !== 0) {
-            formula = formula ? `${formula}+${modifier}` : `${modifier}`;
+      if (hasDamage && weaponMasterySystem) {
+         const wmResult = weaponMasterySystem.getDamageMods(this, targetWeaponType, formula, modifier);
+         if (wmResult) {
+            formula = wmResult?.formula ?? formula;
+            digest = [...digest, ...wmResult.digest];
          }
       }
 
       return { formula, type: weaponData.damageType, digest, hasDamage };
-   }
-
-   /**
-    * Attack modes are things like one-handed, offhand and two-handed
-    */
-   getAttackModes() {
-      let result = [];
-      const twoHand = this.system.grip === '2H';
-      const breath = this.system.breath?.length > 0;
-      const natural = this.system.natural === true;
-
-      if (natural || breath) {
-         result.push({ text: game.i18n.format('FADE.dialog.attackMode.natural'), value: "natural" });
-      } else if (twoHand) {
-         result.push({ text: game.i18n.format('FADE.dialog.attackMode.2hand'), value: "2hand" });
-      } else {
-         result.push({ text: game.i18n.format('FADE.dialog.attackMode.1hand'), value: "1hand" });
-      }
-
-      return result;
    }
 
    /**
@@ -142,18 +91,22 @@ export class WeaponItem extends GearItem {
    getAttackTypes() {
       let result = [];
       const isBreath = this.system.breath?.length > 0 && this.system.savingThrow === "breath";
+
       if (isBreath) {
          result.push({ text: game.i18n.localize('FADE.dialog.attackType.breath'), value: "breath" });
       } else {
+         const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
          const owner = this.actor ?? null;
-         const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-         if (owner && masteryEnabled) {
-            // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
-            const ownerMastery = owner.items.find((item) => item.type === 'mastery' && item.name === this.system.mastery);
-            if (ownerMastery) {
-               if (ownerMastery.system.canRanged) result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
-               if (this.system.canMelee) result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
+
+         // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
+         if (owner && weaponMasterySystem) {
+            const wmResult = weaponMasterySystem.getAttackTypes(this);
+            if (wmResult?.canRanged === true) {
+               result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
             }
+            if (wmResult?.canMelee === true) {
+               result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
+            }         
          }
 
          if (result.length === 0) {
@@ -162,6 +115,7 @@ export class WeaponItem extends GearItem {
             if (this.system.canMelee) result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
          }
       }
+
       return result;
    }
 
@@ -189,7 +143,7 @@ export class WeaponItem extends GearItem {
          const targetTokens = Array.from(game.user.targets);
          const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken: targetToken });
+         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken });
          canAttack = dialogResp?.resp?.rolling === true;
          if (canAttack) {
             // If not breath...
@@ -202,7 +156,8 @@ export class WeaponItem extends GearItem {
                if (dialogResp.resp.targetWeaponType) {
                   rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
                }
-               let attackRoll = this.actor.getAttackRoll(this, dialogResp.resp.attackType, rollOptions);
+
+               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, dialogResp.resp.attackType, rollOptions);
                rollData.formula = attackRoll.formula;
                digest = attackRoll.digest;
                hasRoll = true;

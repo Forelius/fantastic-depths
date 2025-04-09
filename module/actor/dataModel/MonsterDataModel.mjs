@@ -43,7 +43,8 @@ export class MonsterDataModel extends fadeActorDataModel {
       this.details.alignment = this.details.alignment || "Chaotic";
       this.encumbrance.max = this.encumbrance.max || 0;
       this._prepareTHAC0ToHitBonus();
-      this.thbonus = 19 - this.thac0.value;
+      // Maybe this is the wrong place to do this. We may need to wait until after init.
+      this.thbonus = CONFIG.FADE.ToHit.BaseTHAC0 - this.thac0.value;
       this._prepareHitPoints();
       this._prepareXP();
    }

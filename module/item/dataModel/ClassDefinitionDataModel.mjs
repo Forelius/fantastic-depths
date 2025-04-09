@@ -18,7 +18,7 @@ export class SavingThrowsData {
    }
 }
 
-export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
+export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
 
@@ -31,11 +31,28 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
-         minCon: new fields.NumberField({ required: false, nullable: true }),
-         minInt: new fields.NumberField({ required: false, nullable: true }),
-         minDex: new fields.NumberField({ required: false, nullable: true }),
-         minWis: new fields.NumberField({ required: false, nullable: true }),
          description: new fields.StringField({ required: false, initial: "" }),
+         // Ability scores
+         abilities: new fields.SchemaField({
+            str: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            int: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            wis: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            dex: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            con: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            }),
+            cha: new fields.SchemaField({
+               min: new fields.NumberField({ nullable: true }),
+            })
+         }),
          primeReqs: new fields.ArrayField(
             new fields.SchemaField({
                concatLogic: new fields.StringField({ required: true }),
@@ -54,7 +71,7 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
             new fields.SchemaField({
                level: new fields.NumberField({ required: true }),
                xp: new fields.NumberField({ required: true, initial: 5 }),
-               thac0: new fields.NumberField({ required: true, initial: 19 }),
+               thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
                thbonus: new fields.NumberField({ required: true, initial: 0 }),
                hd: new fields.StringField({ required: true, initial: '' }),
                hdcon: new fields.BooleanField({ required: true, initial: true }),
@@ -66,13 +83,13 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                required: true,
                initial: Array.from({ length: this.maxLevel }, (_, index) => {
                   const newLevel = new ClassLevelData();
-                  newLevel.level = index + 1;
+                  newLevel.level = index + this.firstLevel;
                   return newLevel;
                })
             }
          ),
          saves: new fields.ArrayField(
-            new fields.ObjectField({}),           
+            new fields.ObjectField({}),
             {
                required: true,
                initial: []
@@ -94,10 +111,51 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
                name: new fields.StringField({ required: true, initial: '' }),
                level: new fields.NumberField({ required: true }),
                target: new fields.NumberField({ required: true, nullable: true }),
-            }), {
-            required: false,
-         })
+               classKey: new fields.StringField({ nullable: true, initial: null }),
+               changes: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
+         classItems: new fields.ArrayField(
+            new fields.SchemaField({
+               level: new fields.NumberField({ required: true, nullable: false }),
+               name: new fields.StringField({ required: true, initial: '' }),
+               type: new fields.StringField({ required: true, initial: '' }),
+               changes: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
       };
+   }
+
+   /**
+   * Migrate source data from some prior format into a new specification.
+   * The source parameter is either original data retrieved from disk or provided by an update operation.
+   * @inheritDoc
+   */
+   static migrateData(source) {
+      const abilityScores = {
+         con: { min: null }, wis: { min: null }, int: { min: null }, dex: { min: null }
+      };
+      Object.assign(abilityScores, source.abilities);
+      abilityScores.con.min = abilityScores.con?.min ?? source.minCon ?? null;
+      abilityScores.wis.min = abilityScores.wis?.min ?? source.minWis ?? null;
+      abilityScores.int.min = abilityScores.int?.min ?? source.minInt ?? null;
+      abilityScores.dex.min = abilityScores.dex?.min ?? source.minDex ?? null;
+      source.abilities = abilityScores;
+      if (source.classAbilities) {
+         const classAbilities = Array.isArray(source.classAbilities) ? source.classAbilities : Object.values(source.classAbilities);
+         for (let classAbility of classAbilities) {
+            if (classAbility.classKey == "") {
+               classAbility.classKey = null;
+            }
+         }
+      }
+      return super.migrateData(source);
    }
 
    /** @override */
@@ -122,7 +180,9 @@ export class ClassItemDataModel extends foundry.abstract.TypeDataModel {
          // Try to preserve existing levels
          if (this.levels && this.levels.length > 0) {
             for (let i = 0; i < this.levels.length && i < newLevels.length; i++) {
-               newLevels[i] = this.levels[i];
+               if (newLevels[i].level === this.levels[i].level) {
+                  newLevels[i] = this.levels[i];
+               }
             }
          }
          this.levels = [...newLevels];

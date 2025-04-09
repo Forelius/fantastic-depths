@@ -4,8 +4,8 @@
          <div class='item-image {{#if item.system.isUsable}}rollable{{else}}chatable{{/if}}' data-roll-type='item'>
             <img src='{{item.img}}' width='24' height='24' />
          </div>
-         {{#if item.system.container}}
-         <div class="category-caret"><i class="fas fa-caret-down"></i></div>
+         {{#if item.system.container}}         
+         <div class="category-caret"><i class="fas {{#if item.system.isOpen}}fa-caret-down{{else}}fa-caret-right{{/if}}"></i></div>
          {{/if}}
          <a class='item-control description-expand' data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
             {{#if (or @root.isGM item.system.isIdentified)}}
@@ -37,36 +37,36 @@
          </a>
       </div>
    </div>
-   <div class='item-description desc-collapsed'></div>
+   <div class='item-description desc-collapsed bordered'></div>
 </li>
-{{#if item.system.container}}
+{{#if (and item.system.container item.system.isOpen)}}
 {{#each item.contained as |childItem|}}
-{{> "systems/fantastic-depths/templates/item/parts/item-contained.hbs" parentItem=../item item=childItem rootobj=../rootobj}}
+{{> "itemContained" parentItem=../item item=childItem rootobj=../rootobj}}
 {{/each}}
 {{/if}}
 {{#unless item.system.container}}
-   {{#if item.system.quantityMax}}
-   <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
-      <div class="consumable-counter">
-         <label>{{localize 'FADE.Item.uses'}}</label>
-         {{#times item.system.quantity}}
-         <div class="full-mark"></div>
-         {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
-         <div class="empty-mark"></div>
-         {{/times}}
-      </div>
-   </li>
-   {{/if}}
-   {{#if item.system.chargesMax}}
-   <li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
-      <div class="charges-counter">
-         <label>{{localize 'FADE.Item.charges.long'}}</label>
-         {{#times item.system.charges}}
-         <div class="full-mark"></div>
-         {{/times}} {{#times (subtract item.system.chargesMax item.system.charges)}}
-         <div class="empty-mark"></div>
-         {{/times}}
-      </div>
-   </li>
-   {{/if}}
+{{#if item.system.quantityMax}}
+<li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+   <div class="consumable-counter">
+      <label>{{localize 'FADE.Item.uses'}}</label>
+      {{#times item.system.quantity}}
+      <div class="full-mark"></div>
+      {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
+      <div class="empty-mark"></div>
+      {{/times}}
+   </div>
+</li>
+{{/if}}
+{{#if (and item.system.chargesMax @root.isGM)}}
+<li class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+   <div class="charges-counter">
+      <label>{{localize 'FADE.Item.charges.long'}}</label>
+      {{#times item.system.charges}}
+      <div class="full-mark"></div>
+      {{/times}} {{#times (subtract item.system.chargesMax item.system.charges)}}
+      <div class="empty-mark"></div>
+      {{/times}}
+   </div>
+</li>
+{{/if}}
 {{/unless}}

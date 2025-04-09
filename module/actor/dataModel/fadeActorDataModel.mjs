@@ -1,5 +1,3 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-
 export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
@@ -63,7 +61,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          }),
          initiative: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
-            mod: new fields.NumberField({ initial: 0 }),
          }),
          languages: new fields.StringField({ initial: "" }),
          combat: new fields.SchemaField({
@@ -109,13 +106,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                selfToHitRanged: new fields.NumberField({ initial: 0 }),
             }),
             save: new fields.ObjectField({
-               //initial: { all: 0 },
                all: new fields.NumberField({ initial: 0 }),
-               //death: new fields.NumberField({ initial: 0 }),
-               //wand: new fields.NumberField({ initial: 0 }),
-               //paralysis: new fields.NumberField({ initial: 0 }),
-               //breath: new fields.NumberField({ initial: 0 }),
-               //spell: new fields.NumberField({ initial: 0 }),
             })
          }),
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
@@ -137,20 +128,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    }
 
    /**
-    * Prepare the actor's movement rate values.
-   */
-   prepareDerivedMovement() {
-      this.movement.turn = this.encumbrance.mv;
-      this.flight.turn = this.encumbrance.fly || 0;
-      this.movement.round = this.movement.turn > 0 ? Math.floor(this.movement.turn / 3) : 0;
-      this.movement.day = this.movement.turn > 0 ? Math.floor(this.movement.turn / 5) : 0;
-      this.movement.run = this.movement.turn;
-      this.flight.round = this.flight.turn > 0 ? Math.floor(this.flight.turn / 3) : 0;
-      this.flight.day = this.flight.turn > 0 ? Math.floor(this.flight.turn / 5) : 0;
-      this.flight.run = this.flight.turn;
-   }
-
-   /**
     * @protected
     */
    async _prepareMods() {
@@ -158,6 +135,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.baseAc = 0;
       this.mod.upgradeAc = null;
       this.mod.upgradeRangedAc = null;
+      this.mod.acVsLarge = 0;
       this.mod.initiative = 0;
       this.mod.combat.toHit = 0;
       this.mod.combat.dmg = 0;

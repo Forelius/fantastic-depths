@@ -1,4 +1,5 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
@@ -20,26 +21,20 @@ export class fadeActor extends Actor {
    }
 
    get currentActiveToken() {
-      let result = null;
-      if (this.isToken === true) {
-         result = canvas.tokens?.placeables?.find(token => token.id === this.token.id).document;
-      } else {
-         result = canvas.tokens?.placeables?.find(token => token.actor.id === this.id).document;
-      }
-      //console.debug(`Get currentActiveToken for ${this.name} (${result?.name}). ${result?.id}`, this);
-      return result;
+      // Get the first active token.
+      return this.getActiveTokens()?.[0].document;
    }
 
    /**
     * Pre-create method. Being used to set some defaults on the prototype token.
     * @override
-    * @param {any} data
-    * @param {any} options
-    * @param {any} userId
-    * @returns
+    * @param {any} documents Pending document instances to be created
+    * @param {any} operation Parameters of the database creation operation
+    * @param {any} user The User requesting the creation operation
+    * @returns Return false to cancel the creation operation entirely
     */
-   async _preCreate(data, options, userId) {
-      const allowed = await super._preCreate(data, options, userId);
+   async _preCreate(documents, operation, user) {
+      const allowed = await super._preCreate(documents, operation, user);
       const fdPath = `systems/fantastic-depths/assets/img/actor`;
       const changeData = {};
 
@@ -65,20 +60,20 @@ export class fadeActor extends Actor {
                "prototypeToken.sight.enabled": true,
                "prototypeToken.sight.visionMode": "basic"
             });
-            assignIfUndefined(data, changeData, "img", `${fdPath}/fighter1.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.texture.src", `${fdPath}/fighter1a.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.FRIENDLY);
-            assignIfUndefined(data, changeData, "prototypeToken.actorLink", true);
-            assignIfUndefined(data, changeData, "prototypeToken.scale", 0.9);
-            assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
+            assignIfUndefined(documents, changeData, "img", `${fdPath}/fighter1.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.texture.src", `${fdPath}/fighter1a.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.FRIENDLY);
+            assignIfUndefined(documents, changeData, "prototypeToken.actorLink", true);
+            assignIfUndefined(documents, changeData, "prototypeToken.scale", 0.9);
+            assignIfUndefined(documents, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.HOVER);
             break;
          case "monster":
-            assignIfUndefined(data, changeData, "img", `${fdPath}/monster1.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.texture.src", `${fdPath}/monster1a.webp`);
-            assignIfUndefined(data, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER);
-            assignIfUndefined(data, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.HOSTILE);
-            assignIfUndefined(data, changeData, "prototypeToken.actorLink", false);
-            assignIfUndefined(data, changeData, "prototypeToken.scale", 1);
+            assignIfUndefined(documents, changeData, "img", `${fdPath}/monster1.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.texture.src", `${fdPath}/monster1a.webp`);
+            assignIfUndefined(documents, changeData, "prototypeToken.displayName", CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER);
+            assignIfUndefined(documents, changeData, "prototypeToken.disposition", CONST.TOKEN_DISPOSITIONS.HOSTILE);
+            assignIfUndefined(documents, changeData, "prototypeToken.actorLink", false);
+            assignIfUndefined(documents, changeData, "prototypeToken.scale", 1);
             break;
       }
 
@@ -106,9 +101,9 @@ export class fadeActor extends Actor {
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
-         this._prepareEncumbrance(this.type);
-         this.system.prepareDerivedMovement();
-         this._prepareArmorClass();
+         game.fade.registry.getSystem('encumbranceSystem').prepareDerivedData(this);
+         this._prepareDerivedMovement();
+         game.fade.registry.getSystem('actorArmor').prepareDerivedData(this);
       } else {
          //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
       }
@@ -131,21 +126,24 @@ export class fadeActor extends Actor {
       }
    }
 
-   onUpdateActorItem(item, updateData, options, userId) {
+   async onUpdateActorItem(item, updateData, options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this instanceof CharacterActor)) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
          // Log the item update and notify the GM
          console.log(`Item updated: ${this.name} ${item.name} by ${user.name}`, updateData?.system);
       }
    }
 
-   onCreateActorItem(item, options, userId) {
+   async onCreateActorItem(item, options, userId) {
       const user = game.users.get(userId);
+      if (item.type === 'mastery') {
+         await item.updatePropertiesFromMastery();
+      }
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this instanceof CharacterActor)) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
          this.logActorChanges(item, null, user, "addItem");
       }
    }
@@ -154,10 +152,49 @@ export class fadeActor extends Actor {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this instanceof CharacterActor)) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
          // Log the item removal and notify the GM
          console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
          this.logActorChanges(item, null, user, "deleteItem");
+      }
+   }
+
+   /**
+   * Handler for updateWorldTime event.
+   */
+   onUpdateWorldTime(worldTime, dt, options, userId) {
+      // Only the GM should handle updating effects
+      if (!game.user.isGM) return;
+
+      // Ensure there's an active scene and tokens on the canvas
+      if (!canvas?.scene) return;
+
+      // Active effects
+      // Ensure the actor has active effects to update
+      for (let effect of this.allApplicableEffects()) {
+         if (effect.isTemporary && effect.duration?.type !== "none") {
+            effect.updateDuration();
+            // Adjust the duration based on the time passed
+            if (effect.duration.remaining <= 0) {
+               if (effect.parent && effect.parent.type === "condition") {
+                  // Condition expired
+                  effect.parent.delete();
+               } else {
+                  // Effect expired
+                  effect.delete();
+               }
+
+               // Notify chat.
+               const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
+               let chatContent = game.i18n.format('FADE.Chat.effectEnds', { effectName: effect.name, actorName: this.name });
+               ChatMessage.create({ speaker: speaker, content: chatContent });
+            }
+         }
+      }
+
+      // Only re-render the sheet if it's already rendered
+      if (this.sheet && this.sheet.rendered) {
+         this.sheet.render(true);  // Force a re-render of the actor sheet
       }
    }
 
@@ -167,73 +204,6 @@ export class fadeActor extends Actor {
    getRollData() {
       const data = { ...this.system };
       return data;
-   }
-
-   /**
-    * Get the attack roll formula for the specified weapon, attack type, mod and target.
-    * @public
-    * @param {any} weapon The weapon being used to attack with.
-    * @param {any} attackType The type of attack. Values are melee, missile, breath and save.
-    * @param {any} options An object containing one or more of the following:
-    *    mod - A manual modifier entered by the user.
-    *    target - This doesn't work when there are multiple targets.
-    *    targetWeaponType - For weapon mastery system, the type of weapon the target is using (monster or handheld).
-    * @returns
-    */
-   getAttackRoll(weapon, attackType, options = {}) {
-      const weaponData = weapon.system;
-      const targetData = options.target?.system;
-      let formula = '1d20';
-      let digest = [];
-      let modifier = 0;
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
-
-      if (options.mod && options.mod !== 0) {
-         modifier += options.mod;
-         //formula = `${formula}+@mod`; 
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: options.mod }));
-      }
-
-      if (toHitSystem === 'aac' && this.system.thbonus !== 0) {
-         modifier += this.system.thbonus;
-         digest.push(`${game.i18n.localize('FADE.Actor.THBonus')}: ${this.system.thbonus}`);
-      }
-
-      if (attackType === "melee") {
-         modifier += this.#getMeleeAttackRollMods(weaponData, digest, targetData);
-      } else {
-         // Missile attack
-         modifier += this.#getMissileAttackRollMods(weaponData, digest, targetData, options?.ammo);
-      }
-
-      if (masteryEnabled && weaponData.mastery !== "") {
-         modifier += this.#getMasteryAttackRollMods(weaponData, options, digest, attackType);
-      }
-
-      if (modifier !== 0) {
-         formula = `${formula}+${modifier}`;
-      }
-
-      return { formula, digest };
-   }
-
-   /**
-    * Attemtps to determine the weapon type of this actor.
-    * @public
-    * @returns The weapon type of this actor or 'monster' if it can't be determined.
-    */
-   getWeaponType() {
-      let result = 'monster';
-      const weapons = this.items.filter(item => item.type === 'weapon');
-      const equippedWeapons = weapons?.filter(item => item.system.equipped === true && item.system.quantity > 0);
-      if (equippedWeapons && equippedWeapons.length > 0) {
-         result = equippedWeapons[0].system.weaponType;
-      } else if (weapons && weapons.length > 0) {
-         result = 'monster';
-         console.warn(`${this.name} has weapons, but none are equipped or the quantity is zero.`)
-      }
-      return result;
    }
 
    /**
@@ -323,42 +293,6 @@ export class fadeActor extends Actor {
          content: chatContent
       };
       ChatMessage.create(chatData);
-   }
-
-   /**
-   * Handler for updateWorldTime event.
-   */
-   onUpdateWorldTime(worldTime, dt, options, userId) {
-      // Only the GM should handle updating effects
-      if (!game.user.isGM) return;
-
-      // Ensure there's an active scene and tokens on the canvas
-      if (!canvas?.scene) return;
-
-      // Active effects
-      if (this.effects.size > 0) {
-         // Ensure the actor has active effects to update
-         for (let effect of this.effects) {
-            if (effect.isTemporary && effect.duration?.type !== "none") {
-               effect.updateDuration();
-               // Adjust the duration based on the time passed
-               if (effect.duration.remaining <= 0) {
-                  // Effect expired
-                  effect.delete();
-
-                  // Notify chat.
-                  const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-                  let chatContent = game.i18n.format('FADE.Chat.effectEnds', { effectName: effect.name, actorName: this.name });
-                  ChatMessage.create({ speaker: speaker, content: chatContent });
-               }
-            }
-         }
-
-         // Only re-render the sheet if it's already rendered
-         if (this.sheet && this.sheet.rendered) {
-            this.sheet.render(true);  // Force a re-render of the actor sheet
-         }
-      }
    }
 
    /**
@@ -474,92 +408,6 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * Finds the best defense mastery for the specified attacker weapon type,
-    * taking into account the number of times the actor has been attacked this round,
-    * and the fact that the AC bonus only applies a limited number of times per round.
-    *
-    * The actor’s combat object contains:
-    *   - system.combat.attAgainstH: number of handheld attacks this round
-    *   - system.combat.attAgainstM: number of monster attacks this round
-    *
-    * Each mastery in system.ac.mastery has the following properties:
-    *   - acBonus:      the AC bonus value.
-    *   - acBonusType:  indicates which attack types the bonus applies to:
-    *                   "handheld", "monster", or "all" (applies to both).
-    *   - acBonusAT:    the maximum number of attacks per round for which this bonus applies.
-    *
-    * @public
-    * @param {string} attackerWeaponType - "handheld" or "monster"
-    * @param {string} attackDirection - "front" or "rear"
-    * @returns {object|null} The best defense mastery, or null if none qualifies.
-    */
-   getBestDefenseMastery(attackerWeaponType, attackDirection = 'front') {
-      const defenseMasteries = this.system.ac.mastery;
-      if (!defenseMasteries || defenseMasteries.length === 0) {
-         return null;
-      }
-
-      // Determine how many attacks of this type have been made this round.
-      // (For "handheld" attacks use attAgainstH; for "monster" attacks use attAgainstM)
-      const attackCount = attackerWeaponType === 'handheld'
-         ? (this.system.combat.attAgainstH || 0)
-         : (this.system.combat.attAgainstM || 0);
-
-      // Filter masteries to those that:
-      //   1. Apply to this weapon type (or all types).
-      //   2. Still have their bonus available (i.e. current attackCount is less than acBonusAT).
-      const applicableMasteries = defenseMasteries.filter(mastery => {
-         const typeMatches = (mastery.acBonusType === attackerWeaponType || mastery.acBonusType === 'all');
-         const bonusAvailable = attackCount < mastery.acBonusAT || mastery.acBonusAT === null;
-         return typeMatches && bonusAvailable;
-      });
-
-      if (applicableMasteries.length === 0) {
-         return null;
-      }
-
-      // Choose the mastery with the best (lowest) AC bonus.
-      return applicableMasteries.reduce((best, current) => {
-         return (current.acBonus < best.acBonus) ? current : best;
-      });
-   }
-
-
-   /**
-    * Get this actor's defense masteries for all equipped weapons.
-    * @public
-    * @param {any} ac
-    * @returns
-    */
-   getDefenseMasteries(ac) {
-      const results = [];
-      const masteries = this.items.filter(item => item.type === "mastery");
-      const equippedWeapons = this.items.filter((item) => item.type === "weapon" && item.system.equipped);
-      // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
-      if (masteries?.length > 0 && equippedWeapons?.length > 0) {
-         for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => mastery.name === weapon.system.mastery);
-            if (weaponMastery) {
-               results.push({
-                  // The type(s) of attack the AC bonus applies to.
-                  acBonusType: weaponMastery.system.acBonusType,
-                  // The AC bonus itself, specified as a negative number for better AC.
-                  acBonus: weaponMastery.system.acBonus || 0,
-                  // The total of the AC with the mastery AC bonus.
-                  total: ac.total + (weaponMastery.system.acBonus || 0),
-                  // The total of the AAC with the mastery AC bonus.
-                  totalAAC: 19 - ac.total + (weaponMastery.system.acBonus || 0),
-                  // The number of attacks that this bonus applies to per round.
-                  acBonusAT: weaponMastery.system.acBonusAT,
-                  name: weaponMastery.name
-               });
-            }
-         }
-      }
-      return results;
-   }
-
-   /**
     * Get an array of strings indicating which combat maneuvers this actor is capable of.
     */
    getAvailableActions() {
@@ -609,6 +457,40 @@ export class fadeActor extends Actor {
          }
       }
       return result;
+   }
+
+   async clearClassData(className) {
+      const classItem = await fadeFinder.getClass(className?.toLowerCase());
+      if (!classItem) {
+         console.warn(`Class not found ${className}.`);
+         return;
+      }
+      const update = {
+         details: {
+            title: "",
+            class: "",
+            xp: {
+               bonus: null,
+               next: null
+            }
+         },
+         thbonus: 0,
+         hp: { hd: "" },
+         thac0: { value: null },
+         config: { maxSpellLevel: 0 },
+         spellSlots: []
+      };
+      await this.update({ system: update });
+      const abilityNames = classItem.system.classAbilities.map(item => item.name);
+      const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save' && abilityNames.includes(item.name));
+      for (let classAbility of actorAbilities) {
+         classAbility.delete();
+      }
+      const itemNames = classItem.system.classItems.map(item => item.name);
+      const actorItems = this.items.filter(item => (item.type === 'weapon' || item.type === 'armor') && itemNames.includes(item.name));
+      for (let classItem of actorItems) {
+         classItem.delete();
+      }
    }
 
    /** 
@@ -666,124 +548,46 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * @protected
-    * Prepare derived armor class values.
+    * Prepare the actor's movement rate values.
     */
-   _prepareArmorClass() {
-      const acDigest = [];
-      const dexMod = (this.system.abilities?.dex.mod ?? 0);
-      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - this.system.mod.baseAc;
-      let ac = {};
-      ac.nakedAAC = 19 - baseAC;
-      ac.naked = baseAC;
-      // AC value is used for wrestling rating and should not include Dexterity bonus.
-      ac.value = CONFIG.FADE.Armor.acNaked;
-      ac.total = baseAC;
-      ac.mod = 0;
-      ac.shield = 0;
-
-      const naturalArmor = this.items.find(item => item.type === 'armor' && item.system.natural);
-      this.system.equippedArmor = this.items.find(item => item.type === 'armor' && item.system.equipped && !item.system.isShield);
-      const equippedShield = this.items.find(item => item.type === 'armor' && item.system.equipped && item.system.isShield);
-
-      if (dexMod !== 0) {
-         acDigest.push(game.i18n.localize('FADE.Armor.dexterityBonus', { bonus: dexMod }));
-      }
-
-      // If natural armor
-      if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
-         //naturalArmor.prepareEffects();
-         ac.naked = naturalArmor.system.totalAC - dexMod;
-         ac.value = ac.naked;
-         ac.total = ac.naked;
-         naturalArmor.system.equipped = true;
-         acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
-      }
-
-      // If an equipped armor is found...
-      if (this.system.equippedArmor) {
-         //this.system.equippedArmor.prepareEffects();
-         ac.value = this.system.equippedArmor.system.ac;
-         ac.mod += this.system.equippedArmor.system.mod ?? 0;
-         // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total = this.system.equippedArmor.system.totalAC - dexMod;
-         acDigest.push(`${this.system.equippedArmor.name}: ${this.system.equippedArmor.system.totalAC}`);
-      }
-
-      // If a shield is equipped...
-      if (equippedShield) {
-         //equippedShield.prepareEffects();
-         ac.value -= equippedShield.system.ac;
-         ac.shield = equippedShield.system.totalAC;
-         ac.total -= equippedShield.system.totalAC;
-         acDigest.push(`${equippedShield.name}: ${equippedShield.system.totalAC}`);
-      }
-
-      if (this.system.mod.baseAc != 0) {
-         acDigest.push(`${game.i18n.localize('FADE.Armor.modBase')}: ${this.system.mod.baseAc}`);
-      }
-      if (this.system.mod.ac != 0) {
-         ac.total -= this.system.mod.ac;
-         acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${this.system.mod.ac}`);
-      }
-
-      ac.nakedRanged = ac.total;
-      ac.totalRanged = ac.total;
-      // Normal Calcs done at this point --------------------------------
-
-      if (this.system.mod.upgradeAc && this.system.mod.upgradeAc < ac.total) {
-         ac.total = this.system.mod.upgradeAc;
-         ac.naked = this.system.mod.upgradeAc;
-         acDigest.push(`AC upgraded to ${this.system.mod.upgradeAc}`);
-      }
-      if (this.system.mod.upgradeRangedAc && this.system.mod.upgradeRangedAc < ac.totalRanged) {
-         ac.totalRanged = this.system.mod.upgradeRangedAc;
-         ac.nakedRanged = this.system.mod.upgradeRangedAc;
-         acDigest.push(`Ranged AC upgraded to ${this.system.mod.upgradeRangedAc}`);
-      }
-
-      // Now other mods. Dexterity bonus already applied above.
-      ac.nakedAAC = 19 - ac.naked;
-      ac.totalAAC = 19 - ac.total;
-      ac.totalRangedAAC = 19 - ac.totalRanged;
-      ac.nakedRangedAAC = 19 - ac.nakedRanged;
-
-      // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (masteryEnabled) {
-         ac.mastery = this.getDefenseMasteries(ac);
-      }
-
-      this.system.ac = ac;
-      this.system.acDigest = acDigest;
+   _prepareDerivedMovement() {
+      this.system.movement.turn = this.system.encumbrance.mv;
+      this.system.flight.turn = this.system.encumbrance.fly || 0;
+      this.system.movement.round = this.system.movement.turn > 0 ? Math.floor(this.system.movement.turn / 3) : 0;
+      this.system.movement.day = this.system.movement.turn > 0 ? Math.floor(this.system.movement.turn / 5) : 0;
+      this.system.movement.run = this.system.movement.turn;
+      this.system.flight.round = this.system.flight.turn > 0 ? Math.floor(this.system.flight.turn / 3) : 0;
+      this.system.flight.day = this.system.flight.turn > 0 ? Math.floor(this.system.flight.turn / 5) : 0;
+      this.system.flight.run = this.system.flight.turn;
    }
 
    /**
     * @protected
-    * @param {any} classKey The class key by itself.
+    * Add and/or update the actor's class-given special abilities.
     * @param {any} abilitiesData The class ability array for the desired level.
-    * @returns
+    * @returns void
     */
-   async _setupSpecialAbilities(classKey, abilitiesData) {
+   async _setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false) return;
       const promises = [];
       // Get this actor's class ability items.
-      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class');
+      const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
 
       // Determine which special abilities are missing and need to be added.
       const addItems = [];
       for (const abilityData of abilitiesData) {
-         if (specialAbilities.find(item => item.name === abilityData.name) === undefined
+         if (actorAbilities.find(item => item.name === abilityData.name) === undefined
             && addItems.find(item => item.name === abilityData.name) === undefined) {
-            //const itemData = worldAbilities.find(item => item.name === abilityData.name);
-            classKey = classKey ? classKey : abilityData.classKey;
-            const itemData = await fadeFinder.getClassAbility(abilityData.name, classKey);
-            if (itemData) {
-               const newAbility = itemData.toObject();
-               newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
+            const theItem = await fadeFinder.getClassAbility(abilityData.name, abilityData.classKey);
+            if (theItem) {
+               const newAbility = theItem.toObject();
+               //newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
+               if (abilityData.target != null) {
+                  newAbility.system.target = abilityData.target;
+               }
                addItems.push(newAbility);
             } else {
-               console.warn(`The special ability (${abilityData.name}) does not exist as a world item.`);
+               console.warn(`The special ability ${abilityData.name} does not exist as a world item or in the fade compendiums.`);
             }
          }
       }
@@ -794,10 +598,71 @@ export class fadeActor extends Actor {
       }
 
       // Iterate over ability items and set each one.
-      for (const specialAbility of specialAbilities) {
-         const target = abilitiesData.find(item => item.name === specialAbility.name)?.target;
+      for (const specialAbility of actorAbilities) {
+         const abilityData = abilitiesData.find(item => item.name === specialAbility.name);
+         const target = abilityData?.target;
          if (target) {
             promises.push(specialAbility.update({ "system.target": target }));
+         }
+         let changes = abilityData?.changes;
+         if (changes) {
+            try {
+               promises.push(specialAbility.update(JSON.parse(changes)));
+            }
+            catch (err) {
+               console.error(`Invalid class ability changes specified for ${specialAbility.name}.`);
+            }
+         }
+      }
+      if (promises.length > 0) {
+         await Promise.all(promises);
+      }
+   }
+
+   /**
+  * @protected
+  * Add and/or update the actor's class-given items.
+  * @param {any} itemsData The class items array for the desired level.
+  * @returns void
+  */
+   async _setupItems(itemsData) {
+      if (game.user.isGM === false || itemsData == null || itemsData?.length == 0) return;
+      const promises = [];
+      // Get this actor's class ability items.
+      let actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
+
+      // Determine which special abilities are missing and need to be added.
+      const addItems = [];
+      for (const itemData of itemsData) {
+         if (actorItems.find(item => item.name === itemData.name) === undefined
+            && addItems.find(item => item.name === itemData.name) === undefined) {
+            const theItem = await fadeFinder.getItem(itemData.name, ClassDefinitionItem.ValidItemTypes);
+            if (theItem) {
+               const newItem = theItem.toObject();
+               addItems.push(newItem);
+            } else {
+               console.warn(`The class-given item ${itemData.name} does not exist as a world item or in the fade compendiums.`);
+            }
+         }
+      }
+      // Add the missing special abilities.
+      if (addItems.length > 0) {
+         console.debug(`Adding ${addItems.length} class items to ${this.name}`);
+         await this.createEmbeddedDocuments("Item", addItems);
+      }
+
+      actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
+
+      // Iterate over ability items and set each one.
+      for (const actorItem of actorItems) {
+         let changes = itemsData.find(item => item.name === actorItem.name)?.changes;
+         if (changes) {
+            try {
+               promises.push(actorItem.update(JSON.parse(changes)));
+            }
+            catch (err) {
+               console.error(`Invalid class item changes specified for ${actorItem.name}.`);
+            }
          }
       }
       if (promises.length > 0) {
@@ -812,23 +677,21 @@ export class fadeActor extends Actor {
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
       const promises = [];
-      const worldSavingThrows = await fadeFinder.getSavingThrows();
+      const savingThrowItems = await fadeFinder.getSavingThrows();
       const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
       const saveEntries = Object.entries(savesData);
       const addItems = [];
-      //console.debug(saveEntries);
       for (const saveData of saveEntries) {
          const stName = saveData[0];
          if (stName !== 'level' && savingThrows.find(item => item.system.customSaveCode === stName) === undefined
             && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
-            const itemData = worldSavingThrows.find(item => item.system.customSaveCode === stName);
-            if (itemData) {
-               const newSave = itemData.toObject();
+            const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
+            if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
+               const newSave = saveItem.toObject();
                const saveTarget = savesData[newSave.system.customSaveCode];
                newSave.system.target = saveTarget ?? 15;
-               //console.debug(`${this.name}(${this.id}) pushed ${newSave.name} (${itemData.system.customSaveCode}/${stName}) = ${saveTarget}.`);
                addItems.push(newSave);
-            } else {
+            } else if (savesData[saveItem.system.customSaveCode] > 0) {
                console.warn(`The specified saving throw (${stName}) does not exist as a world item.`);
             }
          }
@@ -851,89 +714,6 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * @protected
-    * Prepares the actor's encumbrance values. Supports optional settings for different encumbrance systems.
-   */
-   _prepareEncumbrance(actorType) {
-      const encSetting = game.settings.get(game.system.id, "encumbrance");
-      let encumbrance = this.system.encumbrance || {};
-      let enc = 0;
-
-      //-- Caclulate how much is being carried/tracked --//
-      // If using detailed encumbrance, similar to expert rules...
-      if (encSetting === 'expert' || encSetting === 'classic') {
-         enc = this.items.reduce((sum, item) => {
-            const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
-            const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
-            return sum + (itemWeight * itemQuantity);
-         }, 0);
-         encumbrance.value = enc || 0;
-      }
-      // Else if using simple encumbrance, similar to basic rules...
-      else if (encSetting === 'basic') {
-         encumbrance.value = 0;
-      } else {
-         encumbrance.value = 0;
-      }
-
-      //-- Calculate movement and label --//
-      // If max encumbrace is set to zero...
-      if (encumbrance.max === 0) {
-         encumbrance.mv = this.system.movement.max;
-         encumbrance.fly = this.system.flight.max;
-      } else {
-         this._calculateEncMovement(actorType, enc, encumbrance, encSetting);
-      }
-
-      this.system.encumbrance = encumbrance;
-   }
-
-   /**
-    * Calculate movement rate based on encumbrance.
-    * @protected
-    * @param {any} actorType The actor.type
-    * @param {number} enc The total encumbrance in coins.
-    * @param {any} encumbrance The encumbrance object to set.
-    * @param {encSetting} The current encumbrance setting.
-    */
-   _calculateEncMovement(actorType, enc, encumbrance, encSetting) {
-      let weightPortion = this.system.encumbrance.max / enc;
-      let table = [];
-      switch (actorType) {
-         case "monster":
-            table = CONFIG.FADE.Encumbrance.monster;
-            break;
-         case "character":
-            if (encSetting === 'classic' || encSetting === 'basic') {
-               table = CONFIG.FADE.Encumbrance.classicPC;
-            } else if (encSetting === 'expert') {
-               table = CONFIG.FADE.Encumbrance.expertPC;
-            }
-            break;
-      }
-
-      if (table.length > 0) {
-         let encTier = table.length > 0 ? table[0] : null;
-         if (encSetting === 'basic') {
-            if (this.system.equippedArmor?.system.armorWeight === 'light') {
-               encTier = table[1];
-            } else if (this.system.equippedArmor?.system.armorWeight === 'heavy') {
-               encTier = table[2];
-            }
-         } else {
-            encTier = table.find(tier => weightPortion >= tier.wtPortion) || table[table.length - 1];
-         }
-
-         if (encTier) {
-            encumbrance.label = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`);
-            encumbrance.desc = game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`);
-            encumbrance.mv = Math.floor(this.system.movement.max * encTier.mvFactor);
-            encumbrance.fly = Math.floor(this.system.flight.max * encTier.mvFactor);
-         }
-      }
-   }
-
-   /**
     * Determines if a roll on a non-item (ability score check) should show a success/fail result message.
     * @protected
     * @param {any} event
@@ -950,81 +730,5 @@ export class fadeActor extends Actor {
 
    #getSavingThrow(type) {
       return this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
-   }
-
-   #getMasteryAttackRollMods(weaponData, options, digest, attackType) {
-      let result = 0;
-      const attackerMastery = this.items.find((item) => item.type === 'mastery' && item.name === weaponData.mastery)?.system;
-      if (attackerMastery) {
-         const bIsPrimary = options.targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
-         // Get the to hit bonus, if any.
-         const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
-         if (toHitMod > 0) {
-            result += toHitMod;
-            const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
-            digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
-         }
-      } else if (attackType === "missile" && this.type === "character" && this.system.details.species === "Human") {
-         // Unskilled use for humans
-         result -= 1;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
-      }
-      return result;
-   }
-
-   #getMissileAttackRollMods(weaponData, digest, targetData, ammo) {
-      let result = 0;
-      const systemData = this.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
-
-      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
-         result += weaponData.mod.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
-      }
-      if (systemData.mod.combat?.toHitRanged !== 0) {
-         result += systemData.mod.combat.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
-      }
-      // If the attacker has ability scores...
-      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
-         result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
-      } else if (systemData.abilities && systemData.abilities.dex.mod) {
-         result += systemData.abilities.dex.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
-      }
-      if (targetMods && targetMods.selfToHitRanged !== 0) {
-         result += targetMods.selfToHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
-      }
-      return result;
-   }
-
-   #getMeleeAttackRollMods(weaponData, digest, targetData) {
-      let result = 0;
-      const systemData = this.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
-
-      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
-         result += weaponData.mod.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
-      }
-      if (systemData.mod?.combat.toHit !== 0) {
-         result += systemData.mod.combat.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
-      }
-      // If the attacker has ability scores...
-      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-         result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
-      }
-      if (targetMods && targetMods.selfToHit !== 0) {
-         result += targetMods.selfToHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
-      }
-
-      return result;
    }
 }

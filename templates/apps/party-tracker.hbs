@@ -33,7 +33,7 @@
             </div>
             <div class="small-text">
                {{#each system.abilities as |ability key|}}
-               <span class="ability-score">{{localize (concat 'FADE.Actor.Abilities.' key '.key')}}: {{ability.value}}</span>
+               <span class="ability-score">{{localize (concat 'FADE.Actor.Abilities.' key '.key')}}: {{ability.total}}</span>
                {{/each}}
             </div>
             <div>

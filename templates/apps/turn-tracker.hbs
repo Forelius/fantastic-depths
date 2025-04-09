@@ -1,29 +1,87 @@
 <div>
-   <section class="flexrow bordered" style="margin-top: 10px;">
-      <div class="form-group">
-         <label>{{localize 'FADE.time.sessionCount'}}: </label>
-         <span>{{turnData.sessionTR.turns}}</span>{{#if turnData.sessionTR.rounds}} / <span>{{turnData.sessionTR.roundsDisplay}}</span>{{/if}}
+   <!-- Tab Navigation -->
+   <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item active" data-tab="tracker">{{localize "FADE.tabs.tracker"}}</a>
+      <a class="item" data-tab="config">{{localize "FADE.tabs.config"}}</a>
+   </nav>
+   <div class="tab-content" style="margin-top:10px;">
+      <!-- Tracker Tab -->
+      <div class="tab active" data-tab="tracker">
+         <div style="display: flex; flex-direction: column; height: 100%; min-height: 200px;">
+            <section style="flex-grow: 1;">
+               <table style="text-align:center;">
+                  <thead>
+                     <tr>
+                        <th style="width:120px;"></th>
+                        <th>{{camelize (localize 'FADE.turns')}}</th>
+                        <th>{{camelize (localize 'FADE.rounds')}}</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td style="text-align:right;"><label>{{localize 'FADE.apps.turnTracker.sessionCount'}}:</label></td>
+                        <td><span>{{turnData.sessionTR.turns}}</span></td>
+                        <td><span>{{turnData.sessionTR.roundsDisplay}}</span></td>
+                     </tr>
+                     <tr>
+                        <td style="text-align:right;"><label>{{localize 'FADE.apps.turnTracker.totalCount'}}:</label></td>
+                        <td><span>{{turnData.totalTR.turns}}</span></td>
+                        <td><span>{{turnData.totalTR.roundsDisplay}}</span></td>
+                     </tr>
+                     {{#if turnData.settings.restFrequency}}
+                     <tr>
+                        <td style="text-align:right;"><label>{{localize 'FADE.apps.turnTracker.sinceRest'}}:</label></td>
+                        <td><span>{{turnData.restTR.turns}}/{{turnData.settings.restFrequency}}</span></td>
+                        <td><span>{{turnData.restTR.roundsDisplay}}</span></td>
+                     </tr>
+                     {{/if}}
+                  </tbody>
+               </table>
+            </section>
+            <section class="flexrow" style="text-align: right; padding-top: 8px;">
+               <button id="revert-turn" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.apps.turnTracker.prev'}}</button>
+               <button id="advance-turn" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.apps.turnTracker.next'}}</button>
+               {{#if turnData.settings.restFrequency}}
+               <button id="rest" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.rest'}}"><i class="fa-solid fa-campground"></i> {{localize 'FADE.apps.turnTracker.rest'}}</button>
+               {{/if}}
+            </section>
+            <section class="flexrow" style="margin-top: 2px;">
+               <button id="reset-session" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.resetSession'}}"><i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.apps.turnTracker.resetSession'}}</button>
+               <button id="reset-total" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.resetTotal'}}"><i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.apps.turnTracker.resetTotal'}}</button>
+            </section>
+         </div>
       </div>
-      <div class="form-group">
-         <label>{{localize 'FADE.time.totalCount'}}: </label>
-         <span>{{turnData.totalTR.turns}}</span>{{#if turnData.totalTR.rounds}} / <span>{{turnData.totalTR.roundsDisplay}}</span>{{/if}}
+      <!-- Config Tab -->
+      <div class="tab" data-tab="config">
+         <form style="display: flex; flex-direction: column; height: 100%; min-height: 200px;">
+            <section style="flex-grow: 1;">
+               <table>
+                  <tbody>
+                     <tr>
+                        <td>
+                        <label for="turnData.settings.needRestCondition">{{localize 'FADE.apps.turnTracker.conditionName'}}</label>
+                        </td>
+                        <td>
+                           <select name="turnData.settings.needRestCondition" class="form-control">
+                              {{selectOptions conditions selected=turnData.settings.needRestCondition}}
+                           </select>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>
+                           <label for="turnData.settings.restFrequency" data-tooltip="{{localize 'FADE.apps.turnTracker.turnsHint'}}">{{localize 'FADE.apps.turnTracker.turnsName'}}</label>
+                        </td>
+                        <td>
+                           <input name="turnData.settings.restFrequency" class="form-control" type="number" data-dtype="Number" value="{{turnData.settings.restFrequency}}" />
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </section>
+            <div style="text-align: right; padding-top: 8px;">
+               <button id="save-config" type="button">{{localize 'FADE.apps.turnTracker.saveConfig'}}</button>
+            </div>
+         </form>
       </div>
-      {{#if restFrequency}}
-   <div class="form-group">
-      <label>{{localize 'FADE.time.sinceRest'}}: </label>
-      <span>{{turnData.restTR.rounds}}</span>{{#if turnData.restTR.rounds}} / <span>{{turnData.restTR.roundsDisplay}}</span>{{/if}}
    </div>
-      {{/if}}
-   </section>
-   <section class="flexrow" style="margin-top: 10px;">
-      <button id="revert-turn" type="button" data-tooltip="{{localize 'FADE.time.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.time.prev'}}</button>
-      <button id="advance-turn" type="button" data-tooltip="{{localize 'FADE.time.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.time.next'}}</button>
-      {{#if restFrequency}}
-      <button id="rest" type="button" data-tooltip="{{localize 'FADE.time.rest'}}"><i class="fa-solid fa-campground"></i> {{localize 'FADE.time.rest'}}</button>
-      {{/if}}
-   </section>
-   <section class="flexrow" style="margin-top: 2px;">
-      <button id="reset-session" type="button" data-tooltip="{{localize 'FADE.time.resetSession'}}"><i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.time.resetSession'}}</button>
-      <button id="reset-total" type="button" data-tooltip="{{localize 'FADE.time.resetTotal'}}"><i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.time.resetTotal'}}</button>
-   </section>
 </div>

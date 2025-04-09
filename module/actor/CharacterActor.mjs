@@ -1,12 +1,11 @@
-﻿import Formatter from '../utils/Formatter.mjs';
+﻿import { Formatter } from '../utils/Formatter.mjs';
 import { fadeActor } from './fadeActor.mjs';
-import { ClassItem } from "../item/ClassItem.mjs";
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 
 export class CharacterActor extends fadeActor {
-
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -20,7 +19,6 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareClassInfo();
    }
 
    /**
@@ -43,7 +41,10 @@ export class CharacterActor extends fadeActor {
       }
       // Class or level updated.
       if (this.id) {
-         if (updateData.system?.details?.class !== undefined || updateData.system?.details?.level !== undefined) {
+         if (updateData.system?.details?.class !== undefined
+            || updateData.system?.details?.level !== undefined
+            || updateData.system?.abilities !== undefined) {
+            await this._prepareClassInfo();
             await this._updateLevelClass();
          }
          if (updateData.system?.details?.species !== undefined) {
@@ -60,12 +61,10 @@ export class CharacterActor extends fadeActor {
     * @param {any} parentKey
     * @returns
     */
-   logActorChanges(updateData, oldData, user, type, parentKey = '') {
+   logActorChanges(updateData, oldData, user, type, parentKey = '', recursionLevel = 1) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
-
       let changes = [];
       const ignore = ["_stats", "_id", "flags"];
-
       if (type === "property") {
          for (let key in updateData) {
             const fullKey = parentKey ? `${parentKey}.${key}` : key;
@@ -75,7 +74,7 @@ export class CharacterActor extends fadeActor {
                const newValue = foundry.utils.getProperty(updateData, key);
                if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
                   // Recursively log changes for nested objects
-                  this.logActorChanges(newValue, oldData, user, type, fullKey);
+                  changes = [...changes, ...this.logActorChanges(newValue, oldData, user, type, fullKey, recursionLevel+1)];
                } else if (oldValue) {
                   changes.push({ field: fullKey, oldValue: oldValue, newValue: newValue });
                }
@@ -84,11 +83,9 @@ export class CharacterActor extends fadeActor {
       } else {
          changes.push(updateData);
       }
-
-      if (changes.length > 0) {
+      if (recursionLevel === 1 && changes.length > 0) {
          this._sendChangeMessageToGM(changes, user, type);
       }
-
       return changes;  // This allows recursion to accumulate changes
    }
 
@@ -149,25 +146,32 @@ export class CharacterActor extends fadeActor {
       const prevLevelData = classData.levels.find(level => level.level === currentLevel - 1);
       const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
       const nameLevel = classData.levels.find(level => level.level === 9);
-
-      // Level Bonus
-      this.system.details.xp.bonus = classItem.getXPBonus(this.system.abilities);
+      const update = {
+         details: {
+            xp: {
+               bonus: classItem.getXPBonus(this.system.abilities)
+            }
+         },
+         hp: {},
+         thac0: {},
+         spellSlots: []
+      };
 
       // Level stuff
       if (levelData) {
-         this.system.hp.hd = levelData.hd;
-         this.system.thac0.value = levelData.thac0;
-         //this.system.thbonus = levelData.thbonus;
+         update.thbonus = levelData.thbonus;
+         update.hp.hd = levelData.hd;
+         update.thac0.value = levelData.thac0;
          if (this.system.details.title == "" || this.system.details.title == null || this.system.details.title == prevLevelData?.title) {
             const ordinalized = Formatter.formatOrdinal(currentLevel);
-            this.system.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
+            update.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
          }
       }
       if (nextLevelData) {
-         this.system.details.xp.next = nextLevelData.xp;
+         update.details.xp.next = nextLevelData.xp;
       }
-      this.system.details.species = this.system.details.species == "" || this.system.details.species == null ? classData.species : this.system.details.species;
-      this.system.config.maxSpellLevel = classData.maxSpellLevel;
+      update.details.species = this.system.details.species == "" || this.system.details.species == null ? classData.species : this.system.details.species;
+      update.config = { maxSpellLevel: classData.maxSpellLevel };
 
       // Spells
       const classSpellsIdx = this.system.details.level - 1;
@@ -183,14 +187,17 @@ export class CharacterActor extends fadeActor {
                // Check if the index is within the spellProgression array bounds
                if (index >= 0 && index < spellProgression.length) {
                   // Set the max value based on the class spell progression
-                  slot.max = spellProgression[index];
+                  update.spellSlots[index] = { max: spellProgression[index] };
+                  //slot.max = spellProgression[index];
                } else {
                   // Set max to 0 if the character's class doesn't have spells at this level
-                  slot.max = 0;
+                  //slot.max = 0;
+                  update.spellSlots[index] = { max: 0 };
                }
             }
          }
       }
+      await this.update({ system: update });
    }
 
    /**
@@ -200,22 +207,25 @@ export class CharacterActor extends fadeActor {
    async _updateLevelClass() {
       const className = this.system.details.class?.toLowerCase();
       const classItem = await fadeFinder.getClass(className);
+
       if (classItem) {
          // Get the class data for the character's current level.
          const currentLevel = Math.min(classItem.system.maxLevel, Math.max(classItem.system.firstLevel, this.system.details.level));
 
-         this.system.thbonus = currentLevel.thbonus;
-
          // Saving throws
-         const savesData = await ClassItem.getClassSaves(className, currentLevel);
+         const savesData = await fadeFinder.getClassSaves(className, currentLevel);
          if (savesData) {
             await this._setupSavingThrows(savesData);
          }
 
          // Class special abilities
-         const abilityNames = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.name);
-         const abilitiesData = await ClassItem.getClassAbilities(className, currentLevel);
-         if (abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0) {
+         const abilityNames = this.items.filter(item => item.type === 'specialAbility').map(item => item.name);
+         const validItemTypes = ClassDefinitionItem.ValidItemTypes;
+         const itemNames = this.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
+         const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
+         const itemsData = await fadeFinder.getClassItems(className, currentLevel);
+         if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
+            || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
                title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
@@ -229,8 +239,12 @@ export class CharacterActor extends fadeActor {
             }, this.actor);
 
             if (dialogResp?.resp?.result === true) {
-               await this._setupSpecialAbilities(classItem.system.key, abilitiesData);
+               await this._setupSpecialAbilities(abilitiesData);
+               await this._setupItems(itemsData);
             }
+         } else {
+            await this._setupSpecialAbilities(abilitiesData);
+            await this._setupItems(itemsData);
          }
       }
    }
@@ -240,10 +254,10 @@ export class CharacterActor extends fadeActor {
     */
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
-      const worldItem = await fadeFinder.getSpecies(nameInput);
+      const speciesItem = await fadeFinder.getSpecies(nameInput);
       const actorItem = this.items.find(item => item.type === 'species');
 
-      if (!worldItem) {
+      if (!speciesItem) {
          //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
          return;
       }
@@ -252,12 +266,12 @@ export class CharacterActor extends fadeActor {
       if (actorItem) {
          actorItem.delete();
       }
-      const itemData = [worldItem.toObject()];
+      const itemData = [speciesItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
 
       // Class special abilities
-      const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item=>item.id);
-      const abilitiesData = (await SpeciesItem.getSpecialAbilities(nameInput))?.filter(item =>abilityIds.includes(item.id)===false);
+      const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
+      const abilitiesData = (await SpeciesItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
       if (abilitiesData) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
@@ -272,7 +286,7 @@ export class CharacterActor extends fadeActor {
          }, this.actor);
 
          if (dialogResp?.resp?.result === true) {
-            await this._setupSpecialAbilities(worldItem.system.key, abilitiesData);
+            await this._setupSpecialAbilities(abilitiesData);
          }
       }
    }

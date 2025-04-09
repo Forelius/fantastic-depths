@@ -1,4 +1,4 @@
-import { fadeActorDataModel } from "./fadeActorDataModel.mjs";
+import { fadeActorDataModel } from "/systems/fantastic-depths/module/actor/dataModel/fadeActorDataModel.mjs";
 
 export class CharacterDataModel extends fadeActorDataModel {
    static defineSchema() {
@@ -17,14 +17,14 @@ export class CharacterDataModel extends fadeActorDataModel {
                next: new fields.NumberField({ initial: 0 }),
             }),
             class: new fields.StringField({ initial: "" }),
-            species: new fields.StringField({ initial: "Human" }),
+            species: new fields.StringField({ initial: "" }),
             title: new fields.StringField({ initial: "" }),
             age: new fields.NumberField({ initial: 20 }),
-            sex: new fields.StringField({ initial: "Male" }),
-            height: new fields.StringField({ initial: "6" }),
-            weight: new fields.StringField({ initial: "170 lbs." }),
-            eyes: new fields.StringField({ initial: "Blue" }),
-            hair: new fields.StringField({ initial: "Brown" }),
+            sex: new fields.StringField({ initial: "" }),
+            height: new fields.StringField({ initial: "" }),
+            weight: new fields.StringField({ initial: "" }),
+            eyes: new fields.StringField({ initial: "" }),
+            hair: new fields.StringField({ initial: "" }),
             size: new foundry.data.fields.StringField({ initial: "M" }),
          }),
          abilities: new fields.SchemaField({
@@ -57,6 +57,7 @@ export class CharacterDataModel extends fadeActorDataModel {
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
+               loyaltyMod: new fields.NumberField({ initial: 0 }),
             }),
          }),
          retainer: new fields.SchemaField({
@@ -74,7 +75,7 @@ export class CharacterDataModel extends fadeActorDataModel {
       for (let [key, ability] of Object.entries(this.abilities)) {         
          ability.total = ability.value;
       }
-      this.encumbrance.max = this.encumbrance.max || CONFIG.FADE.Encumbrance.maxLoad;
+      this.encumbrance.max = this.encumbrance.max || game.fade.registry.getSystem("encumbranceSystem").CONFIG.maxLoad;
    }
 
    /** @override */
@@ -85,18 +86,19 @@ export class CharacterDataModel extends fadeActorDataModel {
    }
 
    _prepareDerivedAbilities() {
-      // Initialize abilities if missing
-      const adjustments = CONFIG.FADE.AdjustmentTableDD;
+      // Initialize ability score modifiers
+      const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
+      const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
       for (let [key, ability] of Object.entries(this.abilities)) {
          let adjustment = adjustments.find(item => ability.total <= item.max);
          ability.mod = adjustment ? adjustment.value : adjustments[0].value;
       }
 
       // Retainer
-      let charisma = this.abilities.cha.value;
+      let charisma = this.abilities.cha.total;
       let adjustment = adjustments.find(item => charisma <= item.max);
-      this.retainer.max = adjustment.maxRetainers;
-      this.retainer.morale = adjustment.retainerMorale;
+      this.retainer.max = this.retainer.max > 0 ? this.retainer.max : adjustment.maxRetainers;
+      this.retainer.morale = this.retainer.morale > 0 ? this.retainer.morale : (adjustment.retainerMorale ?? 10);
    }
 
    _prepareWrestling() {

@@ -24,7 +24,7 @@
             </div>
             <a class='item-control description-expand' data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
          </div>
-         <div class="item-80px item-prop">{{item.system.level}}</div>
+         <div class="item-80px item-prop">{{localize (concat "FADE.Mastery.levels." item.system.level)}}</div>
          <div class="item-60px item-prop">+{{item.system.pToHit}}</div>
          <div class="item-60px item-prop" data-tooltip="{{localize (concat 'FADE.Mastery.weaponTypes.' item.system.primaryType '.long')}}">
             {{item.system.pDmgFormula}}
@@ -40,7 +40,7 @@
             {{/if}}
          </div>
       </div>
-      <div class='item-description desc-collapsed'></div>
+      <div class='item-description desc-collapsed bordered'></div>
    </li>
    {{/each}}
 </ol>

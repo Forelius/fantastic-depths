@@ -8,6 +8,21 @@ export class fadeSettings {
    }
 
    async #registerConfigSettings() {
+      // Theme
+      game.settings.register(game.system.id, "theme", {
+         name: "SETTINGS.Theme.Name",
+         hint: "SETTINGS.Theme.Hint",
+         scope: "client",
+         config: true,
+         type: String,
+         requiresReload: true,
+         choices: {
+            "light": "SETTINGS.Theme.Light",
+            "dark": "SETTINGS.Theme.Dark"
+         },
+         default: "dark",
+         onChange: value => this.applyTheme(value)
+      });
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
          name: "SETTINGS.Encumbrance.Name",
@@ -25,18 +40,29 @@ export class fadeSettings {
          },
          restricted: true // Only the GM can change this setting         
       });
-      game.settings.register(game.system.id, "theme", {
-         name: "SETTINGS.Theme.Name",
-         hint: "SETTINGS.Theme.Hint",
-         scope: "client",
+      // Ability score modifier system
+      game.settings.register(game.system.id, "abilityScoreModSystem", {
+         name: "SETTINGS.abilityScoreModSystem.name",
+         hint: "SETTINGS.abilityScoreModSystem.hint",
+         scope: "world",
          config: true,
          type: String,
          choices: {
-            "light": "SETTINGS.Theme.Light",
-            "dark": "SETTINGS.Theme.Dark"
+            //"simple": "SETTINGS.abilityScoreModSystem.choices.simple",
+            "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
          },
-         default: "dark",
-         onChange: value => this.applyTheme(value)
+         default: "darkdungeons",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      game.settings.register(game.system.id, "abilityCheckFormula", {
+         name: "SETTINGS.abilityCheckFormula.name",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "1d20",  // Default formula, using DEX modifier
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
       });
       game.settings.register(game.system.id, "abilityAbbr", {
          name: "SETTINGS.display.abilities.name",
@@ -112,17 +138,53 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
-      // Register party rest frequency
-      game.settings.register(game.system.id, "restFrequency", {
-         name: "SETTINGS.rest.name",
-         hint: "SETTINGS.rest.hint",
+      // Register duration of a round in seconds.
+      game.settings.register(game.system.id, "roundDurationSec", {
+         name: "SETTINGS.roundDurationSec.name",
+         hint: "SETTINGS.roundDurationSec.hint",
          scope: "world",
          config: true,
-         default: 0,  // Default is 0, no rest
+         default: 10,
          type: Number,
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+
+      // Register duration of a turn in seconds.
+      game.settings.register(game.system.id, "turnDurationSec", {
+         name: "SETTINGS.turnDurationSec.name",
+         hint: "SETTINGS.turnDurationSec.hint",
+         scope: "world",
+         config: true,
+         default: 600,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+
+      //// Register party rest frequency
+      //game.settings.register(game.system.id, "restFrequency", {
+      //   name: "SETTINGS.rest.turnsName",
+      //   hint: "SETTINGS.rest.turnsNHint",
+      //   scope: "world",
+      //   config: true,
+      //   default: 0,  // Default is 0, no rest
+      //   type: Number,
+      //   requiresReload: true,
+      //   restricted: true // Only the GM can change this setting
+      //});
+
+      //// Register party rest frequency
+      //game.settings.register(game.system.id, "restCondition", {
+      //   name: "SETTINGS.rest.conditionName",
+      //   hint: "SETTINGS.rest.conditionHint",
+      //   scope: "world",
+      //   config: true,
+      //   default: "",  // Default is 0, no rest
+      //   type: String,
+      //   requiresReload: true,
+      //   restricted: true // Only the GM can change this setting
+      //});
 
       game.settings.register(game.system.id, "rememberCollapsedState", {
          name: "SETTINGS.collapseState.name",
@@ -142,7 +204,6 @@ export class fadeSettings {
          default: false,
          restricted: true // Only the GM can change this setting
       });
-
       game.settings.register(game.system.id, "toasts", {
          name: "SETTINGS.toasts.name",
          hint: "SETTINGS.toasts.hint",
@@ -178,6 +239,15 @@ export class fadeSettings {
          default: "heroic",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
+      });
+      game.settings.register(game.system.id, "showExplorationTarget", {
+         name: "SETTINGS.showExplorationTarget.name",
+         hint: "SETTINGS.showExplorationTarget.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: true,
+         restricted: false
       });
    }
 

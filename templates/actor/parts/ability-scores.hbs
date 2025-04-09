@@ -19,10 +19,8 @@
          </label>
       </div>
       <div class="flex-group-center">
-         <span class="ability-score-input" style="display:none;">
-            <input type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" />
-         </span>
-         <span class="ability-score">{{ability.total}}</span>
+         <input class="ability-score-input" type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" {{#unless @root.editScores}}style="display:none"{{/unless}} />
+         <span class="ability-score" {{#if @root.editScores}}style="display:none"{{/if}}>{{ability.total}}</span>
          <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
       </div>
    </div>

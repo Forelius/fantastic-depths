@@ -32,6 +32,8 @@ export class fadeActorSheet extends ActorSheet {
       context.system = actorData.system;
       context.flags = actorData.flags;
       context.isSpellcaster = actorData.system.config.maxSpellLevel > 0;
+      context.isGM = game.user.isGM;
+      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
 
       // Adding a pointer to CONFIG.FADE
       context.config = CONFIG.FADE;
@@ -64,16 +66,20 @@ export class fadeActorSheet extends ActorSheet {
             relativeTo: this.actor,
          }
       );
-
       // Prepare active effects
       // A generator that returns all effects stored on the actor as well as any items
       context.effects = EffectManager.prepareActiveEffectCategories(
          this.actor.allApplicableEffects()
-         //this.actor.effects
       );
-
-      context.isGM = game.user.isGM;
-      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
+      // Equipped Weapons
+      const equippedWeapons = [];
+      for (let item of context.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         if (item.type === 'weapon' && item.system.equipped === true) {
+            equippedWeapons.push(item);
+         }
+      }
+      context.equippedWeapons = equippedWeapons;
 
       return context;
    }
@@ -118,8 +124,8 @@ export class fadeActorSheet extends ActorSheet {
          html.on('click', '.chatable', this._onRoll.bind(this));
 
          // Containers collapse/expand
-         html.find(".gear-items .category-caret").click((event) => {
-            this._toggleContainedItems(event);
+         html.find(".gear-items .category-caret").click(async (event) => {
+            await this._toggleContainedItems(event);
          });
 
          // Drag events for macros.
@@ -259,8 +265,15 @@ export class fadeActorSheet extends ActorSheet {
             masteries.push(item);
          }// Append to specialAbility.
          else if (item.type === 'specialAbility') {
+            const operators = {
+               eq: '=',
+               gt: '&gt;',
+               lt: '&lt;',
+               gte: '&gt;=',
+               lte: '&lt;='
+            };
             if (item.system.category === "explore") {
-               exploration.push(item);
+               exploration.push({ item, op: operators[item.system.operator] });
             } else if (item.system.category === "class") {
                classAbilities.push(item);
             } else if (item.system.category === "save") {
@@ -301,52 +314,10 @@ export class fadeActorSheet extends ActorSheet {
       context.savingThrows = savingThrows;
       context.conditions = conditions;
 
-      this._calcCategoryEnc(context);
+      Object.assign(context, game.fade.registry.getSystem('encumbranceSystem').calcCategoryEnc(context.items));
    }
 
    /* -------------------------------------------- */
-
-   /**
-    * Calculate encumbrance for different categories.
-    * @param {any} context
-    */
-   _calcCategoryEnc(context) {
-      const encSetting = game.settings.get(game.system.id, "encumbrance");
-      if (encSetting === 'classic') {
-         context.gearEnc = 80 + context.items
-            .filter(item => item.type === 'treasure')
-            .reduce((sum, item) => {
-               const itemWeight = item.system.weight || 0;
-               const itemQuantity = item.system.quantity || 1;
-               return sum + (itemWeight * itemQuantity);
-            }, 0);
-      } else if (encSetting === 'expert') {
-         // Gear
-         context.gearEnc = context.items
-            .filter(item => item.type === 'item' || item.type === 'light')
-            .reduce((sum, item) => {
-               const itemWeight = item.system.weight || 0;
-               const itemQuantity = item.system.quantity || 1;
-               //const citem = context.document.items.get(item._id);
-               //console.debug(item.name, citem.totalEnc);
-               return sum + (itemWeight * itemQuantity);
-            }, 0);
-      }
-      if (encSetting === 'expert' || encSetting === 'classic') {
-         // Weapons
-         context.weaponsEnc = context.items
-            .filter(item => item.type === 'weapon')
-            .reduce((sum, item) => {
-               return sum + (item.system.weight || 0);
-            }, 0);
-         // Armor
-         context.armorEnc = context.items
-            .filter(item => item.type === 'armor')
-            .reduce((sum, item) => {
-               return sum + (item.system.weight || 0);
-            }, 0);
-      }
-   }
 
    /**
     * @override
@@ -500,8 +471,6 @@ export class fadeActorSheet extends ActorSheet {
       event.preventDefault();
       event.stopPropagation();
 
-      //console.debug('_onRoll', event);
-      const ctrlKey = event.originalEvent.ctrlKey;
       const elem = event.currentTarget;
       const dataset = elem.dataset;
       let formula = dataset.formula;
@@ -515,19 +484,11 @@ export class fadeActorSheet extends ActorSheet {
          // Directly roll item and skip the rest
          if (item) await item.roll(dataset, null, event);
       } else if (dataset.test === 'ability') {
-         dataset.dialog = dataset.test;
-         chatType = CHAT_TYPE.ABILITY_CHECK;
-         formula = formula ? formula : '1d20';
-         if (ctrlKey === false) {
-            dialogResp = await DialogFactory(dataset, this.actor);
-            if (dialogResp?.resp?.rolling === true) {
-               formula = (dialogResp !== null && dialogResp?.resp.mod != 0) ? "1d20-@mod" : "1d20";
-            } else {
-               // This will stop the process below.
-               chatType = null;
-            }
-         }
-      } else if (dataset.test === 'save') {
+         await game.fade.registry.getSystem('abilityCheck').execute({ actor: this.actor, event });
+      } else if (dataset.test === 'morale') {
+         await game.fade.registry.getSystem('MoraleCheck').execute({ actor: this.actor, event });
+      }
+      else if (dataset.test === 'save') {
          this.actor.rollSavingThrow(dataset.type, event);
       } else if (dataset.test === "generic") {
          dataset.dialog = dataset.test;
@@ -603,9 +564,9 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
- * Handles the click event for toggling collapsible sections.
- * @param {Event} event - The click event on the collapsible header
- */
+    * Handles the click event for toggling collapsible sections.
+    * @param {Event} event - The click event on the collapsible header
+    */
    async _toggleCollapsibleContent(event) {
       await this._toggleContent($(event.currentTarget));
    }
@@ -684,6 +645,11 @@ export class fadeActorSheet extends ActorSheet {
                console.warn("Removed invalid flag: collapsed-undefined");
             }
          });
+
+         const collapsedContainers = this.actor.items.filter(item => item.system.isOpen === false);
+         for (let collapsed of collapsedContainers) {
+            //const target = document.querySelector(`[data-]`);
+         }
       }
    }
 
@@ -716,61 +682,46 @@ export class fadeActorSheet extends ActorSheet {
    }
 
    /**
- * Handler for clicking on a container item's collapse/expand icon.
- * @param {MouseEvent} event
- */
-   _toggleContainedItems(event) {
+    * Handler for clicking on a container item's collapse/expand icon.
+    * @param {MouseEvent} event
+    */
+   async _toggleContainedItems(event) {
       event.preventDefault();
 
       // The stack of jQuery elements we need to process
       const containers = [$(event.target).closest(".item")];
       const isExpanding = event.target.classList.contains("fa-caret-right");
       const handledIds = [];
+      const updates = [];
 
       while (containers.length > 0) {
          // Pop the top jQuery element
          const toggledItem = containers.pop();
+
          const parentId = toggledItem.data("itemId");
-
-         // Get all immediate sibling items that are contained by this parent
-         const containedItems = toggledItem
-            .siblings(`[data-item-parentid="${parentId}"]`);
-
-         // Toggle the icon on the parent container
-         if (isExpanding) {
-            toggledItem
-               .find(".fas.fa-caret-right")
-               .first()
-               .removeClass("fa-caret-right")
-               .addClass("fa-caret-down");
-            containedItems.slideDown(200);
-         } else {
-            toggledItem
-               .find(".fas.fa-caret-down")
-               .first()
-               .removeClass("fa-caret-down")
-               .addClass("fa-caret-right");
-            containedItems.slideUp(200);
-         }
-
+         const containedItems = toggledItem.siblings(`[data-item-parentid="${parentId}"]`);
          // Avoid reprocessing the same container
          handledIds.push(parentId);
+         updates.push({ _id: parentId, "system.isOpen": isExpanding });
 
          // If we are collapsing, we want to recursively collapse any sub-containers
-         if (!isExpanding) {
+         if (isExpanding === false) {
             // Find each sibling container under these items (the next nesting level)
             const subContainers = containedItems.filter(".item-container");
-
             // For each container, push the jQuery-wrapped element to the stack
             subContainers.each((i, el) => {
                const $subContainer = $(el);
                const nextParentId = $subContainer.data("itemId");
-               if (!handledIds.includes(nextParentId)) {
+               if (handledIds.includes(nextParentId) === false) {
+                  updates.push({ _id: nextParentId, "system.isOpen": isExpanding });
+                  // Push this sub-container onto the stack of containers to collapse.
                   containers.push($subContainer);
                }
             });
          }
       }
+
+      this.actor.updateEmbeddedDocuments("Item", updates);
    }
 
    async _onDescriptionExpand(event) {
