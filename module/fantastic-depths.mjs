@@ -114,7 +114,6 @@ Hooks.once('init', async function () {
       condition: ConditionItemDataModel,
       species: SpeciesItemDataModel
    };
-   //CONFIG.Item.compendiumIndexFields.push("system.cost");
 
    // Active Effects are never copied to the Actor,
    // but will still apply to the Actor from within the Item
@@ -275,6 +274,9 @@ Hooks.once('ready', async function () {
          console.info(`Registered socket listener: system.${game.system.id}`);
       }
    }
+
+   // Set the length of a round of combat.
+   CONFIG.time.turnTime = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
 
    Hooks.call("afterFadeReady", game.fadeRegistry);
 });
