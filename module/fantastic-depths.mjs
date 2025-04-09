@@ -276,7 +276,7 @@ Hooks.once('ready', async function () {
    }
 
    // Set the length of a round of combat.
-   CONFIG.time.turnTime = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+   CONFIG.time.roundTime = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
 
    Hooks.call("afterFadeReady", game.fadeRegistry);
 });

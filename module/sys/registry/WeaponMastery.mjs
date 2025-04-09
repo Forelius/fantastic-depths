@@ -1,4 +1,9 @@
 export class WeaponMasterySystem {
+   constructor() {
+      this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+      this.isAAC = this.toHitSystem === 'aac';
+      this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+   }
 
    getAttackRollMod(actor, weapon, { targetWeaponType, attackType, target } = {}) {
       let result = { mod: 0, digest: [] };
