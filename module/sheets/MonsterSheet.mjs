@@ -23,6 +23,29 @@ export class MonsterSheet extends fadeActorSheet {
       });
    }
 
+   constructor(object, options = {}) {
+      super(object, options);
+      this.editScores = false;
+   }
+
+   /** @override */
+   async getData() {
+      const context = await super.getData();
+      context.editScores = this.editScores;
+      return context;
+   }
+
+   /**
+   * @override
+   */
+   activateListeners(html) {
+      super.activateListeners(html);
+      html.on('click', '.edit-scores', async (event) => {
+         this.editScores = !this.editScores;
+         html.find('.ability-score-input, .ability-score').toggle();
+      });
+   }
+
    /** @override */
    async render(force, options = {}) {
       // Call the original render method with modified options

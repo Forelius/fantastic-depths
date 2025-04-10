@@ -2,11 +2,11 @@
    padding: 3px 4px 3px 4px;
 
    .message-content {
+      padding: 1px 5px 4px 5px;
+
       img {
          border: none;
       }
-
-      padding: 1px 5px 4px 5px;
 
       button {
          margin: 0;
@@ -15,9 +15,6 @@
       .digest {
          margin-bottom: 6px;
       }
-      /*.collapser {
-         margin-bottom: 4px;
-      }*/
 
       .apply-damage, .apply-heal {
          margin-top: 4px;

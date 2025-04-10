@@ -42,7 +42,6 @@ export class MonsterDataModel extends fadeActorDataModel {
       super.prepareBaseData();
       this.details.alignment = this.details.alignment || "Chaotic";
       this.encumbrance.max = this.encumbrance.max || 0;
-      this.abilities.con.value = this.getParsedHD().base * 2;
       this._prepareTHAC0ToHitBonus();
       // Maybe this is the wrong place to do this. We may need to wait until after init.
       this.thbonus = CONFIG.FADE.ToHit.BaseTHAC0 - this.thac0.value;

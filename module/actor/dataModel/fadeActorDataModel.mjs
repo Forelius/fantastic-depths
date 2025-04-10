@@ -115,12 +115,6 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             })
          }),
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
-         //wrestling: {
-         //   // The actor's Wrestling Rating, including modifiers for strength and dexterity.            
-         //   rating: new foundry.data.fields.NumberField({ initial: 0 }),
-         //   // The total wrestling rating after all additional modifiers are applied.
-         //   total: new foundry.data.fields.NumberField({ initial: 0 })
-         //},
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
          abilities: new fields.SchemaField({
@@ -162,26 +156,28 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this._prepareMods();
+      this._prepareSpells();
       for (let [key, ability] of Object.entries(this.abilities)) {
          ability.total = ability.value;
       }
-      this._prepareMods();
-      this._prepareSpells();
+      this._prepareDerivedAbilities();
    }
 
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareDerivedAbilities();
    }
 
    _prepareDerivedAbilities() {
-      // Initialize ability score modifiers
-      const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
-      const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
-      for (let [key, ability] of Object.entries(this.abilities)) {
-         let adjustment = adjustments.find(item => ability.total <= item.max);
-         ability.mod = adjustment ? adjustment.value : adjustments[0].value;
+      if (this.parent.type === 'character') {
+         // Initialize ability score modifiers
+         const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
+         const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
+         for (let [key, ability] of Object.entries(this.abilities)) {
+            let adjustment = adjustments.find(item => ability.total <= item.max);
+            ability.mod = adjustment ? adjustment.value : adjustments[0].value;
+         }
       }
    }
 
