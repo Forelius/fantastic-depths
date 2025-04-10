@@ -77,21 +77,33 @@ export class DataMigrator {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
-         //if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
-         //   await this.fixUnidentified();
-         //   ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
+         //if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
+         //   await this.fixTreasureItems();
+         //   ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.");
          //}
-         if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
-            await this.fixTreasureItems();
-            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.");
-         }
-         if (this.oldVersion.lt(new MySystemVersion("0.8.1-rc.11"))) {
-            await this.fixTypeAndRarity();
-            const msg = "Fantastic Depths 0.8.0-rc.11 data migration complete.";
+         //if (this.oldVersion.lt(new MySystemVersion("0.8.1-rc.11"))) {
+         //   await this.fixTypeAndRarity();
+         //   const msg = "Fantastic Depths 0.8.0-rc.11 data migration complete.";
+         //   ui.notifications.info(msg);
+         //}
+         if (this.oldVersion.lt(new MySystemVersion("0.10.0-rc.1"))) {
+            await this.fixMonsterAbilities();
+            const msg = "Fantastic Depths 0.10.0-rc.1 data migration complete.";
             ui.notifications.info(msg);
          }
          // Set the new version after migration is complete
          await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+      }
+   }
+
+   async fixMonsterAbilities() {
+      let monsters = await game.fade.fadeFinder._getWorldSource("actor").filter(actor=>actor.type==='monster');
+      for (let monster of monsters) {
+         monster.system.abilities.int.value = monster.system.details.intelligence;
+      }
+      monsters = (await game.fade.fadeFinder._getPackSource("actor")).filter(actor => actor.type === 'monster');
+      for (let monster of monsters) {
+         monster.system.abilities.int.value = monster.system.details.intelligence;
       }
    }
 
@@ -138,56 +150,6 @@ export class DataMigrator {
          });
          console.debug(`Set ${monster.name}`, monster);
       }
-   }
-
-   async fixUnidentified() {
-      const processItems = async (items, contextName) => {
-         for (const item of items) {
-            let isUpdated = false;
-            if (item.type === 'weapon' || item.type === 'armor') {
-               if (item.system.natural === true) {
-                  await item.update({
-                     "system.unidentifiedName": null,
-                     "system.unidentifiedDesc": null,
-                  });
-               } else {
-                  if (item.system.unidentifiedName === null || item.system.unidentifiedName === '') {
-                     await item.update({ "system.unidentifiedName": item.name });
-                     isUpdated = true;
-                  }
-                  if ((item.system.unidentifiedDesc === null || item.system.unidentifiedDesc === '') && item.system.description !== null && item.system.description !== '') {
-                     await item.update({ "system.unidentifiedDesc": item.system.description });
-                     isUpdated = true;
-                  }
-                  if (isUpdated === true) {
-                     console.log(`[${contextName}] Updating ${item.name}(${item.type}): setting unidentified values`, item);
-                  }
-               }
-            } else if (item.type === 'item' || item.type === 'light') {
-               if (item.system.unidentifiedName === null || item.system.unidentifiedName === '') {
-                  await item.update({ "system.unidentifiedName": item.name });
-                  isUpdated = true;
-               }
-               if ((item.system.unidentifiedDesc === null || item.system.unidentifiedDesc === '') && item.system.description !== null && item.system.description !== '') {
-                  await item.update({ "system.unidentifiedDesc": item.system.description });
-                  isUpdated = true;
-               }
-               if (isUpdated === true) {
-                  console.log(`[${contextName}] Updating ${item.name}(${item.type}): setting unidentified values`, item);
-               }
-            }
-         }
-      };
-
-      // Process all actor items
-      for (const actor of game.actors) {
-         const actorItems = actor.items;
-         await processItems(actorItems, `Actor: ${actor.name}`);
-      }
-
-      // Process all world items
-      const worldItems = game.items;
-      await processItems(worldItems, "World Items");
    }
 
    async fixTreasureItems() {

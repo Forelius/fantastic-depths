@@ -1059,7 +1059,7 @@
       },
       "logChanges": {
          "name": "Log Character Sheet Changes",
-         "hint": "If enabled, logs character sheet changes to the GM via chat."
+         "hint": "If enabled, logs character sheet changes to the GM via chat. This can be useful for troubleshoot issues."
       },
       "weaponMastery": {
          "name": "Weapon Mastery",
@@ -1097,6 +1097,11 @@
       "showExplorationTarget": {
          "name": "Show Exploration Target",
          "hint": "Shows the target roll value on the character sheet if enabled."
+      },
+      "packs": {
+         "actorPack": "Actor Compendium",
+         "itemPack": "Item Compendium",
+         "rollTablePack": "Rollable Tables Compendium"
       }
    }
 }

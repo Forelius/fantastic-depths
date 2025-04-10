@@ -42,6 +42,7 @@ export class MonsterDataModel extends fadeActorDataModel {
       super.prepareBaseData();
       this.details.alignment = this.details.alignment || "Chaotic";
       this.encumbrance.max = this.encumbrance.max || 0;
+      this.abilities.con.value = this.getParsedHD().base * 2;
       this._prepareTHAC0ToHitBonus();
       // Maybe this is the wrong place to do this. We may need to wait until after init.
       this.thbonus = CONFIG.FADE.ToHit.BaseTHAC0 - this.thac0.value;
@@ -55,27 +56,16 @@ export class MonsterDataModel extends fadeActorDataModel {
       super.prepareDerivedData();
    }
 
-   _getParsedHD() {
-      // Regular expression to check for a dice specifier like d<number>
-      const diceRegex = /d(\d+)/;
-      // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
-      const modifierRegex = /([+\-*/]\d+)$/;
-
-      const match = this.hp.hd.match(diceRegex);
-      let dieSides = 8;
-      if (match) {
-         dieSides = parseInt(match[1], 10);
-      } else {
-         dieSides = 8;
-      }
-
-      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      let base = this.hp.hd.replace(modifierRegex, ''); // Extract base number
-      let modifier = this.hp.hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
-      base = parseFloat(base);
-      modifier = parseInt(modifier, 10);
-      const sign = modifier <= 0 ? "" : "+";
-      return { base, modifier, dieSides, sign };
+   /**
+    * Migrate source data from some prior format into a new specification.
+    * The source parameter is either original data retrieved from disk or provided by an update operation.
+    * @inheritDoc
+    */
+   static migrateData(source) {
+      //source.abilities = {
+      //   int: { value: source.details.intelligence }
+      //};
+      return super.migrateData(source);
    }
 
    /**
@@ -84,7 +74,7 @@ export class MonsterDataModel extends fadeActorDataModel {
     */
    _prepareHitPoints() {
       if (this.hp.max == null) {
-         const { base, modifier, dieSides } = this._getParsedHD();
+         const { base, modifier, dieSides } = this.getParsedHD();
          this.hp.value = Math.ceil(((dieSides + 1) / 2) * base) + modifier;
          this.hp.max = this.hp.value;
       }
@@ -93,7 +83,7 @@ export class MonsterDataModel extends fadeActorDataModel {
    _prepareXP() {
       if (this.details.xpAward == null || this.details.xpAward == 0) {
          const xpCalc = new MonsterXPCalculator();
-         const { base, modifier, dieSides, sign } = this._getParsedHD();
+         const { base, modifier, dieSides, sign } = this.getParsedHD();
          if (base > 0 || modifier > 0) {
             const xp = xpCalc.getXP(`${base}${sign}${(modifier != 0 ? modifier : '')}`, this.details.abilityCount);
             this.details.xpAward = xp;
@@ -106,5 +96,5 @@ export class MonsterDataModel extends fadeActorDataModel {
          const thac0Calc = new MonsterTHAC0Calculator();
          this.thac0.value = thac0Calc.getTHAC0(this.hp.hd);
       }
-   }   
+   }
 }

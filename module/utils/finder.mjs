@@ -1,13 +1,26 @@
 export class fadeFinder {
 
+   static _actorPackName() {
+      return game.settings.get(game.system.id, "actorPack");
+   }
+   static _getActorPack() {
+      return game.packs.get(fadeFinder._actorPackName() ?? 'fade-compendiums.actor-compendium');
+   }
+
+   static _itemPackName() {
+      return game.settings.get(game.system.id, "itemPack");
+   }
    static _getItemPack() {
-      return game.packs.get('fade-compendiums.item-compendium');
+      return game.packs.get(fadeFinder._itemPackName() ?? 'fade-compendiums.item-compendium');
    }
 
+   static _rollTablePackName() {
+      return game.settings.get(game.system.id, "rollTablePack");
+   }
    static _getRollTablePack() {
-      return game.packs.get('fade-compendiums.roll-table-compendium');
+      return game.packs.get(fadeFinder._rollTablePackName() ?? 'fade-compendiums.roll-table-compendium');
    }
-
+      
    /**
     * Get the item source. First try world, then try compendiums.
     * @private
@@ -18,7 +31,10 @@ export class fadeFinder {
       let result = null;
       if (type === 'rolltable') {
          result = await fadeFinder._getRollTablePack()?.getDocuments();
-      } else if (type === 'anyItem') {
+      } else if (type === 'actor') {
+         result = await fadeFinder._getActorPack()?.getDocuments();
+      }
+      else if (type === 'anyItem') {
          result = await fadeFinder._getItemPack()?.getDocuments();
       } else {
          result = await fadeFinder._getItemPack()?.getDocuments({ type });
@@ -36,6 +52,8 @@ export class fadeFinder {
       let result = null;
       if (type === 'rolltable') {
          result = game.tables;
+      } else if (type === 'actor') {
+         result = game.actors;
       } else if (type === 'anyItem') {
          result = game.items;
       } else {

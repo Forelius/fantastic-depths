@@ -41,10 +41,11 @@ export class MonsterActor extends fadeActor {
    _prepareWrestling() {
       // Wrestling skill
       const data = this.system;
-      const hitDice = data.hp.hd?.match(/^\d+/)[0];
+      const { base, modifier, dieSides, sign } = this.system.getParsedHD();
+      //const hitDice = data.hp.hd?.match(/^\d+/)[0];
       let wrestling = 0;
-      if (hitDice) {
-         wrestling = Math.ceil(hitDice * 2);
+      if (base) {
+         wrestling = Math.ceil(base * 2);
       }
       // Determine if the monster is wearing any non-natural armor.
       const hasArmor = this.items.some(item => item.type === 'armor' && item.system.equipped === true && item.system.natural === false);

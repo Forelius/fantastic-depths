@@ -112,12 +112,48 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
+         abilities: new fields.SchemaField({
+            str: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
+            }),
+            int: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
+            }),
+            wis: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
+            }),
+            dex: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
+            }),
+            con: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
+            }),
+            cha: new fields.SchemaField({
+               value: new fields.NumberField({ initial: 10 }),
+               total: new fields.NumberField({ initial: 10 }),
+               mod: new fields.NumberField({ initial: 0 }),
+               loyaltyMod: new fields.NumberField({ initial: 0 }),
+            }),
+         }),
       };
    }
 
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      for (let [key, ability] of Object.entries(this.abilities)) {
+         ability.total = ability.value;
+      }
       this._prepareMods();
       this._prepareSpells();
    }
@@ -125,6 +161,17 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      this._prepareDerivedAbilities();
+   }
+
+   _prepareDerivedAbilities() {
+      // Initialize ability score modifiers
+      const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
+      const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
+      for (let [key, ability] of Object.entries(this.abilities)) {
+         let adjustment = adjustments.find(item => ability.total <= item.max);
+         ability.mod = adjustment ? adjustment.value : adjustments[0].value;
+      }
    }
 
    /**
@@ -168,5 +215,28 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       } else {
          this.spellSlots = [];
       }
+   }
+
+   getParsedHD() {
+      // Regular expression to check for a dice specifier like d<number>
+      const diceRegex = /d(\d+)/;
+      // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
+      const modifierRegex = /([+\-*/]\d+)$/;
+
+      const match = this.hp.hd.match(diceRegex);
+      let dieSides = 8;
+      if (match) {
+         dieSides = parseInt(match[1], 10);
+      } else {
+         dieSides = 8;
+      }
+
+      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
+      let base = this.hp.hd.replace(modifierRegex, ''); // Extract base number
+      let modifier = this.hp.hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
+      base = parseFloat(base);
+      modifier = parseInt(modifier, 10);
+      const sign = modifier <= 0 ? "" : "+";
+      return { base, modifier, dieSides, sign };
    }
 }

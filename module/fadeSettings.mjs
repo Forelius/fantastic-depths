@@ -23,6 +23,36 @@ export class fadeSettings {
          default: "dark",
          onChange: value => this.applyTheme(value)
       });
+      // Actor pack
+      game.settings.register(game.system.id, "actorPack", {
+         name: "SETTINGS.packs.actorPack",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "fade-compendiums.actor-compendium",  
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Item pack
+      game.settings.register(game.system.id, "itemPack", {
+         name: "SETTINGS.packs.itemPack",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "fade-compendiums.item-compendium",
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Rolltable pack
+      game.settings.register(game.system.id, "rollTablePack", {
+         name: "SETTINGS.packs.rollTablePack",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "fade-compendiums.roll-table-compendium",
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
          name: "SETTINGS.Encumbrance.Name",
