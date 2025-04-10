@@ -2,6 +2,7 @@
 import { fadeActor } from './fadeActor.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { Wrestling } from "/systems/fantastic-depths/module/sys/combat/Wrestling.mjs";
 
 export class MonsterActor extends fadeActor {
    constructor(data, context) {
@@ -14,7 +15,7 @@ export class MonsterActor extends fadeActor {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareSavingThrows();
-      this._prepareWrestling();
+      this.system.wrestling = Wrestling.calculateWrestlingRating(this);
    }
 
    /**
@@ -36,25 +37,6 @@ export class MonsterActor extends fadeActor {
       if (updateData.system?.details?.castAs?.length > 0) {
          await this._setupClassMagic();
       }
-   }
-
-   _prepareWrestling() {
-      // Wrestling skill
-      const data = this.system;
-      const { base, modifier, dieSides, sign } = this.system.getParsedHD();
-      //const hitDice = data.hp.hd?.match(/^\d+/)[0];
-      let wrestling = 0;
-      if (base) {
-         wrestling = Math.ceil(base * 2);
-      }
-      // Determine if the monster is wearing any non-natural armor.
-      const hasArmor = this.items.some(item => item.type === 'armor' && item.system.equipped === true && item.system.natural === false);
-      if (hasArmor) {
-         wrestling += data.ac.value;
-      } else {
-         wrestling += 9;
-      }
-      this.system.wrestling = wrestling;
    }
 
    async _prepareSavingThrows() {

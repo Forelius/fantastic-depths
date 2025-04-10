@@ -45,7 +45,6 @@ export class CharacterDataModel extends fadeActorDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this._prepareWrestling();
    }
 
    _prepareDerivedAbilities() {
@@ -58,11 +57,4 @@ export class CharacterDataModel extends fadeActorDataModel {
       this.retainer.max = this.retainer.max > 0 ? this.retainer.max : adjustment.maxRetainers;
       this.retainer.morale = this.retainer.morale > 0 ? this.retainer.morale : (adjustment.retainerMorale ?? 10);
    }
-
-   _prepareWrestling() {
-      // Wrestling skill
-      const { base, modifier, dieSides, sign } = this.getParsedHD();
-      this.wrestling = Math.ceil(base / 2) + this.ac.value;
-      this.wrestling += this.abilities.str.mod + this.abilities.dex.mod;
-   } 
 }

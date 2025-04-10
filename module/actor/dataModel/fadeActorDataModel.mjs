@@ -87,9 +87,14 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          mod: new fields.SchemaField({
             // mod is for items that modify AC (add/subtract only) but are not armor items.
             ac: new fields.NumberField({ initial: 0 }),
+            // Modifies the natural/naked AC.
             baseAc: new fields.NumberField({ initial: 0 }),
+            // Upgrades the AC if better, otherwise does nothing.
             upgradeAc: new fields.NumberField({ nullable: true, initial: null }),
+            // Upgrades the ranged AC if better, otherwise does nothing.
             upgradeRangedAc: new fields.NumberField({ nullable: true, initial: null }),
+            // Wrestling Rating modifier
+            wrestling: new fields.NumberField({ nullable: true, initial: null }),
             initiative: new fields.NumberField({ initial: 0 }),
             combat: new fields.SchemaField({
                toHit: new fields.NumberField({ initial: 0 }),
@@ -110,6 +115,12 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             })
          }),
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
+         //wrestling: {
+         //   // The actor's Wrestling Rating, including modifiers for strength and dexterity.            
+         //   rating: new foundry.data.fields.NumberField({ initial: 0 }),
+         //   // The total wrestling rating after all additional modifiers are applied.
+         //   total: new foundry.data.fields.NumberField({ initial: 0 })
+         //},
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
          abilities: new fields.SchemaField({

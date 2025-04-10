@@ -193,4 +193,30 @@ export class Wrestling {
 
       return message;
    }
+
+   static calculateWrestlingRating(actor) {
+      let result = 0;
+
+      if (actor.type === 'character') {
+         const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
+         result = Math.ceil(base / 2) + actor.system.ac.value;
+         result += actor.system.abilities.str.mod + actor.system.abilities.dex.mod;
+      } else {
+         // Wrestling skill
+         const data = actor.system;
+         const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
+         //const hitDice = data.hp.hd?.match(/^\d+/)[0];
+         if (base) {
+            result = Math.ceil(base * 2);
+         }
+         // Determine if the monster is wearing any non-natural armor.
+         const hasArmor = actor.items.some(item => item.type === 'armor' && item.system.equipped === true && item.system.natural === false);
+         if (hasArmor) {
+            result += data.ac.value;
+         } else {
+            result += 9;
+         }
+      }
+      return result + actor.system.mod?.wrestling ?? 0;
+   }
 }
