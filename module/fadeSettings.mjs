@@ -85,6 +85,22 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+      // Ability score modifier system
+      game.settings.register(game.system.id, "monsterAbilityScores", {
+         name: "SETTINGS.monsterAbilityScores.name",
+         hint: "SETTINGS.monsterAbilityScores.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            none: "SETTINGS.Encumbrance.None",
+            withoutmod: "SETTINGS.monsterAbilityScores.choices.withoutmod",
+            withmod: "SETTINGS.monsterAbilityScores.choices.withmod",
+         },
+         default: "none",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
       game.settings.register(game.system.id, "abilityCheckFormula", {
          name: "SETTINGS.abilityCheckFormula.name",
          scope: "world",   // This means the setting is stored globally for the world

@@ -32,6 +32,9 @@ export class MonsterSheet extends fadeActorSheet {
    async getData() {
       const context = await super.getData();
       context.editScores = this.editScores;
+      const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
+      context.hasAbilityScores = abilityScoreSetting !== "none";
+      context.hasAbilityScoreMods = abilityScoreSetting === "withmod";
       return context;
    }
 

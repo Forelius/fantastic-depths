@@ -1086,6 +1086,14 @@
       "abilityCheckFormula": {
          "name": "Ability Check Roll Formula"
       },
+      "monsterAbilityScores": {
+         "name": "Monster Ability Scores",
+         "hint": "If enabled, the monster sheet will have ability scores, just like the character sheet. Select 'Without Modifier' option to ignore ability score modifiers. Select 'With Modifier' to include ability score modifiers. Including the modifiers will not only display them on the sheet, but also include them in die rolls, such as bonuses to attack and damage rolls.",
+         "choices": {
+            "withoutmod": "Without Modifier",
+            "withmod": "With Modifier"
+         }
+      },
       "roundDurationSec": {
          "name": "Round Duration",
          "hint": "The number of seconds a round represent in game time."

@@ -170,7 +170,11 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
    }
 
    _prepareDerivedAbilities() {
-      if (this.parent.type === 'character') {
+      // For monsters
+      const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
+      const hasAbilityScoreMods = abilityScoreSetting === "withmod";
+
+      if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
          // Initialize ability score modifiers
          const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
          const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;

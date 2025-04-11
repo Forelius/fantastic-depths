@@ -33,6 +33,7 @@ export class CharacterSheet extends fadeActorSheet {
       const context = await super.getData();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       context.editScores = this.editScores;
+      context.hasAbilityScoreMods = true;
       return context;
    }
 

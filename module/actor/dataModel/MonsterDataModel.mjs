@@ -16,6 +16,7 @@ export class MonsterDataModel extends fadeActorDataModel {
             // This is how many attacks the monster gets
             attacks: new fields.StringField({ initial: "1" }),
             size: new fields.StringField({ initial: "M" }),
+            // Keep this so that the GM can decide which to use, all ability scores or just this.
             intelligence: new fields.StringField({ initial: "7" }),
             monsterType: new fields.StringField({ initial: "Monster" }),
             rarity: new fields.StringField({ initial: "Common" }),
