@@ -10,8 +10,8 @@ export class fadeEffect extends ActiveEffect {
          const start = (this.duration.startTime || wt);
          const elapsed = wt - start;
          const remaining = this.duration.seconds - elapsed;
-         const remainingRounds = remaining / roundDuration;
-         const remainingTurns = remaining / turnDuration;
+         const remainingRounds = (remaining / roundDuration)?.toFixed(0) ?? "--";
+         const remainingTurns = (remaining / turnDuration)?.toFixed(2) ?? "--";
 
          // Dynamically redefine the label
          Object.defineProperty(this.duration, 'label', {

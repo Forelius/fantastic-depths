@@ -9,7 +9,7 @@
                </div>
                <label for="name">{{localize 'Name'}}</label>
             </li>
-            <li class="flex2">
+            <li class="flex1">
                <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
                   {{selectOptions weaponTypes selected=system.weaponType}}
                </select>
@@ -82,6 +82,12 @@
          <li class="flex1">
             <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
             <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <input type='text' value='{{localize (concat "FADE.Mastery.levels." item.system.effectiveLevel)}}' data-dtype='String' readonly />
+            <label for="system.level">{{localize 'FADE.Actor.effectiveLevel'}}</label>
          </li>
       </ul>
    </div>

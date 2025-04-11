@@ -5,11 +5,12 @@ export class ActorMasteryItem extends fadeItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.system.effectiveLevel = this.system.level;
    }
 
    /** @override */
    prepareDerivedData() {
-      super.prepareDerivedData();
+      super.prepareDerivedData();      
    }
 
    /**
@@ -28,7 +29,7 @@ export class ActorMasteryItem extends fadeItem {
 
    /** Update item properties based on FADE.WeaponMastery */
    async updatePropertiesFromMastery() {
-      const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.level);
+      const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.effectiveLevel);
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 
       let result = {};

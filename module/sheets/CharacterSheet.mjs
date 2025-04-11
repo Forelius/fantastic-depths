@@ -44,7 +44,7 @@ export class CharacterSheet extends fadeActorSheet {
       super.activateListeners(html);
       html.on('click', '.edit-scores', async (event) => {
          this.editScores = !this.editScores;
-         html.find('.ability-score-input, .ability-score').toggle();
+         html.find('.ability-score-input, .ability-score, .ability-mod').toggle();
       });
    }
 

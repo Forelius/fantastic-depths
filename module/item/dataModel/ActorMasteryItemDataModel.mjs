@@ -9,6 +9,7 @@ export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
          // Fields from the "base" template
          // Fields specific to the "mastery" template
          level: new fields.StringField({ required: true, initial: "basic" }),
+         effectiveLevel: new fields.StringField({ initial: "basic" }),
          weaponType: new fields.StringField({ required: true, initial: "handheld" }),
          primaryType: new fields.StringField({ nullable: true, initial: null }),
          range: new fields.SchemaField({

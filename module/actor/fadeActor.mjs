@@ -94,7 +94,6 @@ export class fadeActor extends Actor {
       } else {
          //console.warn(`Preparing base data for ${this.name}, but id is null.`);
       }
-
    }
 
    /** @override */
@@ -104,8 +103,13 @@ export class fadeActor extends Actor {
          game.fade.registry.getSystem('encumbranceSystem').prepareDerivedData(this);
          this._prepareDerivedMovement();
          game.fade.registry.getSystem('actorArmor').prepareDerivedData(this);
-      } else {
-         //console.warn(`Preparing derived data for ${this.name}, but id is null.`);
+
+         // Apply the mastery level override, if present.
+         if (this.system.mod.masteryLevelOverride) {
+            for (let mastery of this.items.filter(item => item.type === 'mastery')) {               
+               mastery.system.effectiveLevel = this.system.mod.masteryLevelOverride;
+            }
+         }
       }
    }
 

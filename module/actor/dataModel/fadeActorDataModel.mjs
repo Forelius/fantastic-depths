@@ -112,42 +112,53 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             }),
             save: new fields.ObjectField({
                all: new fields.NumberField({ initial: 0 }),
-            })
+            }),
+            masteryLevelOverride: new fields.StringField({ nullable: true, initial: null }),
          }),
          wrestling: new foundry.data.fields.NumberField({ initial: 0 }),
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          activeLight: new fields.StringField({ nullable: true, required: false, initial: null }),
          abilities: new fields.SchemaField({
             str: new fields.SchemaField({
+               // The base ability score value.
                value: new fields.NumberField({ initial: 10 }),
+               // The ability score total, after active effects and tempMod applied.
                total: new fields.NumberField({ initial: 10 }),
+               // The ability score derived modifier. Sometimes called adjustment.
                mod: new fields.NumberField({ initial: 0 }),
+               // A temporary modifier applied to total.
+               tempMod: new fields.NumberField({ initial: 0 }),
             }),
             int: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
+               tempMod: new fields.NumberField({ initial: 0 }),
             }),
             wis: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
+               tempMod: new fields.NumberField({ initial: 0 }),
             }),
             dex: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
+               tempMod: new fields.NumberField({ initial: 0 }),
             }),
             con: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
+               tempMod: new fields.NumberField({ initial: 0 }),
             }),
             cha: new fields.SchemaField({
                value: new fields.NumberField({ initial: 10 }),
                total: new fields.NumberField({ initial: 10 }),
                mod: new fields.NumberField({ initial: 0 }),
                loyaltyMod: new fields.NumberField({ initial: 0 }),
+               tempMod: new fields.NumberField({ initial: 0 }),
             }),
          }),
       };
@@ -159,7 +170,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this._prepareMods();
       this._prepareSpells();
       for (let [key, ability] of Object.entries(this.abilities)) {
-         ability.total = ability.value;
+         ability.total = ability.value + ability.tempMod;
       }
       this._prepareDerivedAbilities();
    }

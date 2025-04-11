@@ -45,9 +45,11 @@
    </div>
    {{!-- Sheet Body --}}
    <section class="sheet-body">
-      <!--<div style="display:flex;">
-         <img src="systems/fantastic-depths/assets/img/ui/leaf-path3.png" style="width:520px;margin:auto;filter:brightness(50%)"/>
-      </div>-->
+      {{#if showLeafHeader}}
+      <div style="display:flex;margin:-4px 0 4px 0;">
+         <img src="systems/fantastic-depths/assets/img/ui/Extended_Leaf.png" style="width:98%;margin:auto;filter:brightness(50%);border:none;" />
+      </div>
+      {{/if}}
       {{!-- Abilities Tab --}}
       <div class="tab abilities" data-group="primary" data-tab="abilities">
          {{!-- Sheet Header --}}

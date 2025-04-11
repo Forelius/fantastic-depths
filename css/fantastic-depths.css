@@ -1075,9 +1075,9 @@ h1, h2, h3, h4 {
   text-align: left;
 }
 .fantastic-depths .character .ability input {
-  font-size: 20px;
-  max-width: 40px;
-  border-radius: 5px;
+  font-size: 16px;
+  max-width: 30px;
+  border-radius: 4px;
   padding-top: 0;
   text-align: center;
 }
@@ -1111,7 +1111,7 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .monster .ability input {
   font-size: 16px;
-  max-width: 34px;
+  max-width: 30px;
   border-radius: 5px;
   padding-top: 0;
   text-align: center;

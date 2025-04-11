@@ -25,6 +25,7 @@
          "Origin": "Origin",
          "Trainer": "Trainer",
          "Languages": "Languages",
+         "effectiveLevel": "Effective Level",
          "Level": "Level",
          "NextLevel": "Next Level",
          "Experience": "Experience",
@@ -114,6 +115,8 @@
          "Abilities": {
             "score": "Score",
             "long": "Ability",
+            "base": "Base ability score: This is the ability score as it was rolled.",
+            "tempMod": "This is a manually entered temporary modifier to the ability score.",
             "plural": "Abilities",
 
             "str": {
@@ -473,6 +476,10 @@
             "all": {
                "long": "All",
                "abbr": "A"
+            },
+            "wr": {
+               "long": "WR",
+               "abbr": "wr"
             }
          },
          "levels": {
@@ -483,7 +490,7 @@
             "grandMaster": "Grand Master"
          },
          "acBonusType": "AC Bonus Type",
-         "acBonusTypeHint": "The type of attack that the AC bonus applies to.",
+         "acBonusTypeHint": "The type of attack to which the AC (or other) bonus applies.",
          "acBonus": "AC Bonus",
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
