@@ -4,8 +4,7 @@ export class CharacterDataModel extends fadeActorDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
-      return {
-         ...baseSchema,
+      let characterSchema = {
          isRetainer: new fields.BooleanField({ initial: false }),
          details: new fields.SchemaField({
             morale: new fields.NumberField({ initial: 9 }),
@@ -34,6 +33,8 @@ export class CharacterDataModel extends fadeActorDataModel {
             wage: new fields.StringField({ initial: "" }),
          }),
       };
+      foundry.utils.mergeObject(characterSchema, baseSchema);
+      return characterSchema;
    }
 
    /** @override */

@@ -5,6 +5,10 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
          config: new fields.SchemaField({
             maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
+         details: new fields.SchemaField({
+            // This is how many attacks the actor gets.
+            attacks: new fields.StringField({ initial: "1" }),
+         }),
          biography: new fields.StringField({ initial: "" }),
          hp: new fields.SchemaField({
             hd: new fields.StringField({ initial: "1d8" }),

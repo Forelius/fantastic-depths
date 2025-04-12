@@ -20,7 +20,7 @@ export class fadeFinder {
    static _getRollTablePack() {
       return game.packs.get(fadeFinder._rollTablePackName() ?? 'fade-compendiums.roll-table-compendium');
    }
-      
+
    /**
     * Get the item source. First try world, then try compendiums.
     * @private
@@ -130,6 +130,16 @@ export class fadeFinder {
 
    static async getConditions(compendiumOnly = false) {
       const type = 'condition';
+      let result;
+      if (compendiumOnly !== true) {
+         result = fadeFinder._getWorldSource(type);
+      }
+      result = [...result, ...(await fadeFinder._getPackSource(type))];
+      return result;
+   }
+
+   static async getActors(compendiumOnly = false) {
+      const type = 'actor';
       let result;
       if (compendiumOnly !== true) {
          result = fadeFinder._getWorldSource(type);
@@ -334,6 +344,18 @@ export class fadeFinder {
       if (!result) {
          source = await fadeFinder._getPackSource(type);
          result = fadeFinder._getItem(source, name);
+      }
+      return result;
+   }
+
+   static async getActorByName(name) {
+      const type = 'actor';
+      let result;
+      let source = fadeFinder._getWorldSource(type);
+      result = source.filter(item => item.name === name);
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = source.filter(item => item.name === name);
       }
       return result;
    }

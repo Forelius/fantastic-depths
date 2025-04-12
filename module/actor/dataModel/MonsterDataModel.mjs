@@ -6,15 +6,12 @@ export class MonsterDataModel extends fadeActorDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
-      return {
-         ...baseSchema,
+      let monsterSchema = {
          details: new fields.SchemaField({
             morale: new fields.NumberField({ initial: 9 }),
             alignment: new fields.StringField({ initial: "Chaotic" }),
             xpAward: new fields.NumberField({ initial: 5 }),
             abilityCount: new fields.NumberField({ initial: 0 }),
-            // This is how many attacks the monster gets
-            attacks: new fields.StringField({ initial: "1" }),
             size: new fields.StringField({ initial: "M" }),
             // Keep this so that the GM can decide which to use, all ability scores or just this.
             intelligence: new fields.StringField({ initial: "7" }),
@@ -36,6 +33,8 @@ export class MonsterDataModel extends fadeActorDataModel {
          // If enchanted, can only hit with magic weapons or spells.
          isEnchanted: new fields.BooleanField({ initial: false }),
       };
+      foundry.utils.mergeObject(monsterSchema, baseSchema);
+      return monsterSchema;
    }
 
    /** @override */
