@@ -197,10 +197,20 @@ export class Wrestling {
    static calculateWrestlingRating(actor) {
       let result = 0;
 
+      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      let wrestlingMastery = null;
+      if (masteryEnabled) {
+         wrestlingMastery = actor.items.find(item => item.type === 'mastery' && item.system.weaponType === 'wr');
+      }
+
       if (actor.type === 'character') {
          const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
          result = Math.ceil(base / 2) + actor.system.ac.value;
          result += actor.system.abilities.str.mod + actor.system.abilities.dex.mod;
+         // If has wrestling mastery
+         if (wrestlingMastery) {
+            result += wrestlingMastery.system.acBonus;
+         }
       } else {
          // Wrestling skill
          const data = actor.system;
@@ -215,6 +225,11 @@ export class Wrestling {
             result += data.ac.value;
          } else {
             result += 9;
+         }
+
+         // If has wrestling mastery
+         if (wrestlingMastery) {
+            result += wrestlingMastery.system.acBonus;
          }
       }
       return result + actor.system.mod?.wrestling ?? 0;

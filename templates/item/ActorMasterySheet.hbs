@@ -32,13 +32,19 @@
             </li>
             <li class="flex1">
                <input type='text' name="system.acBonus" value='{{system.acBonus}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-               <label for="system.acBonus">{{localize 'FADE.Mastery.acBonus'}}</label>
+               <label for="system.acBonus">
+                  {{#if (eq system.weaponType 'wr')}}
+                  {{localize 'FADE.Mastery.wrBonus'}}
+                  {{else}}
+                  {{localize 'FADE.Mastery.acBonus'}}
+                  {{/if}}
+               </label>
             </li>
             <li class="flex2">
                <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}}disabled='disabled'{{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType}}
                </select>
-               <label for="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.acBonusTypeHint'}}">{{localize 'FADE.Mastery.acBonusType'}}</label>
+               <label for="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.acBonusTypeHint'}}">{{localize 'FADE.Mastery.bonusType'}}</label>
             </li>
             <li class="flex1">
                <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}} />

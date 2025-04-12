@@ -123,7 +123,7 @@ export class fadeActor extends Actor {
       // Hit points updated.
       if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
          await this.update({ "system.combat.isDead": true });
-         this.toggleStatusEffect("dead", { active: true, overlay: true });
+         this.toggleStatusEffect("dead", { active: true });
       } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
          await this.update({ "system.combat.isDead": false });
          this.toggleStatusEffect("dead", { active: false });
