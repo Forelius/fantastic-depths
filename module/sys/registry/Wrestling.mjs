@@ -1,6 +1,5 @@
-﻿import { DialogFactory } from '../../dialog/DialogFactory.mjs';
-
-export class Wrestling {
+﻿export class Wrestling {
+   static States = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
 
    /**
     * Opens the Wrestling Dialog for user interaction.
@@ -31,7 +30,7 @@ export class Wrestling {
 
       // Prepare dialog data
       const dialogData = {
-         wrestlingStates: CONFIG.FADE.WrestlingStates.map((state) => ({
+         wrestlingStates: Wrestling.States.map((state) => ({
             value: state,
             label: game.i18n.localize(`FADE.dialog.wrestling.states.${state}`),
          })),
@@ -41,7 +40,7 @@ export class Wrestling {
             wrestling: token.actor.system.wrestling,
             isPrimary: token.id === primaryAttackerId
          })),
-         wrestlingState: CONFIG.FADE.WrestlingStates.find(state => state === 'free'),
+         wrestlingState: Wrestling.States.find(state => state === 'free'),
          defender,
       };
 
@@ -144,7 +143,7 @@ export class Wrestling {
       const attackerRoll = await new Roll(`1d20 + ${groupWR}`).roll();
       const defenderRoll = await new Roll(`1d20 + ${defender.bonus}`).roll();
 
-      const states = CONFIG.FADE.WrestlingStates;
+      const states = Wrestling.States;
       const currentIndex = states.indexOf(wrestlingState);
 
       let newIndex = currentIndex; // Default: no change
@@ -176,12 +175,11 @@ export class Wrestling {
       let message = `<h2>${game.i18n.localize("FADE.dialog.wrestling.wrestlingContest")}:</h2>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.attacker")}:</div>`;
       attackerGroup.members.forEach(member => {
-         const memberHD = member.hd || 0;
-         message += `<div>${member.name} (${game.i18n.localize("FADE.Actor.HitDiceShort")}: ${memberHD}) → ${member.bonus}</div>`;
+         message += `<div>${member.name} → ${member.bonus}</div>`;
       });
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.groupWR")}: ${groupWR}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}:</div>`;
-      message += `<div>${defender.name} (${game.i18n.localize("FADE.Actor.HitDiceShort")}: ${defender.hd}) → ${defender.bonus}</div>`;
+      message += `<div>${defender.name} → ${defender.bonus}</div>`;
       message += "<hr/>";
       message += `<div class='attack-result attack-info'>${game.i18n.format("FADE.dialog.wrestling.winsRound", { winner })}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.attacker")}: ${attackerRoll.total} (${attackerRoll.formula})</div>`;

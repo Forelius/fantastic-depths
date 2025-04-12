@@ -497,6 +497,10 @@
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
          "specialEffects": "Special Effects",
+         "trainingFails": {
+            "name": "Training",
+            "hint": "The number of failed attempts to reach the next level. Advancement to the next mastery level is not automatic; however, each subsequent attempt increases the probability of success."
+         },
          "summary": "<p>Weapon Type: {weaponType}<br/>Primary: {primaryType}<br/>Special Effects: {special}<br/>Ranges: {short}/{medium}/{long}<br/>{defense}</p>"
       },
       "SpecialAbility": {

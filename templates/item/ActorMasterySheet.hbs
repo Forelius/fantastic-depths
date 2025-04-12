@@ -92,6 +92,10 @@
       </ul>
       <ul class="summary flexrow">
          <li class="flex1">
+            <input type='text' name="system.trainingFails" value='{{system.trainingFails}}' data-dtype='Number'/>
+            <label for="system.trainingFails" data-tooltip="{{localize 'FADE.Mastery.trainingFails.hint'}}">{{localize 'FADE.Mastery.trainingFails.name'}}</label>
+         </li>
+         <li class="flex1">
             <input type='text' value='{{localize (concat "FADE.Mastery.levels." item.system.effectiveLevel)}}' data-dtype='String' readonly />
             <label for="system.level">{{localize 'FADE.Actor.effectiveLevel'}}</label>
          </li>

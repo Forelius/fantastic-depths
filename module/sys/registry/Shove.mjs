@@ -1,5 +1,12 @@
 export class Shove {
-   constructor() { }
+   static ActorSizes = [
+      { id: "T", shoveResist: 1 },  // Tiny: Up to 2 feet
+      { id: "S", shoveResist: 2 },  // Small: 2 to 4 feet
+      { id: "M", shoveResist: 3 },  // Medium: 4 to 7 feet
+      { id: "L", shoveResist: 4 },  // Large: 7 to 12 feet
+      { id: "G", shoveResist: 5 },  // Huge: 12 to 25 feet
+      { id: "I", shoveResist: 6 }   // Immense: Over 25 feet (no upper limit)
+   ];
 
    async execute() {
       // Gather controlled tokens and targets
@@ -50,7 +57,7 @@ export class Shove {
       // Output results to chat
       ChatMessage.create({
          content: `
-            <h2>${game.i18n.localize("FADE.dialog.shove.resultsLabel") }:</h2>
+            <h2>${game.i18n.localize("FADE.dialog.shove.resultsLabel")}:</h2>
             <div style="font-size:14px"><strong>${game.i18n.format("FADE.dialog.shove.defenderResist", { defender: defender.name })}:</strong> ${resistValue}</div>
             <div style="font-size:14px"><strong>${game.i18n.format("FADE.dialog.shove.attackerRoll", { attacker: attacker.name })}:</strong> ${attackRoll.total} (${attackRoll.formula})</div>
             <div style='margin-top:4px;'>${await attackRoll.render()}</div>
@@ -102,7 +109,7 @@ export class Shove {
    }
 
    getShoveResist(sizeid) {
-      return CONFIG.FADE.ActorSizes.find(size => size.id === sizeid)?.shoveResist;
+      return Shove.ActorSizes.find(size => size.id === sizeid)?.shoveResist;
    }
 
    getShoveDie(sizeid) {

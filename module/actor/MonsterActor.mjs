@@ -2,7 +2,6 @@
 import { fadeActor } from './fadeActor.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { Wrestling } from "/systems/fantastic-depths/module/sys/combat/Wrestling.mjs";
 
 export class MonsterActor extends fadeActor {
    constructor(data, context) {
@@ -15,7 +14,8 @@ export class MonsterActor extends fadeActor {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareSavingThrows();
-      this.system.wrestling = Wrestling.calculateWrestlingRating(this);
+      //this.system.wrestling = Wrestling.calculateWrestlingRating(this);
+      this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
    }
 
    /**

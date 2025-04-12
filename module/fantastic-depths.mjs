@@ -47,8 +47,6 @@ import { fadeCombat } from './sys/combat/fadeCombat.mjs'
 import { fadeCombatant } from './sys/combat/fadeCombatant.mjs'
 import { MacroManager } from './sys/MacroManager.mjs';
 import { LightManager } from './sys/LightManager.mjs';
-import { Wrestling } from './sys/combat/Wrestling.mjs';
-import { Shove } from './sys/combat/Shove.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
@@ -76,8 +74,6 @@ Hooks.once('init', async function () {
       AttackRollChatBuilder,
       fadeDialog,
       DataMigrator,
-      Wrestling,
-      Shove,
       PlayerCombatForm,
       fadeTreasure,
       fadeFinder,

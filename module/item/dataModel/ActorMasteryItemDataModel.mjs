@@ -31,7 +31,9 @@ export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
          // Primary to-hit bonus
          pToHit: new fields.NumberField({ required: true, initial: 0 }),
          // Secondary to-hit bonus
-         sToHit: new fields.NumberField({ required: true, initial: 0 })
+         sToHit: new fields.NumberField({ required: true, initial: 0 }),
+         // The number of advancement training attempts failed for the next level
+         trainingFails: new fields.NumberField({ required: true, initial: 0 }),
       };
    }
 

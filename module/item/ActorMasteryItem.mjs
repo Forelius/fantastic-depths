@@ -50,6 +50,7 @@ export class ActorMasteryItem extends fadeItem {
       result.special = masteryLevel.special;
       result.pToHit = masteryLevel.pToHit;
       result.sToHit = masteryLevel.sToHit;
+      result.trainingFails = 0;
 
       await this.update({ system: result });
    }

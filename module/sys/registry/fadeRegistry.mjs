@@ -4,6 +4,8 @@ import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSy
 import { IndivInit } from './IndivInit.mjs';
 import { GroupInit } from './GroupInit.mjs';
 import { WeaponMasterySystem } from './WeaponMastery.mjs';
+import { Wrestling } from "./Wrestling.mjs";
+import { Shove } from "./Shove.mjs";
 
 export class fadeRegistry {
    constructor() {
@@ -49,6 +51,9 @@ export class fadeRegistry {
       } else {
          this.registerSystem('initiativeSystem', new IndivInit());
       }
+
+      this.registerSystem('wrestling', Wrestling);
+      this.registerSystem('shove', Shove);
    }
 
    registerSystem(key, callback) {

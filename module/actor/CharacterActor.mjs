@@ -1,5 +1,4 @@
-﻿import { Wrestling } from "/systems/fantastic-depths/module/sys/combat/Wrestling.mjs";
-import { Formatter } from '../utils/Formatter.mjs';
+﻿import { Formatter } from '../utils/Formatter.mjs';
 import { fadeActor } from './fadeActor.mjs';
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
@@ -20,7 +19,8 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this.system.wrestling = Wrestling.calculateWrestlingRating(this);
+      //this.system.wrestling = Wrestling.calculateWrestlingRating(this);
+      this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
    }
 
    /**

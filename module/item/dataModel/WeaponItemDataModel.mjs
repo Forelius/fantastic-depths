@@ -51,7 +51,6 @@ export class WeaponItemDataModel extends GearItemDataModel {
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.natural === true) {
-         this.size = null;
          this.grip = null;
       }
    }
