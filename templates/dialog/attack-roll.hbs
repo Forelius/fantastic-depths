@@ -5,24 +5,35 @@
    }
 </style>
 <form>
-   <!-- Dropdown for selecting 'melee' or 'missile' -->
-   <div class="form-group">
-      <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
-      <select id="attackType" class="form-control">
-         {{selectOptions types selected='melee'}}
-      </select>
+   <div class="flexrow summary">
+      <div class="flex2">
+         <!-- Dropdown for selecting 'melee' or 'missile' -->
+         <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
+         <select id="attackType" class="form-control" style="width:100%">
+            {{selectOptions types selected='melee'}}
+         </select>
+      </div>
+      {{#if targetWeaponTypes}}
+      <div class="flex2">
+         <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
+         <select id="targetWeaponType" class="form-control" style="width:100%">
+            {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
+         </select>
+      </div>
+      {{/if}}
    </div>
-   {{#if targetWeaponTypes}}
-   <div class="form-group">
-      <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
-      <select id="targetWeaponType" class="form-control">
-         {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
-      </select>
-   </div>
-   {{/if}}
    <!-- Modifier Input Field -->
-   <div class="form-group">
-      <label>{{localize "FADE.modifier"}}</label>
-      <input id="mod" placeholder=0 type="number" />
+   <div class="flexrow summary">
+      <div class="flex1">
+         <label>{{localize "FADE.attackRoll"}}</label>
+         <input id="attackRoll" placeholder='1d20' type="text" value="1d20" />
+      </div>
+      <div class="flex1">
+         <label>{{localize "FADE.modifier"}}</label>
+         <input id="mod" placeholder=0 type="number" />
+      </div>
+   </div>
+   <div>
+      {{radioBoxes "rollFormulaType" rollChoices checked=rollChosen localize=true}}
    </div>
 </form>

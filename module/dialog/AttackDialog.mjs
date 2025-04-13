@@ -31,22 +31,39 @@ export class AttackDialog extends fadeDialog {
          dialogData.selectedWeaponType = weaponMasterySystem.getActorWeaponType(targetActor);
       }
 
+      dialogData.rollGroupName = "rollFormulaType";
+      dialogData.rollChoices = { normal: "FADE.rollFormulaType.normal", advantage: "FADE.rollFormulaType.advantage", disadvantage: "FADE.rollFormulaType.disadvantage" };
+      dialogData.rollChosen = "normal";
+
       const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
       result.resp = await Dialog.wait({
          title: title,
          content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
+         render: () => {
+            fadeDialog.focusById('mod');
+         },
          buttons: {
             check: {
                label: game.i18n.localize('FADE.roll'),
-               callback: () => ({
-                  rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  attackType: document.getElementById('attackType').value,
-                  targetWeaponType: document.getElementById('targetWeaponType')?.value,
-               }),
+               callback: () => {
+                  const selectedRadio = document.querySelector('input[name="rollFormulaType"]:checked')?.value ?? 'normal';
+                  let attackRoll = document.getElementById('attackRoll').value ?? '1d20'
+                  if (selectedRadio === 'advantage') {
+                     attackRoll = `{${attackRoll},${attackRoll}}kh`;
+                  } else if (selectedRadio === 'disadvantage') {
+                     attackRoll = `{${attackRoll},${attackRoll}}kl`;
+                  }
+                  return {
+                     rolling: true,
+                     mod: parseInt(document.getElementById('mod').value, 10) || 0,
+                     attackType: document.getElementById('attackType').value,
+                     targetWeaponType: document.getElementById('targetWeaponType')?.value,
+                     attackRoll,
+                     rollFormulaType: selectedRadio.value
+                  };
+               },
             },
          },
          default: 'check',

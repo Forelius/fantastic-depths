@@ -17,12 +17,13 @@ export class ToHitSystemBase {
     *    mod - A manual modifier entered by the user.
     *    target - This doesn't work when there are multiple targets.
     *    targetWeaponType - For weapon mastery system, the type of weapon the target is using (monster or handheld).
+    *    attackRoll - In case the attack roll is not a straight 1d20.
     * @returns
     */
    getAttackRoll(actor, weapon, attackType, options = {}) {
       const weaponData = weapon.system;
       const targetData = options.target?.system;
-      let formula = '1d20';
+      let formula = options.attackRoll ?? '1d20';
       let digest = [];
       let modifier = 0;
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");

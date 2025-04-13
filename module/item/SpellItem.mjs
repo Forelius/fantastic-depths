@@ -154,7 +154,8 @@ export class SpellItem extends fadeItem {
          if (dialogResp?.resp) {
             const rollOptions = {
                mod: dialogResp.resp.mod,
-               target: targetToken?.actor
+               target: targetToken?.actor,
+               attackRoll: dialogResp.resp.attackRoll
             };
             if (dialogResp.resp.targetWeaponType) {
                rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;

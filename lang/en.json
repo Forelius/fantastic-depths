@@ -747,7 +747,7 @@
          "primeRequisites": "Prime Reqs",
          "attributes": "Attributes",
          "tracker": "Tracker",
-         "config":  "Config."
+         "config": "Config."
       },
       "AttackTypes": {
          "name": "Attack Type",
@@ -959,6 +959,7 @@
       "type": "Type",
       "changes": "Changes",
       "rollFormula": "Roll Formula",
+      "attackRoll": "Attack Roll",
       "showResult": {
          "name": "Result",
          "hint": "Show the result?"
@@ -968,6 +969,11 @@
          "none": "",
          "and": "and",
          "or": "or"
+      },
+      "rollFormulaType": {
+         "normal": "Normal",
+         "advantage": "ADV",
+         "disadvantage": "DIS"
       }
    },
 

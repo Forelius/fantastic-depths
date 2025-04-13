@@ -44,10 +44,22 @@ export class SpeciesItemDataModel extends foundry.abstract.TypeDataModel {
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: '' }),
                classKey: new fields.StringField({ nullable: true }),
-               target: new fields.StringField({ nullable: true, initial: null })
+               target: new fields.StringField({ nullable: true, initial: null }),
+               changes: new fields.StringField({ required: true, initial: '' })
             }), {
             required: false,
-         })
+         }),
+         ancestryItems: new fields.ArrayField(
+            new fields.SchemaField({
+               level: new fields.NumberField({ required: true, nullable: false }),
+               name: new fields.StringField({ required: true, initial: '' }),
+               type: new fields.StringField({ required: true, initial: '' }),
+               changes: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
       };
    }
 

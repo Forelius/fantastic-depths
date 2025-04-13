@@ -151,7 +151,8 @@ export class WeaponItem extends GearItem {
                let rollOptions = {
                   mod: dialogResp.resp.mod,
                   target: targetToken?.actor,
-                  ammoItem
+                  ammoItem,
+                  attackRoll: dialogResp.resp.attackRoll
                };
                if (dialogResp.resp.targetWeaponType) {
                   rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
