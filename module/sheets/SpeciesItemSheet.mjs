@@ -11,7 +11,7 @@ export class SpeciesItemSheet extends fadeItemSheet {
    static get defaultOptions() {
       return foundry.utils.mergeObject(super.defaultOptions, {
          classes: ['fantastic-depths', 'sheet', 'item'],
-         width: 500,
+         width: 550,
          height: 400,
          dragDrop: [
             { dragSelector: "[data-document-id]", dropSelector: "form" }
@@ -44,6 +44,7 @@ export class SpeciesItemSheet extends fadeItemSheet {
 
       // Prepare active effects for easier access
       context.effects = EffectManager.preparePassiveEffects(this.item.effects);
+      context.hideLevel = true;
 
       return context;
    }
@@ -84,7 +85,7 @@ export class SpeciesItemSheet extends fadeItemSheet {
       const droppedItem = await Item.implementation.fromDropData(data);
       console.debug(droppedItem, event, data);
 
-      // If the dropped item is a weapon mastery definition item...
+      // If the dropped item is a special ability item...
       if (droppedItem.type === 'specialAbility') {
          this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
       }
@@ -127,7 +128,7 @@ export class SpeciesItemSheet extends fadeItemSheet {
       console.debug(droppedItem, event, data)
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'specialAbility') {
-
+         this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
       }
    }
 

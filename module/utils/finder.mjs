@@ -149,7 +149,7 @@ export class fadeFinder {
    }
 
    /**
-    * Retrieve the class abilities from the specified class and for the specified level.
+    * Retrieve class special abilities from the specified class and for the specified level.
     * @param {any} className The class name.
     * @param {any} classLevel The level to retrieve abilities for.
     * @returns An array or undefined.
@@ -158,7 +158,7 @@ export class fadeFinder {
       const classItem = await fadeFinder.getClass(className);
       let result;
       if (classItem) {
-         result = classItem.system.classAbilities.filter(a => a.level <= classLevel)
+         result = classItem.system.specialAbilities.filter(a => a.level <= classLevel)
             .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
          result = result ? Object.values(result) : null;
       }
@@ -166,7 +166,7 @@ export class fadeFinder {
    }
 
    /**
-    * Retrieves a class's class abilities. This is not an array of the specialAbilities.
+    * Retrieves class special abilities. This is not an array of the specialAbilities.
     * @param {any} key The class key.
     * @param {any} owner For debugging purpose, the requesting actor.
     * @returns An object containing classAbilityData, classKey and classLevel properties.

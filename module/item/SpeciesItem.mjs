@@ -10,17 +10,18 @@ export class SpeciesItem extends fadeItem {
 
    async createSpecialAbility(name = "", classKey = null) {
       // Retrieve the array
-      const item = this.system.specialAbilities || [];
+      const specialAbilities = this.system.specialAbilities || [];
       // Define the new data
       const newItem = {
          level: 1,
          name,
          target: 0,
+         changes: "",
          classKey: classKey || this.system.key
       };
       // Add the new item to the array
-      item.push(newItem);
-      await this.update({ "system.specialAbilities": item });
+      specialAbilities.push(newItem);
+      await this.update({ "system.specialAbilities": specialAbilities });
    }
 
    async createClass() {

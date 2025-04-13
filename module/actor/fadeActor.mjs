@@ -485,7 +485,7 @@ export class fadeActor extends Actor {
          spellSlots: []
       };
       await this.update({ system: update });
-      const abilityNames = classItem.system.classAbilities.map(item => item.name);
+      const abilityNames = classItem.system.specialAbilities.map(item => item.name);
       const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save' && abilityNames.includes(item.name));
       for (let classAbility of actorAbilities) {
          classAbility.delete();

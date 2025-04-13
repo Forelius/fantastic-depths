@@ -106,7 +106,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: this.maxSpellLevel }))
             }
          ),
-         classAbilities: new fields.ArrayField(
+         specialAbilities: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: '' }),
                level: new fields.NumberField({ required: true }),
@@ -154,6 +154,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                classAbility.classKey = null;
             }
          }
+         source.specialAbilities = source.specialAbilities ?? source.classAbilities;
       }
       return super.migrateData(source);
    }

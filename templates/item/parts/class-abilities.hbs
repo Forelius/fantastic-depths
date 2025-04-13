@@ -3,7 +3,9 @@
       <ol name="class-abilities" class='items-list'>
          <!-- Header Row -->
          <li class='item flexrow items-header collapsible-header'>
+            {{#unless hideLevel}}
             <div style="max-width:50px">{{localize 'FADE.Actor.Level'}}</div>
+            {{/unless}}
             <div>{{localize 'FADE.name'}}</div>
             <div style="max-width:50px">{{localize 'FADE.target'}}</div>
             <div>{{localize 'FADE.changes'}}</div>
@@ -15,25 +17,27 @@
             </div>
          </li>
          <!-- Class Ability Entries -->
-         {{#each system.classAbilities as |item index|}}
+         {{#each system.specialAbilities as |item index|}}
       <li class='item flexrow' data-item-id='{{item.level}}'>
+         {{#unless @root.hideLevel}}
          <div style="max-width:50px">
-            <input type="number" name="system.classAbilities.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
+            <input type="number" name="system.specialAbilities.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
+         </div>
+         {{/unless}}
+         <div>
+            <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+         </div>
+         <div style="max-width:50px">
+            <input type="number" name="system.specialAbilities.{{index}}.target" value="{{item.target}}" data-dtype="Number" />
          </div>
          <div>
-            <input type="text" style="text-align:left;" name="system.classAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+            <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
          </div>
          <div style="max-width:50px">
-            <input type="number" name="system.classAbilities.{{index}}.target" value="{{item.target}}" data-dtype="Number" />
-         </div>
-         <div>
-            <input type="text" style="text-align:left;" name="system.classAbilities.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
-         </div>
-         <div style="max-width:50px">
-            <input type="text" name='system.classAbilities.{{index}}.classKey' value="{{item.classKey}}" data-type="String" />
+            <input type="text" name='system.specialAbilities.{{index}}.classKey' value="{{item.classKey}}" data-type="String" />
          </div>
          <div class='item-controls' style="max-width:30px;">
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}' data-type='classAbility' data-index='{{index}}'>
+            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility' data-index='{{index}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>
@@ -41,9 +45,4 @@
          {{/each}}
       </ol>
    </div>
-   <!--<div style="padding:0 2px;">
-      <div class="items-list">-->
-   <!-- Header Row -->
-   <!--</div>
-   </div>-->
 </div>

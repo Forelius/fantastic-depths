@@ -21,6 +21,30 @@
    <section class='sheet-body'>
       {{! Description Tab }}
       <div class='tab' data-group='primary' data-tab='description'>
+         {{! Languages }}
+         <div class="bordered">
+            <div class="flexrow tag-section">
+               <div class="flex0 add-tag">
+                  {{#if isGM}}
+                  <input type="text" data-action="add-language" placeholder="{{localize 'FADE.Tags.addLanguage'}}" data-tooltip="{{localize 'FADE.Tags.languageDesc'}}" />
+                  {{/if}}
+               </div>
+               <div class="flex3">
+                  <div class="flexrow">
+                     <ol class="tag-list" style="height:auto;line-height: 15px;">
+                        {{#each system.languages as |language|}}
+                        <li class="tag" data-tag="{{language}}">
+                           <span>{{language}}</span>
+                           {{#if @root.isGM}}
+                           <a class="language-delete"><i class="fas fa-times"></i></a>
+                           {{/if}}
+                        </li>
+                        {{/each}}
+                     </ol>
+                  </div>
+               </div>
+            </div>
+         </div>
          {{! Editors must receive enriched text data from getData to properly handle rolls }}
          {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
       </div>
@@ -108,64 +132,8 @@
          </div>
       </div>
       {{! Special Abilities / Skills Tab }}
-      <div class="tab" data-group="primary" data-tab="abilities">
-         <ol name="class-abilities" class='items-list'>
-            <!-- Header Row -->
-            <li class='item flexrow items-header collapsible-header'>
-               <div>{{localize 'FADE.name'}}</div>
-               <div style="max-width:60px">{{localize 'FADE.class.key.name'}}</div>
-               <div style="max-width:60px">{{localize 'FADE.target'}}</div>
-               <div class='item-controls'>
-                  <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility'>
-                     <i class='fas fa-plus'></i>
-                     {{localize 'FADE.SpecialAbility.short'}}
-                  </a>
-               </div>
-            </li>
-            <!-- Class Ability Entries -->
-            {{#each system.specialAbilities as |item index|}}
-            <li class='item flexrow'>
-               <div>
-                  <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
-               </div>
-               <div style="max-width:60px">
-                  <input type="text" name="system.specialAbilities.{{index}}.classKey" value="{{item.classKey}}" data-dtype="String" />
-               </div>
-               <div style="max-width:60px">
-                  <input type="text" name="system.specialAbilities.{{index}}.target" value="{{item.target}}" data-dtype="String" />
-               </div>
-               <div class='item-controls'>
-                  <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility' data-index='{{index}}'>
-                     <i class='fas fa-trash'></i>
-                  </a>
-               </div>
-            </li>
-            {{/each}}
-         </ol>
-         {{! Languages }}
-         <div class="bordered">
-            <div class="flexrow tag-section">
-               <div class="flex0 add-tag">
-                  {{#if isGM}}
-                  <input type="text" data-action="add-language" placeholder="{{localize 'FADE.Tags.addLanguage'}}" data-tooltip="{{localize 'FADE.Tags.languageDesc'}}" />
-                  {{/if}}
-               </div>
-               <div class="flex3">
-                  <div class="flexrow">
-                     <ol class="tag-list" style="height:auto;line-height: 15px;">
-                        {{#each system.languages as |language|}}
-                        <li class="tag" data-tag="{{language}}">
-                           <span>{{language}}</span>
-                           {{#if @root.isGM}}
-                           <a class="language-delete"><i class="fas fa-times"></i></a>
-                           {{/if}}
-                        </li>
-                        {{/each}}
-                     </ol>
-                  </div>
-               </div>
-            </div>
-         </div>
+      <div class='tab' data-group='primary' data-tab='abilities'>
+         {{> "classAbilities"}}
       </div>
    </section>
 </form>

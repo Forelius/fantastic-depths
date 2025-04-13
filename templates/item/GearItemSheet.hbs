@@ -4,11 +4,13 @@
       <div class='header-fields'>
          <ul class="summary flexrow">
             <li>
-               {{#if (or isGM system.isIdentified)}}
-               <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
-               {{else}}
-               <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
-               {{/if}}
+               <div class='charname'>
+                  {{#if (or isGM system.isIdentified)}}
+                  <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+                  {{else}}
+                  <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
+                  {{/if}}
+               </div>
             </li>
          </ul>
          <ul class="summary flexrow">
@@ -24,7 +26,7 @@
                {{#if isGM}}
                <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
                {{else}}
-               <input type='text' value='?' data-dtype='Number' readonly/>
+               <input type='text' value='?' data-dtype='Number' readonly />
                {{/if}}
                <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
             </li>

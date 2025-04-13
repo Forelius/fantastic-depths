@@ -3,7 +3,7 @@
       <img class='profile-img-sm' src='{{item.img}}' data-edit='img' />
       <div class='header-fields'>
          <div class="summary flexrow">
-            <div class="flex3">
+            <div class="flex3 charname">
                {{#if (or isGM system.isIdentified)}}
                <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}}readonly{{/unless}}/>
                {{else}}

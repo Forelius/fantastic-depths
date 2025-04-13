@@ -127,11 +127,11 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
             primeReqs.splice(index, 1);
             await this.item.update({ "system.primeReqs": primeReqs });
          }
-      } else if (type === 'classAbility') {
-         const classAbilities = this.item.system.classAbilities;
-         if (classAbilities.length > index) {
-            classAbilities.splice(index, 1);
-            await this.item.update({ "system.classAbilities": classAbilities });
+      } else if (type === 'specialAbility') {
+         const specialAbilities = this.item.system.specialAbilities;
+         if (specialAbilities.length > index) {
+            specialAbilities.splice(index, 1);
+            await this.item.update({ "system.specialAbilities": specialAbilities });
          }
       }
       this.render();
