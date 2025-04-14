@@ -6,6 +6,7 @@ import { GroupInit } from './GroupInit.mjs';
 import { WeaponMasterySystem } from './WeaponMastery.mjs';
 import { Wrestling } from "./Wrestling.mjs";
 import { Shove } from "./Shove.mjs";
+import { UserTables } from "./UserTables.mjs";
 
 export class fadeRegistry {
    constructor() {
@@ -54,6 +55,7 @@ export class fadeRegistry {
 
       this.registerSystem('wrestling', Wrestling);
       this.registerSystem('shove', Shove);
+      this.registerSystem('userTables', new UserTables());
    }
 
    registerSystem(key, callback) {

@@ -1,4 +1,25 @@
 export class fadeEffect extends ActiveEffect {
+   /**
+    * Apply this ActiveEffect to a provided Actor.
+    * TODO: This method is poorly conceived. Its functionality is static, applying a provided change to an Actor
+    * TODO: When we revisit this in Active Effects V2 this should become an Actor method, or a static method
+    * @param {Actor} actor                   The Actor to whom this effect should be applied
+    * @param {EffectChangeData} change       The change data being applied
+    * @returns {*}                           The resulting applied value
+    */
+   apply(actor, change) {
+      if (change.value.startsWith("@actor")) {
+         const roll = new Roll(change.value, { actor: actor.getRollData() });
+         if (Number(game.version) >= 12) {
+            roll.evaluateSync();
+         } else {
+            roll.evaluate({ async: true });
+         }
+         change.value = roll.total;
+      }
+      return super.apply(actor, change);
+   }
+
    /** @override */
    updateDuration() {
       super.updateDuration();

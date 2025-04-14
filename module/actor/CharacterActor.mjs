@@ -49,7 +49,8 @@ export class CharacterActor extends fadeActor {
             await this._prepareClassInfo();
             await this._updateLevelClass();
          }
-         if (updateData.system?.details?.species !== undefined) {
+         if (updateData.system?.details?.species !== undefined
+            || updateData.system?.abilities !== undefined) {
             await this._updateSpecies();
          }
       }
@@ -252,7 +253,7 @@ export class CharacterActor extends fadeActor {
    }
 
    /**
-    * Called by update actor even halder to update species-related data.
+    * Called by update actor to update species-related data.
     */
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
