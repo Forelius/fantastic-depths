@@ -49,8 +49,7 @@ export class CharacterActor extends fadeActor {
             await this._prepareClassInfo();
             await this._updateLevelClass();
          }
-         if (updateData.system?.details?.species !== undefined
-            || updateData.system?.abilities !== undefined) {
+         if (updateData.system?.details?.species !== undefined) {
             await this._updateSpecies();
          }
       }
@@ -77,7 +76,7 @@ export class CharacterActor extends fadeActor {
                const newValue = foundry.utils.getProperty(updateData, key);
                if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
                   // Recursively log changes for nested objects
-                  changes = [...changes, ...this.logActorChanges(newValue, oldData, user, type, fullKey, recursionLevel+1)];
+                  changes = [...changes, ...this.logActorChanges(newValue, oldData, user, type, fullKey, recursionLevel + 1)];
                } else if (oldValue) {
                   changes.push({ field: fullKey, oldValue: oldValue, newValue: newValue });
                }
@@ -258,17 +257,18 @@ export class CharacterActor extends fadeActor {
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
       const speciesItem = await fadeFinder.getSpecies(nameInput);
-      const actorItem = this.items.find(item => item.type === 'species');
+      const actorItems = this.items.filter(item => item.type === 'species');
+
+      // Manage the species embedded item
+      if (actorItems?.length > 0) {
+         for (let actorItem of actorItems) actorItem.delete();
+      }
 
       if (!speciesItem) {
          //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
          return;
       }
 
-      // Manage the species embedded item
-      if (actorItem) {
-         actorItem.delete();
-      }
       const itemData = [speciesItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
 

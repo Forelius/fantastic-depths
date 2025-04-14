@@ -15,7 +15,7 @@ class GlobalEffectConfig extends ActiveEffectConfig {
 
     if (effectIndex !== -1) {
       globalEffects[effectIndex] = mergeObject(globalEffects[effectIndex], formData);
-      await game.settings.set(game.system.id, 'globalEffects', globalEffects);
+      game.settings.set(game.system.id, 'globalEffects', globalEffects);
       ui.notifications.info('Global effect updated.');
     }
   }

@@ -207,7 +207,7 @@ function registerSheets() {
 async function handleAsyncInit() {
    // Register System Settings
    const settings = new fadeSettings();
-   await settings.RegisterSystemSettings();
+   settings.RegisterSystemSettings();
    // Hook into the rendering of the settings form
    Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
    const fxMgr = new EffectManager();

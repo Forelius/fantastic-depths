@@ -2,8 +2,9 @@ export class UserTables {
    constructor() {
       this.tableTypes = ["bonus"];
       this.userTables = {};
+      this.#loadTables();
    }
-
+      
    addTable(tableName, type, table) {
       if (Array.isArray(table) === false){
          console.error(`addTable ${tableName} table is not an array.`);
@@ -20,17 +21,32 @@ export class UserTables {
       }
 
       this.userTables[tableName] = { type, table };
+      game.settings.set(game.system.id, 'userTables', this.userTables);
+   }
+
+   removeTable(tableName) {
+      if (this.userTables[tableName]) {
+         delete this.userTables[tableName];
+      }
    }
 
    getTable(tableName) {
       return this.userTables[tableName];
    }
 
+   getTableType(tableName) { 
+      return this.userTables[tableName]?.type;
+   }
+
    getBonus(tableName, value) {
-      const table = this.getTable(tableName).table;
-      const bestRow = table.filter(row => row.min <= value)
+      const table = this.getTable(tableName)?.table;
+      const bestRow = table?.filter(row => row.min <= value)
          .reduce((prev, current) => prev.min > current.min ? prev : current, { min: 0, bonus: 0 });
-      return bestRow.bonus;
+      return bestRow?.bonus ?? 0;
+   }
+
+   #loadTables() {
+      this.userTables = game.settings.get(game.system.id, 'userTables') ?? {};
    }
 }
 /*

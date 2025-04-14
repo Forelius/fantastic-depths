@@ -18,7 +18,7 @@ export class EffectManager {
 
       // Sync global effects into CONFIG.statusEffects
       //CONFIG.statusEffects = allEffects;
-      //await game.settings.set(game.system.id, 'globalEffects', allEffects);
+      //game.settings.set(game.system.id, 'globalEffects', allEffects);
    }
 
    async OnGameReady() {
@@ -31,7 +31,7 @@ export class EffectManager {
       //   globalEffects = [...globalEffects.slice(sfx.length - globalEffects.length), ...sfx];
       //}
 
-      //await game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
+      //game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
    }
 
    //static async applyInvulnerabilityEffect(token) {
@@ -101,7 +101,7 @@ export class EffectManager {
 
          case 'delete':
             globalEffects = globalEffects.filter(e => e.id !== effectId);
-            await game.settings.set(game.system.id, 'globalEffects', globalEffects);
+            game.settings.set(game.system.id, 'globalEffects', globalEffects);
             ui.notifications.info('Effect deleted from global library.');
             break;
 

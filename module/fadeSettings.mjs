@@ -2,12 +2,12 @@ export class fadeSettings {
    /**
     * Register all of the system's settings.
     */
-   async RegisterSystemSettings() {
-      await this.#registerConfigSettings();      
-      await this.#registerNonConfigSettings();
+   RegisterSystemSettings() {
+      this.#registerConfigSettings();      
+      this.#registerNonConfigSettings();
    }
 
-   async #registerConfigSettings() {
+   #registerConfigSettings() {
       // Theme
       game.settings.register(game.system.id, "theme", {
          name: "SETTINGS.Theme.Name",
@@ -208,30 +208,6 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
-      //// Register party rest frequency
-      //game.settings.register(game.system.id, "restFrequency", {
-      //   name: "SETTINGS.rest.turnsName",
-      //   hint: "SETTINGS.rest.turnsNHint",
-      //   scope: "world",
-      //   config: true,
-      //   default: 0,  // Default is 0, no rest
-      //   type: Number,
-      //   requiresReload: true,
-      //   restricted: true // Only the GM can change this setting
-      //});
-
-      //// Register party rest frequency
-      //game.settings.register(game.system.id, "restCondition", {
-      //   name: "SETTINGS.rest.conditionName",
-      //   hint: "SETTINGS.rest.conditionHint",
-      //   scope: "world",
-      //   config: true,
-      //   default: "",  // Default is 0, no rest
-      //   type: String,
-      //   requiresReload: true,
-      //   restricted: true // Only the GM can change this setting
-      //});
-
       game.settings.register(game.system.id, "rememberCollapsedState", {
          name: "SETTINGS.collapseState.name",
          hint: "SETTINGS.collapseState.hint",
@@ -297,7 +273,7 @@ export class fadeSettings {
       });
    }
 
-   async #registerNonConfigSettings() {
+   #registerNonConfigSettings() {
       game.settings.register(game.system.id, 'partyTrackerData', {
          name: "Party Tracker Data",
          scope: "world",      // This means it's stored for the whole world
@@ -306,7 +282,7 @@ export class fadeSettings {
          default: []          // Default value is an empty array
       });
 
-      await game.settings.register(game.system.id, 'globalEffects', {
+      game.settings.register(game.system.id, 'globalEffects', {
          name: 'Global Active Effects',
          scope: 'world',
          config: false,
@@ -333,13 +309,21 @@ export class fadeSettings {
       });
 
       // Register the systemMigrationVersion setting
-      await game.settings.register(game.system.id, "gameVer", {
+      game.settings.register(game.system.id, "gameVer", {
          name: "System Migration Version",
          hint: "Stores the current version of the system to manage data migrations.",
          scope: "world",  // "world" scope means it's stored at the world level, shared by all users
          config: false,   // Set to false to hide it from the settings UI
          type: String,    // The type of the setting (String, Number, Boolean, etc.)
          default: "0.0.0" // Set a default version, e.g., "0.0.0"
+      });
+
+      game.settings.register(game.system.id, 'userTables', {
+         name: 'User Tables',
+         scope: 'world',
+         config: false,
+         type: Object,
+         default: {}
       });
    }
 

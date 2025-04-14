@@ -8,15 +8,12 @@ export class fadeEffect extends ActiveEffect {
     * @returns {*}                           The resulting applied value
     */
    apply(actor, change) {
-      if (change.value.startsWith("@actor")) {
-         const roll = new Roll(change.value, { actor: actor.getRollData() });
-         if (Number(game.version) >= 12) {
-            roll.evaluateSync();
-         } else {
-            roll.evaluate({ async: true });
-         }
-         change.value = roll.total;
+      if (change.value.startsWith("{")) {
+         this.#handleAdvancedApply(actor, change);
+      } else if (change.value.includes("@actor")) {
+         this.#applyRollData(change, actor);
       }
+
       return super.apply(actor, change);
    }
 
@@ -40,5 +37,32 @@ export class fadeEffect extends ActiveEffect {
             configurable: true
          });
       }
+   }
+
+   #handleAdvancedApply(actor, change) {
+      try {
+         const parsedChange = JSON.parse(change.value);
+         if (parsedChange?.type === 'userTableLookup') {
+            const userTables = game.fade.registry.getSystem("userTables");
+            const roll = new Roll(parsedChange.value, { actor: actor.getRollData() });
+            if (Number(game.version) >= 12) {
+               roll.evaluateSync();
+            } else {
+               roll.evaluate({ async: true });
+            }
+            change.value = userTables.getBonus(parsedChange.table, roll.total);
+         }
+      } catch (ex) {
+         console.error(`Error handling advanced fadeEffect value. ${change?.key}: ${change?.value}.`, ex);
+      }
+   }
+
+   #applyRollData(change, actor) {
+      if (Number(game.version) >= 12) {
+         roll.evaluateSync();
+      } else {
+         roll.evaluate({ async: true });
+      }
+      change.value = roll.total;
    }
 }

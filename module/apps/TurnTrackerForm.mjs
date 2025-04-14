@@ -35,21 +35,21 @@ class TurnData {
       };
    }
 
-   async saveSettings() {
-      await game.settings.set(game.system.id, 'turnData', this);
+   saveSettings() {
+      game.settings.set(game.system.id, 'turnData', this);
    }
 
-   async resetSession() {
+   resetSession() {
       this.dungeon.session = 0;
-      await this.saveSettings();
+      this.saveSettings();
    }
 
-   async resetTotal() {
+   resetTotal() {
       this.dungeon.session = 0;
       this.dungeon.total = 0;
       this.dungeon.rest = 0;
       this.worldTime = game.time.worldTime
-      await this.saveSettings();
+      this.saveSettings();
    }
 
    rest() {
@@ -64,7 +64,7 @@ class TurnData {
          this.dungeon.rest += turns;
       }
       this.worldTime = game.time.worldTime;
-      await this.saveSettings();
+      this.saveSettings();
       return turns;
    }
 }
@@ -155,7 +155,7 @@ export class TurnTrackerForm extends FormApplication {
       });
       html.find("#reset-session")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.turnData.resetSession();
+         this.turnData.resetSession();
          this.render(true);  // Re-render the form to update the UI
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
          ChatMessage.create({
@@ -165,7 +165,7 @@ export class TurnTrackerForm extends FormApplication {
       });
       html.find("#reset-total")[0].addEventListener('click', async (e) => {
          e.preventDefault();
-         await this.turnData.resetTotal();
+         this.turnData.resetTotal();
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
          ChatMessage.create({
             speaker: speaker,
@@ -196,7 +196,7 @@ export class TurnTrackerForm extends FormApplication {
       const seconds = worldTime - this.turnData.worldTime;
 
       if (Math.abs(seconds) >= timeSteps.round) {
-         const turns = await this.turnData.updateTime(seconds, this.isResting);
+         const turns = this.turnData.updateTime(seconds, this.isResting);
          this.isResting = false;
          const turnsRounds = this.turnData.toTurnsRounds(Math.abs(turns));
          chatContent = (turns > 0)

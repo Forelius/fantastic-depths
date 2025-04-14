@@ -83,7 +83,7 @@ export class DataMigrator {
             ui.notifications.info(msg);
          }
          // Set the new version after migration is complete
-         await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+         game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
       }
    }
 
