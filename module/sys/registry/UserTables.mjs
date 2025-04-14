@@ -5,7 +5,7 @@ export class UserTables {
       this.#loadTables();
    }
       
-   addTable(tableName, type, table) {
+   setTable(tableName, type, table) {
       if (Array.isArray(table) === false){
          console.error(`addTable ${tableName} table is not an array.`);
          return;
