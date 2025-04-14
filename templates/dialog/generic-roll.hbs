@@ -1,6 +1,14 @@
 <form>
-   <div class="form-group">
-      <label>{{localize "FADE.modifier"}}</label>
-      <input id="mod" placeholder=0 type="number" />
+   <div class="flexrow summary">
+      {{#unless hideFormula}}
+      <div class="flex2">
+         <input id="formula" placeholder="{{formula}}" type="text" />
+         <label>{{localize "FADE.rollFormula"}}</label>
+      </div>
+      {{/unless}}
+      <div class="flex2">
+         <input id="mod" placeholder=0 type="number" />
+         <label>{{localize "FADE.modifier"}}</label>
+      </div>
    </div>
 </form>

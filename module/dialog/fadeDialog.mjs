@@ -10,6 +10,7 @@ export class fadeDialog {
       const dialogResp = { caller };
 
       dialogData.label = dataset.label;
+      dialogData.formula = dataset.formula;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
@@ -23,6 +24,7 @@ export class fadeDialog {
                callback: () => ({
                   rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
+                  formula: document.getElementById('formula').value || dataset.formula,
                }),
             }
          },
@@ -177,6 +179,7 @@ export class fadeDialog {
       await dialog.getDialog();
    }
 
+   /* Dialog allows player to select a special ability to roll */
    static async getSpecialAbilityDialog() {
       // Get the first selected actor of the player
       const player = game.user;

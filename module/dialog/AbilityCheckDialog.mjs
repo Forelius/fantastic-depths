@@ -1,4 +1,5 @@
 import { fadeDialog } from './fadeDialog.mjs';
+
 export class AbilityCheckDialog extends fadeDialog {
    static async getDialog(dataset, caller) {
       const dialogData = {};
@@ -21,7 +22,7 @@ export class AbilityCheckDialog extends fadeDialog {
                callback: () => ({
                   rolling: true,
                   mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  formula: document.getElementById('formula').value || "1d20",
+                  formula: document.getElementById('formula').value || dataset.formula,
                }),
             },
          },

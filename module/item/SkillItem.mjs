@@ -67,21 +67,24 @@ export class SkillItem extends fadeItem {
       const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
       let levelMod = Math.max(0, systemData.level - 1) + (systemData.level > 0 ? systemData.skillBonus : systemData.skillPenalty);
       const bonusOperator = systemData.operator === 'lte' ? '-' : '+';
-      rollData.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
+      dataset.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
       let rolling = true;
 
       if (ctrlKey === true) {
          dialogResp = {
             rolling: true,
-            mod: 0
+            mod: 0,
+            formula: dataset.formula
          };
+         rollData.formula = dataset.formula;
       } else {
          // Show the dialog for roll modifier
          const dialog = await DialogFactory(dataset, this.actor);
          dialogResp = dialog?.resp;
          rolling = dialogResp.rolling === true;
+         rollData.formula = dialogResp.formula ?? dataset.formula;
          if (dialogResp.mod != 0) {
-            rollData.formula = `${rollData.formula}${bonusOperator}@mod`;
+            rollData.formula = `${rollData.formula}+@mod`;
          }
       }
 

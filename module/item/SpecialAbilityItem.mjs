@@ -67,12 +67,15 @@ export class SpecialAbilityItem extends fadeItem {
          // Retrieve roll data.
          dataset.dialog = "generic";
          dataset.rollmode = systemData.rollMode;
+         dataset.formula = systemData.rollFormula;
+
          if (dialogResp) {
             dialogResp.rolling === true
          } else if (ctrlKey === true) {
             dialogResp = {
                rolling: true,
-               mod: 0
+               mod: 0,
+               formula: systemData.rollFormula
             };
          } else {
             const dialog = await DialogFactory(dataset, this.actor);
@@ -80,6 +83,7 @@ export class SpecialAbilityItem extends fadeItem {
          }
 
          if (dialogResp?.rolling === true) {
+            dialogResp.formula = dialogResp.formula ?? systemData.rollFormula;
             if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
                dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
             } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
@@ -88,9 +92,9 @@ export class SpecialAbilityItem extends fadeItem {
          } else {
             canProceed = false;
          }
-         rollData.formula = dialogResp?.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
+         
+         rollData.formula = dialogResp?.mod != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
          const rollContext = { ...rollData, ...dialogResp || {} };
-         //rolled = await new Roll(rollData.formula, rollContext).evaluate();
          roll = await new Roll(rollData.formula, rollContext);
       }
 

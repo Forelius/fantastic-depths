@@ -24,7 +24,6 @@ export class SavingThrowDialog extends fadeDialog {
             mod: parseInt(document.getElementById('mod').value, 10) || 0,
          })
       };
-      //}
 
       dialogResp.resp = await Dialog.wait({
          title: title,

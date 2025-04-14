@@ -15,7 +15,7 @@ export class MoraleCheck {
       if (ctrlKey === false) {
          dialogResp = await DialogFactory(dataset, actor);
          if (dialogResp?.resp?.rolling === true) {
-            dataset.formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${dataset.formula}+@mod` : `${dataset.formula}-@mod`) : dataset.formula;
+            dataset.formula = dialogResp.resp.mod != 0 ? `${dataset.formula}+@mod` : dataset.formula;
          } else {
             // This will stop the process below.
             chatType = null;
@@ -48,7 +48,7 @@ export class AbilityCheck {
       if (ctrlKey === false) {
          dialogResp = await DialogFactory(dataset, actor);
          if (dialogResp?.resp?.rolling === true) {
-            dataset.formula = (dialogResp !== null && dialogResp.resp.mod != 0) ? `${dialogResp.resp.formula}-@mod` : dialogResp.resp.formula;
+            dataset.formula = (dialogResp !== null && dialogResp.resp.mod != 0) ? `${dialogResp.resp.formula}+@mod` : dialogResp.resp.formula;
          } else {
             // This will stop the process below.
             chatType = null;
