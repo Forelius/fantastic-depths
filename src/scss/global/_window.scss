@@ -8,6 +8,18 @@
    }
 }
 
+table.compact-table {
+   th {
+      line-height: 1;
+      padding: 1px 18px;
+   }
+
+   td {
+      line-height: 1;
+      padding: 1px 8px;
+   }
+}
+
 .rollable, .chatable {
    &:hover,
    &:focus {

@@ -631,6 +631,25 @@
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
       "apps": {
+         "userTables": {
+            "title": "User Tables",
+            "tableId": "Table ID",
+            "tableName": "Table Name",
+            "tableType": "Table Type",
+            "selectTable": "Select Table...",
+            "minimum": "Minimum",
+            "bonus": "Bonus",
+            "removePrompt": "Remove Table?",
+            "actions": {
+               "new": "Add",
+               "load": "Load",
+               "createTable": "Create Table",
+               "saveTable": "Save Changes"
+            },
+            "tableTypes": {
+               "bonus": "Bonus Table"
+            }
+         },
          "playerCombat": {
             "title": "Player Combat",
             "prompt": "Select combat manuever for this round.",

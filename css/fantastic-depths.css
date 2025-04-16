@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 h1, h2, h3, h4 {
   font-weight: bold;
 }
@@ -109,6 +107,15 @@ h1, h2, h3, h4 {
 .window-app .minimized {
   min-width: 300px;
   width: 300px;
+}
+
+table.compact-table th {
+  line-height: 1;
+  padding: 1px 18px;
+}
+table.compact-table td {
+  line-height: 1;
+  padding: 1px 8px;
 }
 
 .rollable:hover, .rollable:focus, .chatable:hover, .chatable:focus {
@@ -841,23 +848,23 @@ h1, h2, h3, h4 {
 }
 
 /* Styles limited to fantastic-depths sheets */
-.fantastic-depths .character .nav-tabs-right, .fantastic-depths .monster .nav-tabs-right {
+.system-fantastic-depths .character .nav-tabs-right, .system-fantastic-depths .monster .nav-tabs-right {
   left: 100%;
   top: 10%;
   position: absolute;
   flex-direction: column;
 }
-.fantastic-depths .character .nav-tabs-right .nav-tab, .fantastic-depths .monster .nav-tabs-right .nav-tab {
+.system-fantastic-depths .character .nav-tabs-right .nav-tab, .system-fantastic-depths .monster .nav-tabs-right .nav-tab {
   width: 38px;
   margin: 2px 0;
   padding-inline-end: 12px;
   border-radius: 0 8px 8px 0;
   padding: 4px;
 }
-.fantastic-depths .character .nav-tabs-right .nav-tab .active img, .fantastic-depths .monster .nav-tabs-right .nav-tab .active img {
+.system-fantastic-depths .character .nav-tabs-right .nav-tab .active img, .system-fantastic-depths .monster .nav-tabs-right .nav-tab .active img {
   filter: brightness(100%);
 }
-.fantastic-depths .character .nav-tabs-right .nav-tab a, .fantastic-depths .monster .nav-tabs-right .nav-tab a {
+.system-fantastic-depths .character .nav-tabs-right .nav-tab a, .system-fantastic-depths .monster .nav-tabs-right .nav-tab a {
   border-radius: 0 6px 6px 0;
   border-right: 1px solid;
   border-bottom: 1px solid;
@@ -866,10 +873,10 @@ h1, h2, h3, h4 {
   width: 30px;
   display: inline-block;
 }
-.fantastic-depths .character .nav-tabs-right .nav-tab a img, .fantastic-depths .monster .nav-tabs-right .nav-tab a img {
+.system-fantastic-depths .character .nav-tabs-right .nav-tab a img, .system-fantastic-depths .monster .nav-tabs-right .nav-tab a img {
   filter: brightness(50%);
 }
-.fantastic-depths .character .nav-tabs-right .nav-tab-vert, .fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
+.system-fantastic-depths .character .nav-tabs-right .nav-tab-vert, .system-fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
   width: 26px;
   padding: 8px 2px;
   margin: 4px 0;
@@ -877,71 +884,71 @@ h1, h2, h3, h4 {
   border-radius: 0 8px 8px 0;
   writing-mode: vertical-lr;
 }
-.fantastic-depths .character input, .fantastic-depths .monster input {
+.system-fantastic-depths .character input, .system-fantastic-depths .monster input {
   border: 0 none;
   padding: 2px 5px;
 }
-.fantastic-depths .character .ability-scores, .fantastic-depths .monster .ability-scores {
+.system-fantastic-depths .character .ability-scores, .system-fantastic-depths .monster .ability-scores {
   max-width: 200px;
 }
-.fantastic-depths .character .ability-horz, .fantastic-depths .monster .ability-horz {
+.system-fantastic-depths .character .ability-horz, .system-fantastic-depths .monster .ability-horz {
   border-right-style: solid;
   border-right-width: 1px;
 }
-.fantastic-depths .character .ability-horz input, .fantastic-depths .monster .ability-horz input {
+.system-fantastic-depths .character .ability-horz input, .system-fantastic-depths .monster .ability-horz input {
   margin-right: 4px;
 }
-.fantastic-depths .character .ability-horz:last-child, .fantastic-depths .monster .ability-horz:last-child {
+.system-fantastic-depths .character .ability-horz:last-child, .system-fantastic-depths .monster .ability-horz:last-child {
   border-right: none;
 }
-.fantastic-depths .character .xsmall-col, .fantastic-depths .monster .xsmall-col {
+.system-fantastic-depths .character .xsmall-col, .system-fantastic-depths .monster .xsmall-col {
   min-height: 32px;
 }
-.fantastic-depths .character .xsmall-col input, .fantastic-depths .character .xsmall-col label, .fantastic-depths .monster .xsmall-col input, .fantastic-depths .monster .xsmall-col label {
+.system-fantastic-depths .character .xsmall-col input, .system-fantastic-depths .character .xsmall-col label, .system-fantastic-depths .monster .xsmall-col input, .system-fantastic-depths .monster .xsmall-col label {
   max-width: 38px;
   min-width: 38px;
   display: inline-block;
   text-align: center;
 }
-.fantastic-depths .character .xsmall-col label, .fantastic-depths .monster .xsmall-col label {
+.system-fantastic-depths .character .xsmall-col label, .system-fantastic-depths .monster .xsmall-col label {
   font-size: 13px;
 }
-.fantastic-depths .character .small-input input, .fantastic-depths .monster .small-input input {
+.system-fantastic-depths .character .small-input input, .system-fantastic-depths .monster .small-input input {
   align-content: center;
   max-width: 34px;
   min-width: 34px;
   font-size: 16px;
 }
-.fantastic-depths .character .saving-throws .tall-row, .fantastic-depths .monster .saving-throws .tall-row {
+.system-fantastic-depths .character .saving-throws .tall-row, .system-fantastic-depths .monster .saving-throws .tall-row {
   min-height: 36px;
 }
-.fantastic-depths .character .saving-throws .small-row, .fantastic-depths .monster .saving-throws .small-row {
+.system-fantastic-depths .character .saving-throws .small-row, .system-fantastic-depths .monster .saving-throws .small-row {
   min-height: 30px;
 }
-.fantastic-depths .character .saving-throws input, .fantastic-depths .monster .saving-throws input {
+.system-fantastic-depths .character .saving-throws input, .system-fantastic-depths .monster .saving-throws input {
   align-content: center;
   margin-right: 6px;
   max-width: 34px;
   min-width: 34px;
   font-size: 16px;
 }
-.fantastic-depths .character .saving-throws label, .fantastic-depths .monster .saving-throws label {
+.system-fantastic-depths .character .saving-throws label, .system-fantastic-depths .monster .saving-throws label {
   align-content: center;
   text-align: left;
   font-size: 12px;
 }
-.fantastic-depths .character .saving-throws .abbr, .fantastic-depths .monster .saving-throws .abbr {
+.system-fantastic-depths .character .saving-throws .abbr, .system-fantastic-depths .monster .saving-throws .abbr {
   margin-left: 8px;
   font-size: 20px;
 }
-.fantastic-depths .character .saving-throws .long, .fantastic-depths .monster .saving-throws .long {
+.system-fantastic-depths .character .saving-throws .long, .system-fantastic-depths .monster .saving-throws .long {
   font-size: 12px;
 }
-.fantastic-depths .character .hit-points, .fantastic-depths .monster .hit-points {
+.system-fantastic-depths .character .hit-points, .system-fantastic-depths .monster .hit-points {
   height: 74px;
   position: relative;
 }
-.fantastic-depths .character .hit-points .hp-value, .fantastic-depths .monster .hit-points .hp-value {
+.system-fantastic-depths .character .hit-points .hp-value, .system-fantastic-depths .monster .hit-points .hp-value {
   color: #ebeae4;
   background: none;
   border: 0 none;
@@ -950,35 +957,35 @@ h1, h2, h3, h4 {
   text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
   background: none;
 }
-.fantastic-depths .character .hit-points .hp-top, .fantastic-depths .monster .hit-points .hp-top {
+.system-fantastic-depths .character .hit-points .hp-top, .system-fantastic-depths .monster .hit-points .hp-top {
   position: absolute;
   font-size: 26px;
   top: 15px;
   width: 50px;
   left: calc(50% - 25px);
 }
-.fantastic-depths .character .hit-points .hp-bottom, .fantastic-depths .monster .hit-points .hp-bottom {
+.system-fantastic-depths .character .hit-points .hp-bottom, .system-fantastic-depths .monster .hit-points .hp-bottom {
   position: absolute;
   font-size: 12px;
   bottom: 8px;
   width: 40px;
   right: calc(50% - 20px);
 }
-.fantastic-depths .character .hit-points .hp-empty, .fantastic-depths .monster .hit-points .hp-empty {
+.system-fantastic-depths .character .hit-points .hp-empty, .system-fantastic-depths .monster .hit-points .hp-empty {
   background-size: 74px;
   background-position: top;
   background-clip: content-box;
   background-image: url("../assets/img/heart_empty2.png");
   background-repeat: no-repeat;
 }
-.fantastic-depths .character .hit-points .hp-full, .fantastic-depths .monster .hit-points .hp-full {
+.system-fantastic-depths .character .hit-points .hp-full, .system-fantastic-depths .monster .hit-points .hp-full {
   background-size: 74px;
   background-position: bottom;
   background-clip: content-box;
   background-image: url("../assets/img/heart_full2.png");
   background-repeat: no-repeat;
 }
-.fantastic-depths .character .armor-class, .fantastic-depths .monster .armor-class {
+.system-fantastic-depths .character .armor-class, .system-fantastic-depths .monster .armor-class {
   height: 74px;
   position: relative;
   background-size: 70px;
@@ -986,7 +993,7 @@ h1, h2, h3, h4 {
   background-image: url("../assets/img/armor1.png");
   background-repeat: no-repeat;
 }
-.fantastic-depths .character .armor-class .ac-value, .fantastic-depths .monster .armor-class .ac-value {
+.system-fantastic-depths .character .armor-class .ac-value, .system-fantastic-depths .monster .armor-class .ac-value {
   color: #ebeae4;
   background: none;
   border: 0 none;
@@ -994,28 +1001,28 @@ h1, h2, h3, h4 {
   font-weight: bolder;
   text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
 }
-.fantastic-depths .character .armor-class .ac-top, .fantastic-depths .monster .armor-class .ac-top {
+.system-fantastic-depths .character .armor-class .ac-top, .system-fantastic-depths .monster .armor-class .ac-top {
   position: absolute;
   font-size: 26px;
   top: 11px;
   width: 50px;
   left: calc(50% - 25px);
 }
-.fantastic-depths .character .armor-class .ac-bottom, .fantastic-depths .monster .armor-class .ac-bottom {
+.system-fantastic-depths .character .armor-class .ac-bottom, .system-fantastic-depths .monster .armor-class .ac-bottom {
   position: absolute;
   font-size: 12px;
   bottom: 15px;
   width: 50px;
   right: calc(50% - 25px);
 }
-.fantastic-depths .character .armor-class .shield, .fantastic-depths .monster .armor-class .shield {
+.system-fantastic-depths .character .armor-class .shield, .system-fantastic-depths .monster .armor-class .shield {
   position: absolute;
   left: 71%;
   top: 30px;
   font-size: 24px;
   color: #707070;
 }
-.fantastic-depths .character .armor-class .shield .shield-ac-val, .fantastic-depths .monster .armor-class .shield .shield-ac-val {
+.system-fantastic-depths .character .armor-class .shield .shield-ac-val, .system-fantastic-depths .monster .armor-class .shield .shield-ac-val {
   width: 40px;
   color: #ebeae4;
   font-weight: bolder;
@@ -1027,14 +1034,14 @@ h1, h2, h3, h4 {
   transform: translate(-50%, -50%); /* Adjust position to truly center */
   font-size: 14px;
 }
-.fantastic-depths .character .armor-class .ranged-ac, .fantastic-depths .monster .armor-class .ranged-ac {
+.system-fantastic-depths .character .armor-class .ranged-ac, .system-fantastic-depths .monster .armor-class .ranged-ac {
   position: absolute;
   left: 1px;
   top: 30px;
   font-size: 24px;
   color: #808080;
 }
-.fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
+.system-fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .system-fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
   width: 40px;
   color: #ebeae4;
   font-weight: bolder;
@@ -1046,92 +1053,92 @@ h1, h2, h3, h4 {
   transform: translate(-50%, -50%); /* Adjust position to truly center */
   font-size: 14px;
 }
-.fantastic-depths .character .category-info, .fantastic-depths .monster .category-info {
+.system-fantastic-depths .character .category-info, .system-fantastic-depths .monster .category-info {
   font-weight: normal;
   margin-left: 10px;
 }
-.fantastic-depths .character .category-caret, .fantastic-depths .monster .category-caret {
+.system-fantastic-depths .character .category-caret, .system-fantastic-depths .monster .category-caret {
   flex: 0 0 6px;
   margin: 0 5px 0 0;
   cursor: pointer;
 }
-.fantastic-depths .character .ability {
+.system-fantastic-depths .character .ability {
   min-height: 34px;
 }
-.fantastic-depths .character .ability label {
+.system-fantastic-depths .character .ability label {
   font-weight: 500;
   margin: 0 0 2px 0;
 }
-.fantastic-depths .character .ability .abbr {
+.system-fantastic-depths .character .ability .abbr {
   font-size: 20px;
   min-width: 60px;
   max-width: 80px;
   text-align: center;
 }
-.fantastic-depths .character .ability .long {
+.system-fantastic-depths .character .ability .long {
   font-size: 15px;
   min-width: 80px;
   max-width: 80px;
   text-align: left;
 }
-.fantastic-depths .character .ability input {
+.system-fantastic-depths .character .ability input {
   font-size: 16px;
   max-width: 30px;
   border-radius: 4px;
   padding-top: 0;
   text-align: center;
 }
-.fantastic-depths .character .ability .ability-score {
+.system-fantastic-depths .character .ability .ability-score {
   font-size: 25px;
   text-align: center;
   padding-right: 5px;
 }
-.fantastic-depths .character .ability .ability-mod {
+.system-fantastic-depths .character .ability .ability-mod {
   max-width: 36px;
   font-size: 18px;
 }
-.fantastic-depths .monster .ability {
+.system-fantastic-depths .monster .ability {
   min-height: 30px;
 }
-.fantastic-depths .monster .ability label {
+.system-fantastic-depths .monster .ability label {
   font-weight: 500;
   margin: 0 0 2px 0;
 }
-.fantastic-depths .monster .ability .abbr {
+.system-fantastic-depths .monster .ability .abbr {
   font-size: 16px;
   min-width: 60px;
   max-width: 80px;
   text-align: center;
 }
-.fantastic-depths .monster .ability .long {
+.system-fantastic-depths .monster .ability .long {
   font-size: 12px;
   min-width: 80px;
   max-width: 80px;
   text-align: left;
 }
-.fantastic-depths .monster .ability input {
+.system-fantastic-depths .monster .ability input {
   font-size: 16px;
   max-width: 30px;
   border-radius: 5px;
   padding-top: 0;
   text-align: center;
 }
-.fantastic-depths .monster .ability .ability-score {
+.system-fantastic-depths .monster .ability .ability-score {
   font-size: 20px;
   text-align: center;
   padding-right: 5px;
 }
-.fantastic-depths .monster .ability .ability-mod {
+.system-fantastic-depths .monster .ability .ability-mod {
   max-width: 30px;
   font-size: 14px;
 }
-.fantastic-depths .item-form {
+.system-fantastic-depths .item-form {
   font-family: "Barlow", sans-serif;
 }
-.fantastic-depths h4 {
+.system-fantastic-depths h4 {
   margin: 2px;
 }
-.fantastic-depths .sheet-header {
+.system-fantastic-depths .sheet-header {
   flex: 0 auto;
   overflow: hidden;
   display: flex;
@@ -1141,18 +1148,18 @@ h1, h2, h3, h4 {
   align-items: normal !important;
   margin-bottom: 5px;
 }
-.fantastic-depths .sheet-header input {
+.system-fantastic-depths .sheet-header input {
   border: 0;
   padding: 2px 8px;
 }
-.fantastic-depths .sheet-header .profile-img {
+.system-fantastic-depths .sheet-header .profile-img {
   flex: 0 0 10px;
   height: 130px;
   width: 130px;
   margin-right: 10px;
   border: none;
 }
-.fantastic-depths .sheet-header .profile-img-sm {
+.system-fantastic-depths .sheet-header .profile-img-sm {
   float: left;
   flex: 0 0 10px;
   height: 80px;
@@ -1160,29 +1167,29 @@ h1, h2, h3, h4 {
   margin-right: 10px;
   border: none;
 }
-.fantastic-depths .sheet-header .profile-img-xsm {
+.system-fantastic-depths .sheet-header .profile-img-xsm {
   flex: 0 0 10px;
   height: 50px;
   width: 50px;
   margin-right: 10px;
   border: none;
 }
-.fantastic-depths .sheet-header .header-fields {
+.system-fantastic-depths .sheet-header .header-fields {
   flex: 1;
 }
-.fantastic-depths .sheet-header .charname {
+.system-fantastic-depths .sheet-header .charname {
   height: 34px;
 }
-.fantastic-depths .sheet-header .charname input, .fantastic-depths .sheet-header .charname select {
+.system-fantastic-depths .sheet-header .charname input, .system-fantastic-depths .sheet-header .charname select {
   font-size: 22px;
   font-weight: 500;
   height: 30px;
 }
-.fantastic-depths .tag-section {
+.system-fantastic-depths .tag-section {
   padding: 1px 2px 0 1px;
   margin: 0 0 1px 0;
 }
-.fantastic-depths .tag-section .tag-list {
+.system-fantastic-depths .tag-section .tag-list {
   margin: 0;
   height: 24px;
   overflow: auto;
@@ -1191,7 +1198,7 @@ h1, h2, h3, h4 {
   display: flex;
   flex-wrap: wrap;
 }
-.fantastic-depths .tag-section .tag-list .tag {
+.system-fantastic-depths .tag-section .tag-list .tag {
   background: #393833;
   border-radius: 5px;
   color: whitesmoke;
@@ -1200,38 +1207,38 @@ h1, h2, h3, h4 {
   box-shadow: 0 0 3px #d8d6c9;
   margin: 2px;
 }
-.fantastic-depths .tag-section .tag-list .tag i {
+.system-fantastic-depths .tag-section .tag-list .tag i {
   font-size: 9px;
   vertical-align: middle;
   color: #d8d6c9;
 }
-.fantastic-depths .tag-section .add-tag {
+.system-fantastic-depths .tag-section .add-tag {
   max-height: 28px;
 }
-.fantastic-depths .tag-section .add-tag input {
+.system-fantastic-depths .tag-section .add-tag input {
   margin-top: 1px;
   max-height: 20px;
   min-width: 70px;
 }
-.fantastic-depths .sheet-tabs {
+.system-fantastic-depths .sheet-tabs {
   flex: 0;
 }
-.fantastic-depths .sheet-body,
-.fantastic-depths .sheet-body .tab,
-.fantastic-depths .sheet-body .tab .editor {
+.system-fantastic-depths .sheet-body,
+.system-fantastic-depths .sheet-body .tab,
+.system-fantastic-depths .sheet-body .tab .editor {
   height: 100%;
   min-height: 32px;
 }
-.fantastic-depths .tox .tox-editor-container {
+.system-fantastic-depths .tox .tox-editor-container {
   background: #fff;
 }
-.fantastic-depths .tox .tox-edit-area {
+.system-fantastic-depths .tox .tox-edit-area {
   padding: 0 8px;
 }
-.fantastic-depths .label-12px label {
+.system-fantastic-depths .label-12px label {
   font-size: 12px;
 }
-.fantastic-depths .summary {
+.system-fantastic-depths .summary {
   flex: 0 0 100%;
   height: 46px;
   margin: 0;
@@ -1239,21 +1246,21 @@ h1, h2, h3, h4 {
   list-style: none;
   border-top: none;
 }
-.fantastic-depths .summary div {
+.system-fantastic-depths .summary div {
   height: calc(100% - 5px);
   margin: 2px 2px;
   padding: 0;
   line-height: 30px;
   position: relative;
 }
-.fantastic-depths .summary div label {
+.system-fantastic-depths .summary div label {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
   top: 31px;
   left: 2px;
 }
-.fantastic-depths .summary li {
+.system-fantastic-depths .summary li {
   height: calc(100% - 5px);
   float: left;
   margin: 2px 2px;
@@ -1261,36 +1268,36 @@ h1, h2, h3, h4 {
   line-height: 30px;
   position: relative;
 }
-.fantastic-depths .summary li label {
+.system-fantastic-depths .summary li label {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
   top: 31px;
   left: 2px;
 }
-.fantastic-depths .summary li.notify input {
+.system-fantastic-depths .summary li.notify input {
   font-weight: bold;
   animation: 0.8s ease-in 1s infinite alternate notify;
 }
-.fantastic-depths .resource-label {
+.system-fantastic-depths .resource-label {
   font-weight: bold;
 }
-.fantastic-depths .items-list {
+.system-fantastic-depths .items-list {
   list-style: none;
   margin: 0;
   padding: 0;
   overflow-y: auto;
   scrollbar-width: thin;
 }
-.fantastic-depths .items-list .warning-bkgd {
+.system-fantastic-depths .items-list .warning-bkgd {
   background: rgba(150, 20, 20, 0.15);
 }
-.fantastic-depths .items-list .item-list {
+.system-fantastic-depths .items-list .item-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.fantastic-depths .items-list .item-name {
+.system-fantastic-depths .items-list .item-name {
   flex: 2;
   margin: 0;
   overflow: hidden;
@@ -1299,64 +1306,64 @@ h1, h2, h3, h4 {
   align-items: center;
   display: flex;
 }
-.fantastic-depths .items-list .item-name h3, .fantastic-depths .items-list .item-name h4 {
+.system-fantastic-depths .items-list .item-name h3, .system-fantastic-depths .items-list .item-name h4 {
   margin: 0;
   white-space: nowrap;
   overflow-x: hidden;
 }
-.fantastic-depths .items-list .item-controls {
+.system-fantastic-depths .items-list .item-controls {
   display: flex;
   flex: 0 0 70px;
   justify-content: flex-end;
 }
-.fantastic-depths .items-list .item-controls a {
+.system-fantastic-depths .items-list .item-controls a {
   font-size: 10px;
   text-align: center;
   margin: 0 5px;
 }
-.fantastic-depths .items-list .item-controls i {
+.system-fantastic-depths .items-list .item-controls i {
   font-size: 12px;
 }
-.fantastic-depths .items-list .item-controls-sm {
+.system-fantastic-depths .items-list .item-controls-sm {
   display: flex;
   flex: 0 0 50px;
   justify-content: flex-end;
 }
-.fantastic-depths .items-list .item-controls-sm a {
+.system-fantastic-depths .items-list .item-controls-sm a {
   font-size: 8px;
   text-align: center;
   margin: 0 5px;
 }
-.fantastic-depths .items-list .item-controls-sm i {
+.system-fantastic-depths .items-list .item-controls-sm i {
   font-size: 10px;
 }
-.fantastic-depths .items-list .item {
+.system-fantastic-depths .items-list .item {
   align-items: center;
   padding: 0;
 }
-.fantastic-depths .items-list .item .center-vert {
+.system-fantastic-depths .items-list .item .center-vert {
   align-items: center;
 }
-.fantastic-depths .items-list .item ol {
+.system-fantastic-depths .items-list .item ol {
   padding: 0;
   margin: 0;
 }
-.fantastic-depths .items-list .item:last-child {
+.system-fantastic-depths .items-list .item:last-child {
   border-bottom: none;
 }
-.fantastic-depths .items-list .item .contained {
+.system-fantastic-depths .items-list .item .contained {
   padding-left: 10px;
 }
-.fantastic-depths .items-list .item .contained2 {
+.system-fantastic-depths .items-list .item .contained2 {
   padding-left: 20px;
 }
-.fantastic-depths .items-list .item .contained3 {
+.system-fantastic-depths .items-list .item .contained3 {
   padding-left: 30px;
 }
-.fantastic-depths .items-list .item .item-name img {
+.system-fantastic-depths .items-list .item .item-name img {
   border: none;
 }
-.fantastic-depths .items-list .item .item-name .item-image {
+.system-fantastic-depths .items-list .item .item-name .item-image {
   flex: 0 0 30px;
   height: 30px;
   background-size: 85%; /* Ensures the d20 icon is properly sized */
@@ -1367,136 +1374,136 @@ h1, h2, h3, h4 {
   position: relative;
   top: 2px;
 }
-.fantastic-depths .items-list .item .item-name .rollable:hover img, .fantastic-depths .items-list .item .item-name .chatable:hover img {
+.system-fantastic-depths .items-list .item .item-name .rollable:hover img, .system-fantastic-depths .items-list .item .item-name .chatable:hover img {
   opacity: 0; /* Or use display: none; */
 }
-.fantastic-depths .items-list .item .item-name .rollable:hover {
+.system-fantastic-depths .items-list .item .item-name .rollable:hover {
   background-image: url("/icons/svg/d20-highlight.svg");
 }
-.fantastic-depths .items-list .item .item-name .chatable:hover {
+.system-fantastic-depths .items-list .item .item-name .chatable:hover {
   background-image: url("/icons/svg/book.svg");
 }
-.fantastic-depths .items-list .item input {
+.system-fantastic-depths .items-list .item input {
   text-align: center;
 }
-.fantastic-depths .items-list .item .item-description {
+.system-fantastic-depths .items-list .item .item-description {
   margin: -3px 0 4px 0;
   padding: 0 8px;
   display: block;
   flex: auto;
   text-align: justify;
 }
-.fantastic-depths .items-list .item .desc-collapsed {
+.system-fantastic-depths .items-list .item .desc-collapsed {
   display: none;
   height: 0;
   padding: 0;
   margin: 0;
   transition: height 0.1s ease-in, padding 0.1s ease-in;
 }
-.fantastic-depths .items-list .item-40px {
+.system-fantastic-depths .items-list .item-40px {
   width: 40px;
   max-width: 40px;
 }
-.fantastic-depths .items-list .item-50px {
+.system-fantastic-depths .items-list .item-50px {
   width: 50px;
   max-width: 50px;
 }
-.fantastic-depths .items-list .item-60px {
+.system-fantastic-depths .items-list .item-60px {
   width: 60px;
   max-width: 60px;
 }
-.fantastic-depths .items-list .item-80px {
+.system-fantastic-depths .items-list .item-80px {
   width: 80px;
   max-width: 80px;
 }
-.fantastic-depths .items-list .item-prop {
+.system-fantastic-depths .items-list .item-prop {
   text-align: center;
   border-left: 1px solid #c9c7b8;
   border-right: 1px solid #c9c7b8;
   font-size: 12px;
 }
-.fantastic-depths .items-list .items-header {
+.system-fantastic-depths .items-list .items-header {
   height: auto;
   margin: 2px 0;
   padding: 3px 1px;
   align-items: center;
   font-weight: bold;
 }
-.fantastic-depths .items-list .items-header > * {
+.system-fantastic-depths .items-list .items-header > * {
   font-size: 12px;
   text-align: center;
 }
-.fantastic-depths .items-list .items-header .align-left {
+.system-fantastic-depths .items-list .items-header .align-left {
   text-align: left;
   padding-left: 6px;
 }
-.fantastic-depths .items-list .items-header .item-name {
+.system-fantastic-depths .items-list .items-header .item-name {
   padding-left: 3px;
   text-align: left;
 }
-.fantastic-depths .items-list .items-footer {
+.system-fantastic-depths .items-list .items-footer {
   height: 26px;
   margin: 2px 0;
   padding: 0;
   align-items: center;
   font-weight: bold;
 }
-.fantastic-depths .items-list .items-footer > * {
+.system-fantastic-depths .items-list .items-footer > * {
   font-size: 12px;
   text-align: center;
 }
-.fantastic-depths .items-list .items-footer .align-left {
+.system-fantastic-depths .items-list .items-footer .align-left {
   text-align: left;
 }
-.fantastic-depths .items-list .items-footer .item-name {
+.system-fantastic-depths .items-list .items-footer .item-name {
   padding-left: 3px;
   text-align: left;
 }
-.fantastic-depths .items-list .consumable-counter, .fantastic-depths .items-list .charges-counter {
+.system-fantastic-depths .items-list .consumable-counter, .system-fantastic-depths .items-list .charges-counter {
   height: 16px;
   display: flex;
   flex-wrap: wrap;
   line-height: 14px;
 }
-.fantastic-depths .items-list .consumable-counter label, .fantastic-depths .items-list .charges-counter label {
+.system-fantastic-depths .items-list .consumable-counter label, .system-fantastic-depths .items-list .charges-counter label {
   flex: 0 30px;
   font-size: 11px;
   text-indent: 3px;
 }
-.fantastic-depths .items-list .consumable-counter .full-mark,
-.fantastic-depths .items-list .consumable-counter .empty-mark, .fantastic-depths .items-list .charges-counter .full-mark,
-.fantastic-depths .items-list .charges-counter .empty-mark {
+.system-fantastic-depths .items-list .consumable-counter .full-mark,
+.system-fantastic-depths .items-list .consumable-counter .empty-mark, .system-fantastic-depths .items-list .charges-counter .full-mark,
+.system-fantastic-depths .items-list .charges-counter .empty-mark {
   cursor: pointer;
   flex: 0 8px;
   margin: 0 1px;
   box-shadow: inset 0 0 3px #7a7971;
   height: 12px;
 }
-.fantastic-depths .items-list .consumable-counter .full-mark:hover,
-.fantastic-depths .items-list .consumable-counter .empty-mark:hover, .fantastic-depths .items-list .charges-counter .full-mark:hover,
-.fantastic-depths .items-list .charges-counter .empty-mark:hover {
+.system-fantastic-depths .items-list .consumable-counter .full-mark:hover,
+.system-fantastic-depths .items-list .consumable-counter .empty-mark:hover, .system-fantastic-depths .items-list .charges-counter .full-mark:hover,
+.system-fantastic-depths .items-list .charges-counter .empty-mark:hover {
   background: #7a7971;
 }
-.fantastic-depths .items-list .consumable-counter .full-mark, .fantastic-depths .items-list .charges-counter .full-mark {
+.system-fantastic-depths .items-list .consumable-counter .full-mark, .system-fantastic-depths .items-list .charges-counter .full-mark {
   background: #808080;
   border: 1px inset #7a7971;
 }
-.fantastic-depths .item-formula {
+.system-fantastic-depths .item-formula {
   flex: 0 0 200px;
   padding: 0 8px;
 }
-.fantastic-depths .item-info {
+.system-fantastic-depths .item-info {
   text-align: center;
 }
-.fantastic-depths .effects .item .effect-source,
-.fantastic-depths .effects .item .effect-duration,
-.fantastic-depths .effects .item .effect-controls {
+.system-fantastic-depths .effects .item .effect-source,
+.system-fantastic-depths .effects .item .effect-duration,
+.system-fantastic-depths .effects .item .effect-controls {
   text-align: center;
   border-left: 1px solid #c9c7b8;
   border-right: 1px solid #c9c7b8;
   font-size: 12px;
 }
-.fantastic-depths .effects .item .effect-controls {
+.system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
 

@@ -1,0 +1,9 @@
+﻿<div autocomplete="off">
+   <div class="flexrow">
+      <select class="flex3" name="system.selectedTable" data-dtype="String">
+         {{selectOptions tableNames selected=system.selectedTable}}
+      </select>
+      <button name="loadTable" class="flex1" style="max-width:50px;margin-left:5px;" type="submit">{{localize "FADE.apps.userTables.actions.load"}}</button>
+      <button name="addTable" class="flex1" style="max-width:50px;margin-left:5px;" type="submit">{{localize "FADE.apps.userTables.actions.new"}}</button>
+   </div>   
+</div>
