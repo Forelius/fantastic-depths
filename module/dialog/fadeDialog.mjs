@@ -1,10 +1,6 @@
 import { rollTableDialog } from '/systems/fantastic-depths/module/dialog/rollTableDialog.mjs';
 
 export class fadeDialog {
-   static focusById(id) {
-      return setTimeout(() => { document.getElementById(id).focus(); }, 50);
-   }
-
    static async getGenericDialog(dataset, caller) {
       const dialogData = {};
       const dialogResp = { caller };
@@ -14,21 +10,22 @@ export class fadeDialog {
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await Dialog.wait({
-         title: title,
+      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+         window: { title },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons: {
-            roll: {
+         buttons: [
+            {
+               action: "roll",
+               default: true,
                label: game.i18n.localize('FADE.roll'),
-               callback: () => ({
+               callback: (event, button, dialog) => ({
                   rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  formula: document.getElementById('formula').value || dataset.formula,
+                  mod: parseInt(dialog.querySelector('#mod').value, 10) || 0,
+                  formula: dialog.querySelector('#formula').value || dataset.formula,
                }),
             }
-         },
-         default: 'roll',
+         ],
          close: () => { return { rolling: false } }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
@@ -56,26 +53,29 @@ export class fadeDialog {
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
-            result.resp = await Dialog.wait({
-               title: dialogData.label,
+            result.resp = await foundry.applications.api.DialogV2.wait({
+               window: { title: dialogData.label },
+               rejectClose: false,
                content: await renderTemplate(template, dialogData),
-               buttons: {
-                  attack: {
+               buttons: [
+                  {
+                     action: "close",
+                     label: game.i18n.localize('FADE.dialog.close'),
+                     callback: function (event, button, dialog) { return null; }
+                  },
+                  {
+                     action: "attack",
                      label: game.i18n.localize('FADE.combat.maneuvers.attack.name'),
-                     callback: function (html) {
-                        const itemId = document.getElementById('weaponItem').value;
+                     callback: async (event, button, dialog) => {
+                        const itemId = dialog.querySelector('[name="weaponItem"]').value;
                         const item = attackerActor.items.get(itemId);
                         // Call item's roll method.
                         item.roll();
                         return { item };
-                     }
-                  },
-                  close: {
-                     label: game.i18n.localize('FADE.dialog.close'),
-                     callback: function (html) { return null; }
+                     },
+                     default: true
                   }
-               },
-               default: "close",
+               ],               
                close: () => { return null; }
             }, {
                classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
@@ -106,26 +106,41 @@ export class fadeDialog {
                acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
                return acc;
             }, {});;
-            await Dialog.wait({
-               title: dialogData.label,
+            await foundry.applications.api.DialogV2.wait({
+               window: { title: dialogData.label },
+               rejectClose: false,
+               position: { width: 460 },
                content: await renderTemplate(template, dialogData),
-               buttons: {
-                  attack: {
-                     label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
-                     callback: function (html) {
-                        const itemId = document.getElementById('spellItem').value;
+               buttons: [
+                  {
+                     action: 'close',
+                     label: game.i18n.localize('FADE.dialog.close'),
+                     callback: function (event, button, dialog) { return null; }
+                  },
+                  {
+                     action: 'view',
+                     label: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
+                     callback: async (event, button, dialog) => {
+                        const itemId = dialog.querySelector('[name="spellItem"]').value;
                         const item = actor.items.get(itemId);
                         // Call item's roll method.
-                        item.roll();
+                        item.roll({ rollType: "item", skipdlg: true });
                         return { item };
                      }
                   },
-                  close: {
-                     label: game.i18n.localize('FADE.dialog.close'),
-                     callback: function (html) { return null; }
-                  }
-               },
-               default: "close",
+                  {
+                     action: 'cast',
+                     label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
+                     callback: async (event, button, dialog) => {
+                        const itemId = dialog.querySelector('[name="spellItem"]').value;
+                        const item = actor.items.get(itemId);
+                        // Call item's roll method.
+                        item.doSpellcast();
+                        return { item };
+                     },
+                     default: true
+                  },
+               ],
                close: () => { return null; }
             }, {
                classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
@@ -146,26 +161,30 @@ export class fadeDialog {
          defaultChoice = "no" } = dataset;
       const dialogResp = {};
 
-      dialogResp.resp = await Dialog.wait({
-         title: title,
+      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+         window: { title },
+         rejectClose: false,
          content: `<div style="margin:0 0 8px;">${content}</div>`,
-         buttons: {
-            yes: {
-               label: yesLabel,
-               callback: () => ({
-                  rolling: true,
-                  result: true
-               })
-            },
-            no: {
+         buttons: [            
+            {
+               action: 'no',
                label: noLabel,
                callback: () => ({
                   rolling: true,
                   result: false
-               })
+               }),
+               default: defaultChoice === 'no'
+            },
+            {
+               action: 'yes',
+               label: yesLabel,
+               callback: () => ({
+                  rolling: true,
+                  result: true
+               }),
+               default: defaultChoice === 'yes'
             }
-         },
-         default: defaultChoice,
+         ],
          close: () => { return null; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
@@ -181,8 +200,6 @@ export class fadeDialog {
 
    /* Dialog allows player to select a special ability to roll */
    static async getSpecialAbilityDialog() {
-      // Get the first selected actor of the player
-      const player = game.user;
       const actor = canvas.tokens.controlled?.[0]?.actor;
 
       if (!actor) {

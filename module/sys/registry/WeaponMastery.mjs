@@ -58,7 +58,7 @@ export class WeaponMasterySystem {
    /**
     * Get the target's potential weapon types
     * @param {any} weapon The actor's weapon
-    * @param {any} actor The target actor
+    * @param {any} attackerActor The attacker actor
     * @returns Returns weapon types if conditions met, otherwise null.
     */
    getWeaponTypes(weapon, attackerActor) {

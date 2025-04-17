@@ -1,8 +1,8 @@
+import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
+import { RollAttackMixin } from './mixins/RollAttackMixin.mjs';
 import { GearItem } from './GearItem.mjs';
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
-export class WeaponItem extends GearItem {
+export class WeaponItem extends RollAttackMixin(GearItem) {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -85,6 +85,29 @@ export class WeaponItem extends GearItem {
    }
 
    /**
+   * Handle clickable rolls.
+   * @override
+   * @param {Event} event The originating click event
+   */
+   async roll() {
+      return await this.rollAttack();
+   }
+
+   async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {
+
+      const chatData = {
+         resp: dialogResp,
+         caller: this,
+         context: attacker,
+         roll: rollEval,
+         digest
+      };
+
+      const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData, { ammoItem });
+      await builder.createChatMessage();
+   }
+
+   /**
     * Retrieves an array of attack types. Attack types include breath, missile and melee.
     * @returns An array of valid attack types for this weapon.
     */
@@ -106,7 +129,7 @@ export class WeaponItem extends GearItem {
             }
             if (wmResult?.canMelee === true) {
                result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
-            }         
+            }
          }
 
          if (result.length === 0) {
@@ -117,111 +140,6 @@ export class WeaponItem extends GearItem {
       }
 
       return result;
-   }
-
-   /**
-   * Handle clickable rolls.
-   * @override
-   * @param {Event} event The originating click event
-   */
-   async roll() {
-      const systemData = this.system;
-      // The selected token, not the actor
-      const attacker = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
-      const rollData = this.getRollData();
-      let dialogResp;
-      let canAttack = true;
-      let digest = [];
-      let result = null;
-      let hasRoll = false;
-
-      if (this.system.quantity === 0) {
-         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
-      }
-      else if (attacker) {
-         let ammoItem = this.actor?.getAmmoItem(this);
-         const targetTokens = Array.from(game.user.targets);
-         const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
-
-         dialogResp = await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken });
-         canAttack = dialogResp?.resp?.rolling === true;
-         if (canAttack) {
-            // If not breath...
-            if (systemData.damageType !== "breath" && dialogResp.resp.attackType !== "breath") {
-               let rollOptions = {
-                  mod: dialogResp.resp.mod,
-                  target: targetToken?.actor,
-                  ammoItem,
-                  attackRoll: dialogResp.resp.attackRoll
-               };
-               if (dialogResp.resp.targetWeaponType) {
-                  rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
-               }
-
-               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, dialogResp.resp.attackType, rollOptions);
-               rollData.formula = attackRoll.formula;
-               digest = attackRoll.digest;
-               hasRoll = true;
-            }
-         }
-
-         // Check if the attack type is a missile/ranged attack
-         if (canAttack && dialogResp.resp.attackType === 'missile') {
-            await this.#tryUseAmmo();
-            canAttack = ammoItem !== null && ammoItem !== undefined;
-            // No need to show ammo item if it is also the weapon we are using (thrown).
-            ammoItem = ammoItem?.id === this.id ? null : ammoItem;
-         } else {
-            ammoItem = null;
-         }
-
-         // Perform the roll if there's ammo or if it's a melee attack
-         if (canAttack && dialogResp) {
-            let rolled = null;
-            if (hasRoll) {
-               const rollContext = { ...rollData, ...dialogResp.resp || {} };
-               rolled = await new Roll(rollData.formula, rollContext).evaluate();
-            }
-
-            const chatData = {
-               resp: dialogResp.resp, // the dialog response
-               caller: this, // the weapon
-               context: attacker,
-               roll: rolled,
-               digest: digest
-            };
-
-            const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData, { ammoItem });
-            await builder.createChatMessage();
-         }
-      } else {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
-      }
-
-      return result;
-   }
-
-   /**
-    * Gets the equipped ammo item and optionally uses it.
-    * @private
-    * @param {any} getOnly If true, does not use, just gets.
-    * @returns The ammo item, if one exists.
-    */
-   async #tryUseAmmo(getOnly = false) {
-      const ammoItem = this.actor?.getAmmoItem(this);
-      // If there's no ammo, show a UI notification
-      if (ammoItem === undefined || ammoItem === null) {
-         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: this.actor?.name, weaponName: this.name });
-         ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
-      } else if (getOnly !== true) {
-         // Deduct 1 ammo if not infinite
-         if (ammoItem.system.quantity !== null) {
-            const newQuantity = Math.max(0, ammoItem.system.quantity - 1);
-            await ammoItem.update({ "system.quantity": newQuantity });
-         }
-      }
-      return ammoItem;
    }
 
    _prepareModText() {

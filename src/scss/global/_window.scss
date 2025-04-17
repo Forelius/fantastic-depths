@@ -156,6 +156,19 @@ table.compact-table {
    position: relative !important;
 }
 
+/* Dialog footer buttons */
+.standard-form .form-footer > button{
+   line-height:1;
+   min-width:auto;
+}
+
+/* Fixes spacing when using labels on top. */
+.top-label label {
+   margin: 0 4px;
+}
+.top-label select, .top-label input {
+   margin-top: 4px;
+}
 
 .system-fantastic-depths {
    #tooltip.text-center {

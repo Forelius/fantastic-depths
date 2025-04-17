@@ -35,7 +35,7 @@ export class SkillItemSheet extends fadeItemSheet {
 
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
-         acc[key] = game.i18n.localize(value);
+         acc[key] = game.i18n.localize(value.label ?? value);
          return acc;
       }, {});
       // Abilities

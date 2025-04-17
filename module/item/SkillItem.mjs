@@ -74,7 +74,8 @@ export class SkillItem extends fadeItem {
          dialogResp = {
             rolling: true,
             mod: 0,
-            formula: dataset.formula
+            formula: dataset.formula,
+            editFormula: game.user.isGM
          };
          rollData.formula = dataset.formula;
       } else {

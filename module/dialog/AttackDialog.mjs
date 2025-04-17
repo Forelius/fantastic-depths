@@ -2,8 +2,8 @@ import { fadeDialog } from './fadeDialog.mjs';
 export class AttackDialog extends fadeDialog {
    /**
     * Display a dialog allowing the caller to select a type of attack and attack roll modifier.
-    * @param {any} weapon The attacker's weapon item
-    * @param {any} caller The owning actor
+    * @param {any} weapon The attacker's weapon/spell item
+    * @param {any} caller The owning actor, the attacker.
     * @param {object} options Additional options:
     *    targetToken: The targetted token
     * @returns
@@ -32,24 +32,27 @@ export class AttackDialog extends fadeDialog {
       }
 
       dialogData.rollGroupName = "rollFormulaType";
-      dialogData.rollChoices = { normal: "FADE.rollFormulaType.normal", advantage: "FADE.rollFormulaType.advantage", disadvantage: "FADE.rollFormulaType.disadvantage" };
+      dialogData.rollChoices = {
+         normal: "FADE.rollFormulaType.normal",
+         advantage: "FADE.rollFormulaType.advantage",
+         disadvantage: "FADE.rollFormulaType.disadvantage"
+      };
       dialogData.rollChosen = "normal";
 
       const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
-      result.resp = await Dialog.wait({
-         title: title,
+      result.resp = await foundry.applications.api.DialogV2.wait({
+         window: { title: title },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         render: () => {
-            fadeDialog.focusById('mod');
-         },
-         buttons: {
-            check: {
+         buttons: [
+            {
+               action: "check",
                label: game.i18n.localize('FADE.roll'),
-               callback: () => {
-                  const selectedRadio = document.querySelector('input[name="rollFormulaType"]:checked')?.value ?? 'normal';
-                  let attackRoll = document.getElementById('attackRoll').value ?? '1d20'
+               callback: (event, button, dialog) => {
+                  const selectedRadio = dialog.querySelector('input[name="rollFormulaType"]:checked')?.value ?? 'normal';
+                  let attackRoll = dialog.querySelector('#attackRoll').value ?? '1d20'
                   if (selectedRadio === 'advantage') {
                      attackRoll = `{${attackRoll},${attackRoll}}kh`;
                   } else if (selectedRadio === 'disadvantage') {
@@ -57,16 +60,16 @@ export class AttackDialog extends fadeDialog {
                   }
                   return {
                      rolling: true,
-                     mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                     attackType: document.getElementById('attackType').value,
-                     targetWeaponType: document.getElementById('targetWeaponType')?.value,
+                     mod: parseInt(dialog.querySelector('#mod').value, 10) || 0,
+                     attackType: dialog.querySelector('#attackType').value,
+                     targetWeaponType: dialog.querySelector('#targetWeaponType')?.value,
                      attackRoll,
                      rollFormulaType: selectedRadio.value
                   };
                },
+               default: true
             },
-         },
-         default: 'check',
+         ],
          close: () => { return { rolling: false } }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
@@ -100,6 +103,7 @@ export class AttackDialog extends fadeDialog {
 
       dialogResp.resp = await Dialog.wait({
          title: title,
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
          render: () => fadeDialog.focusById('mod'),
          buttons: {

@@ -80,12 +80,24 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === 'heal';
-      dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, theItem);
-      rolling = dialogResp?.resp?.rolling === true;
 
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison"];
       const otherDamageTypes = ["magic", "heal", "hull"];
+      if (weaponDamageTypes.includes(dataset.damagetype)) {
+         damageRoll = await theItem.getDamageRoll(attacktype, null, targetweapontype);
+      } else if (otherDamageTypes.includes(dataset.damagetype)) {
+         damageRoll = await theItem.getDamageRoll(null);
+      }
+
+      dialogResp = await DialogFactory({
+         dialog: 'generic',
+         label: isHeal ? "Heal" : "Damage",
+         formula: damageRoll.formula,
+         editFormula: game.user.isGM
+      }, theItem);
+      rolling = dialogResp?.resp?.rolling === true;
+
       if (weaponDamageTypes.includes(dataset.damagetype)) {
          damageRoll = await theItem.getDamageRoll(attacktype, dialogResp?.resp, targetweapontype);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {

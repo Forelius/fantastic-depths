@@ -1,9 +1,10 @@
+import { RollAttackMixin } from './mixins/RollAttackMixin.mjs';
 import { fadeItem } from './fadeItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
-export class SpellItem extends fadeItem {
+export class SpellItem extends RollAttackMixin(fadeItem) {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -58,19 +59,21 @@ export class SpellItem extends fadeItem {
    */
    async roll(dataset) {
       const caster = this.actor || canvas.tokens.controlled?.[0];
-      if (caster) {
+      if (dataset?.skipdlg === true) {
+         super.roll(dataset);
+      } else if (caster) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.localize('FADE.dialog.spellcast.title'),
             content: game.i18n.localize('FADE.dialog.spellcast.content'),
-            yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
             noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
+            yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
             defaultChoice: "yes"
          }, this.actor);
 
-         if (dialogResp?.resp?.result === true) {
+         if (dialogResp?.resp?.result === false) {
             await this.doSpellcast();
-         } else if (dialogResp?.resp?.result === false) {
+         } else if (dialogResp?.resp?.result === true) {
             super.roll(dataset);
          }
       } else {
@@ -84,12 +87,16 @@ export class SpellItem extends fadeItem {
       const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
-      
+
       if (systemData.cast < systemData.memorized || systemData.memorized === null) {
-         const attackRollResult = await this.#doAttackRoll();
+         let rollAttackResult = null;
+
+         if (this.system.attackType === 'melee') {
+            rollAttackResult = await this.rollAttack();
+         }
          const durationRollResult = await this.#getDurationText();
 
-         if (attackRollResult === null || attackRollResult?.canProceed === true) {
+         if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource
             systemData.cast += 1;
             await this.update({ "system.cast": systemData.cast });
@@ -97,8 +104,8 @@ export class SpellItem extends fadeItem {
             const chatData = {
                caller: this, // the spell
                context: instigator, // the caster
-               roll: attackRollResult?.rollEval,
-               digest: attackRollResult?.digest
+               roll: rollAttackResult?.rollEval,
+               digest: rollAttackResult?.digest
             };
 
             const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, { durationMsg: durationRollResult });
@@ -116,6 +123,16 @@ export class SpellItem extends fadeItem {
       return result;
    }
 
+   /**
+    * Retrieves an array of attack types. Attack types include breath, missile and melee.
+    * @returns An array of valid attack types for this weapon.
+    */
+   getAttackTypes() {
+      const result = [];
+      result.push({ text: game.i18n.localize(`FADE.dialog.attackType.${this.system.attackType}`), value: this.system.attackType });
+      return result;
+   }
+
    async #getDurationText() {
       let result = `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`;
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
@@ -124,55 +141,5 @@ export class SpellItem extends fadeItem {
          result = `${result} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
       }
       return result;
-   }
-
-   async #doAttackRoll() {
-      if (this.system.attackType !== 'melee') {
-         return null;
-      }
-
-      const caster = this.parent.getActiveTokens()?.[0] || this.actor;
-      const casterActor = caster.actor || this.actor;
-      const rollMode = game.settings.get("core", "rollMode");
-      const rollData = this.getRollData();
-      let rollEval = null;
-      let canProceed = true;
-      let dialogResp = null;
-      let digest = [];
-
-      try {
-         const targetTokens = Array.from(game.user.targets);
-         // Touch attacks can only be performed against a single opponent.
-         const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
-         // Get roll modification
-         let dataset = {
-            dialog: "spellattack",
-            label: "Attack",
-            rollMode
-         };
-         dialogResp = await DialogFactory(dataset, casterActor, { targetToken });
-         if (dialogResp?.resp) {
-            const rollOptions = {
-               mod: dialogResp.resp.mod,
-               target: targetToken?.actor,
-               attackRoll: dialogResp.resp.attackRoll
-            };
-            if (dialogResp.resp.targetWeaponType) {
-               rollOptions.targetWeaponType = dialogResp.resp.targetWeaponType;
-            }
-
-            const rollInfo = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, this.system.attackType, rollOptions);
-            rollData.formula = rollInfo.formula;
-            digest = rollInfo.digest;
-            const rollContext = { ...rollData };
-            rollEval = await new Roll(rollData.formula, rollContext).evaluate();
-         } else {
-            canProceed = false;
-         }
-      } catch (error) {
-         // Close button pressed or other error
-         canProceed = false;
-      }
-      return { resp: dialogResp?.resp, digest, rollEval, canProceed };
    }
 }

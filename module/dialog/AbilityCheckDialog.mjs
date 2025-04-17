@@ -9,24 +9,24 @@ export class AbilityCheckDialog extends fadeDialog {
       dialogData.formula = dataset.formula;
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
       const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/ability-roll.hbs';
+      const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await Dialog.wait({
-         title: title,
-         rejectClose: true,
+      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+         window: { title },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons: {
-            check: {
+         buttons: [
+            {
+               action: 'check',
                label: game.i18n.localize('FADE.dialog.abilityCheck'),
-               callback: () => ({
+               callback: (event, button, dialog) => ({
                   rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  formula: document.getElementById('formula').value || dataset.formula,
+                  mod: parseInt(dialog.querySelector('#mod').value, 10) || 0,
+                  formula: dialog.querySelector('#formula').value || dataset.formula,
                }),
+               default: true
             },
-         },
-         default: 'check',
+         ],
          close: () => { return { rolling: false }; }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]

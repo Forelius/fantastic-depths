@@ -59,13 +59,13 @@ export class UserTables {
    }
 }
 /*
-game.fade.registry.getSystem("userTables").addTable('DwarfResiliance', "bonus", [
+game.fade.registry.getSystem("userTables").addTable('dwarf-resiliance', 'Dwarf Resiliance', "bonus", [
     {min:0, bonus:0},
     {min:7, bonus:2},
     {min:11, bonus:3},
     {min:15, bonus:4},
     {min:18, bonus:5},
 ]);
-game.fade.registry.getSystem("userTables").getBonus("DwarfResiliance", 7);
-eval('game.fade.registry.getSystem("userTables").getBonus("DwarfResiliance", 7)');
+game.fade.registry.getSystem("userTables").getBonus("dwarf-resiliance", 7);
+eval('game.fade.registry.getSystem("userTables").getBonus("dwarf-resiliance", 7)');
 */

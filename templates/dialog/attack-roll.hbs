@@ -1,11 +1,17 @@
 <style type="text/css">
    .form-group label {
-      flex: 3 !important;
+      max-width: 110px;
       line-height: normal !important;
+   }
+   .application label.checkbox{
+      display:block;
+   }
+   .top-label div {
+      padding: 0 4px;
    }
 </style>
 <form>
-   <div class="flexrow summary">
+   <div class="flexrow top-label">
       <div class="flex2">
          <!-- Dropdown for selecting 'melee' or 'missile' -->
          <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
@@ -23,7 +29,7 @@
       {{/if}}
    </div>
    <!-- Modifier Input Field -->
-   <div class="flexrow summary">
+   <div class="flexrow top-label">
       <div class="flex1">
          <label>{{localize "FADE.attackRoll"}}</label>
          <input id="attackRoll" placeholder='1d20' type="text" value="1d20" />
@@ -34,7 +40,7 @@
       </div>
    </div>
    {{!-- Roll with advantage/disadvantage --}}
-   <div>
+   <div class="form-group">
       {{radioBoxes "rollFormulaType" rollChoices checked=rollChosen localize=true}}
    </div>
 </form>

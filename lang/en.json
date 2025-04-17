@@ -991,8 +991,8 @@
       },
       "rollFormulaType": {
          "normal": "Normal",
-         "advantage": "ADV",
-         "disadvantage": "DIS"
+         "advantage": "Advantage",
+         "disadvantage": "Disadvantage"
       }
    },
 

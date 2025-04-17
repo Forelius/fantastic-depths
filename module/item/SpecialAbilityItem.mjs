@@ -75,7 +75,8 @@ export class SpecialAbilityItem extends fadeItem {
             dialogResp = {
                rolling: true,
                mod: 0,
-               formula: systemData.rollFormula
+               formula: systemData.rollFormula,
+               editFormula: game.user.isGM
             };
          } else {
             const dialog = await DialogFactory(dataset, this.actor);

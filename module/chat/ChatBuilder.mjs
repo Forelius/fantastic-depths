@@ -1,4 +1,3 @@
-import { ChatBuilderSchema } from './ChatBuilderSchema.mjs';
 
 /**
 * Enumeration for chat result codes.
@@ -41,7 +40,7 @@ export class ChatBuilder {
       }
 
       this.RESULT_TYPE = RESULT_TYPE;
-      this.data = new ChatBuilderSchema({ ...dataset, options });
+      this.data = { ...dataset, options };
       this.template = new.target.template;
    }
 
