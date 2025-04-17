@@ -1,3 +1,5 @@
+import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTablesConfig.mjs"
+
 export class fadeSettings {
    /**
     * Register all of the system's settings.
@@ -8,6 +10,14 @@ export class fadeSettings {
    }
 
    #registerConfigSettings() {
+      // User Tables Menu
+      game.settings.registerMenu(game.system.id, "userTablesConfig", {
+         name: "FADE.apps.userTables.title",
+         label: "FADE.apps.userTables.title",
+         icon: "fas fa-table",
+         type: UserTablesConfig,
+         restricted: true
+      });
       // Theme
       game.settings.register(game.system.id, "theme", {
          name: "SETTINGS.Theme.Name",

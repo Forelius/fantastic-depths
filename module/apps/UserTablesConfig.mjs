@@ -25,7 +25,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       },
       form: {
          handler: UserTablesConfig.#onSubmit,
-         submitOnChange: false,
+         submitOnChange: true,
          closeOnSubmit: false
       },
       actions: {
@@ -40,22 +40,9 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    }
 
    /** @override */
-   _configureRenderOptions(options) {
-      // This fills in `options.parts` with an array of ALL part keys by default
-      super._configureRenderOptions(options);
-      options.parts = ['header'];
-
-      // The order of `parts` *does* matter. May need to use array manipulation
-      if (this.system.currentTable?.type === 'bonus') {
-         options.parts.push('editBonus');
-      }
-      console.log(`_configureRenderOptions:`, options, this.system);
-   }
-
-   /** @override */
    async _prepareContext(_options) {
       const context = {};
-      console.log(`_prepareContext:`, _options);
+      //console.log(`_prepareContext:`, _options);
       context.system = foundry.utils.deepClone(this.system);
       return context;
    }
@@ -73,8 +60,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
     * @protected
     */
    async _preparePartContext(partId, context) {
-      //context.partId = `${this.id}-${partId}`;
-      console.log(`_preparePartContext: ${this.id}-${partId}`);
+      //console.log(`_preparePartContext: ${this.id}-${partId}`);
       if (partId === 'header') {
          const userTables = this.userTablesSys.getTables();
          const tableNames = { none: game.i18n.localize('FADE.apps.userTables.selectTable') };
@@ -93,14 +79,15 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
      * @returns {Promise<void>}
      */
    static async #onSubmit(event, form, formData) {
+      event.preventDefault();
       const data = foundry.utils.expandObject(formData.object);
-      console.log(`#onSubmit: ${event.submitter?.name}`);
+      console.log(`#onSubmit: ${event.submitter?.name}`, data);
 
       const selectedTable = this.system.selectedTable;
       // Update system with data from form.
       foundry.utils.mergeObject(this.system, data.system);
 
-      if (event.submitter?.name == 'loadTable' && data.system?.selectedTable !== selectedTable) {
+      if (event.submitter?.name == 'loadTable') {
          this.#loadTable(data);
       } else if (event.submitter?.name == 'addTable') {
          await this.#addTable(data);
@@ -113,7 +100,9 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          this.system.selectedTable = "none";
       }
 
-      this.render(true);
+      if (event.submitter) {
+         await this.render(true);
+      }
    }
 
    async #addTable(data) {
@@ -157,7 +146,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       });
 
       if (dialogResp != null && dialogResp != 'cancel') {
-         console.log('#addTable', dialogResp);
+         //console.log('#addTable', dialogResp);
          const table = { id: dialogResp.tableId, name: dialogResp.tableName, type: dialogResp.tableType, table: [] };
          this.userTablesSys.setTable(table);
          this.system.currentTable = table;
@@ -166,14 +155,14 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    }
 
    #loadTable(data) {
-      console.log('#loadTable', data);
       const table = foundry.utils.deepClone(this.userTablesSys.getTable(this.system.selectedTable));
       table.table = table.table.sort((a, b) => a.min - b.min);
       this.system.currentTable = table;
+      console.log('#loadTable', data, this.system);
    }
 
    #saveTable(data) {
-      console.log('#saveTable', data);
+      //console.log('#saveTable', data);
       const table = this.#fixTable(data.system.currentTable.table).sort((a, b) => a.min - b.min);
       this.system.currentTable.table = table;
       this.userTablesSys.setTable(this.system.currentTable);
@@ -188,7 +177,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          modal: true
       });
       if (proceed) {
-         this.userTablesSys.removeTable(data.system.currentTable.id);
+         this.userTablesSys.removeTable(this.system.currentTable.id);
          this.system.selectedTable = "none";
          this.system.currentTable = null;
       }
@@ -198,16 +187,22 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
      * @param {PointerEvent} event - The originating click event
      * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
      */
-   static #addRow(event, target) {
+   static async #addRow(event, target) {
+      const table = this.#fixTable(this.system.currentTable.table);
       if (this.system.currentTable.type === "bonus") {
-         this.system.currentTable.table.push({ min: 0, bonus: 0 });
+         table.push({ min: 0, bonus: 0 });
+         this.system.currentTable.table = table;
       }
-      this.render();
+      await this.render();
    }
 
-   static #removeRow(event, target) {
-      console.log('#removeRow', event, target);
-      this.render();
+   static async #removeRow(event, target) {
+      const index = target.getAttribute('data-index');
+      //console.log(`#removeRow ${index}`, this.system.currentTable);
+      const table = this.#fixTable(this.system.currentTable.table);
+      table.splice(index, 1);
+      this.system.currentTable.table = table;
+      await this.render();
    }
 
    #fixTable(table) {
