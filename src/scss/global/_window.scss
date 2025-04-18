@@ -8,6 +8,14 @@
    }
 }
 
+.fantastic-depths {
+   .window-content {
+      input, select {
+         max-height:28px;
+      }
+   }
+}
+
 table.compact-table {
    th {
       line-height: 1;
@@ -55,7 +63,6 @@ table.compact-table {
    padding: 4px 8px;
    font-weight: 600;
 }
-
 /* Apply these styles only when the "minimized" class is not present */
 .window-app.fantastic-depths.sheet.actor:not(.minimized) {
    min-width: 600px !important;
@@ -155,17 +162,16 @@ table.compact-table {
 .prosemirror .editor-container .editor-content {
    position: relative !important;
 }
-
 /* Dialog footer buttons */
-.standard-form .form-footer > button{
-   line-height:1;
-   min-width:auto;
+.standard-form .form-footer > button {
+   line-height: 1;
+   min-width: auto;
 }
-
 /* Fixes spacing when using labels on top. */
 .top-label label {
    margin: 0 4px;
 }
+
 .top-label select, .top-label input {
    margin-top: 4px;
 }

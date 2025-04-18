@@ -1,4 +1,4 @@
-<form class='{{cssClass}}' autocomplete='off'>
+<div class='{{cssClass}}' autocomplete='off'>
    <header class='sheet-header'>
       <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
       <div class='header-fields'>
@@ -15,7 +15,6 @@
                </select>
                <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
             </li>
-            <li>
             <li class="flex1">
                <select name="system.level">
                   {{selectOptions masteryLevels selected=system.level}}
@@ -101,28 +100,4 @@
          </li>
       </ul>
    </div>
-   {{#if false}}
-   {{! Sheet Tab Navigation }}
-   <nav class='sheet-tabs tabs' data-group='primary'>
-      <a class='item' data-tab='description'>{{localize 'FADE.tabs.description'}}</a>
-      {{#if isGM}}
-      <a class='item' data-tab='effects'>{{localize 'FADE.tabs.effects'}}</a>
-      {{/if}}
-   </nav>
-
-   {{! Sheet Body }}
-   <section class='sheet-body'>
-      {{! Description Tab }}
-      <div class='tab' data-group='primary' data-tab='description'>
-         {{! Editors must receive enriched text data from getData to properly handle rolls }}
-         {{editor enrichedDesc target='system.description' engine='prosemirror' button=true editable=editable }}
-      </div>
-      {{#if isGM}}
-      {{! Effects Tab }}
-      <div class="tab effects" data-group="primary" data-tab="effects">
-         {{> "itemEffects"}}
-      </div>
-      {{/if}}
-   </section>
-   {{/if}}
-</form>
+</div>
