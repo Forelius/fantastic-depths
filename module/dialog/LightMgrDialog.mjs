@@ -10,30 +10,34 @@ export class LightMgrDialog extends fadeDialog {
       dialogData.lightItems = opt.lightItems.reduce((acc, item) => {
          acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
          return acc;
-      }, {});;
+      }, {});
 
-      dialogResp.resp = await Dialog.wait({
-         title: "Light Manager",
+      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+         window: { title: game.i18n.localize('FADE.dialog.lightManager.title') },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         buttons: {
-            ignite: {
-               label: game.i18n.localize('FADE.dialog.ignite'),
-               callback: (html) => ({
-                  action: "ignite",
-                  itemId: document.getElementById('lightItem').value,
+         buttons: [
+            {
+               action: 'ignite',
+               label: game.i18n.localize('FADE.dialog.lightManager.ignite'),
+               callback: (event, button, dialog) => ({
+                  action: 'ignite',
+                  itemId: dialog.querySelector('#lightItem').value,
                })
             },
-            extinguish: {
-               label: game.i18n.localize('FADE.dialog.extinguish'),
-               callback: () => ({
-                  action: "extinguish",
-                  itemId: document.getElementById('lightItem').value,
+            {
+               action: 'extinguish',
+               label: game.i18n.localize('FADE.dialog.lightManager.extinguish'),
+               callback: (event, button, dialog) => ({
+                  action: 'extinguish',
+                  itemId: dialog.querySelector('#lightItem').value,
                })
             },
-            close: {
+            {
+               action: 'close',
                label: game.i18n.localize('FADE.dialog.close')
             }
-         },
+         ],
          default: "close",
          close: () => { return null; }
       }, {

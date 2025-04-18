@@ -259,6 +259,17 @@ table.compact-table td {
   margin-top: 4px;
 }
 
+.fade-dialog .form-group label {
+  max-width: 110px;
+  line-height: normal !important;
+}
+.fade-dialog .application label.checkbox {
+  display: block;
+}
+.fade-dialog .top-label div {
+  padding: 0 4px;
+}
+
 .system-fantastic-depths #tooltip.text-center {
   text-align: left !important;
 }
@@ -742,6 +753,7 @@ table.compact-table td {
 }
 .chat-message .message-content button {
   margin: 0;
+  width: 100%;
 }
 .chat-message .message-content .digest {
   margin-bottom: 6px;
@@ -751,7 +763,7 @@ table.compact-table td {
 }
 .chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll, .chat-message .message-content .heal-roll {
   font-size: 15px;
-  padding: 5px 4px;
+  /*padding: 5px 4px;*/
 }
 .chat-message .message-content .small-text {
   margin-left: 4px;

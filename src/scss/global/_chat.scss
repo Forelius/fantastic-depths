@@ -10,6 +10,7 @@
 
       button {
          margin: 0;
+         width:100%
       }
 
       .digest {
@@ -22,7 +23,7 @@
 
       .damage-roll, .saving-Roll, .heal-roll {
          font-size: 15px;
-         padding: 5px 4px;
+         /*padding: 5px 4px;*/
       }
 
       .small-text {

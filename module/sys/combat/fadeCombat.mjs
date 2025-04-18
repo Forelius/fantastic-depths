@@ -128,19 +128,12 @@ export class fadeCombat extends Combat {
     * @param {any} combatant
     */
    async addDeclarationControl(combat, combatantElement, combatant) {
-      const combatantControls = combatantElement.find('.combatant-controls');
+      const combatantControls = combatantElement.querySelector('.combatant-controls');
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
       let templateData = { combatant };
 
       const controlsContent = await renderTemplate(template, templateData);
-      combatantControls.prepend(controlsContent);
-      // Add a change event listener to update the actor's data when the dropdown selection changes
-      if (combatant.initiative === null || game.user.isGM) {
-         combatantElement.find('#combatantDeclaration').on('change', async (event) => {
-            const newAction = event.target.value;
-            await combatant.actor.update({ 'system.combat.declaredAction': newAction });
-         });
-      }
+      combatantControls.insertAdjacentHTML("afterbegin", controlsContent);
    }
 
    /**
@@ -150,21 +143,24 @@ export class fadeCombat extends Combat {
     * @param {any} data
     */
    async onRenderCombatTracker(app, html, data) {
+      if (html instanceof Element === false) {
+         html = html[0];
+      }
       if (data?.combat?.combatants) {
          // Iterate over each combatant and apply a CSS class based on disposition
          for (let combatant of data.combat.combatants) {
             /* console.debug(combatant);*/
             const disposition = combatant.token.disposition;
-            const combatantElement = html.find(`.combatant[data-combatant-id="${combatant.id}"]`);
+            const combatantElement = html.querySelector(`.combatant[data-combatant-id="${combatant.id}"]`);
             // Set disposition indicator
             if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-               combatantElement.addClass('disposition-friendly');
+               combatantElement.classList.add('disposition-friendly');
             } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-               combatantElement.addClass('disposition-neutral');
+               combatantElement.classList.add('disposition-neutral');
             } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-               combatantElement.addClass('disposition-hostile');
+               combatantElement.classList.add('disposition-hostile');
             } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-               combatantElement.addClass('disposition-secret');
+               combatantElement.classList.add('disposition-secret');
             }
 
             if (data.combat.declaredActions === true) {

@@ -1,16 +1,4 @@
-<style type="text/css">
-   .form-group label {
-      max-width: 110px;
-      line-height: normal !important;
-   }
-   .application label.checkbox{
-      display:block;
-   }
-   .top-label div {
-      padding: 0 4px;
-   }
-</style>
-<form>
+<div class="fade-dialog">
    <div class="flexrow top-label">
       <div class="flex2">
          <!-- Dropdown for selecting 'melee' or 'missile' -->
@@ -43,4 +31,4 @@
    <div class="form-group">
       {{radioBoxes "rollFormulaType" rollChoices checked=rollChosen localize=true}}
    </div>
-</form>
+</div>

@@ -59,11 +59,6 @@ export class fadeDialog {
                content: await renderTemplate(template, dialogData),
                buttons: [
                   {
-                     action: "close",
-                     label: game.i18n.localize('FADE.dialog.close'),
-                     callback: function (event, button, dialog) { return null; }
-                  },
-                  {
                      action: "attack",
                      label: game.i18n.localize('FADE.combat.maneuvers.attack.name'),
                      callback: async (event, button, dialog) => {
@@ -74,7 +69,12 @@ export class fadeDialog {
                         return { item };
                      },
                      default: true
-                  }
+                  },
+                  {
+                     action: "close",
+                     label: game.i18n.localize('FADE.dialog.close'),
+                     callback: function (event, button, dialog) { return null; }
+                  },                 
                ],               
                close: () => { return null; }
             }, {
@@ -113,9 +113,16 @@ export class fadeDialog {
                content: await renderTemplate(template, dialogData),
                buttons: [
                   {
-                     action: 'close',
-                     label: game.i18n.localize('FADE.dialog.close'),
-                     callback: function (event, button, dialog) { return null; }
+                     action: 'cast',
+                     label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
+                     callback: async (event, button, dialog) => {
+                        const itemId = dialog.querySelector('[name="spellItem"]').value;
+                        const item = actor.items.get(itemId);
+                        // Call item's roll method.
+                        item.doSpellcast();
+                        return { item };
+                     },
+                     default: true
                   },
                   {
                      action: 'view',
@@ -129,16 +136,9 @@ export class fadeDialog {
                      }
                   },
                   {
-                     action: 'cast',
-                     label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
-                     callback: async (event, button, dialog) => {
-                        const itemId = dialog.querySelector('[name="spellItem"]').value;
-                        const item = actor.items.get(itemId);
-                        // Call item's roll method.
-                        item.doSpellcast();
-                        return { item };
-                     },
-                     default: true
+                     action: 'close',
+                     label: game.i18n.localize('FADE.dialog.close'),
+                     callback: function (event, button, dialog) { return null; }
                   },
                ],
                close: () => { return null; }
@@ -165,16 +165,7 @@ export class fadeDialog {
          window: { title },
          rejectClose: false,
          content: `<div style="margin:0 0 8px;">${content}</div>`,
-         buttons: [            
-            {
-               action: 'no',
-               label: noLabel,
-               callback: () => ({
-                  rolling: true,
-                  result: false
-               }),
-               default: defaultChoice === 'no'
-            },
+         buttons: [
             {
                action: 'yes',
                label: yesLabel,
@@ -183,6 +174,15 @@ export class fadeDialog {
                   result: true
                }),
                default: defaultChoice === 'yes'
+            },
+            {
+               action: 'no',
+               label: noLabel,
+               callback: () => ({
+                  rolling: true,
+                  result: false
+               }),
+               default: defaultChoice === 'no'
             }
          ],
          close: () => { return null; }

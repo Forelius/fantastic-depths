@@ -71,8 +71,6 @@ export class AttackDialog extends fadeDialog {
             },
          ],
          close: () => { return { rolling: false } }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
       result.context = caller;
       return result;

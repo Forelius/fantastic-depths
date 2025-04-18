@@ -676,6 +676,11 @@
          }
       },
       "dialog": {
+         "lightManager": {
+            "title": "Light Manager",
+            "ignite": "Enable",
+            "extinguish": "Disable"
+         },
          "shove": {
             "resultsLabel": "Shove Results",
             "attackerRoll": "{attacker} Roll",
@@ -715,8 +720,6 @@
          },
          "lightSource": "Light Source",
          "selectLightSource": "Select Light Source",
-         "ignite": "Enable",
-         "extinguish": "Disable",
          "selectWeapon": "Select Weapon",
          "masteryTargetType": "Target Weapon Type",
          "abilityCheck": "Ability Check",

@@ -170,6 +170,21 @@ table.compact-table {
    margin-top: 4px;
 }
 
+.fade-dialog {
+   .form-group label {
+      max-width: 110px;
+      line-height: normal !important;
+   }
+
+   .application label.checkbox {
+      display: block;
+   }
+
+   .top-label div {
+      padding: 0 4px;
+   }
+}
+
 .system-fantastic-depths {
    #tooltip.text-center {
       text-align: left !important;
