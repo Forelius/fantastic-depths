@@ -19,8 +19,6 @@ export const DialogFactory = (dataset = null, caller = null, opt = {}) => {
       result = fadeDialog.getGenericDialog(dataset, caller);
    } else if (dataset.dialog === 'attack') {
       result = AttackDialog.getDialog(opt.weapon, caller, opt);
-   } else if (dataset.dialog === 'spellattack') {
-      result = AttackDialog.getForSpellsDialog(dataset, caller, opt);
    } else if (dataset.dialog === 'lightmgr') {
       result = LightMgrDialog.getDialog(dataset, caller, opt);
    } else if (dataset.dialog === 'yesno') {

@@ -1,4 +1,6 @@
+const { DialogV2 } = foundry.applications.api;
 import { fadeDialog } from './fadeDialog.mjs';
+
 export class LightMgrDialog extends fadeDialog {
    static async getDialog(dataset, caller, opt) {
       const dialogData = {};
@@ -12,7 +14,7 @@ export class LightMgrDialog extends fadeDialog {
          return acc;
       }, {});
 
-      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+      dialogResp.resp = await DialogV2.wait({
          window: { title: game.i18n.localize('FADE.dialog.lightManager.title') },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
@@ -39,9 +41,8 @@ export class LightMgrDialog extends fadeDialog {
             }
          ],
          default: "close",
-         close: () => { return null; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         close: () => { return null; },
+         classes: ["fantastic-depths"]
       });
       dialogResp.context = caller;
       return dialogResp;

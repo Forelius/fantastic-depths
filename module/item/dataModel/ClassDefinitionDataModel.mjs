@@ -132,33 +132,6 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
       };
    }
 
-   /**
-   * Migrate source data from some prior format into a new specification.
-   * The source parameter is either original data retrieved from disk or provided by an update operation.
-   * @inheritDoc
-   */
-   static migrateData(source) {
-      const abilityScores = {
-         con: { min: null }, wis: { min: null }, int: { min: null }, dex: { min: null }
-      };
-      Object.assign(abilityScores, source.abilities);
-      abilityScores.con.min = abilityScores.con?.min ?? source.minCon ?? null;
-      abilityScores.wis.min = abilityScores.wis?.min ?? source.minWis ?? null;
-      abilityScores.int.min = abilityScores.int?.min ?? source.minInt ?? null;
-      abilityScores.dex.min = abilityScores.dex?.min ?? source.minDex ?? null;
-      source.abilities = abilityScores;
-      if (source.classAbilities) {
-         const classAbilities = Array.isArray(source.classAbilities) ? source.classAbilities : Object.values(source.classAbilities);
-         for (let classAbility of classAbilities) {
-            if (classAbility.classKey == "") {
-               classAbility.classKey = null;
-            }
-         }
-         source.specialAbilities = source.specialAbilities ?? source.classAbilities;
-      }
-      return super.migrateData(source);
-   }
-
    /** @override */
    prepareBaseData() {
       this.maxSpellLevel = Math.max(0, (this.maxSpellLevel ?? 0));

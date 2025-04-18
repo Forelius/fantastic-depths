@@ -31,7 +31,8 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       actions: {
          addRow: UserTablesConfig.#addRow,
          removeRow: UserTablesConfig.#removeRow
-      }
+      },
+      classes: ['fantastic-depths']
    }
 
    static PARTS = {

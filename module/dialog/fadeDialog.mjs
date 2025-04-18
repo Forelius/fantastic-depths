@@ -1,3 +1,4 @@
+const { DialogV2 } = foundry.applications.api;
 import { rollTableDialog } from '/systems/fantastic-depths/module/dialog/rollTableDialog.mjs';
 
 export class fadeDialog {
@@ -10,7 +11,7 @@ export class fadeDialog {
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+      dialogResp.resp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
@@ -26,9 +27,8 @@ export class fadeDialog {
                }),
             }
          ],
-         close: () => { return { rolling: false } }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         close: () => { return { rolling: false } },
+         classes: ["fantastic-depths"]
       });
       dialogResp.context = caller;
       return dialogResp;
@@ -53,7 +53,7 @@ export class fadeDialog {
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
-            result.resp = await foundry.applications.api.DialogV2.wait({
+            result.resp = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
                content: await renderTemplate(template, dialogData),
@@ -76,9 +76,8 @@ export class fadeDialog {
                      callback: function (event, button, dialog) { return null; }
                   },                 
                ],               
-               close: () => { return null; }
-            }, {
-               classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+               close: () => { return null; },
+               classes: ["fantastic-depths"]
             });
             result.context = attackerActor;
          }
@@ -106,7 +105,7 @@ export class fadeDialog {
                acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
                return acc;
             }, {});;
-            await foundry.applications.api.DialogV2.wait({
+            await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
                position: { width: 460 },
@@ -141,9 +140,8 @@ export class fadeDialog {
                      callback: function (event, button, dialog) { return null; }
                   },
                ],
-               close: () => { return null; }
-            }, {
-               classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+               close: () => { return null; },
+               classes: ["fantastic-depths"]
             });
          }
       } else {
@@ -161,7 +159,7 @@ export class fadeDialog {
          defaultChoice = "no" } = dataset;
       const dialogResp = {};
 
-      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+      dialogResp.resp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
          content: `<div style="margin:0 0 8px;">${content}</div>`,
@@ -185,9 +183,8 @@ export class fadeDialog {
                default: defaultChoice === 'no'
             }
          ],
-         close: () => { return null; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         close: () => { return null; },
+         classes: ["fantastic-depths"]
       });
 
       return dialogResp;

@@ -1,4 +1,6 @@
+const { DialogV2 } = foundry.applications.api;
 import { fadeDialog } from './fadeDialog.mjs';
+
 export class AttackDialog extends fadeDialog {
    /**
     * Display a dialog allowing the caller to select a type of attack and attack roll modifier.
@@ -42,7 +44,7 @@ export class AttackDialog extends fadeDialog {
       const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
-      result.resp = await foundry.applications.api.DialogV2.wait({
+      result.resp = await DialogV2.wait({
          window: { title: title },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
@@ -70,56 +72,10 @@ export class AttackDialog extends fadeDialog {
                default: true
             },
          ],
-         close: () => { return { rolling: false } }
+         close: () => { return { rolling: false } },
+         classes: ["fantastic-depths"]
       });
       result.context = caller;
       return result;
-   }
-
-   /**
-    * Show the Spell Attack dialog.
-    * @param {any} dataset
-    * @param {any} caller
-    * @param {any} options
-    * @returns
-    */
-   static async getForSpellsDialog(dataset, caller, options) {
-      const dialogData = {};
-      const dialogResp = { caller };
-      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
-
-      dialogData.label = dataset.label;
-
-      if (weaponMasterySystem) {
-         dialogData.targetWeaponTypes = weaponMasterySystem.getWeaponTypes({ type: "spell" }, caller);
-         // Determines which target weapon type to pick by default.
-         dialogData.selectedWeaponType = weaponMasterySystem.getActorWeaponType(options.targetToken?.actor);
-      }
-
-      const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/spell-attack-roll.hbs';
-
-      dialogResp.resp = await Dialog.wait({
-         title: title,
-         rejectClose: false,
-         content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons: {
-            roll: {
-               label: game.i18n.localize('FADE.roll'),
-               callback: () => ({
-                  rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  targetWeaponType: document.getElementById('targetWeaponType')?.value,
-               }),
-            }
-         },
-         default: 'roll',
-         close: () => { return null; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
-      });
-      dialogResp.context = caller;
-      return dialogResp;
    }
 }

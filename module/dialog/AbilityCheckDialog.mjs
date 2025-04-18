@@ -1,3 +1,4 @@
+const { DialogV2 } = foundry.applications.api;
 import { fadeDialog } from './fadeDialog.mjs';
 
 export class AbilityCheckDialog extends fadeDialog {
@@ -11,7 +12,7 @@ export class AbilityCheckDialog extends fadeDialog {
       const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await foundry.applications.api.DialogV2.wait({
+      dialogResp.resp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
@@ -27,9 +28,8 @@ export class AbilityCheckDialog extends fadeDialog {
                default: true
             },
          ],
-         close: () => { return { rolling: false }; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         close: () => { return { rolling: false }; },
+         classes: ["fantastic-depths"]
       });
       dialogResp.context = caller;
       return dialogResp;

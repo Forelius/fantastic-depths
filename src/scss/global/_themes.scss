@@ -17,9 +17,13 @@
    }
 
    .fantastic-depths {
-      .window-content {
+      .window-app {
          background: url('../assets/img/grunge2.jpg');
+      }
+
+      .window-content {
          color: $lighterColor;
+         background: url('../assets/img/grunge2.jpg');
 
          .editor-container {
             margin: 0 4px;

@@ -507,9 +507,12 @@ table.compact-table td {
 .dark-mode .item-piles-chat-card li:nth-child(even) {
   background-color: rgba(250, 250, 250, 0.05);
 }
-.dark-mode .fantastic-depths .window-content {
+.dark-mode .fantastic-depths .window-app {
   background: url("../assets/img/grunge2.jpg");
+}
+.dark-mode .fantastic-depths .window-content {
   color: #ebeae4;
+  background: url("../assets/img/grunge2.jpg");
 }
 .dark-mode .fantastic-depths .window-content .editor-container {
   margin: 0 4px;
