@@ -1,13 +1,15 @@
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ItemSheetV2 } = foundry.applications.sheets;
 import { EffectManager } from '../sys/EffectManager.mjs';
 
 /**
  * Base sheet class for fadeItem.
  */
-export class fadeItemSheet extends ItemSheet {
+export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   async getData(options) {
+   async _prepareContext(options) {
       const context = await super.getData(options);
       const itemData = context.data;
       const rollData = this.item.getRollData();
