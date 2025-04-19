@@ -13,7 +13,6 @@ export class MonsterDataModel extends fadeActorDataModel {
             xpAward: new fields.NumberField({ initial: 5 }),
             abilityCount: new fields.NumberField({ initial: 0 }),
             size: new fields.StringField({ initial: "M" }),
-            // Keep this so that the GM can decide which to use, all ability scores or just this.
             monsterType: new fields.StringField({ initial: "Monster" }),
             rarity: new fields.StringField({ initial: "Common" }),
             //monsterTypes: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),

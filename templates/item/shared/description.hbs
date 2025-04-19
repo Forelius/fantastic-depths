@@ -1,7 +1,7 @@
-﻿<section class='tab {{tab.cssClass}} active' data-group='primary' data-tab='description'>
+﻿<section class='tab {{tabs.description.cssClass}}' data-group='primary' data-tab='description'>
    {{#if (or isGM system.isIdentified)}}
-   {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+   {{editor enrichedDesc target='system.description' engine="prosemirror" editable=editable button=true collaborate=false}}
    {{else}}
-   {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}
+   {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" editable=editable button=true collaborate=false}}
    {{/if}}
 </section>

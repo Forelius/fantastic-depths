@@ -8,10 +8,10 @@
       <div class="flexrow">
          <ol class="tag-list">
             {{#each system.tags as |tag|}}
-            <li class="tag" data-tag="{{tag}}">
+            <li class="tag">
                <span>{{tag}}</span>
                {{#if @root.isGM}}
-               <a class="tag-delete"><i class="fas fa-times"></i></a>
+               <a class="tag-delete" data-tag="{{tag}}" data-action="deleteTag"><i class="fas fa-times"></i></a>
                {{/if}}
             </li>
             {{/each}}

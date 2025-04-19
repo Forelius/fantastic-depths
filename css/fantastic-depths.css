@@ -1255,7 +1255,7 @@ table.compact-table td {
   flex: 0;
 }
 .system-fantastic-depths .scroll-body {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .system-fantastic-depths .sheet-body .tab .editor {
   height: 100%;

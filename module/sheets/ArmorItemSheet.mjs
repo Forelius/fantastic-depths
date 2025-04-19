@@ -6,12 +6,12 @@ import { fadeItemSheet } from './fadeItemSheet.mjs';
  */
 export class ArmorItemSheet extends fadeItemSheet {
    /**
-    * Get the default options for the MasteryDefinitionItem sheet.
+    * Get the default options for the sheet.
     */
    static DEFAULT_OPTIONS = {
       position: {
          width: 540,
-         height: "auto",
+         height: 350,
       },
       window: {
          resizable: true,
@@ -80,6 +80,7 @@ export class ArmorItemSheet extends fadeItemSheet {
          context.encOptions = encOptions;
       }
 
+      // Prepare the tabs.
       context.tabs = this.#getTabs();
 
       // Prepare active effects for easier access

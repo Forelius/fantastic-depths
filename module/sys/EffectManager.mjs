@@ -77,8 +77,9 @@ export class EffectManager {
     */
    async onManageGlobalActiveEffect(event) {
       event.preventDefault();
-      const a = event.currentTarget;
-      const li = a.closest('li');
+      const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
+      const parentElem = event.target.parentElement;
+      const li = parentElem.closest('li');
       const effectId = li.dataset.effectId;
 
       // Retrieve global effects from the persistent setting
@@ -86,12 +87,14 @@ export class EffectManager {
       let effect = globalEffects.find(e => e.id === effectId);
 
       // Handle the specific action
-      switch (a.dataset.action) {
+      switch (action) {
          case 'create':
+         case 'createEffect':
             ui.notifications.warn('Cannot create new effects from this interface.');
             break;
 
          case 'edit':
+         case 'editEffect':
             if (effect) {
                // Edit global effect by creating a temporary ActiveEffect
                const tempEffect = new ActiveEffect(effect);
@@ -100,12 +103,14 @@ export class EffectManager {
             break;
 
          case 'delete':
+         case 'deleteEffect':
             globalEffects = globalEffects.filter(e => e.id !== effectId);
             game.settings.set(game.system.id, 'globalEffects', globalEffects);
             ui.notifications.info('Effect deleted from global library.');
             break;
 
          case 'toggle':
+         case 'toggleEffect':
             ui.notifications.warn('Toggling is only available for owned effects.');
             break;
       }
@@ -118,11 +123,13 @@ export class EffectManager {
     */
    static async onManageActiveEffect(event, owner) {
       event.preventDefault();
-      const a = event.currentTarget;
-      const li = a.closest('li');
+      const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
+      const parentElem = event.target.parentElement;
+      const li = parentElem.closest('li');
       const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;
-      switch (a.dataset.action) {
+      switch (action) {
          case 'create':
+         case 'createEffect':
             return owner.createEmbeddedDocuments('ActiveEffect', [
                {
                   name: game.i18n.format('DOCUMENT.New', {
@@ -135,10 +142,13 @@ export class EffectManager {
                },
             ]);
          case 'edit':
+         case 'editEffect':
             return effect.sheet.render(true);
          case 'delete':
+         case 'deleteEffect':
             return effect.delete();
          case 'toggle':
+         case 'toggleEffect':
             return await effect.update({ disabled: !effect.disabled });
       }
    }

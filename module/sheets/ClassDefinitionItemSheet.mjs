@@ -1,47 +1,93 @@
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { DragDropMixin } from './mixins/DragDropMixin.mjs';
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassDefinitionItemSheet extends fadeItemSheet {
-   /** @override */
-   static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'item'],
+export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
+   /**
+   * Get the default options for the sheet.
+   */
+   static DEFAULT_OPTIONS = {
+      position: {
+         top: 150,
          width: 650,
-         height: 480,
-         dragDrop: [
-            { dragSelector: "[data-document-id]", dropSelector: "form" }
-         ],
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'description',
-            },
-         ],
-      });
+         height: 500,
+      },
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      form: {
+         submitOnChange: true
+      },
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/classdef/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      levels: {
+         template: "systems/fantastic-depths/templates/item/classdef/levels.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      saves: {
+         template: "systems/fantastic-depths/templates/item/classdef/saves.hbs",
+      },
+      primereqs: {
+         template: "systems/fantastic-depths/templates/item/classdef/primereqs.hbs",
+      },
+      abilities: {
+         template: "systems/fantastic-depths/templates/item/classdef/abilities.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/item/classdef/items.hbs",
+      },
+      spells: {
+         template: "systems/fantastic-depths/templates/item/classdef/spells.hbs",
+      },
    }
 
    /** @override */
-   get template() {
-      const path = 'systems/fantastic-depths/templates/item';
-      return `${path}/ClassDefinitionItemSheet.hbs`;
+   tabGroups = {
+      primary: { id: "description" }
    }
 
    /** @override */
-   async getData() {
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'levels', 'description', 'saves', 'primereqs', 'abilities', 'items']
+
+      if (this.item.system.maxSpellLevel > 0) {
+         options.parts.push('spells');
+      }
+   }
+
+   /** @override */
+   async _prepareContext() {
       // Retrieve base data structure
-      const context = await super.getData();
-      const itemData = context.data;
+      const context = await super._prepareContext();
 
       // Add the item's data for easier access
-      //context.flags = itemData.flags;
-      context.isSpellcaster = itemData.system.maxSpellLevel > 0;
+      //context.flags = this.item.flags;
+      context.isSpellcaster = this.item.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
-      for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
+      for (let i = 1; i <= this.item.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
       // Ability score abilities
@@ -54,6 +100,9 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
       context.logics = [...CONFIG.FADE.ConcatLogic.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.concatLogic.${key}`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      // Prepare the tabs.
+      context.tabs = this.#getTabs();
 
       return context;
    }
@@ -72,7 +121,6 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
       html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
    }
 
-   /** @inheritdoc */
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
@@ -133,7 +181,39 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
             specialAbilities.splice(index, 1);
             await this.item.update({ "system.specialAbilities": specialAbilities });
          }
+      } else if (type === 'item') {
+         const items = this.item.system.classItems;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.classItems": items });
+         }
       }
       this.render();
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const tabs = {
+         levels: { id: 'levels', group: 'primary', label: 'FADE.tabs.levels' },
+         description: { id: 'description', group: 'primary', label: 'FADE.tabs.description' },
+         saves: { id: 'saves', group: 'primary', label: 'FADE.Actor.Saves.long' },
+         primereqs: { id: 'primereqs', group: 'primary', label: 'FADE.tabs.primeRequisites' },
+         abilities: { id: 'abilities', group: 'primary', label: 'FADE.SpecialAbility.plural' },
+         items: { id: 'items', group: 'primary', label: 'FADE.items' },
+      }
+
+      if (this.item.system.maxSpellLevel > 0) {
+         tabs.spells = { id: 'spells', group: 'primary', label: 'FADE.tabs.spells' };
+      }
+
+      for (const v of Object.values(tabs)) {
+         v.active = this.tabGroups[v.group] === v.id;
+         v.cssClass = v.active ? "active" : "";
+      }
+
+      return tabs;
    }
 }

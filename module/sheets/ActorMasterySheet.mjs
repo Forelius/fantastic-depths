@@ -6,7 +6,7 @@ const { ItemSheetV2 } = foundry.applications.sheets;
  */
 export class ActorMasterySheet extends HandlebarsApplicationMixin(ItemSheetV2) {
    /**
-    * Get the default options for the ActorMasteryItem sheet.
+    * Get the default options for the sheet.
     */
    static DEFAULT_OPTIONS = {
       window: {

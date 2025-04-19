@@ -6,6 +6,21 @@ import { EffectManager } from '../sys/EffectManager.mjs';
  * Base sheet class for fadeItem.
  */
 export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+   get title() {
+      return game.user.isGM || this.item.system.isIdentified ? this.item.name : this.item.system.unidentifiedName;
+   }
+
+   static DEFAULT_OPTIONS = {
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      actions: {
+         deleteTag: fadeItemSheet.#clickDeleteTag,
+         createEffect: fadeItemSheet.#clickEffect,
+         editEffect: fadeItemSheet.#clickEffect,
+         deleteEffect: fadeItemSheet.#clickEffect,
+         toggleEffect: fadeItemSheet.#clickEffect,
+      }
+   }
+
    /**
     * Prepare data to be used in the Handlebars template.
     */
@@ -34,30 +49,31 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       return context;
    }
 
-   get title() {
-      return game.user.isGM || this.item.system.isIdentified ? this.item.name : this.item.system.unidentifiedName;
-   }
-
-   /** @override */
-   activateListeners(html) {
-      super.activateListeners(html);
-
-      // Everything below here is only needed if the sheet is editable
+   /**
+     * Actions performed after any render of the Application.
+     * Post-render steps are not awaited by the render process.
+     * @param {ApplicationRenderContext} context      Prepared context data
+     * @param {RenderOptions} options                 Provided render options
+     * @protected
+     */
+   _onRender(context, options) {    
       if (this.isEditable) {
-         // Active Effect management
-         html.on('click', '.effect-control', async (ev) =>
-            await EffectManager.onManageActiveEffect(ev, this.item)
-         );
-         html.find('input[data-action="add-tag"]').keypress((ev) => {
-            if (ev.which === 13) {
-               const value = $(ev.currentTarget).val();
-               this.object.tagManager.pushTag(value);
+         const inputField = this.element.querySelector('input[data-action="add-tag"]');
+         inputField.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') { // Check if the Enter key is pressed
+               const value = event.currentTarget.value; // Get the value of the input
+               this.item.tagManager.pushTag(value); // Push the value to the tag manager
             }
          });
-         html.find(".tag-delete").click((ev) => {
-            const value = ev.currentTarget.parentElement.dataset.tag;
-            this.object.tagManager.popTag(value);
-         });
       }
+   }
+
+   static async #clickEffect(event) {
+      await EffectManager.onManageActiveEffect(event, this.item)
+   }
+
+   static #clickDeleteTag(event) {
+      const value = event.target.parentElement.dataset.tag;
+      this.item.tagManager.popTag(value);
    }
 }

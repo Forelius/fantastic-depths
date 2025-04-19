@@ -1,0 +1,38 @@
+<section class='tab {{tabs.items.cssClass}}' data-group='primary' data-tab='items'>
+   <ol name="class-items" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header collapsible-header'>
+         <div style="max-width:50px">{{localize 'FADE.Actor.Level'}}</div>
+         <div style="max-width:90px">{{localize 'FADE.type'}}</div>
+         <div>{{localize 'FADE.name'}}</div>
+         <div>{{localize 'FADE.changes'}}</div>
+         <div class='item-controls' style="max-width:30px;">
+            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.item")}}' data-type='item'>
+               <i class='fas fa-plus'></i>
+            </a>
+         </div>
+      </li>
+      <!-- Class Ability Entries -->
+      {{#each system.classItems as |item index|}}
+      <li class='item flexrow' data-item-id='{{item._id}}'>
+         <div style="max-width:50px">
+            <input type="number" name="system.classItems.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
+         </div>
+         <div style="max-width:90px">
+            <input type="text" name="system.classItems.{{index}}.type" value="{{item.type}}" data-dtype="String" />
+         </div>
+         <div>
+            <input type="text" style="text-align:left;" name="system.classItems.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+         </div>
+         <div>
+            <input type="text" style="text-align:left;" name="system.classItems.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
+         </div>
+         <div class='item-controls' style="max-width:30px;">
+            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}' data-type='item' data-index='{{index}}'>
+               <i class='fas fa-trash'></i>
+            </a>
+         </div>
+      </li>
+      {{/each}}
+   </ol>
+</section>

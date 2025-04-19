@@ -19,9 +19,15 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    static DEFAULT_OPTIONS = {
       id: 'user-tables-config',
       tag: 'form',
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
       position: {
          top: 80,
-         width: 500
+         width: 500,
+         height: 400
       },
       form: {
          handler: UserTablesConfig.#onSubmit,
