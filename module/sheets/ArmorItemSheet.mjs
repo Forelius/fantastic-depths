@@ -11,7 +11,7 @@ export class ArmorItemSheet extends fadeItemSheet {
    static DEFAULT_OPTIONS = {
       position: {
          width: 540,
-         height: 340,
+         height: "auto",
       },
       window: {
          resizable: true,
@@ -32,20 +32,16 @@ export class ArmorItemSheet extends fadeItemSheet {
          template: "templates/generic/tab-navigation.hbs",
       },
       description: {
-         template: "systems/fantastic-depths/templates/item/armor/description.hbs",
-         scrollable: ['']
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
       },
       attributes: {
          template: "systems/fantastic-depths/templates/item/armor/attributes.hbs",
-         scrollable: ['']
       },
       effects: {
-         template: "systems/fantastic-depths/templates/item/armor/effects.hbs",
-         scrollable: ['']
+         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
       gmOnly: {
          template: "systems/fantastic-depths/templates/item/armor/gmOnly.hbs",
-         scrollable: ['']
       }
    }
 

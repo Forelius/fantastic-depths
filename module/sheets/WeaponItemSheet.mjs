@@ -7,32 +7,71 @@ import { fadeItemSheet } from './fadeItemSheet.mjs';
  */
 export class WeaponItemSheet extends fadeItemSheet {
    /**
-    * Get the default options for the WeaponItem sheet.
-    */
-   static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'item'],
-         template: "systems/fantastic-depths/templates/item/WeaponItemSheet.hbs",
+   * Get the default options for the MasteryDefinitionItem sheet.
+   */
+   static DEFAULT_OPTIONS = {
+      position: {
          width: 540,
-         height: 360,
+         height: "auto",
+      },
+      window: {
          resizable: true,
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'description',
-            },
-         ],
-      });
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      form: {
+         submitOnChange: true
+      }
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/weapon/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      attributes: {
+         template: "systems/fantastic-depths/templates/item/weapon/attributes.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/weapon/gmOnly.hbs",
+      }
+   }
+
+   /** @override */
+   tabGroups = {
+      primary: "description"
+   }
+
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'description']
+
+      if (game.user.isGM) {
+         options.parts.push('attributes');
+         options.parts.push('effects');
+         options.parts.push('gmOnly');
+      }
    }
 
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   async getData(options) {
-      const context = await super.getData(options);
-      const itemData = context.data;
-      context.usesAmmo = itemData.system.ammoType?.length > 0;
+   async _prepareContext(options) {
+      const context = await super._prepareContext(options);
+      context.usesAmmo = this.item.system.ammoType?.length > 0;
 
       // Weapon types
       const weaponTypes = [];
@@ -73,9 +112,32 @@ export class WeaponItemSheet extends fadeItemSheet {
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
+      context.tabs = this.#getTabs();
+
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const tabs = {
+         description: { id: 'description', group: 'primary', label: 'FADE.tabs.description', cssClass: 'item', active: true }
+      }
+      if (game.user.isGM) {
+         tabs.attributes = { id: 'attributes', group: 'primary', label: 'FADE.tabs.attributes', cssClass: 'item' };
+         tabs.effects = { id: 'effects', group: 'primary', label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.gmOnly = { id: 'gmOnly', group: 'primary', label: 'FADE.tabs.gmOnly', cssClass: 'item' };
+      }
+
+      for (const v of Object.values(tabs)) {
+         v.active = this.tabGroups[v.group] === v.id;
+         v.cssClass = v.active ? "active" : "";
+      }
+      return tabs;
    }
 }
