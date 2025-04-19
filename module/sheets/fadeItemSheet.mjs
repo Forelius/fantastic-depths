@@ -59,7 +59,7 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
    _onRender(context, options) {    
       if (this.isEditable) {
          const inputField = this.element.querySelector('input[data-action="add-tag"]');
-         inputField.addEventListener('keypress', (event) => {
+         inputField?.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') { // Check if the Enter key is pressed
                const value = event.currentTarget.value; // Get the value of the input
                this.item.tagManager.pushTag(value); // Push the value to the tag manager

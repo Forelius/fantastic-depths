@@ -11,8 +11,8 @@ export class WeaponItemSheet extends fadeItemSheet {
    */
    static DEFAULT_OPTIONS = {
       position: {
-         width: 540,
-         height: 400,
+         width: 570,
+         height: 'auto',
       },
       window: {
          resizable: true,
