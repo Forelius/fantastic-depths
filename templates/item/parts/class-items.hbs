@@ -15,7 +15,7 @@
       </li>
       <!-- Class Ability Entries -->
       {{#each system.classItems as |item index|}}
-   <li class='item flexrow' data-item-id='{{item.level}}'>
+   <li class='item flexrow' data-item-id='{{item._id}}'>
       <div style="max-width:50px">
          <input type="number" name="system.classItems.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
       </div>
@@ -29,7 +29,7 @@
          <input type="text" style="text-align:left;" name="system.classItems.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
       </div>
       <div class='item-controls' style="max-width:30px;">
-         <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.item")}}' data-type='item' data-index='{{index}}'>
+         <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}' data-type='item' data-index='{{index}}'>
             <i class='fas fa-trash'></i>
          </a>
       </div>

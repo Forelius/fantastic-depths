@@ -1,5 +1,7 @@
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeItemSheet } from './fadeItemSheet.mjs';
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
@@ -132,6 +134,12 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
          if (specialAbilities.length > index) {
             specialAbilities.splice(index, 1);
             await this.item.update({ "system.specialAbilities": specialAbilities });
+         }
+      } else if (type === 'item') {
+         const items = this.item.system.classItems;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.classItems": items });
          }
       }
       this.render();
