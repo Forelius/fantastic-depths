@@ -1,0 +1,7 @@
+﻿<section class='tab {{tab.cssClass}} active' data-group='primary' data-tab='description'>
+   {{#if (or isGM system.isIdentified)}}
+   {{editor enrichedDesc target='system.description' engine="prosemirror" button=true editable=editable}}
+   {{else}}
+   {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}
+   {{/if}}
+</section>

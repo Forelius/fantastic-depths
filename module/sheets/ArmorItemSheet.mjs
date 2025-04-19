@@ -15,19 +15,13 @@ export class ArmorItemSheet extends fadeItemSheet {
       },
       window: {
          resizable: true,
-         minimizable: false
+         minimizable: false,
+         contentClasses: ["scroll-body"]
       },
       classes: ['fantastic-depths', 'sheet', 'item'],
       form: {
          submitOnChange: true
-      },
-      tabs: [
-         {
-            navSelector: '.sheet-tabs',
-            contentSelector: '.sheet-body',
-            initial: 'description'
-         },
-      ],
+      }
    }
 
    static PARTS = {
@@ -35,10 +29,43 @@ export class ArmorItemSheet extends fadeItemSheet {
          template: "systems/fantastic-depths/templates/item/armor/header.hbs",
       },
       tabnav: {
-         template: "templates/generic/tab-navigation.hbs"
+         template: "templates/generic/tab-navigation.hbs",
       },
-      body: {
-         template: "systems/fantastic-depths/templates/item/armor/body.hbs",
+      description: {
+         template: "systems/fantastic-depths/templates/item/armor/description.hbs",
+         scrollable: ['']
+      },
+      attributes: {
+         template: "systems/fantastic-depths/templates/item/armor/attributes.hbs",
+         scrollable: ['']
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/item/armor/effects.hbs",
+         scrollable: ['']
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/armor/gmOnly.hbs",
+         scrollable: ['']
+      }
+   }
+
+   /** @override */
+   tabGroups = {
+      primary: "description"
+   }
+
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'description']
+
+      if (game.user.isGM) {
+         options.parts.push('attributes');
+         options.parts.push('effects');
+         options.parts.push('gmOnly');
       }
    }
 
@@ -57,9 +84,32 @@ export class ArmorItemSheet extends fadeItemSheet {
          context.encOptions = encOptions;
       }
 
+      context.tabs = this.#getTabs();
+
       // Prepare active effects for easier access
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const tabs = {
+         description: { id: 'description', group: 'primary', label: 'FADE.tabs.description', cssClass: 'item', active: true }
+      }
+      if (game.user.isGM) {
+         tabs.attributes = { id: 'attributes', group: 'primary', label: 'FADE.tabs.attributes', cssClass: 'item' };
+         tabs.effects = { id: 'effects', group: 'primary', label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.gmOnly = { id: 'gmOnly', group: 'primary', label: 'FADE.tabs.gmOnly', cssClass: 'item' };
+      }
+
+      for (const v of Object.values(tabs)) {
+         v.active = this.tabGroups[v.group] === v.id;
+         v.cssClass = v.active ? "active" : "";
+      }
+      return tabs;
    }
 }

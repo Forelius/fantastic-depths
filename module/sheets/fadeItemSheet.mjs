@@ -10,8 +10,7 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     * Prepare data to be used in the Handlebars template.
     */
    async _prepareContext(options) {
-      const context = await super.getData(options);
-      const itemData = context.data;
+      const context = await super._prepareContext(options);
       const rollData = this.item.getRollData();
       // Enrich description info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -28,7 +27,8 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
             relativeTo: this.item,
          });
       }
-      context.system = itemData.system;
+      context.item = this.item;
+      context.system = this.item.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
       return context;

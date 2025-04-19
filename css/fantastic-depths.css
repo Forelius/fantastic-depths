@@ -1171,7 +1171,7 @@ table.compact-table td {
 }
 .system-fantastic-depths .sheet-header {
   flex: 0 auto;
-  overflow: hidden;
+  /*overflow: hidden;*/
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -1254,8 +1254,9 @@ table.compact-table td {
 .system-fantastic-depths .sheet-tabs {
   flex: 0;
 }
-.system-fantastic-depths .sheet-body,
-.system-fantastic-depths .sheet-body .tab,
+.system-fantastic-depths .scroll-body {
+  overflow-y: scroll;
+}
 .system-fantastic-depths .sheet-body .tab .editor {
   height: 100%;
   min-height: 32px;
