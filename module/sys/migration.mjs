@@ -6,7 +6,7 @@ import { SYSTEM_ID } from './config.mjs';
  * The function currently sets the game version to the system's version, preparing for future checks
  * and potential migrations.
  */
-class MySystemVersion {
+export class MySystemVersion {
    constructor(version) {
       this.version = version;
 

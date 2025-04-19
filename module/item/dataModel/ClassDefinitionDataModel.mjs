@@ -132,6 +132,19 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
       };
    }
 
+   /**
+    * Migrate source data from some prior format into a new specification.
+    * The source parameter is either original data retrieved from disk or provided by an update operation.
+    * @inheritDoc
+    */
+   static migrateData(source) {
+      //const currentVersion = new MySystemVersion(source.version ?? '0.10.0-rc.5');
+      if ((!source.specialAbilities || source.specialAbilities.length == 0) && source.classAbilities?.length > 0) {
+         source.specialAbilities = source.classAbilities;
+      }
+      return super.migrateData(source);
+   }
+
    /** @override */
    prepareBaseData() {
       this.maxSpellLevel = Math.max(0, (this.maxSpellLevel ?? 0));
