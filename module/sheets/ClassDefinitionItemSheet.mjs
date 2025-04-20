@@ -26,6 +26,10 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
       form: {
          submitOnChange: true
       },
+      actions: {
+         createItem: ClassDefinitionItemSheet.#onCreateChild,
+         deleteItem: ClassDefinitionItemSheet.#onDeleteChild,
+      },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
 
@@ -61,7 +65,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
 
    /** @override */
    tabGroups = {
-      primary: { id: "description" }
+      primary: "description"
    }
 
    /** @override */
@@ -107,20 +111,6 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
       return context;
    }
 
-   /** @override */
-   activateListeners(html) {
-      super.activateListeners(html);
-
-      // Everything below here is only needed if the sheet is editable
-      if (!this.isEditable) return;
-
-      // Add Inventory Item
-      html.on('click', '.item-create', async (event) => { await this.#onCreateChild(event) });
-
-      // Delete Inventory Item
-      html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
-   }
-
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
@@ -142,28 +132,36 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
    * @param {Event} event The originating click event
    * @private
    */
-   async #onCreateChild(event) {
+   static async #onCreateChild(event) {
       event.preventDefault();
-      const header = event.currentTarget;
-      const type = header.dataset.type;
+      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
 
       if (type === 'classSave') {
-         this.item.createClassSave();
+         await this.item.createClassSave();
       } else if (type === 'primeReq') {
-         this.item.createPrimeReq();
-      } else if (type === 'classAbility') {
-         this.item.createClassAbility();
-      } else if (ClassDefinitionItem.ValidItemTypes.includes(type)) {
-         this.item.createClassItem();
+         await this.item.createPrimeReq();
+      } else if (type === 'specialAbility') {
+         await this.item.createClassAbility();
+      } else if (type === 'item') {
+         await this.item.createClassItem();
       }
       this.render();
    }
 
-   async #onDeleteChild(event) {
+   static async #onDeleteChild(event) {
       event.preventDefault();
-      const type = event.currentTarget.dataset.type;
-      const index = parseInt(event.currentTarget.dataset.index);
-
+      let type;
+      let index;
+      if (event.target.dataset.type) {
+         type = event.target.dataset.type;
+         index = parseInt(event.target.dataset.index);
+      } else if (event.target.parentElement.dataset.type) {
+         type = event.target.parentElement.dataset.type;
+         index = parseInt(event.target.parentElement.dataset.index);
+      } else {
+         console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can't determine item type.`, item);
+      }
+      
       if (type === 'classSave') {
          const saves = this.item.system.saves;
          // Handle deletion of a class save
@@ -196,22 +194,26 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
+      const group = 'primary';
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+
       const tabs = {
-         levels: { id: 'levels', group: 'primary', label: 'FADE.tabs.levels' },
-         description: { id: 'description', group: 'primary', label: 'FADE.tabs.description' },
-         saves: { id: 'saves', group: 'primary', label: 'FADE.Actor.Saves.long' },
-         primereqs: { id: 'primereqs', group: 'primary', label: 'FADE.tabs.primeRequisites' },
-         abilities: { id: 'abilities', group: 'primary', label: 'FADE.SpecialAbility.plural' },
-         items: { id: 'items', group: 'primary', label: 'FADE.items' },
+         levels: { id: 'levels', group, label: 'FADE.tabs.levels' },
+         description: { id: 'description', group, label: 'FADE.tabs.description' },
+         saves: { id: 'saves', group, label: 'FADE.Actor.Saves.long' },
+         primereqs: { id: 'primereqs', group, label: 'FADE.tabs.primeRequisites' },
+         abilities: { id: 'abilities', group, label: 'FADE.SpecialAbility.plural' },
+         items: { id: 'items', group, label: 'FADE.items' },
       }
 
       if (this.item.system.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group: 'primary', label: 'FADE.tabs.spells' };
+         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
       }
 
-      for (const v of Object.values(tabs)) {
-         v.active = this.tabGroups[v.group] === v.id;
-         v.cssClass = v.active ? "active" : "";
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
       }
 
       return tabs;

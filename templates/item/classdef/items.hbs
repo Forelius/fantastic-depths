@@ -7,7 +7,7 @@
          <div>{{localize 'FADE.name'}}</div>
          <div>{{localize 'FADE.changes'}}</div>
          <div class='item-controls' style="max-width:30px;">
-            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.item")}}' data-type='item'>
+            <a class='item-control' data-action="createItem" data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.item")}}' data-type='item'>
                <i class='fas fa-plus'></i>
             </a>
          </div>
@@ -28,7 +28,7 @@
             <input type="text" style="text-align:left;" name="system.classItems.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
          </div>
          <div class='item-controls' style="max-width:30px;">
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}' data-type='item' data-index='{{index}}'>
+            <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.item")}}' data-type='item' data-index='{{index}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>

@@ -27,7 +27,7 @@
             <div style="min-width: 70px;">{{localize 'FADE.Actor.Min'}}</div>
             <div style="min-width: 70px;">+%</div>
             <div class='item-controls'>
-               <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq'>
+               <a class='item-control' data-action="createItem" data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq'>
                   <i class='fas fa-plus'></i>
                </a>
             </div>
@@ -52,7 +52,7 @@
                <input type="number" name="system.primeReqs.{{index}}.percentage" value="{{primeReqData.percentage}}" data-dtype="Number" />
             </div>
             <div class='item-controls'>
-               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq' data-index='{{index}}'>
+               <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq' data-index='{{index}}'>
                   <i class='fas fa-trash'></i>
                </a>
             </div>

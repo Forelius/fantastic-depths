@@ -7,7 +7,7 @@
          <div>{{save.system.shortName}}</div>
          {{/each}}
          <div class='item-controls'>
-            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave'>
+            <a class='item-control' data-action="createItem" data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave'>
                <i class='fas fa-plus'></i>
                {{localize 'FADE.Actor.Saves.short'}}
             </a>
@@ -23,7 +23,7 @@
          </div>
          {{/contextMergeEach}}
          <div class='item-controls'>
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave' data-index='{{index}}'>
+            <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave' data-index='{{index}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>

@@ -73,7 +73,7 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
    }
 
    static #clickDeleteTag(event) {
-      const value = event.target.parentElement.dataset.tag;
+      const value = event.target.dataset.tag ?? event.target.parentElement.dataset.tag;
       this.item.tagManager.popTag(value);
    }
 }

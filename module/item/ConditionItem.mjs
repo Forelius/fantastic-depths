@@ -1,17 +1,8 @@
 import { fadeItem } from './fadeItem.mjs';
 
 export class ConditionItem extends fadeItem {
-   constructor(data, context) {
-      super(data, context);
-   }
-
    get duration() {
       return 0;
-   }
-
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
    }
 
    /** @override */

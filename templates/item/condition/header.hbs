@@ -1,0 +1,23 @@
+<header class='sheet-header'>
+   <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
+   <div class='header-fields'>
+      <div class="summary flexrow">
+         <div>
+            <div class='charname'>
+               <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+            </div>
+            <label>{{localize 'Name'}}</label>
+         </div>
+         <div style="max-width:100px">
+            <input type="text" name='item.system.key' value="{{item.system.key}}" data-type="String" />
+            <label for="item.system.key" data-tooltip="{{localize 'FADE.condition.key.hint'}}">{{localize 'FADE.class.key.name'}}</label>
+         </div>
+      </div>
+      <!--<div class="summary flexrow">
+         <div>
+            <input type="checkbox" name="system.addStatusEffect" data-dtype="Boolean" {{#if system.addStatusEffect}} checked{{/if}} data-tooltip="{{localize "FADE.condition.addStatusEffect.hint"}}" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.addStatusEffect" data-tooltip="{{localize "FADE.condition.addStatusEffect.hint"}}">{{localize "FADE.condition.addStatusEffect.name"}}</label>
+         </div>
+      </div>-->
+   </div>
+</header>

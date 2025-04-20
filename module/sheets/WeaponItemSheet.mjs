@@ -76,7 +76,6 @@ export class WeaponItemSheet extends fadeItemSheet {
    }
 
    async _preparePartContext(partId, context) {
-      console.log(`_preparePartContext for ${this.item.name}:`, partId, context);
       if (partId === 'header') {
          // Damage types
          const damageTypes = [];
@@ -121,10 +120,6 @@ export class WeaponItemSheet extends fadeItemSheet {
          // Prepare active effects for easier access
          context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
       }
-
-      if (partId === this.tabGroups['primary']) {
-         console.log("ME");
-      }
       return context;
    }
 
@@ -151,7 +146,7 @@ export class WeaponItemSheet extends fadeItemSheet {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }
-      console.log(`#getTabs for ${this.item.name}:`, tabs);
+
       return tabs;
    }
 }
