@@ -77,7 +77,7 @@ export class SpecialAbilitySheet extends fadeItemSheet {
       // Saving throws
       const saves = [];
       saves.push({ value: "", text: game.i18n.localize('None') });
-      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName));
+      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
       saves.push(...saveItems.map((save) => {
          return { value: save.system.customSaveCode, text: save.system.shortName }
       }));

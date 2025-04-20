@@ -81,6 +81,13 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          }
       }
 
+      // This is where the modifiers are applied to the formula. It only supports addition mode.
+      if (hasDamage) {
+         if (modifier !== 0) {
+            formula = formula ? `${formula}+${modifier}` : `${modifier}`;
+         }
+      }
+
       return { formula, type: weaponData.damageType, digest, hasDamage };
    }
 

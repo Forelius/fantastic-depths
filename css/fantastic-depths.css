@@ -110,7 +110,7 @@ h1, h2, h3, h4 {
 }
 
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
-  max-height: 28px;
+  max-height: 26px;
 }
 
 table.compact-table th {
@@ -1212,11 +1212,13 @@ table.compact-table input {
   flex: 1;
 }
 .system-fantastic-depths .sheet-header .charname {
+  max-height: 34px;
   height: 34px;
 }
 .system-fantastic-depths .sheet-header .charname input, .system-fantastic-depths .sheet-header .charname select {
   font-size: 22px;
   font-weight: 500;
+  max-height: 30px;
   height: 30px;
 }
 .system-fantastic-depths .tag-section {
@@ -1292,7 +1294,7 @@ table.compact-table input {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
-  top: 31px;
+  top: 32px;
   left: 2px;
 }
 .system-fantastic-depths .summary li {
@@ -1307,7 +1309,7 @@ table.compact-table input {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
-  top: 31px;
+  top: 32px;
   left: 2px;
 }
 .system-fantastic-depths .summary li.notify input {

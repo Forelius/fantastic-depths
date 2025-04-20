@@ -212,7 +212,7 @@ export class SpeciesItemSheet extends DragDropMixin(fadeItemSheet) {
    }
 
    static #clickDeleteLanguage(event) {
-      const value = event.target.dataset.tag ?? event.target.parentElement.dataset.tag;
-      this.item.languageManager.popTag(value);
+      const tag = event.target.closest('.tag').dataset.tag;
+      this.item.languageManager.popTag(tag);
    }
 }

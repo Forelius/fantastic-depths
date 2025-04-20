@@ -58,8 +58,8 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
      */
    _onRender(context, options) {    
       if (this.isEditable) {
-         const inputField = this.element.querySelector('input[data-action="add-tag"]');
-         inputField?.addEventListener('keypress', (event) => {
+         const inputField = this.element.querySelector('input[data-action="addTag"]');
+         inputField?.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') { // Check if the Enter key is pressed
                const value = event.currentTarget.value; // Get the value of the input
                this.item.tagManager.pushTag(value); // Push the value to the tag manager
@@ -73,7 +73,7 @@ export class fadeItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
    }
 
    static #clickDeleteTag(event) {
-      const value = event.target.dataset.tag ?? event.target.parentElement.dataset.tag;
-      this.item.tagManager.popTag(value);
+      const tag = event.target.closest('.tag-delete').dataset.tag;
+      this.item.tagManager.popTag(tag);
    }
 }
