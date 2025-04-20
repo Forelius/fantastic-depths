@@ -42,7 +42,7 @@ export class WeaponItemSheet extends fadeItemSheet {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/weapon/gmOnly.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/gmOnly.hbs",
       }
    }
 
@@ -57,10 +57,9 @@ export class WeaponItemSheet extends fadeItemSheet {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description']
+      options.parts = ['header', 'tabnav', 'description', 'attributes']
 
       if (game.user.isGM) {
-         options.parts.push('attributes');
          options.parts.push('effects');
          options.parts.push('gmOnly');
       }
@@ -129,7 +128,6 @@ export class WeaponItemSheet extends fadeItemSheet {
    */
    #getTabs() {
       const group = 'primary';
-
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
 

@@ -56,10 +56,9 @@ export class ArmorItemSheet extends fadeItemSheet {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description']
+      options.parts = ['header', 'tabnav', 'description', 'attributes']
 
       if (game.user.isGM) {
-         options.parts.push('attributes');
          options.parts.push('effects');
          options.parts.push('gmOnly');
       }
@@ -94,13 +93,17 @@ export class ArmorItemSheet extends fadeItemSheet {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
+      const group = 'primary';
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+
       const tabs = {
-         description: { id: 'description', group: 'primary', label: 'FADE.tabs.description', cssClass: 'item', active: true }
+         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' },
+         attributes: { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' }
       }
       if (game.user.isGM) {
-         tabs.attributes = { id: 'attributes', group: 'primary', label: 'FADE.tabs.attributes', cssClass: 'item' };
-         tabs.effects = { id: 'effects', group: 'primary', label: 'FADE.tabs.effects', cssClass: 'item' };
-         tabs.gmOnly = { id: 'gmOnly', group: 'primary', label: 'FADE.tabs.gmOnly', cssClass: 'item' };
+         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly', cssClass: 'item' };
       }
 
       for (const v of Object.values(tabs)) {

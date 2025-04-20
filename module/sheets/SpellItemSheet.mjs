@@ -7,6 +7,51 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
  */
 export class SpellItemSheet extends fadeItemSheet {
    /**
+   * Get the default options for the sheet.
+   */
+   static DEFAULT_OPTIONS = {
+      position: {
+         width: 570,
+         height: 'auto',
+      },
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      form: {
+         submitOnChange: true
+      }
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/weapon/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      attributes: {
+         template: "systems/fantastic-depths/templates/item/weapon/attributes.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/shared/gmOnly.hbs",
+      }
+   }
+
+   /** @override */
+   tabGroups = {
+      primary: "description"
+   }
+
+   /**
     * Get the default options for the SpellItem sheet.
     */
    static get defaultOptions() {

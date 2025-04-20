@@ -1,0 +1,39 @@
+﻿<header class='sheet-header'>
+   <div class='header-fields'>
+      <img class='profile-img-sm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
+      <ul class="summary flexrow">
+         <li class="flex3">
+            <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='{{localize 'Name'}}' {{#unless isGM}} readonly{{/unless}} /></div>
+            <label>{{localize 'Name'}}</label>
+         </li>
+         <li class="flex0" style="min-width:40px;">
+            <input type='text' name='system.spellLevel' value='{{system.spellLevel}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.spellLevel">{{localize 'FADE.Spell.level'}}</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name='system.range' value='{{system.range}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.range">{{localize 'FADE.Spell.range'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex3">
+            <input type='text' name='system.duration' value='{{system.duration}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} data-tooltip="{{system.duration}}" />
+            <label>{{localize 'FADE.Spell.duration'}}</label>
+         </li>
+         <li class="flex1">
+            <input type="checkbox" name="system.targetSelf" data-dtype="Boolean" {{#if system.targetSelf}} checked{{/if}} {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.targetSelf">{{localize "FADE.Spell.targetSelf"}}</label>
+         </li>
+         <li class="flex1">
+            <input type="checkbox" name="system.targetOther" data-dtype="Boolean" {{#if system.targetOther}} checked{{/if}} {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.targetOther">{{localize "FADE.Spell.targetOther"}}</label>
+         </li>
+         <li class="flex1">
+            <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions savingThrows selected=system.savingThrow}}
+            </select>
+            <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+         </li>
+      </ul>
+   </div>
+</header>

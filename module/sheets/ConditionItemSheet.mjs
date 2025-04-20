@@ -74,11 +74,14 @@ export class ConditionItemSheet extends fadeItemSheet {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
+      const group = 'primary';
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
       const tabs = {
-         description: { id: 'description', group: 'primary', label: 'FADE.tabs.description', cssClass: 'item', active: true }
+         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' }
       }
       if (game.user.isGM) {
-         tabs.effects = { id: 'effects', group: 'primary', label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
       }
       for (const v of Object.values(tabs)) {
          v.active = this.tabGroups[v.group] === v.id;

@@ -19,12 +19,15 @@
 table.compact-table {
    th {
       line-height: 1;
-      padding: 1px 18px;
+      padding: 2px 12px;
    }
 
    td {
       line-height: 1;
-      padding: 1px 8px;
+      padding: 2px 4px;
+   }
+   input{
+      height: 26px;
    }
 }
 

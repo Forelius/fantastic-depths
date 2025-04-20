@@ -46,6 +46,10 @@ export class AttackDialog extends fadeDialog {
 
       result.resp = await DialogV2.wait({
          window: { title: title },
+         position: {
+            width: 350,
+            height: 'auto'
+         },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
          buttons: [

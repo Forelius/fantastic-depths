@@ -87,7 +87,6 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
       const context = await super._prepareContext();
 
       // Add the item's data for easier access
-      //context.flags = this.item.flags;
       context.isSpellcaster = this.item.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
@@ -109,6 +108,36 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
       context.tabs = this.#getTabs();
 
       return context;
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const group = 'primary';
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+
+      const tabs = {
+         levels: { id: 'levels', group, label: 'FADE.tabs.levels' },
+         description: { id: 'description', group, label: 'FADE.tabs.description' },
+         saves: { id: 'saves', group, label: 'FADE.Actor.Saves.long' },
+         primereqs: { id: 'primereqs', group, label: 'FADE.tabs.primeRequisites' },
+         abilities: { id: 'abilities', group, label: 'FADE.SpecialAbility.plural' },
+         items: { id: 'items', group, label: 'FADE.items' },
+      }
+
+      if (this.item.system.maxSpellLevel > 0) {
+         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+      }
+
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
+      }
+
+      return tabs;
    }
 
    async _onDrop(event) {
@@ -187,35 +216,5 @@ export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
          }
       }
       this.render();
-   }
-
-   /**
-   * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
-   */
-   #getTabs() {
-      const group = 'primary';
-      // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
-
-      const tabs = {
-         levels: { id: 'levels', group, label: 'FADE.tabs.levels' },
-         description: { id: 'description', group, label: 'FADE.tabs.description' },
-         saves: { id: 'saves', group, label: 'FADE.Actor.Saves.long' },
-         primereqs: { id: 'primereqs', group, label: 'FADE.tabs.primeRequisites' },
-         abilities: { id: 'abilities', group, label: 'FADE.SpecialAbility.plural' },
-         items: { id: 'items', group, label: 'FADE.items' },
-      }
-
-      if (this.item.system.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
-      }
-
-      for (const tab of Object.values(tabs)) {
-         tab.active = this.tabGroups[tab.group] === tab.id;
-         tab.cssClass = tab.active ? "active" : "";
-      }
-
-      return tabs;
    }
 }

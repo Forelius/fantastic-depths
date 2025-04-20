@@ -1,0 +1,10 @@
+﻿<header class='sheet-header'>
+   <img class='profile-img-sm' src='{{item.img}}' data-edit='img' style="width:40px; height:40px;" />
+   <div class='header-fields'>
+      <ul class="summary flexrow">
+         <li class='charname'>
+            <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+         </li>
+      </ul>
+   </div>
+</header>

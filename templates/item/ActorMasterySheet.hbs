@@ -1,4 +1,4 @@
-<div class='{{cssClass}}' autocomplete='off'>
+<div>
    <header class='sheet-header'>
       <img class='profile-img-xsm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
       <div class='header-fields'>
@@ -24,7 +24,7 @@
          </ul>
          <ul class="summary flexrow">
             <li class="flex2">
-               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}}disabled='disabled'{{/unless}}>
+               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} disabled='disabled' {{/unless}}>
                   {{selectOptions weaponTypes selected=system.primaryType}}
                </select>
                <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>
@@ -40,7 +40,7 @@
                </label>
             </li>
             <li class="flex2">
-               <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}}disabled='disabled'{{/unless}}>
+               <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} disabled='disabled' {{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType}}
                </select>
                <label for="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.acBonusTypeHint'}}">{{localize 'FADE.Mastery.bonusType'}}</label>
@@ -91,7 +91,7 @@
       </ul>
       <ul class="summary flexrow">
          <li class="flex1">
-            <input type='text' name="system.trainingFails" value='{{system.trainingFails}}' data-dtype='Number'/>
+            <input type='text' name="system.trainingFails" value='{{system.trainingFails}}' data-dtype='Number' />
             <label for="system.trainingFails" data-tooltip="{{localize 'FADE.Mastery.trainingFails.hint'}}">{{localize 'FADE.Mastery.trainingFails.name'}}</label>
          </li>
          <li class="flex1">

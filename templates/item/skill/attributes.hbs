@@ -1,0 +1,42 @@
+<div class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
+   <div class="bordered">
+      <div class="summary flexrow">
+         <div>
+            <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' />
+            <label for="system.rollFormula">{{localize 'FADE.roll'}}</label>
+         </div>
+         <div style="max-width:50px;">
+            <select name="system.operator">
+               {{selectOptions operators selected=system.operator}}
+            </select>
+            <label for="system.operator">{{localize 'FADE.operator'}}</label>
+         </div>
+         <div>
+            <input type='text' name="system.targetFormula" value='{{system.targetFormula}}' data-dtype='String' />
+            <label for="system.targetFormula">{{localize 'FADE.target'}}</label>
+         </div>
+         <div style="max-width:60px">
+            <input type="checkbox" name="system.showResult" data-dtype="Boolean" {{#if system.showResult}} checked{{/if}} data-tooltip="{{localize 'FADE.showResult.hint'}}" />
+            <label for="system.showResult" data-tooltip="{{localize 'FADE.showResult.hint'}}">{{localize 'FADE.showResult.name'}}</label>
+         </div>
+      </div>
+      <div class="summary flexrow">
+         <div style="max-width:100px">
+            <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
+            <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
+         </div>
+         <div style="max-width:100px">
+            <input type='text' name="system.autoFail" value='{{system.autoFail}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}" />
+            <label for="system.autoFail" data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}">{{localize 'FADE.SpecialAbility.autoFail'}}</label>
+         </div>
+         <div style="max-width:100px">
+            <input type='number' name="system.skillBonus" value='{{system.skillBonus}}' data-dtype='Number' />
+            <label for="system.skillBonus" data-tooltip="{{localize 'FADE.Skill.bonusHint'}}">{{localize 'FADE.bonus'}}</label>
+         </div>
+         <div style="max-width:100px">
+            <input type='number' name="system.skillPenalty" value='{{system.skillPenalty}}' data-dtype='Number' />
+            <label for="system.skillPenalty" data-tooltip="{{localize 'FADE.Skill.penaltyHint'}}">{{localize 'FADE.penalty'}}</label>
+         </div>
+      </div>
+   </div>
+</div>

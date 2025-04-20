@@ -1,13 +1,15 @@
 // -----------------------------------------
 // Items Lists
 // -----------------------------------------
+ol.items-list {
+   margin: 0 !important;
+   padding: 0 !important;
+}
+
 .items-list {
    list-style: none;
-   margin: 0;
-   padding: 0;
    overflow-y: auto;
    scrollbar-width: thin;
-
 
    .warning-bkgd {
       background: rgba(150, 20, 20, 0.15);
@@ -97,9 +99,10 @@
       }
 
       .item-name {
-         img{
-            border:none;
+         img {
+            border: none;
          }
+
          .item-image {
             flex: 0 0 30px;
             height: 30px;
@@ -127,6 +130,12 @@
 
       input {
          text-align: center;
+      }
+
+      input, select {
+         padding: 0 4px;
+         width: calc(100% - 3px);
+         height: 26px;
       }
 
       .item-description {

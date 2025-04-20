@@ -1,0 +1,75 @@
+﻿<div class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
+   {{> "itemFlags"}}
+   <div class="bordered">
+      <ul class="summary flexrow" style="min-height:26px;">
+         <li class="flex1">
+            <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions savingThrows selected=system.savingThrow}}
+            </select>
+            <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name="system.autoSuccess" value='{{system.autoSuccess}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}" />
+            <label for="system.autoSuccess" data-tooltip="{{localize 'FADE.SpecialAbility.autoSuccessHint'}}">{{localize 'FADE.SpecialAbility.autoSuccess'}}</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name="system.autoFail" value='{{system.autoFail}}' data-dtype='Number' data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}" />
+            <label for="system.autoFail" data-tooltip="{{localize 'FADE.SpecialAbility.autoFailHint'}}">{{localize 'FADE.SpecialAbility.autoFail'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+            <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+            <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
+         </li>
+         <li>
+            <select name="system.damageType" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions damageTypes selected=system.damageType}}
+            </select>
+            <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li>
+            <input type='text' name='system.shortName' value='{{system.shortName}}' data-dtype='String' />
+            <label for="system.shortName">{{localize 'FADE.shortName'}}</label>
+         </li>
+         <li>
+            <select name="system.category" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions categories selected=system.category}}
+            </select>
+            <label for="system.category">{{localize 'FADE.category'}}</label>
+         </li>
+         <li>
+            <select name="system.combatManeuver" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions combatManeuvers selected=system.combatManeuver}}
+            </select>
+            <label for="system.combatManeuver">{{localize 'FADE.combat.maneuvers.label'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.customSaveCode' value='{{system.customSaveCode}}' data-dtype='String' />
+            <label for="system.customSaveCode" data-tooltip="{{localize 'FADE.SpecialAbility.saveTypeHint'}}">{{localize 'FADE.SpecialAbility.saveType'}}</label>
+         </li>
+         <li style="max-width:50px">
+            <input type="text" name='system.classKey' value="{{system.classKey}}" data-type="String" />
+            <label for="system.classKey" data-tooltip="{{localize 'FADE.class.key.hint'}}">{{localize 'FADE.class.key.name'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li style="max-width:60px">
+            <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+            <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
+         </li>
+         <li style="max-width:60px">
+            <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+            <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
+         </li>
+         <li style="max-width:60px">
+            <input type="checkbox" name="system.showResult" data-dtype="Boolean" {{#if system.showResult}} checked{{/if}} data-tooltip="{{localize 'FADE.showResult.hint'}}" />
+            <label for="system.showResult" data-tooltip="{{localize 'FADE.showResult.hint'}}">{{localize 'FADE.showResult.name'}}</label>
+         </li>
+      </ul>
+   </div>
+</div>

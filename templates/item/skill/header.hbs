@@ -1,0 +1,34 @@
+<header class='sheet-header'>
+   <img class='profile-img-sm' src='{{item.img}}' data-edit='img' data-tooltip='{{item.name}}' />
+   <div class='header-fields'>
+      <ul class="summary flexrow">
+         <li class="flex3">
+            <div class='charname'>
+               <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+            </div>
+            <label>{{localize 'Name'}}</label>
+         </li>
+         <li class="flex1" style="max-width:70px">
+            <input type='number' name="system.level" value='{{system.level}}' data-dtype='Number' />
+            <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex2">
+            <select name="system.ability" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions abilities selected=system.ability}}
+            </select>
+            <label for="system.ability">{{localize 'FADE.Actor.Abilities.long'}}</label>
+         </li>
+         <li class="flex2">
+            <select name="system.rollMode" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions rollModes selected=system.rollMode}}
+            </select>
+         </li>
+         <li class="flex2">
+            <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+         </li>
+      </ul>
+   </div>
+</header>

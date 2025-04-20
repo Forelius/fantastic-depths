@@ -11,7 +11,8 @@ export class ActorMasterySheet extends HandlebarsApplicationMixin(ItemSheetV2) {
    static DEFAULT_OPTIONS = {
       window: {
          resizable: true,
-         minimizable: false
+         minimizable: false,
+         contentClasses: ["scroll-body"]
       },
       classes: ['fantastic-depths', 'sheet', 'item'],
       position: {

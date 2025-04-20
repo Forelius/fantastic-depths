@@ -15,7 +15,7 @@ export class SpeciesItem extends fadeItem {
       const newItem = {
          level: 1,
          name,
-         target: 0,
+         target: null,
          changes: "",
          classKey: classKey || this.system.key
       };

@@ -1,0 +1,143 @@
+﻿<section class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
+   <div>
+      {{> "itemFlags"}}
+   </div>
+   <div class="bordered">
+      {{#if system.isLight}}
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
+            <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+         </li>
+         <li class="flex1">
+            <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
+            <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <input name="turnsRemaining" type="text" data-dtype="String" value="{{turnsRemaining}}" readonly />
+            <label for="turnsRemaining" data-tooltip="{{localize 'FADE.Item.light.turnsRemainingHint'}}">{{localize "FADE.Item.light.turnsRemaining"}}</label>
+         </li>
+         {{#if isGM}}
+         <li class="flex1">
+            <input name="system.light.secondsRemain" type="text" data-dtype="String" value="{{system.light.secondsRemain}}" />
+            <label for="system.light.secondsRemain" data-tooltip="{{localize 'FADE.Item.light.secondsRemainingHint'}}">{{localize "FADE.Item.light.secondsRemaining"}}</label>
+         </li>
+         {{/if}}
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <input name="system.light.duration" type="text" data-dtype="Number" value="{{system.light.duration}}" placeholder="{{#if (eq system.light.duration null)}}∞{{/if}}" />
+            <label for="system.light.duration" data-tooltip="{{localize "FADE.Item.light.durationHint"}}">{{localize "FADE.Spell.duration"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.light.radius" type="text" data-dtype="Number" value="{{system.light.radius}}" />
+            <label for="system.light.radius" data-tooltip="{{localize 'FADE.Item.light.radiusHint'}}">{{localize "FADE.Item.light.radius"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.light.bright" type="text" data-dtype="Number" value="{{system.light.bright}}" {{#unless isCustom}} readonly{{/unless}} />
+            <label for="system.light.bright" data-tooltip="{{localize 'FADE.Item.light.brightHint'}}">{{localize "FADE.Item.light.bright"}}</label>
+         </li>
+         <li class="flex2">
+            <select name="system.light.type">
+               {{selectOptions lightTypes selected=system.light.type}}
+            </select>
+            <label for="system.light.type">{{localize "FADE.Item.light.typeLabel"}}</label>
+         </li>
+         <li class="flex2">
+            <input name="system.light.fuelType" type="text" data-dtype="String" value="{{system.light.fuelType}}" />
+            <label for="system.light.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
+         </li>
+      </ul>
+      {{#if isCustom}}
+      <ul class="summary flexrow">
+         <li class="flex2">
+            <div style="margin-top:0;">
+               {{colorPicker name="light.color" value=system.light.color}}
+            </div>
+            <label data-tooltip="{{localize 'FADE.Item.light.colorHint'}}">{{localize "FADE.Item.light.color"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.light.attenuation" type="text" data-dtype="Number" value="{{system.light.attenuation}}" />
+            <label for="system.light.attenuation">{{localize "FADE.Item.light.attenuation"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.light.luminosity" type="text" data-dtype="Number" value="{{system.light.luminosity}}" />
+            <label for="system.light.luminosity">{{localize "FADE.Item.light.luminosity"}}</label>
+         </li>
+         <li class="flex1">
+            <label for="system.light.angle">{{localize "FADE.Item.light.angle" }} <span class="units">({{localize "Degrees"}})</span></label>
+            <div class="form-fields">
+               <input type="number" name="system.light.angle" value="{{system.light.angle}}" placeholder="{{localize "Degrees"}}" />
+            </div>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex2">
+            <select name="system.light.animation.type">
+               {{selectOptions animationTypes selected=system.light.animation.type localize=true}}
+            </select>
+            <label for="system.light.animation.type">{{localize "FADE.Item.light.animationType"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.light.animation.speed" type="text" data-dtype="Number" value="{{system.light.animation.speed}}" />
+            <label for="system.light.animation.speed">{{localize "FADE.Item.light.animationSpeed"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.light.animation.intensity" type="text" data-dtype="Number" value="{{system.light.animation.intensity}}" />
+            <label for="system.light.animation.intensity">{{localize "FADE.Item.light.animationIntensity"}}</label>
+         </li>
+      </ul>
+      {{/if}}
+      {{else}}
+      <ul class="summary flexrow">
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
+            <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
+            <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.isUsable" data-dtype="Boolean" {{#if system.isUsable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isUsable.hint"}}" />
+            <label for="system.isUsable" data-tooltip="{{localize "FADE.Item.isUsable.hint"}}">{{localize "FADE.Item.isUsable.name"}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.isTreasure" data-dtype="Boolean" {{#if system.isTreasure}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isTreasure.hint"}}" />
+            <label for="system.isTreasure" data-tooltip="{{localize "FADE.Item.isTreasure.hint"}}">{{localize "FADE.Actor.Treasure.short"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.fuelType" type="text" data-dtype="String" value="{{system.fuelType}}" />
+            <label for="system.fuelType">{{localize "FADE.Item.light.fuelType"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.ammoType" type="text" data-dtype="String" value="{{system.ammoType}}" />
+            <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions savingThrows selected=system.savingThrow}}
+            </select>
+            <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+            <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+            <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
+         </li>
+         <li>
+            <select name="system.damageType" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions damageTypes selected=system.damageType}}
+            </select>
+            <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+         </li>
+      </ul>
+      {{/if}}
+   </div>
+   {{> "itemIdentified"}}
+</section>
