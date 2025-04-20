@@ -109,6 +109,19 @@ h1, h2, h3, h4 {
   width: 300px;
 }
 
+.fantastic-depths .window-content input, .fantastic-depths .window-content select {
+  max-height: 28px;
+}
+
+table.compact-table th {
+  line-height: 1;
+  padding: 1px 18px;
+}
+table.compact-table td {
+  line-height: 1;
+  padding: 1px 8px;
+}
+
 .rollable:hover, .rollable:focus, .chatable:hover, .chatable:focus {
   cursor: pointer;
 }
@@ -233,6 +246,32 @@ h1, h2, h3, h4 {
 
 .prosemirror .editor-container .editor-content {
   position: relative !important;
+}
+
+/* Dialog footer buttons */
+.standard-form .form-footer > button {
+  line-height: 1;
+  min-width: auto;
+}
+
+/* Fixes spacing when using labels on top. */
+.top-label label {
+  margin: 0 4px;
+}
+
+.top-label select, .top-label input {
+  margin-top: 4px;
+}
+
+.fade-dialog .form-group label {
+  max-width: 110px;
+  line-height: normal !important;
+}
+.fade-dialog .application label.checkbox {
+  display: block;
+}
+.fade-dialog .top-label div {
+  padding: 0 4px;
 }
 
 .system-fantastic-depths #tooltip.text-center {
@@ -473,8 +512,8 @@ h1, h2, h3, h4 {
   background-color: rgba(250, 250, 250, 0.05);
 }
 .dark-mode .fantastic-depths .window-content {
-  background: url("../assets/img/grunge2.jpg");
   color: #ebeae4;
+  background: url("../assets/img/grunge2.jpg");
 }
 .dark-mode .fantastic-depths .window-content .editor-container {
   margin: 0 4px;
@@ -712,15 +751,13 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content {
   padding: 1px 5px 4px 5px;
-  /*.collapser {
-     margin-bottom: 4px;
-  }*/
 }
 .chat-message .message-content img {
   border: none;
 }
 .chat-message .message-content button {
   margin: 0;
+  width: 100%;
 }
 .chat-message .message-content .digest {
   margin-bottom: 6px;
@@ -730,7 +767,7 @@ h1, h2, h3, h4 {
 }
 .chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll, .chat-message .message-content .heal-roll {
   font-size: 15px;
-  padding: 5px 4px;
+  /*padding: 5px 4px;*/
 }
 .chat-message .message-content .small-text {
   margin-left: 4px;
@@ -895,41 +932,6 @@ h1, h2, h3, h4 {
 .system-fantastic-depths .character .ability-horz:last-child, .system-fantastic-depths .monster .ability-horz:last-child {
   border-right: none;
 }
-.system-fantastic-depths .character .ability, .system-fantastic-depths .monster .ability {
-  min-height: 34px;
-}
-.system-fantastic-depths .character .ability label, .system-fantastic-depths .monster .ability label {
-  font-weight: 500;
-  margin: 0 0 2px 0;
-}
-.system-fantastic-depths .character .ability .abbr, .system-fantastic-depths .monster .ability .abbr {
-  font-size: 20px;
-  min-width: 60px;
-  max-width: 80px;
-  text-align: center;
-}
-.system-fantastic-depths .character .ability .long, .system-fantastic-depths .monster .ability .long {
-  font-size: 15px;
-  min-width: 80px;
-  max-width: 80px;
-  text-align: left;
-}
-.system-fantastic-depths .character .ability input, .system-fantastic-depths .monster .ability input {
-  font-size: 20px;
-  max-width: 40px;
-  border-radius: 5px;
-  padding-top: 0;
-  text-align: center;
-}
-.system-fantastic-depths .character .ability .ability-score, .system-fantastic-depths .monster .ability .ability-score {
-  font-size: 25px;
-  text-align: center;
-  padding-right: 5px;
-}
-.system-fantastic-depths .character .ability .ability-mod, .system-fantastic-depths .monster .ability .ability-mod {
-  max-width: 36px;
-  font-size: 18px;
-}
 .system-fantastic-depths .character .xsmall-col, .system-fantastic-depths .monster .xsmall-col {
   min-height: 32px;
 }
@@ -1090,6 +1092,76 @@ h1, h2, h3, h4 {
   flex: 0 0 6px;
   margin: 0 5px 0 0;
   cursor: pointer;
+}
+.system-fantastic-depths .character .ability {
+  min-height: 34px;
+}
+.system-fantastic-depths .character .ability label {
+  font-weight: 500;
+  margin: 0 0 2px 0;
+}
+.system-fantastic-depths .character .ability .abbr {
+  font-size: 20px;
+  min-width: 60px;
+  max-width: 80px;
+  text-align: center;
+}
+.system-fantastic-depths .character .ability .long {
+  font-size: 15px;
+  min-width: 80px;
+  max-width: 80px;
+  text-align: left;
+}
+.system-fantastic-depths .character .ability input {
+  font-size: 16px;
+  max-width: 30px;
+  border-radius: 4px;
+  padding-top: 0;
+  text-align: center;
+}
+.system-fantastic-depths .character .ability .ability-score {
+  font-size: 25px;
+  text-align: center;
+  padding-right: 5px;
+}
+.system-fantastic-depths .character .ability .ability-mod {
+  max-width: 36px;
+  font-size: 18px;
+}
+.system-fantastic-depths .monster .ability {
+  min-height: 30px;
+}
+.system-fantastic-depths .monster .ability label {
+  font-weight: 500;
+  margin: 0 0 2px 0;
+}
+.system-fantastic-depths .monster .ability .abbr {
+  font-size: 16px;
+  min-width: 60px;
+  max-width: 80px;
+  text-align: center;
+}
+.system-fantastic-depths .monster .ability .long {
+  font-size: 12px;
+  min-width: 80px;
+  max-width: 80px;
+  text-align: left;
+}
+.system-fantastic-depths .monster .ability input {
+  font-size: 16px;
+  max-width: 30px;
+  border-radius: 5px;
+  padding-top: 0;
+  text-align: center;
+}
+.system-fantastic-depths .monster .ability .ability-score {
+  font-size: 20px;
+  text-align: center;
+  padding-right: 5px;
+}
+.system-fantastic-depths .monster .ability .ability-mod {
+  max-width: 30px;
+  font-size: 14px;
 }
 .system-fantastic-depths .item-form {
   font-family: "Barlow", sans-serif;
@@ -1465,5 +1537,3 @@ h1, h2, h3, h4 {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */
