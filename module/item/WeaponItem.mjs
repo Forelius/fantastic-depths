@@ -74,10 +74,17 @@ export class WeaponItem extends GearItem {
 
       // Check weapon mastery
       if (hasDamage && weaponMasterySystem) {
-         const wmResult = weaponMasterySystem.getDamageMods(this, targetWeaponType, formula, modifier);
+         const wmResult = weaponMasterySystem.getDamageMods(this, targetWeaponType, formula);
          if (wmResult) {
             formula = wmResult?.formula ?? formula;
             digest = [...digest, ...wmResult.digest];
+         }
+      }
+
+      if (hasDamage) {
+         // This is where the modifiers are applied to the formula. It only supports addition mode.
+         if (modifier !== 0) {
+            formula = formula ? `${formula}+${modifier}` : `${modifier}`;
          }
       }
 
