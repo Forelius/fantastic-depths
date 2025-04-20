@@ -141,11 +141,6 @@ export class WeaponMasterySystem {
             result.formula = `floor(${formula}/2)`;
             result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
          }
-
-         // This is where the modifiers are applied to the formula. It only supports addition mode.
-         if (modifier !== 0) {
-            result.formula = result.formula ? `${result.formula}+${modifier}` : `${modifier}`;
-         }
       }
 
       return result;
