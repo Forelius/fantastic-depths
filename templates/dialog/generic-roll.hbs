@@ -2,11 +2,11 @@
    {{#unless hideFormula}}
    <div class="form-group">
       <label for="formula" style="min-width:120px">{{localize "FADE.rollFormula"}}</label>
-      <input id="formula" style="max-width:120px" placeholder="{{formula}}" type="text" {{#unless editFormula}} readonly{{/unless}} />
+      <input name="formula" style="max-width:120px" placeholder="{{formula}}" type="text" {{#unless editFormula}} readonly{{/unless}} />
    </div>
    {{/unless}}
    <div class="form-group">
       <label for="mod" style="min-width:120px">{{localize "FADE.modifier"}}</label>
-      <input id="mod" style="max-width:120px" placeholder=0 type="number" />
+      <input name="mod" style="max-width:120px" placeholder=0 type="number" />
    </div>
 </div>

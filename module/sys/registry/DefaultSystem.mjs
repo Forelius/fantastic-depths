@@ -14,8 +14,9 @@ export class MoraleCheck {
 
       if (ctrlKey === false) {
          dialogResp = await DialogFactory(dataset, actor);
-         if (dialogResp?.resp?.rolling === true) {
-            dataset.formula = dialogResp.resp.mod != 0 ? `${dataset.formula}+@mod` : dataset.formula;
+         if (dialogResp) {
+            dialogResp.formula = dialogResp.formula?.length > 0 ? dialogResp.formula : dataset.formula;
+            dataset.formula = Number(dialogResp.mod) != 0 ? `${dataset.formula}+@mod` : dataset.formula;
          } else {
             // This will stop the process below.
             chatType = null;
@@ -23,9 +24,9 @@ export class MoraleCheck {
       }
 
       if (chatType !== null) {
-         const rollContext = { ...actor.getRollData(), ...dialogResp?.resp || {} };
+         const rollContext = { ...actor.getRollData(), ...dialogResp || {} };
          const rolled = await new Roll(dataset.formula, rollContext).evaluate();
-         const chatData = { dialogResp: dialogResp, caller: actor, context: actor, mdata: dataset, roll: rolled };
+         const chatData = { caller: actor, context: actor, mdata: dataset, roll: rolled };
          const showResult = actor._getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
          builder.createChatMessage();
@@ -40,15 +41,16 @@ export class AbilityCheck {
       const ctrlKey = event.originalEvent.ctrlKey;
       const dataset = event.currentTarget.dataset;
       let dialogResp = null;
-      const chatType = CHAT_TYPE.ABILITY_CHECK;
+      let chatType = CHAT_TYPE.ABILITY_CHECK;
 
       dataset.formula = game.settings.get(game.system.id, "abilityCheckFormula");
       dataset.dialog = dataset.test;
 
       if (ctrlKey === false) {
          dialogResp = await DialogFactory(dataset, actor);
-         if (dialogResp?.resp?.rolling === true) {
-            dataset.formula = (dialogResp !== null && dialogResp.resp.mod != 0) ? `${dialogResp.resp.formula}+@mod` : dialogResp.resp.formula;
+         if (dialogResp) {
+            dialogResp.formula = dialogResp.formula?.length > 0 ? dialogResp.formula : dataset.formula;
+            dataset.formula = Number(dialogResp.mod) != 0 ? `${dialogResp.formula}+@mod` : dialogResp.formula;
          } else {
             // This will stop the process below.
             chatType = null;
@@ -56,9 +58,9 @@ export class AbilityCheck {
       }
 
       if (chatType !== null) {
-         const rollContext = { ...actor.getRollData(), ...dialogResp?.resp || {} };
+         const rollContext = { ...actor.getRollData(), ...dialogResp || {} };
          const rolled = await new Roll(dataset.formula, rollContext).evaluate();
-         const chatData = { dialogResp: dialogResp, caller: actor, context: actor, mdata: dataset, roll: rolled };
+         const chatData = { caller: actor, context: actor, mdata: dataset, roll: rolled };
          const showResult = actor._getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
          builder.createChatMessage();
@@ -68,7 +70,6 @@ export class AbilityCheck {
 
 /** Not sure where this is going yet, but breaking into own system. */
 export class ActorArmor {
-
    /**
     * Prepare derived armor class values.
     */

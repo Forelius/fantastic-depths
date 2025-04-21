@@ -4,7 +4,7 @@ import { fadeDialog } from './fadeDialog.mjs';
 export class AbilityCheckDialog extends fadeDialog {
    static async getDialog(dataset, caller) {
       const dialogData = {};
-      const dialogResp = { caller };
+      let dialogResp = null;
 
       dialogData.ability = dataset.ability;
       dialogData.formula = dataset.formula;
@@ -12,7 +12,7 @@ export class AbilityCheckDialog extends fadeDialog {
       const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await DialogV2.wait({
+      dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
@@ -20,18 +20,13 @@ export class AbilityCheckDialog extends fadeDialog {
             {
                action: 'check',
                label: game.i18n.localize('FADE.dialog.abilityCheck'),
-               callback: (event, button, dialog) => ({
-                  rolling: true,
-                  mod: parseInt(dialog.querySelector('#mod').value, 10) || 0,
-                  formula: dialog.querySelector('#formula').value || dataset.formula,
-               }),
+               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
                default: true
             },
          ],
-         close: () => { return { rolling: false }; },
+         close: () => {},
          classes: ["fantastic-depths"]
       });
-      dialogResp.context = caller;
       return dialogResp;
    }
 }

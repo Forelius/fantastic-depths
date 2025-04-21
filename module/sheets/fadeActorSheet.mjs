@@ -486,24 +486,10 @@ export class fadeActorSheet extends ActorSheet {
       } else if (dataset.test === 'ability') {
          await game.fade.registry.getSystem('abilityCheck').execute({ actor: this.actor, event });
       } else if (dataset.test === 'morale') {
-         await game.fade.registry.getSystem('MoraleCheck').execute({ actor: this.actor, event });
+         await game.fade.registry.getSystem('moraleCheck').execute({ actor: this.actor, event });
       }
       else if (dataset.test === 'save') {
          this.actor.rollSavingThrow(dataset.type, event);
-      } else if (dataset.test === "generic") {
-         dataset.dialog = dataset.test;
-         const title = elem.getAttribute("title");
-         if (title) { // Do this because dataset stringifies all properties.
-            dataset.desc = title;
-         }
-         chatType = CHAT_TYPE.GENERIC_ROLL;
-         dialogResp = await DialogFactory(dataset, this.actor);
-         if (dialogResp?.resp?.rolling === true) {
-            formula = dialogResp.resp.mod != 0 ? (dataset.pass.startsWith("gt") ? `${formula}+@mod` : `${formula}-@mod`) : formula;
-         } else {
-            // This will stop the process below.
-            chatType = null;
-         }
       } else {
          // Basic roll with roll formula and label
          chatType = CHAT_TYPE.GENERIC_ROLL;

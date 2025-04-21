@@ -72,7 +72,6 @@ export class SkillItem extends fadeItem {
 
       if (ctrlKey === true) {
          dialogResp = {
-            rolling: true,
             mod: 0,
             formula: dataset.formula,
             editFormula: game.user.isGM
@@ -80,11 +79,10 @@ export class SkillItem extends fadeItem {
          rollData.formula = dataset.formula;
       } else {
          // Show the dialog for roll modifier
-         const dialog = await DialogFactory(dataset, this.actor);
-         dialogResp = dialog?.resp;
-         rolling = dialogResp.rolling === true;
-         rollData.formula = dialogResp.formula ?? dataset.formula;
-         if (dialogResp.mod != 0) {
+         dialogResp = await DialogFactory(dataset, this.actor);
+         rolling = dialogResp != null;
+         rollData.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : dataset.formula;
+         if (Number(dialogResp?.mod) != 0) {
             rollData.formula = `${rollData.formula}+@mod`;
          }
       }

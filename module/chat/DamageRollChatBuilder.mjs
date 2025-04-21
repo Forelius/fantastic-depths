@@ -96,12 +96,12 @@ export class DamageRollChatBuilder extends ChatBuilder {
          formula: damageRoll.formula,
          editFormula: game.user.isGM
       }, theItem);
-      rolling = dialogResp?.resp?.rolling === true;
+      rolling = dialogResp != null;
 
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = await theItem.getDamageRoll(attacktype, dialogResp?.resp, targetweapontype);
+         damageRoll = await theItem.getDamageRoll(attacktype, dialogResp, targetweapontype);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = await theItem.getDamageRoll(dialogResp?.resp);
+         damageRoll = await theItem.getDamageRoll(dialogResp);
       }
 
       if (rolling === true) {

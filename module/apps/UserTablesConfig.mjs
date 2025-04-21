@@ -1,4 +1,4 @@
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) {
    constructor() {
@@ -116,7 +116,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       const tableTypes = game.fade.registry.getSystem("userTables", true).type.TABLE_TYPES
          .map(type => { return { id: type, name: game.i18n.localize(`FADE.apps.userTables.tableTypes.${type}`) } });
 
-      const dialogResp = await foundry.applications.api.DialogV2.wait({
+      const dialogResp = await DialogV2.wait({
          window: { title: game.i18n.localize('FADE.apps.userTables.actions.createTable') },
          position: { top: 100 },
          content: `<form>

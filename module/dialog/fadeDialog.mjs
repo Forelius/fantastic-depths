@@ -4,14 +4,14 @@ import { rollTableDialog } from '/systems/fantastic-depths/module/dialog/rollTab
 export class fadeDialog {
    static async getGenericDialog(dataset, caller) {
       const dialogData = {};
-      const dialogResp = { caller };
+      let dialogResp = null;
 
       dialogData.label = dataset.label;
       dialogData.formula = dataset.formula;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await DialogV2.wait({
+      dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
@@ -20,17 +20,12 @@ export class fadeDialog {
                action: "roll",
                default: true,
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => ({
-                  rolling: true,
-                  mod: parseInt(dialog.querySelector('#mod').value, 10) || 0,
-                  formula: dialog.querySelector('#formula').value || dataset.formula,
-               }),
+               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
             }
          ],
-         close: () => { return { rolling: false } },
+         close: () => { },
          classes: ["fantastic-depths"]
       });
-      dialogResp.context = caller;
       return dialogResp;
    }
 

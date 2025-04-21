@@ -106,7 +106,7 @@ export class fadeActor extends Actor {
 
          // Apply the mastery level override, if present.
          if (this.system.mod.masteryLevelOverride) {
-            for (let mastery of this.items.filter(item => item.type === 'mastery')) {               
+            for (let mastery of this.items.filter(item => item.type === 'mastery')) {
                mastery.system.effectiveLevel = this.system.mod.masteryLevelOverride;
             }
          }
@@ -323,17 +323,15 @@ export class fadeActor extends Actor {
 
       if (ctrlKey === true) {
          dialogResp = {
-            rolling: true,
             mod: 0
          };
       } else {
-         const dialog = await DialogFactory(dataset, this);
-         dialogResp = dialog?.resp;
+         dialogResp = await DialogFactory(dataset, this);
       }
 
-      if (dialogResp?.rolling === true) {
-         let rollMod = dialogResp.mod || 0;
-         if (dialogResp.vsmagic === true) {
+      if (dialogResp) {
+         let rollMod = Number(dialogResp.mod) || 0;
+         if (dialogResp.action === 'magic') {
             rollMod += this.system.abilities?.wis?.mod ?? 0;
          }
          rollMod += this.system.mod.save[type] || 0;

@@ -36,7 +36,7 @@ export class SpecialAbilityItem extends fadeItem {
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
          hasDamage = false;
       }
-      
+
       return {
          formula,
          type,
@@ -79,12 +79,15 @@ export class SpecialAbilityItem extends fadeItem {
                editFormula: game.user.isGM
             };
          } else {
-            const dialog = await DialogFactory(dataset, this.actor);
-            dialogResp = dialog?.resp;
+            dialogResp = await DialogFactory(dataset, this.actor);
+            if (dialogResp) {
+               dialogResp.rolling = true;
+               dialogResp.mod = Number(dialogResp.mod);
+            }
          }
 
          if (dialogResp?.rolling === true) {
-            dialogResp.formula = dialogResp.formula ?? systemData.rollFormula;
+            dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
             if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
                dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
             } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
@@ -93,8 +96,8 @@ export class SpecialAbilityItem extends fadeItem {
          } else {
             canProceed = false;
          }
-         
-         rollData.formula = dialogResp?.mod != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
+
+         rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
          const rollContext = { ...rollData, ...dialogResp || {} };
          roll = await new Roll(rollData.formula, rollContext);
       }

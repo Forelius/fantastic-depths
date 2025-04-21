@@ -34,9 +34,9 @@ const RollAttackMixin = (superclass) => class extends superclass {
          const targetTokens = Array.from(game.user.targets);
          const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken }))?.resp;
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken }));
          attackType = result.dialogResp?.attackType;
-         result.canAttack = result.dialogResp?.rolling === true;
+         result.canAttack = result.dialogResp != null;
          if (result.canAttack) {
             // If not breath...
             if (systemData.damageType !== "breath" && attackType !== "breath") {
@@ -44,14 +44,22 @@ const RollAttackMixin = (superclass) => class extends superclass {
                   mod: result.dialogResp.mod,
                   target: targetToken?.actor,
                   ammoItem: result.ammoItem,
+                  // This is the roll if no advantage or disadvantage. See below.
                   attackRoll: result.dialogResp.attackRoll
                };
                if (result.dialogResp.targetWeaponType) {
                   rollOptions.targetWeaponType = result.dialogResp.targetWeaponType;
                }
 
+               // Handle advantage or disadvantage.
+               if (result.dialogResp.rollFormulaType === 'advantage') {
+                  rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kh`;
+               } else if (result.dialogResp.rollFormulaType === 'disadvantage') {
+                  rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kl`;
+               }
+
                const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, attackType, rollOptions);
-               rollData = this.getRollData()
+               rollData = this.getRollData();
                rollData.formula = attackRoll.formula;
                result.digest = attackRoll.digest;
             }
@@ -66,7 +74,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
          }
 
          // Perform the roll if there's ammo or if it's a melee attack
-         if (result.canAttack && result.dialogResp) {
+         if (result.canAttack) {
             if (rollData) {
                const rollContext = { ...rollData, ...result.dialogResp || {} };
                result.rollEval = await new Roll(rollData.formula, rollContext).evaluate();

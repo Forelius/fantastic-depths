@@ -72,9 +72,9 @@ export class SpellItem extends RollAttackMixin(fadeItem) {
          }, this.actor);
 
          if (dialogResp?.resp?.result === false) {
-            await this.doSpellcast();
-         } else if (dialogResp?.resp?.result === true) {
             super.roll(dataset);
+         } else if (dialogResp?.resp?.result === true) {
+            await this.doSpellcast();
          }
       } else {
          ui.notifications.warn(game.i18n.localize('FADE.notification.spellSelectToken'));

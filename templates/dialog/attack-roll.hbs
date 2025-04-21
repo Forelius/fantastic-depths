@@ -3,14 +3,14 @@
       <div class="flex2">
          <!-- Dropdown for selecting 'melee' or 'missile' -->
          <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
-         <select id="attackType" class="form-control" style="width:100%">
+         <select name="attackType" class="form-control" style="width:100%">
             {{selectOptions types selected='melee'}}
          </select>
       </div>
       {{#if targetWeaponTypes}}
       <div class="flex2">
          <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
-         <select id="targetWeaponType" class="form-control" style="width:100%">
+         <select name="targetWeaponType" class="form-control" style="width:100%">
             {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
          </select>
       </div>
@@ -20,11 +20,11 @@
    <div class="flexrow top-label" style="margin-top:5px;">
       <div class="flex1">
          <label>{{localize "FADE.attackRoll"}}</label>
-         <input id="attackRoll" placeholder='1d20' type="text" value="1d20" />
+         <input name="attackRoll" placeholder='1d20' type="text" value="1d20" />
       </div>
       <div class="flex1">
          <label>{{localize "FADE.modifier"}}</label>
-         <input id="mod" placeholder=0 type="number" />
+         <input name="mod" placeholder=0 type="number" />
       </div>
    </div>
    {{!-- Roll with advantage/disadvantage --}}

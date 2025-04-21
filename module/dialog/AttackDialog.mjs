@@ -12,7 +12,7 @@ export class AttackDialog extends fadeDialog {
     */
    static async getDialog(weapon, caller, options) {
       const dialogData = { caller };
-      const result = {};
+      let result = null;
       const weaponData = weapon.system;
       const callerName = caller.token?.name || caller.name;
       const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
@@ -44,7 +44,7 @@ export class AttackDialog extends fadeDialog {
       const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
-      result.resp = await DialogV2.wait({
+      result = await DialogV2.wait({
          window: { title: title },
          position: {
             width: 350,
@@ -56,30 +56,14 @@ export class AttackDialog extends fadeDialog {
             {
                action: "check",
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => {
-                  const selectedRadio = dialog.querySelector('input[name="rollFormulaType"]:checked')?.value ?? 'normal';
-                  let attackRoll = dialog.querySelector('#attackRoll').value ?? '1d20'
-                  if (selectedRadio === 'advantage') {
-                     attackRoll = `{${attackRoll},${attackRoll}}kh`;
-                  } else if (selectedRadio === 'disadvantage') {
-                     attackRoll = `{${attackRoll},${attackRoll}}kl`;
-                  }
-                  return {
-                     rolling: true,
-                     mod: parseInt(dialog.querySelector('#mod').value, 10) || 0,
-                     attackType: dialog.querySelector('#attackType').value,
-                     targetWeaponType: dialog.querySelector('#targetWeaponType')?.value,
-                     attackRoll,
-                     rollFormulaType: selectedRadio.value
-                  };
-               },
-               default: true
+               default: true,
+               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
             },
          ],
-         close: () => { return { rolling: false } },
+         close: () => {},
          classes: ["fantastic-depths"]
       });
-      result.context = caller;
+      //result = caller;
       return result;
    }
 }
