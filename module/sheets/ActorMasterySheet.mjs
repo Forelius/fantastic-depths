@@ -1,10 +1,10 @@
 const { HandlebarsApplicationMixin } = foundry.applications.api;
-const { ItemSheetV2 } = foundry.applications.sheets;
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 
 /**
  * Sheet class for ActorMasteryItem.
  */
-export class ActorMasterySheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+export class ActorMasterySheet extends FDItemSheetV2 {
    /**
     * Get the default options for the sheet.
     */

@@ -1,13 +1,13 @@
 import { DragDropMixin } from './mixins/DragDropMixin.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class SpeciesItemSheet extends DragDropMixin(fadeItemSheet) {
+export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
    static ValidItemTypes = ['item', 'weapon', 'armor'];
 
    /**

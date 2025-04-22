@@ -1,9 +1,9 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 /**
  * Sheet class for SkillItem.
  */
-export class SkillItemSheet extends fadeItemSheet {
+export class SkillItemSheet extends FDItemSheetV2 {
    /**
    * Get the default options for the sheet.
    */

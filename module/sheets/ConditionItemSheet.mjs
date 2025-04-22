@@ -1,10 +1,10 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs'; 
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 
 /**
  * Sheet class for ConditionItem.
  */
-export class ConditionItemSheet extends fadeItemSheet {
+export class ConditionItemSheet extends FDItemSheetV2 {
    /**
     * Get the default options for the sheet.
     */

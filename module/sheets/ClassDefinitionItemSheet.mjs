@@ -1,13 +1,13 @@
 import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { DragDropMixin } from './mixins/DragDropMixin.mjs';
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassDefinitionItemSheet extends DragDropMixin(fadeItemSheet) {
+export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */

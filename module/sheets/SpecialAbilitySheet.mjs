@@ -1,11 +1,11 @@
-import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
  * Sheet class for SpecialAbilityItem.
  */
-export class SpecialAbilitySheet extends fadeItemSheet {
+export class SpecialAbilitySheet extends FDItemSheetV2 {
    /**
    * Get the default options for the sheet.
    */

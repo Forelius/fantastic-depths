@@ -1,8 +1,8 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
-export class GearItemSheet extends fadeItemSheet {
+export class GearItemSheet extends FDItemSheetV2 {
    /**
    * Get the default options for the sheet.
    */
