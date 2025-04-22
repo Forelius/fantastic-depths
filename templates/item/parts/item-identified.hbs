@@ -18,7 +18,9 @@
    <div>
       {{! Editors must receive enriched text data from getData to properly handle rolls }}
       <label>{{localize 'FADE.tabs.description'}}</label>
-      {{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" button=true editable=editable}}      
+      <prose-mirror name="system.unidentifiedDesc" data-document-u-u-i-d="{{item.uuid}}" value="{{system.unidentifiedDesc}}" collaborate="false" toggled="true">
+         {{{enrichedUIDesc}}}
+      </prose-mirror>
    </div>
 </div>
 {{/if}}

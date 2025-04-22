@@ -5,6 +5,8 @@
       {{{enrichedDesc}}}
    </prose-mirror>
    {{else}}
-   {{editor enrichedDesc target='system.description' engine="prosemirror" editable=true button=true collaborate=false}}{{editor enrichedUIDesc target='system.unidentifiedDesc' engine="prosemirror" editable=true button=true collaborate=false}}
+   <prose-mirror name="system.unidentifiedDesc" data-document-u-u-i-d="{{item.uuid}}" value="{{system.unidentifiedDesc}}" collaborate="false" toggled="true">
+      {{{enrichedUIDesc}}}
+   </prose-mirror>
    {{/if}}
 </section>
