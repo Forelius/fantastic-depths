@@ -113,9 +113,51 @@ h1, h2, h3, h4 {
   max-height: 26px;
 }
 
+.application h1 {
+  margin: 6px 0 4px 0;
+  font-size: 28px;
+  font-family: "Barlow", sans-serif;
+}
+.application h2 {
+  margin: 6px 0 4px 0;
+  font-size: 24px;
+  font-family: "Barlow", sans-serif;
+}
+.application h3 {
+  margin: 6px 0 4px 0;
+  font-size: 20px;
+  font-family: "Barlow", sans-serif;
+}
+.application h4 {
+  margin: 6px 0 4px 0;
+  font-size: 16px;
+  font-family: "Barlow", sans-serif;
+}
+.application ul, .application ul {
+  margin: 8px 0;
+}
+.application table {
+  margin: 1px 1px;
+  border-radius: 0;
+}
+.application table tr:nth-child(even) {
+  background-color: rgba(100, 100, 100, 0.15);
+}
+.application table th {
+  line-height: 1;
+  padding: 3px 8px;
+}
+.application table td {
+  line-height: 1;
+  padding: 2px 4px;
+}
+.application table input {
+  height: 26px;
+}
+
 table.compact-table th {
   line-height: 1;
-  padding: 2px 12px;
+  padding: 2px 8px;
 }
 table.compact-table td {
   line-height: 1;
@@ -599,7 +641,7 @@ table.compact-table input {
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
 .dark-mode .fantastic-depths .window-content .inline-roll {
-  color: #bbbab4;
+  color: #ebeae4;
 }
 .dark-mode .fantastic-depths .summary li {
   color: #bbbab4;
@@ -677,6 +719,10 @@ table.compact-table input {
 }
 
 /* Light mode styles */
+.light-mode .fantastic-depths .window-content {
+  background: url("../assets/img/grunge3.jpg");
+  color: #2b2a24;
+}
 .light-mode .fantastic-depths .window-content .bordered {
   border-color: #bbbab4;
 }

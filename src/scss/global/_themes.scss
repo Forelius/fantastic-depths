@@ -126,7 +126,7 @@
          }
 
          .inline-roll {
-            color: $lightColor;
+            color: $lighterColor;
          }
       }
 
@@ -237,6 +237,9 @@
 .light-mode {
    .fantastic-depths {
       .window-content {
+         background: url('../assets/img/grunge3.jpg');
+         color: $darkerColor;
+
          .bordered {
             border-color: $lightColor;
          }

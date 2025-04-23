@@ -257,9 +257,9 @@
          "LightItem": "Light Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
          "WeaponItem": "Weapon Item Sheet",
-         "Treasure": "Treasure Item Sheet",
-         "Condition": "Condition Item Sheet",
-         "Species": "Ancestry Item Sheet"
+         "TreasureItem": "Treasure Item Sheet",
+         "ConditionItem": "Condition Item Sheet",
+         "SpeciesItem": "Ancestry Item Sheet"
       },
       "Spell": {
          "casts": "casts",

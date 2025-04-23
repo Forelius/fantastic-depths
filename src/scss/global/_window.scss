@@ -11,7 +11,60 @@
 .fantastic-depths {
    .window-content {
       input, select {
-         max-height:26px;
+         max-height: 26px;
+      }
+   }
+}
+
+.application {
+   h1 {
+      margin: 6px 0 4px 0;
+      font-size: 28px;
+      font-family: $font-primary;
+   }
+
+   h2 {
+      margin: 6px 0 4px 0;
+      font-size: 24px;
+      font-family: $font-primary;
+   }
+
+   h3 {
+      margin: 6px 0 4px 0;
+      font-size: 20px;
+      font-family: $font-primary;
+   }
+
+   h4 {
+      margin: 6px 0 4px 0;
+      font-size: 16px;
+      font-family: $font-primary;
+   }
+
+   ul, ul {
+      margin: 8px 0;
+   }
+
+   table {
+      margin: 1px 1px;
+      border-radius: 0;
+
+      tr:nth-child(even) {
+         background-color: rgba(100, 100, 100, 0.15);
+      }
+
+      th {
+         line-height: 1;
+         padding: 3px 8px;
+      }
+
+      td {
+         line-height: 1;
+         padding: 2px 4px;
+      }
+
+      input {
+         height: 26px;
       }
    }
 }
@@ -19,14 +72,15 @@
 table.compact-table {
    th {
       line-height: 1;
-      padding: 2px 12px;
+      padding: 2px 8px;
    }
 
    td {
       line-height: 1;
       padding: 2px 4px;
    }
-   input{
+
+   input {
       height: 26px;
    }
 }
@@ -162,9 +216,10 @@ table.compact-table {
    color: #888888;
 }
 
-.editor{
-   min-height:36px;
+.editor {
+   min-height: 36px;
 }
+
 .prosemirror .editor-container .editor-content {
    position: relative !important;
 }

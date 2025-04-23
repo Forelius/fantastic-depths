@@ -148,7 +148,7 @@ function registerSheets() {
       types: ['item', 'light']
    });
    Items.registerSheet('fantastic-depths', TreasureItemSheet, {
-      label: 'FADE.SheetLabel.Treasure',
+      label: 'FADE.SheetLabel.TreasureItem',
       makeDefault: true,
       types: ['treasure']
    });
