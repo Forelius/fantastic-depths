@@ -1151,6 +1151,10 @@
          "actorPack": "Actor Compendium",
          "itemPack": "Item Compendium",
          "rollTablePack": "Rollable Tables Compendium"
+      },
+      "extraRollOptions": {
+         "name": "Show Extra Roll Options",
+         "hint": "Toggles the display of advantage/disadvantage on some rolls."
       }
    }
 }

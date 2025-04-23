@@ -17,7 +17,7 @@
       {{/if}}
    </div>
    <!-- Modifier Input Field -->
-   <div class="flexrow top-label" style="margin-top:5px;">
+   <div class="flexrow top-label" style="margin:5px 0;">
       <div class="flex1">
          <label>{{localize "FADE.attackRoll"}}</label>
          <input name="attackRoll" placeholder='1d20' type="text" value="1d20" />
@@ -27,8 +27,10 @@
          <input name="mod" placeholder=0 type="number" />
       </div>
    </div>
+   {{#if extraRollOptions}}
    {{!-- Roll with advantage/disadvantage --}}
    <div class="form-group">
       {{radioBoxes "rollFormulaType" rollChoices checked=rollChosen localize=true}}
    </div>
+   {{/if}}
 </div>

@@ -20,6 +20,7 @@ export class AttackDialog extends fadeDialog {
       const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
       const targetActor = options.targetToken?.actor;
 
+      dialogData.extraRollOptions = game.settings.get(game.system.id, 'extraRollOptions');
       dialogData.weapon = weaponData;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
       // Attack type includes melee, missile and breath.

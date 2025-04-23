@@ -145,6 +145,12 @@
             .nav-tab, .nav-tab-vert {
                background: url('../assets/img/grunge2.jpg');
 
+               .active {
+                  img {
+                     filter: brightness(100%);
+                  }
+               }
+
                a {
                   border-color: $darkColor;
                }
@@ -237,7 +243,7 @@
 .light-mode {
    .fantastic-depths {
       .window-content {
-         background: url('../assets/img/grunge3.jpg');
+         background: url('../assets/img/lightgrunge1.png');
          color: $darkerColor;
 
          .bordered {
@@ -300,7 +306,13 @@
       .character, .monster {
          .nav-tabs-right {
             .nav-tab, .nav-tab-vert {
-               background: url('../assets/img/lightgrunge1.jpg');
+               background: url('../assets/img/lightgrunge1.png');
+
+               .active {
+                  img {
+                     filter: brightness(10%);
+                  }
+               }
 
                a {
                   border-color: $lightColor;

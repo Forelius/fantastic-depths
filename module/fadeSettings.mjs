@@ -25,7 +25,7 @@ export class fadeSettings {
          scope: "client",
          config: true,
          type: String,
-         requiresReload: true,
+         requiresReload: false,
          choices: {
             "light": "SETTINGS.Theme.Light",
             "dark": "SETTINGS.Theme.Dark"
@@ -280,6 +280,15 @@ export class fadeSettings {
          type: Boolean,
          default: true,
          restricted: false
+      });
+      game.settings.register(game.system.id, "extraRollOptions", {
+         name: "SETTINGS.extraRollOptions.name",
+         hint: "SETTINGS.extraRollOptions.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: false,
+         restricted: true
       });
    }
 
