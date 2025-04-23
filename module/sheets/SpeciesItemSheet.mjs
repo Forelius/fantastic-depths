@@ -120,6 +120,7 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
      * @protected
      */
    _onRender(context, options) {
+      super._onRender(context, options);
       if (this.isEditable) {
          const inputField = this.element.querySelector('input[data-action="addLanguage"]');
          inputField?.addEventListener('keypress', (event) => {
@@ -140,7 +141,7 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
       if (droppedItem.type === 'specialAbility') {
          if (droppedItem.system.category === 'save') {
          } else {
-            this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
+            this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
          }
       }
       //   else if (SpeciesDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
