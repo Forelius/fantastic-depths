@@ -183,19 +183,10 @@ export class CharacterActor extends fadeActor {
          if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
             console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`, classData.spells);
          } else {
-            // Loop through the spell slots in the this and update the 'max' values
-            for (let slot of this.system.spellSlots) {
-               const index = slot.spellLevel - 1;
-               // Check if the index is within the spellProgression array bounds
-               if (index >= 0 && index < spellProgression.length) {
-                  // Set the max value based on the class spell progression
-                  update.spellSlots[index] = { max: spellProgression[index] };
-                  //slot.max = spellProgression[index];
-               } else {
-                  // Set max to 0 if the character's class doesn't have spells at this level
-                  //slot.max = 0;
-                  update.spellSlots[index] = { max: 0 };
-               }
+            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
+            for (let i = 0; i < update.spellSlots.length; i++) {
+               // Set the max value based on the class spell progression
+               update.spellSlots[i] = { max: spellProgression[i] };
             }
          }
       }
