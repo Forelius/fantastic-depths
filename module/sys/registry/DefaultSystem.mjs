@@ -160,3 +160,19 @@ export class ActorArmor {
       actor.system.acDigest = acDigest;
    }
 }
+
+export class ActorMovement {
+   static prepareMovementRates(actor) {
+      const roundDivisor = game.settings.get(game.system.id, "mvRoundDivisor") ?? 3;
+      const runDivisor = game.settings.get(game.system.id, "runRoundDivisor") ?? 1.5;
+      actor.system.movement.turn = actor.system.encumbrance.mv;
+      actor.system.movement.round = actor.system.movement.turn > 0 ? Math.floor(actor.system.movement.turn / roundDivisor) : 0;
+      actor.system.movement.day = actor.system.movement.turn > 0 ? Math.floor(actor.system.movement.turn / 5) : 0;
+      actor.system.movement.run = actor.system.movement.turn > 0 ? Math.floor(actor.system.movement.turn / runDivisor) : 0;
+
+      actor.system.flight.turn = actor.system.encumbrance.fly || 0;
+      actor.system.flight.round = actor.system.flight.turn > 0 ? Math.floor(actor.system.flight.turn / roundDivisor) : 0;
+      actor.system.flight.day = actor.system.flight.turn > 0 ? Math.floor(actor.system.flight.turn / 5) : 0;
+      actor.system.flight.run = actor.system.flight.turn > 0 ? Math.floor(actor.system.flight.turn / runDivisor) : 0;
+   }
+}

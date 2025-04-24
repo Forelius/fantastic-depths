@@ -101,7 +101,7 @@ export class fadeActor extends Actor {
       super.prepareDerivedData();
       if (this.id) {
          game.fade.registry.getSystem('encumbranceSystem').prepareDerivedData(this);
-         this._prepareDerivedMovement();
+         game.fade.registry.getSystem('actorMovement').prepareMovementRates(this);         
          game.fade.registry.getSystem('actorArmor').prepareDerivedData(this);
 
          // Apply the mastery level override, if present.
@@ -547,20 +547,6 @@ export class fadeActor extends Actor {
          console.warn(`${this.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${systemData.config.maxSpellLevel}).`);
       }
       systemData.spellSlots = spellSlots;
-   }
-
-   /**
-    * Prepare the actor's movement rate values.
-    */
-   _prepareDerivedMovement() {
-      this.system.movement.turn = this.system.encumbrance.mv;
-      this.system.flight.turn = this.system.encumbrance.fly || 0;
-      this.system.movement.round = this.system.movement.turn > 0 ? Math.floor(this.system.movement.turn / 3) : 0;
-      this.system.movement.day = this.system.movement.turn > 0 ? Math.floor(this.system.movement.turn / 5) : 0;
-      this.system.movement.run = this.system.movement.turn;
-      this.system.flight.round = this.system.flight.turn > 0 ? Math.floor(this.system.flight.turn / 3) : 0;
-      this.system.flight.day = this.system.flight.turn > 0 ? Math.floor(this.system.flight.turn / 5) : 0;
-      this.system.flight.run = this.system.flight.turn;
    }
 
    /**

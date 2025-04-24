@@ -1,5 +1,5 @@
 import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './ToHitSystem.mjs';
-import { MoraleCheck, AbilityCheck, ActorArmor } from './DefaultSystem.mjs'
+import { MoraleCheck, AbilityCheck, ActorArmor, ActorMovement } from './DefaultSystem.mjs'
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
 import { IndivInit } from './IndivInit.mjs';
 import { GroupInit } from './GroupInit.mjs';
@@ -57,6 +57,7 @@ export class fadeRegistry {
       this.registerSystem('wrestling', Wrestling, Wrestling);
       this.registerSystem('shove', Shove, Shove);
       this.registerSystem('userTables', new UserTables(), UserTables);
+      this.registerSystem('actorMovement', ActorMovement, ActorMovement);
    }
 
    registerSystem(id, instance, type) {

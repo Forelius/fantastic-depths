@@ -290,6 +290,28 @@ export class fadeSettings {
          default: false,
          restricted: true
       });
+      // Register movement rate per round divisor (base/divisor)
+      game.settings.register(game.system.id, "mvRoundDivisor", {
+         name: "SETTINGS.mvRoundDivisor.name",
+         hint: "SETTINGS.mvRoundDivisor.hint",
+         scope: "world",
+         config: true,
+         default: 3,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Register 
+      game.settings.register(game.system.id, "runRoundDivisor", {
+         name: "SETTINGS.runRoundDivisor.name",
+         hint: "SETTINGS.runRoundDivisor.hint",
+         scope: "world",
+         config: true,
+         default: 1,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
    #registerNonConfigSettings() {
