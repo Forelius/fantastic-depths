@@ -4,7 +4,7 @@ import { fadeActorSheet } from './fadeActorSheet.mjs';
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class CharacterSheet extends fadeActorSheet {
+export class CharacterSheet extends fadeActorSheet {   
    /** @override */
    static get defaultOptions() {
       const path = 'systems/fantastic-depths/templates/actor';

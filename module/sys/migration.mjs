@@ -88,7 +88,8 @@ export class DataMigrator {
    }
 
    async fixMonsterAbilities() {
-      let monsters = await game.fade.fadeFinder._getWorldSource("actor").filter(actor=>actor.type==='monster');
+      let monsters = await game.fade.fadeFinder._getWorldSource("actor")?.filter(actor => actor.type === 'monster') ?? [];
+
       for (let monster of monsters) {
          if (Number(monster.system.details.intelligence)) {
             await monster.update({
@@ -99,7 +100,7 @@ export class DataMigrator {
             });
          }
       }
-      monsters = (await game.fade.fadeFinder._getPackSource("actor")).filter(actor => actor.type === 'monster');
+      monsters = (await game.fade.fadeFinder._getPackSource("actor"))?.filter(actor => actor.type === 'monster') ?? [];
       for (let monster of monsters) {
          if (Number(monster.system.details.intelligence)) {
             await monster.update({

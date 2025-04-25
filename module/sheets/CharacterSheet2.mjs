@@ -1,25 +1,97 @@
-import { CharacterSheet } from './CharacterSheet.mjs';
+import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class CharacterSheet2 extends CharacterSheet {
+export class CharacterSheet2 extends FDActorSheetV2 {
+   static DEFAULT_OPTIONS = {
+      position: {
+         top: 150,
+         width: 650,
+         height: 600,
+      },
+      form: {
+         submitOnChange: true
+      },
+      classes: ['character'],
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/actor/character/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      abilities: {
+         template: "systems/fantastic-depths/templates/actor/character/abilities.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/actor/character/items.hbs",
+      },
+      skills: {
+         template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
+      },
+      spells: {
+         template: "systems/fantastic-depths/templates/actor/character/spells.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/actor/character/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/actor/character/gmOnly.hbs",
+      }
+   }
+
    /** @override */
-   static get defaultOptions() {
-      const path = 'systems/fantastic-depths/templates/actor';
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'actor'],
-         template: `${path}/CharacterSheet2.hbs`,
-         width: 600,
-         height: 620,
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'abilities',
-            },
-         ],
-      });
+   tabGroups = {
+      primary: "abilities"
+   }
+
+   async _prepareContext(options) {
+      const context = await super._prepareContext();
+      // Prepare the tabs.
+      context.tabs = this.#getTabs();
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const group = 'primary';
+
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+
+      const tabs = {
+         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         description: { id: 'description', group, label: 'FADE.tabs.description' },
+         effects: { id: 'effects', group, label: 'FADE.tabs.effects' },
+      }
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         tabs.items = { id: 'items', group, label: 'FADE.items' };
+         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+      }
+
+      if (this.actor.system.config.maxSpellLevel > 0) {
+         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+      }
+
+      if (game.user.isGM) {
+         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+      }
+
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
+      }
+
+      return tabs;
    }
 }

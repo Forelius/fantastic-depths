@@ -23,6 +23,7 @@ export class MonsterDataModel extends fadeActorDataModel {
             classAbilityAs: new fields.StringField({ initial: null, nullable: true }),
             level: new fields.NumberField({ initial: 1 })
          }),
+         monsterTypes: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          na: new fields.SchemaField({
             wandering: new fields.StringField({ initial: "1d6" }),
             lair: new fields.StringField({ initial: "" }),

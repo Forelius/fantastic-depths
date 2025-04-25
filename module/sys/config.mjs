@@ -220,3 +220,19 @@ FADE.ToHit = {
    /** Represents THAC0 for Normal Man */
    BaseTHAC0: 19
 }
+FADE.MonsterTypes = [
+   'bugs',
+   'constructs',
+   'dragonkind',
+   'enchanted',
+   'giantkind',
+   'lycanthropes',
+   'planar',
+   'regenerating',
+   'reptiles-dinosaurs',
+   'spell-immune',
+   'spellcasters',
+   'undead',
+   'water-breathing',
+   'weapon-using'
+];
