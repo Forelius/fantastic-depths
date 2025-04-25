@@ -37,7 +37,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/character/spells.hbs",
       },
       description: {
-         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/description.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/actor/character/effects.hbs",
@@ -56,6 +56,8 @@ export class CharacterSheet2 extends FDActorSheetV2 {
       const context = await super._prepareContext();
       // Prepare the tabs.
       context.tabs = this.#getTabs();
+
+      return context;
    }
 
    /**

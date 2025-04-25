@@ -1,3 +1,4 @@
+const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 import { DragDropMixin } from './mixins/DragDropMixin.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
@@ -9,7 +10,7 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class FDActorSheetV2 extends DragDropMixin(ActorSheetV2) {
+export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
