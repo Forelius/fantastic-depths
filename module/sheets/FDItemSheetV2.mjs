@@ -32,7 +32,6 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
       // Enrichment turns text like `[[/r 1d20]]` into buttons
       context.enrichedDesc = await TextEditor.enrichHTML(this.item.system.description, {
          secrets: this.document.isOwner,
-         // Necessary in v11, can be removed in v12
          rollData,
          relativeTo: this.item,
       });

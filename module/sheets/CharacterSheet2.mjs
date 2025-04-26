@@ -52,11 +52,35 @@ export class CharacterSheet2 extends FDActorSheetV2 {
       primary: "abilities"
    }
 
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'abilities'];
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         options.parts.push('items');
+         options.parts.push('skills');
+         if (this.actor.system.config.maxSpellLevel > 0) {
+            options.parts.push('spells');
+         }
+         options.parts.push('description');
+      }
+      if (game.user.isGM) {
+         options.parts.push('effects');
+         options.parts.push('gmOnly');
+      }
+   }
+
    async _prepareContext(options) {
       const context = await super._prepareContext();
+      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
+      context.editScores = this.editScores;
+      context.hasAbilityScoreMods = true;
       // Prepare the tabs.
       context.tabs = this.#getTabs();
-
       return context;
    }
 

@@ -10,7 +10,11 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
+export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+   constructor(options = {}) {
+      super(options);
+   }
+
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
@@ -145,12 +149,14 @@ export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       const context = await super._prepareContext();
 
       // Use a safe clone of the actor data for further operations.
-      const actorData = this.actor.toObject(false);
+      const actor = this.actor.toObject(false);
+      context.actor = actor;
+      context.actor.uuid = this.actor.uuid;
 
       // Add the actor's data to context.data for easier access, as well as flags.
-      context.system = actorData.system;
-      context.flags = actorData.flags;
-      context.isSpellcaster = actorData.system.config.maxSpellLevel > 0;
+      context.system = actor.system;
+      context.flags = actor.flags;
+      context.isSpellcaster = actor.system.config.maxSpellLevel > 0;
       context.isGM = game.user.isGM;
       context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
 
@@ -172,19 +178,12 @@ export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedBiography = await TextEditor.enrichHTML(
-         this.actor.system.biography,
-         {
-            // Whether to show secret blocks in the finished html
-            secrets: this.document.isOwner,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            // Data to fill in for inline rolls
-            rollData: this.actor.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.actor,
-         }
-      );
+      context.enrichedBiography = await TextEditor.enrichHTML(this.actor.system.biography, {
+         secrets: this.document.isOwner,
+         rollData: this.actor.getRollData(),
+         relativeTo: this.actor,
+      });
+
       // Prepare active effects
       // A generator that returns all effects stored on the actor as well as any items
       context.effects = EffectManager.prepareActiveEffectCategories(
@@ -208,17 +207,13 @@ export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       return Math.round(total * 100) / 100;
    }
 
-   /**
-    * @override
-    * @param {any} event
-    * @param {any} data
-    * @returns
-    */
-   async _onDropItem(event, data) {
+   async _onDrop(event) {
+      if (!this.actor.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
-      const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === 'weaponMastery') {
          //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
@@ -245,7 +240,7 @@ export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
                // Remove the item from any container
                await droppedItem.update({ "system.containerId": null });
             }
-            super._onDropItem(event, data);
+            super._onDrop(event);
          }
       } else if (droppedItem.type === "class") {
          if (this.actor.type === 'character') {
@@ -258,7 +253,7 @@ export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       } else if (droppedItem.type === 'effect') {
       }
       else {
-         super._onDropItem(event, data);
+         super._onDrop(event);
       }
    }
 
@@ -706,7 +701,7 @@ export class FDActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
 
       // Add derived data to each item
-      gear = gear.map((item)=>this.#mapContainer(item));
+      gear = gear.map((item) => this.#mapContainer(item));
 
       // Assign and return
       context.gear = gear;
