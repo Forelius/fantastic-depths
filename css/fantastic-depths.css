@@ -180,6 +180,10 @@ table.compact-table input {
   cursor: pointer;
 }
 
+.rollable2:hover, .rollable2:focus, .chatable2:hover, .chatable2:focus {
+  cursor: pointer;
+}
+
 .bordered {
   margin: 2px 2px 4px 2px;
   border-width: 2px;
@@ -299,7 +303,7 @@ table.compact-table input {
 }
 
 .editor {
-  min-height: 36px;
+  min-height: 50px;
 }
 
 .prosemirror .editor-container .editor-content {
@@ -649,6 +653,10 @@ table.compact-table input {
   color: #ebeae4;
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
+.dark-mode .fantastic-depths .window-content .rollable2:hover, .dark-mode .fantastic-depths .window-content .rollable2:focus, .dark-mode .fantastic-depths .window-content .chatable2:hover, .dark-mode .fantastic-depths .window-content .chatable2:focus, .dark-mode .fantastic-depths .window-content .open-sheet2:hover, .dark-mode .fantastic-depths .window-content .open-sheet2:focus {
+  color: #ebeae4;
+  text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
+}
 .dark-mode .fantastic-depths .window-content .inline-roll {
   color: #ebeae4;
 }
@@ -762,6 +770,10 @@ table.compact-table input {
   color: #2b2a24;
 }
 .light-mode .fantastic-depths .window-content .rollable:hover, .light-mode .fantastic-depths .window-content .rollable:focus, .light-mode .fantastic-depths .window-content .chatable:hover, .light-mode .fantastic-depths .window-content .chatable:focus, .light-mode .fantastic-depths .window-content .open-sheet:hover, .light-mode .fantastic-depths .window-content .open-sheet:focus {
+  color: #2b2a24;
+  text-shadow: 0 0 10px #ae7615;
+}
+.light-mode .fantastic-depths .window-content .rollable2:hover, .light-mode .fantastic-depths .window-content .rollable2:focus, .light-mode .fantastic-depths .window-content .chatable2:hover, .light-mode .fantastic-depths .window-content .chatable2:focus, .light-mode .fantastic-depths .window-content .open-sheet2:hover, .light-mode .fantastic-depths .window-content .open-sheet2:focus {
   color: #2b2a24;
   text-shadow: 0 0 10px #ae7615;
 }
@@ -1480,6 +1492,15 @@ table.compact-table input {
 }
 .system-fantastic-depths .items-list .item .item-name .rollable:hover img, .system-fantastic-depths .items-list .item .item-name .chatable:hover img {
   opacity: 0; /* Or use display: none; */
+}
+.system-fantastic-depths .items-list .item .item-name .rollable2:hover img, .system-fantastic-depths .items-list .item .item-name .chatable2:hover img {
+  opacity: 0; /* Or use display: none; */
+}
+.system-fantastic-depths .items-list .item .item-name .rollable2:hover {
+  background-image: url("/icons/svg/d20-highlight.svg");
+}
+.system-fantastic-depths .items-list .item .item-name .chatable2:hover {
+  background-image: url("/icons/svg/book.svg");
 }
 .system-fantastic-depths .items-list .item .item-name .rollable:hover {
   background-image: url("/icons/svg/d20-highlight.svg");

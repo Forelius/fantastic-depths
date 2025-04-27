@@ -64,7 +64,7 @@ export class SkillItem extends fadeItem {
       };
       // Retrieve roll data.
       const rollData = this.getRollData();
-      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const ctrlKey = event?.ctrlKey ?? false;
       let levelMod = Math.max(0, systemData.level - 1) + (systemData.level > 0 ? systemData.skillBonus : systemData.skillPenalty);
       const bonusOperator = systemData.operator === 'lte' ? '-' : '+';
       dataset.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;

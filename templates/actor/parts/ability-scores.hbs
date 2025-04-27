@@ -6,10 +6,11 @@
    {{#each system.abilities as |ability key|}}
    <div class="ability ability-horz">
       <div class="flex-group-center">
-         <label for="system.abilities.{{key}}.value" style="text-align:center;" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
+         <label for="system.abilities.{{key}}.value" style="text-align:center;" class="rollable2 flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
                 data-ability="{{key}}"
                 data-test="ability"
                 data-pass="lte"
+                data-action="rollAbility"
                 data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
             {{#if @root.abilityAbbr}}
             {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}

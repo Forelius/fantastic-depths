@@ -4,7 +4,7 @@ import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFac
 export class MoraleCheck {
    async execute(data) {
       const { actor, event } = data;
-      const ctrlKey = event.originalEvent.ctrlKey;
+      const ctrlKey = event.ctrlKey;
       const dataset = event.currentTarget.dataset;
       dataset.formula = '2d6';
       dataset.pass = 'lte';
@@ -38,8 +38,8 @@ export class MoraleCheck {
 export class AbilityCheck {
    async execute(data) {
       const { actor, event } = data;
-      const ctrlKey = event.originalEvent.ctrlKey;
-      const dataset = event.currentTarget.dataset;
+      const ctrlKey = event.ctrlKey;
+      const dataset = event.target.dataset;
       let dialogResp = null;
       let chatType = CHAT_TYPE.ABILITY_CHECK;
 

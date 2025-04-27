@@ -125,6 +125,14 @@
             }
          }
 
+         .rollable2, .chatable2, .open-sheet2 {
+            &:hover,
+            &:focus {
+               color: $lighterColor;
+               text-shadow: $glowForDarkMode;
+            }
+         }
+
          .inline-roll {
             color: $lighterColor;
          }
@@ -285,6 +293,14 @@
          }
 
          .rollable, .chatable, .open-sheet {
+            &:hover,
+            &:focus {
+               color: $darkerColor;
+               text-shadow: 0 0 10px $shadowColor;
+            }
+         }
+
+         .rollable2, .chatable2, .open-sheet2 {
             &:hover,
             &:focus {
                color: $darkerColor;

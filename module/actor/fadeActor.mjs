@@ -307,7 +307,7 @@ export class fadeActor extends Actor {
    async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
-      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const ctrlKey = event?.ctrlKey ?? false;
       const savingThrow = this.#getSavingThrow(type); // Saving throw item
       const rollData = this.getRollData();
       let dialogResp = null;

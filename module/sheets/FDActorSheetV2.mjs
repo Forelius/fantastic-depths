@@ -37,7 +37,14 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          deleteEffect: FDActorSheetV2.#clickEffect,
          toggleEffect: FDActorSheetV2.#clickEffect,
          editImage: FDActorSheetV2.#onEditImage,
-         resetSpells: FDActorSheetV2.#clickResetSpells
+         resetSpells: FDActorSheetV2.#clickResetSpells,
+         rollItem: FDActorSheetV2.#clickRollItem,
+         rollGeneric: FDActorSheetV2.#clickRollGeneric,
+         rollAbility: FDActorSheetV2.#clickRollAbility,
+         deleteItem: FDActorSheetV2.#clickDeleteItem,
+         editItem: FDActorSheetV2.#clickEditItem,
+         editClass: FDActorSheetV2.#clickEditClass,
+         editSpecies: FDActorSheetV2.#clickEditSpecies,
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
@@ -69,24 +76,24 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Temporary fix for now.
       const html = $(this.element);
       // Render the item sheet for viewing/editing prior to the editable check.
-      html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
-      html.on('click', '.class-edit', async (event) => (await fadeFinder.getClass(this.actor.system.details.class))?.sheet?.render(true));
-      html.on('click', '.species-edit', async (event) => (await fadeFinder.getSpecies(this.actor.system.details.species))?.sheet?.render(true));
+      //html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
+      //html.on('click', '.class-edit', async (event) => (await fadeFinder.getClass(this.actor.system.details.class))?.sheet?.render(true));
+      // html.on('click', '.species-edit', async (event) => (await fadeFinder.getSpecies(this.actor.system.details.species))?.sheet?.render(true));
 
       // Add Inventory Item
       html.on('click', '.item-create', async (event) => { await this._onItemCreate(event) });
 
       // Delete Inventory Item
-      html.on('click', '.item-delete', (event) => {
-         const item = this._getItemFromActor(event);
-         const li = $(event.currentTarget).parents('.item');
-         item.delete();
-         li.slideUp(200, () => this.render(false));
-      });
+      //html.on('click', '.item-delete', (event) => {
+      //   const item = this._getItemFromActor(event);
+      //   const li = $(event.currentTarget).parents('.item');
+      //   item.delete();
+      //   li.slideUp(200, () => this.render(false));
+      //});
 
       // Rollable abilities.
-      html.on('click', '.rollable', this._onRoll.bind(this));
-      html.on('click', '.chatable', this._onRoll.bind(this));
+      //html.on('click', '.rollable', this._onRoll.bind(this));
+      //html.on('click', '.chatable', this._onRoll.bind(this));
 
       // Containers collapse/expand
       html.find(".gear-items .category-caret").click(async (event) => {
@@ -210,17 +217,19 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    async _onDrop(event) {
       if (!this.actor.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
-      const droppedItem = await Item.implementation.fromDropData(data);
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
+
       // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === 'weaponMastery') {
+      if (data.type === 'weaponMastery') {
+         const droppedItem = await Item.implementation.fromDropData(data);
          //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
          droppedItem.createActorWeaponMastery(this.actor);
       }
       // If the drop target is a container...
-      else if (droppedItem.type === 'item' || droppedItem.type === 'light' || droppedItem.type === 'treasure') {
+      else if (data.type === 'item' || data.type === 'light' || data.type === 'treasure') {
+         const droppedItem = await Item.implementation.fromDropData(data);
          if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
             const itemData = droppedItem.toObject();
             if (droppedItem.actor == null) {
@@ -242,15 +251,15 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             }
             super._onDrop(event);
          }
-      } else if (droppedItem.type === "class") {
+      } else if (data.type === "class") {
          if (this.actor.type === 'character') {
             await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
          }
-      } else if (droppedItem.type === "species") {
+      } else if (data.type === "species") {
          if (this.actor.type === 'character') {
             await this.actor.update({ "system.details.species": droppedItem.name });
          }
-      } else if (droppedItem.type === 'effect') {
+      } else if (data.type === 'effect') {
       }
       else {
          super._onDrop(event);
@@ -279,8 +288,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @returns 
     */
    _getItemFromActor(event) {
-      const li = $(event.currentTarget).parents('.item');
-      return this.actor.items.get(li.data('itemId'));
+      const parent = $(event.target).parents('.item');
+      return this.actor.items.get(parent.data('itemId'));
    }
 
    /**
@@ -784,5 +793,55 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          left: this.position.left + 10
       });
       await fp.browse();
+   }
+
+   static async #clickRollItem(event) {
+      const dataset = event.target.dataset;
+      const item = this._getItemFromActor(event);
+      // Directly roll item and skip the rest
+      if (item) await item.roll(dataset, null, event);
+   }
+
+   static async #clickDeleteItem(event) {
+      const item = this._getItemFromActor(event);
+      const parent = $(event.target).parents('.item');
+      item.delete();
+      parent.slideUp(200, () => this.render(false));
+   }
+
+   static async #clickEditItem(event) {
+      this._getItemFromActor(event)?.sheet?.render(true);
+   }
+
+   static async #clickEditClass(event) {
+      const classItem = await fadeFinder.getClass(this.actor.system.details.class);
+      classItem?.sheet?.render(true)
+   }
+
+   static async #clickEditSpecies(event) {
+      const speciesItem = await fadeFinder.getSpecies(this.actor.system.details.species);
+      speciesItem?.sheet?.render(true)
+   }
+
+   static async #clickRollGeneric(event) {
+      const dataset = event.target.dataset;
+      let formula = dataset.formula;
+      const chatType = CHAT_TYPE.GENERIC_ROLL;
+      const rollContext = { ...this.actor.getRollData() };
+      const rolled = await new Roll(formula, rollContext).evaluate();
+      const chatData = {
+         caller: this.actor,
+         context: this.actor,
+         mdata: dataset,
+         roll: rolled
+      };
+      const showResult = this.actor._getShowResult(event);
+      const builder = new ChatFactory(chatType, chatData, { showResult });
+      return builder.createChatMessage();
+   }
+
+   static async #clickRollAbility(event) {
+      const abilityCheckSys = await game.fade.registry.getSystem('abilityCheck');
+      abilityCheckSys.execute({ actor: this.actor, event });
    }
 }

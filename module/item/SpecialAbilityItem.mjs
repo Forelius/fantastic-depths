@@ -57,7 +57,7 @@ export class SpecialAbilityItem extends fadeItem {
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
-      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
       //let rolled = null;
       let roll = null;

@@ -92,16 +92,21 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @protected
     */
    async _onDrop(event) {
-      if (super._onDrop) {
-         super._onDrop(event);
-      } else {
-         // Dropped Documents
-         const data = TextEditor.getDragEventData(event);
-         const documentClass = getDocumentClass(data.type);
-         if (documentClass) {
-            const document = await documentClass.fromDropData(data);
-            await this._onDropDocument(event, document);
-         }
+      const data = TextEditor.getDragEventData(event);
+      const actor = this.actor;
+      const allowed = Hooks.call("dropActorSheetData", actor, this, data);
+      if (allowed === false) return;
+
+      // Handle different data types
+      switch (data.type) {
+         case "ActiveEffect":
+            return this._onDropActiveEffect(event, data);
+         case "Actor":
+            return this._onDropActor(event, data);
+         case "Item":
+            return this._onDropItem(event, data);
+         case "Folder":
+            return this._onDropFolder(event, data);
       }
    }
 
@@ -123,26 +128,6 @@ const DragDropMixin = (superclass) => class extends superclass {
          };
          return new DragDrop(d);
       });
-   }
-
-   /**
-    * Handle a dropped document on the ActorSheet
-    * @param {DragEvent} event         The initiating drop event
-    * @param {Document} document       The resolved Document class
-    * @returns {Promise<void>}
-    * @protected
-    */
-   async _onDropDocument(event, document) {
-      switch (document.documentName) {
-         case "ActiveEffect":
-            return this._onDropActiveEffect(event, /** @type ActiveEffect */ document);
-         case "Actor":
-            return this._onDropActor(event, /** @type Actor */ document);
-         case "Item":
-            return this._onDropItem(event, /** @type Item */ document);
-         case "Folder":
-            return this._onDropFolder(event, /** @type Folder */ document);
-      }
    }
 
    /**
@@ -169,7 +154,6 @@ const DragDropMixin = (superclass) => class extends superclass {
     */
    async _onDropActor(event, actor) { }
 
-   /* -------------------------------------------- */
 
    /**
     * Handle a dropped Item on the Actor Sheet.
@@ -180,21 +164,43 @@ const DragDropMixin = (superclass) => class extends superclass {
     */
    async _onDropItem(event, item) {
       if (!this.actor.isOwner) return;
-      if (this.actor.uuid === item.parent?.uuid) return this._onSortItem(event, item);
-      const keepId = !this.actor.items.has(item.id);
-      await Item.create(item.toObject(), { parent: this.actor, keepId });
+      const droppedItem = await Item.implementation.fromDropData(item);
+      if (this.actor.uuid === droppedItem?.parent?.uuid) return this._onSortItem(event, droppedItem);
+      const keepId = !this.actor.items.has(droppedItem.id);
+      await Item.create(droppedItem.toObject(), { parent: this.actor, keepId });
    }
 
-   /* -------------------------------------------- */
-
    /**
-    * Handle a dropped Folder on the Actor Sheet.
-    * @param {DragEvent} event     The initiating drop event
-    * @param {object} data         Extracted drag transfer data
-    * @returns {Promise<void>}
+    * Handle dropping of a Folder on an Actor Sheet.
+    * The core sheet currently supports dropping a Folder of Items to create all items as owned items.
+    * @param {DragEvent} event     The concluding DragEvent which contains drop data
+    * @param {object} data         The data transfer extracted from the event
+    * @returns {Promise<Item[]>}
     * @protected
     */
-   async _onDropFolder(event, data) { }
+   async _onDropFolder(event, data) {
+      if (!this.actor.isOwner) return [];
+      const folder = await Folder.implementation.fromDropData(data);
+      if (folder.type !== "Item") return [];
+      const droppedItemData = await Promise.all(folder.contents.map(async item => {
+         if (!(document instanceof Item)) item = await fromUuid(item.uuid);
+         return item.toObject();
+      }));
+      return this._onDropItemCreate(droppedItemData, event);
+   }
+
+   /**
+    * Handle the final creation of dropped Item data on the Actor.
+    * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
+ * @param {object[]|object} itemData      The item data requested for creation
+ * @param {DragEvent} event               The concluding DragEvent which provided the drop data
+ * @returns {Promise<Item[]>}
+ * @private
+ */
+   async _onDropItemCreate(itemData, event) {
+      itemData = itemData instanceof Array ? itemData : [itemData];
+      return this.actor.createEmbeddedDocuments("Item", itemData);
+   }
 }
 
 export { DragDropMixin }
