@@ -68,7 +68,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
          // Check if the attack type is a missile/ranged attack
          if (result.canAttack && attackType === 'missile') {
             result.ammoItem = await this.#missileAttack();
-            result.canAttack = ammoItem !== null && ammoItem !== undefined;
+            result.canAttack = result.ammoItem !== null && result.ammoItem !== undefined;
          } else {
             result.ammoItem = null;
          }

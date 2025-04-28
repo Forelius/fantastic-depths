@@ -299,7 +299,7 @@ table.compact-table input {
 }
 
 .editor {
-  min-height: 36px;
+  min-height: 50px;
 }
 
 .prosemirror .editor-container .editor-content {
