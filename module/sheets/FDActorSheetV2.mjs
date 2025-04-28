@@ -41,10 +41,20 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          rollItem: FDActorSheetV2.#clickRollItem,
          rollGeneric: FDActorSheetV2.#clickRollGeneric,
          rollAbility: FDActorSheetV2.#clickRollAbility,
+         rollMorale: FDActorSheetV2.#clickRollMorale,
+         createItem: FDActorSheetV2.#clickCreateItem,
          deleteItem: FDActorSheetV2.#clickDeleteItem,
          editItem: FDActorSheetV2.#clickEditItem,
          editClass: FDActorSheetV2.#clickEditClass,
          editSpecies: FDActorSheetV2.#clickEditSpecies,
+         toggleEquipped: FDActorSheetV2.#clickToggleEquipped,
+         toggleHeader: FDActorSheetV2.#clickToggleHeader,
+         toggleContainer: FDActorSheetV2.#clickToggleContainer,
+         useConsumable: FDActorSheetV2.#clickUseConsumable,
+         addConsumable: FDActorSheetV2.#clickAddConsumable,
+         useCharge: FDActorSheetV2.#clickUseCharge,
+         addCharge: FDActorSheetV2.#clickAddCharge,
+         editAbilityScores: FDActorSheetV2.#clickEditAbilityScores,
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
@@ -75,30 +85,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Temporary fix for now.
       const html = $(this.element);
-      // Render the item sheet for viewing/editing prior to the editable check.
-      //html.on('click', '.item-edit', (event) => this._getItemFromActor(event)?.sheet?.render(true));
-      //html.on('click', '.class-edit', async (event) => (await fadeFinder.getClass(this.actor.system.details.class))?.sheet?.render(true));
-      // html.on('click', '.species-edit', async (event) => (await fadeFinder.getSpecies(this.actor.system.details.species))?.sheet?.render(true));
-
-      // Add Inventory Item
-      html.on('click', '.item-create', async (event) => { await this._onItemCreate(event) });
-
-      // Delete Inventory Item
-      //html.on('click', '.item-delete', (event) => {
-      //   const item = this._getItemFromActor(event);
-      //   const li = $(event.currentTarget).parents('.item');
-      //   item.delete();
-      //   li.slideUp(200, () => this.render(false));
-      //});
-
-      // Rollable abilities.
-      //html.on('click', '.rollable', this._onRoll.bind(this));
-      //html.on('click', '.chatable', this._onRoll.bind(this));
-
-      // Containers collapse/expand
-      html.find(".gear-items .category-caret").click(async (event) => {
-         await this._toggleContainedItems(event);
-      });
 
       // Drag events for macros.
       const dragStartHandler = (event) => this._onDragStart(event);
@@ -110,38 +96,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          }
       });
 
-      // Toggle equipped state
-      html.find(".item-toggle").click(async (event) => await this._toggleEquippedState(event));
-
-      // Consumables
-      html.find(".consumable-counter .full-mark").click(async (event) => {
-         await this._useConsumable(event, true);
-      });
-      html.find(".consumable-counter .empty-mark").click(async (event) => {
-         await this._useConsumable(event, false);
-      });
-
-      // Charges
-      html.find(".charges-counter .full-mark").click(async (event) => {
-         await this._useCharge(event, true);
-      });
-      html.find(".charges-counter .empty-mark").click(async (event) => {
-         await this._useCharge(event, false);
-      });
-
       // Editable
       html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
-
-      // Reset spells
-      //html.find(".spells .item-reset[data-action='reset-spells']").click((event) => { this._resetSpells(event); });
-
-      // Bind the collapsible functionality to the header click event
-      html.find('.collapsible-header').on('click', async (event) => {
-         // If not the create item column...
-         if ($(event.target).closest('.item-create').length === 0) {
-            await this._toggleCollapsibleContent(event);
-         }
-      });
 
       // Bind the collapsible functionality to the header click event
       html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
@@ -318,44 +274,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-    * @param {Event} event The originating click event
-    * @private
-    */
-   async _onItemCreate(event) {
-      event.preventDefault();
-      const header = event.currentTarget;
-      // Get the type of item to create.
-      const type = header.dataset.type;
-      // Grab any data associated with this control.
-      const data = foundry.utils.duplicate(header.dataset);
-
-      // If tags are specified
-      if (header.dataset.tags?.length > 0) {
-         data.tags = header.dataset.tags.split(',');
-      }
-
-      // Localize the type
-      const localizedType = game.i18n.localize(`TYPES.Item.${type}`);
-
-      // Initialize a default name with the localized type, and lowercase it
-      const name = `New ${localizedType.toLowerCase()}`;
-
-      // Prepare the item object.
-      const itemData = {
-         name: name,
-         type: type,
-         system: data,
-      };
-
-      // Remove the type from the dataset since it's in the itemData.type prop.
-      delete itemData.system['type'];
-
-      // Finally, create the item!
-      return await fadeItem.create(itemData, { parent: this.actor });
-   }
-
-   /**
     * Handle clickable rolls.
     * @param {Event} event   The originating click event
     * @protected
@@ -430,53 +348,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * Handles the click event for toggling collapsible sections.
-    * @param {Event} event - The click event on the collapsible header
-    */
-   async _toggleCollapsibleContent(event) {
-      await this._toggleContent($(event.currentTarget));
-   }
-
-   /**
-    * Toggles the collapsible content based on the isCollapsed state.
-    * This method is separate from the event handler because it is also called to restore expanded state when opening the sheet.
-    * @param {any} target The clicked element as a jquery object.
-    */
-   async _toggleContent(target) {
-      const collapsibleItems = target.siblings('.collapsible-content');
-      const isCollapsed = $(collapsibleItems[0]).hasClass('collapsed');
-
-      if (isCollapsed === true) {
-         // Expand the content
-         collapsibleItems.each(async (index, content) => {
-            let $content = $(content);
-            $content.removeClass('collapsed');
-            $content.css('height', $content.prop('scrollHeight') + 'px');
-            setTimeout(() => { $content.css('height', ''); }, 100); // Adjust to match CSS transition duration
-         });
-      } else {
-         // Collapse the content
-         collapsibleItems.each(async (index, content) => {
-            let $content = $(content);
-            $content.css('height', $content.height() + 'px');
-            $content.addClass('collapsed');
-            setTimeout(() => { $content.css('height', '0'); }, 0);
-         });
-      }
-
-      // If remember state is enabled, store the collapsed state
-      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
-      if (rememberCollapsedState === true) {
-         const sectionName = target.parent().attr('name'); // Access the `name` attribute from the DOM element
-         //console.debug(`Remembering expanded state for ${sectionName}.`, target);
-         if (sectionName !== undefined) {
-            const actor = game.actors.get(this.actor.id);
-            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
-         }
-      }
-   }
-
-   /**
     * Restore the expanded state of all collapsible headers.
     * @protected
     */
@@ -498,7 +369,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                   // Find the collapsible section by the 'name' attribute
                   const target = document.querySelector(`[name="${sectionName}"]`);
                   if (target) {
-                     await this._toggleContent($(target).children('.items-header'), true);
+                     await this.#toggleContent($(target).children('.items-header'), true);
                   } else {
                      // Not found.
                      //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
@@ -511,39 +382,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                console.warn("Removed invalid flag: collapsed-undefined");
             }
          });
-
-         const collapsedContainers = this.actor.items.filter(item => item.system.isOpen === false);
-         for (let collapsed of collapsedContainers) {
-            //const target = document.querySelector(`[data-]`);
-         }
-      }
-   }
-
-   async _toggleEquippedState(event) {
-      let updateObj = {};
-      const item = this._getItemFromActor(event);
-      let isEquipped = item.system.equipped;
-      // if the item is not equipped or the item is not cursed or the user is GM...
-      if (isEquipped === false || item.system.isCursed === false || game.user.isGM) {
-         // Toggle the equipped state and store the new state in isEquipped
-         isEquipped = !isEquipped;
-
-         // If this is armor and we are equipping it...
-         if (item.type === "armor" && isEquipped === true) {
-            // Unequip other same type armor.
-            const otherSameTypeArmor = this.actor.items.find(aitem => aitem.type === item.type
-               && aitem.system.equipped === true
-               && aitem.system.isShield === item.system.isShield
-               && aitem.system.natural === item.system.natural);
-            if (otherSameTypeArmor) {
-               await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
-            }
-         } else if (item.system.isAmmo === false && (item.type === "item" || item.type === 'light')) {
-            updateObj["system.containerId"] = null;
-         }
-
-         updateObj["system.equipped"] = isEquipped;
-         await item.update(updateObj);
       }
    }
 
@@ -610,6 +448,45 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          } else {
             descElem.addClass('desc-collapsed');
             descElem.empty();
+         }
+      }
+   }
+
+   /**
+    * Toggles the collapsible content based on the isCollapsed state.
+    * This method is separate from the event handler because it is also called to restore expanded state when opening the sheet.
+    * @param {any} parent The clicked element as a jquery object.
+    */
+   async #toggleContent(parent) {
+      const collapsibleItems = parent.find('.collapsible-content');
+      const isCollapsed = $(collapsibleItems[0]).hasClass('collapsed');
+
+      if (isCollapsed === true) {
+         // Expand the content
+         collapsibleItems.each(async (index, content) => {
+            let $content = $(content);
+            $content.removeClass('collapsed');
+            $content.css('height', $content.prop('scrollHeight') + 'px');
+            setTimeout(() => { $content.css('height', ''); }, 100); // Adjust to match CSS transition duration
+         });
+      } else {
+         // Collapse the content
+         collapsibleItems.each(async (index, content) => {
+            let $content = $(content);
+            $content.css('height', $content.height() + 'px');
+            $content.addClass('collapsed');
+            setTimeout(() => { $content.css('height', '0'); }, 0);
+         });
+      }
+
+      // If remember state is enabled, store the collapsed state
+      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+      if (rememberCollapsedState === true) {
+         const sectionName = parent.parent().attr('name'); // Access the `name` attribute from the DOM element
+         //console.debug(`Remembering expanded state for ${sectionName}.`, target);
+         if (sectionName !== undefined) {
+            const actor = game.actors.get(this.actor.id);
+            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
          }
       }
    }
@@ -795,11 +672,81 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       await fp.browse();
    }
 
-   static async #clickRollItem(event) {
-      const dataset = event.target.dataset;
+   static async #clickToggleEquipped(event) {
+      let updateObj = {};
       const item = this._getItemFromActor(event);
-      // Directly roll item and skip the rest
-      if (item) await item.roll(dataset, null, event);
+      let isEquipped = item.system.equipped;
+      // if the item is not equipped or the item is not cursed or the user is GM...
+      if (isEquipped === false || item.system.isCursed === false || game.user.isGM) {
+         // Toggle the equipped state and store the new state in isEquipped
+         isEquipped = !isEquipped;
+
+         // If this is armor and we are equipping it...
+         if (item.type === "armor" && isEquipped === true) {
+            // Unequip other same type armor.
+            const otherSameTypeArmor = this.actor.items.find(aitem => aitem.type === item.type
+               && aitem.system.equipped === true
+               && aitem.system.isShield === item.system.isShield
+               && aitem.system.natural === item.system.natural);
+            if (otherSameTypeArmor) {
+               await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
+            }
+         } else if (item.system.isAmmo === false && (item.type === "item" || item.type === 'light')) {
+            updateObj["system.containerId"] = null;
+         }
+
+         updateObj["system.equipped"] = isEquipped;
+         await item.update(updateObj);
+      }
+   }
+
+   static async #clickToggleHeader(event) {
+      // If not the create item column...
+      const parent = event.target.closest('.items-list');
+      if (parent) {
+         await this.#toggleContent($(parent));         
+      }
+   }
+
+   static async #clickToggleContainer(event) {
+      await this._toggleContainedItems(event)
+   }
+   /**
+    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
+    * @param {Event} event The originating click event
+    * @private
+    */
+   static async #clickCreateItem(event) {
+      event.preventDefault();
+      const target = event.target.closest('.item-control');
+      // Get the type of item to create.
+      const type = target.dataset.type;
+      // Grab any data associated with this control.
+      const data = foundry.utils.duplicate(target.dataset);
+
+      // If tags are specified
+      if (target.dataset.tags?.length > 0) {
+         data.tags = target.dataset.tags.split(',');
+      }
+
+      // Localize the type
+      const localizedType = game.i18n.localize(`TYPES.Item.${type}`);
+
+      // Initialize a default name with the localized type, and lowercase it
+      const name = `New ${localizedType.toLowerCase()}`;
+
+      // Prepare the item object.
+      const itemData = {
+         name: name,
+         type: type,
+         system: data,
+      };
+
+      // Remove the type from the dataset since it's in the itemData.type prop.
+      delete itemData.system['type'];
+
+      // Finally, create the item!
+      return await fadeItem.create(itemData, { parent: this.actor });
    }
 
    static async #clickDeleteItem(event) {
@@ -840,8 +787,41 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return builder.createChatMessage();
    }
 
+   static async #clickRollItem(event) {
+      const dataset = event.target.dataset;
+      const item = this._getItemFromActor(event);
+      // Directly roll item and skip the rest
+      if (item) await item.roll(dataset, null, event);
+   }
+
    static async #clickRollAbility(event) {
       const abilityCheckSys = await game.fade.registry.getSystem('abilityCheck');
       abilityCheckSys.execute({ actor: this.actor, event });
+   }
+
+   static async #clickRollMorale(event) {
+      const moraleCheckSys = await game.fade.registry.getSystem('moraleCheck');
+      moraleCheckSys.execute({ actor: this.actor, event });
+   }
+
+   static async #clickUseConsumable(event) {
+      await this._useConsumable(event, true);
+   }
+
+   static async #clickAddConsumable(event) {
+      await this._useConsumable(event, false);
+   }
+
+   static async #clickUseCharge(event) {
+      await this._useCharge(event, true);
+   }
+
+   static async #clickAddCharge(event) {
+      await this._useCharge(event, false);
+   }
+
+   static async #clickEditAbilityScores(event) {
+      this.editScores = !this.editScores;
+      $(event.currentTarget).find('.ability-score-input, .ability-score, .ability-mod').toggle();
    }
 }

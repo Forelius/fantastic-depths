@@ -1,5 +1,5 @@
 <ol name="treasureItems" class='items-list'>
-   <li class='item flexrow items-header collapsible-header'>
+   <li class='item flexrow items-header' data-action="toggleHeader">
       <div class='item-name'>{{localize 'TYPES.Item.treasure'}} <span class="category-info">({{treasureValue}} {{localize 'FADE.Item.cost.abbr'}})</span></div>
       <div class="item-60px">{{localize 'FADE.Item.cost.abbr'}}</div>
       <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
@@ -15,7 +15,9 @@
                <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
             </a>
          </div>
-         <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
+         <a class='item-control' 
+            data-action="editItem"
+            data-tooltip='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
       </div>
       <div class="item-60px item-prop" data-tooltip="{{localize 'FADE.Item.cost.long'}}"><label>{{item.system.totalCost}}</label></div>
       <div class="item-40px item-prop editable">

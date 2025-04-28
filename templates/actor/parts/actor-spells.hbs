@@ -9,9 +9,9 @@
       </div>
    </div>
    {{#each spellSlots as |slot|}}
-   <ol name="spellLevel{{add @index 1}}" class='items-list'>
+   <div name="spellLevel{{add @index 1}}" class='items-list'>
       {{! Spell Level Header}}
-      <li class='item flexrow items-header collapsible-header'>
+      <div class='item flexrow items-header' data-action="toggleHeader">
          <div class='item-name'>
             {{localize 'FADE.Spell.SpellLVL' level=(add @index 1)}}
          </div>
@@ -26,19 +26,24 @@
          </div>
          <div class='item-controls'>
             {{#if @root.isGM}}
-            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}' data-type='spell'>
+            <a class='item-control' 
+               data-action="createItem" 
+               data-type='spell'
+               data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}'>
                <i class='fas fa-plus'></i>
                {{localize 'FADE.Spell.AddLVL' level=(add @index 1)}}
             </a>
             {{/if}}
          </div>
-      </li>
+      </div>
       {{#each slot.spells as |item id|}}
       {{! Spell Item }}
-      <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+      <div class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
          <div class="flexrow center-vert">
             <div class='item-name flexrow'>
-               <div class='item-image rollable' data-roll-type='item'>
+               <div class='item-image rollable2' 
+                    data-action="rollItem"
+                    data-roll-type='item'>
                   <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
                </div>
                <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
@@ -52,19 +57,23 @@
                       data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
             </div>
             <div class='item-controls-sm center-vert'>
-               <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>
+               <a class="item-control" 
+                  data-action="editItem" 
+                  data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>
                   <i class='fas fa-pencil'></i>
                </a>
                {{#if @root.isGM}}
-               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
+               <a class='item-control' 
+                  data-action="deleteItem" 
+                  data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
                   <i class='fas fa-trash'></i>
                </a>
                {{/if}}
             </div>
          </div>
          <div class='item-description desc-collapsed bordered'></div>
-      </li>
+      </div>
       {{/each}}
-   </ol>
+   </div>
    {{/each}}
 </section>

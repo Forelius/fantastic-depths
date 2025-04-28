@@ -1,9 +1,12 @@
 <ol name="specialAbilityItems" class='items-list'>
-   <li class='item flexrow items-header collapsible-header'>
+   <li class='item flexrow items-header' data-action="toggleHeader">
       <div class='item-name'>{{localize 'FADE.SpecialAbility.plural'}}</div>
       <div class='item-controls-sm'>
          {{#if @root.isGM}}
-         <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility'>
+         <a class='item-control'
+            data-action="createItem"
+            data-type='specialAbility'
+            data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}'>
             <i class='fas fa-plus'></i>
             {{localize 'FADE.SpecialAbility.short'}}
          </a>
@@ -14,7 +17,8 @@
    <li class='item collapsible-content{{#unless item.system.quantityMax }} bottom-border{{/unless}}{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="flexrow">
          <div class='item-name'>
-            <div class="item-image rollable"
+            <div class="item-image rollable2"
+                 data-action="rollItem"
                  data-roll-type='item'
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
                <img src='{{item.img}}'
@@ -28,11 +32,15 @@
             <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
          </div>
          <div class='item-controls-sm center-vert'>
-            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class="item-control"
+               data-action="editItem"
+               data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-pencil'></i>
             </a>
             {{#if @root.isGM}}
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class='item-control'
+               data-action="deleteItem"
+               data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
             {{/if}}
@@ -45,9 +53,9 @@
       <div class="consumable-counter">
          <label>{{localize 'FADE.Item.uses'}}</label>
          {{#times item.system.quantity}}
-         <div class="full-mark"></div>
+         <div class="full-mark" data-action="useCharge"></div>
          {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
-         <div class="empty-mark"></div>
+         <div class="empty-mark" data-action="addCharge"></div>
          {{/times}}
       </div>
    </li>

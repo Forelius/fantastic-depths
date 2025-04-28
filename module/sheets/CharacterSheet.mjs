@@ -1,58 +1,62 @@
-import { fadeActorSheet } from './fadeActorSheet.mjs';
+import { CharacterSheet2 } from './CharacterSheet2.mjs';
 
 /**
- * Extend the basic ActorSheet with some very simple modifications
- * @extends {ActorSheet}
+ * Extend the basic FDActorSheetV2 with some very simple modifications
+ * @extends {FDActorSheetV2}
  */
-export class CharacterSheet extends fadeActorSheet {   
-   /** @override */
-   static get defaultOptions() {
-      const path = 'systems/fantastic-depths/templates/actor';
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'actor'],
-         template: `${path}/CharacterSheet.hbs`,
-         width: 600,
+export class CharacterSheet extends CharacterSheet2 {   
+   static DEFAULT_OPTIONS = {
+      position: {
+         top: 150,
+         width: 650,
          height: 600,
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'abilities',
-            },
-         ],
-      });
+      },
+      form: {
+         submitOnChange: true
+      },
+      classes: ['character'],
    }
 
-   constructor(object, options = {}) {
-      super(object, options);
-      this.editScores = false;
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/actor/character/header.hbs",
+      },
+      tabnav: {
+         template: "systems/fantastic-depths/templates/actor/character/side-tabs.hbs",
+      },
+      abilities: {
+         template: "systems/fantastic-depths/templates/actor/character/abilities.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/actor/character/items.hbs",
+      },
+      skills: {
+         template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
+      },
+      spells: {
+         template: "systems/fantastic-depths/templates/actor/character/spells.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/actor/character/description.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/actor/character/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/actor/character/gmOnly.hbs",
+      }
    }
 
    /** @override */
-   async getData() {
-      const context = await super.getData();
-      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
-      context.editScores = this.editScores;
-      context.hasAbilityScoreMods = true;
-      return context;
-   }
-
-   /**
-    * @override
-    */
-   activateListeners(html) {
-      super.activateListeners(html);
-      html.on('click', '.edit-scores', async (event) => {
-         this.editScores = !this.editScores;
-         html.find('.ability-score-input, .ability-score, .ability-mod').toggle();
-      });
+   tabGroups = {
+      primary: "abilities"
    }
 
    /** @inheritDoc */
    async _renderOuter() {
       const html = await super._renderOuter();
       if (this.actor.system.details?.level > 0) {
-         const header = html[0].querySelector(".window-title");
+         const header = html.querySelector(".window-title");
          const actorData = this.document.toObject(false);
          const level = game.i18n.localize('FADE.Actor.Level');
          header.append(`(${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`);

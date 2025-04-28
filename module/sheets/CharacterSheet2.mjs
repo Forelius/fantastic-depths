@@ -5,6 +5,11 @@ import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
  * @extends {ActorSheet}
  */
 export class CharacterSheet2 extends FDActorSheetV2 {
+   constructor(object, options = {}) {
+      super(object, options);
+      this.editScores = false;
+   }
+
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,

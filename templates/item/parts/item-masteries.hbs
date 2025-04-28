@@ -1,20 +1,23 @@
-<ol name="masteryItems" class='items-list'>
-   <li class='item flexrow items-header collapsible-header'>
+<div name="masteryItems" class='items-list'>
+   <div class='item flexrow items-header' data-action="toggleHeader">
       <div class='item-name'>{{localize 'FADE.Mastery.plural'}}</div>
       <div class="item-80px">{{localize 'FADE.Actor.Level'}}</div>
       <div class="item-60px">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</div>
-         <div class="item-60px">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</div>
-         <div class='item-controls-sm'>
-            {{#if @root.isGM}}
-            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Mastery.long")}}' data-type='mastery'>
-               <i class='fas fa-plus'></i>
-               {{localize 'FADE.Mastery.short'}}
-            </a>
-            {{/if}}
-         </div>
-</li>
+      <div class="item-60px">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</div>
+      <div class='item-controls-sm'>
+         {{#if @root.isGM}}
+         <a class='item-control item-create'
+            data-action="createItem"
+            data-type='mastery'
+            data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Mastery.long")}}'>
+            <i class='fas fa-plus'></i>
+            {{localize 'FADE.Mastery.short'}}
+         </a>
+         {{/if}}
+      </div>
+   </div>
    {{#each masteries as |item|}}
-   <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+   <div class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
       <div class="flexrow center-vert">
          <div class='item-name'>
             <div class='item-image'>
@@ -30,17 +33,21 @@
             {{item.system.pDmgFormula}}
          </div>
          <div class='item-controls-sm'>
-            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Mastery.long")}}'>
+            <a class="item-control" 
+               data-action="editItem"
+               data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Mastery.long")}}'>
                <i class='fas fa-pencil'></i>
             </a>
             {{#if @root.isGM}}
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Mastery.long")}}'>
+            <a class='item-control' 
+               data-action="deleteItem"
+               data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Mastery.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
             {{/if}}
          </div>
       </div>
       <div class='item-description desc-collapsed bordered'></div>
-   </li>
+   </div>
    {{/each}}
-</ol>
+</div>

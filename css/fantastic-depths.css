@@ -885,7 +885,7 @@ table.compact-table input {
 .chat-message .message-content .warning {
   font-size: 16px;
 }
-.chat-message .message-content .collapsible-header {
+.chat-message .message-content .collapser {
   cursor: pointer;
 }
 .chat-message .message-content .item-image {

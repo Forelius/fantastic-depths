@@ -11,7 +11,9 @@
                  data-label="{{item.name}} {{localize 'FADE.SpecialAbility.short'}}">
                <img src='{{item.img}}' data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}' width='24' height='24' />
             </div>
-            <a class="item-control item-edit" data-action="editItem" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class="item-control item-edit" 
+               data-action="editItem" 
+               data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
                {{#if saveAbbr}}
                {{item.system.shortName}}
                {{else}}
@@ -24,7 +26,9 @@
          </div>
          <div class='item-controls' style="max-width:20px;">
             {{#if @root.isGM}}
-            <a class='item-control item-delete' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
+            <a class='item-control item-delete' 
+               data-action="deleteItem" 
+               data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
             {{/if}}

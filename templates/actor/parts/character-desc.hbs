@@ -27,6 +27,7 @@
                 data-test="morale"
                 data-target="{{system.retainer.loyalty}}"
                 data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                data-action="rollMorale"
                 data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">{{localize 'FADE.Actor.morale'}}</label>
       </li>
       {{else}}
@@ -37,6 +38,7 @@
       <li style="max-width:60px;">
          <label class="rollable" for="system.retainer.morale"
                 data-test="morale"
+                data-action="rollMorale"
                 data-target="{{system.retainer.morale}}"
                 data-label="{{localize 'FADE.Actor.retainerMorale'}}"
                 data-tooltip="{{localize 'FADE.Actor.retainerMoraleHint'}}">
