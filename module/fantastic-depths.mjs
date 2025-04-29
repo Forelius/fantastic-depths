@@ -256,12 +256,11 @@ Hooks.once('ready', async function () {
    await fxMgr.OnGameReady();
 
    if (game.socket) {
+      game.fade.SocketManager = new SocketManager();
       const toastsEnabled = game.settings.get(game.system.id, "toasts");
       if (toastsEnabled) {
          // Ensure that the socket is ready before using it
          game.fade.toastManager = new ToastManager();
-         game.fade.SocketManager = new SocketManager();
-
          game.socket.on(`system.${game.system.id}`, (data) => {
             //console.debug("onSocketReceived", data);
             if (data.action === 'showToast') {
@@ -273,6 +272,8 @@ Hooks.once('ready', async function () {
          });
          console.info(`Registered socket listener: system.${game.system.id}`);
       }
+   } else {
+      console.warn(`Game socket not found: system.${game.system.id}`);
    }
 
    // Set the length of a round of combat.
