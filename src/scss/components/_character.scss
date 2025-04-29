@@ -1,9 +1,10 @@
 .application.actor {
-/*   overflow: visible;
+   /*   overflow: visible;*/
 
    .window-content {
-      overflow: visible;
-   }*/
+      /*overflow-y:auto;*/
+      overflow-x: hidden;
+   }
 }
 
 .actor {
