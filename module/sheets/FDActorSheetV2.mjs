@@ -11,6 +11,7 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
  * @extends {ActorSheet}
  */
 export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+
    constructor(options = {}) {
       super(options);
    }
@@ -57,6 +58,13 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          editAbilityScores: FDActorSheetV2.#clickEditAbilityScores,
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+   }
+
+
+   /** @inheritDoc */
+   async _renderFrame(options) {
+      this._frame = await super._renderFrame(options);
+      return this._frame;
    }
 
    /**

@@ -122,22 +122,26 @@ h1, h2, h3, h4 {
   max-height: 26px;
 }
 
-.application h1 {
+.application.character {
+  overflow: visible;
+}
+
+.application .window-content h1, .application .chat-message h1 {
   margin: 6px 0 4px 0;
   font-size: 28px;
   font-family: "Barlow", sans-serif;
 }
-.application h2 {
+.application .window-content h2, .application .chat-message h2 {
   margin: 6px 0 4px 0;
   font-size: 24px;
   font-family: "Barlow", sans-serif;
 }
-.application h3 {
+.application .window-content h3, .application .chat-message h3 {
   margin: 6px 0 4px 0;
   font-size: 20px;
   font-family: "Barlow", sans-serif;
 }
-.application h4 {
+.application .window-content h4, .application .chat-message h4 {
   margin: 6px 0 4px 0;
   font-size: 16px;
   font-family: "Barlow", sans-serif;
@@ -573,6 +577,18 @@ table.compact-table input {
 .dark-mode .item-piles-chat-card li:nth-child(even) {
   background-color: rgba(250, 250, 250, 0.05);
 }
+.dark-mode .application.character .nav-tabs-right .nav-tab, .dark-mode .application.character .nav-tabs-right .nav-tab-vert, .dark-mode .application.monster .nav-tabs-right .nav-tab, .dark-mode .application.monster .nav-tabs-right .nav-tab-vert {
+  background: url("../assets/img/grunge2.jpg");
+}
+.dark-mode .application.character .nav-tabs-right .nav-tab .active img, .dark-mode .application.character .nav-tabs-right .nav-tab-vert .active img, .dark-mode .application.monster .nav-tabs-right .nav-tab .active img, .dark-mode .application.monster .nav-tabs-right .nav-tab-vert .active img {
+  filter: brightness(100%);
+}
+.dark-mode .application.character .nav-tabs-right .nav-tab a, .dark-mode .application.character .nav-tabs-right .nav-tab-vert a, .dark-mode .application.monster .nav-tabs-right .nav-tab a, .dark-mode .application.monster .nav-tabs-right .nav-tab-vert a {
+  border-color: #4b4a44;
+}
+.dark-mode .application.character .ability-scores .ability, .dark-mode .application.monster .ability-scores .ability {
+  border-color: #4b4a44;
+}
 .dark-mode .fantastic-depths .window-content {
   color: #ebeae4;
   background: url("../assets/img/grunge2.jpg");
@@ -666,18 +682,6 @@ table.compact-table input {
 .dark-mode .fantastic-depths .summary li label {
   color: #bbbab4;
 }
-.dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab, .dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
-  background: url("../assets/img/grunge2.jpg");
-}
-.dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab .active img, .dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert .active img, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab .active img, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert .active img {
-  filter: brightness(100%);
-}
-.dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab a, .dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert a, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab a, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert a {
-  border-color: #4b4a44;
-}
-.dark-mode .fantastic-depths .character .ability-scores .ability, .dark-mode .fantastic-depths .monster .ability-scores .ability {
-  border-color: #4b4a44;
-}
 .dark-mode .chat-message {
   background: url("../assets/img/grungeyellow.jpg");
   color: #ebeae4;
@@ -739,6 +743,18 @@ table.compact-table input {
 }
 
 /* Light mode styles */
+.light-mode .application.character .nav-tabs-right .nav-tab, .light-mode .application.character .nav-tabs-right .nav-tab-vert, .light-mode .application.monster .nav-tabs-right .nav-tab, .light-mode .application.monster .nav-tabs-right .nav-tab-vert {
+  background: url("../assets/img/lightgrunge1.png");
+}
+.light-mode .application.character .nav-tabs-right .nav-tab .active img, .light-mode .application.character .nav-tabs-right .nav-tab-vert .active img, .light-mode .application.monster .nav-tabs-right .nav-tab .active img, .light-mode .application.monster .nav-tabs-right .nav-tab-vert .active img {
+  filter: brightness(10%);
+}
+.light-mode .application.character .nav-tabs-right .nav-tab a, .light-mode .application.character .nav-tabs-right .nav-tab-vert a, .light-mode .application.monster .nav-tabs-right .nav-tab a, .light-mode .application.monster .nav-tabs-right .nav-tab-vert a {
+  border-color: #bbbab4;
+}
+.light-mode .application.character .ability-scores .ability, .light-mode .application.monster .ability-scores .ability {
+  border-color: #bbbab4;
+}
 .light-mode .fantastic-depths .window-content {
   background: url("../assets/img/lightgrunge1.png");
   color: #2b2a24;
@@ -782,18 +798,6 @@ table.compact-table input {
 }
 .light-mode .fantastic-depths .summary li label {
   color: #4b4a44;
-}
-.light-mode .fantastic-depths .character .nav-tabs-right .nav-tab, .light-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
-  background: url("../assets/img/lightgrunge1.png");
-}
-.light-mode .fantastic-depths .character .nav-tabs-right .nav-tab .active img, .light-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert .active img, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab .active img, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert .active img {
-  filter: brightness(10%);
-}
-.light-mode .fantastic-depths .character .nav-tabs-right .nav-tab a, .light-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert a, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab a, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert a {
-  border-color: #bbbab4;
-}
-.light-mode .fantastic-depths .character .ability-scores .ability, .light-mode .fantastic-depths .monster .ability-scores .ability {
-  border-color: #bbbab4;
 }
 .light-mode .chat-message .attack-fail, .light-mode .chat-message .roll-fail {
   color: #602010;

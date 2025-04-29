@@ -10,6 +10,19 @@ export class CharacterSheet2 extends FDActorSheetV2 {
       this.editScores = false;
    }
 
+   get title() {
+      let result = super.title;
+      const actorData = this.document.toObject(false);
+      const level = game.i18n.localize('FADE.Actor.Level');
+      if (actorData.system.details.species === actorData.system.details.class) {
+         result = `${result} (${actorData.system.details.class}, ${level} ${actorData.system.details.level})`;
+      } else {
+         result = `${result} (${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`;
+      }
+      
+      return result;
+   }
+
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,

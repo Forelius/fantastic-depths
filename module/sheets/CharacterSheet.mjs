@@ -52,15 +52,19 @@ export class CharacterSheet extends CharacterSheet2 {
       primary: "abilities"
    }
 
-   /** @inheritDoc */
-   async _renderOuter() {
-      const html = await super._renderOuter();
-      if (this.actor.system.details?.level > 0) {
-         const header = html.querySelector(".window-title");
-         const actorData = this.document.toObject(false);
-         const level = game.i18n.localize('FADE.Actor.Level');
-         header.append(`(${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`);
-      }
-      return html;
+
+   /**
+   * Replace the HTML of the application with the result provided by the rendering backend.
+   * An Application subclass should implement this method in order for the Application to be renderable.
+   * @param {any} result            The result returned by the application rendering backend
+   * @param {HTMLElement} content   The content element into which the rendered result must be inserted
+   * @param {RenderOptions} options Options which configure application rendering behavior
+   * @protected
+   */
+   _replaceHTML(result, content, options) {
+      super._replaceHTML(result, content, options);
+      // Move the tabs
+      const navTabs = content.querySelector('.nav-tabs-right');
+      this._frame.appendChild(navTabs);
    }
 }

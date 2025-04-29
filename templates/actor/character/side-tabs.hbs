@@ -1,41 +1,41 @@
-<div class="nav-tabs-right sheet-tabs tabs" data-group="primary">
-   <div class="nav-tab">
-      <a class="item" data-tab="abilities" data-tooltip="{{localize 'FADE.tabs.abilities'}}">
+<div class="nav-tabs-right sheet-tabs tabs">
+   <div class="nav-tab {{tabs.abilities.cssClass}}" data-tab="abilities" data-action="tab" data-group="primary">
+      <a class="item" data-tooltip="{{localize 'FADE.tabs.abilities'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/big-gear.svg" />
       </a>
    </div>
    {{#if isOwner}}
-   <div class="nav-tab">
-      <a class="item" data-tab="items" data-tooltip="{{localize 'FADE.tabs.items'}}">
+   <div class="nav-tab {{tabs.items.cssClass}}" data-tab="items" data-action="tab" data-group="primary">
+      <a class="item" data-tooltip="{{localize 'FADE.tabs.items'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/battle-gear.svg" />
       </a>
    </div>
    <div class="nav-tab">
-      <a class="item" data-tab="skills" data-tooltip="{{localize 'FADE.tabs.skills'}}">
+      <a class="item {{tabs.skills.cssClass}}" data-tab="skills" data-action="tab" data-group="primary" data-tooltip="{{localize 'FADE.tabs.skills'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/skills.svg" />
       </a>
    </div>
    {{#if isSpellcaster}}
    <div class="nav-tab">
-      <a class="item" data-tab="spells" data-tooltip="{{localize 'FADE.tabs.spells'}}">
+      <a class="item {{tabs.spells.cssClass}}" data-tab="spells" data-action="tab" data-group="primary" data-tooltip="{{localize 'FADE.tabs.spells'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/spell-book.svg" />
       </a>
    </div>
    {{/if}}
    <div class="nav-tab">
-      <a class="item" data-tab="description" data-tooltip="{{localize 'FADE.tabs.description'}}">
+      <a class="item {{tabs.description.cssClass}}" data-tab="description" data-action="tab" data-group="primary" data-tooltip="{{localize 'FADE.tabs.description'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/quill-ink.svg" />
       </a>
    </div>
    {{/if}}
    {{#if isGM}}
    <div class="nav-tab">
-      <a class="item" data-tab="effects" data-tooltip="{{localize 'FADE.tabs.effects'}}">
+      <a class="item {{tabs.effects.cssClass}}" data-tab="effects" data-action="tab" data-group="primary" data-tooltip="{{localize 'FADE.tabs.effects'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/internal-injury.svg" />
       </a>
    </div>
    <div class="nav-tab">
-      <a class='item' data-tab='gm-only' data-tooltip="{{localize 'FADE.tabs.gmOnly'}}">
+      <a class="item {{tabs.gmOnly.cssClass}}" data-tab="gmOnly" data-action="tab" data-group="primary" data-tooltip="{{localize 'FADE.tabs.gmOnly'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/lock-spy.svg" />
       </a>
    </div>
