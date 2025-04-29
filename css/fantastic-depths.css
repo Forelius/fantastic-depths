@@ -969,7 +969,7 @@ table.compact-table input {
   /*   overflow: visible;*/
 }
 .system-fantastic-depths .application.actor .window-content {
-  overflow-y: auto;
+  /*overflow-y:auto;*/
   overflow-x: hidden;
 }
 .system-fantastic-depths .actor img {
