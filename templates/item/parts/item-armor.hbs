@@ -33,7 +33,7 @@
                  data-roll-type='item'>
                <img src='{{item.img}}' width='26' height='26' />
             </div>
-            <a class='item-control description-expand' data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
+            <a class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
                {{#if (or item.system.isIdentified @root.isGM)}}
                {{item.name}}
                {{else}}

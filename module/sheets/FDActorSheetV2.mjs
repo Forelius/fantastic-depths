@@ -56,6 +56,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          useCharge: FDActorSheetV2.#clickUseCharge,
          addCharge: FDActorSheetV2.#clickAddCharge,
          editAbilityScores: FDActorSheetV2.#clickEditAbilityScores,
+         expandDesc: FDActorSheetV2.#clickExpandDesc,
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
@@ -108,7 +109,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
 
       // Bind the collapsible functionality to the header click event
-      html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
+      //html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
    }
 
    /** @override */
@@ -434,30 +435,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
 
       this.actor.updateEmbeddedDocuments("Item", updates);
-   }
-
-   async _onDescriptionExpand(event) {
-      // If not the create item column...
-      const descElem = $(event.target).parents('.item').find('.item-description');
-      if (descElem) {
-         const isCollapsed = $(descElem[0]).hasClass('desc-collapsed');
-         if (isCollapsed === true) {
-            descElem.removeClass('desc-collapsed');
-            const li = $(event.currentTarget).parents('.item');
-            const item = this.actor.items.get(li.data('itemId'));
-            if (item !== null) {
-               const enrichedDesc = await item.getInlineDescription();
-               if (enrichedDesc.startsWith('<') === false) {
-                  descElem.append(enrichedDesc);
-               } else {
-                  descElem.append($(enrichedDesc));
-               }
-            }
-         } else {
-            descElem.addClass('desc-collapsed');
-            descElem.empty();
-         }
-      }
    }
 
    /**
@@ -831,5 +808,29 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    static async #clickEditAbilityScores(event) {
       this.editScores = !this.editScores;
       $(event.currentTarget).find('.ability-score-input, .ability-score, .ability-mod').toggle();
+   }
+
+   static async #clickExpandDesc(event) {
+      // If not the create item column...
+      const descElem = $(event.target).parents('.item').find('.item-description');
+      if (descElem) {
+         const isCollapsed = $(descElem[0]).hasClass('desc-collapsed');
+         if (isCollapsed === true) {
+            descElem.removeClass('desc-collapsed');
+            const li = $(event.currentTarget).parents('.item');
+            const item = this.actor.items.get(li.data('itemId'));
+            if (item !== null) {
+               const enrichedDesc = await item.getInlineDescription();
+               if (enrichedDesc.startsWith('<') === false) {
+                  descElem.append(enrichedDesc);
+               } else {
+                  descElem.append($(enrichedDesc));
+               }
+            }
+         } else {
+            descElem.addClass('desc-collapsed');
+            descElem.empty();
+         }
+      }
    }
 }

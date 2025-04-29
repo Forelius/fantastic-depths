@@ -26,7 +26,7 @@ Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-de
 Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
 
 **Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
-FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin and Herrenlosigkeit.
+FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, and silentcatfart.
 
 ---
 

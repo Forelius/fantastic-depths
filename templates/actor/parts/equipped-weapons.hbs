@@ -17,9 +17,9 @@
                <img src='{{item.img}}' width='26' height='26' />
             </div>
             {{#if (or ../isGM item.system.isIdentified)}}
-            <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
+            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
             {{else}}
-            <a class="item-control description-expand" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.system.unidentifiedName}}</a>
+            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.system.unidentifiedName}}</a>
             {{/if}}
          </div>
          <div class="item-40px item-prop"><label>{{item.system.ammo.load}}</label></div>

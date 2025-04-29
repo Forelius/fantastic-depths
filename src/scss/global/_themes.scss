@@ -16,15 +16,23 @@
       background-color: rgba(250,250,250,0.05);
    }
 
-   .application.character, .application.monster {
+   .application.actor {
       .nav-tabs-right {
          .nav-tab, .nav-tab-vert {
             background: url('../assets/img/grunge2.jpg');
 
-            .active {
+            &.active {
                img {
                   filter: brightness(100%);
                }
+            }
+            // Hover effect for nav-tab images
+            img {
+               transition: filter 0.3s ease; // Smooth transition for the filter effect
+            }
+
+            &:hover img {
+               filter: brightness(80%);
             }
 
             a {
@@ -249,7 +257,7 @@
 }
 /* Light mode styles */
 .light-mode {
-   .application.character, .application.monster {
+   .application.actor{
       .nav-tabs-right {
          .nav-tab, .nav-tab-vert {
             background: url('../assets/img/lightgrunge1.png');

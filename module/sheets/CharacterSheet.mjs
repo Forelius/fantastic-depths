@@ -18,9 +18,9 @@ export class CharacterSheet extends CharacterSheet2 {
    }
 
    static PARTS = {
-      header: {
-         template: "systems/fantastic-depths/templates/actor/character/header.hbs",
-      },
+      //header: {
+      //   template: "systems/fantastic-depths/templates/actor/character/header.hbs",
+      //},
       tabnav: {
          template: "systems/fantastic-depths/templates/actor/character/side-tabs.hbs",
       },
@@ -29,6 +29,7 @@ export class CharacterSheet extends CharacterSheet2 {
       },
       items: {
          template: "systems/fantastic-depths/templates/actor/character/items.hbs",
+         scrollable: [".tab"]
       },
       skills: {
          template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
@@ -53,18 +54,72 @@ export class CharacterSheet extends CharacterSheet2 {
    }
 
 
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['tabnav', 'abilities'];
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         options.parts.push('items');
+         options.parts.push('skills');
+         if (this.actor.system.config.maxSpellLevel > 0) {
+            options.parts.push('spells');
+         }
+         options.parts.push('description');
+      }
+      if (game.user.isGM) {
+         options.parts.push('effects');
+         options.parts.push('gmOnly');
+      }
+   }
+
+   async _prepareContext(options) {
+      const context = await super._prepareContext();
+      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
+      context.editScores = this.editScores;
+      context.hasAbilityScoreMods = true;
+      // Prepare the tabs.
+      context.tabs = this.#getTabs();
+      return context;
+   }
+
    /**
-   * Replace the HTML of the application with the result provided by the rendering backend.
-   * An Application subclass should implement this method in order for the Application to be renderable.
-   * @param {any} result            The result returned by the application rendering backend
-   * @param {HTMLElement} content   The content element into which the rendered result must be inserted
-   * @param {RenderOptions} options Options which configure application rendering behavior
-   * @protected
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
    */
-   _replaceHTML(result, content, options) {
-      super._replaceHTML(result, content, options);
-      // Move the tabs
-      const navTabs = content.querySelector('.nav-tabs-right');
-      this._frame.appendChild(navTabs);
+   #getTabs() {
+      const group = 'primary';
+
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+
+      const tabs = {
+         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         description: { id: 'description', group, label: 'FADE.tabs.description' },
+         effects: { id: 'effects', group, label: 'FADE.tabs.effects' },
+      }
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         tabs.items = { id: 'items', group, label: 'FADE.items' };
+         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+      }
+
+      if (this.actor.system.config.maxSpellLevel > 0) {
+         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+      }
+
+      if (game.user.isGM) {
+         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+      }
+
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
+      }
+
+      return tabs;
    }
 }
