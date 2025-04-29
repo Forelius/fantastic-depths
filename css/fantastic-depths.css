@@ -122,22 +122,22 @@ h1, h2, h3, h4 {
   max-height: 26px;
 }
 
-.application h1 {
+.application .window-content h1, .application .chat-message h1 {
   margin: 6px 0 4px 0;
   font-size: 28px;
   font-family: "Barlow", sans-serif;
 }
-.application h2 {
+.application .window-content h2, .application .chat-message h2 {
   margin: 6px 0 4px 0;
   font-size: 24px;
   font-family: "Barlow", sans-serif;
 }
-.application h3 {
+.application .window-content h3, .application .chat-message h3 {
   margin: 6px 0 4px 0;
   font-size: 20px;
   font-family: "Barlow", sans-serif;
 }
-.application h4 {
+.application .window-content h4, .application .chat-message h4 {
   margin: 6px 0 4px 0;
   font-size: 16px;
   font-family: "Barlow", sans-serif;

@@ -20,28 +20,30 @@
 }
 
 .application {
-   h1 {
-      margin: 6px 0 4px 0;
-      font-size: 28px;
-      font-family: $font-primary;
-   }
+   .window-content, .chat-message {
+      h1 {
+         margin: 6px 0 4px 0;
+         font-size: 28px;
+         font-family: $font-primary;
+      }
 
-   h2 {
-      margin: 6px 0 4px 0;
-      font-size: 24px;
-      font-family: $font-primary;
-   }
+      h2 {
+         margin: 6px 0 4px 0;
+         font-size: 24px;
+         font-family: $font-primary;
+      }
 
-   h3 {
-      margin: 6px 0 4px 0;
-      font-size: 20px;
-      font-family: $font-primary;
-   }
+      h3 {
+         margin: 6px 0 4px 0;
+         font-size: 20px;
+         font-family: $font-primary;
+      }
 
-   h4 {
-      margin: 6px 0 4px 0;
-      font-size: 16px;
-      font-family: $font-primary;
+      h4 {
+         margin: 6px 0 4px 0;
+         font-size: 16px;
+         font-family: $font-primary;
+      }
    }
 
    ul, ul {
