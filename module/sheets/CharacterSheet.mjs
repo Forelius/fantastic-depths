@@ -122,4 +122,54 @@ export class CharacterSheet extends CharacterSheet2 {
 
       return tabs;
    }
+
+   /**
+   * Replace the HTML of the application with the result provided by the rendering backend.
+   * An Application subclass should implement this method in order for the Application to be renderable.
+   * @param {any} result            The result returned by the application rendering backend
+   * @param {HTMLElement} content   The content element into which the rendered result must be inserted
+   * @param {RenderOptions} options Options which configure application rendering behavior
+   * @protected
+   */
+   _replaceHTML(result, content, options) {
+      super._replaceHTML(result, content, options);
+      // Move the tabs
+      const navTabs = content.querySelector('.nav-tabs-right');
+      this._frame.appendChild(navTabs);
+   }
+
+   /**
+    * Change the active tab within a tab group in this Application instance.
+    * @param {string} tab        The name of the tab which should become active
+    * @param {string} group      The name of the tab group which defines the set of tabs
+    * @param {object} [options]  Additional options which affect tab navigation
+    * @param {Event} [options.event]                 An interaction event which caused the tab change, if any
+    * @param {HTMLElement} [options.navElement]      An explicit navigation element being modified
+    * @param {boolean} [options.force=false]         Force changing the tab even if the new tab is already active
+    * @param {boolean} [options.updatePosition=true] Update application position after changing the tab?
+    */
+   changeTab(tab, group, { event, navElement, force = false, updatePosition = true } = {}) {
+      if (!tab || !group) throw new Error("You must pass both the tab and tab group identifier");
+      if ((this.tabGroups[group] === tab) && !force) return;  // No change necessary
+      const tabElement = this.element.querySelector(`.tabs > [data-group="${group}"][data-tab="${tab}"]`);
+      if (!tabElement) throw new Error(`No matching tab element found for group "${group}" and tab "${tab}"`);
+
+      // Update tab navigation
+      for (const t of this.element.querySelectorAll(`.tabs > [data-group="${group}"]`)) {
+         t.classList.toggle("active", t.dataset.tab === tab);
+      }
+
+      // Update tab contents
+      for (const section of this.element.querySelectorAll(`.tab[data-group="${group}"]`)) {
+         section.classList.toggle("active", section.dataset.tab === tab);
+      }
+      this.tabGroups[group] = tab;
+
+      // Update automatic width or height
+      if (!updatePosition) return;
+      const positionUpdate = {};
+      if (this.options.position.width === "auto") positionUpdate.width = "auto";
+      if (this.options.position.height === "auto") positionUpdate.height = "auto";
+      if (!foundry.utils.isEmpty(positionUpdate)) this.setPosition(positionUpdate);
+   }
 }

@@ -966,11 +966,13 @@ table.compact-table input {
 
 /* Styles limited to fantastic-depths sheets */
 .system-fantastic-depths .application.actor {
-  /*   overflow: visible;*/
+  overflow: visible clip;
 }
 .system-fantastic-depths .application.actor .window-content {
-  /*overflow-y:auto;*/
-  overflow-x: hidden;
+  overflow: auto;
+}
+.system-fantastic-depths .application.actor .window-content .flexrow {
+  align-items: flex-start;
 }
 .system-fantastic-depths .actor img {
   border: none;

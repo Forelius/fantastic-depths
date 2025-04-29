@@ -25,7 +25,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       window: {
          resizable: true,
          minimizable: true,
-         contentClasses: ["scroll-body"]
+         //contentClasses: ["scroll-body"]
       },
       form: {
          submitOnChange: true
@@ -88,7 +88,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       inputField?.addEventListener('keydown', (event) => {
          if (event.key === 'Enter') { // Check if the Enter key is pressed
             const value = event.currentTarget.value; // Get the value of the input
-            this.item.tagManager.pushTag(value); // Push the value to the tag manager
+            this.actor.tagManager.pushTag(value); // Push the value to the tag manager
          }
       });
 

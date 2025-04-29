@@ -1,15 +1,18 @@
 .application.actor {
-   /*   overflow: visible;*/
+   overflow: visible clip;
 
    .window-content {
-      /*overflow-y:auto;*/
-      overflow-x: hidden;
+      .flexrow {
+         align-items: flex-start;
+      }
+
+      overflow: auto;
    }
 }
 
 .actor {
-   img{
-      border:none;
+   img {
+      border: none;
    }
 
    .nav-tabs-right {
