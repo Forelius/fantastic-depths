@@ -6,6 +6,10 @@ h4 {
    margin: 2px;
 }
 
+textarea{
+   width:100%;
+}
+
 .sheet-header {
    flex: 0 auto;
    /*overflow: hidden;*/
@@ -16,10 +20,10 @@ h4 {
    align-items: normal !important;
    margin-bottom: 5px;
 
-   input {
+/*   input {
       border: 0;
       padding: 2px 8px;
-   }
+   }*/
 
    .profile-img {
       flex: 0 0 10px;

@@ -982,6 +982,12 @@ table.compact-table input {
 .system-fantastic-depths .application.actor .window-content {
   overflow: auto;
 }
+.system-fantastic-depths .actor {
+  /*   input {
+        border: 0 none;
+        padding: 2px 5px;
+     }*/
+}
 .system-fantastic-depths .actor img {
   border: none;
 }
@@ -1017,10 +1023,6 @@ table.compact-table input {
   padding-inline-end: 8px;
   border-radius: 0 8px 8px 0;
   writing-mode: vertical-lr;
-}
-.system-fantastic-depths .actor input {
-  border: 0 none;
-  padding: 2px 5px;
 }
 .system-fantastic-depths .actor .ability-scores {
   max-width: 200px;
@@ -1272,6 +1274,9 @@ table.compact-table input {
 .system-fantastic-depths h4 {
   margin: 2px;
 }
+.system-fantastic-depths textarea {
+  width: 100%;
+}
 .system-fantastic-depths .sheet-header {
   flex: 0 auto;
   /*overflow: hidden;*/
@@ -1281,10 +1286,10 @@ table.compact-table input {
   justify-content: flex-start;
   align-items: normal !important;
   margin-bottom: 5px;
-}
-.system-fantastic-depths .sheet-header input {
-  border: 0;
-  padding: 2px 8px;
+  /*   input {
+        border: 0;
+        padding: 2px 8px;
+     }*/
 }
 .system-fantastic-depths .sheet-header .profile-img {
   flex: 0 0 10px;
