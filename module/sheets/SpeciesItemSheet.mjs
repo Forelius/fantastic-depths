@@ -16,7 +16,7 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
    static DEFAULT_OPTIONS = {
       position: {
          width: 580,
-         height: 'auto',
+         height: 450,
       },
       window: {
          resizable: true,

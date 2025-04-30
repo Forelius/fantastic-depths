@@ -43,7 +43,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
          template: "templates/generic/tab-navigation.hbs",
       },
       abilities: {
-         template: "systems/fantastic-depths/templates/actor/character/abilities.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/abilities2.hbs",
       },
       items: {
          template: "systems/fantastic-depths/templates/actor/character/items.hbs",

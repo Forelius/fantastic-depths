@@ -10,7 +10,7 @@ export class SkillItemSheet extends FDItemSheetV2 {
    static DEFAULT_OPTIONS = {
       position: {
          width: 580,
-         height: 'auto',
+         height: 400,
       },
       window: {
          resizable: true,

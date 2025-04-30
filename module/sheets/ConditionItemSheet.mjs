@@ -11,7 +11,7 @@ export class ConditionItemSheet extends FDItemSheetV2 {
    static DEFAULT_OPTIONS = {
       position: {
          width: 570,         
-         height: 'auto',
+         height: 400,
       },
       window: {
          resizable: true,

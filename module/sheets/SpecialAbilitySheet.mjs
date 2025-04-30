@@ -12,7 +12,7 @@ export class SpecialAbilitySheet extends FDItemSheetV2 {
    static DEFAULT_OPTIONS = {
       position: {
          width: 580,
-         height: 'auto',
+         height: 420,
       },
       window: {
          resizable: true,
@@ -84,7 +84,7 @@ export class SpecialAbilitySheet extends FDItemSheetV2 {
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
       context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
-         acc[key] = game.i18n.localize(value);
+         acc[key] = game.i18n.localize(value?.label ?? value); // cause v12 and v13 different
          return acc;
       }, {});
       // Prepare operators

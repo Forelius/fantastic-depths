@@ -139,6 +139,20 @@ export class CharacterSheet extends CharacterSheet2 {
    }
 
    /**
+    * Handle click events on a tab within the Application.
+    * @param {PointerEvent} event
+    * @protected
+    */
+   _onClickTab(event) {
+      const button = event.target.closest("[data-action]");
+      const tab = button.dataset.tab;
+      if (!tab || button.classList.contains("active") || (event.button !== 0)) return;
+      const group = button.dataset.group;
+      const navElement = button.closest(".tabs");
+      this.changeTab(tab, group, { event, navElement });
+   }
+
+   /**
     * Change the active tab within a tab group in this Application instance.
     * @param {string} tab        The name of the tab which should become active
     * @param {string} group      The name of the tab group which defines the set of tabs

@@ -14,8 +14,14 @@
 
 .fantastic-depths {
    .window-content {
+      .tab {
+         height:100%;
+      }
       input, select {
          max-height: 26px;
+      }
+      .sheet-tabs{
+         gap:0;
       }
    }
 }
@@ -230,7 +236,8 @@ table.compact-table {
 }
 
 .editor {
-   min-height: 50px;
+   height:100%;
+   /*min-height: 50px;*/
 }
 
 .prosemirror .editor-container .editor-content {

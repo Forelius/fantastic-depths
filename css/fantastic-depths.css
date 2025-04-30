@@ -118,8 +118,14 @@ h1, h2, h3, h4 {
   width: 300px;
 }
 
+.fantastic-depths .window-content .tab {
+  height: 100%;
+}
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
   max-height: 26px;
+}
+.fantastic-depths .window-content .sheet-tabs {
+  gap: 0;
 }
 
 .application .window-content h1, .application .chat-message h1 {
@@ -303,7 +309,8 @@ table.compact-table input {
 }
 
 .editor {
-  min-height: 50px;
+  height: 100%;
+  /*min-height: 50px;*/
 }
 
 .prosemirror .editor-container .editor-content {
