@@ -3,7 +3,7 @@
       <div class='item-name'>{{localize 'FADE.Skill.plural'}}</div>
       <div class="item-80px">{{localize 'FADE.Actor.Abilities.long'}}</div>
       <div class="item-40px">{{localize 'FADE.Actor.Level'}}</div>
-      <div class='item-controls-sm'>
+      <div class='item-controls'>
          {{#if @root.isGM}}
          <a class='item-control item-create'
             data-type='skill'
@@ -17,7 +17,7 @@
    </div>
    {{#each skills as |item id|}}
    <div class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
-      <div class="flexrow center-vert">
+      <div class="flexrow">
          <div class='item-name'>
             <div class="item-image rollable2"
                  data-action="rollItem"
@@ -31,7 +31,7 @@
          </div>
          <div class="item-80px item-prop"><label>{{localize (concat 'FADE.Actor.Abilities.' item.system.ability '.long')}}</label></div>
          <div class="item-40px item-prop"><label>{{item.system.level}}</label></div>
-         <div class='item-controls-sm'>
+         <div class='item-controls'>
             <a class="item-control"
                data-action="editItem"
                data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>

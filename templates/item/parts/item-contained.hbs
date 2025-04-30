@@ -1,6 +1,6 @@
 <div class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
    <div {{#if item.system.container}} {{#unless item.system.quantityMax }} class="bottom-border" {{/unless}} {{/if}}>
-      <div class="flexrow center-vert">
+      <div class="flexrow">
          <div class='item-name contained'>
             <div class='item-image {{#if item.system.isUsable}}rollable2{{else}}chatable2{{/if}}' 
                  data-action="rollItem"

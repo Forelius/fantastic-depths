@@ -532,6 +532,10 @@ table.compact-table input {
   justify-content: space-between;
 }
 
+.align-vtop {
+  align-items: flex-start !important;
+}
+
 .align-left {
   justify-content: flex-start;
   text-align: left;
@@ -978,9 +982,6 @@ table.compact-table input {
 .system-fantastic-depths .application.actor .window-content {
   overflow: auto;
 }
-.system-fantastic-depths .application.actor .window-content .flexrow {
-  align-items: flex-start;
-}
 .system-fantastic-depths .actor img {
   border: none;
 }
@@ -1418,11 +1419,9 @@ table.compact-table input {
 .system-fantastic-depths .resource-label {
   font-weight: bold;
 }
-.system-fantastic-depths ol.items-list {
+.system-fantastic-depths .items-list {
   margin: 0 !important;
   padding: 0 !important;
-}
-.system-fantastic-depths .items-list {
   list-style: none;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -1441,8 +1440,8 @@ table.compact-table input {
   overflow: hidden;
   font-size: 14px;
   text-align: left;
-  align-items: center;
   display: flex;
+  align-items: center;
 }
 .system-fantastic-depths .items-list .item-name h3, .system-fantastic-depths .items-list .item-name h4 {
   margin: 0;
@@ -1476,15 +1475,7 @@ table.compact-table input {
   font-size: 10px;
 }
 .system-fantastic-depths .items-list .item {
-  align-items: center;
   padding: 0;
-}
-.system-fantastic-depths .items-list .item .center-vert {
-  align-items: center;
-}
-.system-fantastic-depths .items-list .item ol {
-  padding: 0;
-  margin: 0;
 }
 .system-fantastic-depths .items-list .item:last-child {
   border-bottom: none;
@@ -1573,6 +1564,9 @@ table.compact-table input {
   border-left: 1px solid #c9c7b8;
   border-right: 1px solid #c9c7b8;
   font-size: 12px;
+  height: 26px;
+  line-height: 26px;
+  align-items: center;
 }
 .system-fantastic-depths .items-list .items-header {
   height: auto;

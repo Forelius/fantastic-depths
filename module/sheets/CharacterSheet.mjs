@@ -35,7 +35,7 @@ export class CharacterSheet extends CharacterSheet2 {
          template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
       },
       spells: {
-         template: "systems/fantastic-depths/templates/actor/character/spells.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
       },
       description: {
          template: "systems/fantastic-depths/templates/actor/character/description.hbs",

@@ -1,12 +1,9 @@
 // -----------------------------------------
 // Items Lists
 // -----------------------------------------
-ol.items-list {
+.items-list {
    margin: 0 !important;
    padding: 0 !important;
-}
-
-.items-list {
    list-style: none;
    overflow-y: auto;
    scrollbar-width: thin;
@@ -27,8 +24,8 @@ ol.items-list {
       overflow: hidden;
       font-size: 14px;
       text-align: left;
-      align-items: center;
       display: flex;
+      align-items:center;
 
       h3, h4 {
          margin: 0;
@@ -70,17 +67,7 @@ ol.items-list {
    }
    // Individual Item
    .item {
-      align-items: center;
       padding: 0; // to align with the header border
-
-      .center-vert {
-         align-items: center;
-      }
-
-      ol {
-         padding: 0;
-         margin: 0;
-      }
 
       &:last-child {
          border-bottom: none;
@@ -192,6 +179,9 @@ ol.items-list {
       border-left: 1px solid #c9c7b8;
       border-right: 1px solid #c9c7b8;
       font-size: 12px;
+      height: 26px;
+      line-height:26px;
+      align-items: center;
    }
    // Section Header
    .items-header {

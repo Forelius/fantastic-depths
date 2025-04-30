@@ -817,8 +817,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          const isCollapsed = $(descElem[0]).hasClass('desc-collapsed');
          if (isCollapsed === true) {
             descElem.removeClass('desc-collapsed');
-            const li = $(event.currentTarget).parents('.item');
-            const item = this.actor.items.get(li.data('itemId'));
+            const itemElement = $(event.target).parents('.item');
+            const item = this.actor.items.get(itemElement.data('itemId'));
             if (item !== null) {
                const enrichedDesc = await item.getInlineDescription();
                if (enrichedDesc.startsWith('<') === false) {
