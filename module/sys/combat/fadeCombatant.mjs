@@ -1,4 +1,13 @@
 export class fadeCombatant extends Combatant {
+   /**
+    * Construct a Combatant document using provided data and context.
+    * @param {Partial<CombatantData>} data           Initial data from which to construct the Combatant
+    * @param {DocumentConstructionContext} context   Construction context options
+    */
+   constructor(data, context) {
+      super(data, context);
+   }
+
    get declaredAction() {
       return this.actor?.system.combat.declaredAction;
    }
@@ -16,20 +25,6 @@ export class fadeCombatant extends Combatant {
    }
    get canChangeAction() {
       return game.user.isGM === true || this.initiative === null;
-   }
-   get group() {
-      const disposition = this.token.disposition;
-      let result = null;
-      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-         result = "friendly";
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-         result = "neutral";
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-         result = "hostile";
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-         result = "secret";
-      }
-      return result;
    }
    get availableActions() {
       const actions = this.actor.getAvailableActions();
@@ -62,9 +57,24 @@ export class fadeCombatant extends Combatant {
       return result;
    }
 
+   getGroup() {
+      const disposition = this.token.disposition;
+      let result = null;
+      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+         result = "friendly";
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+         result = "neutral";
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+         result = "hostile";
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+         result = "secret";
+      }
+      return result;
+   }
+
    async roundReset() {
       // Reset initiative to null
-      if (this.group === 'hostile') {
+      if (this.getGroup() === 'hostile') {
          await this.actor.update({
             "system.combat.attacks": 0,
             "system.combat.attAgainstH": 0,

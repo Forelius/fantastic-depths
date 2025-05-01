@@ -7,6 +7,10 @@ h1,h2,h3,h4{
    font-weight:bold;
 }
 
+.text-size20b {
+   font-size: 20px;
+   font-weight: bold;
+}
 .text-size20{
    font-size: 20px;
 }
@@ -22,4 +26,9 @@ h1,h2,h3,h4{
 .text-size16 {
    font-size: 18px;
    margin-bottom: 3px;
+}
+.text-size16b {
+   font-size: 18px;
+   margin: 4px 0;
+   font-weight: bold;
 }
