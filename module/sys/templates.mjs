@@ -12,9 +12,7 @@ export const preloadHandlebarsTemplates = async function () {
       actorHpAc:'systems/fantastic-depths/templates/actor/parts/hp-ac.hbs',
       actorMovement: 'systems/fantastic-depths/templates/actor/parts/movement.hbs',
       actorFlight: 'systems/fantastic-depths/templates/actor/parts/flight.hbs',
-      actorItems: 'systems/fantastic-depths/templates/actor/parts/actor-items.hbs',
       actorSkillTab: 'systems/fantastic-depths/templates/actor/parts/actor-skills.hbs',
-      actorEffects: 'systems/fantastic-depths/templates/actor/parts/actor-effects.hbs',
       actorEquippedWeapons: "systems/fantastic-depths/templates/actor/parts/equipped-weapons.hbs",
       actorSpecialAbilities: 'systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs',
       actorWeapons: 'systems/fantastic-depths/templates/item/parts/item-weapons.hbs',
@@ -26,14 +24,6 @@ export const preloadHandlebarsTemplates = async function () {
       actorExploration: 'systems/fantastic-depths/templates/actor/parts/actor-exploration.hbs',
       actorClassAbilities: 'systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs',
       actorSaves: 'systems/fantastic-depths/templates/actor/parts/actor-saves.hbs',
-      // Monster
-      monsterSkills: 'systems/fantastic-depths/templates/actor/parts/monster-skills.hbs',
-      monsterAbilities: 'systems/fantastic-depths/templates/actor/parts/monster-abilities.hbs',
-      monsterHeader: 'systems/fantastic-depths/templates/actor/parts/monster-header.hbs',
-      monsterGmOnly: "systems/fantastic-depths/templates/actor/parts/monster-gm-only.hbs",
-      // Character
-      characterDesc: 'systems/fantastic-depths/templates/actor/parts/character-desc.hbs',
-      characterHeader: 'systems/fantastic-depths/templates/actor/parts/character-header.hbs',
       // Item partials
       itemEffects: 'systems/fantastic-depths/templates/item/parts/item-effects.hbs',
       itemContained: 'systems/fantastic-depths/templates/item/parts/item-contained.hbs',

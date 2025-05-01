@@ -1,59 +1,130 @@
-import { fadeActorSheet } from './fadeActorSheet.mjs';
+import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class MonsterSheet extends fadeActorSheet {
-   /** @override */
-   static get defaultOptions() {
-      const path = 'systems/fantastic-depths/templates/actor';
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'actor'],
-         template: `${path}/MonsterSheet.hbs`,
-         width: 680,
-         height: 540,
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'abilities',
-            },
-         ],
-      });
-   }
-
+export class MonsterSheet extends FDActorSheetV2 {
    constructor(object, options = {}) {
       super(object, options);
       this.editScores = false;
    }
 
+   static DEFAULT_OPTIONS = {
+      position: {
+         top: 150,
+         width: 650,
+         height: 600,
+      },
+      form: {
+         submitOnChange: true
+      },
+      classes: ['monster'],
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/actor/monster/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      abilities: {
+         template: "systems/fantastic-depths/templates/actor/monster/abilities.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
+      },
+      skills: {
+         template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
+      },
+      spells: {
+         template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/actor/monster/description.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/actor/shared/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/actor/monster/gmOnly.hbs",
+      }
+   }
+
    /** @override */
-   async getData() {
-      const context = await super.getData();
-      context.editScores = this.editScores;
+   tabGroups = {
+      primary: "abilities"
+   }
+
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'abilities'];
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         options.parts.push('items');
+         options.parts.push('skills');
+         if (this.actor.system.config.maxSpellLevel > 0) {
+            options.parts.push('spells');
+         }
+         options.parts.push('description');
+      }
+      if (game.user.isGM) {
+         options.parts.push('effects');
+         options.parts.push('gmOnly');
+      }
+   }
+
+   async _prepareContext(options) {
+      const context = await super._prepareContext();
+      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
       context.hasAbilityScores = abilityScoreSetting !== "none";
       context.hasAbilityScoreMods = abilityScoreSetting === "withmod";
+      context.editScores = this.editScores;
+      // Prepare the tabs.
+      context.tabs = this.#getTabs();
       return context;
    }
 
    /**
-   * @override
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
    */
-   activateListeners(html) {
-      super.activateListeners(html);
-      html.on('click', '.edit-scores', async (event) => {
-         this.editScores = !this.editScores;
-         html.find('.ability-score-input, .ability-score, .ability-mod').toggle();
-      });
-   }
+   #getTabs() {
+      const group = 'primary';
 
-   /** @override */
-   async render(force, options = {}) {
-      // Call the original render method with modified options
-      await super.render(force, options);
-      // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
-      setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+
+      const tabs = {
+         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         description: { id: 'description', group, label: 'FADE.tabs.description' },
+         effects: { id: 'effects', group, label: 'FADE.tabs.effects' },
+      }
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         tabs.items = { id: 'items', group, label: 'FADE.items' };
+         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+      }
+
+      if (this.actor.system.config.maxSpellLevel > 0) {
+         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+      }
+
+      if (game.user.isGM) {
+         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+      }
+
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
+      }
+
+      return tabs;
    }
 }

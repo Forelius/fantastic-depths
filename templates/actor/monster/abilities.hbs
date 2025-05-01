@@ -1,0 +1,53 @@
+<section class="tab abilities {{tabs.abilities.cssClass}}" data-group="primary" data-tab="abilities">
+   <div class="flexrow align-vtop">
+      <div class="flex1" style="max-width: 180px;">
+         {{> "actorHpAc"}}
+         <div class="flexrow">
+            <!-- SAVING THROWS -->
+            {{> "actorSaves"}}
+         </div>
+         <div class="flexrow">
+            <div class="bordered text-center flex1">
+               <div class="grid grid-2col label-12px">
+                  <div>
+                     <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
+                     <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
+                  </div>
+                  <div>
+                     <label for="system.details.saveAs" data-tooltip="{{localize 'FADE.Actor.Saves.saveAs.long'}}">{{localize 'FADE.Actor.Saves.saveAs.abbr'}}</label>
+                     <input name="system.details.saveAs" type="text" data-dtype="String" value="{{system.details.saveAs}}" />
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="flex2">
+         <div class="bordered">
+            <!-- Equipped Weapons -->
+            {{> "actorEquippedWeapons"}}
+            {{!-- Special Abilities --}}
+            {{> "actorSpecialAbilities"}}
+         </div>
+         {{#if system.encumbrance.max}}
+         <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
+            <span class="flex3">
+               Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
+            </span>
+            <span class="flex2">
+               Base movement: {{system.encumbrance.mv}}
+            </span>
+         </div>
+         {{/if}}
+         <div class="flexrow">
+            <div class="bordered text-center">
+               {{> "actorMovement"}}
+            </div>
+            {{> "actorFlight"}}
+         </div>
+         {{#if hasAbilityScores}}
+         <!-- ABILITY SCORES -->
+         {{> "abilityScores"}}
+         {{/if}}
+      </div>
+   </div>
+</section>

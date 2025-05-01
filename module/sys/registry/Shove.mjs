@@ -57,7 +57,7 @@ export class Shove {
       // Output results to chat
       ChatMessage.create({
          content: `
-            <h2>${game.i18n.localize("FADE.dialog.shove.resultsLabel")}:</h2>
+            <div class="text-size18b">${game.i18n.localize("FADE.dialog.shove.resultsLabel")}:</div>
             <div style="font-size:14px"><strong>${game.i18n.format("FADE.dialog.shove.defenderResist", { defender: defender.name })}:</strong> ${resistValue}</div>
             <div style="font-size:14px"><strong>${game.i18n.format("FADE.dialog.shove.attackerRoll", { attacker: attacker.name })}:</strong> ${attackRoll.total} (${attackRoll.formula})</div>
             <div style='margin-top:4px;'>${await attackRoll.render()}</div>

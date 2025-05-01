@@ -55,7 +55,7 @@
             content,
             buttons: {
                ok: {
-                  label: game.i18n.localize("Roll"),
+                  label: game.i18n.localize("FADE.roll"),
                   callback: (html) => {
                      try {
                         // Parse WR inputs for attackers
@@ -100,7 +100,7 @@
                   },
                },
                cancel: {
-                  label: game.i18n.localize("Cancel"),
+                  label: game.i18n.localize("FADE.dialog.cancel"),
                   callback: () => resolve(null),
                },
             },
@@ -172,7 +172,7 @@
       // Directly localize the new state
       const localizedState = game.i18n.localize(`FADE.dialog.wrestling.states.${newState}`);
       const winner = attackerRoll.total > defenderRoll.total ? game.i18n.localize("FADE.dialog.wrestling.attacker") : game.i18n.localize("FADE.dialog.wrestling.defender");
-      let message = `<h2>${game.i18n.localize("FADE.dialog.wrestling.wrestlingContest")}:</h2>`;
+      let message = `<div class="text-size18b">${game.i18n.localize("FADE.dialog.wrestling.wrestlingContest")}:</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.attacker")}:</div>`;
       attackerGroup.members.forEach(member => {
          message += `<div>${member.name} → ${member.bonus}</div>`;
@@ -180,13 +180,11 @@
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.groupWR")}: ${groupWR}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}:</div>`;
       message += `<div>${defender.name} → ${defender.bonus}</div>`;
-      message += "<hr/>";
       message += `<div class='attack-result attack-info'>${game.i18n.format("FADE.dialog.wrestling.winsRound", { winner })}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.attacker")}: ${attackerRoll.total} (${attackerRoll.formula})</div>`;
       message += `<div>${await attackerRoll.render()}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}: ${defenderRoll.total} (${defenderRoll.formula})</div>`;
       message += `<div>${await defenderRoll.render()}</div>`;
-      message += "<hr/>";
       message += `<div style='margin-top:4px;' class='attack-result attack-info'>${game.i18n.localize("FADE.dialog.wrestling.stateLabel")}: ${localizedState}</div>`;
 
       return message;

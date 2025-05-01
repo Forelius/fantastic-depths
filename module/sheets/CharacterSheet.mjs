@@ -18,9 +18,6 @@ export class CharacterSheet extends CharacterSheet2 {
    }
 
    static PARTS = {
-      //header: {
-      //   template: "systems/fantastic-depths/templates/actor/character/header.hbs",
-      //},
       tabnav: {
          template: "systems/fantastic-depths/templates/actor/character/side-tabs.hbs",
       },
@@ -28,11 +25,11 @@ export class CharacterSheet extends CharacterSheet2 {
          template: "systems/fantastic-depths/templates/actor/character/abilities.hbs",
       },
       items: {
-         template: "systems/fantastic-depths/templates/actor/character/items.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
          scrollable: [".tab"]
       },
       skills: {
-         template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
@@ -41,7 +38,7 @@ export class CharacterSheet extends CharacterSheet2 {
          template: "systems/fantastic-depths/templates/actor/character/description.hbs",
       },
       effects: {
-         template: "systems/fantastic-depths/templates/actor/character/effects.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/effects.hbs",
       },
       gmOnly: {
          template: "systems/fantastic-depths/templates/actor/character/gmOnly.hbs",

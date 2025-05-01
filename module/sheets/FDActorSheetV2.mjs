@@ -97,7 +97,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Drag events for macros.
       const dragStartHandler = (event) => this._onDragStart(event);
-      html.find('li.item').each((i, li) => {
+      html.find('div.item').each((i, li) => {
          // If not an inventory header...
          if (li.classList.contains('items-header') == false) {
             li.setAttribute('draggable', true);
@@ -107,9 +107,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Editable
       html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
-
-      // Bind the collapsible functionality to the header click event
-      //html.find('.description-expand').on('click', async (event) => await this._onDescriptionExpand(event));
    }
 
    /** @override */

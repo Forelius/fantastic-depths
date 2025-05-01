@@ -183,7 +183,7 @@
 
    .chat-message {
       background: url('../assets/img/grungeyellow.jpg');
-      color: $lighterColor;
+      color: $lighterColor !important;
       border: 1px solid #545140;
 
       a.inline-roll {
@@ -257,15 +257,23 @@
 }
 /* Light mode styles */
 .light-mode {
-   .application.actor{
+   .application.actor {
       .nav-tabs-right {
          .nav-tab, .nav-tab-vert {
-            background: url('../assets/img/lightgrunge1.png');
+            background: url('../assets/img/parchment.jpg');
 
-            .active {
+            &.active {
                img {
-                  filter: brightness(10%);
+                  filter: brightness(5%);
                }
+            }
+            // Hover effect for nav-tab images
+            img {
+               transition: filter 0.3s ease; // Smooth transition for the filter effect
+            }
+
+            &:hover img {
+               filter: brightness(40%);
             }
 
             a {
@@ -283,7 +291,7 @@
 
    .fantastic-depths {
       .window-content {
-         background: url('../assets/img/lightgrunge1.png');
+         background: url('../assets/img/parchment.jpg');
          color: $darkerColor;
 
          .bordered {
@@ -353,6 +361,8 @@
    }
 
    .chat-message {
+      color: $darkerColor !important;
+
       .attack-fail, .roll-fail {
          color: #602010;
       }

@@ -11,6 +11,12 @@ h1, h2, h3, h4 {
   font-size: 20px;
 }
 
+.text-size18b {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
 .text-size18 {
   font-size: 18px;
   margin-bottom: 4px;
@@ -123,6 +129,7 @@ h1, h2, h3, h4 {
 }
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
   max-height: 26px;
+  padding: 0 4px;
 }
 .fantastic-depths .window-content .sheet-tabs {
   gap: 0;
@@ -697,7 +704,7 @@ table.compact-table input {
 }
 .dark-mode .chat-message {
   background: url("../assets/img/grungeyellow.jpg");
-  color: #ebeae4;
+  color: #ebeae4 !important;
   border: 1px solid #545140;
 }
 .dark-mode .chat-message a.inline-roll {
@@ -757,10 +764,16 @@ table.compact-table input {
 
 /* Light mode styles */
 .light-mode .application.actor .nav-tabs-right .nav-tab, .light-mode .application.actor .nav-tabs-right .nav-tab-vert {
-  background: url("../assets/img/lightgrunge1.png");
+  background: url("../assets/img/parchment.jpg");
 }
-.light-mode .application.actor .nav-tabs-right .nav-tab .active img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert .active img {
-  filter: brightness(10%);
+.light-mode .application.actor .nav-tabs-right .nav-tab.active img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert.active img {
+  filter: brightness(5%);
+}
+.light-mode .application.actor .nav-tabs-right .nav-tab img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert img {
+  transition: filter 0.3s ease;
+}
+.light-mode .application.actor .nav-tabs-right .nav-tab:hover img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert:hover img {
+  filter: brightness(40%);
 }
 .light-mode .application.actor .nav-tabs-right .nav-tab a, .light-mode .application.actor .nav-tabs-right .nav-tab-vert a {
   border-color: #bbbab4;
@@ -769,7 +782,7 @@ table.compact-table input {
   border-color: #bbbab4;
 }
 .light-mode .fantastic-depths .window-content {
-  background: url("../assets/img/lightgrunge1.png");
+  background: url("../assets/img/parchment.jpg");
   color: #2b2a24;
 }
 .light-mode .fantastic-depths .window-content .bordered {
@@ -811,6 +824,9 @@ table.compact-table input {
 }
 .light-mode .fantastic-depths .summary li label {
   color: #4b4a44;
+}
+.light-mode .chat-message {
+  color: #2b2a24 !important;
 }
 .light-mode .chat-message .attack-fail, .light-mode .chat-message .roll-fail {
   color: #602010;
