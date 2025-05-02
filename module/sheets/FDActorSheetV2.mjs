@@ -176,55 +176,69 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return Math.round(total * 100) / 100;
    }
 
-   async _onDrop(event) {
-      if (!this.actor.isOwner) return false;
-      const data = TextEditor.getDragEventData(event);
-      const targetId = event.target.closest(".item")?.dataset?.itemId;
-      const targetItem = this.actor.items.get(targetId);
-      const targetIsContainer = targetItem?.system.container;
+   //async _onDrop(event) {
+   //   if (!this.actor.isOwner) return false;
+   //   const data = TextEditor.getDragEventData(event);
+   //}
 
-      // If the dropped item is a weapon mastery definition item...
-      if (data.type === 'weaponMastery') {
-         const droppedItem = await Item.implementation.fromDropData(data);
-         //console.warn("Weapon Mastery Definitions can't be added to a character sheet.");
-         droppedItem.createActorWeaponMastery(this.actor);
-      }
-      // If the drop target is a container...
-      else if (data.type === 'item' || data.type === 'light' || data.type === 'treasure') {
-         const droppedItem = await Item.implementation.fromDropData(data);
-         if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
-            const itemData = droppedItem.toObject();
-            if (droppedItem.actor == null) {
-               const newItem = await this._onDropItemCreate(itemData, event);
-               await newItem[0].update({ "system.containerId": targetId });
-            } else if (droppedItem.actor.id != this.actor.id) {
-               const newItem = await this._onDropItemCreate(itemData, event);
-               await newItem[0].update({ "system.containerId": targetId });
-            } else {
-               await droppedItem.update({ "system.containerId": targetId });
-            }
+   /**
+    * Handle a dropped Item on the Actor Sheet.
+    * @param {DragEvent} event     The initiating drop event
+    * @param {Item} item           The dropped Item document
+    * @returns {Promise<void>}
+    * @protected
+    */
+   async _onDropItem(event, item) {
+      if (!this.actor.isOwner) return;
+      const droppedItem = await Item.implementation.fromDropData(item);
+
+      if (this.actor.uuid === droppedItem?.parent?.uuid) {
+         this._onSortItem(event, droppedItem);
+      } else {
+         const targetId = event.target.closest(".item")?.dataset?.itemId;
+         const targetItem = this.actor.items.get(targetId);
+         const targetIsContainer = targetItem?.system.container;
+
+         // If the dropped item is a weapon mastery definition item...
+         if (droppedItem.type === 'weaponMastery') {
+            droppedItem.createActorWeaponMastery(this.actor);
          }
-         // The drop target is not a container
+         // If the drop target is a container...
+         else if (droppedItem.type === 'item' || droppedItem.type === 'light' || droppedItem.type === 'treasure') {
+            if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
+               const itemData = droppedItem.toObject();
+               if (droppedItem.actor == null) {
+                  const newItem = await this._onDropItemCreate(itemData, event);
+                  await newItem[0].update({ "system.containerId": targetId });
+               } else if (droppedItem.actor.id != this.actor.id) {
+                  const newItem = await this._onDropItemCreate(itemData, event);
+                  await newItem[0].update({ "system.containerId": targetId });
+               } else {
+                  await droppedItem.update({ "system.containerId": targetId });
+               }
+            }
+            // The drop target is not a container
+            else {
+               // If the dropped item is owned by an actor already...
+               if (droppedItem.actor !== null) {
+                  // Remove the item from any container
+                  await droppedItem.update({ "system.containerId": null });
+               }
+               super._onDropItem(event, item);
+            }
+         } else if (droppedItem.type === "class") {
+            if (this.actor.type === 'character') {
+               await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
+            }
+         } else if (droppedItem.type === "species") {
+            if (this.actor.type === 'character') {
+               await this.actor.update({ "system.details.species": droppedItem.name });
+            }
+         } else if (droppedItem.type === 'effect') {
+         }
          else {
-            // If the dropped item is owned by an actor already...
-            if (droppedItem.actor !== null) {
-               // Remove the item from any container
-               await droppedItem.update({ "system.containerId": null });
-            }
-            super._onDrop(event);
+            super._onDropItem(event, item);
          }
-      } else if (data.type === "class") {
-         if (this.actor.type === 'character') {
-            await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
-         }
-      } else if (data.type === "species") {
-         if (this.actor.type === 'character') {
-            await this.actor.update({ "system.details.species": droppedItem.name });
-         }
-      } else if (data.type === 'effect') {
-      }
-      else {
-         super._onDrop(event);
       }
    }
 
