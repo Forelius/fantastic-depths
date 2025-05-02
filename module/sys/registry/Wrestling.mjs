@@ -1,4 +1,6 @@
-﻿export class Wrestling {
+﻿import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+
+export class Wrestling {
    static States = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
 
    /**
@@ -15,98 +17,64 @@
       // Gather controlled tokens and targets
       const attackers = Array.from(canvas.tokens.controlled);
       const defender = game.user.targets?.first();
-
-      if (!attackers.length) {
-         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
-         return;
-      }
-      if (!defender) {
-         ui.notifications.warn(game.i18n.localize("FADE.notification.selectTarget"));
-         return;
-      }
-      // Find the maximum WR among the attackers
-      const maxWR = Math.max(...attackers.map(a => a.actor.system.wrestling));
-      let primaryAttackerId = attackers.find(a => a.actor.system.wrestling === maxWR).id;
-
-      // Prepare dialog data
-      const dialogData = {
-         wrestlingStates: Wrestling.States.map((state) => ({
+      const dlgOptions = {
+         attackers,
+         defender,
+         states: Wrestling.States.map((state) => ({
             value: state,
             label: game.i18n.localize(`FADE.dialog.wrestling.states.${state}`),
          })),
-         attackers: attackers.map((token) => ({
-            id: token.id,
-            name: token.name,
-            wrestling: token.actor.system.wrestling,
-            isPrimary: token.id === primaryAttackerId
-         })),
-         wrestlingState: Wrestling.States.find(state => state === 'free'),
-         defender,
       };
 
-      // Render dialog
-      const template = 'systems/fantastic-depths/templates/dialog/wrestling.hbs';
-      const content = await renderTemplate(template, dialogData);
+      if (!dlgOptions.attackers.length) {
+         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
+         return;
+      }
+      if (!dlgOptions.defender) {
+         ui.notifications.warn(game.i18n.localize("FADE.notification.selectTarget"));
+         return;
+      }
 
-      // Show dialog and gather input
-      const wrestlingData = await new Promise((resolve) => {
-         new Dialog({
-            title: game.i18n.localize("FADE.dialog.wrestling.wrestlingContest"),
-            content,
-            buttons: {
-               ok: {
-                  label: game.i18n.localize("FADE.roll"),
-                  callback: (html) => {
-                     try {
-                        // Parse WR inputs for attackers
-                        const attackerWRs = {};
-                        attackers.forEach((attacker) => {
-                           const inputId = `#attackerWR-${attacker.id}`;
-                           const value = html.find(inputId).val();
-                           attackerWRs[attacker.id] = value ? parseInt(value, 10) : 0; // Default to 0 if empty
-                        });
+      const dialogResp = await DialogFactory({ dialog: 'wrestling' }, null, dlgOptions);
+      let wrestlingData = null;
 
-                        // Parse WR input for the defender
-                        const defenderWRInput = html.find("#defenderWR").val();
-                        const defenderWR = defenderWRInput ? parseInt(defenderWRInput, 10) : defender.actor.system.wrestling;
+      if (dialogResp?.action === "roll") {
+         console.debug(dialogResp);
 
-                        // Parse selected wrestling state
-                        const wrestlingState = html.find("#wrestlingState").val();
+         // Parse WR inputs for attackers
+         const attackerWRs = {};
+         attackers.forEach((attacker) => {
+            const inputId = `attackerWR-${attacker.id}`;
+            const value = dialogResp[inputId];
+            attackerWRs[attacker.id] = value ? parseInt(value, 10) : 0; // Default to 0 if empty
+         });
 
-                        // Resolve with collected data
-                        resolve({
-                           attackerGroup: {
-                              leaderWR: Math.max(...Object.values(attackerWRs)), // Highest WR among attackers
-                              members: attackers.map((attacker) => ({
-                                 name: attacker.name,
-                                 id: attacker.id,
-                                 hd: attacker.actor.system.hp.hd, // Hit Dice
-                                 wrestling: attackerWRs[attacker.id],   // Wrestling Rating
-                              })),
-                           },
-                           defender: {
-                              name: defender.name,
-                              id: defender.id,
-                              hd: defender.actor.system.hp.hd, // Hit Dice
-                              wrestling: defenderWR,   // Wrestling Rating
-                           },
-                           wrestlingState,
-                        });
-                     } catch (error) {
-                        console.error("Error parsing dialog inputs:", error);
-                        ui.notifications.error(game.i18n.localize("FADE.notification.inputError"));
-                        resolve(null); // Resolve with null to indicate failure
-                     }
-                  },
-               },
-               cancel: {
-                  label: game.i18n.localize("FADE.dialog.cancel"),
-                  callback: () => resolve(null),
-               },
+         // Parse WR input for the defender
+         const defenderWRInput = dialogResp.defenderWR;
+         const defenderWR = defenderWRInput ? parseInt(defenderWRInput, 10) : defender.actor.system.wrestling;
+         // Parse selected wrestling state
+         const wrestlingState = dialogResp.wrestlingState;
+
+         // Resolve with collected data
+         wrestlingData = {
+            attackerGroup: {
+               leaderWR: Math.max(...Object.values(attackerWRs)), // Highest WR among attackers
+               members: attackers.map((attacker) => ({
+                  name: attacker.name,
+                  id: attacker.id,
+                  hd: attacker.actor.system.hp.hd, // Hit Dice
+                  wrestling: attackerWRs[attacker.id],   // Wrestling Rating
+               })),
             },
-            default: "ok",
-         }).render(true);
-      });
+            defender: {
+               name: defender.name,
+               id: defender.id,
+               hd: defender.actor.system.hp.hd, // Hit Dice
+               wrestling: defenderWR,   // Wrestling Rating
+            },
+            wrestlingState,
+         };
+      }
 
       // Exit if canceled
       if (!wrestlingData) {

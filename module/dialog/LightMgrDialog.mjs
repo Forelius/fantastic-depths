@@ -1,7 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-import { fadeDialog } from './fadeDialog.mjs';
 
-export class LightMgrDialog extends fadeDialog {
+export class LightMgrDialog {
    static async getDialog(dataset, caller, opt) {
       const dialogData = {};
       const dialogResp = { caller };

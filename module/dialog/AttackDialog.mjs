@@ -1,9 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-//const { renderTemplate } = foundry.applications.handlebars;
-//const { FormDataExtended } = foundry.applications.ux;
-import { fadeDialog } from './fadeDialog.mjs';
 
-export class AttackDialog extends fadeDialog {
+export class AttackDialog {
    /**
     * Display a dialog allowing the caller to select a type of attack and attack roll modifier.
     * @param {any} weapon The attacker's weapon/spell item

@@ -1,7 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-import { fadeDialog } from './fadeDialog.mjs';
 
-export class SavingThrowDialog extends fadeDialog {
+export class SavingThrowDialog  {
    static async getDialog(dataset, caller) {
       const dialogData = { label: dataset.label };
       let dialogResp = null;

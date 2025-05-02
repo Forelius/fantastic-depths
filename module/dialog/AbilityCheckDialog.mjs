@@ -1,7 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-import { fadeDialog } from './fadeDialog.mjs';
 
-export class AbilityCheckDialog extends fadeDialog {
+export class AbilityCheckDialog {
    static async getDialog(dataset, caller) {
       const dialogData = {};
       let dialogResp = null;

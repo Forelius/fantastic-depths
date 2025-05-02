@@ -1,4 +1,4 @@
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+ import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 
 /**
 * Requires class implements getAttackTypes()
