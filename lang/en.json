@@ -163,10 +163,11 @@
                "hint": "<b>Charisma (Cha) is the character's force of personality and presence.</b><p>It affects the way other characters, especially nonplayer characters controlled by the DM, react to the character.</p><p><i>Click label to roll ability check. Ctrl-click to roll without modifier.</i></p>"
             }
          },
-         "Attacks": {            
+         "Attacks": {
             "abbr": "AT#",
             "short": "Attacks",
-            "long": "Number of Attacks"
+            "long": "Number of Attacks",
+            "groupHint": "Which attack group this attack belongs to. Click to cycle through the six available groups."
          },
          "NumberAppearing": {
             "abbr": "NA",

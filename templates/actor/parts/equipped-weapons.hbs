@@ -2,7 +2,7 @@
    <div class='item flexrow items-header'>
       <div class='item-name'>{{localize 'FADE.Item.equipped'}} {{localize 'FADE.Weapon.plural'}}</div>
       <div class="item-100px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
-      <div class="item-80px">{{localize 'FADE.Actor.Attacks.short'}}</div>
+      <div class="item-60px">{{localize 'FADE.Actor.Attacks.short'}}</div>
    </div>
    {{#each equippedWeapons as |item id|}}
    <div class='item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
@@ -21,7 +21,7 @@
             {{/if}}
          </div>
          <div class="item-100px item-prop">{{item.system.damageLabel}}</div>
-         <div class="item-80px item-prop flexrow editable">
+         <div class="item-60px item-prop flexrow editable">
             <input type="text" name="system.attacks.used" data-dtype="String" value="{{item.system.attacks.used}}" data-field="waUsed"/>/
             <input type="text" name="system.attacks.max" data-dtype="String" value="{{item.system.attacks.max}}" placeholder="∞" data-field="waMax"/>
          </div>

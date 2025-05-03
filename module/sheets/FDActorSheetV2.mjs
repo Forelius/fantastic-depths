@@ -159,14 +159,18 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          this.actor.allApplicableEffects()
       );
       // Equipped Weapons
-      const equippedWeapons = [];
+      const attackGroups = [];
       for (let item of this.actor.items) {
          item.img = item.img || Item.DEFAULT_ICON;
          if (item.type === 'weapon' && item.system.equipped === true) {
-            equippedWeapons.push(item);
+            const group = item.system.attacks.group;
+            if (!attackGroups[group]) {
+               attackGroups[group] = [];
+            }
+            attackGroups[group].push(item);
          }
       }
-      context.equippedWeapons = equippedWeapons;
+      context.attackGroups = attackGroups;
 
       return context;
    }

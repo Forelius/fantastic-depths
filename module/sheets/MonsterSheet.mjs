@@ -20,6 +20,9 @@ export class MonsterSheet extends FDActorSheetV2 {
          submitOnChange: true
       },
       classes: ['monster'],
+      actions: {
+         cycleAttackGroup: MonsterSheet.#clickAttackGroup
+      }
    }
 
    static PARTS = {
@@ -126,5 +129,11 @@ export class MonsterSheet extends FDActorSheetV2 {
       }
 
       return tabs;
+   }
+
+   static async #clickAttackGroup(event) {
+      const dataset = event.target.dataset;
+      const item = this._getItemFromActor(event);
+      await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }

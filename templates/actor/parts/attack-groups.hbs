@@ -4,8 +4,9 @@
       <div class="item-100px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
       <div class="item-80px">{{localize 'FADE.Actor.Attacks.short'}}</div>
    </div>
+   {{#each attackGroups as |equippedWeapons|}}
    {{#each equippedWeapons as |item id|}}
-   <div class='item collapsible-content' data-item-id='{{item._id}}' style="border:none;">
+   <div class='item collapsible-content attack-group' data-item-id='{{item._id}}' style="border:none;">
       <div class="flexrow">
          <div class='item-name'>
             <div class='item-image rollable2'
@@ -24,6 +25,7 @@
          <div class="item-80px item-prop flexrow editable">
             <input type="text" name="system.attacks.used" data-dtype="String" value="{{item.system.attacks.used}}" data-field="waUsed" />/
             <input type="text" name="system.attacks.max" data-dtype="String" value="{{item.system.attacks.max}}" placeholder="∞" data-field="waMax" />
+            <div style="max-width:8px" data-action="cycleAttackGroup" class="item-group {{concat "group-" item.system.attacks.group}}" data-tooltip="{{localize "Fade.Actor.Attack.groupHint"}}"></div>
          </div>
       </div>
       <div class='item-description desc-collapsed bordered'></div>
@@ -42,5 +44,6 @@
       {{/if}}
       {{/if}}
    </div>
+   {{/each}}
    {{/each}}
 </div>
