@@ -12,10 +12,10 @@
             <div class='item-image chatable' data-roll-type='item'>
                <img src='{{item.img}}' width='26' height='26' />
             </div>
-            <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.condition")}}'>{{item.name}}</a>
+            <a class='item-control item-edit'  data-action="editItem" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.condition")}}'>{{item.name}}</a>
          </div>
          <div class='item-controls item-prop'>
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.condition")}}'>
+            <a class='item-control item-delete' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.condition")}}'>
                <i class='fas fa-trash'></i>
             </a>
          </div>
@@ -30,7 +30,7 @@
          <div class="effect-source">{{localize "FADE.Effect.Source"}}</div>
          <div class="effect-source">{{localize "FADE.Spell.duration"}}</div>
          <div class="item-controls effect-controls flexrow">
-            <a class="effect-control" data-action="create" data-tooltip="{{localize 'DOCUMENT.Create' type=(localize "FADE.Effect.short")}}">
+            <a class="effect-control" data-action="createEffect" data-tooltip="{{localize 'DOCUMENT.Create' type=(localize "FADE.Effect.short")}}">
                <i class="fas fa-plus"></i> {{localize 'FADE.Effect.short'}}
             </a>
          </div>
@@ -43,7 +43,7 @@
                   <div class='item-image'>
                      <img src='{{effect.img}}' data-tooltip='{{effect.name}}' width='26' height='26' />
                   </div>
-                  <a class="effect-control" data-action="edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Effect.short")}}'>{{effect.name}}</a>
+                  <a class="effect-control" data-action="editEffect" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Effect.short")}}'>{{effect.name}}</a>
                </div>
                <div class="effect-source">{{effect.sourceNameFix}}</div>
                <div class="effect-duration">{{effect.duration?.label}}</div>
@@ -51,7 +51,7 @@
                   <a class="effect-control" data-action="toggle" data-tooltip="{{localize 'FADE.Effect.Toggle'}}">
                      <i class="fas {{#if effect.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
                   </a>
-                  <a class="effect-control" data-action="delete" data-tooltip="{{localize 'DOCUMENT.Delete' type=(localize "FADE.Effect.short")}}">
+                  <a class="effect-control" data-action="deleteEffect" data-tooltip="{{localize 'DOCUMENT.Delete' type=(localize "FADE.Effect.short")}}">
                      <i class="fas fa-trash"></i>
                   </a>
                </div>
