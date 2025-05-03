@@ -15,6 +15,7 @@ export class WeaponItemDataModel extends GearItemDataModel {
 
          // Fields specific to the "weapon" template
          damageRoll: new fields.StringField({ required: true, initial: "1d6" }),
+         damageLabel: new fields.StringField({ required: false, initial: "1d6" }),
          damageType: new fields.StringField({ required: true, initial: "physical" }),
          breath: new fields.StringField({ nullable: true, initial: null }),
          canMelee: new fields.BooleanField({ required: false, initial: true }),
@@ -41,8 +42,8 @@ export class WeaponItemDataModel extends GearItemDataModel {
          }),
          attacks: new fields.SchemaField({
             used: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 1 }),
-            group: new fields.NumberField({ initial: 1 }),
+            max: new fields.NumberField({ nullable: true, initial: null }),
+            group: new fields.NumberField({ initial: 0 }),
          }),
       };
    }

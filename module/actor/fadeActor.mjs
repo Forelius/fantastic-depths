@@ -556,7 +556,7 @@ export class fadeActor extends Actor {
     * @returns void
     */
    async _setupSpecialAbilities(abilitiesData) {
-      if (game.user.isGM === false) return;
+      if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
       const promises = [];
       // Get this actor's class ability items.
       const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');

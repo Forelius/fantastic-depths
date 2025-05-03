@@ -1013,12 +1013,6 @@ table.compact-table input {
 .system-fantastic-depths .application.actor .window-content {
   overflow: auto;
 }
-.system-fantastic-depths .actor {
-  /*   input {
-        border: 0 none;
-        padding: 2px 5px;
-     }*/
-}
 .system-fantastic-depths .actor img {
   border: none;
 }
@@ -1227,6 +1221,35 @@ table.compact-table input {
 .system-fantastic-depths .actor .category-caret {
   flex: 0 0 6px;
   margin: 0 5px 0 0;
+  cursor: pointer;
+}
+.system-fantastic-depths .actor .attack-group {
+  box-shadow: 1px 0 1px black;
+  padding: 0;
+}
+.system-fantastic-depths .actor .attack-group .group-0 {
+  background-color: white;
+}
+.system-fantastic-depths .actor .attack-group .group-1 {
+  background-color: green;
+}
+.system-fantastic-depths .actor .attack-group .group-2 {
+  background-color: red;
+}
+.system-fantastic-depths .actor .attack-group .group-3 {
+  background-color: yellow;
+}
+.system-fantastic-depths .actor .attack-group .group-4 {
+  background-color: blue;
+}
+.system-fantastic-depths .actor .attack-group .group-5 {
+  background-color: orange;
+}
+.system-fantastic-depths .actor .attack-group .item-group {
+  content: "";
+  width: 5px;
+  border: none;
+  height: initial;
   cursor: pointer;
 }
 .system-fantastic-depths .character .ability {
@@ -1452,9 +1475,6 @@ table.compact-table input {
   font-weight: bold;
   animation: 0.8s ease-in 1s infinite alternate notify;
 }
-.system-fantastic-depths .resource-label {
-  font-weight: bold;
-}
 .system-fantastic-depths .items-list {
   margin: 0 !important;
   padding: 0 !important;
@@ -1594,6 +1614,10 @@ table.compact-table input {
 .system-fantastic-depths .items-list .item-80px {
   width: 80px;
   max-width: 80px;
+}
+.system-fantastic-depths .items-list .item-100px {
+  width: 100px;
+  max-width: 100px;
 }
 .system-fantastic-depths .items-list .item-prop {
   text-align: center;

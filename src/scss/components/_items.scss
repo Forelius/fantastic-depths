@@ -25,7 +25,7 @@
       font-size: 14px;
       text-align: left;
       display: flex;
-      align-items:center;
+      align-items: center;
 
       h3, h4 {
          margin: 0;
@@ -174,13 +174,18 @@
       max-width: 80px;
    }
 
+   .item-100px {
+      width: 100px;
+      max-width: 100px;
+   }
+
    .item-prop {
       text-align: center;
       border-left: 1px solid #c9c7b8;
       border-right: 1px solid #c9c7b8;
       font-size: 12px;
       height: 26px;
-      line-height:26px;
+      line-height: 26px;
       align-items: center;
    }
    // Section Header

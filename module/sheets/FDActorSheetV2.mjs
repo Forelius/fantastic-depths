@@ -176,11 +176,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return Math.round(total * 100) / 100;
    }
 
-   //async _onDrop(event) {
-   //   if (!this.actor.isOwner) return false;
-   //   const data = TextEditor.getDragEventData(event);
-   //}
-
    /**
     * Handle a dropped Item on the Actor Sheet.
     * @param {DragEvent} event     The initiating drop event
@@ -362,6 +357,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          result = await item.update({ "system.memorized": newVal });
       } else if (event.target.dataset.field === "target") {
          result = await item.update({ "system.target": newVal ?? 0 });
+      } else if (event.target.dataset.field === "waUsed") {
+         result = await item.update({ "system.attacks.used": newVal ?? 0 });
+      } else if (event.target.dataset.field === "waMax") {
+         result = await item.update({ "system.attacks.max": newVal });
       }
 
       return result;
@@ -511,8 +510,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          spellSlots.push({ spells: [] })
       }
 
+      const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
-      for (let item of this.actor.items) {
+      for (let item of items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === 'item' || item.type === 'light' || item.type === 'treasure') {

@@ -131,8 +131,30 @@ export class fadeItem extends Item {
       return result;
    }
 
+   getEvaluatedRollSync(formula, options = { minimize: true }) {
+      let result = null;
+      if (formula !== null && formula !== "") {
+         const rollData = this.getRollData();
+         try {
+            const roll = new Roll(formula, rollData);
+            roll.evaluateSync(options);
+            result = roll;
+         }
+         catch (error) {
+            if (game.user.isGM === true) {
+               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            }
+         }
+      }
+      return result;
+   }
+
    async getEvaluatedRollFormula(formula) {
       return await this.getEvaluatedRoll(formula)?.formula;
+   }
+
+   getEvaluatedRollFormulaSync(formula) {
+      return this.getEvaluatedRollSync(formula)?.formula;
    }
 
    /**

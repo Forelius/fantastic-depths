@@ -191,7 +191,7 @@ export class fadeCombat extends Combat {
             content: game.i18n.localize("FADE.Chat.combatTracker.ended"),
          });
          for (let combatant of combat.combatants) {
-            combatant.exitCombat();
+            combatant.roundReset(true);
          }
       }
    }

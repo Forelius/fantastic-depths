@@ -27,14 +27,14 @@ export class SkillItem extends fadeItem {
       }
    }
 
-   async getDamageRoll() {
+   getDamageRoll() {
       const isHeal = this.system.healFormula?.length > 0;
       let formula = null;
       let digest = [];
       let hasDamage = false;
 
       if (isHeal) {
-         const evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
+         const evaluatedRoll = this.getEvaluatedRollSync(this.system.healFormula);
          formula = evaluatedRoll?.formula;
          hasDamage = true;
       }

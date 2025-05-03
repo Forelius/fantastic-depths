@@ -8,7 +8,7 @@ export class SpecialAbilityChat extends ChatBuilder {
       const { context, caller, roll, options } = this.data;
       const targetTokens = Array.from(game.user.targets);
       const item = caller;
-      const damageRoll = await item.getDamageRoll(null);
+      const damageRoll = item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "" };
       let description = '?';

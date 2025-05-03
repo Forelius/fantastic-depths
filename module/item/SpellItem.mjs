@@ -26,9 +26,9 @@ export class SpellItem extends RollAttackMixin(fadeItem) {
       systemData.damageType = systemData.damageType || ""
    }
 
-   async getDamageRoll(resp) {
+   getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      const evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       const digest = [];
       let formula = evaluatedRoll?.formula;
       let modifier = 0;

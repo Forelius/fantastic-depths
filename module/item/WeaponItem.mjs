@@ -18,14 +18,14 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareModText();
-      this._prepareDamageRollLabel();
+      this._prepareDamageLabel();
    }
 
-   async getDamageRoll(attackType, resp, targetWeaponType) {
+   getDamageRoll(attackType, resp, targetWeaponType) {
       const weaponData = this.system;
       const attackerData = this.parent.system;
       const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
-      let evaluatedRoll = await this.getEvaluatedRoll(weaponData.damageRoll);
+      let evaluatedRoll = this.getEvaluatedRollSync(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
       let digest = [];
       let modifier = 0;
@@ -178,7 +178,12 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       this._processNonTransferActiveEffects();
    }
 
-   async _prepareDamageRollLabel() {
-      this.system.damageRollLabel = await this.getEvaluatedRollFormula(this.system.damageRoll);
+   async _prepareDamageLabel() {
+      if (this.parent) {
+         const attackType = this.system.canMelee ? "melee" : "missile";
+         this.system.damageLabel = this.getDamageRoll(attackType, null, "primary")?.formula ?? this.system.damageRoll;
+      } else {
+         this.system.damageLabel = this.system.damageRoll;
+      }
    }
 }

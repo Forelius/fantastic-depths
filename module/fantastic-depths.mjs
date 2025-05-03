@@ -14,7 +14,7 @@ import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
-import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
+import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
 import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
 import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
 import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.mjs';
@@ -105,7 +105,7 @@ Hooks.once('init', async function () {
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDataModel,
       class: ClassDefinitionDataModel,
-      weaponMastery: MasteryDefinitionItemDataModel,
+      weaponMastery: MasteryDefinitionDataModel,
       specialAbility: SpecialAbilityDataModel,
       condition: ConditionItemDataModel,
       species: SpeciesItemDataModel

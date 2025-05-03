@@ -1,7 +1,7 @@
 /**
  * Data model for a weapon mastery item containing multiple mastery levels.
  */
-export class MasteryDefinitionItemDataModel extends foundry.abstract.TypeDataModel {
+export class MasteryDefinitionDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {

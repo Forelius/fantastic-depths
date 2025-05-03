@@ -121,6 +121,9 @@ export class WeaponMasterySystem {
          }
 
          if (attackerMastery) {
+            if (attackerMastery.system.primaryType !== "all" && targetWeaponType === "primary") {
+               targetWeaponType = attackerMastery.system.primaryType;
+            }
             // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
             if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
                result.formula = attackerMastery.system.pDmgFormula;

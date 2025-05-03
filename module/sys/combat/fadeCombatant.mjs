@@ -72,33 +72,24 @@ export class fadeCombatant extends Combatant {
       return result;
    }
 
-   async roundReset() {
-      // Reset initiative to null
-      if (this.getGroup() === 'hostile') {
-         await this.actor.update({
-            "system.combat.attacks": 0,
-            "system.combat.attAgainstH": 0,
-            "system.combat.attAgainstM": 0,
-            'system.combat.declaredAction': "attack"
-         });
-      } else {
-         await this.actor.update({
-            "system.combat.attacks": 0,
-            "system.combat.attAgainstH": 0,
-            "system.combat.attAgainstM": 0,
-            'system.combat.declaredAction': "nothing"
-         });
-      }
-   }
+   async roundReset(isExit=false) {
+      const promises = [];
 
-   async exitCombat() {
+      // Reset weapon attacks to zero
+      const weapons = this.actor.items.filter(item => item.type === "weapon");
+      for (let weapon of weapons) {
+         promises.push(weapon.update({ "system.attacks.used": 0 }));
+      }
+
       // Reset initiative to null
-      await this.actor.update({
+      promises.push(this.actor.update({
          "system.combat.attacks": 0,
          "system.combat.attAgainstH": 0,
          "system.combat.attAgainstM": 0,
-         "system.combat.declaredAction": null
-      });
+         'system.combat.declaredAction': isExit ? null : "attack"
+      }));
+
+      await Promise.all(promises);
    }
 }
 

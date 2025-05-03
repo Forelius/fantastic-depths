@@ -49,11 +49,6 @@
       }
    }
 
-/*   input {
-      border: 0 none;
-      padding: 2px 5px;
-   }*/
-
    .ability-scores {
       max-width: 200px;
    }
@@ -268,6 +263,43 @@
       margin: 0 5px 0 0;
       cursor: pointer;
    }
+
+   .attack-group {
+      box-shadow: 1px 0 1px black;
+      padding: 0;
+
+      .group-0 {
+         background-color: white;
+      }
+
+      .group-1 {
+         background-color: green;
+      }
+
+      .group-2 {
+         background-color: red;
+      }
+
+      .group-3 {
+         background-color: yellow;
+      }
+
+      .group-4 {
+         background-color: blue;
+      }
+
+      .group-5 {
+         background-color: orange;
+      }
+
+      .item-group {
+         content: "";
+         width: 5px;
+         border: none;
+         height: initial;
+         cursor: pointer;
+      }
+   }
 }
 
 .character {
@@ -351,7 +383,7 @@
          padding-right: 5px;
       }
 
-      .ability-mod {         
+      .ability-mod {
          max-width: 30px;
          font-size: 14px;
       }

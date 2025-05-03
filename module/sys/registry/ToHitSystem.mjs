@@ -81,6 +81,7 @@ export class ToHitSystemBase {
 
       if (roll) {
          await attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
+         await weapon.update({ "system.attacks.used": weapon.system.attacks.used + 1 });
 
          const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
          const thac0 = attackingActor.system.thac0.value;

@@ -138,9 +138,9 @@ export class GearItem extends fadeItem {
       return description;
    }
 
-   async getDamageRoll(resp) {
+   getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      let evaluatedRoll = this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
       let formula = evaluatedRoll?.formula;
       let digest = [];
       let modifier = 0;

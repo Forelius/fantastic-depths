@@ -14,7 +14,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { context, caller, roll, options } = this.data;
-      const damageRoll = await caller.getDamageRoll(null);
+      const damageRoll = caller.getDamageRoll(null);
       const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
