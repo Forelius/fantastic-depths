@@ -4,7 +4,7 @@ import { CharacterSheet2 } from './CharacterSheet2.mjs';
  * Extend the basic FDActorSheetV2 with some very simple modifications
  * @extends {FDActorSheetV2}
  */
-export class CharacterSheet extends CharacterSheet2 {   
+export class CharacterSheet extends CharacterSheet2 {
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
@@ -66,9 +66,9 @@ export class CharacterSheet extends CharacterSheet2 {
             options.parts.push('spells');
          }
          options.parts.push('description');
+         options.parts.push('effects');
       }
       if (game.user.isGM) {
-         options.parts.push('effects');
          options.parts.push('gmOnly');
       }
    }
@@ -95,14 +95,15 @@ export class CharacterSheet extends CharacterSheet2 {
 
       const tabs = {
          abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
-         description: { id: 'description', group, label: 'FADE.tabs.description' },
-         effects: { id: 'effects', group, label: 'FADE.tabs.effects' },
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          tabs.items = { id: 'items', group, label: 'FADE.items' };
          tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
       }
+
+      tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
+      tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
 
       if (this.actor.system.config.maxSpellLevel > 0) {
          tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
