@@ -93,8 +93,6 @@ const RollAttackMixin = (superclass) => class extends superclass {
    async #missileAttack() {
       let ammoItem = this.actor?.getAmmoItem(this);
       await this.#tryUseAmmo();
-      // No need to show ammo item if it is also the weapon we are using (thrown).
-      ammoItem = ammoItem?.id === this.id ? null : ammoItem;
       return ammoItem;
    }
 

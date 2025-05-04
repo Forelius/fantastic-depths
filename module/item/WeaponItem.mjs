@@ -110,6 +110,9 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          digest
       };
 
+      // No need to show ammo item if it is also the weapon we are using (thrown).
+      ammoItem = ammoItem?.id === this.id ? null : ammoItem;
+
       const builder = new ChatFactory(CHAT_TYPE.ATTACK_ROLL, chatData, { ammoItem });
       await builder.createChatMessage();
    }
