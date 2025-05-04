@@ -56,7 +56,7 @@ class TurnData {
       this.dungeon.rest = 0;
    }
 
-   async updateTime(seconds, skipRest=false) {
+   updateTime(seconds, skipRest=false) {
       const turns = seconds / this.timeSteps.turn;
       this.dungeon.session += turns;
       this.dungeon.total += turns;
@@ -233,8 +233,6 @@ export class TurnTrackerForm extends FormApplication {
          const condition = trackedActor.items.find(item => item.type === needRestCondition.type && item.name === needRestCondition.name);
          if (condition) {
             condition.delete();
-            //const itemData = [condition.toObject()];
-            //await trackedActor.deleteEmbeddedDocuments("Item", itemData);
          }
       }
 
