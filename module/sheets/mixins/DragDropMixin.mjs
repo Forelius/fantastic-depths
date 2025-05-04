@@ -202,6 +202,41 @@ const DragDropMixin = (superclass) => class extends superclass {
       itemData = itemData instanceof Array ? itemData : [itemData];
       return this.actor.createEmbeddedDocuments("Item", itemData);
    }
+
+   /**
+    * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings.
+    * @param {DragEvent} event     The initiating drop event
+    * @param {Item} item           The dropped Item document
+    * @protected
+    */
+   _onSortItem(event, item) {
+      const items = this.actor.items;
+      const source = items.get(item.id);
+
+      // Confirm the drop target
+      const dropTarget = event.target.closest("[data-item-id]");
+      if (!dropTarget) return;
+      const target = items.get(dropTarget.dataset.itemId);
+      if (source.id === target.id) return;
+
+      // Identify sibling items based on adjacent HTML elements
+      const siblings = [];
+      for (const element of dropTarget.parentElement.children) {
+         const siblingId = element.dataset.itemId;
+         if (siblingId && (siblingId !== source.id)) siblings.push(items.get(element.dataset.itemId));
+      }
+
+      // Perform the sort
+      const sortUpdates = SortingHelpers.performIntegerSort(source, { target, siblings });
+      const updateData = sortUpdates.map(u => {
+         const update = u.update;
+         update._id = u.target._id;
+         return update;
+      });
+
+      // Perform the update
+      return this.actor.updateEmbeddedDocuments("Item", updateData);
+   }
 }
 
 export { DragDropMixin }

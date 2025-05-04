@@ -190,14 +190,13 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    async _onDropItem(event, item) {
       if (!this.actor.isOwner) return;
       const droppedItem = await Item.implementation.fromDropData(item);
+      const targetId = event.target.closest(".item")?.dataset?.itemId;
+      const targetItem = this.actor.items.get(targetId);
+      const targetIsContainer = targetItem?.system.container;
 
-      if (this.actor.uuid === droppedItem?.parent?.uuid) {
+      if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer === false) {
          this._onSortItem(event, droppedItem);
       } else {
-         const targetId = event.target.closest(".item")?.dataset?.itemId;
-         const targetItem = this.actor.items.get(targetId);
-         const targetIsContainer = targetItem?.system.container;
-
          // If the dropped item is a weapon mastery definition item...
          if (droppedItem.type === 'weaponMastery') {
             droppedItem.createActorWeaponMastery(this.actor);
