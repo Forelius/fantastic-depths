@@ -56,5 +56,6 @@ export class WeaponItemDataModel extends GearItemDataModel {
 
    prepareDerivedData() {
       super.prepareDerivedData();
+      this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
    }
 }

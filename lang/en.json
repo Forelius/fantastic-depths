@@ -558,6 +558,7 @@
          "languageDesc": "Add one or more languages."
       },
       "notification": {
+         "missingSave": "The actor does not have the requested saving throw type ({type}).",
          "selectTarget": "A targetted must first be selected.",
          "selectToken1": "A token must first be selected.",
          "spellSelectToken": "You must have your token selected to cast a spell.",

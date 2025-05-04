@@ -357,6 +357,6 @@ export class fadeFinder {
          source = await fadeFinder._getPackSource(type);
          result = source.filter(item => item.name === name);
       }
-      return result;
+      return result?.[0];
    }
 }

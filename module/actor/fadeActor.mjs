@@ -307,8 +307,10 @@ export class fadeActor extends Actor {
    async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
-      const ctrlKey = event?.ctrlKey ?? false;
       const savingThrow = this.#getSavingThrow(type); // Saving throw item
+      if (!savingThrow) return;
+
+      const ctrlKey = event?.ctrlKey ?? false;
       const rollData = this.getRollData();
       let dialogResp = null;
       let dataset = {};
@@ -717,6 +719,10 @@ export class fadeActor extends Actor {
    }
 
    #getSavingThrow(type) {
-      return this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
+      const result = this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
+      if (!result) {
+         ui.notifications.error(game.i18n.format('FADE.notification.missingSave', { type }));
+      }
+      return result;
    }
 }

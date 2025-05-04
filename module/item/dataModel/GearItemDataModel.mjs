@@ -60,6 +60,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
       if (this.quantity === 0) {
          this.equipped = false;
       }
