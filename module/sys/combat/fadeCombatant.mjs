@@ -81,12 +81,19 @@ export class fadeCombatant extends Combatant {
          promises.push(weapon.update({ "system.attacks.used": 0 }));
       }
 
+      const defaultWeapon = weapons?.find(item => item.system.equipped === true);
+      let defaultAction = null;
+      if (defaultWeapon?.system.canMelee) {
+         defaultAction = "attack";
+      } else if (defaultWeapon?.system.canRanged) {
+         defaultAction = "fire";
+      }
       // Reset initiative to null
       promises.push(this.actor.update({
          "system.combat.attacks": 0,
          "system.combat.attAgainstH": 0,
          "system.combat.attAgainstM": 0,
-         'system.combat.declaredAction': isExit ? null : "attack"
+         'system.combat.declaredAction': isExit ? null : defaultAction
       }));
 
       await Promise.all(promises);
