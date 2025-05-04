@@ -750,6 +750,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickDeleteItem(event) {
       const item = this._getItemFromActor(event);
+      if (item.type === 'condition' && game.user.isGM === false) return;
       const parent = $(event.target).parents('.item');
       item.delete();
       parent.slideUp(200, () => this.render(false));
