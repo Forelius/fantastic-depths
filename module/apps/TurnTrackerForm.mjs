@@ -182,7 +182,7 @@ export class TurnTrackerForm extends FormApplication {
          e.preventDefault();
          this.submit();
       });
-
+      Hooks.off('updateWorldTime', this._updateWorldTime);
       Hooks.on('updateWorldTime', this._updateWorldTime);
    }
 
@@ -206,7 +206,7 @@ export class TurnTrackerForm extends FormApplication {
          // Rest message
          chatContent += (await this.#handleNeedRest());
 
-         this.render(true);  // Re-render the form to update the UI
+         this.render();  // Re-render the form to update the UI
 
          if (chatContent.length > 0) {
             ChatMessage.create({ speaker: speaker, content: chatContent });
