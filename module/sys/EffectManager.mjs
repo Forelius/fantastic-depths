@@ -78,9 +78,8 @@ export class EffectManager {
    async onManageGlobalActiveEffect(event) {
       event.preventDefault();
       const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
-      const parentElem = event.target.parentElement;
-      const li = parentElem.closest('li');
-      const effectId = li.dataset.effectId;
+      const parent = event.target.closest('.item');
+      const effectId = parent.dataset.effectId;
 
       // Retrieve global effects from the persistent setting
       let globalEffects = game.settings.get(game.system.id, 'globalEffects');
@@ -124,9 +123,16 @@ export class EffectManager {
    static async onManageActiveEffect(event, owner) {
       event.preventDefault();
       const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
-      const parentElem = event.target.parentElement;
-      const li = parentElem.closest('li');
-      const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;
+      const dataset = event.target.closest('.item').dataset;
+      let effect = null;
+      if (owner instanceof Actor) {
+         // From actor
+         effect = owner.allApplicableEffects().find(fx => fx.id === dataset.effectId)
+      } else {
+         // From item
+         effect = owner.effects.get(dataset.effectId);
+      }
+
       switch (action) {
          case 'create':
          case 'createEffect':
@@ -137,8 +143,8 @@ export class EffectManager {
                   }),
                   img: 'icons/svg/aura.svg',
                   origin: owner.uuid,
-                  'duration.rounds': li.dataset.effectType === 'temporary' ? 1 : undefined,
-                  disabled: li.dataset.effectType === 'inactive',
+                  'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
+                  disabled: dataset.effectType === 'inactive',
                },
             ]);
          case 'edit':

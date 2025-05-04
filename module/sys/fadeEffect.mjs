@@ -21,7 +21,7 @@ export class fadeEffect extends ActiveEffect {
    updateDuration() {
       super.updateDuration();
       // Custom logic for second-based durations
-      if (this.duration.type === 'seconds') {
+      if (this.duration.type === "seconds") {
          const roundDuration = game.settings.get(game.system.id, "roundDurationSec") ?? 60;
          const turnDuration = game.settings.get(game.system.id, "turnDurationSec") ?? 10 * 60;
          const wt = game.time.worldTime;
@@ -31,18 +31,14 @@ export class fadeEffect extends ActiveEffect {
          const remainingRounds = (remaining / roundDuration)?.toFixed(0) ?? "--";
          const remainingTurns = (remaining / turnDuration)?.toFixed(2) ?? "--";
 
-         // Dynamically redefine the label
-         Object.defineProperty(this.duration, 'label', {
-            get: () => `${remainingRounds} rounds/${remainingTurns} turns`,
-            configurable: true
-         });
+         this.durationLabel = `${remainingRounds} rounds/${remainingTurns} turns`;
       }
    }
 
    #handleAdvancedApply(actor, change) {
       try {
          const parsedChange = JSON.parse(change.value);
-         if (parsedChange?.type === 'userTableLookup') {
+         if (parsedChange?.type === "userTableLookup") {
             const userTables = game.fade.registry.getSystem("userTables");
             const roll = new Roll(parsedChange.value, { actor: actor.getRollData() });
             if (Number(game.version) >= 12) {

@@ -58,25 +58,26 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @protected
     */
    _onDragStart(event) {
-      const li = event.currentTarget;
+      const currentTarget = event.currentTarget;
       if ("link" in event.target.dataset) return;
       let dragData;
 
       // Owned Items
-      if (li.dataset.itemId) {
-         const item = this.actor.items.get(li.dataset.itemId);
+      if (currentTarget.dataset.itemId) {
+         const item = this.actor.items.get(currentTarget.dataset.itemId);
          dragData = item.toDragData();
       }
 
       // Active Effect
-      if (li.dataset.effectId) {
-         const effect = this.actor.effects.get(li.dataset.effectId);
+      if (currentTarget.dataset.effectId) {
+         const effect = this.actor.effects.get(currentTarget.dataset.effectId);
          dragData = effect.toDragData();
       }
 
       // Set data transfer
-      if (!dragData) return;
-      event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      if (dragData) {
+         event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      }
    }
 
    /**
