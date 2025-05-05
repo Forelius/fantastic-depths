@@ -21,7 +21,7 @@
                       name="system.spellSlots[{{@index}}].max" data-dtype="Number" placeholder="0"
                       data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
             </div>
-            <div class='item-controls'>
+            <div class='item-controls2'>
                {{#if @root.isGM}}
                <a class='item-control'
                   data-action="createItem"
@@ -53,7 +53,7 @@
                          value="{{item.system.memorized}}" data-field="memorized" data-dtype="Number" placeholder="∞"
                          data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
                </div>
-               <div class='item-controls'>
+               <div class='item-controls2'>
                   <a class="item-control"
                      data-action="editItem"
                      data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>

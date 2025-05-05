@@ -4,14 +4,13 @@
       <div class="item-80px">{{localize 'FADE.Actor.Level'}}</div>
       <div class="item-60px">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</div>
       <div class="item-60px">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</div>
-      <div class='item-controls'>
+      <div class='item-controls2'>
          {{#if @root.isGM}}
          <a class='item-control item-create'
             data-action="createItem"
             data-type='mastery'
             data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Mastery.long")}}'>
-            <i class='fas fa-plus'></i>
-            {{localize 'FADE.Mastery.short'}}
+            <i class='fas fa-plus'></i>            
          </a>
          {{/if}}
       </div>
@@ -32,7 +31,7 @@
          <div class="item-60px item-prop" data-tooltip="{{localize (concat 'FADE.Mastery.weaponTypes.' item.system.primaryType '.long')}}">
             {{item.system.pDmgFormula}}
          </div>
-         <div class='item-controls'>
+         <div class='item-controls2'>
             <a class="item-control" 
                data-action="editItem"
                data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.Mastery.long")}}'>

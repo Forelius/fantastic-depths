@@ -34,20 +34,27 @@
       }
    }
    // Control Buttons
-   .item-controls {
+   .item-controls, .item-controls2 {
       display: flex;
-      flex: 0 0 70px;
       justify-content: flex-end;
 
       a {
          font-size: 10px;
          text-align: center;
-         margin: 0 5px;
+         margin: 0 4px;
       }
 
       i {
          font-size: 12px;
       }
+   }
+
+   .item-controls {
+      flex: 0 0 70px;
+   }
+
+   .item-controls2 {
+      flex: 0 0 46px;
    }
 
    .item-controls-sm {

@@ -1506,18 +1506,23 @@ table.compact-table input {
   white-space: nowrap;
   overflow-x: hidden;
 }
-.system-fantastic-depths .items-list .item-controls {
+.system-fantastic-depths .items-list .item-controls, .system-fantastic-depths .items-list .item-controls2 {
   display: flex;
-  flex: 0 0 70px;
   justify-content: flex-end;
 }
-.system-fantastic-depths .items-list .item-controls a {
+.system-fantastic-depths .items-list .item-controls a, .system-fantastic-depths .items-list .item-controls2 a {
   font-size: 10px;
   text-align: center;
-  margin: 0 5px;
+  margin: 0 4px;
 }
-.system-fantastic-depths .items-list .item-controls i {
+.system-fantastic-depths .items-list .item-controls i, .system-fantastic-depths .items-list .item-controls2 i {
   font-size: 12px;
+}
+.system-fantastic-depths .items-list .item-controls {
+  flex: 0 0 70px;
+}
+.system-fantastic-depths .items-list .item-controls2 {
+  flex: 0 0 46px;
 }
 .system-fantastic-depths .items-list .item-controls-sm {
   display: flex;
