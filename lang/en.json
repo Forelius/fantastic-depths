@@ -678,6 +678,11 @@
          }
       },
       "dialog": {
+         "rollFormulaType": {
+            "normal": "Normal",
+            "advantage": "Advantage",
+            "disadvantage": "Disadvantage"
+         },
          "lightManager": {
             "title": "Light Manager",
             "ignite": "Enable",
@@ -993,12 +998,7 @@
          "none": "",
          "and": "and",
          "or": "or"
-      },
-      "rollFormulaType": {
-         "normal": "Normal",
-         "advantage": "Advantage",
-         "disadvantage": "Disadvantage"
-      }
+      }      
    },
 
    "TYPES": {

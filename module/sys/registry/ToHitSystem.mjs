@@ -3,6 +3,11 @@ import { SocketManager } from '/systems/fantastic-depths/module/sys/SocketManage
 
 export class ToHitSystemBase {
    constructor() {
+      this.rangeModifiers = {
+         short: 1,
+         medium: 0,
+         long: -1
+      };
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
       this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');

@@ -12,36 +12,50 @@ export class AttackDialog {
    static async getDialog(weapon, caller, options) {
       const dialogData = { caller };
       let result = null;
-      const weaponData = weapon.system;
-      const callerName = caller.token?.name || caller.name;
-      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      const attackerToken = caller.currentActiveToken ?? caller;
+      const attackerName = caller.token?.name || caller.name;
+      const masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      const toHitSystem = game.fade.registry.getSystem('toHitSystem');
+      const targetToken = options.targetToken?.document ?? options.targetToken;
       const targetActor = options.targetToken?.actor;
 
+      dialogData.attackRoll = "1d20";
       dialogData.extraRollOptions = game.settings.get(game.system.id, 'extraRollOptions');
-      dialogData.weapon = weaponData;
+      dialogData.weapon = weapon;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
       // Attack type includes melee, missile and breath.
-      dialogData.types = weapon.getAttackTypes().reduce((acc, item) => {
+      dialogData.attackTypes = weapon.getAttackTypes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
          return acc;
       }, {});
+      dialogData.attackType = dialogData.attackTypes.melee ? "melee" : "missile";
 
-      if (weaponMasterySystem) {
+      let ranges = weapon.system.range;
+      if (masterySystem) {
          // Get the available target types.
-         dialogData.targetWeaponTypes = weaponMasterySystem.getWeaponTypes(weapon, caller);
+         dialogData.targetWeaponTypes = masterySystem.getWeaponTypes(weapon, caller);
          // Determines which target weapon type to pick by default.
-         dialogData.selectedWeaponType = weaponMasterySystem.getActorWeaponType(targetActor);
+         dialogData.selectedWeaponType = masterySystem.getActorWeaponType(targetActor);
+         ranges = masterySystem.getRanges(weapon);
       }
 
-      dialogData.rollGroupName = "rollFormulaType";
-      dialogData.rollChoices = {
-         normal: "FADE.rollFormulaType.normal",
-         advantage: "FADE.rollFormulaType.advantage",
-         disadvantage: "FADE.rollFormulaType.disadvantage"
+      const distance = AttackDialog.getDistance(attackerToken, targetToken);
+      dialogData.attackDistance = distance;
+      dialogData.rangeChoices = {
+         short: `${game.i18n.localize("FADE.Weapon.range.short")} (${ranges.short})`,
+         medium: `${game.i18n.localize("FADE.Weapon.range.medium")} (${ranges.medium})`,
+         long: `${game.i18n.localize("FADE.Weapon.range.long")} (${ranges.long})`
       };
-      dialogData.rollChosen = "normal";
+      dialogData.rangeSelected = AttackDialog.getRange(distance, ranges);
+      dialogData.modifier = dialogData.attackType === "melee" ? 0 : toHitSystem.rangeModifiers[dialogData.rangeSelected];
+      dialogData.rollChoices = {
+         normal: "FADE.dialog.rollFormulaType.normal",
+         advantage: "FADE.dialog.rollFormulaType.advantage",
+         disadvantage: "FADE.dialog.rollFormulaType.disadvantage"
+      };
+      dialogData.rollSelected = "normal";
 
-      const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
+      const title = `${attackerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
 
       result = await DialogV2.wait({
@@ -60,10 +74,55 @@ export class AttackDialog {
                callback: (event, button, dialog) => new FormDataExtended(button.form).object,
             },
          ],
-         close: () => {},
-         classes: ["fantastic-depths"]
+         close: () => { },
+         classes: ["fantastic-depths"],
+         render: (event, dialog) => {
+            dialog.querySelector('[name="attackType"]').addEventListener("change", changeEvent => {
+               AttackDialog._updateRange(changeEvent.target.value, dialog);
+               const rangedSelectorDiv = dialog.querySelector("#rangeSelect");
+               rangedSelectorDiv.style.display = changeEvent.target.value === "missile" ? "block" : "none";
+            });
+            dialog.querySelectorAll(`input[name="rangeType"]`).forEach(radio => {
+               radio.addEventListener("change", changeEvent => {
+                  AttackDialog._updateRange(dialog.querySelector('[name="attackType"]').value, dialog);
+               });
+            });
+         }
       });
-      //result = caller;
       return result;
+   }
+
+   static getDistance(token1, token2) {
+      const waypoints = [token1.object.center, token2.object.center];
+      let result = canvas.grid.measurePath(waypoints)?.distance;
+      if (token1.elevation !== token2.elevation) {
+         const h_diff = token2.elevation > token1.elevation
+            ? token2.elevation - token1.elevation
+            : token1.elevation - token2.elevation;
+         result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
+      }
+      return Math.floor(result);
+   }
+
+   static getRange(distance, ranges) {
+      let result = null;
+      if (distance < 6) {
+         result = "close";
+      } else if (distance < ranges.short) {
+         result = "short";
+      } else if (distance < ranges.medium) {
+         result = "medium";
+      } else if (distance < ranges.long) {
+         result = "long";
+      }
+      return result;
+   }
+
+   static _updateRange(attackType, dialog) {
+      const toHitSystem = game.fade.registry.getSystem('toHitSystem');
+      const modInput = dialog.querySelector(`input[name="mod"]`);
+      const selectedRange = dialog.querySelector(`input[name="rangeType"]:checked`)?.value;
+      const isMissile = attackType === "missile";
+      modInput.value = isMissile ? toHitSystem.rangeModifiers[selectedRange] : 0;
    }
 }

@@ -4,7 +4,7 @@
          <!-- Dropdown for selecting 'melee' or 'missile' -->
          <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
          <select name="attackType" class="form-control" style="width:100%">
-            {{selectOptions types selected='melee'}}
+            {{selectOptions attackTypes selected=attackType}}
          </select>
       </div>
       {{#if targetWeaponTypes}}
@@ -16,21 +16,30 @@
       </div>
       {{/if}}
    </div>
+   <!-- Range Selector -->
+   <div id="rangeSelect" style="margin: 10px 0 6px 0;{{#unless (eq attackType "missile")}}display: none;{{/unless}}">
+      <div class="flexrow">
+         <label class="flex0" style="margin-left: 8px;">{{localize "FADE.Spell.range"}}:</label> <span style="margin-left:6px;">{{attackDistance}}</span>
+      </div>
+      <div class="form-group">
+         {{radioBoxes "rangeType" rangeChoices checked=rangeSelected localize=true}}
+      </div>
+   </div>
    <!-- Modifier Input Field -->
    <div class="flexrow top-label" style="margin:5px 0;">
       <div class="flex1">
          <label>{{localize "FADE.attackRoll"}}</label>
-         <input name="attackRoll" placeholder='1d20' type="text" value="1d20" />
+         <input name="attackRoll" placeholder='1d20' type="text" value="{{attackRoll}}" />
       </div>
       <div class="flex1">
          <label>{{localize "FADE.modifier"}}</label>
-         <input name="mod" placeholder=0 type="number" />
+         <input name="mod" placeholder=0 type="number" value="{{modifier}}"/>
       </div>
    </div>
    {{#if extraRollOptions}}
    {{!-- Roll with advantage/disadvantage --}}
    <div class="form-group">
-      {{radioBoxes "rollFormulaType" rollChoices checked=rollChosen localize=true}}
+      {{radioBoxes "rollFormulaType" rollSelected checked=rollChosen localize=true}}
    </div>
    {{/if}}
 </div>
