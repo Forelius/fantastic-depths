@@ -117,46 +117,55 @@ export class EffectManager {
 
    /**
    * Manage Active Effect instances through an Actor or Item Sheet via effect control buttons.
-   * @param {MouseEvent} event      The left-click event on the effect control
-   * @param {Actor|Item} owner      The owning document which manages this effect
+   * @param {MouseEvent} event The left-click event on the effect control
+   * @param {Actor|Item} owner The owning actor which manages this effect
     */
    static async onManageActiveEffect(event, owner) {
       event.preventDefault();
+      event.stopPropagation();
+
       const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
-      const dataset = event.target.closest('.item').dataset;
-      let effect = null;
-      if (owner instanceof Actor) {
-         // From actor
-         effect = owner.allApplicableEffects().find(fx => fx.id === dataset.effectId)
+      let result = null;
+
+      if (action === 'createEffect') {
+         const dataset = event.target.closest(".items-header").dataset;
+         //let aeCls = getDocumentClass("ActiveEffect");
+         //aeCls.createDialog({}, { parent: owner });
+         result = owner.createEmbeddedDocuments('ActiveEffect', [
+            {
+               name: game.i18n.format('DOCUMENT.New', {
+                  type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+               }),
+               img: 'icons/svg/aura.svg',
+               origin: owner.uuid,
+               'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
+               disabled: dataset.effectType === 'inactive',
+            }
+         ]);
       } else {
-         // From item
-         effect = owner.effects.get(dataset.effectId);
+         const dataset = event.target.closest('.item').dataset;
+         let effect = null;
+         if (owner instanceof Actor) {
+            // From actor
+            effect = owner.allApplicableEffects().find(fx => fx.id === dataset.effectId)
+         } else {
+            // From item
+            effect = owner.effects.get(dataset.effectId);
+         }
+         switch (action) {
+            case 'editEffect':
+               result = effect.sheet.render(true);
+               break;
+            case 'deleteEffect':
+               result = await effect.delete();
+               break;
+            case 'toggleEffect':
+               result = await effect.update({ disabled: !effect.disabled });
+               break;
+         }
       }
 
-      switch (action) {
-         case 'create':
-         case 'createEffect':
-            return owner.createEmbeddedDocuments('ActiveEffect', [
-               {
-                  name: game.i18n.format('DOCUMENT.New', {
-                     type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-                  }),
-                  img: 'icons/svg/aura.svg',
-                  origin: owner.uuid,
-                  'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
-                  disabled: dataset.effectType === 'inactive',
-               },
-            ]);
-         case 'edit':
-         case 'editEffect':
-            return effect.sheet.render(true);
-         case 'delete':
-         case 'deleteEffect':
-            return effect.delete();
-         case 'toggle':
-         case 'toggleEffect':
-            return await effect.update({ disabled: !effect.disabled });
-      }
+      return result;
    }
 
    /**
