@@ -32,9 +32,7 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       const acDigest = [];
       const dexMod = (actor.system.abilities?.dex.mod ?? 0);
       let ac = this.reset(actor);
-      let { naturalArmor, equippedArmor, equippedShield } = this.getArmorPieces(actor);
-
-      actor.system.equippedArmor = equippedArmor;
+      const { naturalArmor, equippedArmor, equippedShield } = this.getArmorPieces(actor);
 
       if (dexMod !== 0) {
          acDigest.push(game.i18n.localize('FADE.Armor.dexterityBonus', { bonus: dexMod }));
@@ -50,13 +48,13 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       }
 
       // If an equipped armor is found...
-      if (actor.system.equippedArmor) {
-         ac.value = actor.system.equippedArmor.system.ac;
+      if (equippedArmor) {
+         ac.value = equippedArmor.system.ac;
          // What was ac.mod for??
-         ac.mod += actor.system.equippedArmor.system.mod ?? 0;
+         ac.mod += equippedArmor.system.mod ?? 0;
          // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total = actor.system.equippedArmor.system.totalAC - dexMod;
-         acDigest.push(`${actor.system.equippedArmor.name}: ${actor.system.equippedArmor.system.totalAC}`);
+         ac.total = equippedArmor.system.totalAC - dexMod;
+         acDigest.push(`${equippedArmor.name}: ${equippedArmor.system.totalAC}`);
       }
 
       // If a shield is equipped...

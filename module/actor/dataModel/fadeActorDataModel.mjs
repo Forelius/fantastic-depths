@@ -29,6 +29,9 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             // Same for ascending armor class
             totalAAC: new fields.NumberField({ initial: 10 }),
             totalRangedAAC: new fields.NumberField({ initial: 10 }),
+            // AV is armor value and represents how many points of damage armor stops.
+            // Assumes one AV for all body parts.
+            av: new fields.NumberField({ initial: 0 }),
             shield: new fields.NumberField({ initial: 0 }),
             // mod is an accumulator for armor AC mods only. All other items that modify armor must do so via actor's system.mod.ac.
             mod: new fields.NumberField({ initial: 0 })

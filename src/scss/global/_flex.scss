@@ -2,23 +2,23 @@
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
 }
 
 .flex-group-left {
-  justify-content: flex-start;
-  text-align: left;
+   justify-content: flex-start;
+   text-align: left;
 }
 
 .flex-group-right {
-  justify-content: flex-end;
-  text-align: right;
+   justify-content: flex-end;
+   text-align: right;
 }
 
 .flex-between {
-  justify-content: space-between;
+   justify-content: space-between;
 }
 
 .align-vtop {
@@ -27,32 +27,36 @@
 
 // Alignment styles.
 .align-left {
-  justify-content: flex-start;
-  text-align: left;
+   justify-content: flex-start;
+   text-align: left;
 }
 
 .align-right {
-  justify-content: flex-end;
-  text-align: right;
+   justify-content: flex-end;
+   text-align: right;
 }
 
 .align-center {
-  justify-content: center;
-  text-align: center;
+   justify-content: center;
+   text-align: center;
 }
 
 .width-60 {
    max-width: 60px;
 }
-.width-80{
-   max-width:80px;
+
+.width-80 {
+   max-width: 80px;
 }
+
 .width-100 {
    max-width: 100px;
 }
+
 .width-130 {
    max-width: 130px;
 }
+
 .width-180 {
    max-width: 180px;
 }

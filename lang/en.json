@@ -421,6 +421,11 @@
          "plural": "Armor",
          "naked": "Without Armor",
          "long": "Base AC",
+         "av": {
+            "long": "Armor Value",
+            "short": "AV",
+            "hint": "Armor value indicates how many points of damage the armor stops."
+         },
          "hintBase": "<b>Base Armor Class</b><p>This is the base armor class and it doesn't' include modifiers from effects.</p>",
          "longAAC": "Base AAC",
          "abbr": "AC",
@@ -998,7 +1003,7 @@
          "none": "",
          "and": "and",
          "or": "or"
-      }      
+      }
    },
 
    "TYPES": {
