@@ -14,11 +14,11 @@ export class DamageTypeDialog {
       }));
       dialogData.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
-
+      const content = await renderTemplate(template, dialogData);
       dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
-         content: await renderTemplate(template, dialogData),
+         content,
          buttons: [{
             action: "apply",
             default: true,

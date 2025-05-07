@@ -216,6 +216,7 @@ export class fadeActor extends Actor {
    /**
       * Handle how changes to a Token attribute bar are applied to the Actor.
       * This allows for game systems to override this behavior and deploy special logic.
+      * @override
       * @param {string} attribute    The attribute path
       * @param {number} value        The target attribute value
       * @param {boolean} isDelta     Whether the number represents a relative change (true) or an absolute change (false)
@@ -225,18 +226,10 @@ export class fadeActor extends Actor {
    async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
       if (this.isOwner === false) return this;
       let result = this;
-      let damageType = null;
       // If delta damage...
       if (isDelta === true && attribute === 'hp') {
-         if (value < 0) {
-            let dataset = { dialog: "damageType" };
-            let dialogResp = await DialogFactory(dataset, this);
-            damageType = dialogResp.damageType;
-         } else {
-            damageType = "heal";
-         }
-         const dmgSys = game.fade.registry.getSystem("damageSystem");
-         dmgSys.ApplyDamage(this, value, damageType);
+         // Try debouncing to prevent ENTER key from propogating
+         setTimeout(() => this.#handleHPChange(value), 100);
       } else {
          result = super.modifyTokenAttribute(attribute, value, isDelta, isBar);
       }
@@ -668,5 +661,18 @@ export class fadeActor extends Actor {
          ui.notifications.error(game.i18n.format('FADE.notification.missingSave', { type }));
       }
       return result;
+   }
+
+   async #handleHPChange(value) {
+      let damageType = null;
+      if (value < 0) {
+         let dataset = { dialog: "damageType" };
+         let dialogResp = await DialogFactory(dataset, this);
+         damageType = dialogResp.damageType;
+      } else {
+         damageType = "heal";
+      }
+      const dmgSys = game.fade.registry.getSystem("damageSystem");
+      dmgSys.ApplyDamage(this, value, damageType);
    }
 }

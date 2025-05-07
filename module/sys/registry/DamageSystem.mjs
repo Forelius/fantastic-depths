@@ -17,29 +17,13 @@ export class DamageSystem {
       const isHeal = delta > 0;
       // Damage mitigation
       let damageMitigated = 0;
-      let isKilled = false;
-      let isRestoredToLife = false;
 
       if (isHeal) {
          // Restoring HP
          digest.push(game.i18n.format('FADE.Chat.damageRoll.restored', { hp: (finalHP - prevHP), tokenName: tokenName }));
       } else {
          // Damage!
-         switch (damageType) {
-            case 'physical':
-               damageMitigated = systemData.mod.combat.selfDmg;
-               break;
-            case 'breath':
-               damageMitigated = systemData.mod.combat.selfDmgBreath;
-               damageMitigated += -finalDelta * systemData.mod.combat.selfDmgBreathScale;
-               break;
-            case 'magic':
-               damageMitigated = systemData.mod.combat.selfDmgMagic;
-               break;
-         }
-
-         // Don't allow addition of damage via damage mitigation
-         damageMitigated = Math.min(damageMitigated, 0);
+         damageMitigated = this.mitigateDamage(damageType, systemData, finalDelta);
 
          if (damageMitigated !== 0) {
             finalDelta += MathdamageMitigated;
@@ -51,29 +35,7 @@ export class DamageSystem {
       await actor.update({ "system.hp.value": finalHP });
 
       // Check if the actor already has the "Dead" effect
-      let hasDeadStatus = actor.statuses.has("dead");
-
-      if (prevHP > 0 && finalHP <= 0) {
-         isKilled = hasDeadStatus === false;
-         if (isKilled) {
-            if (actor.type === 'character') {
-               systemData.combat.deathCount++;
-               await actor.update({
-                  "system.combat.deathCount": systemData.combat.deathCount + 1,
-                  "system.combat.isDead": true
-               });
-            }
-            await actor.toggleStatusEffect("dead", { active: true, overlay: true });
-            digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
-         }
-      } else if (prevHP < 0 && finalHP > 0) {
-         isRestoredToLife = hasDeadStatus === true;
-         if (isRestoredToLife) {
-            await actor.update({ "system.combat.isDead": false });
-            await actor.toggleStatusEffect("dead", { active: false });
-            digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
-         }
-      }
+      //await this.updateActorStatus(actor, prevHP, finalHP, systemData, digest, tokenName);
 
       let chatContent = source ? `<div class="text-size18">${source.name}</div>` : "";
       for (let msg of digest) {
@@ -90,5 +52,51 @@ export class DamageSystem {
          content: chatContent
       };
       ChatMessage.create(chatData);
+   }
+
+   async updateActorStatus(actor, prevHP, finalHP, systemData, digest, tokenName) {
+      let hasDeadStatus = actor.statuses.has("dead");
+
+      if (prevHP > 0 && finalHP <= 0) {
+         const isKilled = hasDeadStatus === false;
+         if (isKilled) {
+            if (actor.type === 'character') {
+               systemData.combat.deathCount++;
+               await actor.update({
+                  "system.combat.deathCount": systemData.combat.deathCount + 1,
+                  "system.combat.isDead": true
+               });
+            }
+            await actor.toggleStatusEffect("dead", { active: true, overlay: true });
+            digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
+         }
+      } else if (prevHP < 0 && finalHP > 0) {
+         const isRestoredToLife = hasDeadStatus === true;
+         if (isRestoredToLife) {
+            await actor.update({ "system.combat.isDead": false });
+            await actor.toggleStatusEffect("dead", { active: false });
+            digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
+         }
+      }
+   }
+
+   mitigateDamage(damageType, systemData, finalDelta) {
+      let result = 0;
+      switch (damageType) {
+         case 'physical':
+            result = systemData.mod.combat.selfDmg;
+            break;
+         case 'breath':
+            result = systemData.mod.combat.selfDmgBreath;
+            result += -finalDelta * systemData.mod.combat.selfDmgBreathScale;
+            break;
+         case 'magic':
+            result = systemData.mod.combat.selfDmgMagic;
+            break;
+      }
+
+      // Don't allow addition of damage via damage mitigation
+      result = Math.min(result, 0);
+      return result;
    }
 }
