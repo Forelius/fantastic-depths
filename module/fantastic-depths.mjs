@@ -274,6 +274,57 @@ Hooks.once('ready', async function () {
 
    // Set the length of a round of combat.
    CONFIG.time.roundTime = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+   $(document).on('click', '.saving-roll', fadeActor.handleSavingThrowRequest);
+
+   if (game.user.isGM === true) {
+      /* Hook for time advancement. */
+      Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
+         if (game.user.isGM === true) {
+         await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
+         //console.debug("updateWorldTime", worldTime, dt, options, userId);
+         const placeables = canvas?.tokens.placeables;
+         for (let placeable of placeables) {
+            const token = placeable.document;
+            if (token.actor) {  // Only process tokens with an actor
+               token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+            }
+         }
+         }
+      });
+      /* -------------------------------------------- */
+      /*  Log Changes                                 */
+      /* -------------------------------------------- */
+      // Hook into `updateActor` to compare the old and new values
+      Hooks.on("updateActor", async (actor, updateData, options, userId) => {
+         if (game.user.isGM) {
+            await actor?.onUpdateActor(updateData, options, userId);
+         }
+      });
+
+      // Hook into item creation (added to the actor)
+      Hooks.on("createItem", async (item, options, userId) => {
+         if (game.user.isGM) {
+            const actor = item.parent; // The actor the item belongs to
+            await actor?.onCreateActorItem(item, options, userId);
+         }
+      });
+
+      // Hook into item updates (e.g., changes to an existing item)
+      Hooks.on("updateItem", async (item, updateData, options, userId) => {
+         if (game.user.isGM) {
+            const actor = item.parent; // The actor the item belongs to
+            await actor?.onUpdateActorItem(item, updateData, options, userId);
+         }
+      });
+
+      // Hook into item deletion (removed from the actor)
+      Hooks.on("deleteItem", (item, options, userId) => {
+         if (game.user.isGM) {
+            const actor = item.parent; // The actor the item belongs to
+            actor?.onDeleteActorItem(item, options, userId);
+         }
+      });
+   }
 
    Hooks.call("afterFadeReady", game.fadeRegistry);
 });
@@ -281,57 +332,6 @@ Hooks.once('ready', async function () {
 AddonIntegration.setupItemPiles();
 fadeHandlebars.registerHelpers();
 fadeCombat.initialize();
-
-/**
- * Hook for time advancement.
- */
-Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
-   if (game.user.isGM === true) {
-      await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
-      //console.debug("updateWorldTime", worldTime, dt, options, userId);
-      const placeables = canvas?.tokens.placeables;
-      for (let placeable of placeables) {
-         const token = placeable.document;
-         if (token.actor) {  // Only process tokens with an actor
-            token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
-         }
-      }
-   }
-});
-
-/* -------------------------------------------- */
-/*  Log Changes                                 */
-/* -------------------------------------------- */
-// Hook into `updateActor` to compare the old and new values
-Hooks.on("updateActor", async (actor, updateData, options, userId) => {
-   if (game.user.isGM) {
-      await actor?.onUpdateActor(updateData, options, userId);
-   }
-});
-
-// Hook into item creation (added to the actor)
-Hooks.on("createItem", async (item, options, userId) => {
-   if (game.user.isGM) {
-      const actor = item.parent; // The actor the item belongs to
-      await actor?.onCreateActorItem(item, options, userId);
-   }
-});
-
-// Hook into item updates (e.g., changes to an existing item)
-Hooks.on("updateItem", async (item, updateData, options, userId) => {
-   if (game.user.isGM) {
-      const actor = item.parent; // The actor the item belongs to
-      await actor?.onUpdateActorItem(item, updateData, options, userId);
-   }
-});
-
-// Hook into item deletion (removed from the actor)
-Hooks.on("deleteItem", (item, options, userId) => {
-   if (game.user.isGM) {
-      const actor = item.parent; // The actor the item belongs to
-      actor?.onDeleteActorItem(item, options, userId);
-   }
-});
 
 // License info
 Hooks.on("renderSidebarTab", async (object, html) => {

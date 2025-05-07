@@ -4,6 +4,7 @@ import { SavingThrowDialog } from './SavingThrowDialog.mjs'
 import { AbilityCheckDialog } from './AbilityCheckDialog.mjs'
 import { LightMgrDialog } from './LightMgrDialog.mjs'
 import { WrestlingDialog } from './WrestlingDialog.mjs'
+import { DamageTypeDialog } from './DamageTypeDialog.mjs'
 /**
  * Create a type of dialog to be used.
  * @param {any} dataset Requires that dataset.dialog be set.
@@ -27,6 +28,8 @@ export const DialogFactory = async (dataset = null, caller = null, options = {})
       result = await SavingThrowDialog.getDialog(dataset, caller);
    } else if (dataset.dialog === 'wrestling') {
       result = await WrestlingDialog.getDialog(dataset, caller, options);
+   } else if (dataset.dialog === 'damageType') {
+      result = await DamageTypeDialog.getDialog(dataset, caller, options);
    }
    return result;
 };

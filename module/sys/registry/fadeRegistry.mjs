@@ -1,5 +1,7 @@
 import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './ToHitSystem.mjs';
-import { MoraleCheck, AbilityCheck, ActorArmor, ActorMovement } from './DefaultSystem.mjs'
+import { MoraleCheck, AbilityCheck, ActorMovement } from './DefaultSystem.mjs'
+import { ClassicArmorSystem } from './ArmorSystem.mjs';
+import { DamageSystem } from './DamageSystem.mjs';
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
 import { IndivInit } from './IndivInit.mjs';
 import { GroupInit } from './GroupInit.mjs';
@@ -18,8 +20,8 @@ export class fadeRegistry {
    async registerDefaultSystems() {
       this.registerSystem('moraleCheck', new MoraleCheck(), MoraleCheck);
       this.registerSystem('abilityCheck', new AbilityCheck(), AbilityCheck);
-      this.registerSystem('actorArmor', new ActorArmor(), ActorArmor);
-
+      this.registerSystem('armorSystem', new ClassicArmorSystem(), ClassicArmorSystem);
+      this.registerSystem('damageSystem', new DamageSystem(), DamageSystem);
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       if (masteryEnabled) {
          this.registerSystem('weaponMasterySystem', new WeaponMasterySystem(), WeaponMasterySystem);

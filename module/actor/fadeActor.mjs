@@ -1,6 +1,6 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
+import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 /**
@@ -17,6 +17,9 @@ export class fadeActor extends Actor {
             const token = this.getActiveTokens()[0];
             await token?.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
          };
+      }
+      if (game.user.isGM) {
+
       }
    }
 
@@ -101,8 +104,8 @@ export class fadeActor extends Actor {
       super.prepareDerivedData();
       if (this.id) {
          game.fade.registry.getSystem('encumbranceSystem').prepareDerivedData(this);
-         game.fade.registry.getSystem('actorMovement').prepareMovementRates(this);         
-         game.fade.registry.getSystem('actorArmor').prepareDerivedData(this);
+         game.fade.registry.getSystem('actorMovement').prepareMovementRates(this);
+         game.fade.registry.getSystem('armorSystem').prepareDerivedData(this);
 
          // Apply the mastery level override, if present.
          if (this.system.mod.masteryLevelOverride) {
@@ -211,92 +214,33 @@ export class fadeActor extends Actor {
    }
 
    /**
-    * Applies damage or healing to the actor.
-    * @public
-    * @param {any} amount
-    * @param {any} damageType
-    * @param {any} source
-    */
-   async applyDamage(amount, damageType, source = null) {
-      if (game.user.isGM === false) return;
-
-      const systemData = this.system;
-      const tokenName = this.parent?.name ?? this.name;
-      let dmgAmt = amount;
-      const prevHP = systemData.hp.value;
-      let digest = [];
-      const isHeal = damageType === "heal";
-      // Damage mitigation
-      let damageMitigated = 0;
-      let isKilled = false;
-      let isRestoredToLife = false;
-
-      switch (damageType) {
-         case 'physical':
-            damageMitigated = systemData.mod.combat.selfDmg;
-            break;
-         case 'breath':
-            damageMitigated = systemData.mod.combat.selfDmgBreath;
-            damageMitigated += dmgAmt * systemData.mod.combat.selfDmgBreathScale;
-            break;
-         case 'magic':
-            damageMitigated = systemData.mod.combat.selfDmgMagic;
-            break;
-      }
-
-      if (isHeal) {
-         systemData.hp.value = Math.min((systemData.hp.value + dmgAmt), systemData.hp.max);
-         digest.push(game.i18n.format('FADE.Chat.damageRoll.restored', { hp: (systemData.hp.value - prevHP), tokenName: tokenName }));
+      * Handle how changes to a Token attribute bar are applied to the Actor.
+      * This allows for game systems to override this behavior and deploy special logic.
+      * @param {string} attribute    The attribute path
+      * @param {number} value        The target attribute value
+      * @param {boolean} isDelta     Whether the number represents a relative change (true) or an absolute change (false)
+      * @param {boolean} isBar       Whether the new value is part of an attribute bar, or just a direct value
+      * @returns {Promise<documents.Actor>}  The updated Actor document
+      */
+   async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
+      if (this.isOwner === false) return this;
+      let result = this;
+      let damageType = null;
+      // If delta damage...
+      if (isDelta === true && attribute === 'hp') {
+         if (value < 0) {
+            let dataset = { dialog: "damageType" };
+            let dialogResp = await DialogFactory(dataset, this);
+            damageType = dialogResp.damageType;
+         } else {
+            damageType = "heal";
+         }
+         const dmgSys = game.fade.registry.getSystem("damageSystem");
+         dmgSys.ApplyDamage(this, value, damageType);
       } else {
-         if (damageMitigated !== 0) {
-            dmgAmt -= damageMitigated;
-            digest.push(game.i18n.format('FADE.Chat.damageRoll.mitigated', { damage: damageMitigated, type: damageType }));
-         }
-         systemData.hp.value -= dmgAmt;
-         digest.push(game.i18n.format('FADE.Chat.damageRoll.applied', { damage: dmgAmt, type: damageType, tokenName: tokenName }));
+         result = super.modifyTokenAttribute(attribute, value, isDelta, isBar);
       }
-      await this.update({ "system.hp.value": systemData.hp.value });
-
-      // Check if the actor already has the "Dead" effect
-      let hasDeadStatus = this.statuses.has("dead");
-
-      if (prevHP > 0 && systemData.hp.value <= 0) {
-         isKilled = hasDeadStatus === false;
-         if (isKilled) {
-            if (this.type === 'character') {
-               systemData.combat.deathCount++;
-               await this.update({
-                  "system.combat.deathCount": systemData.combat.deathCount + 1,
-                  "system.combat.isDead": true
-               });
-            }
-            await this.toggleStatusEffect("dead", { active: true, overlay: true });
-            digest.push(game.i18n.format('FADE.Chat.damageRoll.killed', { tokenName: tokenName }));
-         }
-      } else if (prevHP < 0 && systemData.hp.value > 0) {
-         isRestoredToLife = hasDeadStatus === true;
-         if (isRestoredToLife) {
-            await this.update({ "system.combat.isDead": false });
-            await this.toggleStatusEffect("dead", { active: false });
-            digest.push(game.i18n.format('FADE.Chat.damageRoll.restoredLife', { tokenName: tokenName }));
-         }
-      }
-
-      let chatContent = source ? `<div class="text-size18">${source.name}</div>` : "";
-      for (let msg of digest) {
-         chatContent += `<div>${msg}</div>`;
-      }
-
-      if (game.fade.toastManager) {
-         game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
-      }
-
-      const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-      let chatData = {
-         speaker: speaker,
-         content: chatContent
-      };
-      ChatMessage.create(chatData);
+      return result;
    }
 
    /**
