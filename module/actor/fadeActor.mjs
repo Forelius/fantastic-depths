@@ -665,6 +665,8 @@ export class fadeActor extends Actor {
 
    async #handleHPChange(value) {
       let damageType = null;
+      let attackType = null;
+      let weapon = null;
       if (value < 0) {
          let dataset = { dialog: "damageType" };
          let dialogResp = await DialogFactory(dataset, this);
@@ -673,6 +675,6 @@ export class fadeActor extends Actor {
          damageType = "heal";
       }
       const dmgSys = game.fade.registry.getSystem("damageSystem");
-      dmgSys.ApplyDamage(this, value, damageType);
+      dmgSys.ApplyDamage(this, value, damageType, attackType, weapon);
    }
 }

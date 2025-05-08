@@ -79,11 +79,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const instigator = theItem.actor.token ?? theItem.actor;
       let rolling = true;
       let dialogResp = null;
-      const isHeal = damagetype === 'heal';
+      const isHeal = damagetype === "heal";
 
       let damageRoll = null;
-      const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison"];
-      const otherDamageTypes = ["magic", "heal", "hull"];
+      const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
+      const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
       if (weaponDamageTypes.includes(dataset.damagetype)) {
          damageRoll = theItem.getDamageRoll(attacktype, null, targetweapontype);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
@@ -91,7 +91,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       dialogResp = await DialogFactory({
-         dialog: 'generic',
+         dialog: "generic",
          label: isHeal ? "Heal" : "Damage",
          formula: damageRoll.formula,
          editFormula: game.user.isGM
@@ -190,7 +190,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
                }
                // Apply damage to the token's actor
                const dmgSys = game.fade.registry.getSystem("damageSystem");
-               dmgSys.ApplyDamage(target.actor, delta, dataset.damagetype, weapon);
+               dmgSys.ApplyDamage(target.actor, delta, dataset.damagetype, dataset.attacktype, weapon);
             }
          }
       }

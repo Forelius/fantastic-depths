@@ -34,20 +34,20 @@ export class EffectManager {
       //game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
    }
 
-   //static async applyInvulnerabilityEffect(token) {
-   //   const actor = token.actor;
-   //   const now = new Date();
-   //   const lastApplied = actor.getFlag(game.system.id, "lastInvulnerabilityApplied");
+   static async applyInvulnerabilityEffect(token) {
+      const actor = token.actor;
+      const now = new Date();
+      const lastApplied = actor.getFlag(game.system.id, "lastInvulnerabilityApplied");
 
-   //   // Check if it was used within the last 7 days
-   //   if (lastApplied && (now - lastApplied) / 1000 < 604800) {
-   //      ui.notifications.warn("Invulnerability can only be used once per week. You suffer from sickness instead!");
-   //      EffectManager.applySicknessEffect(actor);
-   //   } else {
-   //      await actor.setFlag(game.system.id, "lastInvulnerabilityApplied", now);
-   //      EffectManager.applyEffect(actor, "invulnerability");
-   //   }
-   //}
+      // Check if it was used within the last 7 days
+      if (lastApplied && (now - lastApplied) / 1000 < 604800) {
+         ui.notifications.warn("Invulnerability can only be used once per week. You suffer from sickness instead!");
+         EffectManager.applySicknessEffect(actor);
+      } else {
+         await actor.setFlag(game.system.id, "lastInvulnerabilityApplied", now);
+         EffectManager.applyEffect(actor, "invulnerability");
+      }
+   }
 
    static async applyEffect(actor, effectId) {
       const effect = CONFIG.statusEffects.find(e => e.id === effectId);
@@ -56,18 +56,18 @@ export class EffectManager {
       }
    }
 
-   //static async applySicknessEffect(actor) {
-   //   const sicknessEffect = {
-   //      label: "Sickness",
-   //      icon: "path/to/sickness-icon.png",
-   //      changes: [
-   //         { key: "system.mod.combat.selfDmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 5 }  // Example: adds 5 self-damage
-   //      ],
-   //      duration: { seconds: 600 }
-   //   };
+   static async applySicknessEffect(actor) {
+      const sicknessEffect = {
+         label: "Sickness",
+         icon: "path/to/sickness-icon.png",
+         changes: [
+            { key: "system.mod.combat.selfDmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 5 }  // Example: adds 5 self-damage
+         ],
+         duration: { seconds: 600 }
+      };
 
-   //   await ActiveEffect.create(sicknessEffect, { parent: actor });
-   //}
+      await ActiveEffect.create(sicknessEffect, { parent: actor });
+   }
 
 
    /**

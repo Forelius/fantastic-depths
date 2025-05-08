@@ -190,7 +190,15 @@
       .ac-top {
          position: absolute;
          font-size: 26px;
-         top: 11px;
+         top: 10px;
+         width: 50px;
+         left: calc(50% - 25px);
+      }
+
+      .ac-middle {
+         position: absolute;
+         font-size: 15px;
+         bottom: 25px;
          width: 50px;
          left: calc(50% - 25px);
       }

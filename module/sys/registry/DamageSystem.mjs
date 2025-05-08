@@ -1,4 +1,9 @@
 export class DamageSystem {
+   construction(options) {
+      this.options = options;
+      this.useAV = game.settings.get(game.system.id, "useArmorValue");
+   }
+
    /**
     * Applies damage or healing to the actor.
     * @public
@@ -7,7 +12,7 @@ export class DamageSystem {
     * @param {any} damageType
     * @param {any} source
     */
-   async ApplyDamage(actor, delta, damageType, source = null) {
+   async ApplyDamage(actor, delta, damageType, attackType, source = null) {
       const systemData = actor.system;
       const tokenName = actor.parent?.name ?? actor.name;
       let finalDelta = delta;
@@ -20,17 +25,17 @@ export class DamageSystem {
 
       if (isHeal) {
          // Restoring HP
-         digest.push(game.i18n.format('FADE.Chat.damageRoll.restored', { hp: (finalHP - prevHP), tokenName: tokenName }));
+         digest.push(game.i18n.format("FADE.Chat.damageRoll.restored", { hp: (finalHP - prevHP), tokenName: tokenName }));
       } else {
          // Damage!
          damageMitigated = this.#mitigateDamage(damageType, actor, finalDelta);
 
          if (damageMitigated !== 0) {
             finalDelta += MathdamageMitigated;
-            digest.push(game.i18n.format('FADE.Chat.damageRoll.mitigated', { damage: damageMitigated, type: damageType }));
+            digest.push(game.i18n.format("FADE.Chat.damageRoll.mitigated", { damage: damageMitigated, type: damageType }));
          }
          finalHP = prevHP + finalDelta;
-         digest.push(game.i18n.format('FADE.Chat.damageRoll.applied', { damage: -finalDelta, type: damageType, tokenName: tokenName }));
+         digest.push(game.i18n.format("FADE.Chat.damageRoll.applied", { damage: -finalDelta, type: damageType, tokenName: tokenName }));
       }
 
       await actor.update({ "system.hp.value": finalHP });
@@ -41,27 +46,27 @@ export class DamageSystem {
    #mitigateDamage(damageType, actor, finalDelta) {
       let result = 0;
       const combatMods = actor.system.mod.combat;
-      switch (damageType) {
-         case 'physical':
-            result = this.#getPhysicalMitigation(actor);
-            break;
-         case 'breath':
-            result = combatMods.selfDmgBreath;
-            result += -finalDelta * combatMods.selfDmgBreathScale;
-            break;
-         case 'magic':
-            result = combat.selfDmgMagic;
-            break;
+      const physicalTypes = ["physical", "fire", "frost", "piercing", "breath", "corrosive", ""];
+      if (physicalTypes.includes(damageType)) {
+         result = this.#getPhysicalMitigation(actor, damageType);
       }
-
+      if (damageType === "breath") {
+         result += combatMods.selfDmgBreath;
+         result += -finalDelta * combatMods.selfDmgBreathScale;
+      }
+      if (damageType === "magic") {
+         result += combat.selfDmgMagic;
+      }
       // Don't allow addition of damage via damage mitigation
       result = Math.min(result, 0);
       return result;
    }
 
-   #getPhysicalMitigation(actor) {
+   #getPhysicalMitigation(actor, damageType) {
       let result = actor.system.mod.combat.selfDmg;
+      if (this.useAV) {
 
+      }
       return result;
    }
 

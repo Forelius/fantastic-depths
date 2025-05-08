@@ -312,6 +312,16 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+      game.settings.register(game.system.id, "useArmorValue", {
+         name: "SETTINGS.useArmorValue.name",
+         hint: "SETTINGS.useArmorValue.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: false,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
    #registerNonConfigSettings() {

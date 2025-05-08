@@ -38,17 +38,38 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          acDigest.push(game.i18n.localize('FADE.Armor.dexterityBonus', { bonus: dexMod }));
       }
 
+      this.prepareNaturalArmor(naturalArmor, ac, dexMod, acDigest);
+      this.prepareEquippedArmor(equippedArmor, ac, dexMod, acDigest);
+      this.prepareShield(equippedShield, ac, acDigest);
+      this.prepareACMod(actor, acDigest, ac);
+      this.prepareAAC(ac);
+
+      // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
+      ac.mastery = game.fade.registry.getSystem('weaponMasterySystem')?.weaponMasterySystem.getDefenseMasteries(actor, ac) ?? ac.mastery;
+
+      actor.system.ac = ac;
+      actor.system.acDigest = acDigest;
+   }
+
+   prepareNaturalArmor(naturalArmor, ac, dexMod, acDigest) {
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
          ac.naked = naturalArmor.system.totalAC - dexMod;
          ac.value = ac.naked;
          ac.total = ac.naked;
+         ac.av = naturalArmor.system.av;
          naturalArmor.system.equipped = true;
          acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
       }
+   }
 
+   prepareEquippedArmor(equippedArmor, ac, dexMod, acDigest) {
       // If an equipped armor is found...
       if (equippedArmor) {
+         if (equippedArmor.system.av?.length > 0) {
+            const evaluatedRoll = equippedArmor.getEvaluatedRollSync(equippedArmor.system.av);
+            ac.av = evaluatedRoll?.formula;
+         }
          ac.value = equippedArmor.system.ac;
          // What was ac.mod for??
          ac.mod += equippedArmor.system.mod ?? 0;
@@ -56,7 +77,9 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.total = equippedArmor.system.totalAC - dexMod;
          acDigest.push(`${equippedArmor.name}: ${equippedArmor.system.totalAC}`);
       }
+   }
 
+   prepareShield(equippedShield, ac, acDigest) {
       // If a shield is equipped...
       if (equippedShield) {
          ac.value -= equippedShield.system.ac;
@@ -64,18 +87,20 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.total -= equippedShield.system.totalAC;
          acDigest.push(`${equippedShield.name}: ${equippedShield.system.totalAC}`);
       }
+   }
 
+   prepareACMod(actor, acDigest, ac) {
       if (actor.system.mod.baseAc != 0) {
+         // Not sure why this does nothing.
          acDigest.push(`${game.i18n.localize('FADE.Armor.modBase')}: ${actor.system.mod.baseAc}`);
       }
       if (actor.system.mod.ac != 0) {
+         // Apply actor's ac modifier to total
          ac.total -= actor.system.mod.ac;
          acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${actor.system.mod.ac}`);
       }
-
       ac.nakedRanged = ac.total;
       ac.totalRanged = ac.total;
-      // Normal Calcs done at this point --------------------------------
 
       if (actor.system.mod.upgradeAc && actor.system.mod.upgradeAc < ac.total) {
          ac.total = actor.system.mod.upgradeAc;
@@ -87,20 +112,12 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.nakedRanged = actor.system.mod.upgradeRangedAc;
          acDigest.push(`Ranged AC upgraded to ${actor.system.mod.upgradeRangedAc}`);
       }
+   }
 
-      // Now other mods. Dexterity bonus already applied above.
+   prepareAAC(ac) {
       ac.nakedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.naked;
       ac.totalAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.total;
       ac.totalRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.totalRanged;
       ac.nakedRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.nakedRanged;
-
-      // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
-      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
-      if (weaponMasterySystem) {
-         ac.mastery = weaponMasterySystem.getDefenseMasteries(actor, ac);
-      }
-
-      actor.system.ac = ac;
-      actor.system.acDigest = acDigest;
    }
 }

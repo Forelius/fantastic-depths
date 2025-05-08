@@ -113,6 +113,12 @@ export class fadeItem extends Item {
       return await builder.createChatMessage();
    }
 
+   /**
+    * Evaluates a roll formula asynchronously into a numerical value.
+    * @param {any} formula The roll formula
+    * @param {any} options The Roll.evaluate options. Default minimize=true will generate lowest possible value.
+    * @returns If the formula and options are valid, an evaluated roll object.
+    */
    async getEvaluatedRoll(formula, options = { minimize: true }) {
       let result = null;
       if (formula !== null && formula !== "") {
@@ -131,6 +137,12 @@ export class fadeItem extends Item {
       return result;
    }
 
+   /**
+    * Evaluates a roll formula synchronously into a numerical value.
+    * @param {any} formula The roll formula
+    * @param {any} options The Roll.evaluate options. Default minimize=true will generate lowest possible value.
+    * @returns If the formula and options are valid, an evaluated roll object.
+    */
    getEvaluatedRollSync(formula, options = { minimize: true }) {
       let result = null;
       if (formula !== null && formula !== "") {

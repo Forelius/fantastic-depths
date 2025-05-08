@@ -30,7 +30,7 @@ export class SkillItem extends fadeItem {
    getDamageRoll() {
       const isHeal = this.system.healFormula?.length > 0;
       let formula = null;
-      let digest = [];
+      const digest = [];
       let hasDamage = false;
 
       if (isHeal) {

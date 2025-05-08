@@ -802,9 +802,11 @@
             "frost": "Frost",
             "magic": "Magic",
             "poison": "Poison",
-            "acid": "Acid",
+            "corrosive": "Corrosive",
             "heal": "Healing",
-            "hull": "Hull"
+            "hull": "Hull",
+            "fall": "Fall",
+            "piercing":  "Armor-piercing"
          }
       },
       "combat": {
@@ -1170,6 +1172,10 @@
       "runRoundDivisor": {
          "name": "Run Rate Per Round Divisor",
          "hint": "This field represents the divisor used to calculate the running speed movement rate per round from the base movement rate."
+      },
+      "useArmorValue": {
+         "name": "Use Armor Value",
+         "hint": "Armor Value (AV) is an optional armor system attribute that allows for physical damage mitigation to be assigned to armor items. Enabling this will result in AV showing on actor sheets. Enabling will also result in AV being factored in when applying any damage."
       }
    }
 }

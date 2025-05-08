@@ -20,9 +20,9 @@ export class SpecialAbilityItem extends fadeItem {
 
    getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      let evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       let formula = evaluatedRoll?.formula;
-      let digest = [];
+      const digest = [];
       let modifier = 0;
       let hasDamage = true;
       const type = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);

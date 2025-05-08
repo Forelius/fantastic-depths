@@ -21,14 +21,16 @@ FADE.AttackTypes = [
 ];
 FADE.DamageTypes = [
    "physical",
-   "breath",
-   "fire",
-   "frost",
+   "breath", // Is physical
+   "fire", // Is physical
+   "frost", // Is physical
    "magic",
    "poison",
-   "acid",
+   "corrosive", // Is physical
    "heal",
-   "hull"
+   "hull",
+   "fall",
+   "piercing" // Short for armor-piercing. Is physical and ignores half of AV.
 ]
 FADE.ConcatLogic = [
    "none",

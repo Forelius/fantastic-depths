@@ -1,6 +1,5 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { AttackRollChatBuilder } from './AttackRollChatBuilder.mjs';
 
 export class SpellCastChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/spell-cast.hbs';

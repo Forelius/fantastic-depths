@@ -84,6 +84,8 @@ export class WeaponItemSheet extends FDItemSheetV2 {
          damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.fire'), value: 'fire' });
          damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.frost'), value: 'frost' });
          damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.poison'), value: 'poison' });
+         damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.corrosive'), value: 'corrosive' });
+         damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.piercing'), value: 'piercing' });
          context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       } else if (partId === 'attributes') {
          // Weapon types

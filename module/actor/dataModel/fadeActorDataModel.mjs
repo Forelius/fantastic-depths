@@ -31,7 +31,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
             totalRangedAAC: new fields.NumberField({ initial: 10 }),
             // AV is armor value and represents how many points of damage armor stops.
             // Assumes one AV for all body parts.
-            av: new fields.NumberField({ initial: 0 }),
+            av: new fields.StringField({ initial: "0" }),
             shield: new fields.NumberField({ initial: 0 }),
             // mod is an accumulator for armor AC mods only. All other items that modify armor must do so via actor's system.mod.ac.
             mod: new fields.NumberField({ initial: 0 })
@@ -109,6 +109,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
                toHitRanged: new fields.NumberField({ initial: 0 }),
                dmgRanged: new fields.NumberField({ initial: 0 }),
                selfDmg: new fields.NumberField({ initial: 0 }),
+               selfDmgRanged: new fields.NumberField({ initial: 0 }),
                selfDmgBreath: new fields.NumberField({ initial: 0 }),
                selfDmgBreathScale: new fields.NumberField({ initial: 0 }),
                selfDmgMagic: new fields.NumberField({ initial: 0 }),
@@ -218,6 +219,7 @@ export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
       this.mod.combat.toHitRanged = 0;
       this.mod.combat.dmgRanged = 0;
       this.mod.combat.selfDmg = 0;
+      this.mod.combat.selfDmgRanged = 0;
       this.mod.combat.selfDmgBreath = 0;
       this.mod.combat.selfDmgBreathScale = 0;
       this.mod.combat.selfDmgMagic = 0;
