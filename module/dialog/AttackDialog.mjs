@@ -93,13 +93,16 @@ export class AttackDialog {
    }
 
    static getDistance(token1, token2) {
-      const waypoints = [token1.object.center, token2.object.center];
-      let result = canvas.grid.measurePath(waypoints)?.distance;
-      if (token1.elevation !== token2.elevation) {
-         const h_diff = token2.elevation > token1.elevation
-            ? token2.elevation - token1.elevation
-            : token1.elevation - token2.elevation;
-         result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
+      let result = 0;
+      if (token1 && token2) {
+         const waypoints = [token1.object.center, token2.object.center];
+         result = canvas.grid.measurePath(waypoints)?.distance;
+         if (token1.elevation !== token2.elevation) {
+            const h_diff = token2.elevation > token1.elevation
+               ? token2.elevation - token1.elevation
+               : token1.elevation - token2.elevation;
+            result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
+         }
       }
       return Math.floor(result);
    }

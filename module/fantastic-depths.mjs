@@ -274,7 +274,6 @@ Hooks.once('ready', async function () {
 
    // Set the length of a round of combat.
    CONFIG.time.roundTime = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
-   $(document).on('click', '.saving-roll', fadeActor.handleSavingThrowRequest);
 
    if (game.user.isGM === true) {
       /* Hook for time advancement. */
