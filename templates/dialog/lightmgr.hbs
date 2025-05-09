@@ -1,8 +1,8 @@
 <div>
    <div>
-      <label for="light-item">{{localize 'FADE.dialog.selectLightSource'}}:</label>
-      <select id="lightItem">
-         {{selectOptions lightItems selected=""}}
+      <label for="lightItem">{{localize 'FADE.dialog.selectLightSource'}}:</label>
+      <select name="lightItem">
+         {{selectOptions lightItems selected=lightItem}}
       </select>
    </div>
 </div>
