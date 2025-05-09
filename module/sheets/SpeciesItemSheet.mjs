@@ -20,7 +20,8 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
       },
       window: {
          resizable: true,
-         minimizable: false
+         minimizable: false,
+         contentClasses: ["scroll-body"]
       },
       classes: ['fantastic-depths', 'sheet', 'item'],
       form: {
