@@ -6,7 +6,7 @@ export class WeaponMasterySystem {
    }
 
    getRanges(weapon) {
-      let result = weapon.range;
+      let result = weapon.system.range;
       const mastery = this.getOwnerMastery(weapon);
       if (mastery) {
          result = mastery.system.range;

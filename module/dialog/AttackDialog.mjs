@@ -14,13 +14,13 @@ export class AttackDialog {
       let result = null;
       const attackerToken = caller.currentActiveToken ?? caller;
       const attackerName = caller.token?.name || caller.name;
-      const masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
-      const toHitSystem = game.fade.registry.getSystem('toHitSystem');
+      const masterySystem = game.fade.registry.getSystem("weaponMasterySystem");
+      const toHitSystem = game.fade.registry.getSystem("toHitSystem");
       const targetToken = options.targetToken?.document ?? options.targetToken;
       const targetActor = options.targetToken?.actor;
 
       dialogData.attackRoll = "1d20";
-      dialogData.extraRollOptions = game.settings.get(game.system.id, 'extraRollOptions');
+      dialogData.extraRollOptions = game.settings.get(game.system.id, "extraRollOptions");
       dialogData.weapon = weapon;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
       // Attack type includes melee, missile and breath.
@@ -55,21 +55,21 @@ export class AttackDialog {
       };
       dialogData.rollSelected = "normal";
 
-      const title = `${attackerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
+      const title = `${attackerName}: ${dialogData.label} ${game.i18n.localize("FADE.roll")}`;
+      const template = "systems/fantastic-depths/templates/dialog/attack-roll.hbs";
 
       result = await DialogV2.wait({
          window: { title: title },
          position: {
-            width: 350,
-            height: 'auto'
+            width: 400,
+            height: "auto"
          },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
          buttons: [
             {
                action: "check",
-               label: game.i18n.localize('FADE.roll'),
+               label: game.i18n.localize("FADE.roll"),
                default: true,
                callback: (event, button, dialog) => new FormDataExtended(button.form).object,
             },
@@ -77,14 +77,15 @@ export class AttackDialog {
          close: () => { },
          classes: ["fantastic-depths"],
          render: (event, dialog) => {
-            dialog.querySelector('[name="attackType"]').addEventListener("change", changeEvent => {
+            dialog = dialog.element ?? dialog; // For V12/V13 compatibility.
+            dialog.querySelector(`[name="attackType"]`).addEventListener("change", changeEvent => {
                AttackDialog._updateRange(changeEvent.target.value, dialog);
                const rangedSelectorDiv = dialog.querySelector("#rangeSelect");
                rangedSelectorDiv.style.display = changeEvent.target.value === "missile" ? "block" : "none";
             });
             dialog.querySelectorAll(`input[name="rangeType"]`).forEach(radio => {
                radio.addEventListener("change", changeEvent => {
-                  AttackDialog._updateRange(dialog.querySelector('[name="attackType"]').value, dialog);
+                  AttackDialog._updateRange(dialog.querySelector(`[name="attackType"]`).value, dialog);
                });
             });
          }
@@ -111,18 +112,18 @@ export class AttackDialog {
       let result = null;
       if (distance < 6) {
          result = "close";
-      } else if (distance < ranges.short) {
+      } else if (distance <= ranges.short) {
          result = "short";
-      } else if (distance < ranges.medium) {
+      } else if (distance <= ranges.medium) {
          result = "medium";
-      } else if (distance < ranges.long) {
+      } else if (distance <= ranges.long) {
          result = "long";
       }
       return result;
    }
 
    static _updateRange(attackType, dialog) {
-      const toHitSystem = game.fade.registry.getSystem('toHitSystem');
+      const toHitSystem = game.fade.registry.getSystem("toHitSystem");
       const modInput = dialog.querySelector(`input[name="mod"]`);
       const selectedRange = dialog.querySelector(`input[name="rangeType"]:checked`)?.value;
       const isMissile = attackType === "missile";
