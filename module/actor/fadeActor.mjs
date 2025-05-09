@@ -434,6 +434,30 @@ export class fadeActor extends Actor {
       }
    }
 
+   /**
+    * Evaluates a roll formula synchronously into a numerical value.
+    * @param {any} formula The roll formula
+    * @param {any} options The Roll.evaluate options. Default minimize=true will generate lowest possible value.
+    * @returns If the formula and options are valid, an evaluated roll object.
+    */
+   getEvaluatedRollSync(formula, options = { minimize: true }) {
+      let result = null;
+      if (formula !== null && formula !== "") {
+         const rollData = this.getRollData();
+         try {
+            const roll = new Roll(formula, rollData);
+            roll.evaluateSync(options);
+            result = roll;
+         }
+         catch (error) {
+            if (game.user.isGM === true) {
+               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+            }
+         }
+      }
+      return result;
+   }
+
    /** 
     * Performs base classe prep of actor's active effects.
     * Disables effects from items that are equippable and not equipped. 

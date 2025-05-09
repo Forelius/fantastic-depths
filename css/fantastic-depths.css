@@ -136,7 +136,7 @@ h1, h2, h3, h4 {
 }
 
 .fantastic-depths .window-content .tab {
-  height: 100%;
+  /*height:100%;*/
 }
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
   max-height: 26px;
@@ -1165,7 +1165,7 @@ table.compact-table input {
 .system-fantastic-depths .actor .armor-class .ac-top {
   position: absolute;
   font-size: 26px;
-  top: 11px;
+  top: 10px;
   width: 50px;
   left: calc(50% - 25px);
 }

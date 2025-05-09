@@ -138,7 +138,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
-      context.useAV = game.settings.get(game.system.id, "useArmorValue");
+      context.useAV = game.settings.get(game.system.id, "useArmorValue") && this.actor.system.ac.av?.length > 0;
       context.sizes = CONFIG.FADE.ActorSizes
          .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
@@ -704,7 +704,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // If not the create item column...
       const parent = event.target.closest('.items-list');
       if (parent) {
-         await this.#toggleContent($(parent));         
+         await this.#toggleContent($(parent));
       }
    }
 

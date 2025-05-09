@@ -1,7 +1,6 @@
 export class DamageSystem {
    construction(options) {
-      this.options = options;
-      this.useAV = game.settings.get(game.system.id, "useArmorValue");
+      this.options = options;      
    }
 
    /**
@@ -9,10 +8,12 @@ export class DamageSystem {
     * @public
     * @param {any} actor
     * @param {any} delta The delta to change the HP by. A positive value indicate healing and negative indicates damage.
-    * @param {any} damageType
-    * @param {any} source
+    * @param {any} damageType What type of damage is being done.
+    * @param {*} attackType Melee or missile attack.
+    * @param {any} damageSource (optional) The weapon, spell or other item that caused the damage.
     */
-   async ApplyDamage(actor, delta, damageType, attackType, source = null) {
+   async ApplyDamage(actor, delta, damageType, attackType, damageSource = null) {
+      this.useAV = this.useAV === undefined ? game.settings.get(game.system.id, "useArmorValue") : this.useAV;
       const systemData = actor.system;
       const tokenName = actor.parent?.name ?? actor.name;
       let finalDelta = delta;
@@ -20,19 +21,17 @@ export class DamageSystem {
       let finalHP = Math.min((systemData.hp.value + finalDelta), systemData.hp.max);
       let digest = [];
       const isHeal = delta > 0;
-      // Damage mitigation
-      let damageMitigated = 0;
-
+     
       if (isHeal) {
          // Restoring HP
          digest.push(game.i18n.format("FADE.Chat.damageRoll.restored", { hp: (finalHP - prevHP), tokenName: tokenName }));
       } else {
          // Damage!
-         damageMitigated = this.#mitigateDamage(damageType, actor, finalDelta);
+         const mitigated = this.#mitigateDamage(damageType, actor, finalDelta);
 
-         if (damageMitigated !== 0) {
-            finalDelta += MathdamageMitigated;
-            digest.push(game.i18n.format("FADE.Chat.damageRoll.mitigated", { damage: damageMitigated, type: damageType }));
+         if (mitigated !== 0) {
+            finalDelta += mitigated;
+            digest.push(game.i18n.format("FADE.Chat.damageRoll.mitigated", { damage: mitigated, type: damageType }));
          }
          finalHP = prevHP + finalDelta;
          digest.push(game.i18n.format("FADE.Chat.damageRoll.applied", { damage: -finalDelta, type: damageType, tokenName: tokenName }));
@@ -40,32 +39,43 @@ export class DamageSystem {
 
       await actor.update({ "system.hp.value": finalHP });
 
-      this.#sendChatAndToast(source, digest);
+      this.#sendChatAndToast(damageSource, digest);
    }
 
-   #mitigateDamage(damageType, actor, finalDelta) {
+   #mitigateDamage(damageType, actor, delta) {
       let result = 0;
       const combatMods = actor.system.mod.combat;
       const physicalTypes = ["physical", "fire", "frost", "piercing", "breath", "corrosive", ""];
       if (physicalTypes.includes(damageType)) {
-         result = this.#getPhysicalMitigation(actor, damageType);
+         result += this.#getPhysicalMitigation(actor, damageType, delta);
       }
       if (damageType === "breath") {
          result += combatMods.selfDmgBreath;
-         result += -finalDelta * combatMods.selfDmgBreathScale;
+         result += -delta * combatMods.selfDmgBreathScale;
       }
       if (damageType === "magic") {
          result += combat.selfDmgMagic;
       }
       // Don't allow addition of damage via damage mitigation
-      result = Math.min(result, 0);
+      // And don't allow mitigation of more damage than was caused.
+      result = Math.min(result, -delta);
       return result;
    }
 
-   #getPhysicalMitigation(actor, damageType) {
+   #getPhysicalMitigation(actor, damageType, delta) {
       let result = actor.system.mod.combat.selfDmg;
       if (this.useAV) {
-
+         const av = actor.getEvaluatedRollSync(actor.system.ac.av)?.total;
+         if (av > 0) {
+            let avMitigated = 0;
+            if (damageType === 'piercing') {
+               avMitigated += Math.floor(av / 2);
+            } else {
+               avMitigated += av;
+            }
+            // Blocks at least 1 point.
+            result = Math.min(avMitigated, -(delta+1));
+         }
       }
       return result;
    }
