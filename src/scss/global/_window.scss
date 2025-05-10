@@ -241,9 +241,10 @@ table.compact-table {
    /*min-height: 50px;*/
 }
 
-.prosemirror .editor-container .editor-content {
-   position: relative !important;
+.prosemirror .editor-container .editor-content, prose-mirror .editor-content {
+   position: relative;
 }
+
 /* Dialog footer buttons */
 .standard-form .form-footer > button {
    line-height: 1;
