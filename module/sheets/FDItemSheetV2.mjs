@@ -7,7 +7,11 @@ import { EffectManager } from '../sys/EffectManager.mjs';
  */
 export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    get title() {
-      return game.user.isGM || this.item.system.isIdentified ? this.item.name : this.item.system.unidentifiedName;
+      let result = this.item.name;
+      if (this.item.system.unidentified && game.user.isGM == false && this.item.system.isIdentified == false) {
+         result = this.item.system.unidentifiedName;
+      }
+      return result;
    }
 
    static DEFAULT_OPTIONS = {
@@ -56,7 +60,7 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
      * @param {RenderOptions} options                 Provided render options
      * @protected
      */
-   _onRender(context, options) {    
+   _onRender(context, options) {
       if (this.isEditable) {
          const inputField = this.element.querySelector('input[data-action="addTag"]');
          inputField?.addEventListener('keydown', (event) => {
@@ -83,26 +87,26 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    * @type {ApplicationClickAction}
    */
    static async #onEditImage(_event, target) {
-      if ( target.nodeName !== "IMG" ) {
-      throw new Error("The editImage action is available only for IMG elements.");
+      if (target.nodeName !== "IMG") {
+         throw new Error("The editImage action is available only for IMG elements.");
       }
       const attr = target.dataset.edit;
       const current = foundry.utils.getProperty(this.document._source, attr);
       const defaultArtwork = this.document.constructor.getDefaultArtwork?.(this.document._source) ?? {};
       const defaultImage = foundry.utils.getProperty(defaultArtwork, attr);
       const fp = new FilePicker({
-      current,
-      type: "image",
-      redirectToRoot: defaultImage ? [defaultImage] : [],
-      callback: path => {
-         target.src = path;
-         if ( this.options.form.submitOnChange ) {
-            const submit = new Event("submit");
-            this.element.dispatchEvent(submit);
-         }
-      },
-      top: this.position.top + 40,
-      left: this.position.left + 10
+         current,
+         type: "image",
+         redirectToRoot: defaultImage ? [defaultImage] : [],
+         callback: path => {
+            target.src = path;
+            if (this.options.form.submitOnChange) {
+               const submit = new Event("submit");
+               this.element.dispatchEvent(submit);
+            }
+         },
+         top: this.position.top + 40,
+         left: this.position.left + 10
       });
       await fp.browse();
    }
