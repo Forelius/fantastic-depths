@@ -26,7 +26,7 @@ export class WrestlingDialog {
       const content = await renderTemplate(template, dialogData);
 
       let dialogResp = await DialogV2.wait({
-         title: game.i18n.localize("FADE.dialog.wrestling.wrestlingContest"),
+         window: { title: game.i18n.localize("FADE.dialog.wrestling.wrestlingContest") },
          rejectClose: false,
          content,
          buttons: [

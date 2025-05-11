@@ -81,7 +81,7 @@
             "short": "Wrestling",
             "abbr": "WR"
          },
-         "Flight": {
+         "movement2": {
             "abbr": "Sec.",
             "long": "Secondary",
             "hint": "Secondary movement can be any other type of movement the creature is capable of besides ground movement."
@@ -1059,7 +1059,7 @@
             "name": "Max. Move Speed",
             "hint": "<b>Max ground speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          },
-         "maxFlight": {
+         "maxMove2": {
             "name": "Max. Secondary Speed",
             "hint": "<b>Max secondary movement speed per turn.</b><p> Secondary movement can be any other type of movement the creature is capable of besides ground movement. Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          }

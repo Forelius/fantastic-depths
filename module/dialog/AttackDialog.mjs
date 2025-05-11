@@ -59,7 +59,7 @@ export class AttackDialog {
       const template = "systems/fantastic-depths/templates/dialog/attack-roll.hbs";
 
       result = await DialogV2.wait({
-         window: { title: title },
+         window: { title },
          position: {
             width: 400,
             height: "auto"

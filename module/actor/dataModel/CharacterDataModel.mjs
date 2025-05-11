@@ -1,6 +1,6 @@
-import { FDActorDataModel } from "/systems/fantastic-depths/module/actor/dataModel/FDActorDataModel.mjs";
+import { FDActorDM } from "/systems/fantastic-depths/module/actor/dataModel/FDActorDM.mjs";
 
-export class CharacterDataModel extends FDActorDataModel {
+export class CharacterDataModel extends FDActorDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
@@ -20,11 +20,9 @@ export class CharacterDataModel extends FDActorDataModel {
             title: new fields.StringField({ initial: "" }),
             age: new fields.NumberField({ initial: 20 }),
             sex: new fields.StringField({ initial: "" }),
-            height: new fields.StringField({ initial: "" }),
-            weight: new fields.StringField({ initial: "" }),
+            height: new fields.StringField({ initial: "" }),            
             eyes: new fields.StringField({ initial: "" }),
-            hair: new fields.StringField({ initial: "" }),
-            size: new foundry.data.fields.StringField({ initial: "M" }),
+            hair: new fields.StringField({ initial: "" }),            
          }),         
          retainer: new fields.SchemaField({
             max: new fields.NumberField({ initial: 0 }),

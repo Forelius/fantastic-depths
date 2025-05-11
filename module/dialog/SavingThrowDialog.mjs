@@ -1,13 +1,13 @@
 const { DialogV2 } = foundry.applications.api;
 
-export class SavingThrowDialog  {
+export class SavingThrowDialog {
    static async getDialog(dataset, caller) {
       const dialogData = { label: dataset.label };
       let dialogResp = null;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/save-roll.hbs';
       dialogResp = await DialogV2.wait({
-         title: title,
+         window: { title },
          rejectClose: false,
          content: await renderTemplate(template, dialogData),
          buttons: [

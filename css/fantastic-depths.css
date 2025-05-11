@@ -1634,6 +1634,7 @@ table.compact-table input {
   height: 26px;
   line-height: 26px;
   align-items: center;
+  overflow: hidden;
 }
 .system-fantastic-depths .items-list .items-header {
   height: auto;

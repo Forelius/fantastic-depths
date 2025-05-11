@@ -1,8 +1,8 @@
-import { FDActorDataModel } from "./FDActorDataModel.mjs";
+import { FDActorDM } from "./FDActorDM.mjs";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
 import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
 
-export class MonsterDataModel extends FDActorDataModel {
+export class MonsterDataModel extends FDActorDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
@@ -12,7 +12,6 @@ export class MonsterDataModel extends FDActorDataModel {
             alignment: new fields.StringField({ initial: "Chaotic" }),
             xpAward: new fields.NumberField({ initial: 5 }),
             abilityCount: new fields.NumberField({ initial: 0 }),
-            size: new fields.StringField({ initial: "M" }),
             monsterType: new fields.StringField({ initial: "Monster" }),
             rarity: new fields.StringField({ initial: "Common" }),
             //monsterTypes: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),

@@ -7,7 +7,7 @@ const handler = {
       let result;
       if (args[0]?.type === "monster") {
          result = new MonsterActor(...args);
-      } else {
+      } else if (args[0]?.type === "character") {
          result = new CharacterActor(...args);
       }
       return result;

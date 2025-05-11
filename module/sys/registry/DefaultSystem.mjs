@@ -77,9 +77,9 @@ export class ActorMovement {
       actor.system.movement.day = actor.system.movement.turn > 0 ? Math.floor(actor.system.movement.turn / 5) : 0;
       actor.system.movement.run = actor.system.movement.turn > 0 ? Math.floor(actor.system.movement.turn / runDivisor) : 0;
 
-      actor.system.flight.turn = actor.system.encumbrance.fly || 0;
-      actor.system.flight.round = actor.system.flight.turn > 0 ? Math.floor(actor.system.flight.turn / roundDivisor) : 0;
-      actor.system.flight.day = actor.system.flight.turn > 0 ? Math.floor(actor.system.flight.turn / 5) : 0;
-      actor.system.flight.run = actor.system.flight.turn > 0 ? Math.floor(actor.system.flight.turn / runDivisor) : 0;
+      actor.system.movement2.turn = actor.system.encumbrance.mv2 || 0;
+      actor.system.movement2.round = actor.system.movement2.turn > 0 ? Math.floor(actor.system.movement2.turn / roundDivisor) : 0;
+      actor.system.movement2.day = actor.system.movement2.turn > 0 ? Math.floor(actor.system.movement2.turn / 5) : 0;
+      actor.system.movement2.run = actor.system.movement2.turn > 0 ? Math.floor(actor.system.movement2.turn / runDivisor) : 0;
    }
 }
