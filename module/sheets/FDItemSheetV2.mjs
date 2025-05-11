@@ -8,7 +8,7 @@ import { EffectManager } from '../sys/EffectManager.mjs';
 export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    get title() {
       let result = this.item.name;
-      if (this.item.system.unidentified && game.user.isGM == false && this.item.system.isIdentified == false) {
+      if (this.item.system.unidentifiedName && game.user.isGM == false && this.item.system.isIdentified == false) {
          result = this.item.system.unidentifiedName;
       }
       return result;

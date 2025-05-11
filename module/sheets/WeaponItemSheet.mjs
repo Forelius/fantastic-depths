@@ -58,9 +58,10 @@ export class WeaponItemSheet extends FDItemSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description', 'attributes']
+      options.parts = ['header', 'tabnav', 'description']
 
       if (game.user.isGM) {
+         options.parts.push('attributes');
          options.parts.push('effects');
          options.parts.push('gmOnly');
       }

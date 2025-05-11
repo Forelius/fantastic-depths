@@ -54,9 +54,10 @@ export class GearItemSheet extends FDItemSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description', 'attributes']
+      options.parts = ['header', 'tabnav', 'description']
 
       if (game.user.isGM) {
+         options.parts.push('attributes');
          options.parts.push('effects');
          options.parts.push('gmOnly');
       }
@@ -118,10 +119,10 @@ export class GearItemSheet extends FDItemSheetV2 {
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
       const tabs = {
-         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item'},
-         attributes: { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' }
-      }
+         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' }
+      };
       if (game.user.isGM) {
+         attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' };
          tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
          tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly', cssClass: 'item' };
       }
