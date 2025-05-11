@@ -3,7 +3,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 import { DragDropMixin } from './mixins/DragDropMixin.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { fadeItem } from '../item/fadeItem.mjs';
+import { FDItem } from '../item/FDItem.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
@@ -746,7 +746,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       delete itemData.system['type'];
 
       // Finally, create the item!
-      return await fadeItem.create(itemData, { parent: this.actor });
+      return await FDItem.create(itemData, { parent: this.actor });
    }
 
    static async #clickDeleteItem(event) {

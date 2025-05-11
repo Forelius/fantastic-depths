@@ -4,7 +4,7 @@ import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class fadeItem extends Item {
+export class FDItem extends Item {
    constructor(data, context) {
       super(data, context);      
    }

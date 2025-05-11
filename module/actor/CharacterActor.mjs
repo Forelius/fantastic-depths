@@ -1,11 +1,11 @@
 ﻿import { Formatter } from '../utils/Formatter.mjs';
-import { fadeActor } from './fadeActor.mjs';
+import { FDActor } from './FDActor.mjs';
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 
-export class CharacterActor extends fadeActor {
+export class CharacterActor extends FDActor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);

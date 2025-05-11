@@ -1,4 +1,4 @@
-import { fadeActor } from '../actor/fadeActor.mjs';
+import { FDActor } from '../actor/FDActor.mjs';
 import { CharacterActor } from '../actor/CharacterActor.mjs';
 import { MonsterActor } from '../actor/MonsterActor.mjs';
 
@@ -14,4 +14,4 @@ const handler = {
    }
 };
 
-export const ActorFactory = new Proxy(fadeActor, handler);
+export const ActorFactory = new Proxy(FDActor, handler);

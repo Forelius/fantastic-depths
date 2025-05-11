@@ -1,9 +1,9 @@
 // actor-character.mjs
-import { fadeActor } from './fadeActor.mjs';
+import { FDActor } from './FDActor.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
-export class MonsterActor extends fadeActor {
+export class MonsterActor extends FDActor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);

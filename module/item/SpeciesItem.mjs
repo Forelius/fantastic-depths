@@ -1,8 +1,8 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
-export class SpeciesItem extends fadeItem {
+export class SpeciesItem extends FDItem {
    constructor(data, context) {
       super(data, context);
       this.languageManager = new TagManager(this, 'languages'); // Initialize TagManager

@@ -2,7 +2,7 @@
 
 /**
 * Requires class implements getAttackTypes()
-* @param {any} superclass Assumes superclass is derived from fadeItem.
+* @param {any} superclass Assumes superclass is derived from FDItem.
 * @returns
 */
 const RollAttackMixin = (superclass) => class extends superclass {

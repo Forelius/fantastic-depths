@@ -3,7 +3,7 @@ const { ItemSheetV2 } = foundry.applications.sheets;
 import { EffectManager } from '../sys/EffectManager.mjs';
 
 /**
- * Base sheet class for fadeItem.
+ * Base sheet class for FDItem.
  */
 export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    get title() {

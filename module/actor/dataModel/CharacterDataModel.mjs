@@ -1,6 +1,6 @@
-import { fadeActorDataModel } from "/systems/fantastic-depths/module/actor/dataModel/fadeActorDataModel.mjs";
+import { FDActorDataModel } from "/systems/fantastic-depths/module/actor/dataModel/FDActorDataModel.mjs";
 
-export class CharacterDataModel extends fadeActorDataModel {
+export class CharacterDataModel extends FDActorDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();

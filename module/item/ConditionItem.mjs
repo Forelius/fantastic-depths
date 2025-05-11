@@ -1,6 +1,6 @@
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 
-export class ConditionItem extends fadeItem {
+export class ConditionItem extends FDItem {
    get duration() {
       return 0;
    }

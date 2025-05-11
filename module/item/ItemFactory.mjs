@@ -1,4 +1,4 @@
-import { fadeItem } from '../item/fadeItem.mjs';
+import { FDItem } from '../item/FDItem.mjs';
 import { GearItem } from '../item/GearItem.mjs';
 import { ArmorItem } from '../item/ArmorItem.mjs';
 import { WeaponItem } from '../item/WeaponItem.mjs';
@@ -33,4 +33,4 @@ const handler = {
    }
 };
 
-export const ItemFactory = new Proxy(fadeItem, handler);
+export const ItemFactory = new Proxy(FDItem, handler);

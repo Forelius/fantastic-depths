@@ -1,13 +1,13 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class GearItem extends fadeItem {
+export class GearItem extends FDItem {
    constructor(data, context) {
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager

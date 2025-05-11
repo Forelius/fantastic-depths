@@ -103,7 +103,7 @@ export class ArmorItemSheet extends FDItemSheetV2 {
       };
 
       if (game.user.isGM) {
-         attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' };
+         tabs.attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' };
          tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
          tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly', cssClass: 'item' };
       }

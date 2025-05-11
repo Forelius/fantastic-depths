@@ -7,7 +7,7 @@ import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
  * Extends the basic actor class with modifications for all system actors.
  * @extends {Actor}
  */
-export class fadeActor extends Actor {
+export class FDActor extends Actor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);

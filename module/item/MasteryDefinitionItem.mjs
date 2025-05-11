@@ -1,9 +1,9 @@
-import { fadeItem } from "./fadeItem.mjs";
+import { FDItem } from "./FDItem.mjs";
 
 /**
- * MasteryDefinitionItem class that extends the base fadeItem class.
+ * MasteryDefinitionItem class that extends the base FDItem class.
  */
-export class MasteryDefinitionItem extends fadeItem {
+export class MasteryDefinitionItem extends FDItem {
    /**
     * Prepare derived data for WeaponMasteryItem.
     */
@@ -12,7 +12,7 @@ export class MasteryDefinitionItem extends fadeItem {
    }
 
    async createActorWeaponMastery(owner) {
-      const result = await fadeItem.create({
+      const result = await FDItem.create({
          name: this.name,
          type: "mastery",
       }, { parent: owner });

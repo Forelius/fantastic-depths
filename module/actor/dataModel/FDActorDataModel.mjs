@@ -1,4 +1,4 @@
-export class fadeActorDataModel extends foundry.abstract.TypeDataModel {
+export class FDActorDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {

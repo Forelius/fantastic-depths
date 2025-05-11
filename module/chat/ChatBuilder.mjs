@@ -1,4 +1,3 @@
-
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
@@ -20,8 +19,8 @@ export class ChatBuilder {
     * @constructor
     * @throws {Error} - If instantiated directly.
     * @param {Object} dataset - The dataset object for the builder.
-    * @param {fadeActor} dataset.caller - The actor the chat pertains to.
-    * @param {fadeItem} dataset.context - The item the chat pertains to.
+    * @param {FDActor} dataset.caller - The actor the chat pertains to.
+    * @param {FDItem} dataset.context - The item the chat pertains to.
     * @param {Roll} dataset.roll - A dice roll the chat pertains to.
     * @param {Object} dataset.resp - Data polled from the user from an Application.
     * @param {Object[]} dataset.batch - Bulk object data for batch processing.

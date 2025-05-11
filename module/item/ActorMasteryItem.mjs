@@ -1,7 +1,7 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 
-export class ActorMasteryItem extends fadeItem {
+export class ActorMasteryItem extends FDItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
