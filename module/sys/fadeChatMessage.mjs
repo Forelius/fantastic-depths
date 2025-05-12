@@ -11,6 +11,7 @@ export class fadeChatMessage extends ChatMessage {
          }
          this.#addAttackTargets(html);
          await this.#addApplyDamage(html);
+         await this.#addApplyCondition(html);
       }
       return html;
    }
@@ -25,6 +26,7 @@ export class fadeChatMessage extends ChatMessage {
       }
       this.#addAttackTargets(html);
       await this.#addApplyDamage(html);
+      await this.#addApplyCondition(html);
       return html;
    }
 
@@ -37,6 +39,17 @@ export class fadeChatMessage extends ChatMessage {
       if (!game.user.isGM || !attackData) return;
       const chatData = { attackData };
       let content = await renderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
+      const tray = document.createElement("div");
+      tray.innerHTML = content;
+      html.querySelector(".message-content")?.appendChild(tray);
+   }
+
+   async #addApplyCondition(html) {
+      const conditions = this.getFlag(game.system.id, "conditions");
+      const durationSec = this.getFlag(game.system.id, "durationSec");
+      if (!game.user.isGM || !conditions) return;
+      const chatData = { conditions, durationSec };
+      let content = await renderTemplate('systems/fantastic-depths/templates/chat/spell-conditions.hbs', chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);

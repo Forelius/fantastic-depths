@@ -23,4 +23,10 @@ export class ConditionItem extends FDItem {
          }
       }
    }
+
+   async setEffectsDuration(durationSec) {
+      for (let effect of this.effects) {
+         await effect.update({ "duration.seconds": durationSec });
+      }      
+   }
 }

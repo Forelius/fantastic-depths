@@ -1,3 +1,4 @@
+import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
 
@@ -62,7 +63,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          showTargets: !roll,
          save,
          durationMsg: options.durationMsg,
-         conditions: options.conditions
+         durationSec: options.durationSec
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
@@ -72,10 +73,80 @@ export class SpellCastChatBuilder extends ChatBuilder {
          content, rolls, rollMode,
          flags: {
             [game.system.id]: {
-               targets: toHitResult.targetResults
+               targets: toHitResult.targetResults,
+               conditions: options.conditions,
+               durationSec: options.durationSec
             }
          }
       });
       await ChatMessage.create(chatMessageData);
+   }
+
+   static async clickApplyCondition(event) {
+      const element = event.currentTarget;
+      const dataset = element.dataset;
+      // Custom behavior for damage rolls      
+      if (dataset.name || dataset.uuid) {
+         event.preventDefault(); // Prevent the default behavior
+         event.stopPropagation(); // Stop other handlers from triggering the event
+         let condition = await fromUuid(dataset.uuid);
+         if (!condition) {
+            condition = await game.fade.fadeFinder.getCondition(dataset.name);
+         }
+         if (condition) {
+            // clone and prepare condition duration
+            condition = foundry.utils.deepClone(condition);
+            const durationSec = Number.parseInt(dataset.duration);
+            if (Number.isNaN(durationSec)===false) {
+               condition.setEffectsDuration(durationSec);
+            }
+
+            // Get targets
+            const selected = Array.from(canvas.tokens.controlled);
+            const targeted = Array.from(game.user.targets);
+            let applyTo = [];
+            let hasTarget = targeted.length > 0;
+            let hasSelected = selected.length > 0;
+            let isCanceled = false;
+
+            if (hasTarget && hasSelected) {
+               const dialogResp = await DialogFactory({
+                  dialog: "yesno",
+                  title: game.i18n.localize('FADE.dialog.applyToPrompt'),
+                  content: game.i18n.localize('FADE.dialog.applyToPrompt'),
+                  yesLabel: game.i18n.localize('FADE.dialog.targeted'),
+                  noLabel: game.i18n.localize('FADE.dialog.selected'),
+                  defaultChoice: "yes"
+               });
+
+               if (dialogResp?.resp?.result == undefined) {
+                  isCanceled = true;
+               } else if (dialogResp?.resp?.result === true) {
+                  hasSelected = false;
+               } else if (dialogResp?.resp?.result === false) {
+                  hasTarget = false;
+               }
+            }
+
+            if (isCanceled === true) {
+               // do nothing.
+            } else if (hasTarget) {
+               applyTo = targeted;
+            } else if (hasSelected) {
+               applyTo = selected;
+            } else {
+               ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
+            }
+
+            // Ensure we have a target ID
+            if (applyTo.length > 0) {
+               for (let target of applyTo) {
+                  if (target.actor.isOwner === true) {
+                     target.actor.createEmbeddedDocuments("Item", [condition]);
+                  }
+               }
+            }
+         }
+      }
    }
 }

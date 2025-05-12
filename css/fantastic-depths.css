@@ -739,24 +739,6 @@ table.compact-table input {
   border: 1px solid #4b4a44;
   box-shadow: none;
 }
-.dark-mode .chat-message .saving-roll {
-  background: url("../assets/img/grungeblue.jpg");
-  border: 1px solid #4b4a44;
-  box-shadow: none;
-  color: #ebeae4;
-}
-.dark-mode .chat-message .heal-roll, .dark-mode .chat-message .apply-heal, .dark-mode .chat-message .flags-restored-true {
-  background: url("../assets/img/grungegreen.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #447744;
-}
-.dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage, .dark-mode .chat-message .flags-killed-true {
-  background: url("../assets/img/grungered.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #774444;
-}
 .dark-mode .chat-message .attack-fail, .dark-mode .chat-message .roll-fail {
   color: #d85d48;
 }
@@ -857,18 +839,6 @@ table.compact-table input {
 .light-mode .chat-message .warning {
   color: #702010;
 }
-.light-mode .chat-message .heal-roll, .light-mode .chat-message .apply-heal {
-  background: url("../assets/img/grungegreen.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #447744;
-}
-.light-mode .chat-message .damage-roll, .light-mode .chat-message .apply-damage {
-  background: url("../assets/img/grungered.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #774444;
-}
 
 .chat-message {
   padding: 3px 4px 3px 4px;
@@ -891,7 +861,6 @@ table.compact-table input {
 }
 .chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll, .chat-message .message-content .heal-roll {
   font-size: 15px;
-  /*padding: 5px 4px;*/
 }
 .chat-message .message-content .small-text {
   margin-left: 4px;
@@ -976,6 +945,30 @@ table.compact-table input {
   flex-basis: 50%;
   border-top: 1px dotted #808060;
   align-self: center;
+}
+.chat-message .message-content .apply-condition {
+  background: url("../assets/img/grungeblue.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #302060;
+}
+.chat-message .message-content .heal-roll, .chat-message .message-content .apply-heal {
+  background: url("../assets/img/grungegreen.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #447744;
+}
+.chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
+  background: url("../assets/img/grungered.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #774444;
+}
+.chat-message .message-content .saving-roll {
+  background: url("../assets/img/grungeblue.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
 }
 
 .combatant.disposition-friendly::before {

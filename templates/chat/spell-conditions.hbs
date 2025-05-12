@@ -1,0 +1,10 @@
+{{#each conditions as |condition|}}
+<div>
+   <button type="button" class="apply-condition"
+           data-uuid="{{condition.uuid}}" 
+           data-name="{{condition.name}}"
+           data-duration="{{@root.durationSec}}">
+   {{localize "FADE.Chat.apply"}} {{condition.name}}
+   </button>
+</div>
+{{/each}}

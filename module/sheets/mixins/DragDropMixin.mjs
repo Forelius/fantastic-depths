@@ -187,18 +187,17 @@ const DragDropMixin = (superclass) => class extends superclass {
          if (!(document instanceof Item)) item = await fromUuid(item.uuid);
          return item.toObject();
       }));
-      return this._onDropItemCreate(droppedItemData, event);
+      return this._onDropItemCreate(droppedItemData);
    }
 
    /**
     * Handle the final creation of dropped Item data on the Actor.
     * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
- * @param {object[]|object} itemData      The item data requested for creation
- * @param {DragEvent} event               The concluding DragEvent which provided the drop data
- * @returns {Promise<Item[]>}
- * @private
- */
-   async _onDropItemCreate(itemData, event) {
+    * @param {object[]|object} itemData      The item data requested for creation
+    * @returns {Promise<Item[]>}
+    * @private
+    */
+   async _onDropItemCreate(itemData) {
       itemData = itemData instanceof Array ? itemData : [itemData];
       return this.actor.createEmbeddedDocuments("Item", itemData);
    }

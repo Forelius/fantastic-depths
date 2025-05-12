@@ -10,7 +10,7 @@
 
       button {
          margin: 0;
-         width:100%
+         width: 100%
       }
 
       .digest {
@@ -23,7 +23,6 @@
 
       .damage-roll, .saving-Roll, .heal-roll {
          font-size: 15px;
-         /*padding: 5px 4px;*/
       }
 
       .small-text {
@@ -127,6 +126,34 @@
                align-self: center;
             }
          }
+      }
+
+      .apply-condition {
+         background: url('../assets/img/grungeblue.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #302060;
+      }
+
+      .heal-roll, .apply-heal {
+         background: url('../assets/img/grungegreen.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #447744;
+      }
+
+      .damage-roll, .apply-damage {
+         background: url('../assets/img/grungered.jpg');
+         color: $lighterColor;
+         box-shadow: none;
+         border: 1px solid #774444;
+      }
+
+      .saving-roll {
+         background: url('../assets/img/grungeblue.jpg');
+         border: 1px solid $darkColor;
+         box-shadow: none;
+         color: $lighterColor;
       }
    }
 }

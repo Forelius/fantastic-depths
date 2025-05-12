@@ -94,7 +94,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          if (this.system.attackType === 'melee') {
             rollAttackResult = await this.rollAttack();
          }
-         const durationRollResult = await this.#getDurationText();
+         const durationResult = await this.#getDurationText();
 
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource
@@ -109,8 +109,9 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             };
 
             const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, {
-               durationMsg: durationRollResult,
-               conditions: this.system.conditions
+               durationMsg: durationResult.text,
+               conditions: this.system.conditions,
+               durationSec: durationResult.durationSec,
             });
             await builder.createChatMessage();
          }
@@ -137,11 +138,15 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    }
 
    async #getDurationText() {
-      let result = `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`;
+      let result = {
+         text: `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`
+      };
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
          const rollData = this.getRollData();
          const rollEval = await new Roll(this.system.durationFormula, rollData).evaluate();
-         result = `${result} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
+         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
+         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+         result.durationSec = rollEval.total * roundSeconds;
       }
       return result;
    }

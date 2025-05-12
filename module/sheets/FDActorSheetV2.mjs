@@ -207,10 +207,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
                const itemData = droppedItem.toObject();
                if (droppedItem.actor == null) {
-                  const newItem = await this._onDropItemCreate(itemData, event);
+                  const newItem = await this._onDropItemCreate(itemData);
                   await newItem[0].update({ "system.containerId": targetId });
                } else if (droppedItem.actor.id != this.actor.id) {
-                  const newItem = await this._onDropItemCreate(itemData, event);
+                  const newItem = await this._onDropItemCreate(itemData);
                   await newItem[0].update({ "system.containerId": targetId });
                } else {
                   await droppedItem.update({ "system.containerId": targetId });
@@ -711,6 +711,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    static async #clickToggleContainer(event) {
       await this._toggleContainedItems(event)
    }
+
    /**
     * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
     * @param {Event} event The originating click event

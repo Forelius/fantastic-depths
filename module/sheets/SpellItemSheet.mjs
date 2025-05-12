@@ -114,7 +114,8 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
          const items = this.item.system.conditions || [];
          // Define the new data
          const newItem = {
-            name: droppedItem.name
+            name: droppedItem.name,
+            uuid: droppedItem.uuid
          };
 
          // Add the new item to the array

@@ -359,4 +359,15 @@ export class fadeFinder {
       }
       return result?.[0];
    }
+
+   static async getCondition(name) {
+      const type = 'condition'
+      let source = fadeFinder._getWorldSource(type);
+      let result = fadeFinder._getItem(source, name);
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = fadeFinder._getItem(source, name);
+      }
+      return result;
+   }
 }

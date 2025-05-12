@@ -213,27 +213,6 @@
          box-shadow: none;
       }
 
-      .saving-roll {
-         background: url('../assets/img/grungeblue.jpg');
-         border: 1px solid $darkColor;
-         box-shadow: none;
-         color: $lighterColor;
-      }
-
-      .heal-roll, .apply-heal, .flags-restored-true {
-         background: url('../assets/img/grungegreen.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #447744;
-      }
-
-      .damage-roll, .apply-damage, .flags-killed-true {
-         background: url('../assets/img/grungered.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #774444;
-      }
-
       .attack-fail, .roll-fail {
          color: #d85d48;
       }
@@ -385,20 +364,6 @@
 
       .warning {
          color: #702010;
-      }
-
-      .heal-roll, .apply-heal {
-         background: url('../assets/img/grungegreen.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #447744;
-      }
-
-      .damage-roll, .apply-damage {
-         background: url('../assets/img/grungered.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #774444;
       }
    }
 }
