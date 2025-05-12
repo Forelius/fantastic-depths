@@ -1,5 +1,5 @@
 ﻿<section class='tab {{tabs.description.cssClass}}' data-group='primary' data-tab='description'>
-   {{#if (or isGM system.isIdentified)}}
+   {{#if showIdentifiedText}}
    {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
    <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{system.description}}" collaborate="false" toggled="true">
       {{{enrichedDesc}}}

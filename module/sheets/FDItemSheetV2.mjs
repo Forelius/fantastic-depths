@@ -46,6 +46,8 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
             relativeTo: this.item,
          });
       }
+
+      context.showIdentifiedText = game.user.isGM || this.item.system.isIdentified === true || this.item.system.unidentifiedDesc === undefined;
       context.item = this.item;
       context.system = this.item.system;
       context.config = CONFIG.FADE;
