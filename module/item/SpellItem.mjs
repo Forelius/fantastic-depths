@@ -105,10 +105,13 @@ export class SpellItem extends RollAttackMixin(FDItem) {
                caller: this, // the spell
                context: instigator, // the caster
                roll: rollAttackResult?.rollEval,
-               digest: rollAttackResult?.digest
+               digest: rollAttackResult?.digest,
             };
 
-            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, { durationMsg: durationRollResult });
+            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, {
+               durationMsg: durationRollResult,
+               conditions: this.system.conditions
+            });
             await builder.createChatMessage();
          }
       }

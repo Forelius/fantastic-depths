@@ -1,11 +1,12 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
+import { DragDropMixin } from './mixins/DragDropMixin.mjs';
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
  * Sheet class for SpellItem.
  */
-export class SpellItemSheet extends FDItemSheetV2 {
+export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */
@@ -22,7 +23,11 @@ export class SpellItemSheet extends FDItemSheetV2 {
       classes: ['fantastic-depths', 'sheet', 'item'],
       form: {
          submitOnChange: true
-      }
+      },
+      actions: {
+         deleteItem: SpellItemSheet.#onDeleteChild,
+      },
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
 
    static PARTS = {
@@ -39,7 +44,7 @@ export class SpellItemSheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/spell/attributes.hbs",
       },
       effects: {
-         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+         template: "systems/fantastic-depths/templates/item/spell/conditions.hbs",
       }
    }
 
@@ -48,14 +53,25 @@ export class SpellItemSheet extends FDItemSheetV2 {
       primary: "description"
    }
 
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'description']
+
+      if (game.user.isGM) {
+         options.parts.push('attributes');
+         options.parts.push('effects');
+      }
+   }
+
    /**
     * Prepare data to be used in the Handlebars template.
     */
    async _prepareContext(options) {
       const context = await super._prepareContext(options);
-
-      // Prepare active effects for easier access
-      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       // Attack types
       const attackTypes = []
@@ -80,9 +96,31 @@ export class SpellItemSheet extends FDItemSheetV2 {
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+
       context.tabs = this.#getTabs();
 
       return context;
+   }
+
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'condition') {
+         // Retrieve the array
+         const items = this.item.system.conditions || [];
+         // Define the new data
+         const newItem = {
+            name: droppedItem.name
+         };
+
+         // Add the new item to the array
+         items.push(newItem);
+         await this.item.update({ "system.conditions": items });
+      }
    }
 
    /**
@@ -105,5 +143,20 @@ export class SpellItemSheet extends FDItemSheetV2 {
          tab.cssClass = tab.active ? "active" : "";
       }
       return tabs;
+   }
+
+   static async #onDeleteChild(event) {
+      event.preventDefault();
+      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
+      const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
+
+      if (type === 'condition') {
+         const items = this.item.system.conditions;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.conditions": items });
+         }
+      } 
+      this.render();
    }
 }

@@ -73,7 +73,7 @@ export class ArmorItemSheet extends FDItemSheetV2 {
 
       context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
       if (context.isBasicEnc === true) {
-         let encOptions = [];
+         const encOptions = [];
          encOptions.push({ text: game.i18n.localize('FADE.none'), value: "none" });
          encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.light'), value: "light" });
          encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });

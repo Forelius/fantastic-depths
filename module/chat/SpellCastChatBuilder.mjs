@@ -61,7 +61,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
          targets: targetTokens,
          showTargets: !roll,
          save,
-         durationMsg: options.durationMsg
+         durationMsg: options.durationMsg,
+         conditions: options.conditions
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);

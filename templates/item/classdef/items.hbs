@@ -1,7 +1,7 @@
 <section class='tab {{tabs.items.cssClass}}' data-group='primary' data-tab='items'>
-   <ol name="class-items" class='items-list'>
+   <div name="class-items" class='items-list'>
       <!-- Header Row -->
-      <li class='item flexrow items-header' data-action="toggleHeader">
+      <div class='item flexrow items-header' data-action="toggleHeader">
          <div style="max-width:50px">{{localize 'FADE.Actor.Level'}}</div>
          <div style="max-width:90px">{{localize 'FADE.type'}}</div>
          <div>{{localize 'FADE.name'}}</div>
@@ -11,10 +11,10 @@
                <i class='fas fa-plus'></i>
             </a>
          </div>
-      </li>
+      </div>
       <!-- Class Ability Entries -->
       {{#each system.classItems as |item index|}}
-      <li class='item flexrow' data-item-id='{{item._id}}'>
+      <ldiv class='item flexrow' data-item-id='{{item._id}}'>
          <div style="max-width:50px">
             <input type="number" name="system.classItems.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
          </div>
@@ -32,7 +32,7 @@
                <i class='fas fa-trash'></i>
             </a>
          </div>
-      </li>
+      </ldiv>
       {{/each}}
-   </ol>
+   </div>
 </section>

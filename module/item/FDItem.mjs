@@ -29,11 +29,6 @@ export class FDItem extends Item {
       }
    }
 
-   /** @override
-    * @protected */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-   }
 
    // Define default icons for various item types using core data paths
    static get defaultIcons() {

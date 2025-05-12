@@ -29,7 +29,15 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
          saveDmgFormula: new fields.StringField({ nullable: true, initial: null }),
          attackType: new fields.StringField({ required: false, initial: "" }),
-         damageType: new fields.StringField({ required: false, initial: "" })
+         damageType: new fields.StringField({ required: false, initial: "" }),
+         conditions: new fields.ArrayField(
+            new fields.SchemaField({
+               name: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
       };
    }
 
