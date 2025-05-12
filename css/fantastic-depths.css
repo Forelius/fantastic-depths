@@ -739,6 +739,24 @@ table.compact-table input {
   border: 1px solid #4b4a44;
   box-shadow: none;
 }
+.dark-mode .chat-message .saving-roll {
+  background: url("../assets/img/grungeblue.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
+}
+.dark-mode .chat-message .heal-roll, .dark-mode .chat-message .apply-heal, .dark-mode .chat-message .flags-restored-true {
+  background: url("../assets/img/grungegreen.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #447744;
+}
+.dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage, .dark-mode .chat-message .flags-killed-true {
+  background: url("../assets/img/grungered.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #774444;
+}
 .dark-mode .chat-message .attack-fail, .dark-mode .chat-message .roll-fail {
   color: #d85d48;
 }
@@ -838,6 +856,18 @@ table.compact-table input {
 }
 .light-mode .chat-message .warning {
   color: #702010;
+}
+.light-mode .chat-message .heal-roll, .light-mode .chat-message .apply-heal {
+  background: url("../assets/img/grungegreen.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #447744;
+}
+.light-mode .chat-message .damage-roll, .light-mode .chat-message .apply-damage {
+  background: url("../assets/img/grungered.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #774444;
 }
 
 .chat-message {
@@ -1627,7 +1657,6 @@ table.compact-table input {
   height: 26px;
   line-height: 26px;
   align-items: center;
-  overflow: hidden;
 }
 .system-fantastic-depths .items-list .items-header {
   height: auto;
