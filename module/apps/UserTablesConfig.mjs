@@ -88,9 +88,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    static async #onSubmit(event, form, formData) {
       event.preventDefault();
       const data = foundry.utils.expandObject(formData.object);
-      console.log(`#onSubmit: ${event.submitter?.name}`, data);
-
-      const selectedTable = this.system.selectedTable;
       // Update system with data from form.
       foundry.utils.mergeObject(this.system, data.system);
 

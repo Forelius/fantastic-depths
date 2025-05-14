@@ -637,10 +637,7 @@
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
-      "apps": {
-         "turnTracker": {
-            "title": "Turn Tracker"
-         },
+      "apps": {        
          "userTables": {
             "title": "User Tables",
             "tableId": "Table ID",
@@ -668,6 +665,7 @@
             "noDeclaredActions": "Fantastic Depths is not configured to use declared actions."
          },
          "turnTracker": {
+            "title": "Turn Tracker",
             "sessionCount": "Session Count",
             "totalCount": "Total Count",
             "sinceRest": "Since Rest",

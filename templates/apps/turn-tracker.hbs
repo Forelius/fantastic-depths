@@ -7,7 +7,7 @@
    <div class="tab-content" style="margin-top:10px;">
       <!-- Tracker Tab -->
       <div class="tab active" data-tab="tracker">
-         <div style="display: flex; flex-direction: column; height: 100%; min-height: 200px;">
+         <div style="display: flex; flex-direction: column;">
             <section style="flex-grow: 1;">
                <table style="text-align:center;">
                   <thead>
@@ -39,21 +39,31 @@
                </table>
             </section>
             <section class="flexrow" style="text-align: right; padding-top: 8px;">
-               <button id="revert-turn" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.prevDesc'}}"><i class="fa-solid fa-backward"></i> {{localize 'FADE.apps.turnTracker.prev'}}</button>
-               <button id="advance-turn" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.nextDesc'}}"><i class="fa-solid fa-forward"></i> {{localize 'FADE.apps.turnTracker.next'}}</button>
+               <button type="button" data-action="revert" data-tooltip="{{localize 'FADE.apps.turnTracker.prevDesc'}}">
+                  <i class="fa-solid fa-backward"></i> {{localize 'FADE.apps.turnTracker.prev'}}
+               </button>
+               <button type="button" data-action="advance" data-tooltip="{{localize 'FADE.apps.turnTracker.nextDesc'}}">
+                  <i class="fa-solid fa-forward"></i> {{localize 'FADE.apps.turnTracker.next'}}
+               </button>
                {{#if turnData.settings.restFrequency}}
-               <button id="rest" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.rest'}}"><i class="fa-solid fa-campground"></i> {{localize 'FADE.apps.turnTracker.rest'}}</button>
+               <button type="button" data-action="rest" data-tooltip="{{localize 'FADE.apps.turnTracker.rest'}}">
+                  <i class="fa-solid fa-campground"></i> {{localize 'FADE.apps.turnTracker.rest'}}
+               </button>
                {{/if}}
             </section>
             <section class="flexrow" style="margin-top: 2px;">
-               <button id="reset-session" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.resetSession'}}"><i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.apps.turnTracker.resetSession'}}</button>
-               <button id="reset-total" type="button" data-tooltip="{{localize 'FADE.apps.turnTracker.resetTotal'}}"><i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.apps.turnTracker.resetTotal'}}</button>
+               <button type="button" data-action="resetSession" data-tooltip="{{localize 'FADE.apps.turnTracker.resetSession'}}">
+                  <i class="fa-solid fa-clock-rotate-left"></i> {{localize 'FADE.apps.turnTracker.resetSession'}}
+               </button>
+               <button type="button" data-action="resetTotal" data-tooltip="{{localize 'FADE.apps.turnTracker.resetTotal'}}">
+                  <i class="fa-regular fa-calendar-xmark"></i> {{localize 'FADE.apps.turnTracker.resetTotal'}}
+               </button>
             </section>
          </div>
       </div>
       <!-- Config Tab -->
       <div class="tab" data-tab="config">
-         <form style="display: flex; flex-direction: column; height: 100%; min-height: 200px;">
+         <div style="display: flex; flex-direction: column; height: 100%; min-height: 200px;">
             <section style="flex-grow: 1;">
                <table>
                   <tbody>
@@ -77,11 +87,8 @@
                      </tr>
                   </tbody>
                </table>
-            </section>
-            <div style="text-align: right; padding-top: 8px;">
-               <button id="save-config" type="button">{{localize 'FADE.apps.turnTracker.saveConfig'}}</button>
-            </div>
-         </form>
+            </section>           
+         </div>
       </div>
    </div>
 </div>
