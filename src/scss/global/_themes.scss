@@ -186,6 +186,12 @@
       color: $lighterColor !important;
       border: 1px solid #545140;
 
+      .message-content {
+         h1, h2, h3, h4 {
+            color: $lighterColor;
+         }
+      }
+
       a.inline-roll {
          background: url('../assets/img/grunge2.jpg');
       }

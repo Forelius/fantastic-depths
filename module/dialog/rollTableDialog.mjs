@@ -85,7 +85,7 @@ export class rollTableDialog {
          // Get the text descriptions of the rolled results
          const rolledResultsText = rollResult.results.map(r => r.text).join(', ');
          // Create a message to display the result
-         const messageContent = `<h2>${rollTable.name}</h2><p>${rolledResultsText}</p><hr/><p><strong>${rollTotal} + ${data.modifier} = ${total}</strong></p>`;
+         const messageContent = `<div class="text-size16">${rollTable.name}</div><p>${rolledResultsText}</p><hr/><p><strong>${rollTotal} + ${data.modifier} = ${total}</strong></p>`;
          const chatMsgData = { content: messageContent, speaker: ChatMessage.getSpeaker() };
          ChatMessage.applyRollMode(chatMsgData, data.rollMode);
          // Send the result to chat

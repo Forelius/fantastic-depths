@@ -718,6 +718,9 @@ table.compact-table input {
   color: #ebeae4 !important;
   border: 1px solid #545140;
 }
+.dark-mode .chat-message .message-content h1, .dark-mode .chat-message .message-content h2, .dark-mode .chat-message .message-content h3, .dark-mode .chat-message .message-content h4 {
+  color: #ebeae4;
+}
 .dark-mode .chat-message a.inline-roll {
   background: url("../assets/img/grunge2.jpg");
 }

@@ -638,6 +638,9 @@
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
       "apps": {
+         "turnTracker": {
+            "title": "Turn Tracker"
+         },
          "userTables": {
             "title": "User Tables",
             "tableId": "Table ID",
