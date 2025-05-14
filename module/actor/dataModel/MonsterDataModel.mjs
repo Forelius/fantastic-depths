@@ -14,7 +14,6 @@ export class MonsterDataModel extends FDActorDM {
             abilityCount: new fields.NumberField({ initial: 0 }),
             monsterType: new fields.StringField({ initial: "Monster" }),
             rarity: new fields.StringField({ initial: "Common" }),
-            //monsterTypes: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
             saveAs: new fields.StringField({ initial: "F1" }),
             // Some monsters have spells of a specific class level.
             castAs: new fields.StringField({ initial: null, nullable: true }),

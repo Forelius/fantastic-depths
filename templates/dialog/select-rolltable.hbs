@@ -1,24 +1,24 @@
-<div>
-   <div class="form-group">
-      <label>Folder:</label>
-      <select name="folder" id="folder-select">
-         {{folderOptions}}
+<div class="fade-dialog">
+   <div class="top-label form-group">
+      <label for="folder">{{localize "Fade.folder"}}</label>
+      <select name="folder" class="form-control" style="width:100%">
+         {{selectOptions folders selected=folder}}         
       </select>
    </div>
-   <div class="form-group">
-      <label for="rollTableSelect">Select Roll Table:</label>
-      <select name="table" id="table-select">
-         {{tableOptions}}
+   <div class="form-group top-label">
+      <label for="table">{{localize "Fade.rollTable"}}</label>
+      <select name="table">
+         {{selectOptions tables selected=table}}
       </select>
    </div>
-   <div class="form-group">
-      <label for="modifierInput">Modifier:</label>
-      <input type="number" id="modifierInput" name="modifierInput" value="0" />
+   <div class="form-group top-label">
+      <label for="modifier">{{localize "Fade.modifier"}}</label>
+      <input type="number" name="modifier" value="0" data-type="Number"/>
    </div>
-   <div class="form-group">
-      <label for="rollModeSelect">Select Roll Mode:</label>
-      <select id="rollModeSelect" name="rollModeSelect">
-         {{rollModes}}
+   <div class="form-group top-label">
+      <label for="rollMode">{{localize "Fade.rollMode"}}</label>
+      <select name="rollMode">
+         {{selectOptions rollModes selected=rollMode}}
       </select>
    </div>
 </div>

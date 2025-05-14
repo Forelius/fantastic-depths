@@ -806,7 +806,7 @@
             "heal": "Healing",
             "hull": "Hull",
             "fall": "Fall",
-            "piercing":  "Armor-piercing"
+            "piercing": "Armor-piercing"
          }
       },
       "combat": {
@@ -971,11 +971,13 @@
          "starstone": "Starstone",
          "tristal": "Tristal"
       },
+      "folder": "Folder",
       "Size": "Size",
       "roll": "Roll",
       "rollWithCtrl": "<p>Roll {name} check.</p><p><i>Click to roll. Ctrl-click to roll without mod.</i></p>",
       "vsMagic": "vs Magic",
       "rollMode": "Roll Mode",
+      "rollTable": "Roll Table",
       "operator": "Operator",
       "modifier": "Modifier",
       "target": "Target",

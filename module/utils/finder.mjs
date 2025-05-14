@@ -76,37 +76,6 @@ export class fadeFinder {
       return source?.filter(item => item.id === id)?.[0];
    }
 
-   /**
-    * Retrieves a special ability.
-    * @private
-    * @param {any} name The special ability's name.
-    * @param {any} options Additional options for matching fields (category, customSaveCode).
-    * @returns The requested special ability, otherwise undefined.
-    */
-   static _getSpecialAbility(source, name, options) {
-      let result;
-      const type = 'specialAbility';
-      if (source) {
-         if (options?.category === 'class') {
-            result = source.filter(item => item.type == type && item.system.category == options.category
-               && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
-         } else if (options?.category === 'save') {
-            result = source.filter(item => item.type == type && item.system.category == options.category
-               && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && item.system.customSaveCode == options.customSaveCode)?.[0];
-         } else if (options?.categoryNEQ === 'save') {
-            result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
-               && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
-         } else {
-            result = source.filter(item => item.type == type && item.system.category == options?.category
-               && item.name.toLowerCase() == name.toLowerCase())?.[0];
-         }
-      }
-      return result
-   }
-
    static async getSavingThrows() {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
@@ -116,6 +85,64 @@ export class fadeFinder {
          result = source?.filter(item => item.system.category === 'save');
       }
       return result;
+   }
+
+   static async getFolders(type) {
+      // Get world folders of the type
+      let worldFolders = game.folders.filter(f => f.type === type);
+
+      // Get all compendium packs of the type
+      const rollTablePacks = game.packs.filter(pack => pack.documentName === type);
+
+      // Load all documents in packs and collect folders
+      const packFoldersArrays = await Promise.all(
+         rollTablePacks.map(async (pack) => {
+            await pack.getDocuments();
+            return Array.from(pack.folders);
+         })
+      );
+
+      // Flatten the folder arrays into one
+      const packFolders = packFoldersArrays.flat();
+
+      // Combine world folders and pack folders
+      return [...worldFolders, ...packFolders];
+   }
+
+   /**
+   * Recursively get all documents inside the specified folder UUID and its subfolders.
+   * Works for both world and compendium folders.
+   * @param {string} uuid - The UUID of the folder.
+   * @param {string} type - The document type (e.g., "RollTable", "Item").
+   * @returns {Promise<Array<Document>>} - Flat array of documents.
+   */
+   static async getDocsFromFolder(uuid, type) {
+      const folder = await fromUuid(uuid);
+      if (!(folder instanceof Folder)) {
+         console.warn(`Invalid folder UUID: ${uuid}`);
+         return [];
+      }
+
+      // Ensure compendium packs are loaded
+      let docs;
+      if (folder.pack) {
+         const pack = game.packs.get(folder.pack);
+         if (!pack) {
+            console.warn(`Compendium not found: ${folder.pack}`);
+            return [];
+         }
+         docs = await pack.getDocuments();
+      }
+
+      // Collect documents directly in this folder
+      let documents = folder.contents;
+
+      // Recurse into child folders
+      for (const child of folder.children) {
+         documents = documents.concat(await fadeFinder.getDocsFromFolder(child.uuid, type));
+      }
+
+      return documents;
    }
 
    static async getRollTables(compendiumOnly = false) {
@@ -242,6 +269,37 @@ export class fadeFinder {
          console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
       }
       return result;
+   }
+
+   /**
+    * Retrieves a special ability.
+    * @private
+    * @param {any} name The special ability's name.
+    * @param {any} options Additional options for matching fields (category, customSaveCode).
+    * @returns The requested special ability, otherwise undefined.
+    */
+   static _getSpecialAbility(source, name, options) {
+      let result;
+      const type = 'specialAbility';
+      if (source) {
+         if (options?.category === 'class') {
+            result = source.filter(item => item.type == type && item.system.category == options.category
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
+         } else if (options?.category === 'save') {
+            result = source.filter(item => item.type == type && item.system.category == options.category
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && item.system.customSaveCode == options.customSaveCode)?.[0];
+         } else if (options?.categoryNEQ === 'save') {
+            result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
+         } else {
+            result = source.filter(item => item.type == type && item.system.category == options?.category
+               && item.name.toLowerCase() == name.toLowerCase())?.[0];
+         }
+      }
+      return result
    }
 
    static async getRollTable(name) {
