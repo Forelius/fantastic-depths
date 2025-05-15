@@ -183,11 +183,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
          let delta = parseInt(dataset.amount, 10);
          for (let target of applyTo) {
             if (target.actor.isOwner === true) {
-               // If not restoring HP
-               if (dataset.damageType != "heal") {
-                  // Convert positive damage to delta of negative HP.
-                  delta = -delta;
-               }
+               //// If not restoring HP
+               //if (dataset.damageType != "heal") {
+               //   // Convert positive damage to delta of negative HP.
+               //   delta = -delta;
+               //}
                // Apply damage to the token's actor
                const dmgSys = game.fade.registry.getSystem("damageSystem");
                dmgSys.ApplyDamage(target.actor, delta, dataset.damagetype, dataset.attacktype, weapon);
