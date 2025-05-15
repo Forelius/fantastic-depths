@@ -54,7 +54,7 @@ export class DamageSystem {
          result += -delta * combatMods.selfDmgBreathScale;
       }
       if (damageType === "magic") {
-         result += combat.selfDmgMagic;
+         result += combatMods.selfDmgMagic;
       }
       // Don't allow addition of damage via damage mitigation
       // And don't allow mitigation of more damage than was caused.

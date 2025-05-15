@@ -6,7 +6,7 @@ export class FDActorDM extends FDActorBaseDM {
       const baseSchema = super.defineSchema();
       let schema = {
          details: new fields.SchemaField({
-            // This is how many attacks the actor gets.
+            // This is how many attacks the actor gets per round.
             attacks: new fields.StringField({ initial: "1" }),
          }),
          config: new fields.SchemaField({
@@ -25,6 +25,8 @@ export class FDActorDM extends FDActorBaseDM {
          }),
          languages: new fields.StringField({ initial: "" }),
          combat: new fields.SchemaField({
+            // Instead of looking at actor type, use this field to determine if actor requires mastery for basic proficiency.
+            requiresMastery: new fields.BooleanField({ required: true, initial: true }),
             // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round

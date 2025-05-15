@@ -17,8 +17,8 @@ export class PartyTrackerForm extends FormApplication {
          title: "Party Tracker",
          classes: ["fantastic-depths", ...super.defaultOptions.classes],
          template: `systems/${game.system.id}/templates/apps/party-tracker.hbs`,
-         width: 350,
-         height: 500,
+         width: 300,
+         height: 450,
          resizable: true,
          dragDrop: [
             { dragSelector: ".actor-list .actor", dropSelector: ".party-tracker" },

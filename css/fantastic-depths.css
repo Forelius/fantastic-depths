@@ -3,10 +3,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&display=swap");
 /*$font-primary: 'Alegreya Sans', sans-serif;*/
 /*$font-secondary: 'Barlow', sans-serif;*/
-h1, h2, h3, h4 {
-  font-weight: bold;
-}
-
 .text-size20b {
   font-size: 20px;
   font-weight: bold;
@@ -718,7 +714,7 @@ table.compact-table input {
   color: #ebeae4 !important;
   border: 1px solid #545140;
 }
-.dark-mode .chat-message .message-content h1, .dark-mode .chat-message .message-content h2, .dark-mode .chat-message .message-content h3, .dark-mode .chat-message .message-content h4 {
+.dark-mode .chat-message .message-content h1, .dark-mode .chat-message .message-content h2, .dark-mode .chat-message .message-content h3, .dark-mode .chat-message .message-content h4, .dark-mode .chat-message .message-content h5, .dark-mode .chat-message .message-content h6 {
   color: #ebeae4;
 }
 .dark-mode .chat-message a.inline-roll {
@@ -731,7 +727,7 @@ table.compact-table input {
   border-top: none;
   border-bottom: 2px solid #645140;
 }
-.dark-mode .chat-message .message-header {
+.dark-mode .chat-message .message-header, .dark-mode .chat-message button {
   color: #bbbab4;
 }
 .dark-mode .chat-message .attack-info {
@@ -846,6 +842,10 @@ table.compact-table input {
 .chat-message {
   padding: 3px 4px 3px 4px;
 }
+.chat-message h1, .chat-message h2, .chat-message h3, .chat-message h4, .chat-message h5, .chat-message h6 {
+  /*font-weight: bold;*/
+  margin: 1rem 0 0.5rem;
+}
 .chat-message .message-content {
   padding: 1px 5px 4px 5px;
 }
@@ -853,7 +853,7 @@ table.compact-table input {
   border: none;
 }
 .chat-message .message-content button {
-  margin: 0;
+  margin: 0.4rem 0.1rem;
   width: 100%;
 }
 .chat-message .message-content .digest {

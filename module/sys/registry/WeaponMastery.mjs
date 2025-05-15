@@ -111,7 +111,7 @@ export class WeaponMasterySystem {
     * @returns
     */
    getDamageMods(weapon, targetWeaponType, formula, modifier) {
-      const attacker = weapon.actor; // Why not actor?
+      const attacker = weapon.actor;
       let result = { formula, digest: [] };
 
       //&& (weaponData.mastery !== "" || weaponData.natural)
