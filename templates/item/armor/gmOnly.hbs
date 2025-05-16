@@ -1,0 +1,18 @@
+﻿<section class='tab {{tabs.gmOnly.cssClass}}' data-group='primary' data-tab='gmOnly'>
+   <div class="bordered">
+      <div class="summary flexrow">
+         <div style="max-width:60px;">
+            <div class="text-center">{{system.totalAC}}</div>
+            <label>{{localize 'FADE.Armor.total'}}</label>
+         </div>
+         <div style="max-width:60px;">
+            <div class="item-info">{{system.mod}}</div>
+            <label>{{localize 'FADE.Armor.mod'}}</label>
+         </div>
+      </div>
+   </div>
+   <div class="bordered">
+      <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
+      <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
+   </div>
+</section>

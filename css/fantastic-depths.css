@@ -1,9 +1,21 @@
-h1, h2, h3, h4 {
+/*@import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&display=swap");
+/*$font-primary: 'Alegreya Sans', sans-serif;*/
+/*$font-secondary: 'Barlow', sans-serif;*/
+.text-size20b {
+  font-size: 20px;
   font-weight: bold;
 }
 
 .text-size20 {
   font-size: 20px;
+}
+
+.text-size18b {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .text-size18 {
@@ -14,6 +26,12 @@ h1, h2, h3, h4 {
 .text-size16 {
   font-size: 18px;
   margin-bottom: 3px;
+}
+
+.text-size16b {
+  font-size: 18px;
+  margin: 4px 0;
+  font-weight: bold;
 }
 
 :root {
@@ -100,6 +118,10 @@ h1, h2, h3, h4 {
     transform: translateY(-20px);
   }
 }
+.system-fantastic-depths {
+  font-family: "Barlow", sans-serif;
+}
+
 .window-app {
   font-family: "Barlow", sans-serif;
   --minimized-width: 300px;
@@ -109,13 +131,62 @@ h1, h2, h3, h4 {
   width: 300px;
 }
 
+.fantastic-depths .window-content .tab {
+  /*height:100%;*/
+}
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
-  max-height: 28px;
+  max-height: 26px;
+  padding: 0 4px;
+}
+.fantastic-depths .window-content .sheet-tabs {
+  gap: 0;
+}
+
+.application .window-content h1, .application .chat-message h1 {
+  margin: 6px 0 4px 0;
+  font-size: 28px;
+  font-family: "Barlow", sans-serif;
+}
+.application .window-content h2, .application .chat-message h2 {
+  margin: 6px 0 4px 0;
+  font-size: 24px;
+  font-family: "Barlow", sans-serif;
+}
+.application .window-content h3, .application .chat-message h3 {
+  margin: 6px 0 4px 0;
+  font-size: 20px;
+  font-family: "Barlow", sans-serif;
+}
+.application .window-content h4, .application .chat-message h4 {
+  margin: 6px 0 4px 0;
+  font-size: 16px;
+  font-family: "Barlow", sans-serif;
+}
+.application ul, .application ul {
+  margin: 8px 0;
+}
+.application table {
+  margin: 1px 1px;
+  border-radius: 0;
+}
+.application table tr:nth-child(even) {
+  background-color: rgba(100, 100, 100, 0.15);
+}
+.application table th {
+  line-height: 1;
+  padding: 3px 8px;
+}
+.application table td {
+  line-height: 1;
+  padding: 2px 4px;
+}
+.application table input {
+  height: 26px;
 }
 
 table.compact-table th {
   line-height: 1;
-  padding: 2px 12px;
+  padding: 2px 8px;
 }
 table.compact-table td {
   line-height: 1;
@@ -126,6 +197,10 @@ table.compact-table input {
 }
 
 .rollable:hover, .rollable:focus, .chatable:hover, .chatable:focus {
+  cursor: pointer;
+}
+
+.rollable2:hover, .rollable2:focus, .chatable2:hover, .chatable2:focus {
   cursor: pointer;
 }
 
@@ -247,8 +322,13 @@ table.compact-table input {
   color: #888888;
 }
 
-.prosemirror .editor-container .editor-content {
-  position: relative !important;
+.editor {
+  height: 100%;
+  /*min-height: 50px;*/
+}
+
+.prosemirror .editor-container .editor-content, prose-mirror .editor-content {
+  position: relative;
 }
 
 /* Dialog footer buttons */
@@ -466,6 +546,10 @@ table.compact-table input {
   justify-content: space-between;
 }
 
+.align-vtop {
+  align-items: flex-start !important;
+}
+
 .align-left {
   justify-content: flex-start;
   text-align: left;
@@ -513,6 +597,24 @@ table.compact-table input {
 }
 .dark-mode .item-piles-chat-card li:nth-child(even) {
   background-color: rgba(250, 250, 250, 0.05);
+}
+.dark-mode .application.actor .nav-tabs-right .nav-tab, .dark-mode .application.actor .nav-tabs-right .nav-tab-vert {
+  background: url("../assets/img/grunge2.jpg");
+}
+.dark-mode .application.actor .nav-tabs-right .nav-tab.active img, .dark-mode .application.actor .nav-tabs-right .nav-tab-vert.active img {
+  filter: brightness(100%);
+}
+.dark-mode .application.actor .nav-tabs-right .nav-tab img, .dark-mode .application.actor .nav-tabs-right .nav-tab-vert img {
+  transition: filter 0.3s ease;
+}
+.dark-mode .application.actor .nav-tabs-right .nav-tab:hover img, .dark-mode .application.actor .nav-tabs-right .nav-tab-vert:hover img {
+  filter: brightness(80%);
+}
+.dark-mode .application.actor .nav-tabs-right .nav-tab a, .dark-mode .application.actor .nav-tabs-right .nav-tab-vert a {
+  border-color: #4b4a44;
+}
+.dark-mode .application.actor .ability-scores .ability {
+  border-color: #4b4a44;
 }
 .dark-mode .fantastic-depths .window-content {
   color: #ebeae4;
@@ -594,8 +696,12 @@ table.compact-table input {
   color: #ebeae4;
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
+.dark-mode .fantastic-depths .window-content .rollable2:hover, .dark-mode .fantastic-depths .window-content .rollable2:focus, .dark-mode .fantastic-depths .window-content .chatable2:hover, .dark-mode .fantastic-depths .window-content .chatable2:focus, .dark-mode .fantastic-depths .window-content .open-sheet2:hover, .dark-mode .fantastic-depths .window-content .open-sheet2:focus {
+  color: #ebeae4;
+  text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
+}
 .dark-mode .fantastic-depths .window-content .inline-roll {
-  color: #bbbab4;
+  color: #ebeae4;
 }
 .dark-mode .fantastic-depths .summary li {
   color: #bbbab4;
@@ -603,19 +709,13 @@ table.compact-table input {
 .dark-mode .fantastic-depths .summary li label {
   color: #bbbab4;
 }
-.dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab, .dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
-  background: url("../assets/img/grunge2.jpg");
-}
-.dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab a, .dark-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert a, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab a, .dark-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert a {
-  border-color: #4b4a44;
-}
-.dark-mode .fantastic-depths .character .ability-scores .ability, .dark-mode .fantastic-depths .monster .ability-scores .ability {
-  border-color: #4b4a44;
-}
 .dark-mode .chat-message {
   background: url("../assets/img/grungeyellow.jpg");
-  color: #ebeae4;
+  color: #ebeae4 !important;
   border: 1px solid #545140;
+}
+.dark-mode .chat-message .message-content h1, .dark-mode .chat-message .message-content h2, .dark-mode .chat-message .message-content h3, .dark-mode .chat-message .message-content h4, .dark-mode .chat-message .message-content h5, .dark-mode .chat-message .message-content h6 {
+  color: #ebeae4;
 }
 .dark-mode .chat-message a.inline-roll {
   background: url("../assets/img/grunge2.jpg");
@@ -627,7 +727,7 @@ table.compact-table input {
   border-top: none;
   border-bottom: 2px solid #645140;
 }
-.dark-mode .chat-message .message-header {
+.dark-mode .chat-message .message-header, .dark-mode .chat-message button {
   color: #bbbab4;
 }
 .dark-mode .chat-message .attack-info {
@@ -637,24 +737,6 @@ table.compact-table input {
   background: url("../assets/img/grunge2.jpg");
   border: 1px solid #4b4a44;
   box-shadow: none;
-}
-.dark-mode .chat-message .saving-roll {
-  background: url("../assets/img/grungeblue.jpg");
-  border: 1px solid #4b4a44;
-  box-shadow: none;
-  color: #ebeae4;
-}
-.dark-mode .chat-message .heal-roll, .dark-mode .chat-message .apply-heal, .dark-mode .chat-message .flags-restored-true {
-  background: url("../assets/img/grungegreen.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #447744;
-}
-.dark-mode .chat-message .damage-roll, .dark-mode .chat-message .apply-damage, .dark-mode .chat-message .flags-killed-true {
-  background: url("../assets/img/grungered.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #774444;
 }
 .dark-mode .chat-message .attack-fail, .dark-mode .chat-message .roll-fail {
   color: #d85d48;
@@ -673,6 +755,28 @@ table.compact-table input {
 }
 
 /* Light mode styles */
+.light-mode .application.actor .nav-tabs-right .nav-tab, .light-mode .application.actor .nav-tabs-right .nav-tab-vert {
+  background: url("../assets/img/parchment.jpg");
+}
+.light-mode .application.actor .nav-tabs-right .nav-tab.active img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert.active img {
+  filter: brightness(5%);
+}
+.light-mode .application.actor .nav-tabs-right .nav-tab img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert img {
+  transition: filter 0.3s ease;
+}
+.light-mode .application.actor .nav-tabs-right .nav-tab:hover img, .light-mode .application.actor .nav-tabs-right .nav-tab-vert:hover img {
+  filter: brightness(40%);
+}
+.light-mode .application.actor .nav-tabs-right .nav-tab a, .light-mode .application.actor .nav-tabs-right .nav-tab-vert a {
+  border-color: #bbbab4;
+}
+.light-mode .application.actor .ability-scores .ability {
+  border-color: #bbbab4;
+}
+.light-mode .fantastic-depths .window-content {
+  background: url("../assets/img/parchment.jpg");
+  color: #2b2a24;
+}
 .light-mode .fantastic-depths .window-content .bordered {
   border-color: #bbbab4;
 }
@@ -703,20 +807,18 @@ table.compact-table input {
   color: #2b2a24;
   text-shadow: 0 0 10px #ae7615;
 }
+.light-mode .fantastic-depths .window-content .rollable2:hover, .light-mode .fantastic-depths .window-content .rollable2:focus, .light-mode .fantastic-depths .window-content .chatable2:hover, .light-mode .fantastic-depths .window-content .chatable2:focus, .light-mode .fantastic-depths .window-content .open-sheet2:hover, .light-mode .fantastic-depths .window-content .open-sheet2:focus {
+  color: #2b2a24;
+  text-shadow: 0 0 10px #ae7615;
+}
 .light-mode .fantastic-depths .summary li {
   color: #4b4a44;
 }
 .light-mode .fantastic-depths .summary li label {
   color: #4b4a44;
 }
-.light-mode .fantastic-depths .character .nav-tabs-right .nav-tab, .light-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
-  background: url("../assets/img/lightgrunge1.jpg");
-}
-.light-mode .fantastic-depths .character .nav-tabs-right .nav-tab a, .light-mode .fantastic-depths .character .nav-tabs-right .nav-tab-vert a, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab a, .light-mode .fantastic-depths .monster .nav-tabs-right .nav-tab-vert a {
-  border-color: #bbbab4;
-}
-.light-mode .fantastic-depths .character .ability-scores .ability, .light-mode .fantastic-depths .monster .ability-scores .ability {
-  border-color: #bbbab4;
+.light-mode .chat-message {
+  color: #2b2a24 !important;
 }
 .light-mode .chat-message .attack-fail, .light-mode .chat-message .roll-fail {
   color: #602010;
@@ -736,21 +838,13 @@ table.compact-table input {
 .light-mode .chat-message .warning {
   color: #702010;
 }
-.light-mode .chat-message .heal-roll, .light-mode .chat-message .apply-heal {
-  background: url("../assets/img/grungegreen.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #447744;
-}
-.light-mode .chat-message .damage-roll, .light-mode .chat-message .apply-damage {
-  background: url("../assets/img/grungered.jpg");
-  color: #ebeae4;
-  box-shadow: none;
-  border: 1px solid #774444;
-}
 
 .chat-message {
   padding: 3px 4px 3px 4px;
+}
+.chat-message h1, .chat-message h2, .chat-message h3, .chat-message h4, .chat-message h5, .chat-message h6 {
+  /*font-weight: bold;*/
+  margin: 1rem 0 0.5rem;
 }
 .chat-message .message-content {
   padding: 1px 5px 4px 5px;
@@ -759,7 +853,7 @@ table.compact-table input {
   border: none;
 }
 .chat-message .message-content button {
-  margin: 0;
+  margin: 0.4rem 0.1rem;
   width: 100%;
 }
 .chat-message .message-content .digest {
@@ -770,7 +864,6 @@ table.compact-table input {
 }
 .chat-message .message-content .damage-roll, .chat-message .message-content .saving-Roll, .chat-message .message-content .heal-roll {
   font-size: 15px;
-  /*padding: 5px 4px;*/
 }
 .chat-message .message-content .small-text {
   margin-left: 4px;
@@ -808,7 +901,7 @@ table.compact-table input {
 .chat-message .message-content .warning {
   font-size: 16px;
 }
-.chat-message .message-content .collapsible-header {
+.chat-message .message-content .collapser {
   cursor: pointer;
 }
 .chat-message .message-content .item-image {
@@ -856,49 +949,83 @@ table.compact-table input {
   border-top: 1px dotted #808060;
   align-self: center;
 }
+.chat-message .message-content .apply-condition {
+  background: url("../assets/img/grungeblue.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #302060;
+}
+.chat-message .message-content .heal-roll, .chat-message .message-content .apply-heal {
+  background: url("../assets/img/grungegreen.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #447744;
+}
+.chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
+  background: url("../assets/img/grungered.jpg");
+  color: #ebeae4;
+  box-shadow: none;
+  border: 1px solid #774444;
+}
+.chat-message .message-content .saving-roll {
+  background: url("../assets/img/grungeblue.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
+}
 
 .combatant.disposition-friendly::before {
-  font-family: "Font Awesome 5 Free";
-  content: "\f024";
-  color: green;
-  margin-right: 5px;
-  font-weight: 900;
+  content: "";
+  width: 4px;
+  background-color: green;
+  border: none;
+  height: 48px;
 }
 
 .combatant.disposition-neutral::before {
-  font-family: "Font Awesome 5 Free";
-  content: "\f06c";
-  color: white;
-  margin-right: 5px;
-  font-weight: 900;
+  content: "";
+  width: 4px;
+  background-color: white;
+  border: none;
+  height: 48px;
 }
 
 .combatant.disposition-hostile::before {
-  font-family: "Font Awesome 5 Free";
-  content: "\f06d";
-  color: red;
-  margin-right: 5px;
-  font-weight: 900;
+  content: "";
+  width: 4px;
+  background-color: red;
+  border: none;
+  height: 48px;
+}
+
+.combatant.active::before {
+  height: initial;
 }
 
 /* Styles limited to fantastic-depths sheets */
-.system-fantastic-depths .character .nav-tabs-right, .system-fantastic-depths .monster .nav-tabs-right {
+.system-fantastic-depths .application.actor {
+  overflow: visible clip;
+}
+.system-fantastic-depths .application.actor .window-content {
+  overflow: auto;
+}
+.system-fantastic-depths .actor img {
+  border: none;
+}
+.system-fantastic-depths .actor .nav-tabs-right {
   left: 100%;
   top: 10%;
   position: absolute;
   flex-direction: column;
 }
-.system-fantastic-depths .character .nav-tabs-right .nav-tab, .system-fantastic-depths .monster .nav-tabs-right .nav-tab {
+.system-fantastic-depths .actor .nav-tabs-right .nav-tab {
   width: 38px;
   margin: 2px 0;
   padding-inline-end: 12px;
   border-radius: 0 8px 8px 0;
   padding: 4px;
 }
-.system-fantastic-depths .character .nav-tabs-right .nav-tab .active img, .system-fantastic-depths .monster .nav-tabs-right .nav-tab .active img {
-  filter: brightness(100%);
-}
-.system-fantastic-depths .character .nav-tabs-right .nav-tab a, .system-fantastic-depths .monster .nav-tabs-right .nav-tab a {
+.system-fantastic-depths .actor .nav-tabs-right .nav-tab a {
   border-radius: 0 6px 6px 0;
   border-right: 1px solid;
   border-bottom: 1px solid;
@@ -907,10 +1034,10 @@ table.compact-table input {
   width: 30px;
   display: inline-block;
 }
-.system-fantastic-depths .character .nav-tabs-right .nav-tab a img, .system-fantastic-depths .monster .nav-tabs-right .nav-tab a img {
+.system-fantastic-depths .actor .nav-tabs-right .nav-tab a img {
   filter: brightness(50%);
 }
-.system-fantastic-depths .character .nav-tabs-right .nav-tab-vert, .system-fantastic-depths .monster .nav-tabs-right .nav-tab-vert {
+.system-fantastic-depths .actor .nav-tabs-right .nav-tab-vert {
   width: 26px;
   padding: 8px 2px;
   margin: 4px 0;
@@ -918,71 +1045,67 @@ table.compact-table input {
   border-radius: 0 8px 8px 0;
   writing-mode: vertical-lr;
 }
-.system-fantastic-depths .character input, .system-fantastic-depths .monster input {
-  border: 0 none;
-  padding: 2px 5px;
-}
-.system-fantastic-depths .character .ability-scores, .system-fantastic-depths .monster .ability-scores {
+.system-fantastic-depths .actor .ability-scores {
   max-width: 200px;
 }
-.system-fantastic-depths .character .ability-horz, .system-fantastic-depths .monster .ability-horz {
+.system-fantastic-depths .actor .ability-horz {
   border-right-style: solid;
   border-right-width: 1px;
 }
-.system-fantastic-depths .character .ability-horz input, .system-fantastic-depths .monster .ability-horz input {
+.system-fantastic-depths .actor .ability-horz input {
   margin-right: 4px;
 }
-.system-fantastic-depths .character .ability-horz:last-child, .system-fantastic-depths .monster .ability-horz:last-child {
+.system-fantastic-depths .actor .ability-horz:last-child {
   border-right: none;
 }
-.system-fantastic-depths .character .xsmall-col, .system-fantastic-depths .monster .xsmall-col {
+.system-fantastic-depths .actor .xsmall-col {
   min-height: 32px;
 }
-.system-fantastic-depths .character .xsmall-col input, .system-fantastic-depths .character .xsmall-col label, .system-fantastic-depths .monster .xsmall-col input, .system-fantastic-depths .monster .xsmall-col label {
+.system-fantastic-depths .actor .xsmall-col input, .system-fantastic-depths .actor .xsmall-col label {
   max-width: 38px;
   min-width: 38px;
   display: inline-block;
   text-align: center;
 }
-.system-fantastic-depths .character .xsmall-col label, .system-fantastic-depths .monster .xsmall-col label {
+.system-fantastic-depths .actor .xsmall-col label {
   font-size: 13px;
 }
-.system-fantastic-depths .character .small-input input, .system-fantastic-depths .monster .small-input input {
+.system-fantastic-depths .actor .small-input input {
   align-content: center;
   max-width: 34px;
   min-width: 34px;
   font-size: 16px;
 }
-.system-fantastic-depths .character .saving-throws .tall-row, .system-fantastic-depths .monster .saving-throws .tall-row {
+.system-fantastic-depths .actor .saving-throws .tall-row {
   min-height: 36px;
 }
-.system-fantastic-depths .character .saving-throws .small-row, .system-fantastic-depths .monster .saving-throws .small-row {
+.system-fantastic-depths .actor .saving-throws .small-row {
   min-height: 30px;
 }
-.system-fantastic-depths .character .saving-throws input, .system-fantastic-depths .monster .saving-throws input {
+.system-fantastic-depths .actor .saving-throws input {
   align-content: center;
   margin-right: 6px;
   max-width: 34px;
   min-width: 34px;
   font-size: 16px;
 }
-.system-fantastic-depths .character .saving-throws label, .system-fantastic-depths .monster .saving-throws label {
+.system-fantastic-depths .actor .saving-throws label {
   align-content: center;
   text-align: left;
   font-size: 12px;
 }
-.system-fantastic-depths .character .saving-throws .abbr, .system-fantastic-depths .monster .saving-throws .abbr {
+.system-fantastic-depths .actor .saving-throws .abbr {
   margin-left: 8px;
   font-size: 20px;
 }
-.system-fantastic-depths .character .saving-throws .long, .system-fantastic-depths .monster .saving-throws .long {
+.system-fantastic-depths .actor .saving-throws .long {
   font-size: 12px;
 }
-.system-fantastic-depths .character .hit-points, .system-fantastic-depths .monster .hit-points {
+.system-fantastic-depths .actor .hit-points {
   height: 74px;
   position: relative;
 }
-.system-fantastic-depths .character .hit-points .hp-value, .system-fantastic-depths .monster .hit-points .hp-value {
+.system-fantastic-depths .actor .hit-points .hp-value {
   color: #ebeae4;
   background: none;
   border: 0 none;
@@ -991,35 +1114,35 @@ table.compact-table input {
   text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
   background: none;
 }
-.system-fantastic-depths .character .hit-points .hp-top, .system-fantastic-depths .monster .hit-points .hp-top {
+.system-fantastic-depths .actor .hit-points .hp-top {
   position: absolute;
   font-size: 26px;
   top: 15px;
   width: 50px;
   left: calc(50% - 25px);
 }
-.system-fantastic-depths .character .hit-points .hp-bottom, .system-fantastic-depths .monster .hit-points .hp-bottom {
+.system-fantastic-depths .actor .hit-points .hp-bottom {
   position: absolute;
   font-size: 12px;
   bottom: 8px;
   width: 40px;
   right: calc(50% - 20px);
 }
-.system-fantastic-depths .character .hit-points .hp-empty, .system-fantastic-depths .monster .hit-points .hp-empty {
+.system-fantastic-depths .actor .hit-points .hp-empty {
   background-size: 74px;
   background-position: top;
   background-clip: content-box;
   background-image: url("../assets/img/heart_empty2.png");
   background-repeat: no-repeat;
 }
-.system-fantastic-depths .character .hit-points .hp-full, .system-fantastic-depths .monster .hit-points .hp-full {
+.system-fantastic-depths .actor .hit-points .hp-full {
   background-size: 74px;
   background-position: bottom;
   background-clip: content-box;
   background-image: url("../assets/img/heart_full2.png");
   background-repeat: no-repeat;
 }
-.system-fantastic-depths .character .armor-class, .system-fantastic-depths .monster .armor-class {
+.system-fantastic-depths .actor .armor-class {
   height: 74px;
   position: relative;
   background-size: 70px;
@@ -1027,7 +1150,7 @@ table.compact-table input {
   background-image: url("../assets/img/armor1.png");
   background-repeat: no-repeat;
 }
-.system-fantastic-depths .character .armor-class .ac-value, .system-fantastic-depths .monster .armor-class .ac-value {
+.system-fantastic-depths .actor .armor-class .ac-value {
   color: #ebeae4;
   background: none;
   border: 0 none;
@@ -1035,28 +1158,28 @@ table.compact-table input {
   font-weight: bolder;
   text-shadow: 0 0 2px #2b2a24, 0 1px 2px #2b2a24, 1px 0 2px #2b2a24, 1px 1px 2px #2b2a24;
 }
-.system-fantastic-depths .character .armor-class .ac-top, .system-fantastic-depths .monster .armor-class .ac-top {
+.system-fantastic-depths .actor .armor-class .ac-top {
   position: absolute;
   font-size: 26px;
-  top: 11px;
+  top: 10px;
   width: 50px;
   left: calc(50% - 25px);
 }
-.system-fantastic-depths .character .armor-class .ac-bottom, .system-fantastic-depths .monster .armor-class .ac-bottom {
+.system-fantastic-depths .actor .armor-class .ac-bottom {
   position: absolute;
   font-size: 12px;
   bottom: 15px;
   width: 50px;
   right: calc(50% - 25px);
 }
-.system-fantastic-depths .character .armor-class .shield, .system-fantastic-depths .monster .armor-class .shield {
+.system-fantastic-depths .actor .armor-class .shield {
   position: absolute;
   left: 71%;
   top: 30px;
   font-size: 24px;
   color: #707070;
 }
-.system-fantastic-depths .character .armor-class .shield .shield-ac-val, .system-fantastic-depths .monster .armor-class .shield .shield-ac-val {
+.system-fantastic-depths .actor .armor-class .shield .shield-ac-val {
   width: 40px;
   color: #ebeae4;
   font-weight: bolder;
@@ -1068,14 +1191,14 @@ table.compact-table input {
   transform: translate(-50%, -50%); /* Adjust position to truly center */
   font-size: 14px;
 }
-.system-fantastic-depths .character .armor-class .ranged-ac, .system-fantastic-depths .monster .armor-class .ranged-ac {
+.system-fantastic-depths .actor .armor-class .ranged-ac {
   position: absolute;
   left: 1px;
   top: 30px;
   font-size: 24px;
   color: #808080;
 }
-.system-fantastic-depths .character .armor-class .ranged-ac .ranged-ac-val, .system-fantastic-depths .monster .armor-class .ranged-ac .ranged-ac-val {
+.system-fantastic-depths .actor .armor-class .ranged-ac .ranged-ac-val {
   width: 40px;
   color: #ebeae4;
   font-weight: bolder;
@@ -1087,13 +1210,44 @@ table.compact-table input {
   transform: translate(-50%, -50%); /* Adjust position to truly center */
   font-size: 14px;
 }
-.system-fantastic-depths .character .category-info, .system-fantastic-depths .monster .category-info {
+.system-fantastic-depths .actor .category-info {
   font-weight: normal;
   margin-left: 10px;
 }
-.system-fantastic-depths .character .category-caret, .system-fantastic-depths .monster .category-caret {
+.system-fantastic-depths .actor .category-caret {
   flex: 0 0 6px;
   margin: 0 5px 0 0;
+  cursor: pointer;
+}
+.system-fantastic-depths .actor .attack-group {
+  box-shadow: 1px 0 1px black;
+  padding: 0;
+  margin-bottom: 4px;
+}
+.system-fantastic-depths .actor .attack-group .group-0 {
+  background-color: #dc2f2f;
+}
+.system-fantastic-depths .actor .attack-group .group-1 {
+  background-color: #33cb44;
+}
+.system-fantastic-depths .actor .attack-group .group-2 {
+  background-color: #efe528;
+}
+.system-fantastic-depths .actor .attack-group .group-3 {
+  background-color: #af50cf;
+}
+.system-fantastic-depths .actor .attack-group .group-4 {
+  background-color: #4788bf;
+}
+.system-fantastic-depths .actor .attack-group .group-5 {
+  background-color: #dd8525;
+}
+.system-fantastic-depths .actor .attack-group .item-group {
+  content: "";
+  margin-left: 4px;
+  width: 7px;
+  border: none;
+  height: 24px;
   cursor: pointer;
 }
 .system-fantastic-depths .character .ability {
@@ -1172,19 +1326,22 @@ table.compact-table input {
 .system-fantastic-depths h4 {
   margin: 2px;
 }
+.system-fantastic-depths textarea {
+  width: 100%;
+}
 .system-fantastic-depths .sheet-header {
   flex: 0 auto;
-  overflow: hidden;
+  /*overflow: hidden;*/
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: normal !important;
   margin-bottom: 5px;
-}
-.system-fantastic-depths .sheet-header input {
-  border: 0;
-  padding: 2px 8px;
+  /*   input {
+        border: 0;
+        padding: 2px 8px;
+     }*/
 }
 .system-fantastic-depths .sheet-header .profile-img {
   flex: 0 0 10px;
@@ -1212,11 +1369,13 @@ table.compact-table input {
   flex: 1;
 }
 .system-fantastic-depths .sheet-header .charname {
+  max-height: 34px;
   height: 34px;
 }
 .system-fantastic-depths .sheet-header .charname input, .system-fantastic-depths .sheet-header .charname select {
   font-size: 22px;
   font-weight: 500;
+  max-height: 30px;
   height: 30px;
 }
 .system-fantastic-depths .tag-section {
@@ -1257,8 +1416,9 @@ table.compact-table input {
 .system-fantastic-depths .sheet-tabs {
   flex: 0;
 }
-.system-fantastic-depths .sheet-body,
-.system-fantastic-depths .sheet-body .tab,
+.system-fantastic-depths .scroll-body {
+  overflow-y: auto;
+}
 .system-fantastic-depths .sheet-body .tab .editor {
   height: 100%;
   min-height: 32px;
@@ -1291,7 +1451,7 @@ table.compact-table input {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
-  top: 31px;
+  top: 32px;
   left: 2px;
 }
 .system-fantastic-depths .summary li {
@@ -1306,21 +1466,16 @@ table.compact-table input {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
-  top: 31px;
+  top: 32px;
   left: 2px;
 }
 .system-fantastic-depths .summary li.notify input {
   font-weight: bold;
   animation: 0.8s ease-in 1s infinite alternate notify;
 }
-.system-fantastic-depths .resource-label {
-  font-weight: bold;
-}
-.system-fantastic-depths ol.items-list {
+.system-fantastic-depths .items-list {
   margin: 0 !important;
   padding: 0 !important;
-}
-.system-fantastic-depths .items-list {
   list-style: none;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -1339,26 +1494,31 @@ table.compact-table input {
   overflow: hidden;
   font-size: 14px;
   text-align: left;
-  align-items: center;
   display: flex;
+  align-items: center;
 }
 .system-fantastic-depths .items-list .item-name h3, .system-fantastic-depths .items-list .item-name h4 {
   margin: 0;
   white-space: nowrap;
   overflow-x: hidden;
 }
-.system-fantastic-depths .items-list .item-controls {
+.system-fantastic-depths .items-list .item-controls, .system-fantastic-depths .items-list .item-controls2 {
   display: flex;
-  flex: 0 0 70px;
   justify-content: flex-end;
 }
-.system-fantastic-depths .items-list .item-controls a {
+.system-fantastic-depths .items-list .item-controls a, .system-fantastic-depths .items-list .item-controls2 a {
   font-size: 10px;
   text-align: center;
-  margin: 0 5px;
+  margin: 0 4px;
 }
-.system-fantastic-depths .items-list .item-controls i {
+.system-fantastic-depths .items-list .item-controls i, .system-fantastic-depths .items-list .item-controls2 i {
   font-size: 12px;
+}
+.system-fantastic-depths .items-list .item-controls {
+  flex: 0 0 70px;
+}
+.system-fantastic-depths .items-list .item-controls2 {
+  flex: 0 0 46px;
 }
 .system-fantastic-depths .items-list .item-controls-sm {
   display: flex;
@@ -1374,15 +1534,7 @@ table.compact-table input {
   font-size: 10px;
 }
 .system-fantastic-depths .items-list .item {
-  align-items: center;
   padding: 0;
-}
-.system-fantastic-depths .items-list .item .center-vert {
-  align-items: center;
-}
-.system-fantastic-depths .items-list .item ol {
-  padding: 0;
-  margin: 0;
 }
 .system-fantastic-depths .items-list .item:last-child {
   border-bottom: none;
@@ -1412,6 +1564,15 @@ table.compact-table input {
 }
 .system-fantastic-depths .items-list .item .item-name .rollable:hover img, .system-fantastic-depths .items-list .item .item-name .chatable:hover img {
   opacity: 0; /* Or use display: none; */
+}
+.system-fantastic-depths .items-list .item .item-name .rollable2:hover img, .system-fantastic-depths .items-list .item .item-name .chatable2:hover img {
+  opacity: 0; /* Or use display: none; */
+}
+.system-fantastic-depths .items-list .item .item-name .rollable2:hover {
+  background-image: url("/icons/svg/d20-highlight.svg");
+}
+.system-fantastic-depths .items-list .item .item-name .chatable2:hover {
+  background-image: url("/icons/svg/book.svg");
 }
 .system-fantastic-depths .items-list .item .item-name .rollable:hover {
   background-image: url("/icons/svg/d20-highlight.svg");
@@ -1457,11 +1618,19 @@ table.compact-table input {
   width: 80px;
   max-width: 80px;
 }
+.system-fantastic-depths .items-list .item-100px {
+  width: 100px;
+  max-width: 100px;
+}
 .system-fantastic-depths .items-list .item-prop {
   text-align: center;
   border-left: 1px solid #c9c7b8;
   border-right: 1px solid #c9c7b8;
   font-size: 12px;
+  height: 26px;
+  line-height: 26px;
+  align-items: center;
+  overflow: hidden;
 }
 .system-fantastic-depths .items-list .items-header {
   height: auto;
@@ -1547,5 +1716,3 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

@@ -1,36 +1,31 @@
-import { fadeDialog } from './fadeDialog.mjs';
-export class AbilityCheckDialog extends fadeDialog {
+const { DialogV2 } = foundry.applications.api;
+
+export class AbilityCheckDialog {
    static async getDialog(dataset, caller) {
       const dialogData = {};
-      const dialogResp = { caller };
+      let dialogResp = null;
 
       dialogData.ability = dataset.ability;
       dialogData.formula = dataset.formula;
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
       const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/ability-roll.hbs';
+      const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
 
-      dialogResp.resp = await Dialog.wait({
-         title: title,
-         rejectClose: true,
+      dialogResp = await DialogV2.wait({
+         window: { title },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons: {
-            check: {
+         buttons: [
+            {
+               action: 'check',
                label: game.i18n.localize('FADE.dialog.abilityCheck'),
-               callback: () => ({
-                  rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  formula: document.getElementById('formula').value || "1d20",
-               }),
+               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
+               default: true
             },
-         },
-         default: 'check',
-         close: () => { return { rolling: false }; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         ],
+         close: () => {},
+         classes: ["fantastic-depths"]
       });
-      dialogResp.context = caller;
       return dialogResp;
    }
 }

@@ -1,0 +1,50 @@
+<section class='tab {{tabs.abilities.cssClass}}' data-group='primary' data-tab='abilities'>
+   <div class="flexrow">
+      <div style="padding:0 2px;">
+         <ol name="class-abilities" class='items-list'>
+            <!-- Header Row -->
+            <li class='item flexrow items-header'>
+               {{#unless hideLevel}}
+               <div style="max-width:50px">{{localize 'FADE.Actor.Level'}}</div>
+               {{/unless}}
+               <div>{{localize 'FADE.name'}}</div>
+               <div style="max-width:50px">{{localize 'FADE.target'}}</div>
+               <div>{{localize 'FADE.changes'}}</div>
+               <div style="max-width:50px">{{localize 'FADE.class.key.name'}}</div>
+               <div class='item-controls' style="max-width:30px;">
+                  <a class='item-control' data-action="createItem" data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility'>
+                     <i class='fas fa-plus'></i>
+                  </a>
+               </div>
+            </li>
+            <!-- Class Ability Entries -->
+            {{#each system.specialAbilities as |item index|}}
+            <li class='item flexrow' data-item-id='{{item.level}}'>
+               {{#unless @root.hideLevel}}
+               <div style="max-width:50px">
+                  <input type="number" name="system.specialAbilities.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
+               </div>
+               {{/unless}}
+               <div>
+                  <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+               </div>
+               <div style="max-width:50px">
+                  <input type="number" name="system.specialAbilities.{{index}}.target" value="{{item.target}}" data-dtype="Number" />
+               </div>
+               <div>
+                  <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.changes" value="{{item.changes}}" data-dtype="String" />
+               </div>
+               <div style="max-width:50px">
+                  <input type="text" name='system.specialAbilities.{{index}}.classKey' value="{{item.classKey}}" data-type="String" />
+               </div>
+               <div class='item-controls' style="max-width:30px;">
+                  <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}' data-type='specialAbility' data-index='{{index}}'>
+                     <i class='fas fa-trash'></i>
+                  </a>
+               </div>
+            </li>
+            {{/each}}
+         </ol>
+      </div>
+   </div>
+</section>

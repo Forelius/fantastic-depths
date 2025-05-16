@@ -1,45 +1,42 @@
-import { fadeDialog } from './fadeDialog.mjs';
-export class LightMgrDialog extends fadeDialog {
+const { DialogV2 } = foundry.applications.api;
+
+export class LightMgrDialog {
    static async getDialog(dataset, caller, opt) {
       const dialogData = {};
-      const dialogResp = { caller };
       // Check if there are any items with the "light" tag
-      const template = 'systems/fantastic-depths/templates/dialog/lightmgr.hbs';
+      const template = "systems/fantastic-depths/templates/dialog/lightmgr.hbs";
 
       dialogData.label = dataset.label;
       dialogData.lightItems = opt.lightItems.reduce((acc, item) => {
          acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
          return acc;
-      }, {});;
+      }, {});
+      dialogData.lightItem = opt.lightItems[0]?.id;
 
-      dialogResp.resp = await Dialog.wait({
-         title: "Light Manager",
+      const result = await DialogV2.wait({
+         window: { title: game.i18n.localize("FADE.dialog.lightManager.title") },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         buttons: {
-            ignite: {
-               label: game.i18n.localize('FADE.dialog.ignite'),
-               callback: (html) => ({
-                  action: "ignite",
-                  itemId: document.getElementById('lightItem').value,
-               })
+         buttons: [
+            {
+               action: "ignite",
+               label: game.i18n.localize("FADE.dialog.lightManager.ignite"),
+               callback: (event, button, dialog) => { return { action: "ignite", ...(new FormDataExtended(button.form).object) } },
             },
-            extinguish: {
-               label: game.i18n.localize('FADE.dialog.extinguish'),
-               callback: () => ({
-                  action: "extinguish",
-                  itemId: document.getElementById('lightItem').value,
-               })
+            {
+               action: "extinguish",
+               label: game.i18n.localize("FADE.dialog.lightManager.extinguish"),
+               callback: (event, button, dialog) => { return { action: "extinguish", ...(new FormDataExtended(button.form).object) } },
             },
-            close: {
-               label: game.i18n.localize('FADE.dialog.close')
+            {
+               action: "close",
+               label: game.i18n.localize("FADE.dialog.close")
             }
-         },
+         ],
          default: "close",
-         close: () => { return null; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         close: () => { },
+         classes: ["fantastic-depths"]
       });
-      dialogResp.context = caller;
-      return dialogResp;
+      return result;
    }
 }

@@ -1,29 +1,31 @@
-<ol name="treasureItems" class='items-list'>
-   <li class='item flexrow items-header collapsible-header'>
+<div name="treasureItems" class='items-list'>
+   <div class='item flexrow items-header' data-action="toggleHeader">
       <div class='item-name'>{{localize 'TYPES.Item.treasure'}} <span class="category-info">({{treasureValue}} {{localize 'FADE.Item.cost.abbr'}})</span></div>
       <div class="item-60px">{{localize 'FADE.Item.cost.abbr'}}</div>
-      <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
+      <div class="item-60px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
       {{#if showCoinWeight}}
       <div class="item-40px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       {{/if}}
-   </li>
+   </div>
    {{#each treasure as |item id|}}
-   <li class='flexrow item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+   <div class='flexrow item collapsible-content bottom-border' data-item-id='{{item._id}}'>
       <div class='item-name'>
          <div class='item-image'>
             <a data-roll-type='item'>
                <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
             </a>
          </div>
-         <a class='item-control item-edit' data-tooltip='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
+         <a class='item-control' 
+            data-action="editItem"
+            data-tooltip='{{localize "DOCUMENT.Update" type='Item'}}'>{{item.name}}</a>
       </div>
       <div class="item-60px item-prop" data-tooltip="{{localize 'FADE.Item.cost.long'}}"><label>{{item.system.totalCost}}</label></div>
-      <div class="item-40px item-prop editable">
+      <div class="item-60px item-prop editable">
          <input type="text" value="{{item.system.quantity}}" data-dtype="Number" placeholder="0" data-field="quantity" data-tooltip="{{localize 'FADE.Item.quantity.long'}}" />
       </div>
       {{#if @root.showCoinWeight}}
       <div class="item-40px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
       {{/if}}
-   </li>
+   </div>
    {{/each}}
-</ol>
+</div>

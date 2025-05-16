@@ -36,7 +36,7 @@ export class BasicEncumbrance {
       Object.assign(encumbrance, actor.system.encumbrance);
       Object.assign(encumbrance, {
          mv: actor.system.movement.max,
-         fly: actor.system.flight.max
+         mv2: actor.system.movement2.max
       });
 
       // Recalc total encumbrance
@@ -97,7 +97,7 @@ export class BasicEncumbrance {
          label: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`),
          desc: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`),
          mv: Math.floor(actor.system.movement.max * encTier.mvFactor),
-         fly: Math.floor(actor.system.flight.max * encTier.mvFactor)
+         mv2: Math.floor(actor.system.movement2.max * encTier.mvFactor)
       };
    }
 }

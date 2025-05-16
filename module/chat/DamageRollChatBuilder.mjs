@@ -79,17 +79,29 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const instigator = theItem.actor.token ?? theItem.actor;
       let rolling = true;
       let dialogResp = null;
-      const isHeal = damagetype === 'heal';
-      dialogResp = await DialogFactory({ dialog: 'generic', label: isHeal ? "Heal" : "Damage" }, theItem);
-      rolling = dialogResp?.resp?.rolling === true;
+      const isHeal = damagetype === "heal";
 
       let damageRoll = null;
-      const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison"];
-      const otherDamageTypes = ["magic", "heal", "hull"];
+      const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
+      const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = await theItem.getDamageRoll(attacktype, dialogResp?.resp, targetweapontype);
+         damageRoll = theItem.getDamageRoll(attacktype, null, targetweapontype);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = await theItem.getDamageRoll(dialogResp?.resp);
+         damageRoll = theItem.getDamageRoll(null);
+      }
+
+      dialogResp = await DialogFactory({
+         dialog: "generic",
+         label: isHeal ? "Heal" : "Damage",
+         formula: damageRoll.formula,
+         editFormula: game.user.isGM
+      }, theItem);
+      rolling = dialogResp != null;
+
+      if (weaponDamageTypes.includes(dataset.damagetype)) {
+         damageRoll = theItem.getDamageRoll(attacktype, dialogResp, targetweapontype);
+      } else if (otherDamageTypes.includes(dataset.damagetype)) {
+         damageRoll = theItem.getDamageRoll(dialogResp);
       }
 
       if (rolling === true) {
@@ -168,9 +180,20 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
       // Ensure we have a target ID
       if (applyTo.length > 0) {
+         let delta = parseInt(dataset.amount, 10);
          for (let target of applyTo) {
-            // Apply damage to the token's actor
-            target.actor.applyDamage(parseInt(dataset.amount, 10), dataset.damagetype, weapon);
+            if (target.actor.isOwner === true) {
+               // If not restoring HP
+               if (dataset.damagetype != "heal") {
+                  // Convert positive damage to delta of negative HP.
+                  delta = -Math.abs(delta);
+               } else {
+                  delta = Math.abs(delta);
+               }
+               // Apply damage to the token's actor
+               const dmgSys = game.fade.registry.getSystem("damageSystem");
+               dmgSys.ApplyDamage(target.actor, delta, dataset.damagetype, dataset.attacktype, weapon);
+            }
          }
       }
    }

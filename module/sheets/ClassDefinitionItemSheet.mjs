@@ -1,47 +1,97 @@
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
+import { DragDropMixin } from './mixins/DragDropMixin.mjs';
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassDefinitionItemSheet extends fadeItemSheet {
-   /** @override */
-   static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'item'],
-         width: 650,
-         height: 480,
-         dragDrop: [
-            { dragSelector: "[data-document-id]", dropSelector: "form" }
-         ],
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'description',
-            },
-         ],
-      });
+export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
+   /**
+   * Get the default options for the sheet.
+   */
+   static DEFAULT_OPTIONS = {
+      position: {
+         top: 150,
+         width: 680,
+         height: 500,
+      },
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      form: {
+         submitOnChange: true
+      },
+      actions: {
+         createItem: ClassDefinitionItemSheet.#onCreateChild,
+         deleteItem: ClassDefinitionItemSheet.#onDeleteChild,
+      },
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/classdef/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      levels: {
+         template: "systems/fantastic-depths/templates/item/classdef/levels.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      saves: {
+         template: "systems/fantastic-depths/templates/item/classdef/saves.hbs",
+      },
+      primereqs: {
+         template: "systems/fantastic-depths/templates/item/classdef/primereqs.hbs",
+      },
+      abilities: {
+         template: "systems/fantastic-depths/templates/item/classdef/abilities.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/item/classdef/items.hbs",
+      },
+      spells: {
+         template: "systems/fantastic-depths/templates/item/classdef/spells.hbs",
+      },
    }
 
    /** @override */
-   get template() {
-      const path = 'systems/fantastic-depths/templates/item';
-      return `${path}/ClassDefinitionItemSheet.hbs`;
+   tabGroups = {
+      primary: "description"
    }
 
    /** @override */
-   async getData() {
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'levels', 'description', 'saves', 'primereqs', 'abilities', 'items']
+
+      if (this.item.system.maxSpellLevel > 0) {
+         options.parts.push('spells');
+      }
+   }
+
+   /** @override */
+   async _prepareContext() {
       // Retrieve base data structure
-      const context = await super.getData();
-      const itemData = context.data;
+      const context = await super._prepareContext();
+      context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
 
       // Add the item's data for easier access
-      //context.flags = itemData.flags;
-      context.isSpellcaster = itemData.system.maxSpellLevel > 0;
+      context.isSpellcaster = this.item.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
-      for (let i = 1; i <= itemData.system.maxSpellLevel; i++) {
+      for (let i = 1; i <= this.item.system.maxSpellLevel; i++) {
          context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
       }
       // Ability score abilities
@@ -55,24 +105,42 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
          return { value: key, text: game.i18n.localize(`FADE.concatLogic.${key}`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
+      // Prepare the tabs.
+      context.tabs = this.#getTabs();
+
       return context;
    }
 
-   /** @override */
-   activateListeners(html) {
-      super.activateListeners(html);
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const group = 'primary';
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
 
-      // Everything below here is only needed if the sheet is editable
-      if (!this.isEditable) return;
+      const tabs = {
+         levels: { id: 'levels', group, label: 'FADE.tabs.levels' },
+         description: { id: 'description', group, label: 'FADE.tabs.description' },
+         saves: { id: 'saves', group, label: 'FADE.Actor.Saves.long' },
+         primereqs: { id: 'primereqs', group, label: 'FADE.tabs.primeRequisites' },
+         abilities: { id: 'abilities', group, label: 'FADE.SpecialAbility.plural' },
+         items: { id: 'items', group, label: 'FADE.items' },
+      }
 
-      // Add Inventory Item
-      html.on('click', '.item-create', async (event) => { await this.#onCreateChild(event) });
+      if (this.item.system.maxSpellLevel > 0) {
+         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+      }
 
-      // Delete Inventory Item
-      html.on('click', '.item-delete', async (event) => { await this.#onDeleteChild(event) });
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
+      }
+
+      return tabs;
    }
 
-   /** @inheritdoc */
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
@@ -94,28 +162,36 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
    * @param {Event} event The originating click event
    * @private
    */
-   async #onCreateChild(event) {
+   static async #onCreateChild(event) {
       event.preventDefault();
-      const header = event.currentTarget;
-      const type = header.dataset.type;
+      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
 
       if (type === 'classSave') {
-         this.item.createClassSave();
+         await this.item.createClassSave();
       } else if (type === 'primeReq') {
-         this.item.createPrimeReq();
-      } else if (type === 'classAbility') {
-         this.item.createClassAbility();
-      } else if (ClassDefinitionItem.ValidItemTypes.includes(type)) {
-         this.item.createClassItem();
+         await this.item.createPrimeReq();
+      } else if (type === 'specialAbility') {
+         await this.item.createClassAbility();
+      } else if (type === 'item') {
+         await this.item.createClassItem();
       }
       this.render();
    }
 
-   async #onDeleteChild(event) {
+   static async #onDeleteChild(event) {
       event.preventDefault();
-      const type = event.currentTarget.dataset.type;
-      const index = parseInt(event.currentTarget.dataset.index);
-
+      let type;
+      let index;
+      if (event.target.dataset.type) {
+         type = event.target.dataset.type;
+         index = parseInt(event.target.dataset.index);
+      } else if (event.target.parentElement.dataset.type) {
+         type = event.target.parentElement.dataset.type;
+         index = parseInt(event.target.parentElement.dataset.index);
+      } else {
+         console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can't determine item type.`, item);
+      }
+      
       if (type === 'classSave') {
          const saves = this.item.system.saves;
          // Handle deletion of a class save
@@ -127,11 +203,17 @@ export class ClassDefinitionItemSheet extends fadeItemSheet {
             primeReqs.splice(index, 1);
             await this.item.update({ "system.primeReqs": primeReqs });
          }
-      } else if (type === 'classAbility') {
-         const classAbilities = this.item.system.classAbilities;
-         if (classAbilities.length > index) {
-            classAbilities.splice(index, 1);
-            await this.item.update({ "system.classAbilities": classAbilities });
+      } else if (type === 'specialAbility') {
+         const specialAbilities = this.item.system.specialAbilities;
+         if (specialAbilities.length > index) {
+            specialAbilities.splice(index, 1);
+            await this.item.update({ "system.specialAbilities": specialAbilities });
+         }
+      } else if (type === 'item') {
+         const items = this.item.system.classItems;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.classItems": items });
          }
       }
       this.render();

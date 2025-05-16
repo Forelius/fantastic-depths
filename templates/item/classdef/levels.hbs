@@ -1,0 +1,28 @@
+<section class='tab {{tabs.levels.cssClass}}' data-group='primary' data-tab='levels'>
+   <ol name="class-levels" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header'>
+         <div>{{localize 'FADE.Actor.Level'}}</div>
+         <div>{{localize 'FADE.Actor.XPShort'}}</div>
+         <div>{{localize 'FADE.Actor.THAC0'}}</div>
+         <div>{{localize 'FADE.Actor.THBonus'}}</div>
+         <div>{{localize 'FADE.Actor.HitDiceShort'}}</div>
+         <div data-tooltip="{{localize 'FADE.Actor.hdConBonus.hint'}}">{{localize 'FADE.Actor.hdConBonus.name'}}</div>
+         <div>{{localize 'FADE.Actor.Title'}}</div>
+         <div>{{localize 'FADE.Actor.attackRank'}}</div>
+      </li>
+      <!-- Level Entries -->
+      {{#each system.levels as |levelData index|}}
+      <li class='item flexrow' data-item-id='{{levelData.level}}'>
+         <div class="align-center"><input type="text" name="system.levels.{{index}}.level" value="{{levelData.level}}" data-dtype="Number" readonly /></div>
+         <div class="align-left"><input type="text" name="system.levels.{{index}}.xp" value="{{levelData.xp}}" data-dtype="Number" /></div>
+         <div class="align-left"><input type="text" name="system.levels.{{index}}.thac0" value="{{levelData.thac0}}" data-dtype="Number" /></div>
+         <div class="align-left"><input type="text" name="system.levels.{{index}}.thbonus" value="{{levelData.thbonus}}" data-dtype="Number" /></div>
+         <div class="align-left"><input type="text" name="system.levels.{{index}}.hd" value="{{levelData.hd}}" data-dtype="String" /></div>
+         <div data-tooltip="{{localize 'FADE.Actor.hdConBonus.hint'}}"><input type="checkbox" name="system.levels.{{index}}.hdcon" data-dtype="Boolean" {{#if levelData.hdcon}} checked{{/if}} /></div>
+         <div class="align-left"><input type="text" name="system.levels.{{index}}.title" value="{{levelData.title}}" data-dtype="String" /></div>
+         <div class="align-left"><input type="text" name="system.levels.{{index}}.attackRank" value="{{levelData.attackRank}}" data-dtype="String" /></div>
+      </li>
+      {{/each}}
+   </ol>
+</section>

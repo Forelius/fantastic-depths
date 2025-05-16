@@ -1,8 +1,8 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
-export class SpeciesItem extends fadeItem {
+export class SpeciesItem extends FDItem {
    constructor(data, context) {
       super(data, context);
       this.languageManager = new TagManager(this, 'languages'); // Initialize TagManager
@@ -10,17 +10,18 @@ export class SpeciesItem extends fadeItem {
 
    async createSpecialAbility(name = "", classKey = null) {
       // Retrieve the array
-      const item = this.system.specialAbilities || [];
+      const specialAbilities = this.system.specialAbilities || [];
       // Define the new data
       const newItem = {
          level: 1,
          name,
-         target: 0,
+         target: null,
+         changes: "",
          classKey: classKey || this.system.key
       };
       // Add the new item to the array
-      item.push(newItem);
-      await this.update({ "system.specialAbilities": item });
+      specialAbilities.push(newItem);
+      await this.update({ "system.specialAbilities": specialAbilities });
    }
 
    async createClass() {

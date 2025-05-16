@@ -5,15 +5,24 @@ export class WeaponMasterySystem {
       this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
    }
 
+   getRanges(weapon) {
+      let result = weapon.system.range;
+      const mastery = this.getOwnerMastery(weapon);
+      if (mastery) {
+         result = mastery.system.range;
+      }
+      return result;
+   }
+
    getAttackRollMod(actor, weapon, { targetWeaponType, attackType, target } = {}) {
       let result = { mod: 0, digest: [] };
 
       if (weapon?.system?.mastery?.length > 0) {
-         const attackerMastery = actor.items.find((item) => item.type === 'mastery' && item.name === weapon.system.mastery)?.system;
-         if (attackerMastery) {
-            const bIsPrimary = targetWeaponType === attackerMastery.primaryType || attackerMastery.primaryType === 'all';
+         const masterySystem = this.getOwnerMastery(weapon)?.system;
+         if (masterySystem) {
+            const bIsPrimary = targetWeaponType === masterySystem.primaryType || masterySystem.primaryType === 'all';
             // Get the to hit bonus, if any.
-            const toHitMod = bIsPrimary ? attackerMastery.pToHit : attackerMastery.sToHit;
+            const toHitMod = bIsPrimary ? masterySystem.pToHit : masterySystem.sToHit;
             if (toHitMod > 0) {
                result.mod += toHitMod;
                const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
@@ -58,13 +67,13 @@ export class WeaponMasterySystem {
    /**
     * Get the target's potential weapon types
     * @param {any} weapon The actor's weapon
-    * @param {any} actor The target actor
+    * @param {any} attackerActor The attacker actor
     * @returns Returns weapon types if conditions met, otherwise null.
     */
    getWeaponTypes(weapon, attackerActor) {
       let result = null;
       // Get the actor's weapon mastery data.
-      const attackerMastery = attackerActor.items.find((item) => item.type === 'mastery' && item.name === weapon?.system?.mastery);
+      const attackerMastery = this.getOwnerMastery(weapon);
       // If the actor is a monster, weaponData indicates a spell is being cast or the actor has a mastery for the weapon being used...
       if (attackerActor.type === "monster" || weapon.type === "spell" || attackerMastery) {
          result = {
@@ -101,16 +110,16 @@ export class WeaponMasterySystem {
     * @param {any} formula The current attack formula
     * @returns
     */
-   getDamageMods(weapon, targetWeaponType, formula) {
-      const attacker = weapon.parent;
+   getDamageMods(weapon, targetWeaponType, formula, modifier) {
+      const attacker = weapon.actor;
       let result = { formula, digest: [] };
 
       //&& (weaponData.mastery !== "" || weaponData.natural)
       if (weapon.system.mastery !== "" || weapon.system.natural) {
-         let attackerMastery = attacker.items.find((item) => item.type === 'mastery' && item.name === weapon.system.mastery);
+         let attackerMastery = this.getOwnerMastery(weapon);
 
          // If a monster and no weapon mastery with this weapon...
-         if (attackerMastery === undefined && attacker.type === 'monster') {
+         if (attackerMastery === undefined && (attacker.type === 'monster' || attacker.system.combat.basicProficiency === true)) {
             // Give blanket basic skill usage.
             attackerMastery = {
                system: {
@@ -121,6 +130,9 @@ export class WeaponMasterySystem {
          }
 
          if (attackerMastery) {
+            if (attackerMastery.system.primaryType !== "all" && targetWeaponType === "primary") {
+               targetWeaponType = attackerMastery.system.primaryType;
+            }
             // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
             if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
                result.formula = attackerMastery.system.pDmgFormula;
@@ -140,7 +152,7 @@ export class WeaponMasterySystem {
             // Half damage if unskilled use.
             result.formula = `floor(${formula}/2)`;
             result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
-         }         
+         }
       }
 
       return result;
@@ -148,9 +160,9 @@ export class WeaponMasterySystem {
 
    getAttackTypes(weapon) {
       const actor = weapon.actor;
-      let result = { canMelee: false, canRanged: false };
+      let result = { canMelee: weapon.system.canMelee, canRanged: weapon.system.canRanged };
       // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
-      const ownerMastery = actor?.items.find((item) => item.type === 'mastery' && item.name === weapon.system.mastery);
+      const ownerMastery = this.getOwnerMastery(weapon);
       if (ownerMastery) {
          result.canRanged = ownerMastery.system.canRanged;
          result.canMelee = weapon.system.canMelee;
@@ -218,7 +230,6 @@ export class WeaponMasterySystem {
       });
    }
 
-
    /**
     * Finds the best defense mastery for the specified attacker weapon type,
     * taking into account the number of times the actor has been attacked this round,
@@ -268,5 +279,9 @@ export class WeaponMasterySystem {
       }
 
       return result;
+   }
+
+   getOwnerMastery(weapon) {
+      return weapon?.actor.items.find(item => item.type === "mastery" && item.name === weapon?.system.mastery);
    }
 }

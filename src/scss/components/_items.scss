@@ -2,12 +2,11 @@
 // Items Lists
 // -----------------------------------------
 .items-list {
+   margin: 0 !important;
+   padding: 0 !important;
    list-style: none;
-   margin: 0;
-   padding: 0;
    overflow-y: auto;
    scrollbar-width: thin;
-
 
    .warning-bkgd {
       background: rgba(150, 20, 20, 0.15);
@@ -25,8 +24,8 @@
       overflow: hidden;
       font-size: 14px;
       text-align: left;
-      align-items: center;
       display: flex;
+      align-items: center;
 
       h3, h4 {
          margin: 0;
@@ -35,20 +34,27 @@
       }
    }
    // Control Buttons
-   .item-controls {
+   .item-controls, .item-controls2 {
       display: flex;
-      flex: 0 0 70px;
       justify-content: flex-end;
 
       a {
          font-size: 10px;
          text-align: center;
-         margin: 0 5px;
+         margin: 0 4px;
       }
 
       i {
          font-size: 12px;
       }
+   }
+
+   .item-controls {
+      flex: 0 0 70px;
+   }
+
+   .item-controls2 {
+      flex: 0 0 46px;
    }
 
    .item-controls-sm {
@@ -68,17 +74,7 @@
    }
    // Individual Item
    .item {
-      align-items: center;
       padding: 0; // to align with the header border
-
-      .center-vert {
-         align-items: center;
-      }
-
-      ol {
-         padding: 0;
-         margin: 0;
-      }
 
       &:last-child {
          border-bottom: none;
@@ -97,9 +93,10 @@
       }
 
       .item-name {
-         img{
-            border:none;
+         img {
+            border: none;
          }
+
          .item-image {
             flex: 0 0 30px;
             height: 30px;
@@ -116,6 +113,18 @@
             opacity: 0; /* Or use display: none; */
          }
 
+         .rollable2:hover img, .chatable2:hover img {
+            opacity: 0; /* Or use display: none; */
+         }
+
+         .rollable2:hover {
+            background-image: url('/icons/svg/d20-highlight.svg');
+         }
+
+         .chatable2:hover {
+            background-image: url('/icons/svg/book.svg');
+         }
+
          .rollable:hover {
             background-image: url('/icons/svg/d20-highlight.svg');
          }
@@ -127,6 +136,12 @@
 
       input {
          text-align: center;
+      }
+
+      input, select {
+         padding: 0 4px;
+         width: calc(100% - 3px);
+         height: 26px;
       }
 
       .item-description {
@@ -166,11 +181,20 @@
       max-width: 80px;
    }
 
+   .item-100px {
+      width: 100px;
+      max-width: 100px;
+   }
+
    .item-prop {
       text-align: center;
       border-left: 1px solid #c9c7b8;
       border-right: 1px solid #c9c7b8;
       font-size: 12px;
+      height: 26px;
+      line-height: 26px;
+      align-items: center;
+      overflow: hidden;
    }
    // Section Header
    .items-header {

@@ -1,11 +1,24 @@
 export class fadeFinder {
 
-   static _getItemPack() {
-      return game.packs.get('fade-compendiums.item-compendium');
+   static _actorPackName() {
+      return game.settings.get(game.system.id, "actorPack");
+   }
+   static _getActorPack() {
+      return game.packs.get(fadeFinder._actorPackName() ?? 'fade-compendiums.actor-compendium');
    }
 
+   static _itemPackName() {
+      return game.settings.get(game.system.id, "itemPack");
+   }
+   static _getItemPack() {
+      return game.packs.get(fadeFinder._itemPackName() ?? 'fade-compendiums.item-compendium');
+   }
+
+   static _rollTablePackName() {
+      return game.settings.get(game.system.id, "rollTablePack");
+   }
    static _getRollTablePack() {
-      return game.packs.get('fade-compendiums.roll-table-compendium');
+      return game.packs.get(fadeFinder._rollTablePackName() ?? 'fade-compendiums.roll-table-compendium');
    }
 
    /**
@@ -18,7 +31,10 @@ export class fadeFinder {
       let result = null;
       if (type === 'rolltable') {
          result = await fadeFinder._getRollTablePack()?.getDocuments();
-      } else if (type === 'anyItem') {
+      } else if (type === 'actor') {
+         result = await fadeFinder._getActorPack()?.getDocuments();
+      }
+      else if (type === 'anyItem') {
          result = await fadeFinder._getItemPack()?.getDocuments();
       } else {
          result = await fadeFinder._getItemPack()?.getDocuments({ type });
@@ -36,6 +52,8 @@ export class fadeFinder {
       let result = null;
       if (type === 'rolltable') {
          result = game.tables;
+      } else if (type === 'actor') {
+         result = game.actors;
       } else if (type === 'anyItem') {
          result = game.items;
       } else {
@@ -58,37 +76,6 @@ export class fadeFinder {
       return source?.filter(item => item.id === id)?.[0];
    }
 
-   /**
-    * Retrieves a special ability.
-    * @private
-    * @param {any} name The special ability's name.
-    * @param {any} options Additional options for matching fields (category, customSaveCode).
-    * @returns The requested special ability, otherwise undefined.
-    */
-   static _getSpecialAbility(source, name, options) {
-      let result;
-      const type = 'specialAbility';
-      if (source) {
-         if (options?.category === 'class') {
-            result = source.filter(item => item.type == type && item.system.category == options.category
-               && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
-         } else if (options?.category === 'save') {
-            result = source.filter(item => item.type == type && item.system.category == options.category
-               && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && item.system.customSaveCode == options.customSaveCode)?.[0];
-         } else if (options?.categoryNEQ === 'save') {
-            result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
-               && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
-         } else {
-            result = source.filter(item => item.type == type && item.system.category == options?.category
-               && item.name.toLowerCase() == name.toLowerCase())?.[0];
-         }
-      }
-      return result
-   }
-
    static async getSavingThrows() {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
@@ -98,6 +85,64 @@ export class fadeFinder {
          result = source?.filter(item => item.system.category === 'save');
       }
       return result;
+   }
+
+   static async getFolders(type) {
+      // Get world folders of the type
+      let worldFolders = game.folders.filter(f => f.type === type);
+
+      // Get all compendium packs of the type
+      const rollTablePacks = game.packs.filter(pack => pack.documentName === type);
+
+      // Load all documents in packs and collect folders
+      const packFoldersArrays = await Promise.all(
+         rollTablePacks.map(async (pack) => {
+            await pack.getDocuments();
+            return Array.from(pack.folders);
+         })
+      );
+
+      // Flatten the folder arrays into one
+      const packFolders = packFoldersArrays.flat();
+
+      // Combine world folders and pack folders
+      return [...worldFolders, ...packFolders];
+   }
+
+   /**
+   * Recursively get all documents inside the specified folder UUID and its subfolders.
+   * Works for both world and compendium folders.
+   * @param {string} uuid - The UUID of the folder.
+   * @param {string} type - The document type (e.g., "RollTable", "Item").
+   * @returns {Promise<Array<Document>>} - Flat array of documents.
+   */
+   static async getDocsFromFolder(uuid, type) {
+      const folder = await fromUuid(uuid);
+      if (!(folder instanceof Folder)) {
+         console.warn(`Invalid folder UUID: ${uuid}`);
+         return [];
+      }
+
+      // Ensure compendium packs are loaded
+      let docs;
+      if (folder.pack) {
+         const pack = game.packs.get(folder.pack);
+         if (!pack) {
+            console.warn(`Compendium not found: ${folder.pack}`);
+            return [];
+         }
+         docs = await pack.getDocuments();
+      }
+
+      // Collect documents directly in this folder
+      let documents = folder.contents;
+
+      // Recurse into child folders
+      for (const child of folder.children) {
+         documents = documents.concat(await fadeFinder.getDocsFromFolder(child.uuid, type));
+      }
+
+      return documents;
    }
 
    static async getRollTables(compendiumOnly = false) {
@@ -120,8 +165,18 @@ export class fadeFinder {
       return result;
    }
 
+   static async getActors(compendiumOnly = false) {
+      const type = 'actor';
+      let result;
+      if (compendiumOnly !== true) {
+         result = fadeFinder._getWorldSource(type);
+      }
+      result = [...result, ...(await fadeFinder._getPackSource(type))];
+      return result;
+   }
+
    /**
-    * Retrieve the class abilities from the specified class and for the specified level.
+    * Retrieve class special abilities from the specified class and for the specified level.
     * @param {any} className The class name.
     * @param {any} classLevel The level to retrieve abilities for.
     * @returns An array or undefined.
@@ -130,7 +185,7 @@ export class fadeFinder {
       const classItem = await fadeFinder.getClass(className);
       let result;
       if (classItem) {
-         result = classItem.system.classAbilities.filter(a => a.level <= classLevel)
+         result = classItem.system.specialAbilities.filter(a => a.level <= classLevel)
             .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
          result = result ? Object.values(result) : null;
       }
@@ -138,7 +193,7 @@ export class fadeFinder {
    }
 
    /**
-    * Retrieves a class's class abilities. This is not an array of the specialAbilities.
+    * Retrieves class special abilities. This is not an array of the specialAbilities.
     * @param {any} key The class key.
     * @param {any} owner For debugging purpose, the requesting actor.
     * @returns An object containing classAbilityData, classKey and classLevel properties.
@@ -214,6 +269,37 @@ export class fadeFinder {
          console.warn(`${owner?.name}: Invalid class key specified ${key}.`);
       }
       return result;
+   }
+
+   /**
+    * Retrieves a special ability.
+    * @private
+    * @param {any} name The special ability's name.
+    * @param {any} options Additional options for matching fields (category, customSaveCode).
+    * @returns The requested special ability, otherwise undefined.
+    */
+   static _getSpecialAbility(source, name, options) {
+      let result;
+      const type = 'specialAbility';
+      if (source) {
+         if (options?.category === 'class') {
+            result = source.filter(item => item.type == type && item.system.category == options.category
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
+         } else if (options?.category === 'save') {
+            result = source.filter(item => item.type == type && item.system.category == options.category
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && item.system.customSaveCode == options.customSaveCode)?.[0];
+         } else if (options?.categoryNEQ === 'save') {
+            result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
+               && (!name || item.name.toLowerCase() == name.toLowerCase())
+               && ((!options.classKey && !item.system.classKey) || item.system.classKey == options.classKey))?.[0];
+         } else {
+            result = source.filter(item => item.type == type && item.system.category == options?.category
+               && item.name.toLowerCase() == name.toLowerCase())?.[0];
+         }
+      }
+      return result
    }
 
    static async getRollTable(name) {
@@ -311,6 +397,29 @@ export class fadeFinder {
 
    static async getWeaponMastery(name) {
       const type = 'weaponMastery'
+      let source = fadeFinder._getWorldSource(type);
+      let result = fadeFinder._getItem(source, name);
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = fadeFinder._getItem(source, name);
+      }
+      return result;
+   }
+
+   static async getActorByName(name) {
+      const type = 'actor';
+      let result;
+      let source = fadeFinder._getWorldSource(type);
+      result = source.filter(item => item.name === name);
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = source.filter(item => item.name === name);
+      }
+      return result?.[0];
+   }
+
+   static async getCondition(name) {
+      const type = 'condition'
       let source = fadeFinder._getWorldSource(type);
       let result = fadeFinder._getItem(source, name);
       if (!result) {

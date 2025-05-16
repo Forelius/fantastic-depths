@@ -62,23 +62,23 @@ export class LightManager {
             LightManager.notify(game.i18n.format('FADE.notification.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
          } else {
             // Render the dialog with the necessary data
-            const dialogResponse = await DialogFactory(dataset, caller, { lightItems });
+            const dialogResult = await DialogFactory(dataset, caller, { lightItems });
 
             // Early return if dialog was cancelled
-            if (!dialogResponse || !dialogResponse.resp) {
+            if (!dialogResult) {
                // Do nothing?
             } else {
                // Get the selected light item from the user's selection.
-               const selectedItem = actorItems.get(dialogResponse.resp.itemId);
+               const selectedItem = actorItems.get(dialogResult.lightItem);
 
-               if (dialogResponse.resp.action === 'ignite') {
+               if (dialogResult.action === 'ignite') {
                   // If the light item exists.
                   if (selectedItem) {
                      await selectedItem.enableLight();
                   } else {
                      LightManager.notify(game.i18n.format('FADE.notifcation.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
                   }
-               } else if (dialogResponse.resp.action === 'extinguish') {
+               } else if (dialogResult.action === 'extinguish') {
                   await token.actor.setActiveLight(null);
                   await selectedItem.update({ "system.light.enabled": false });
                   LightManager.notify(game.i18n.format('FADE.Item.light.disabled', { actor: token.name }), 'info');

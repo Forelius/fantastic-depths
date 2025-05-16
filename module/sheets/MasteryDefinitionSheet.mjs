@@ -1,36 +1,54 @@
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
+
 /**
  * Sheet class for MasteryDefinitionItem.
  */
-export class MasteryDefinitionSheet extends ItemSheet {
+export class MasteryDefinitionSheet extends FDItemSheetV2 {
    /**
-    * Get the default options for the MasteryDefinitionItem sheet.
-    */
-   static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ["fantastic-depths", "item", "weapon-mastery-item"],
-         template: "systems/fantastic-depths/templates/item/MasteryDefinitionSheet.hbs",
-         width: 400,
-         height: 400,
-         resizable: true
-      });
+ * Get the default options for the sheet.
+ */
+   static DEFAULT_OPTIONS = {
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      position: {
+         top: 150,
+         width: 540,
+         height: 500
+      },
+      form: {
+         submitOnChange: true
+      }
+   };
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/MasteryDefinitionSheet.hbs"
+      }
    }
 
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   async getData(options) {
-      const context = await super.getData(options);
-      const itemData = context.data;
+   async _prepareContext(options) {
+      const context = await super._prepareContext(options);
 
-      context.system = itemData.system;
+      context.item = this.item;
+      context.system = this.item.system;
       context.config = CONFIG.FADE;
       context.isGM = game.user.isGM;
+
       // Weapon types
       const types = [];
       types.push({ value: null, text: game.i18n.localize('None') });
       types.push(...CONFIG.FADE.WeaponTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.Mastery.weaponTypes.${type}.long`) }
       }));
+      types.push({ value: "wr", text: game.i18n.localize('FADE.Mastery.weaponTypes.wr.long') });
       context.weaponTypes = types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       return context;

@@ -1,39 +1,77 @@
 import { EffectManager } from '../sys/EffectManager.mjs';
-import { fadeItemSheet } from './fadeItemSheet.mjs'; 
+import { DragDropMixin } from './mixins/DragDropMixin.mjs';
+import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
  * Sheet class for SpellItem.
  */
-export class SpellItemSheet extends fadeItemSheet {
+export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
    /**
-    * Get the default options for the SpellItem sheet.
-    */
-   static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         classes: ['fantastic-depths', 'sheet', 'item'],
-         template: "systems/fantastic-depths/templates/item/SpellItemSheet.hbs",
-         width: 540,
-         height: 360,
+   * Get the default options for the sheet.
+   */
+   static DEFAULT_OPTIONS = {
+      position: {
+         width: 570,
+         height: 450,
+      },
+      window: {
          resizable: true,
-         tabs: [
-            {
-               navSelector: '.sheet-tabs',
-               contentSelector: '.sheet-body',
-               initial: 'description',
-            },
-         ],
-      });
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ['fantastic-depths', 'sheet', 'item'],
+      form: {
+         submitOnChange: true
+      },
+      actions: {
+         deleteItem: SpellItemSheet.#onDeleteChild,
+      },
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/spell/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      attributes: {
+         template: "systems/fantastic-depths/templates/item/spell/attributes.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/item/spell/conditions.hbs",
+      }
+   }
+
+   /** @override */
+   tabGroups = {
+      primary: "description"
+   }
+
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header', 'tabnav', 'description']
+
+      if (game.user.isGM) {
+         options.parts.push('attributes');
+         options.parts.push('effects');
+      }
    }
 
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   async getData(options) {
-      const context = await super.getData(options);
-
-      // Prepare active effects for easier access
-      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+   async _prepareContext(options) {
+      const context = await super._prepareContext(options);
 
       // Attack types
       const attackTypes = []
@@ -58,6 +96,68 @@ export class SpellItemSheet extends fadeItemSheet {
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+
+      context.tabs = this.#getTabs();
+
       return context;
+   }
+
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === 'condition') {
+         // Retrieve the array
+         const items = this.item.system.conditions || [];
+         // Define the new data
+         const newItem = {
+            name: droppedItem.name,
+            uuid: droppedItem.uuid
+         };
+
+         // Add the new item to the array
+         items.push(newItem);
+         await this.item.update({ "system.conditions": items });
+      }
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, Partial<ApplicationTab>>}
+   */
+   #getTabs() {
+      const group = 'primary';
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+      const tabs = {
+         description: { id: 'description', group, label: 'FADE.tabs.description' }
+      }
+      if (game.user.isGM) {
+         tabs.attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes' };
+         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
+      }
+      for (const tab of Object.values(tabs)) {
+         tab.active = this.tabGroups[tab.group] === tab.id;
+         tab.cssClass = tab.active ? "active" : "";
+      }
+      return tabs;
+   }
+
+   static async #onDeleteChild(event) {
+      event.preventDefault();
+      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
+      const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
+
+      if (type === 'condition') {
+         const items = this.item.system.conditions;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.conditions": items });
+         }
+      } 
+      this.render();
    }
 }

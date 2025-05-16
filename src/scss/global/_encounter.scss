@@ -1,25 +1,28 @@
 ﻿// Sass file for disposition flags using Font Awesome icons
-
 .combatant.disposition-friendly::before {
-   font-family: "Font Awesome 5 Free"; // Ensure Font Awesome is used
-   content: "\f024"; // Font Awesome flag icon
-   color: green; // Green for friendly
-   margin-right: 5px;
-   font-weight: 900; // Solid style for Font Awesome
+   content: ""; // Remove the icon content
+   width: 4px; // Set the width of the bar
+   background-color: green;
+   border: none;
+   height: 48px;
 }
 
 .combatant.disposition-neutral::before {
-   font-family: "Font Awesome 5 Free";
-   content: "\f06c"; // Font Awesome minus-circle icon for neutral
-   color: white;
-   margin-right: 5px;
-   font-weight: 900;
+   content: ""; // Remove the icon content
+   width: 4px; // Set the width of the bar
+   background-color: white;
+   border: none;
+   height: 48px;
 }
 
 .combatant.disposition-hostile::before {
-   font-family: "Font Awesome 5 Free";
-   content: "\f06d"; // Font Awesome times-circle icon for hostile
-   color: red;
-   margin-right: 5px;
-   font-weight: 900;
+   content: ""; // Remove the icon content
+   width: 4px; // Set the width of the bar
+   background-color: red;
+   border: none;
+   height: 48px;
+}
+
+.combatant.active::before {
+   height: initial;
 }

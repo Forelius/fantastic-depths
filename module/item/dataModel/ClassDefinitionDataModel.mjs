@@ -29,6 +29,8 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
+         // If true the character or class has basic proficiency with all weapons.
+         basicProficiency: new fields.BooleanField({ required: true, initial: false }),
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
          description: new fields.StringField({ required: false, initial: "" }),
@@ -106,7 +108,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: this.maxSpellLevel }))
             }
          ),
-         classAbilities: new fields.ArrayField(
+         specialAbilities: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: '' }),
                level: new fields.NumberField({ required: true }),
@@ -133,27 +135,14 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    }
 
    /**
-   * Migrate source data from some prior format into a new specification.
-   * The source parameter is either original data retrieved from disk or provided by an update operation.
-   * @inheritDoc
-   */
+    * Migrate source data from some prior format into a new specification.
+    * The source parameter is either original data retrieved from disk or provided by an update operation.
+    * @inheritDoc
+    */
    static migrateData(source) {
-      const abilityScores = {
-         con: { min: null }, wis: { min: null }, int: { min: null }, dex: { min: null }
-      };
-      Object.assign(abilityScores, source.abilities);
-      abilityScores.con.min = abilityScores.con?.min ?? source.minCon ?? null;
-      abilityScores.wis.min = abilityScores.wis?.min ?? source.minWis ?? null;
-      abilityScores.int.min = abilityScores.int?.min ?? source.minInt ?? null;
-      abilityScores.dex.min = abilityScores.dex?.min ?? source.minDex ?? null;
-      source.abilities = abilityScores;
-      if (source.classAbilities) {
-         const classAbilities = Array.isArray(source.classAbilities) ? source.classAbilities : Object.values(source.classAbilities);
-         for (let classAbility of classAbilities) {
-            if (classAbility.classKey == "") {
-               classAbility.classKey = null;
-            }
-         }
+      //const currentVersion = new MySystemVersion(source.version ?? '0.10.0-rc.5');
+      if ((!source.specialAbilities || source.specialAbilities.length == 0) && source.classAbilities?.length > 0) {
+         source.specialAbilities = source.classAbilities;
       }
       return super.migrateData(source);
    }

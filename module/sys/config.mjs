@@ -21,14 +21,16 @@ FADE.AttackTypes = [
 ];
 FADE.DamageTypes = [
    "physical",
-   "breath",
-   "fire",
-   "frost",
+   "breath", // Is physical
+   "fire", // Is physical
+   "frost", // Is physical
    "magic",
    "poison",
-   "acid",
+   "corrosive", // Is physical
    "heal",
-   "hull"
+   "hull",
+   "fall",
+   "piercing" // Short for armor-piercing. Is physical and ignores half of AV.
 ]
 FADE.ConcatLogic = [
    "none",
@@ -148,14 +150,13 @@ FADE.CombatManeuvers = {
    unarmed: { phase: "melee", canMove: true },
    dodge: { phase: "melee", canMove: true }
 }
-FADE.WrestlingStates = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
 FADE.ActorSizes = [
-   { id: "T", shoveResist: 1, isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet
-   { id: "S", shoveResist: 2, isCombat: true, maxFeet: 4 },    // Small: 2 to 4 feet
-   { id: "M", shoveResist: 3, isCombat: true, maxFeet: 7 },    // Medium: 4 to 7 feet
-   { id: "L", shoveResist: 4, isCombat: true, maxFeet: 12 },   // Large: 7 to 12 feet
-   { id: "G", shoveResist: 5, isCombat: false, maxFeet: 25 },  // Huge: 12 to 25 feet
-   { id: "I", shoveResist: 6, isCombat: false, maxFeet: Infinity } // Immense: Over 25 feet (no upper limit)
+   { id: "T", isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet
+   { id: "S", isCombat: true, maxFeet: 4 },    // Small: 2 to 4 feet
+   { id: "M", isCombat: true, maxFeet: 7 },    // Medium: 4 to 7 feet
+   { id: "L", isCombat: true, maxFeet: 12 },   // Large: 7 to 12 feet
+   { id: "G", isCombat: false, maxFeet: 25 },  // Huge: 12 to 25 feet
+   { id: "I", isCombat: false, maxFeet: Infinity } // Immense: Over 25 feet (no upper limit)
 ];
 FADE.TreasureTypes = {
    coins: {
@@ -221,3 +222,19 @@ FADE.ToHit = {
    /** Represents THAC0 for Normal Man */
    BaseTHAC0: 19
 }
+FADE.MonsterTypes = [
+   'bugs',
+   'constructs',
+   'dragonkind',
+   'enchanted',
+   'giantkind',
+   'lycanthropes',
+   'planar',
+   'regenerating',
+   'reptiles-dinosaurs',
+   'spell-immune',
+   'spellcasters',
+   'undead',
+   'water-breathing',
+   'weapon-using'
+];

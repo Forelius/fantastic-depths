@@ -1,0 +1,33 @@
+<section class='tab {{tabs.saves.cssClass}}' data-group='primary' data-tab='saves' name="classSavesSection">
+   <ol name="class-saves" class='items-list'>
+      <!-- Header Row -->
+      <li class='item flexrow items-header'>
+         <div>{{localize 'FADE.Actor.Level'}}</div>
+         {{#each saves as |save|}}
+         <div>{{save.system.shortName}}</div>
+         {{/each}}
+         <div class='item-controls'>
+            <a class='item-control' data-action="createItem" data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave'>
+               <i class='fas fa-plus'></i>
+               {{localize 'FADE.Actor.Saves.short'}}
+            </a>
+         </div>
+      </li>
+      <!-- Save Entries -->
+      {{#each system.saves as |saveData index|}}
+      <li class='item flexrow' data-item-id='{{saveData.level}}'>
+         <div class="align-left"><input type="number" name="system.saves.{{index}}.level" value="{{saveData.level}}" data-dtype="Number" /></div>
+         {{#contextMergeEach @root.saves outerIndex=index outerSaveData=saveData}}
+         <div class="align-left">
+            <input type="number" name="system.saves.{{outerIndex}}.{{item.system.customSaveCode}}" value="{{lookup outerSaveData item.system.customSaveCode}}" data-dtype="Number" />
+         </div>
+         {{/contextMergeEach}}
+         <div class='item-controls'>
+            <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Saves.singular")}}' data-type='classSave' data-index='{{index}}'>
+               <i class='fas fa-trash'></i>
+            </a>
+         </div>
+      </li>
+      {{/each}}
+   </ol>
+</section>

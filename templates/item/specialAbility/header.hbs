@@ -1,0 +1,41 @@
+﻿<header class='sheet-header'>
+   <div class='header-fields'>
+      <img class='profile-img-sm' src='{{item.img}}' data-edit="img" data-action="editImage" />
+      <ul class="summary flexrow">
+         <li class="flex3">
+            <div class='charname'>
+               <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+            </div>
+            <label>{{localize 'Name'}}</label>
+         </li>
+         <li class="flex1">
+            <select name="system.rollMode" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions rollModes selected=system.rollMode}}
+            </select>
+            <label for="system.operator">{{localize 'FADE.rollMode'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li style="max-width:90px;">
+            <input type='text' name="system.rollFormula" value='{{system.rollFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} data-tooltip="{{system.rollFormula}}" />
+            <label for="system.rollFormula">{{localize 'FADE.roll'}}</label>
+         </li>
+         <li style="max-width:60px;">
+            <select name="system.operator" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions operators selected=system.operator}}
+            </select>
+            <label for="system.operator">{{localize 'FADE.operator'}}</label>
+         </li>
+         <li>
+            <input type='text' name="system.target" value='{{system.target}}' data-dtype='String' data-tooltip="{{system.target}}" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.target">{{localize 'FADE.target'}}</label>
+         </li>
+         <li style="max-width:70px;">
+            <select name="system.abilityMod" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions abilities selected=system.abilityMod}}
+            </select>
+            <label for="system.abilityMod">{{localize 'FADE.SpecialAbility.abilityMod'}}</label>
+         </li>
+      </ul>
+   </div>
+</header>

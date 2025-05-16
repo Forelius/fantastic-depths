@@ -1,18 +1,35 @@
+/*$font-primary: 'Alegreya Sans', sans-serif;*/
+/*$font-secondary: 'Barlow', sans-serif;*/
 $font-primary: 'Barlow', sans-serif;
-$font-secondary: 'Alegreya', serif;
+$font-secondary: 'Alegreya Sans', sans-serif;
 
-h1,h2,h3,h4{
-   font-weight:bold;
+.text-size20b {
+   font-size: 20px;
+   font-weight: bold;
 }
 
-.text-size20{
+.text-size20 {
    font-size: 20px;
 }
+
+.text-size18b {
+   font-size: 18px;
+   font-weight: bold;
+   margin-bottom: 4px;
+}
+
 .text-size18 {
    font-size: 18px;
-   margin-bottom:4px;
+   margin-bottom: 4px;
 }
+
 .text-size16 {
    font-size: 18px;
    margin-bottom: 3px;
+}
+
+.text-size16b {
+   font-size: 18px;
+   margin: 4px 0;
+   font-weight: bold;
 }

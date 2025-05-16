@@ -1,0 +1,68 @@
+<section class="tab {{tabs.description.cssClass}}" data-group="primary" data-tab="description">
+   <div class="bordered">
+      <div class="summary flexrow">
+         <div>
+            <input type='text' name="system.details.sex" value='{{system.details.sex}}' data-dtype='String' />
+            <label for="system.details.sex">{{localize 'FADE.Actor.Sex'}}</label>
+         </div>
+         <div style="max-width:60px">
+            <input type='text' name="system.details.age" value='{{system.details.age}}' data-dtype='Number' />
+            <label for="system.details.age">{{localize 'FADE.Actor.Age'}}</label>
+         </div>
+         <div style="max-width:60px">
+            <input type='text' name="system.details.height" value='{{system.details.height}}' data-dtype='String' />
+            <label for="system.details.height">{{localize 'FADE.Actor.Height'}}</label>
+         </div>
+         <div style="max-width: 70px">
+            <input type='text' name="system.details.weight" value='{{system.details.weight}}' data-dtype='String' />
+            <label for="system.details.weight">{{localize 'FADE.Actor.Weight'}}</label>
+         </div>
+         {{#if system.isRetainer}}
+         <div style="max-width:60px;">
+            <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
+            <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
+         </div>
+         <div style="max-width:60px;">
+            <input type="text" name="system.retainer.loyalty" value="{{system.retainer.loyalty}}" data-dtype="String" />
+            <label class="rollable2" for="system.retainer.loyalty"
+                   data-test="morale"
+                   data-target="{{system.retainer.loyalty}}"
+                   data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                   data-action="rollMorale"
+                   data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">{{localize 'FADE.Actor.morale'}}</label>
+         </div>
+         {{else}}
+         <div style="max-width:60px;">
+            <input name="system.retainer.max" type="text" data-dtype="Number" value="{{system.retainer.max}}" />
+            <label for="system.retainer.max">{{localize 'FADE.Actor.Abilities.cha.retainer'}}</label>
+         </div>
+         <div style="max-width:60px;">
+            <label class="rollable2" for="system.retainer.morale"
+                   data-test="morale"
+                   data-action="rollMorale"
+                   data-target="{{system.retainer.morale}}"
+                   data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                   data-tooltip="{{localize 'FADE.Actor.retainerMoraleHint'}}">
+               {{localize 'FADE.Actor.retainerMorale'}}
+            </label>
+            <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
+         </div>
+         {{/if}}
+         <div style="max-width: 100px;">
+            <select name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
+               {{selectOptions sizes selected=system.details.size}}
+            </select>
+            <label for="system.details.size">{{localize 'FADE.Size'}}</label>
+         </div>
+      </div>
+      <div class="summary flexrow">
+         <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
+         <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
+      </div>
+
+      {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
+      <prose-mirror name="system.biography" data-document-u-u-i-d="{{actor.uuid}}" value="{{system.biography}}" collaborate="false" toggled="true">
+         {{{enrichedBiography}}}
+      </prose-mirror>
+   </div>
+</section>

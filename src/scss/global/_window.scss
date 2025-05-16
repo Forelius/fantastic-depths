@@ -1,3 +1,7 @@
+.system-fantastic-depths {
+   font-family: $font-primary;
+}
+
 .window-app {
    font-family: $font-primary;
    --minimized-width: 300px;
@@ -8,7 +12,100 @@
    }
 }
 
+.fantastic-depths {
+   .window-content {
+      .tab {
+         /*height:100%;*/
+      }
+      input, select {
+         max-height: 26px;
+         padding: 0 4px;
+      }
+      .sheet-tabs{
+         gap:0;
+      }
+   }
+}
+
+.application {
+   .window-content, .chat-message {
+      h1 {
+         margin: 6px 0 4px 0;
+         font-size: 28px;
+         font-family: $font-primary;
+      }
+
+      h2 {
+         margin: 6px 0 4px 0;
+         font-size: 24px;
+         font-family: $font-primary;
+      }
+
+      h3 {
+         margin: 6px 0 4px 0;
+         font-size: 20px;
+         font-family: $font-primary;
+      }
+
+      h4 {
+         margin: 6px 0 4px 0;
+         font-size: 16px;
+         font-family: $font-primary;
+      }
+   }
+
+   ul, ul {
+      margin: 8px 0;
+   }
+
+   table {
+      margin: 1px 1px;
+      border-radius: 0;
+
+      tr:nth-child(even) {
+         background-color: rgba(100, 100, 100, 0.15);
+      }
+
+      th {
+         line-height: 1;
+         padding: 3px 8px;
+      }
+
+      td {
+         line-height: 1;
+         padding: 2px 4px;
+      }
+
+      input {
+         height: 26px;
+      }
+   }
+}
+
+table.compact-table {
+   th {
+      line-height: 1;
+      padding: 2px 8px;
+   }
+
+   td {
+      line-height: 1;
+      padding: 2px 4px;
+   }
+
+   input {
+      height: 26px;
+   }
+}
+
 .rollable, .chatable {
+   &:hover,
+   &:focus {
+      cursor: pointer;
+   }
+}
+
+.rollable2, .chatable2 {
    &:hover,
    &:focus {
       cursor: pointer;
@@ -43,7 +140,6 @@
    padding: 4px 8px;
    font-weight: 600;
 }
-
 /* Apply these styles only when the "minimized" class is not present */
 .window-app.fantastic-depths.sheet.actor:not(.minimized) {
    min-width: 600px !important;
@@ -140,10 +236,44 @@
    color: #888888;
 }
 
-.prosemirror .editor-container .editor-content {
-   position: relative !important;
+.editor {
+   height:100%;
+   /*min-height: 50px;*/
 }
 
+.prosemirror .editor-container .editor-content, prose-mirror .editor-content {
+   position: relative;
+}
+
+/* Dialog footer buttons */
+.standard-form .form-footer > button {
+   line-height: 1;
+   min-width: auto;
+}
+/* Fixes spacing when using labels on top. */
+.top-label label {
+   margin: 0 4px;
+}
+
+.top-label select, .top-label input {
+   margin-top: 4px;
+}
+
+.fade-dialog {
+
+   .form-group label {
+      max-width: 110px;
+      line-height: normal !important;
+   }
+
+   .application label.checkbox {
+      display: block;
+   }
+
+   .top-label div {
+      padding: 0 4px;
+   }
+}
 
 .system-fantastic-depths {
    #tooltip.text-center {

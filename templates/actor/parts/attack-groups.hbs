@@ -1,0 +1,49 @@
+<div name="weaponItems" class='items-list'>
+   <div class='item flexrow items-header'>
+      <div class='item-name'>{{localize 'FADE.Item.equipped'}} {{localize 'FADE.Weapon.plural'}}</div>
+      <div class="item-100px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
+      <div class="item-80px">{{localize 'FADE.Actor.Attacks.short'}}</div>
+   </div>
+   {{#each attackGroups as |equippedWeapons|}}
+   {{#each equippedWeapons as |item id|}}
+   <div class='item collapsible-content attack-group' data-item-id='{{item._id}}' style="border:none;">
+      <div class="flexrow">
+         <div class='item-name'>
+            <div class='item-image rollable2'
+                 data-action="rollItem"
+                 data-test="attack"
+                 data-roll-type='item'>
+               <img src='{{item.img}}' width='26' height='26' />
+            </div>
+            {{#if (or ../isGM item.system.isIdentified)}}
+            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
+            {{else}}
+            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.system.unidentifiedName}}</a>
+            {{/if}}
+         </div>
+         <div class="item-100px item-prop">{{item.system.damageLabel}}</div>
+         <div class="item-80px item-prop flexrow editable">
+            <input type="text" name="system.attacks.used" data-dtype="String" value="{{item.system.attacks.used}}" data-field="waUsed" />/
+            <input type="text" name="system.attacks.max" data-dtype="String" value="{{item.system.attacks.max}}" placeholder="∞" data-field="waMax" />
+            <div style="max-width:8px" data-action="cycleAttackGroup" class="item-group {{concat "group-" item.system.attacks.group}}" data-tooltip="{{localize "Fade.Actor.Attack.groupHint"}}"></div>
+         </div>
+      </div>
+      <div class='item-description desc-collapsed bordered'></div>
+   </div>
+   <div class='flexrow item collapsible-content' data-item-id='{{item._id}}'>
+      {{#if item.system.ammo.maxLoad}}
+      {{#if (lte item.system.ammo.maxLoad 30)}}
+      <div class="consumable-counter">
+         <label style="margin-right:4px;">{{item.system.ammo.type}}</label>
+         {{#times item.system.ammo.load}}
+         <div class="full-mark"></div>
+         {{/times}} {{#times (subtract item.system.ammo.maxLoad item.system.ammo.load)}}
+         <div class="empty-mark"></div>
+         {{/times}}
+      </div>
+      {{/if}}
+      {{/if}}
+   </div>
+   {{/each}}
+   {{/each}}
+</div>

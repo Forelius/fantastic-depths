@@ -17,19 +17,19 @@ export class fadeTreasure {
    async rollMultipleTables(inlines = [], tables = [], title = "") {
       const chatContentArray = [];
       if (title) {
-         chatContentArray.push(`<h2>${title}</h2>`);
+         chatContentArray.push(`<div class="text-size18b">${title}</div>`);
       }
       await this.#doInlineRolls(inlines);
       await this.#doTableRolls(tables);
 
       if (this.group.coins.length > 0) {
          const total = this.group.coins.reduce((acc, item) => item.value + acc, 0);
-         chatContentArray.push(`<h3>${game.i18n.format('FADE.treasure.coins', { total: total.toLocaleString() })}</h3>`);
+         chatContentArray.push(`<div class="text-size16b">${game.i18n.format('FADE.treasure.coins', { total: total.toLocaleString() })}</div>`);
          chatContentArray.push(...this.group.coins.map(item => item.content));
       }
       if (this.group.gems.length > 0) {
          const total = this.group.gems.reduce((acc, item) => item.value + acc, 0);
-         chatContentArray.push(`<h3 style='margin-top:4px;'>${game.i18n.format('FADE.treasure.gems', { total: total.toLocaleString() })}</h3>`);
+         chatContentArray.push(`<div class="text-size16">${game.i18n.format('FADE.treasure.gems', { total: total.toLocaleString() })}</div>`);
          const normalized = this.group.gems.map(item => {
             return game.i18n.format('FADE.treasure.formatValue', { name: item.name, value: item.value.toLocaleString() });
          }).reduce((acc, item) => {
@@ -44,15 +44,19 @@ export class fadeTreasure {
       }
       if (this.group.jewelry.length > 0) {
          const total = this.group.jewelry.reduce((acc, item) => item.value + acc, 0);
-         chatContentArray.push(`<h3 style='margin-top:4px;'>${game.i18n.format('FADE.treasure.jewelry', { total: total.toLocaleString() })}</h3>`);
+         chatContentArray.push(`<div class="text-size16b">${game.i18n.format('FADE.treasure.jewelry', { total: total.toLocaleString() })}</div>`);
          chatContentArray.push(...this.group.jewelry.map(item => item.content));
       }
       if (this.group.items.length > 0) {
-         chatContentArray.push(`<h3 style='margin-top:4px;'>${game.i18n.localize('FADE.treasure.magic')}</h3>`);
+         chatContentArray.push(`<div class="text-size16b">${game.i18n.localize('FADE.treasure.magic')}</div>`);
          chatContentArray.push(...this.group.items);
       }
 
-      ChatMessage.create({ content: chatContentArray.join('') });
+      const chatMsgData = {
+         content: chatContentArray.join('')
+      };
+      ChatMessage.applyRollMode(chatMsgData, "blindroll");
+      ChatMessage.create(chatMsgData);
    }
 
    async #rollWorldTableMulti(tableName, rollFormula) {

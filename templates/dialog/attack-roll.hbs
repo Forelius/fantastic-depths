@@ -1,28 +1,45 @@
-<style type="text/css">
-   .form-group label {
-      flex: 3 !important;
-      line-height: normal !important;
-   }
-</style>
-<form>
-   <!-- Dropdown for selecting 'melee' or 'missile' -->
-   <div class="form-group">
-      <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
-      <select id="attackType" class="form-control">
-         {{selectOptions types selected='melee'}}
-      </select>
+<div class="fade-dialog">
+   <div class="flexrow top-label">
+      <div class="flex2">
+         <!-- Dropdown for selecting 'melee' or 'missile' -->
+         <label for="attackType">{{localize 'FADE.AttackTypes.name'}}</label>
+         <select name="attackType" class="form-control" style="width:100%">
+            {{selectOptions attackTypes selected=attackType}}
+         </select>
+      </div>
+      {{#if targetWeaponTypes}}
+      <div class="flex2">
+         <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
+         <select name="targetWeaponType" class="form-control" style="width:100%">
+            {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
+         </select>
+      </div>
+      {{/if}}
    </div>
-   {{#if targetWeaponTypes}}
+   <!-- Range Selector -->
+   <div id="rangeSelect" style="margin: 10px 0 6px 0;{{#unless (eq attackType "missile")}}display: none;{{/unless}}">
+      <div class="flexrow">
+         <label class="flex0" style="margin-left: 8px;">{{localize "FADE.Spell.range"}}:</label> <span style="margin-left:6px;">{{attackDistance}}</span>
+      </div>
+      <div class="form-group">
+         {{radioBoxes "rangeType" rangeChoices checked=rangeSelected localize=true}}
+      </div>
+   </div>
+   <!-- Modifier Input Field -->
+   <div class="flexrow top-label" style="margin:5px 0;">
+      <div class="flex1">
+         <label>{{localize "FADE.attackRoll"}}</label>
+         <input name="attackRoll" placeholder='1d20' type="text" value="{{attackRoll}}" />
+      </div>
+      <div class="flex1">
+         <label>{{localize "FADE.modifier"}}</label>
+         <input name="mod" placeholder=0 type="number" value="{{modifier}}"/>
+      </div>
+   </div>
+   {{#if extraRollOptions}}
+   {{!-- Roll with advantage/disadvantage --}}
    <div class="form-group">
-      <label for="targetWeaponType">{{localize 'FADE.dialog.masteryTargetType'}}</label>
-      <select id="targetWeaponType" class="form-control">
-         {{selectOptions targetWeaponTypes selected=selectedWeaponType}}
-      </select>
+      {{radioBoxes "rollFormulaType" rollSelected checked=rollChosen localize=true}}
    </div>
    {{/if}}
-   <!-- Modifier Input Field -->
-   <div class="form-group">
-      <label>{{localize "FADE.modifier"}}</label>
-      <input id="mod" placeholder=0 type="number" />
-   </div>
-</form>
+</div>

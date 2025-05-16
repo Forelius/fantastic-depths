@@ -1,3 +1,4 @@
+const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 class TurnData {
    constructor(data) {
@@ -35,28 +36,28 @@ class TurnData {
       };
    }
 
-   async saveSettings() {
-      await game.settings.set(game.system.id, 'turnData', this);
+   saveSettings() {
+      game.settings.set(game.system.id, 'turnData', this);
    }
 
-   async resetSession() {
+   resetSession() {
       this.dungeon.session = 0;
-      await this.saveSettings();
+      this.saveSettings();
    }
 
-   async resetTotal() {
+   resetTotal() {
       this.dungeon.session = 0;
       this.dungeon.total = 0;
       this.dungeon.rest = 0;
       this.worldTime = game.time.worldTime
-      await this.saveSettings();
+      this.saveSettings();
    }
 
    rest() {
       this.dungeon.rest = 0;
    }
 
-   async updateTime(seconds, skipRest=false) {
+   updateTime(seconds, skipRest = false) {
       const turns = seconds / this.timeSteps.turn;
       this.dungeon.session += turns;
       this.dungeon.total += turns;
@@ -64,31 +65,72 @@ class TurnData {
          this.dungeon.rest += turns;
       }
       this.worldTime = game.time.worldTime;
-      await this.saveSettings();
+      this.saveSettings();
       return turns;
    }
 }
 
-export class TurnTrackerForm extends FormApplication {
+export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    constructor(object = {}, options = {}) {
       super(object, options);
-      this.isGM = game.user.isGM;
-      this.settingsChanged = false;
       this.turnData = new TurnData();
       this.isResting = false;
       // Only keep necessary properties
       Object.assign(this.turnData, game.settings.get(game.system.id, 'turnData'));
    }
 
-   static get defaultOptions() {
-      const options = super.defaultOptions;
-      options.id = "turn-tracker-form";
-      options.template = `systems/${game.system.id}/templates/apps/turn-tracker.hbs`;
-      options.width = 400;
-      options.height = 280;
-      options.title = "Turn Tracker";
-      options.classes = ["fantastic-depths", ...super.defaultOptions.classes];
-      return options;
+   get title() {
+      return game.i18n.localize("FADE.apps.turnTracker.title");
+   }
+
+   static DEFAULT_OPTIONS = {
+      id: "turn-tracker-form",
+      tag: 'form',
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      position: {
+         width: 400,
+         height: "auto",
+      },
+      form: {
+         handler: TurnTrackerForm.#onSubmit,
+         submitOnChange: true,
+         closeOnSubmit: false
+      },
+      actions: {
+         advance: TurnTrackerForm.#clickAdvanceTurn,
+         revert: TurnTrackerForm.#clickRevertTurn,
+         rest: TurnTrackerForm.#clickRest,
+         resetSession: TurnTrackerForm.#clickResetSession,
+         resetTotal: TurnTrackerForm.#clickResetTotal,
+      },
+      classes: ['fantastic-depths']
+   }
+
+   static PARTS = {
+      main: {
+         template: `systems/fantastic-depths/templates/apps/turn-tracker.hbs`,
+      }
+   }
+
+   /** @override 
+    * Fetch data for the form, such as turn count and game time 
+    */
+   async _prepareContext(_options) {
+      const context = {};
+      context.turnData = foundry.utils.deepClone(this.turnData);
+      // Conditions
+      const conditions = [];
+      conditions.push({ value: "", text: game.i18n.localize("FADE.none") });
+      const conditionItems = (await fadeFinder.getConditions()).sort((a, b) => a.name.localeCompare(b.name));
+      conditions.push(...conditionItems.map((condition) => {
+         return { value: condition.uuid, text: condition.name }
+      }));
+      context.conditions = conditions.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      return context;
    }
 
    async _updateObject(event, formData) {
@@ -100,24 +142,6 @@ export class TurnTrackerForm extends FormApplication {
       return this.turnData.saveSettings();
    }
 
-   /** 
-    * Fetch data for the form, such as turn count and game time 
-    */
-   async getData() {
-      const context = await super.getData();
-      context.turnData = this.turnData;
-
-      // Conditions
-      const conditions = [];
-      conditions.push({ value: "", text: game.i18n.localize('None') });
-      const conditionItems = (await fadeFinder.getConditions()).sort((a, b) => a.name.localeCompare(b.name));
-      conditions.push(...conditionItems.map((condition) => {
-         return { value: condition.uuid, text: condition.name }
-      }));
-      context.conditions = conditions.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-      return context;
-   }
-
    /**
     * Increment the turn count, advance the in-game time, and re-render the form
     * @param {any} seconds 
@@ -127,12 +151,14 @@ export class TurnTrackerForm extends FormApplication {
       await game.time.advance(seconds);
    }
 
-   /** 
-    * Attach event listeners to elements in the form 
-    */
-   async activateListeners(html) {
-      super.activateListeners(html);
-
+   /**
+   * Actions performed after any render of the Application.
+   * Post-render steps are not awaited by the render process.
+   * @param {ApplicationRenderContext} context      Prepared context data
+   * @param {RenderOptions} options                 Provided render options
+   * @protected
+   */
+   _onRender(context, options) {
       if (game.user.isGM == false) return;
 
       // Initialize tab system
@@ -141,48 +167,9 @@ export class TurnTrackerForm extends FormApplication {
          contentSelector: ".tab-content",
          initial: "tracker",
       });
-      this.tabsController.bind(html[0]);
+      this.tabsController.bind(this.element);
 
-      const timeSteps = this.turnData.timeSteps;
-
-      html.find("#advance-turn")[0].addEventListener('click', async (e) => {
-         e.preventDefault();
-         await this.advanceTime(timeSteps.turn);
-      });
-      html.find("#revert-turn")[0].addEventListener('click', async (e) => {
-         e.preventDefault();
-         await this.advanceTime(-timeSteps.turn);
-      });
-      html.find("#reset-session")[0].addEventListener('click', async (e) => {
-         e.preventDefault();
-         await this.turnData.resetSession();
-         this.render(true);  // Re-render the form to update the UI
-         const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
-         ChatMessage.create({
-            speaker: speaker,
-            content: game.i18n.localize("FADE.notification.timeReset1")
-         });
-      });
-      html.find("#reset-total")[0].addEventListener('click', async (e) => {
-         e.preventDefault();
-         await this.turnData.resetTotal();
-         const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
-         ChatMessage.create({
-            speaker: speaker,
-            content: game.i18n.localize("FADE.notification.timeReset2")
-         });
-         this.render(true);  // Re-render the form to update the UI
-      });
-      const restElem = html.find("#rest");
-      if (restElem?.length > 0) {
-         restElem[0].addEventListener('click', async (e) => await this.#onClickRest(e));
-      }
-
-      html.find("#save-config")[0].addEventListener('click', async (e) => {
-         e.preventDefault();
-         this.submit();
-      });
-
+      Hooks.off('updateWorldTime', this._updateWorldTime);
       Hooks.on('updateWorldTime', this._updateWorldTime);
    }
 
@@ -196,7 +183,7 @@ export class TurnTrackerForm extends FormApplication {
       const seconds = worldTime - this.turnData.worldTime;
 
       if (Math.abs(seconds) >= timeSteps.round) {
-         const turns = await this.turnData.updateTime(seconds, this.isResting);
+         const turns = this.turnData.updateTime(seconds, this.isResting);
          this.isResting = false;
          const turnsRounds = this.turnData.toTurnsRounds(Math.abs(turns));
          chatContent = (turns > 0)
@@ -206,7 +193,7 @@ export class TurnTrackerForm extends FormApplication {
          // Rest message
          chatContent += (await this.#handleNeedRest());
 
-         this.render(true);  // Re-render the form to update the UI
+         this.render();  // Re-render the form to update the UI
 
          if (chatContent.length > 0) {
             ChatMessage.create({ speaker: speaker, content: chatContent });
@@ -219,8 +206,59 @@ export class TurnTrackerForm extends FormApplication {
       return super.close(options);
    }
 
-   async #onClickRest(e) {
-      e.preventDefault();
+   /**
+     * Process form submission for the sheet
+     * @this {MyApplication}                 The handler is called with the application as its bound scope
+     * @param {SubmitEvent} event            The originating form submission event
+     * @param {HTMLFormElement} form         The form element that was submitted
+     * @param {FormDataExtended} formData    Processed data for the submitted form
+     * @returns {Promise<void>}
+     */
+   static async #onSubmit(event, form, formData) {
+      event.preventDefault();
+      const data = foundry.utils.expandObject(formData.object);
+      // Update system with data from form.
+      foundry.utils.mergeObject(this.turnData, data.turnData);
+      this.turnData.saveSettings();
+      await this.render(true);
+   }
+
+   static async #clickAdvanceTurn(event) {
+      event.preventDefault();
+      const timeSteps = this.turnData.timeSteps;
+      await this.advanceTime(timeSteps.turn);
+   }
+
+   static async #clickRevertTurn(event) {
+      event.preventDefault();
+      const timeSteps = this.turnData.timeSteps;
+      await this.advanceTime(-timeSteps.turn);
+   }
+
+   static async #clickResetSession(event) {
+      event.preventDefault();
+      this.turnData.resetSession();
+      this.render(true);  // Re-render the form to update the UI
+      const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
+      ChatMessage.create({
+         speaker: speaker,
+         content: game.i18n.localize("FADE.notification.timeReset1")
+      });
+   }
+
+   static async #clickResetTotal(event) {
+      event.preventDefault();
+      this.turnData.resetTotal();
+      const speaker = { alias: game.user.name };  // Use the player's name as the speaker         
+      ChatMessage.create({
+         speaker: speaker,
+         content: game.i18n.localize("FADE.notification.timeReset2")
+      });
+      this.render(true);  // Re-render the form to update the UI
+   }
+
+   static async #clickRest(event) {
+      event.preventDefault();
       this.isResting = true;
       await this.advanceTime(this.turnData.timeSteps.turn);
       this.turnData.rest();
@@ -233,8 +271,6 @@ export class TurnTrackerForm extends FormApplication {
          const condition = trackedActor.items.find(item => item.type === needRestCondition.type && item.name === needRestCondition.name);
          if (condition) {
             condition.delete();
-            //const itemData = [condition.toObject()];
-            //await trackedActor.deleteEmbeddedDocuments("Item", itemData);
          }
       }
 

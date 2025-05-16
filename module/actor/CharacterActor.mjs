@@ -1,11 +1,11 @@
 ﻿import { Formatter } from '../utils/Formatter.mjs';
-import { fadeActor } from './fadeActor.mjs';
+import { FDActor } from './FDActor.mjs';
 import { SpeciesItem } from "../item/SpeciesItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 
-export class CharacterActor extends fadeActor {
+export class CharacterActor extends FDActor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -19,6 +19,8 @@ export class CharacterActor extends fadeActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      //this.system.wrestling = Wrestling.calculateWrestlingRating(this);
+      this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
    }
 
    /**
@@ -74,7 +76,7 @@ export class CharacterActor extends fadeActor {
                const newValue = foundry.utils.getProperty(updateData, key);
                if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
                   // Recursively log changes for nested objects
-                  changes = [...changes, ...this.logActorChanges(newValue, oldData, user, type, fullKey, recursionLevel+1)];
+                  changes = [...changes, ...this.logActorChanges(newValue, oldData, user, type, fullKey, recursionLevel + 1)];
                } else if (oldValue) {
                   changes.push({ field: fullKey, oldValue: oldValue, newValue: newValue });
                }
@@ -152,6 +154,10 @@ export class CharacterActor extends fadeActor {
                bonus: classItem.getXPBonus(this.system.abilities)
             }
          },
+         combat: {
+            // If false then take from class data, otherwise whatever character's value was set to.
+            basicProficiency: classData.basicProficiency
+         },
          hp: {},
          thac0: {},
          spellSlots: []
@@ -181,19 +187,10 @@ export class CharacterActor extends fadeActor {
          if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
             console.warn(`Class spells are empty for spellcaster ${this.name} (${this.system.details.class}). Max spells per level cannot be set.`, classData.spells);
          } else {
-            // Loop through the spell slots in the this and update the 'max' values
-            for (let slot of this.system.spellSlots) {
-               const index = slot.spellLevel - 1;
-               // Check if the index is within the spellProgression array bounds
-               if (index >= 0 && index < spellProgression.length) {
-                  // Set the max value based on the class spell progression
-                  update.spellSlots[index] = { max: spellProgression[index] };
-                  //slot.max = spellProgression[index];
-               } else {
-                  // Set max to 0 if the character's class doesn't have spells at this level
-                  //slot.max = 0;
-                  update.spellSlots[index] = { max: 0 };
-               }
+            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
+            for (let i = 0; i < update.spellSlots.length; i++) {
+               // Set the max value based on the class spell progression
+               update.spellSlots[i] = { max: spellProgression[i] };
             }
          }
       }
@@ -250,22 +247,23 @@ export class CharacterActor extends fadeActor {
    }
 
    /**
-    * Called by update actor even halder to update species-related data.
+    * Called by update actor to update species-related data.
     */
    async _updateSpecies() {
       const nameInput = this.system.details.species?.toLowerCase();
       const speciesItem = await fadeFinder.getSpecies(nameInput);
-      const actorItem = this.items.find(item => item.type === 'species');
+      const actorItems = this.items.filter(item => item.type === 'species');
+
+      // Manage the species embedded item
+      if (actorItems?.length > 0) {
+         for (let actorItem of actorItems) actorItem.delete();
+      }
 
       if (!speciesItem) {
          //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
          return;
       }
 
-      // Manage the species embedded item
-      if (actorItem) {
-         actorItem.delete();
-      }
       const itemData = [speciesItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
 

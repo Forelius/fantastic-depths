@@ -1,8 +1,7 @@
 <div>
-   <!--<p>Select a weapon to attack with:</p>-->
-   <div style="margin-bottom: 10px;">
-      <label for="weapon-item">{{localize 'FADE.dialog.selectWeapon'}}:</label>
-      <select id="weaponItem">
+   <div class="top-label">
+      <label for="selectedid">{{localize 'FADE.dialog.selectWeapon'}}:</label>
+      <select name="selectedid">
          {{selectOptions attackItems selected=selectedid}}
       </select>
    </div>

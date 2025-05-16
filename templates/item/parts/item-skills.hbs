@@ -1,44 +1,52 @@
-<ol name="skillItems" class='items-list'>
-   <li class='item flexrow items-header collapsible-header'>
+<div name="skillItems" class='items-list'>
+   <div class='item flexrow items-header' data-action="toggleHeader">
       <div class='item-name'>{{localize 'FADE.Skill.plural'}}</div>
       <div class="item-80px">{{localize 'FADE.Actor.Abilities.long'}}</div>
       <div class="item-40px">{{localize 'FADE.Actor.Level'}}</div>
-      <div class='item-controls-sm'>
+      <div class='item-controls2'>
          {{#if @root.isGM}}
-         <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Skill.long")}}' data-type='skill'>
+         <a class='item-control item-create'
+            data-type='skill'
+            data-action="createItem"
+            data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Skill.long")}}'>
             <i class='fas fa-plus'></i>
             {{localize 'FADE.Skill.short'}}
          </a>
          {{/if}}
       </div>
-   </li>
+   </div>
    {{#each skills as |item id|}}
-   <li class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
-      <div class="flexrow center-vert">
+   <div class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+      <div class="flexrow">
          <div class='item-name'>
-            <div class="item-image rollable"
+            <div class="item-image rollable2"
+                 data-action="rollItem"
                  data-roll-type='item'
                  data-label="{{item.name}}"
                  data-dialog="generic"
                  data-test="skill">
                <img src='{{item.img}}' data-tooltip='{{localize 'FADE.rollWithCtrl' name=item.name}}' width='24' height='24' />
             </div>
-            <a class='item-control description-expand' data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
+            <a class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
          </div>
          <div class="item-80px item-prop"><label>{{localize (concat 'FADE.Actor.Abilities.' item.system.ability '.long')}}</label></div>
          <div class="item-40px item-prop"><label>{{item.system.level}}</label></div>
-         <div class='item-controls-sm'>
-            <a class="item-control item-edit" data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
+         <div class='item-controls2'>
+            <a class="item-control"
+               data-action="editItem"
+               data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-pencil'></i>
             </a>
             {{#if @root.isGM}}
-            <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Skill.long")}}'>
+            <a class='item-control' 
+               data-action="deleteItem"
+               data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Skill.long")}}'>
                <i class='fas fa-trash'></i>
             </a>
             {{/if}}
          </div>
       </div>
       <div class='item-description desc-collapsed bordered'></div>
-   </li>
+   </div>
    {{/each}}
-</ol>
+</div>

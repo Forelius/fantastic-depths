@@ -25,6 +25,7 @@
          "Origin": "Origin",
          "Trainer": "Trainer",
          "Languages": "Languages",
+         "effectiveLevel": "Effective Level",
          "Level": "Level",
          "NextLevel": "Next Level",
          "Experience": "Experience",
@@ -80,7 +81,7 @@
             "short": "Wrestling",
             "abbr": "WR"
          },
-         "Flight": {
+         "movement2": {
             "abbr": "Sec.",
             "long": "Secondary",
             "hint": "Secondary movement can be any other type of movement the creature is capable of besides ground movement."
@@ -114,6 +115,8 @@
          "Abilities": {
             "score": "Score",
             "long": "Ability",
+            "base": "Base ability score: This is the ability score as it was rolled.",
+            "tempMod": "This is a manually entered temporary modifier to the ability score.",
             "plural": "Abilities",
 
             "str": {
@@ -162,8 +165,9 @@
          },
          "Attacks": {
             "abbr": "AT#",
-            "short": "# Attacks",
-            "long": "Number of Attacks"
+            "short": "Attacks",
+            "long": "Number of Attacks",
+            "groupHint": "Which attack group this attack belongs to. Click to cycle through the six available groups."
          },
          "NumberAppearing": {
             "abbr": "NA",
@@ -254,9 +258,9 @@
          "LightItem": "Light Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
          "WeaponItem": "Weapon Item Sheet",
-         "Treasure": "Treasure Item Sheet",
-         "Condition": "Condition Item Sheet",
-         "Species": "Ancestry Item Sheet"
+         "TreasureItem": "Treasure Item Sheet",
+         "ConditionItem": "Condition Item Sheet",
+         "SpeciesItem": "Ancestry Item Sheet"
       },
       "Spell": {
          "casts": "casts",
@@ -417,6 +421,11 @@
          "plural": "Armor",
          "naked": "Without Armor",
          "long": "Base AC",
+         "av": {
+            "long": "Armor Value",
+            "short": "AV",
+            "hint": "Armor value indicates how many points of damage the armor stops."
+         },
          "hintBase": "<b>Base Armor Class</b><p>This is the base armor class and it doesn't' include modifiers from effects.</p>",
          "longAAC": "Base AAC",
          "abbr": "AC",
@@ -459,6 +468,10 @@
          "long": "Weapon Mastery",
          "primary": "Primary",
          "secondary": "Secondary",
+         "required": {
+            "name": "Basic Proficiency",
+            "hint": "This actor or class has basic profiency with all weapon types."
+         },
          "weaponTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
          "weaponType": "Weapon Type",
          "weaponTypes": {
@@ -473,6 +486,10 @@
             "all": {
                "long": "All",
                "abbr": "A"
+            },
+            "wr": {
+               "long": "Wrestling",
+               "abbr": "WR"
             }
          },
          "levels": {
@@ -483,11 +500,17 @@
             "grandMaster": "Grand Master"
          },
          "acBonusType": "AC Bonus Type",
-         "acBonusTypeHint": "The type of attack that the AC bonus applies to.",
+         "bonusType": "Bonus Type",
+         "acBonusTypeHint": "The type of attack to which the AC (or other) bonus applies.",
          "acBonus": "AC Bonus",
+         "wrBonus": "WR Bonus",
          "acBonusAT": "AT#",
          "acBonusATTitle": "AC bonus attacks per round",
          "specialEffects": "Special Effects",
+         "trainingFails": {
+            "name": "Training",
+            "hint": "The number of failed attempts to reach the next level. Advancement to the next mastery level is not automatic; however, each subsequent attempt increases the probability of success."
+         },
          "summary": "<p>Weapon Type: {weaponType}<br/>Primary: {primaryType}<br/>Special Effects: {special}<br/>Ranges: {short}/{medium}/{long}<br/>{defense}</p>"
       },
       "SpecialAbility": {
@@ -544,6 +567,7 @@
          "languageDesc": "Add one or more languages."
       },
       "notification": {
+         "missingSave": "The actor does not have the requested saving throw type ({type}).",
          "selectTarget": "A targetted must first be selected.",
          "selectToken1": "A token must first be selected.",
          "spellSelectToken": "You must have your token selected to cast a spell.",
@@ -617,7 +641,26 @@
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
-      "apps": {
+      "apps": {        
+         "userTables": {
+            "title": "User Tables",
+            "tableId": "Table ID",
+            "tableName": "Table Name",
+            "tableType": "Table Type",
+            "selectTable": "Select Table...",
+            "minimum": "Minimum",
+            "bonus": "Bonus",
+            "removePrompt": "Remove Table?",
+            "actions": {
+               "new": "Add",
+               "load": "Load",
+               "createTable": "Create Table",
+               "saveTable": "Save Changes"
+            },
+            "tableTypes": {
+               "bonus": "Bonus Table"
+            }
+         },
          "playerCombat": {
             "title": "Player Combat",
             "prompt": "Select combat manuever for this round.",
@@ -626,6 +669,7 @@
             "noDeclaredActions": "Fantastic Depths is not configured to use declared actions."
          },
          "turnTracker": {
+            "title": "Turn Tracker",
             "sessionCount": "Session Count",
             "totalCount": "Total Count",
             "sinceRest": "Since Rest",
@@ -644,6 +688,16 @@
          }
       },
       "dialog": {
+         "rollFormulaType": {
+            "normal": "Normal",
+            "advantage": "Advantage",
+            "disadvantage": "Disadvantage"
+         },
+         "lightManager": {
+            "title": "Light Manager",
+            "ignite": "Enable",
+            "extinguish": "Disable"
+         },
          "shove": {
             "resultsLabel": "Shove Results",
             "attackerRoll": "{attacker} Roll",
@@ -683,8 +737,6 @@
          },
          "lightSource": "Light Source",
          "selectLightSource": "Select Light Source",
-         "ignite": "Enable",
-         "extinguish": "Disable",
          "selectWeapon": "Select Weapon",
          "masteryTargetType": "Target Weapon Type",
          "abilityCheck": "Ability Check",
@@ -734,7 +786,7 @@
          "primeRequisites": "Prime Reqs",
          "attributes": "Attributes",
          "tracker": "Tracker",
-         "config":  "Config."
+         "config": "Config."
       },
       "AttackTypes": {
          "name": "Attack Type",
@@ -755,9 +807,11 @@
             "frost": "Frost",
             "magic": "Magic",
             "poison": "Poison",
-            "acid": "Acid",
+            "corrosive": "Corrosive",
             "heal": "Healing",
-            "hull": "Hull"
+            "hull": "Hull",
+            "fall": "Fall",
+            "piercing": "Armor-piercing"
          }
       },
       "combat": {
@@ -922,11 +976,13 @@
          "starstone": "Starstone",
          "tristal": "Tristal"
       },
+      "folder": "Folder",
       "Size": "Size",
       "roll": "Roll",
       "rollWithCtrl": "<p>Roll {name} check.</p><p><i>Click to roll. Ctrl-click to roll without mod.</i></p>",
       "vsMagic": "vs Magic",
       "rollMode": "Roll Mode",
+      "rollTable": "Roll Table",
       "operator": "Operator",
       "modifier": "Modifier",
       "target": "Target",
@@ -946,6 +1002,7 @@
       "type": "Type",
       "changes": "Changes",
       "rollFormula": "Roll Formula",
+      "attackRoll": "Attack Roll",
       "showResult": {
          "name": "Result",
          "hint": "Show the result?"
@@ -1009,7 +1066,7 @@
             "name": "Max. Move Speed",
             "hint": "<b>Max ground speed per turn.</b><p>Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          },
-         "maxFlight": {
+         "maxMove2": {
             "name": "Max. Secondary Speed",
             "hint": "<b>Max secondary movement speed per turn.</b><p> Secondary movement can be any other type of movement the creature is capable of besides ground movement. Movement distances are measured in feet when indoors and in yards when outdoors.</p>"
          }
@@ -1059,7 +1116,7 @@
       },
       "logChanges": {
          "name": "Log Character Sheet Changes",
-         "hint": "If enabled, logs character sheet changes to the GM via chat."
+         "hint": "If enabled, logs character sheet changes to the GM via chat. This can be useful for troubleshoot issues."
       },
       "weaponMastery": {
          "name": "Weapon Mastery",
@@ -1086,6 +1143,14 @@
       "abilityCheckFormula": {
          "name": "Ability Check Roll Formula"
       },
+      "monsterAbilityScores": {
+         "name": "Monster Ability Scores",
+         "hint": "If enabled, the monster sheet will have ability scores, just like the character sheet. Select 'Without Modifier' option to ignore ability score modifiers. Select 'With Modifier' to include ability score modifiers. Including the modifiers will not only display them on the sheet, but also include them in die rolls, such as bonuses to attack and damage rolls.",
+         "choices": {
+            "withoutmod": "Without Modifier",
+            "withmod": "With Modifier"
+         }
+      },
       "roundDurationSec": {
          "name": "Round Duration",
          "hint": "The number of seconds a round represent in game time."
@@ -1097,6 +1162,27 @@
       "showExplorationTarget": {
          "name": "Show Exploration Target",
          "hint": "Shows the target roll value on the character sheet if enabled."
+      },
+      "packs": {
+         "actorPack": "Actor Compendium",
+         "itemPack": "Item Compendium",
+         "rollTablePack": "Rollable Tables Compendium"
+      },
+      "extraRollOptions": {
+         "name": "Show Extra Roll Options",
+         "hint": "Toggles the display of advantage/disadvantage on some rolls."
+      },
+      "mvRoundDivisor": {
+         "name": "Movement Rate Per Round Divisor",
+         "hint": "This field represents the divisor used to calculate the movement rate per round from the base movement rate."
+      },
+      "runRoundDivisor": {
+         "name": "Run Rate Per Round Divisor",
+         "hint": "This field represents the divisor used to calculate the running speed movement rate per round from the base movement rate."
+      },
+      "useArmorValue": {
+         "name": "Use Armor Value",
+         "hint": "Armor Value (AV) is an optional armor system attribute that allows for physical damage mitigation to be assigned to armor items. Enabling this will result in AV showing on actor sheets. Enabling will also result in AV being factored in when applying any damage."
       }
    }
 }

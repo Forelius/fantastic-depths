@@ -3,6 +3,11 @@ import { SocketManager } from '/systems/fantastic-depths/module/sys/SocketManage
 
 export class ToHitSystemBase {
    constructor() {
+      this.rangeModifiers = {
+         short: 1,
+         medium: 0,
+         long: -1
+      };
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
       this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
@@ -17,12 +22,13 @@ export class ToHitSystemBase {
     *    mod - A manual modifier entered by the user.
     *    target - This doesn't work when there are multiple targets.
     *    targetWeaponType - For weapon mastery system, the type of weapon the target is using (monster or handheld).
+    *    attackRoll - In case the attack roll is not a straight 1d20.
     * @returns
     */
    getAttackRoll(actor, weapon, attackType, options = {}) {
       const weaponData = weapon.system;
       const targetData = options.target?.system;
-      let formula = '1d20';
+      let formula = options.attackRoll ?? '1d20';
       let digest = [];
       let modifier = 0;
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
@@ -80,6 +86,9 @@ export class ToHitSystemBase {
 
       if (roll) {
          await attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
+         if (weapon.system.attacks !== undefined) {
+            await weapon.update({ "system.attacks.used": weapon.system.attacks.used + 1 });
+         }
 
          const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
          const thac0 = attackingActor.system.thac0.value;

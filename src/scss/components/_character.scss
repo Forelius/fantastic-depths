@@ -1,4 +1,16 @@
-.character, .monster {
+.application.actor {
+   overflow: visible clip;
+
+   .window-content {
+      overflow: auto;
+   }
+}
+
+.actor {
+   img {
+      border: none;
+   }
+
    .nav-tabs-right {
       left: 100%;
       top: 10%;
@@ -11,12 +23,6 @@
          padding-inline-end: 12px;
          border-radius: 0 8px 8px 0;
          padding: 4px;
-
-         .active {
-            img {
-               filter: brightness(100%);
-            }
-         }
 
          a {
             border-radius: 0 6px 6px 0;
@@ -43,11 +49,6 @@
       }
    }
 
-   input {
-      border: 0 none;
-      padding: 2px 5px;
-   }
-
    .ability-scores {
       max-width: 200px;
    }
@@ -63,49 +64,6 @@
 
    .ability-horz:last-child {
       border-right: none;
-   }
-
-   .ability {
-      min-height: 34px;
-
-      label {
-         font-weight: 500;
-         margin: 0 0 2px 0;
-      }
-
-      .abbr {
-         font-size: 20px;
-         min-width: 60px;
-         max-width: 80px;
-         text-align: center;
-      }
-
-      .long {
-         font-size: 15px;
-         min-width: 80px;
-         max-width: 80px;
-         text-align: left;
-      }
-
-      input {
-         font-size: 20px;
-         max-width: 40px;
-         border-radius: 5px;
-         padding-top: 0;
-         //min-height: 32px;
-         text-align: center;
-      }
-
-      .ability-score {
-         font-size: 25px;
-         text-align: center;
-         padding-right: 5px;
-      }
-
-      .ability-mod {
-         max-width: 36px;
-         font-size: 18px;
-      }
    }
 
    .xsmall-col {
@@ -232,7 +190,7 @@
       .ac-top {
          position: absolute;
          font-size: 26px;
-         top: 11px;
+         top: 10px;
          width: 50px;
          left: calc(50% - 25px);
       }
@@ -304,5 +262,132 @@
       flex: 0 0 6px;
       margin: 0 5px 0 0;
       cursor: pointer;
+   }
+
+   .attack-group {
+      box-shadow: 1px 0 1px black;
+      padding: 0;
+      margin-bottom: 4px;
+
+      .group-0 {
+         background-color: #dc2f2f;
+      }
+
+      .group-1 {
+         background-color: #33cb44;
+      }
+
+      .group-2 {
+         background-color: #efe528;
+      }
+
+      .group-3 {
+         background-color: #af50cf;
+      }
+
+      .group-4 {
+         background-color: #4788bf;
+      }
+
+      .group-5 {
+         background-color: #dd8525;
+      }
+
+      .item-group {
+         content: "";
+         margin-left: 4px;
+         width: 7px;
+         border: none;
+         height: 24px;
+         cursor: pointer;
+      }
+   }
+}
+
+.character {
+   .ability {
+      min-height: 34px;
+
+      label {
+         font-weight: 500;
+         margin: 0 0 2px 0;
+      }
+
+      .abbr {
+         font-size: 20px;
+         min-width: 60px;
+         max-width: 80px;
+         text-align: center;
+      }
+
+      .long {
+         font-size: 15px;
+         min-width: 80px;
+         max-width: 80px;
+         text-align: left;
+      }
+
+      input {
+         font-size: 16px;
+         max-width: 30px;
+         border-radius: 4px;
+         padding-top: 0;
+         text-align: center;
+      }
+
+      .ability-score {
+         font-size: 25px;
+         text-align: center;
+         padding-right: 5px;
+      }
+
+      .ability-mod {
+         max-width: 36px;
+         font-size: 18px;
+      }
+   }
+}
+
+.monster {
+   .ability {
+      min-height: 30px;
+
+      label {
+         font-weight: 500;
+         margin: 0 0 2px 0;
+      }
+
+      .abbr {
+         font-size: 16px;
+         min-width: 60px;
+         max-width: 80px;
+         text-align: center;
+      }
+
+      .long {
+         font-size: 12px;
+         min-width: 80px;
+         max-width: 80px;
+         text-align: left;
+      }
+
+      input {
+         font-size: 16px;
+         max-width: 30px;
+         border-radius: 5px;
+         padding-top: 0;
+         text-align: center;
+      }
+
+      .ability-score {
+         font-size: 20px;
+         text-align: center;
+         padding-right: 5px;
+      }
+
+      .ability-mod {
+         max-width: 30px;
+         font-size: 14px;
+      }
    }
 }

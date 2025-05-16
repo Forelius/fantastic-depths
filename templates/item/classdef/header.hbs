@@ -1,0 +1,43 @@
+<header class='sheet-header'>
+   <img class='profile-img-sm' src='{{item.img}}' data-edit="img" data-action="editImage" />
+   <div class='header-fields'>
+      <div class="summary flexrow">
+         <div class="flex3">
+            <div class='charname'><input name='name' type='text' value='{{item.name}}' placeholder='Name' /></div>
+            <label>{{localize 'Name'}}</label>
+         </div>
+         <div class="flex1" style="min-width:40px;">
+            <input type='text' name='system.species' value='{{system.species}}' data-dtype='String' />
+            <label>{{localize 'FADE.Actor.Species'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name='system.alignment' value='{{system.alignment}}' data-dtype='String' />
+            <label for="system.alignment">{{localize 'FADE.Actor.Alignment'}}</label>
+         </div>
+      </div>
+      <div class="summary flexrow">
+         <div class="flex1">
+            <input type='text' name='system.maxLevel' value='{{system.maxLevel}}' data-dtype='Number' />
+            <label for="system.maxLevel" data-tooltip="{{localize 'FADE.Actor.maxLevel.hint'}}">{{localize 'FADE.Actor.maxLevel.name'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name='system.firstLevel' value='{{system.firstLevel}}' data-dtype='Number' />
+            <label for="system.firstLevel" data-tooltip="{{localize 'FADE.Actor.firstLevel.hint'}}">{{localize 'FADE.Actor.firstLevel.name'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name='system.maxSpellLevel' value='{{system.maxSpellLevel}}' data-dtype='Number' />
+            <label for="system.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name='system.key' value='{{system.key}}' data-dtype='String' />
+            <label for="system.key" data-tooltip{{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
+         </div>
+         {{#if weaponMastery}}
+         <div class="flex1">
+            <input type="checkbox" name="system.basicProficiency" data-dtype="Boolean" {{#if system.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
+            <label for="system.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>
+         </div>
+         {{/if}}
+      </div>
+   </div>
+</header>

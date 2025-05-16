@@ -1,8 +1,8 @@
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
-export class SkillItem extends fadeItem {
+export class SkillItem extends FDItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -27,14 +27,14 @@ export class SkillItem extends fadeItem {
       }
    }
 
-   async getDamageRoll() {
+   getDamageRoll() {
       const isHeal = this.system.healFormula?.length > 0;
       let formula = null;
-      let digest = [];
+      const digest = [];
       let hasDamage = false;
 
       if (isHeal) {
-         const evaluatedRoll = await this.getEvaluatedRoll(this.system.healFormula);
+         const evaluatedRoll = this.getEvaluatedRollSync(this.system.healFormula);
          formula = evaluatedRoll?.formula;
          hasDamage = true;
       }
@@ -64,24 +64,26 @@ export class SkillItem extends fadeItem {
       };
       // Retrieve roll data.
       const rollData = this.getRollData();
-      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const ctrlKey = event?.ctrlKey ?? false;
       let levelMod = Math.max(0, systemData.level - 1) + (systemData.level > 0 ? systemData.skillBonus : systemData.skillPenalty);
       const bonusOperator = systemData.operator === 'lte' ? '-' : '+';
-      rollData.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
+      dataset.formula = levelMod !== 0 ? `${systemData.rollFormula}${bonusOperator}${levelMod}` : systemData.rollFormula;
       let rolling = true;
 
       if (ctrlKey === true) {
          dialogResp = {
-            rolling: true,
-            mod: 0
+            mod: 0,
+            formula: dataset.formula,
+            editFormula: game.user.isGM
          };
+         rollData.formula = dataset.formula;
       } else {
          // Show the dialog for roll modifier
-         const dialog = await DialogFactory(dataset, this.actor);
-         dialogResp = dialog?.resp;
-         rolling = dialogResp.rolling === true;
-         if (dialogResp.mod != 0) {
-            rollData.formula = `${rollData.formula}${bonusOperator}@mod`;
+         dialogResp = await DialogFactory(dataset, this.actor);
+         rolling = dialogResp != null;
+         rollData.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : dataset.formula;
+         if (Number(dialogResp?.mod) != 0) {
+            rollData.formula = `${rollData.formula}+@mod`;
          }
       }
 

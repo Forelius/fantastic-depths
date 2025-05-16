@@ -1,106 +1,132 @@
-import { fadeDialog } from './fadeDialog.mjs';
-export class AttackDialog extends fadeDialog {
+const { DialogV2 } = foundry.applications.api;
+
+export class AttackDialog {
    /**
     * Display a dialog allowing the caller to select a type of attack and attack roll modifier.
-    * @param {any} weapon The attacker's weapon item
-    * @param {any} caller The owning actor
+    * @param {any} weapon The attacker's weapon/spell item
+    * @param {any} caller The owning actor, the attacker.
     * @param {object} options Additional options:
     *    targetToken: The targetted token
     * @returns
     */
    static async getDialog(weapon, caller, options) {
       const dialogData = { caller };
-      const result = {};
-      const weaponData = weapon.system;
-      const callerName = caller.token?.name || caller.name;
-      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      let result = null;
+      const attackerToken = caller.currentActiveToken ?? caller;
+      const attackerName = caller.token?.name || caller.name;
+      const masterySystem = game.fade.registry.getSystem("weaponMasterySystem");
+      const toHitSystem = game.fade.registry.getSystem("toHitSystem");
+      const targetToken = options.targetToken?.document ?? options.targetToken;
       const targetActor = options.targetToken?.actor;
 
-      dialogData.weapon = weaponData;
+      dialogData.attackRoll = "1d20";
+      dialogData.extraRollOptions = game.settings.get(game.system.id, "extraRollOptions");
+      dialogData.weapon = weapon;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
       // Attack type includes melee, missile and breath.
-      dialogData.types = weapon.getAttackTypes().reduce((acc, item) => {
+      dialogData.attackTypes = weapon.getAttackTypes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value
          return acc;
       }, {});
+      dialogData.attackType = dialogData.attackTypes.melee ? "melee" : "missile";
 
-      if (weaponMasterySystem) {
+      let ranges = weapon.system.range;
+      if (masterySystem) {
          // Get the available target types.
-         dialogData.targetWeaponTypes = weaponMasterySystem.getWeaponTypes(weapon, caller);
+         dialogData.targetWeaponTypes = masterySystem.getWeaponTypes(weapon, caller);
          // Determines which target weapon type to pick by default.
-         dialogData.selectedWeaponType = weaponMasterySystem.getActorWeaponType(targetActor);
+         dialogData.selectedWeaponType = masterySystem.getActorWeaponType(targetActor);
+         ranges = masterySystem.getRanges(weapon);
       }
 
-      const title = `${callerName}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/attack-roll.hbs';
+      const distance = AttackDialog.getDistance(attackerToken, targetToken);
+      dialogData.attackDistance = distance;
+      dialogData.rangeChoices = {
+         short: `${game.i18n.localize("FADE.Weapon.range.short")} (${ranges.short})`,
+         medium: `${game.i18n.localize("FADE.Weapon.range.medium")} (${ranges.medium})`,
+         long: `${game.i18n.localize("FADE.Weapon.range.long")} (${ranges.long})`
+      };
+      dialogData.rangeSelected = AttackDialog.getRange(distance, ranges);
+      dialogData.modifier = dialogData.attackType === "melee" ? 0 : toHitSystem.rangeModifiers[dialogData.rangeSelected];
+      dialogData.rollChoices = {
+         normal: "FADE.dialog.rollFormulaType.normal",
+         advantage: "FADE.dialog.rollFormulaType.advantage",
+         disadvantage: "FADE.dialog.rollFormulaType.disadvantage"
+      };
+      dialogData.rollSelected = "normal";
 
-      result.resp = await Dialog.wait({
-         title: title,
-         content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons: {
-            check: {
-               label: game.i18n.localize('FADE.roll'),
-               callback: () => ({
-                  rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  attackType: document.getElementById('attackType').value,
-                  targetWeaponType: document.getElementById('targetWeaponType')?.value,
-               }),
-            },
+      const title = `${attackerName}: ${dialogData.label} ${game.i18n.localize("FADE.roll")}`;
+      const template = "systems/fantastic-depths/templates/dialog/attack-roll.hbs";
+
+      result = await DialogV2.wait({
+         window: { title },
+         position: {
+            width: 400,
+            height: "auto"
          },
-         default: 'check',
-         close: () => { return { rolling: false } }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
+         rejectClose: false,
+         content: await renderTemplate(template, dialogData),
+         buttons: [
+            {
+               action: "check",
+               label: game.i18n.localize("FADE.roll"),
+               default: true,
+               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
+            },
+         ],
+         close: () => { },
+         classes: ["fantastic-depths"],
+         render: (event, dialog) => {
+            dialog = dialog.element ?? dialog; // For V12/V13 compatibility.
+            dialog.querySelector(`[name="attackType"]`).addEventListener("change", changeEvent => {
+               AttackDialog._updateRange(changeEvent.target.value, dialog);
+               const rangedSelectorDiv = dialog.querySelector("#rangeSelect");
+               rangedSelectorDiv.style.display = changeEvent.target.value === "missile" ? "block" : "none";
+            });
+            dialog.querySelectorAll(`input[name="rangeType"]`).forEach(radio => {
+               radio.addEventListener("change", changeEvent => {
+                  AttackDialog._updateRange(dialog.querySelector(`[name="attackType"]`).value, dialog);
+               });
+            });
+         }
       });
-      result.context = caller;
       return result;
    }
 
-   /**
-    * Show the Spell Attack dialog.
-    * @param {any} dataset
-    * @param {any} caller
-    * @param {any} options
-    * @returns
-    */
-   static async getForSpellsDialog(dataset, caller, options) {
-      const dialogData = {};
-      const dialogResp = { caller };
-      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
-
-      dialogData.label = dataset.label;
-
-      if (weaponMasterySystem) {
-         dialogData.targetWeaponTypes = weaponMasterySystem.getWeaponTypes({ type: "spell" }, caller);
-         // Determines which target weapon type to pick by default.
-         dialogData.selectedWeaponType = weaponMasterySystem.getActorWeaponType(options.targetToken?.actor);
+   static getDistance(token1, token2) {
+      let result = 0;
+      if (token1 && token2) {
+         const waypoints = [token1.object.center, token2.object.center];
+         result = canvas.grid.measurePath(waypoints)?.distance;
+         if (token1.elevation !== token2.elevation) {
+            const h_diff = token2.elevation > token1.elevation
+               ? token2.elevation - token1.elevation
+               : token1.elevation - token2.elevation;
+            result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
+         }
       }
+      return Math.floor(result);
+   }
 
-      const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/spell-attack-roll.hbs';
+   static getRange(distance, ranges) {
+      let result = null;
+      if (distance < 6) {
+         result = "close";
+      } else if (distance <= ranges.short) {
+         result = "short";
+      } else if (distance <= ranges.medium) {
+         result = "medium";
+      } else if (distance <= ranges.long) {
+         result = "long";
+      }
+      return result;
+   }
 
-      dialogResp.resp = await Dialog.wait({
-         title: title,
-         content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons: {
-            roll: {
-               label: game.i18n.localize('FADE.roll'),
-               callback: () => ({
-                  rolling: true,
-                  mod: parseInt(document.getElementById('mod').value, 10) || 0,
-                  targetWeaponType: document.getElementById('targetWeaponType')?.value,
-               }),
-            }
-         },
-         default: 'roll',
-         close: () => { return null; }
-      }, {
-         classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
-      });
-      dialogResp.context = caller;
-      return dialogResp;
+   static _updateRange(attackType, dialog) {
+      const toHitSystem = game.fade.registry.getSystem("toHitSystem");
+      const modInput = dialog.querySelector(`input[name="mod"]`);
+      const selectedRange = dialog.querySelector(`input[name="rangeType"]:checked`)?.value;
+      const isMissile = attackType === "missile";
+      modInput.value = isMissile ? toHitSystem.rangeModifiers[selectedRange] : 0;
    }
 }

@@ -1,13 +1,23 @@
+import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTablesConfig.mjs"
+
 export class fadeSettings {
    /**
     * Register all of the system's settings.
     */
-   async RegisterSystemSettings() {
-      await this.#registerConfigSettings();      
-      await this.#registerNonConfigSettings();
+   RegisterSystemSettings() {
+      this.#registerConfigSettings();      
+      this.#registerNonConfigSettings();
    }
 
-   async #registerConfigSettings() {
+   #registerConfigSettings() {
+      // User Tables Menu
+      game.settings.registerMenu(game.system.id, "userTablesConfig", {
+         name: "FADE.apps.userTables.title",
+         label: "FADE.apps.userTables.title",
+         icon: "fas fa-table",
+         type: UserTablesConfig,
+         restricted: true
+      });
       // Theme
       game.settings.register(game.system.id, "theme", {
          name: "SETTINGS.Theme.Name",
@@ -15,13 +25,43 @@ export class fadeSettings {
          scope: "client",
          config: true,
          type: String,
-         requiresReload: true,
+         requiresReload: false,
          choices: {
             "light": "SETTINGS.Theme.Light",
             "dark": "SETTINGS.Theme.Dark"
          },
          default: "dark",
          onChange: value => this.applyTheme(value)
+      });
+      // Actor pack
+      game.settings.register(game.system.id, "actorPack", {
+         name: "SETTINGS.packs.actorPack",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "fade-compendiums.actor-compendium",  
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Item pack
+      game.settings.register(game.system.id, "itemPack", {
+         name: "SETTINGS.packs.itemPack",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "fade-compendiums.item-compendium",
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Rolltable pack
+      game.settings.register(game.system.id, "rollTablePack", {
+         name: "SETTINGS.packs.rollTablePack",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "fade-compendiums.roll-table-compendium",
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
       });
       // Encumbrance tracking
       game.settings.register(game.system.id, "encumbrance", {
@@ -52,6 +92,22 @@ export class fadeSettings {
             "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
          },
          default: "darkdungeons",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Ability score modifier system
+      game.settings.register(game.system.id, "monsterAbilityScores", {
+         name: "SETTINGS.monsterAbilityScores.name",
+         hint: "SETTINGS.monsterAbilityScores.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            none: "SETTINGS.Encumbrance.None",
+            withoutmod: "SETTINGS.monsterAbilityScores.choices.withoutmod",
+            withmod: "SETTINGS.monsterAbilityScores.choices.withmod",
+         },
+         default: "none",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
@@ -162,30 +218,6 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting
       });
 
-      //// Register party rest frequency
-      //game.settings.register(game.system.id, "restFrequency", {
-      //   name: "SETTINGS.rest.turnsName",
-      //   hint: "SETTINGS.rest.turnsNHint",
-      //   scope: "world",
-      //   config: true,
-      //   default: 0,  // Default is 0, no rest
-      //   type: Number,
-      //   requiresReload: true,
-      //   restricted: true // Only the GM can change this setting
-      //});
-
-      //// Register party rest frequency
-      //game.settings.register(game.system.id, "restCondition", {
-      //   name: "SETTINGS.rest.conditionName",
-      //   hint: "SETTINGS.rest.conditionHint",
-      //   scope: "world",
-      //   config: true,
-      //   default: "",  // Default is 0, no rest
-      //   type: String,
-      //   requiresReload: true,
-      //   restricted: true // Only the GM can change this setting
-      //});
-
       game.settings.register(game.system.id, "rememberCollapsedState", {
          name: "SETTINGS.collapseState.name",
          hint: "SETTINGS.collapseState.hint",
@@ -249,9 +281,50 @@ export class fadeSettings {
          default: true,
          restricted: false
       });
+      game.settings.register(game.system.id, "extraRollOptions", {
+         name: "SETTINGS.extraRollOptions.name",
+         hint: "SETTINGS.extraRollOptions.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: false,
+         restricted: true
+      });
+      // Register movement rate per round divisor (base/divisor)
+      game.settings.register(game.system.id, "mvRoundDivisor", {
+         name: "SETTINGS.mvRoundDivisor.name",
+         hint: "SETTINGS.mvRoundDivisor.hint",
+         scope: "world",
+         config: true,
+         default: 3,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      // Register 
+      game.settings.register(game.system.id, "runRoundDivisor", {
+         name: "SETTINGS.runRoundDivisor.name",
+         hint: "SETTINGS.runRoundDivisor.hint",
+         scope: "world",
+         config: true,
+         default: 1,
+         type: Number,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      game.settings.register(game.system.id, "useArmorValue", {
+         name: "SETTINGS.useArmorValue.name",
+         hint: "SETTINGS.useArmorValue.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: false,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
-   async #registerNonConfigSettings() {
+   #registerNonConfigSettings() {
       game.settings.register(game.system.id, 'partyTrackerData', {
          name: "Party Tracker Data",
          scope: "world",      // This means it's stored for the whole world
@@ -260,7 +333,7 @@ export class fadeSettings {
          default: []          // Default value is an empty array
       });
 
-      await game.settings.register(game.system.id, 'globalEffects', {
+      game.settings.register(game.system.id, 'globalEffects', {
          name: 'Global Active Effects',
          scope: 'world',
          config: false,
@@ -287,13 +360,21 @@ export class fadeSettings {
       });
 
       // Register the systemMigrationVersion setting
-      await game.settings.register(game.system.id, "gameVer", {
+      game.settings.register(game.system.id, "gameVer", {
          name: "System Migration Version",
          hint: "Stores the current version of the system to manage data migrations.",
          scope: "world",  // "world" scope means it's stored at the world level, shared by all users
          config: false,   // Set to false to hide it from the settings UI
          type: String,    // The type of the setting (String, Number, Boolean, etc.)
          default: "0.0.0" // Set a default version, e.g., "0.0.0"
+      });
+
+      game.settings.register(game.system.id, 'userTables', {
+         name: 'User Tables',
+         scope: 'world',
+         config: false,
+         type: Object,
+         default: {}
       });
    }
 

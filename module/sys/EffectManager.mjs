@@ -18,7 +18,7 @@ export class EffectManager {
 
       // Sync global effects into CONFIG.statusEffects
       //CONFIG.statusEffects = allEffects;
-      //await game.settings.set(game.system.id, 'globalEffects', allEffects);
+      //game.settings.set(game.system.id, 'globalEffects', allEffects);
    }
 
    async OnGameReady() {
@@ -31,23 +31,23 @@ export class EffectManager {
       //   globalEffects = [...globalEffects.slice(sfx.length - globalEffects.length), ...sfx];
       //}
 
-      //await game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
+      //game.settings.set(game.system.id, 'globalEffects', CONFIG.statusEffects);
    }
 
-   //static async applyInvulnerabilityEffect(token) {
-   //   const actor = token.actor;
-   //   const now = new Date();
-   //   const lastApplied = actor.getFlag(game.system.id, "lastInvulnerabilityApplied");
+   static async applyInvulnerabilityEffect(token) {
+      const actor = token.actor;
+      const now = new Date();
+      const lastApplied = actor.getFlag(game.system.id, "lastInvulnerabilityApplied");
 
-   //   // Check if it was used within the last 7 days
-   //   if (lastApplied && (now - lastApplied) / 1000 < 604800) {
-   //      ui.notifications.warn("Invulnerability can only be used once per week. You suffer from sickness instead!");
-   //      EffectManager.applySicknessEffect(actor);
-   //   } else {
-   //      await actor.setFlag(game.system.id, "lastInvulnerabilityApplied", now);
-   //      EffectManager.applyEffect(actor, "invulnerability");
-   //   }
-   //}
+      // Check if it was used within the last 7 days
+      if (lastApplied && (now - lastApplied) / 1000 < 604800) {
+         ui.notifications.warn("Invulnerability can only be used once per week. You suffer from sickness instead!");
+         EffectManager.applySicknessEffect(actor);
+      } else {
+         await actor.setFlag(game.system.id, "lastInvulnerabilityApplied", now);
+         EffectManager.applyEffect(actor, "invulnerability");
+      }
+   }
 
    static async applyEffect(actor, effectId) {
       const effect = CONFIG.statusEffects.find(e => e.id === effectId);
@@ -56,18 +56,18 @@ export class EffectManager {
       }
    }
 
-   //static async applySicknessEffect(actor) {
-   //   const sicknessEffect = {
-   //      label: "Sickness",
-   //      icon: "path/to/sickness-icon.png",
-   //      changes: [
-   //         { key: "system.mod.combat.selfDmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 5 }  // Example: adds 5 self-damage
-   //      ],
-   //      duration: { seconds: 600 }
-   //   };
+   static async applySicknessEffect(actor) {
+      const sicknessEffect = {
+         label: "Sickness",
+         icon: "path/to/sickness-icon.png",
+         changes: [
+            { key: "system.mod.combat.selfDmg", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: 5 }  // Example: adds 5 self-damage
+         ],
+         duration: { seconds: 600 }
+      };
 
-   //   await ActiveEffect.create(sicknessEffect, { parent: actor });
-   //}
+      await ActiveEffect.create(sicknessEffect, { parent: actor });
+   }
 
 
    /**
@@ -77,21 +77,23 @@ export class EffectManager {
     */
    async onManageGlobalActiveEffect(event) {
       event.preventDefault();
-      const a = event.currentTarget;
-      const li = a.closest('li');
-      const effectId = li.dataset.effectId;
+      const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
+      const parent = event.target.closest('.item');
+      const effectId = parent.dataset.effectId;
 
       // Retrieve global effects from the persistent setting
       let globalEffects = game.settings.get(game.system.id, 'globalEffects');
       let effect = globalEffects.find(e => e.id === effectId);
 
       // Handle the specific action
-      switch (a.dataset.action) {
+      switch (action) {
          case 'create':
+         case 'createEffect':
             ui.notifications.warn('Cannot create new effects from this interface.');
             break;
 
          case 'edit':
+         case 'editEffect':
             if (effect) {
                // Edit global effect by creating a temporary ActiveEffect
                const tempEffect = new ActiveEffect(effect);
@@ -100,12 +102,14 @@ export class EffectManager {
             break;
 
          case 'delete':
+         case 'deleteEffect':
             globalEffects = globalEffects.filter(e => e.id !== effectId);
-            await game.settings.set(game.system.id, 'globalEffects', globalEffects);
+            game.settings.set(game.system.id, 'globalEffects', globalEffects);
             ui.notifications.info('Effect deleted from global library.');
             break;
 
          case 'toggle':
+         case 'toggleEffect':
             ui.notifications.warn('Toggling is only available for owned effects.');
             break;
       }
@@ -113,34 +117,55 @@ export class EffectManager {
 
    /**
    * Manage Active Effect instances through an Actor or Item Sheet via effect control buttons.
-   * @param {MouseEvent} event      The left-click event on the effect control
-   * @param {Actor|Item} owner      The owning document which manages this effect
+   * @param {MouseEvent} event The left-click event on the effect control
+   * @param {Actor|Item} owner The owning actor which manages this effect
     */
    static async onManageActiveEffect(event, owner) {
       event.preventDefault();
-      const a = event.currentTarget;
-      const li = a.closest('li');
-      const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;
-      switch (a.dataset.action) {
-         case 'create':
-            return owner.createEmbeddedDocuments('ActiveEffect', [
-               {
-                  name: game.i18n.format('DOCUMENT.New', {
-                     type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-                  }),
-                  img: 'icons/svg/aura.svg',
-                  origin: owner.uuid,
-                  'duration.rounds': li.dataset.effectType === 'temporary' ? 1 : undefined,
-                  disabled: li.dataset.effectType === 'inactive',
-               },
-            ]);
-         case 'edit':
-            return effect.sheet.render(true);
-         case 'delete':
-            return effect.delete();
-         case 'toggle':
-            return await effect.update({ disabled: !effect.disabled });
+      event.stopPropagation();
+
+      const action = event.target.dataset.action ?? event.target.parentElement.dataset.action;
+      let result = null;
+
+      if (action === 'createEffect') {
+         const dataset = event.target.closest(".items-header").dataset;
+         //let aeCls = getDocumentClass("ActiveEffect");
+         //aeCls.createDialog({}, { parent: owner });
+         result = owner.createEmbeddedDocuments('ActiveEffect', [
+            {
+               name: game.i18n.format('DOCUMENT.New', {
+                  type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+               }),
+               img: 'icons/svg/aura.svg',
+               origin: owner.uuid,
+               'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
+               disabled: dataset.effectType === 'inactive',
+            }
+         ]);
+      } else {
+         const dataset = event.target.closest('.item').dataset;
+         let effect = null;
+         if (owner instanceof Actor) {
+            // From actor
+            effect = owner.allApplicableEffects().find(fx => fx.id === dataset.effectId)
+         } else {
+            // From item
+            effect = owner.effects.get(dataset.effectId);
+         }
+         switch (action) {
+            case 'editEffect':
+               result = effect.sheet.render(true);
+               break;
+            case 'deleteEffect':
+               result = await effect.delete();
+               break;
+            case 'toggleEffect':
+               result = await effect.update({ disabled: !effect.disabled });
+               break;
+         }
       }
+
+      return result;
    }
 
    /**

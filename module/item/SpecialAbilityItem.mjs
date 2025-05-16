@@ -1,9 +1,9 @@
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
-export class SpecialAbilityItem extends fadeItem {
+export class SpecialAbilityItem extends FDItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -18,11 +18,11 @@ export class SpecialAbilityItem extends fadeItem {
       return summary;
    }
 
-   async getDamageRoll(resp) {
+   getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       let formula = evaluatedRoll?.formula;
-      let digest = [];
+      const digest = [];
       let modifier = 0;
       let hasDamage = true;
       const type = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);
@@ -36,7 +36,7 @@ export class SpecialAbilityItem extends fadeItem {
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
          hasDamage = false;
       }
-      
+
       return {
          formula,
          type,
@@ -57,7 +57,7 @@ export class SpecialAbilityItem extends fadeItem {
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
-      const ctrlKey = event?.originalEvent?.ctrlKey ?? false;
+      const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
       //let rolled = null;
       let roll = null;
@@ -67,19 +67,27 @@ export class SpecialAbilityItem extends fadeItem {
          // Retrieve roll data.
          dataset.dialog = "generic";
          dataset.rollmode = systemData.rollMode;
+         dataset.formula = systemData.rollFormula;
+
          if (dialogResp) {
             dialogResp.rolling === true
          } else if (ctrlKey === true) {
             dialogResp = {
                rolling: true,
-               mod: 0
+               mod: 0,
+               formula: systemData.rollFormula,
+               editFormula: game.user.isGM
             };
          } else {
-            const dialog = await DialogFactory(dataset, this.actor);
-            dialogResp = dialog?.resp;
+            dialogResp = await DialogFactory(dataset, this.actor);
+            if (dialogResp) {
+               dialogResp.rolling = true;
+               dialogResp.mod = Number(dialogResp.mod);
+            }
          }
 
          if (dialogResp?.rolling === true) {
+            dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
             if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
                dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
             } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
@@ -88,9 +96,9 @@ export class SpecialAbilityItem extends fadeItem {
          } else {
             canProceed = false;
          }
-         rollData.formula = dialogResp?.mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
+
+         rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
          const rollContext = { ...rollData, ...dialogResp || {} };
-         //rolled = await new Roll(rollData.formula, rollContext).evaluate();
          roll = await new Roll(rollData.formula, rollContext);
       }
 

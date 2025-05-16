@@ -1,9 +1,8 @@
 <div>
-   <!--<p>Select a lighting option for the selected token</p>-->
-   <div style="margin-bottom: 10px;">
-      <label for="light-item">{{localize 'FADE.dialog.selectLightSource'}}:</label>
-      <select id="lightItem">
-         {{selectOptions lightItems selected=""}}
+   <div>
+      <label for="lightItem">{{localize 'FADE.dialog.selectLightSource'}}:</label>
+      <select name="lightItem">
+         {{selectOptions lightItems selected=lightItem}}
       </select>
    </div>
 </div>

@@ -1,7 +1,9 @@
 ![image](./assets/img/banner.jpg)
 
 ## Fantastic Depths - Foundry VTT System
-![Foundry v11](https://img.shields.io/badge/foundry-v11-green)![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
+![Foundry v11](https://img.shields.io/badge/foundry-v11-green)![Foundry v12](https://img.shields.io/badge/foundry-v12-green)![Foundry v13](https://img.shields.io/badge/foundry-v13-orange)
+
+![GitHub Downloads (specific asset, all releases)](https://img.shields.io/github/downloads/forelius/fantastic-depths/fantastic-depths.zip)
 
 This [Foundry Virtual Tabletop](https://foundryvtt.com/packages/fantastic-depths) system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
 
@@ -24,7 +26,7 @@ Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-de
 Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
 
 **Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
-FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin and Herrenlosigkeit.
+FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, and silentcatfart.
 
 ---
 

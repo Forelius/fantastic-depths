@@ -8,7 +8,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const actor = context;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
-      const damageRoll = await caller.getDamageRoll(null);
+      const damageRoll = caller.getDamageRoll(null);
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
       const targetTokens = Array.from(game.user.targets);
 

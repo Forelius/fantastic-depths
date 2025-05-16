@@ -4,7 +4,7 @@ export class Collapser {
 * @param {Event} event - The click event on the collapsible header
 */
    static async toggleCollapsibleContent(event) {
-      const $parent = $(event.currentTarget.parentNode); // Get the parent container
+      const $parent = $(event.target.closest('.collapser').parentNode); // Get the parent container
       await Collapser.toggleContent($parent);
    }
 

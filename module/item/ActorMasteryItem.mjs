@@ -1,15 +1,16 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 
-export class ActorMasteryItem extends fadeItem {
+export class ActorMasteryItem extends FDItem {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
+      this.system.effectiveLevel = this.system.level;
    }
 
    /** @override */
    prepareDerivedData() {
-      super.prepareDerivedData();
+      super.prepareDerivedData();      
    }
 
    /**
@@ -28,7 +29,7 @@ export class ActorMasteryItem extends fadeItem {
 
    /** Update item properties based on FADE.WeaponMastery */
    async updatePropertiesFromMastery() {
-      const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.level);
+      const { masteryItem, masteryLevel } = await this.getMastery(this.name, this.system.effectiveLevel);
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 
       let result = {};
@@ -49,6 +50,7 @@ export class ActorMasteryItem extends fadeItem {
       result.special = masteryLevel.special;
       result.pToHit = masteryLevel.pToHit;
       result.sToHit = masteryLevel.sToHit;
+      result.trainingFails = 0;
 
       await this.update({ system: result });
    }

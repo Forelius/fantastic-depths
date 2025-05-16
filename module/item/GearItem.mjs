@@ -1,13 +1,13 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class GearItem extends fadeItem {
+export class GearItem extends FDItem {
    constructor(data, context) {
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager
@@ -99,28 +99,6 @@ export class GearItem extends fadeItem {
       return await builder.createChatMessage();
    }
 
-   async getEvaluatedRoll(formula, options = { minimize: true }) {
-      let result = null;
-      if (formula !== null && formula !== "") {
-         const rollData = this.getRollData();
-         try {
-            const roll = new Roll(formula, rollData);
-            await roll.evaluate(options);
-            result = roll;
-         }
-         catch (error) {
-            if (game.user.isGM === true) {
-               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
-            }
-         }
-      }
-      return result;
-   }
-
-   async getEvaluatedRollFormula(formula) {
-      return await this.getEvaluatedRoll(formula)?.formula;
-   }
-
    async getInlineDescription() {
       let description = this.system.isIdentified === true ?
          await super.getInlineDescription()
@@ -138,11 +116,11 @@ export class GearItem extends fadeItem {
       return description;
    }
 
-   async getDamageRoll(resp) {
+   getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
-      let evaluatedRoll = await this.getEvaluatedRoll(isHeal ? this.system.healFormula : this.system.dmgFormula);
+      const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       let formula = evaluatedRoll?.formula;
-      let digest = [];
+      const digest = [];
       let modifier = 0;
       let hasDamage = true;
       const type = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);

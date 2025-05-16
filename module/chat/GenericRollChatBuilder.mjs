@@ -21,7 +21,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       let damageRoll = { hasDamage: false };
 
       if (item?.getDamageRoll && options?.isUsing === true) {
-         damageRoll = await item?.getDamageRoll(null);
+         damageRoll = item?.getDamageRoll(null);
       }
 
       if (roll && options.showResult !== false) {

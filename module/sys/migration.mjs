@@ -6,7 +6,7 @@ import { SYSTEM_ID } from './config.mjs';
  * The function currently sets the game version to the system's version, preparing for future checks
  * and potential migrations.
  */
-class MySystemVersion {
+export class MySystemVersion {
    constructor(version) {
       this.version = version;
 
@@ -77,154 +77,38 @@ export class DataMigrator {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
-         //if (this.oldVersion.lt(new MySystemVersion("0.7.21-rc.7"))) {
-         //   await this.fixUnidentified();
-         //   ui.notifications.info("Fantastic Depths 0.7.21-rc.7 data migration complete.")
-         //}
-         if (this.oldVersion.lt(new MySystemVersion("0.8.0-rc.1"))) {
-            await this.fixTreasureItems();
-            ui.notifications.info("Fantastic Depths 0.8.0-rc.1 data migration complete.");
-         }
-         if (this.oldVersion.lt(new MySystemVersion("0.8.1-rc.11"))) {
-            await this.fixTypeAndRarity();
-            const msg = "Fantastic Depths 0.8.0-rc.11 data migration complete.";
+         if (this.oldVersion.lt(new MySystemVersion("0.10.0-rc.1"))) {
+            await this.fixMonsterAbilities();
+            const msg = "Fantastic Depths 0.10.0-rc.1 data migration complete.";
             ui.notifications.info(msg);
          }
          // Set the new version after migration is complete
-         await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+         game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
       }
    }
 
-   async fixTypeAndRarity() {
-      function parseMonsterType(monsterType) {
-         // Split the monsterType by commas and trim whitespace
-         const terms = monsterType.split(',').map(term => term.trim());
-         let rarity = null;
+   async fixMonsterAbilities() {
+      let monsters = await game.fade.fadeFinder._getWorldSource("actor")?.filter(actor => actor.type === 'monster') ?? [];
 
-         // Iterate through the terms to find the one with rarity
-         const monsterTypes = terms.map(term => {
-            // Check if the term contains parentheses with the correct regex
-            const match = term.match(/^(.*?)\s*\((.*?)\)\s*$/);
-            if (match && match[2]) {
-               // If there's a match, extract the rarity from inside the parentheses
-               rarity = match[2].trim(); // Extract the rarity
-               return match[1].trim(); // Return the term without the rarity
-            }
-            return term; // Return the term if it doesn't contain rarity
-         }).filter(term => term); // Filter out any empty terms
-
-         return {
-            monsterTypes,
-            rarity
-         };
-      }
-
-      const monsters = game.actors.filter(actor => actor.type === 'monster');
-
-      const parsedMonsters = monsters.map(actor => {
-         const { monsterTypes, rarity } = parseMonsterType(actor.system.details.monsterType);
-         return {
-            actor,
-            name: actor.name,
-            monsterType: monsterTypes.join(', '),
-            rarity
-         };
-      });
-      for (let monster of parsedMonsters) {
-         if (monster.rarity === null) continue;
-         await monster.actor.update({
-            'system.details.monsterType': monster.monsterType,
-            'system.details.rarity': monster.rarity
-         });
-         console.debug(`Set ${monster.name}`, monster);
-      }
-   }
-
-   async fixUnidentified() {
-      const processItems = async (items, contextName) => {
-         for (const item of items) {
-            let isUpdated = false;
-            if (item.type === 'weapon' || item.type === 'armor') {
-               if (item.system.natural === true) {
-                  await item.update({
-                     "system.unidentifiedName": null,
-                     "system.unidentifiedDesc": null,
-                  });
-               } else {
-                  if (item.system.unidentifiedName === null || item.system.unidentifiedName === '') {
-                     await item.update({ "system.unidentifiedName": item.name });
-                     isUpdated = true;
-                  }
-                  if ((item.system.unidentifiedDesc === null || item.system.unidentifiedDesc === '') && item.system.description !== null && item.system.description !== '') {
-                     await item.update({ "system.unidentifiedDesc": item.system.description });
-                     isUpdated = true;
-                  }
-                  if (isUpdated === true) {
-                     console.log(`[${contextName}] Updating ${item.name}(${item.type}): setting unidentified values`, item);
-                  }
-               }
-            } else if (item.type === 'item' || item.type === 'light') {
-               if (item.system.unidentifiedName === null || item.system.unidentifiedName === '') {
-                  await item.update({ "system.unidentifiedName": item.name });
-                  isUpdated = true;
-               }
-               if ((item.system.unidentifiedDesc === null || item.system.unidentifiedDesc === '') && item.system.description !== null && item.system.description !== '') {
-                  await item.update({ "system.unidentifiedDesc": item.system.description });
-                  isUpdated = true;
-               }
-               if (isUpdated === true) {
-                  console.log(`[${contextName}] Updating ${item.name}(${item.type}): setting unidentified values`, item);
-               }
-            }
+      for (let monster of monsters) {
+         if (Number(monster.system.details.intelligence)) {
+            await monster.update({
+               "system.abilities.int.value": parseInt(monster.system.details.intelligence ?? 1),
+               "system.abilities.int.total": parseInt(monster.system.details.intelligence ?? 1),
+               "system.abilities.con.value": parseInt(monster.system.getParsedHD().base * 2 ?? 10),
+               "system.abilities.con.total": parseInt(monster.system.getParsedHD().base * 2 ?? 10),
+            });
          }
-      };
-
-      // Process all actor items
-      for (const actor of game.actors) {
-         const actorItems = actor.items;
-         await processItems(actorItems, `Actor: ${actor.name}`);
       }
-
-      // Process all world items
-      const worldItems = game.items;
-      await processItems(worldItems, "World Items");
-   }
-
-   async fixTreasureItems() {
-      // Helper function to filter for treasure items.
-      const findTreasureItems = items => items.filter(item => {
-         // Only consider items of type "item" for this filter.
-         if (item.type !== "item") return false;
-         // Assume tags are stored in item.system.tags.
-         const tags = item.system?.tags;
-         if (!tags) return false;
-         // If tags is an array, check if it includes "treasure".
-         return Array.isArray(tags) ? tags.includes("treasure") : tags === "treasure";
-      });
-
-      // 1. Get world items from the global item collection.
-      const worldItems = game.items.contents;
-      const treasureWorldItems = findTreasureItems(worldItems);
-
-      // 2. Get owned items from all actors.
-      let actorOwnedItems = [];
-      for (let actor of game.actors.contents) {
-         actorOwnedItems.push(...actor.items.contents);
-      }
-      const treasureActorItems = findTreasureItems(actorOwnedItems);
-
-      // Combine both collections.
-      const allTreasureItems = [...treasureWorldItems, ...treasureActorItems];
-
-      // Iterate over each treasure item and update its type to "treasure".
-      for (let item of allTreasureItems) {
-         console.log(`Updating item "${item.name}" (${item.id}) to type "treasure"`);
-         try {
-            await item.update({ type: "treasure" });
-            await item.tagManager.popTag("treasure");
-            console.log(`Item "${item.name}" updated successfully.`);
-         } catch (error) {
-            console.error(`Error updating item "${item.name}":`, error);
+      monsters = (await game.fade.fadeFinder._getPackSource("actor"))?.filter(actor => actor.type === 'monster') ?? [];
+      for (let monster of monsters) {
+         if (Number(monster.system.details.intelligence)) {
+            await monster.update({
+               "system.abilities.int.value": parseInt(monster.system.details.intelligence ?? 1),
+               "system.abilities.int.total": parseInt(monster.system.details.intelligence ?? 1),
+               "system.abilities.con.value": parseInt(monster.system.getParsedHD().base * 2 ?? 10),
+               "system.abilities.con.total": parseInt(monster.system.getParsedHD().base * 2 ?? 10),
+            });
          }
       }
    }

@@ -1,0 +1,63 @@
+<section class='tab {{tabs.primereqs.cssClass}}' data-group='primary' data-tab='primereqs'>
+   {{! Ability score minimums }}
+   <div class="bordered">
+      <h4>{{localize 'FADE.species.requiredScores'}}</h4>
+      <div class="flexrow" style="margin-top:10px;">
+         {{#each system.abilities as |ability key|}}
+         <div>
+            <div class="flex-group-center">
+               <input type="text" style="max-width:50px" name="system.abilities.{{key}}.min" value="{{ability.min}}" data-dtype="Number" />
+            </div>
+            <div class="flex-group-center">
+               <label for="system.abilities.{{key}}.value" style="font-size: 12px;text-align:center;" class="flex0 abbr">
+                  {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}} {{localize 'FADE.Actor.Min'}}
+               </label>
+            </div>
+         </div>
+         {{/each}}
+      </div>
+   </div>
+   <!-- Class Prime Requisites Section -->
+   <div name="classPrimeReqsSection" class="items-list">
+      <ol name="class-prime-reqs" class='items-list'>
+         <!-- Header Row -->
+         <li class='item flexrow items-header'>
+            <div class="align-left" style="min-width: 70px;">{{localize 'FADE.concatLogic.name'}}</div>
+            <div class="align-left" style="min-width: 140px;">{{localize 'FADE.Actor.Abilities.long'}}</div>
+            <div style="min-width: 70px;">{{localize 'FADE.Actor.Min'}}</div>
+            <div style="min-width: 70px;">+%</div>
+            <div class='item-controls'>
+               <a class='item-control' data-action="createItem" data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq'>
+                  <i class='fas fa-plus'></i>
+               </a>
+            </div>
+         </li>
+         <!-- Prime Requisite Entries -->
+         {{#each system.primeReqs as |primeReqData index|}}
+         <li class='item flexrow' data-item-id='{{primeReqData.ability}}'>
+            <div class="align-left" style="min-width: 70px;">
+               <select name="system.primeReqs.{{index}}.concatLogic">
+                  {{selectOptions @root.logics selected=primeReqData.concatLogic}}
+               </select>
+            </div>
+            <div class="align-left" style="min-width: 140px;">
+               <select name="system.primeReqs.{{index}}.ability">
+                  {{selectOptions @root.abilities selected=primeReqData.ability}}
+               </select>
+            </div>
+            <div class="align-left" style="min-width: 70px;">
+               <input type="number" name="system.primeReqs.{{index}}.minScore" value="{{primeReqData.minScore}}" data-dtype="Number" />
+            </div>
+            <div class="align-left" style="min-width: 70px;">
+               <input type="number" name="system.primeReqs.{{index}}.percentage" value="{{primeReqData.percentage}}" data-dtype="Number" />
+            </div>
+            <div class='item-controls'>
+               <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.PrimeReq")}}' data-type='primeReq' data-index='{{index}}'>
+                  <i class='fas fa-trash'></i>
+               </a>
+            </div>
+         </li>
+         {{/each}}
+      </ol>
+   </div>
+</section>

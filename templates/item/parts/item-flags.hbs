@@ -1,17 +1,17 @@
 <section class="flexrow bordered tag-section">
    <div class="flex0 add-tag">
       {{#if isGM}}
-      <input type="text" data-action="add-tag" placeholder="{{localize 'FADE.Tags.addTags'}}" data-tooltip="{{localize 'FADE.Tags.desc'}}" />
+      <input type="text" name="addTag" data-action="addTag" placeholder="{{localize 'FADE.Tags.addTags'}}" data-tooltip="{{localize 'FADE.Tags.desc'}}" />
       {{/if}}
    </div>
    <div class="flex3">
       <div class="flexrow">
-         <ol class="tag-list">
+         <ol class="tag-list" style="height:auto; line-height: 15px;">
             {{#each system.tags as |tag|}}
-            <li class="tag" data-tag="{{tag}}">
+            <li class="tag">
                <span>{{tag}}</span>
                {{#if @root.isGM}}
-               <a class="tag-delete"><i class="fas fa-times"></i></a>
+               <a class="tag-delete" data-tag="{{tag}}" data-action="deleteTag"><i class="fas fa-times"></i></a>
                {{/if}}
             </li>
             {{/each}}

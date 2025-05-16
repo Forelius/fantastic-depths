@@ -16,10 +16,42 @@
       background-color: rgba(250,250,250,0.05);
    }
 
+   .application.actor {
+      .nav-tabs-right {
+         .nav-tab, .nav-tab-vert {
+            background: url('../assets/img/grunge2.jpg');
+
+            &.active {
+               img {
+                  filter: brightness(100%);
+               }
+            }
+            // Hover effect for nav-tab images
+            img {
+               transition: filter 0.3s ease; // Smooth transition for the filter effect
+            }
+
+            &:hover img {
+               filter: brightness(80%);
+            }
+
+            a {
+               border-color: $darkColor;
+            }
+         }
+      }
+
+      .ability-scores {
+         .ability {
+            border-color: $darkColor;
+         }
+      }
+   }
+
    .fantastic-depths {
       .window-content {
-         background: url('../assets/img/grunge2.jpg');
          color: $lighterColor;
+         background: url('../assets/img/grunge2.jpg');
 
          .editor-container {
             margin: 0 4px;
@@ -125,8 +157,16 @@
             }
          }
 
+         .rollable2, .chatable2, .open-sheet2 {
+            &:hover,
+            &:focus {
+               color: $lighterColor;
+               text-shadow: $glowForDarkMode;
+            }
+         }
+
          .inline-roll {
-            color: $darkColor;
+            color: $lighterColor;
          }
       }
 
@@ -139,30 +179,18 @@
             }
          }
       }
-
-      .character, .monster {
-         .nav-tabs-right {
-            .nav-tab, .nav-tab-vert {
-               background: url('../assets/img/grunge2.jpg');
-
-               a {
-                  border-color: $darkColor;
-               }
-            }
-         }
-
-         .ability-scores {
-            .ability {
-               border-color: $darkColor;
-            }
-         }
-      }
    }
 
    .chat-message {
       background: url('../assets/img/grungeyellow.jpg');
-      color: $lighterColor;
+      color: $lighterColor !important;
       border: 1px solid #545140;
+
+      .message-content {
+         h1, h2, h3, h4, h5, h6 {
+            color: $lighterColor;
+         }
+      }
 
       a.inline-roll {
          background: url('../assets/img/grunge2.jpg');
@@ -177,7 +205,7 @@
          border-bottom: 2px solid #645140;
       }
 
-      .message-header {
+      .message-header, button {
          color: $lightColor;
       }
 
@@ -189,27 +217,6 @@
          background: url('../assets/img/grunge2.jpg');
          border: 1px solid $darkColor;
          box-shadow: none;
-      }
-
-      .saving-roll {
-         background: url('../assets/img/grungeblue.jpg');
-         border: 1px solid $darkColor;
-         box-shadow: none;
-         color: $lighterColor;
-      }
-
-      .heal-roll, .apply-heal, .flags-restored-true {
-         background: url('../assets/img/grungegreen.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #447744;
-      }
-
-      .damage-roll, .apply-damage, .flags-killed-true {
-         background: url('../assets/img/grungered.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #774444;
       }
 
       .attack-fail, .roll-fail {
@@ -235,8 +242,43 @@
 }
 /* Light mode styles */
 .light-mode {
+   .application.actor {
+      .nav-tabs-right {
+         .nav-tab, .nav-tab-vert {
+            background: url('../assets/img/parchment.jpg');
+
+            &.active {
+               img {
+                  filter: brightness(5%);
+               }
+            }
+            // Hover effect for nav-tab images
+            img {
+               transition: filter 0.3s ease; // Smooth transition for the filter effect
+            }
+
+            &:hover img {
+               filter: brightness(40%);
+            }
+
+            a {
+               border-color: $lightColor;
+            }
+         }
+      }
+
+      .ability-scores {
+         .ability {
+            border-color: $lightColor;
+         }
+      }
+   }
+
    .fantastic-depths {
       .window-content {
+         background: url('../assets/img/parchment.jpg');
+         color: $darkerColor;
+
          .bordered {
             border-color: $lightColor;
          }
@@ -282,6 +324,14 @@
                text-shadow: 0 0 10px $shadowColor;
             }
          }
+
+         .rollable2, .chatable2, .open-sheet2 {
+            &:hover,
+            &:focus {
+               color: $darkerColor;
+               text-shadow: 0 0 10px $shadowColor;
+            }
+         }
       }
 
       .summary {
@@ -293,27 +343,11 @@
             }
          }
       }
-
-      .character, .monster {
-         .nav-tabs-right {
-            .nav-tab, .nav-tab-vert {
-               background: url('../assets/img/lightgrunge1.jpg');
-
-               a {
-                  border-color: $lightColor;
-               }
-            }
-         }
-
-         .ability-scores {
-            .ability {
-               border-color: $lightColor;
-            }
-         }
-      }
    }
 
    .chat-message {
+      color: $darkerColor !important;
+
       .attack-fail, .roll-fail {
          color: #602010;
       }
@@ -336,20 +370,6 @@
 
       .warning {
          color: #702010;
-      }
-
-      .heal-roll, .apply-heal {
-         background: url('../assets/img/grungegreen.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #447744;
-      }
-
-      .damage-roll, .apply-damage {
-         background: url('../assets/img/grungered.jpg');
-         color: $lighterColor;
-         box-shadow: none;
-         border: 1px solid #774444;
       }
    }
 }

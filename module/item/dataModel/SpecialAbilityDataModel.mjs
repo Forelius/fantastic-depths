@@ -41,4 +41,10 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
    prepareBaseData() {
       super.prepareBaseData();
    }
+
+   /** @override */
+   prepareDerivedData() {
+      super.prepareDerivedData();
+      this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
+   }
 }

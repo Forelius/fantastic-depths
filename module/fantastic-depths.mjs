@@ -8,13 +8,13 @@ import { fadeCompendium } from './sys/fadeCompendium.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
-import { fadeActor } from './actor/fadeActor.mjs';
+import { FDActor } from './actor/FDActor.mjs';
 import { CharacterSheet } from './sheets/CharacterSheet.mjs';
 import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
-import { MasteryDefinitionItemDataModel } from "./item/dataModel/MasteryDefinitionItemDataModel.mjs";
+import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
 import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
 import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
 import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.mjs';
@@ -47,12 +47,11 @@ import { fadeCombat } from './sys/combat/fadeCombat.mjs'
 import { fadeCombatant } from './sys/combat/fadeCombatant.mjs'
 import { MacroManager } from './sys/MacroManager.mjs';
 import { LightManager } from './sys/LightManager.mjs';
-import { Wrestling } from './sys/combat/Wrestling.mjs';
-import { Shove } from './sys/combat/Shove.mjs';
 import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
+import { SpellCastChatBuilder } from './chat/SpellCastChatBuilder.mjs';
 import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
@@ -76,8 +75,6 @@ Hooks.once('init', async function () {
       AttackRollChatBuilder,
       fadeDialog,
       DataMigrator,
-      Wrestling,
-      Shove,
       PlayerCombatForm,
       fadeTreasure,
       fadeFinder,
@@ -109,7 +106,7 @@ Hooks.once('init', async function () {
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDataModel,
       class: ClassDefinitionDataModel,
-      weaponMastery: MasteryDefinitionItemDataModel,
+      weaponMastery: MasteryDefinitionDataModel,
       specialAbility: SpecialAbilityDataModel,
       condition: ConditionItemDataModel,
       species: SpeciesItemDataModel
@@ -152,7 +149,7 @@ function registerSheets() {
       types: ['item', 'light']
    });
    Items.registerSheet('fantastic-depths', TreasureItemSheet, {
-      label: 'FADE.SheetLabel.Treasure',
+      label: 'FADE.SheetLabel.TreasureItem',
       makeDefault: true,
       types: ['treasure']
    });
@@ -211,7 +208,7 @@ function registerSheets() {
 async function handleAsyncInit() {
    // Register System Settings
    const settings = new fadeSettings();
-   await settings.RegisterSystemSettings();
+   settings.RegisterSystemSettings();
    // Hook into the rendering of the settings form
    Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
    const fxMgr = new EffectManager();
@@ -249,8 +246,9 @@ Hooks.once('ready', async function () {
    // inline-roll handler
    $(document).on('click', '.damage-roll,.heal-roll', DamageRollChatBuilder.clickDamageRoll);
    $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
+   $(document).on('click', '.apply-condition', async (event) => await SpellCastChatBuilder.clickApplyCondition(event));
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
-   $(document).on('click', '.saving-roll', fadeActor.handleSavingThrowRequest);
+   $(document).on('click', '.saving-roll', FDActor.handleSavingThrowRequest);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();
@@ -279,63 +277,62 @@ Hooks.once('ready', async function () {
    // Set the length of a round of combat.
    CONFIG.time.roundTime = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
 
+   if (game.user.isGM === true) {
+      /* Hook for time advancement. */
+      Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
+         if (game.user.isGM === true) {
+         await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
+         //console.debug("updateWorldTime", worldTime, dt, options, userId);
+         const placeables = canvas?.tokens.placeables;
+         for (let placeable of placeables) {
+            const token = placeable.document;
+            if (token.actor) {  // Only process tokens with an actor
+               token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+            }
+         }
+         }
+      });
+      /* -------------------------------------------- */
+      /*  Log Changes                                 */
+      /* -------------------------------------------- */
+      // Hook into `updateActor` to compare the old and new values
+      Hooks.on("updateActor", async (actor, updateData, options, userId) => {
+         if (game.user.isGM) {
+            await actor?.onUpdateActor(updateData, options, userId);
+         }
+      });
+
+      // Hook into item creation (added to the actor)
+      Hooks.on("createItem", async (item, options, userId) => {
+         if (game.user.isGM) {
+            const actor = item.parent; // The actor the item belongs to
+            await actor?.onCreateActorItem(item, options, userId);
+         }
+      });
+
+      // Hook into item updates (e.g., changes to an existing item)
+      Hooks.on("updateItem", async (item, updateData, options, userId) => {
+         if (game.user.isGM) {
+            const actor = item.parent; // The actor the item belongs to
+            await actor?.onUpdateActorItem(item, updateData, options, userId);
+         }
+      });
+
+      // Hook into item deletion (removed from the actor)
+      Hooks.on("deleteItem", (item, options, userId) => {
+         if (game.user.isGM) {
+            const actor = item.parent; // The actor the item belongs to
+            actor?.onDeleteActorItem(item, options, userId);
+         }
+      });
+   }
+
    Hooks.call("afterFadeReady", game.fadeRegistry);
 });
 
 AddonIntegration.setupItemPiles();
 fadeHandlebars.registerHelpers();
 fadeCombat.initialize();
-
-/**
- * Hook for time advancement.
- */
-Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
-   if (game.user.isGM === true) {
-      await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
-      //console.debug("updateWorldTime", worldTime, dt, options, userId);
-      const placeables = canvas?.tokens.placeables;
-      for (let placeable of placeables) {
-         const token = placeable.document;
-         if (token.actor) {  // Only process tokens with an actor
-            token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
-         }
-      }
-   }
-});
-
-/* -------------------------------------------- */
-/*  Log Changes                                 */
-/* -------------------------------------------- */
-// Hook into `updateActor` to compare the old and new values
-Hooks.on("updateActor", async (actor, updateData, options, userId) => {
-   if (game.user.isGM) {
-      await actor?.onUpdateActor(updateData, options, userId);
-   }
-});
-
-// Hook into item creation (added to the actor)
-Hooks.on("createItem", async (item, options, userId) => {
-   if (game.user.isGM) {
-      const actor = item.parent; // The actor the item belongs to
-      await actor?.onCreateActorItem(item, options, userId);
-   }
-});
-
-// Hook into item updates (e.g., changes to an existing item)
-Hooks.on("updateItem", async (item, updateData, options, userId) => {
-   if (game.user.isGM) {
-      const actor = item.parent; // The actor the item belongs to
-      await actor?.onUpdateActorItem(item, updateData, options, userId);
-   }
-});
-
-// Hook into item deletion (removed from the actor)
-Hooks.on("deleteItem", (item, options, userId) => {
-   if (game.user.isGM) {
-      const actor = item.parent; // The actor the item belongs to
-      actor?.onDeleteActorItem(item, options, userId);
-   }
-});
 
 // License info
 Hooks.on("renderSidebarTab", async (object, html) => {

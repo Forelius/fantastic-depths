@@ -1,17 +1,8 @@
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 
-export class ConditionItem extends fadeItem {
-   constructor(data, context) {
-      super(data, context);
-   }
-
+export class ConditionItem extends FDItem {
    get duration() {
       return 0;
-   }
-
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
    }
 
    /** @override */
@@ -31,5 +22,11 @@ export class ConditionItem extends fadeItem {
             ]);
          }
       }
+   }
+
+   async setEffectsDuration(durationSec) {
+      for (let effect of this.effects) {
+         await effect.update({ "duration.seconds": durationSec });
+      }      
    }
 }

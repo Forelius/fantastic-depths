@@ -1,42 +1,36 @@
-import { fadeDialog } from './fadeDialog.mjs';
-export class SavingThrowDialog extends fadeDialog {
+const { DialogV2 } = foundry.applications.api;
+
+export class SavingThrowDialog {
    static async getDialog(dataset, caller) {
       const dialogData = { label: dataset.label };
-      const dialogResp = { caller };
-      const type = dataset.type;
+      let dialogResp = null;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/save-roll.hbs';
-      const buttons = {
-         roll: {
-            label: game.i18n.localize('FADE.roll'),
-            callback: () => ({
-               rolling: true,
-               mod: parseInt(document.getElementById('mod').value, 10) || 0,
-            })
-         }
-      };
-
-      buttons.magic = {
-         label: game.i18n.localize('FADE.vsMagic'),
-         callback: () => ({
-            rolling: true,
-            vsmagic: true,
-            mod: parseInt(document.getElementById('mod').value, 10) || 0,
-         })
-      };
-      //}
-
-      dialogResp.resp = await Dialog.wait({
-         title: title,
+      dialogResp = await DialogV2.wait({
+         window: { title },
+         rejectClose: false,
          content: await renderTemplate(template, dialogData),
-         render: () => fadeDialog.focusById('mod'),
-         buttons,
-         default: 'roll',
-         close: () => { return null; }
+         buttons: [
+            {
+               action: 'roll',
+               label: game.i18n.localize('FADE.roll'),
+               default: true,
+               callback: (event, button, dialog) => {
+                  return { action: button.dataset.action, ...(new FormDataExtended(button.form).object) }
+               }
+            },
+            {
+               action: 'magic',
+               label: game.i18n.localize('FADE.vsMagic'),
+               callback: (event, button, dialog) => {
+                  return { action: button.dataset.action, ...(new FormDataExtended(button.form).object) }
+               }
+            }
+         ],
+         close: () => { }
       }, {
          classes: ["fantastic-depths", ...Dialog.defaultOptions.classes]
       });
-      dialogResp.context = caller;
       return dialogResp;
    }
 }

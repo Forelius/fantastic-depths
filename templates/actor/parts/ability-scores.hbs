@@ -1,15 +1,16 @@
- <!--ABILITY SCORES-->
+<!--ABILITY SCORES-->
 <div class="bordered flexrow" style="position:relative;">
-   <a class="edit-scores" style="position:absolute; top:2px; left: 4px; font-size:11px;">
+   <a class="edit-scores" data-action="editAbilityScores" style="position:absolute; top:2px; left: 4px; font-size:11px;">
       <i class="fas fa-pencil"></i>
    </a>
    {{#each system.abilities as |ability key|}}
    <div class="ability ability-horz">
       <div class="flex-group-center">
-         <label for="system.abilities.{{key}}.value" style="text-align:center;" class="rollable flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
+         <label for="system.abilities.{{key}}.value" style="text-align:center;" class="rollable2 flex0{{#if @root.abilityAbbr}} abbr{{else}} long{{/if}}"
                 data-ability="{{key}}"
                 data-test="ability"
                 data-pass="lte"
+                data-action="rollAbility"
                 data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.hint')}}">
             {{#if @root.abilityAbbr}}
             {{localize (concat 'FADE.Actor.Abilities.' key '.abbr')}}
@@ -19,9 +20,12 @@
          </label>
       </div>
       <div class="flex-group-center">
-         <input class="ability-score-input" type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" {{#unless @root.editScores}}style="display:none"{{/unless}} />
+         <input class="ability-score-input" type="text" name="system.abilities.{{key}}.tempMod" value="{{ability.tempMod}}" data-dtype="Number" {{#unless @root.editScores}} style="display:none" {{/unless}} data-tooltip="{{localize 'FADE.Actor.Abilities.tempMod'}}"/>
+         <input class="ability-score-input" type="text" name="system.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number" {{#unless @root.editScores}} style="display:none" {{/unless}} data-tooltip="{{localize 'FADE.Actor.Abilities.base'}}"/>
          <span class="ability-score" {{#if @root.editScores}}style="display:none"{{/if}}>{{ability.total}}</span>
-         <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+         {{#if @root.hasAbilityScoreMods}}
+         <span class="ability-mod flex0" data-tooltip="{{localize (concat 'FADE.Actor.Abilities.' key '.mod')}}" {{#if @root.editScores}}style="display:none"{{/if}}>{{numberFormat ability.mod decimals=0 sign=true}}</span>
+         {{/if}}
       </div>
    </div>
    {{/each}}

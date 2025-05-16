@@ -1,8 +1,8 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { SavingThrowsData } from './dataModel/ClassDefinitionDataModel.mjs';
-import { fadeItem } from './fadeItem.mjs';
+import { FDItem } from './FDItem.mjs';
 
-export class ClassDefinitionItem extends fadeItem {
+export class ClassDefinitionItem extends FDItem {
    static ValidItemTypes = ['item', 'weapon', 'armor'];
 
    /** @override
@@ -10,7 +10,7 @@ export class ClassDefinitionItem extends fadeItem {
     */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this.system.classAbilities = this.system.classAbilities.sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
+      this.system.specialAbilities = this.system.specialAbilities.sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
       this.system.saves = this.system.saves.sort((a, b) => (a.level - b.level));
    }
 
@@ -54,7 +54,7 @@ export class ClassDefinitionItem extends fadeItem {
 
    async createClassAbility(name="", classKey = null) {
       // Retrieve the array
-      const classAbilities = this.system.classAbilities || [];
+      const specialAbilities = this.system.specialAbilities || [];
 
       // Define the new data
       const newItem = {
@@ -66,8 +66,8 @@ export class ClassDefinitionItem extends fadeItem {
       };
 
       // Add the new item to the array
-      classAbilities.push(newItem);
-      await this.update({ "system.classAbilities": classAbilities });
+      specialAbilities.push(newItem);
+      await this.update({ "system.specialAbilities": specialAbilities });
    }
 
    async createClassItem(name="", type=null) {

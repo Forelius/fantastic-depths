@@ -1,5 +1,3 @@
-import { ChatBuilderSchema } from './ChatBuilderSchema.mjs';
-
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
@@ -21,8 +19,8 @@ export class ChatBuilder {
     * @constructor
     * @throws {Error} - If instantiated directly.
     * @param {Object} dataset - The dataset object for the builder.
-    * @param {fadeActor} dataset.caller - The actor the chat pertains to.
-    * @param {fadeItem} dataset.context - The item the chat pertains to.
+    * @param {FDActor} dataset.caller - The actor the chat pertains to.
+    * @param {FDItem} dataset.context - The item the chat pertains to.
     * @param {Roll} dataset.roll - A dice roll the chat pertains to.
     * @param {Object} dataset.resp - Data polled from the user from an Application.
     * @param {Object[]} dataset.batch - Bulk object data for batch processing.
@@ -41,7 +39,7 @@ export class ChatBuilder {
       }
 
       this.RESULT_TYPE = RESULT_TYPE;
-      this.data = new ChatBuilderSchema({ ...dataset, options });
+      this.data = { ...dataset, options };
       this.template = new.target.template;
    }
 
@@ -223,10 +221,10 @@ export class ChatBuilder {
       tempDiv.classList = "digest";
       // Find the 'digest' div and 'dice-tooltip' div
       const digestDiv = tempDiv.querySelector('div[name="digest"]');
-      const tooltipDiv = tempDiv.querySelector('.dice-tooltip');
+      const tooltipDiv = tempDiv.querySelector('.tooltip-part');
       // Move the 'digest' div inside the 'dice-tooltip' div
       if (digestDiv && tooltipDiv) {
-         tooltipDiv.appendChild(digestDiv);
+         tooltipDiv.insertAdjacentElement("afterend", digestDiv);
       }
       // Convert the updated DOM back to a string and assign it to 'content'
       content = tempDiv.innerHTML;
