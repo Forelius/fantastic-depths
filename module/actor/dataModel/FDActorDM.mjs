@@ -25,8 +25,8 @@ export class FDActorDM extends FDActorBaseDM {
          }),
          languages: new fields.StringField({ initial: "" }),
          combat: new fields.SchemaField({
-            // Instead of looking at actor type, use this field to determine if actor requires mastery for basic proficiency.
-            requiresMastery: new fields.BooleanField({ required: true, initial: true }),
+            // If true the character or class has basic proficiency with all weapons.
+            basicProficiency: new fields.BooleanField({ required: true, initial: false }),
             // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round

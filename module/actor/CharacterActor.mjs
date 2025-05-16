@@ -154,6 +154,10 @@ export class CharacterActor extends FDActor {
                bonus: classItem.getXPBonus(this.system.abilities)
             }
          },
+         combat: {
+            // If false then take from class data, otherwise whatever character's value was set to.
+            basicProficiency: classData.basicProficiency
+         },
          hp: {},
          thac0: {},
          spellSlots: []

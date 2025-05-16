@@ -14,6 +14,12 @@
             <input type='text' name="system.movement2.max" value='{{system.movement2.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}" />
             <label for="system.movement2.max" data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}">{{localize 'SETTINGS.move.maxMove2.name'}}</label>
          </div>
+         {{#if weaponMastery}}
+         <div class="flex1">
+            <input type="checkbox" name="system.combat.basicProficiency" data-dtype="Boolean" {{#if system.combat.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
+            <label for="system.combat.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>
+         </div>
+         {{/if}}
          <div class="flex1">
             <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
             <label for="system.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>

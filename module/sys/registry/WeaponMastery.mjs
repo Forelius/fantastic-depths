@@ -119,7 +119,7 @@ export class WeaponMasterySystem {
          let attackerMastery = this.getOwnerMastery(weapon);
 
          // If a monster and no weapon mastery with this weapon...
-         if (attackerMastery === undefined && attacker.type === 'monster') {
+         if (attackerMastery === undefined && (attacker.type === 'monster' || attacker.system.combat.basicProficiency === true)) {
             // Give blanket basic skill usage.
             attackerMastery = {
                system: {

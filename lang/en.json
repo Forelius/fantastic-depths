@@ -468,6 +468,10 @@
          "long": "Weapon Mastery",
          "primary": "Primary",
          "secondary": "Secondary",
+         "required": {
+            "name": "Basic Proficiency",
+            "hint": "This actor or class has basic profiency with all weapon types."
+         },
          "weaponTypeTitle": "M=Monster/Missile, H=Hand-held, A=All",
          "weaponType": "Weapon Type",
          "weaponTypes": {

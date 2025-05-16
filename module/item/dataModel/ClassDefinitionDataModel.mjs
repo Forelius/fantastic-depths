@@ -29,9 +29,8 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
-         // Instead of looking at actor type, use this field to determine if actor requires mastery for basic proficiency.
-         requiresMastery: new fields.BooleanField({ required: true, initial: true }),
-
+         // If true the character or class has basic proficiency with all weapons.
+         basicProficiency: new fields.BooleanField({ required: true, initial: false }),
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
          description: new fields.StringField({ required: false, initial: "" }),
