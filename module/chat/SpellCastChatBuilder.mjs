@@ -89,18 +89,11 @@ export class SpellCastChatBuilder extends ChatBuilder {
       if (dataset.name || dataset.uuid) {
          event.preventDefault(); // Prevent the default behavior
          event.stopPropagation(); // Stop other handlers from triggering the event
-         let condition = await fromUuid(dataset.uuid);
-         if (!condition) {
-            condition = await game.fade.fadeFinder.getCondition(dataset.name);
+         let sourceCondition = await fromUuid(dataset.uuid);
+         if (!sourceCondition) {
+            sourceCondition = await game.fade.fadeFinder.getCondition(dataset.name);
          }
-         if (condition) {
-            // clone and prepare condition duration
-            condition = foundry.utils.deepClone(condition);
-            const durationSec = Number.parseInt(dataset.duration);
-            if (Number.isNaN(durationSec)===false) {
-               condition.setEffectsDuration(durationSec);
-            }
-
+         if (sourceCondition) {                      
             // Get targets
             const selected = Array.from(canvas.tokens.controlled);
             const targeted = Array.from(game.user.targets);
@@ -140,9 +133,15 @@ export class SpellCastChatBuilder extends ChatBuilder {
 
             // Ensure we have a target ID
             if (applyTo.length > 0) {
+               const durationSec = Number.parseInt(dataset.duration);
                for (let target of applyTo) {
                   if (target.actor.isOwner === true) {
-                     target.actor.createEmbeddedDocuments("Item", [condition]);
+                     const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
+                     if (Number.isNaN(durationSec) === false) {
+                        for(let condition of conditions){
+                           condition.setEffectsDuration(durationSec);
+                        }
+                     }
                   }
                }
             }
