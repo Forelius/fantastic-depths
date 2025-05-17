@@ -26,7 +26,9 @@
             <div>{{localize 'FADE.name'}}</div>
             <div style="max-width:80px">{{localize 'FADE.Actor.maxLevel.name'}}</div>
             <div class='item-controls'>
-               <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Class")}}' data-type='class'>
+               <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Class")}}'
+                  data-action="createItem"
+                  data-type='class'>
                   <i class='fas fa-plus'></i>
                   {{localize 'FADE.Actor.Class'}}
                </a>
@@ -42,7 +44,10 @@
                <input type="number" name="system.classes.{{index}}.maxLevel" value="{{item.maxLevel}}" data-dtype="Number" />
             </div>
             <div class='item-controls'>
-               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Class")}}' data-type='class' data-index='{{index}}'>
+               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Class")}}'
+                  data-type='class'
+                  data-action="deleteItem"
+                  data-index='{{index}}'>
                   <i class='fas fa-trash'></i>
                </a>
             </div>
@@ -52,24 +57,6 @@
    </div>
    {{! Other Stuff }}
    <div class="bordered">
-      <div class="summary flexrow">
-         <div>
-            <input type="text" name="system.heightFormulaM" value="{{system.heightFormulaM}}" data-dtype="String" data-tooltip="{{system.heightFormulaM}}" />
-            <label class="rollable2" data-action="clickRoll" data-formula="{{system.heightFormulaM}}" data-label="{{localize 'FADE.Actor.Height'}} ({{localize 'FADE.species.male'}})" for="system.heightFormulaM">{{localize 'FADE.Actor.Height'}} ({{localize 'FADE.species.male'}})</label>
-         </div>
-         <div>
-            <input type="text" name="system.weightFormulaM" value="{{system.weightFormulaM}}" data-dtype="String" data-tooltip="{{system.weightFormulaM}}" />
-            <label class="rollable2" data-action="clickRoll" data-formula="{{system.weightFormulaM}}" data-label="{{localize 'FADE.Actor.Weight'}} ({{localize 'FADE.species.male'}})" for="system.weightFormulaM">{{localize 'FADE.Actor.Weight'}} ({{localize 'FADE.species.male'}})</label>
-         </div>
-         <div>
-            <input type="text" name="system.heightFormulaF" value="{{system.heightFormulaF}}" data-dtype="String" data-tooltip="{{system.heightFormulaF}}" />
-            <label class="rollable2" data-action="clickRoll" data-formula="{{system.heightFormulaF}}" data-label="{{localize 'FADE.Actor.Height'}}" for="system.heightFormulaF">{{localize 'FADE.Actor.Height'}} ({{localize 'FADE.species.female'}})</label>
-         </div>
-         <div>
-            <input type="text" name="system.weightFormulaF" value="{{system.weightFormulaF}}" data-dtype="String" data-tooltip="{{system.weightFormulaF}}" />
-            <label class="rollable2" data-action="clickRoll" data-formula="{{system.weightFormulaF}}" data-label="{{localize 'FADE.Actor.Weight'}} ({{localize 'FADE.species.female'}})" for="system.weightFormulaF">{{localize 'FADE.Actor.Weight'}} ({{localize 'FADE.species.female'}})</label>
-         </div>
-      </div>
       <div class="summary flexrow">
          <div>
             <input type="text" name="system.baseMovement" value="{{system.baseMovement}}" data-dtype="String" />
