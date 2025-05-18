@@ -134,7 +134,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.config = CONFIG.FADE;
       const encSetting = game.settings.get(game.system.id, "encumbrance");
       context.isBasicEnc = encSetting === "basic";
-      context.showCoinWeight = encSetting === "expert" || encSetting === "classic";
+      context.showWeight = encSetting === "expert" || encSetting === "classic";
       context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
       context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
@@ -616,6 +616,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             this.#mapContainer(innerItem);
          }
          item.contained = docItem?.containedItems || [];
+         // For displaying the containers total weight, including contained items.
          item.containedEnc = docItem?.totalEnc || 0;
       }
       return item;

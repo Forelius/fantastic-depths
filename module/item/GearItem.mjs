@@ -24,6 +24,11 @@ export class GearItem extends FDItem {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
 
+   get isContained() {
+      return this.system.containerId?.length > 0;
+   }
+
+   /** A getter for dynamically calculating the total weight of this item, including contained items. */
    get totalEnc() {
       let result = 0;
       if (this.system.container === true) {
@@ -32,6 +37,22 @@ export class GearItem extends FDItem {
       const weight = this.system.weight > 0 ? this.system.weight : 0;
       const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
       result += weight * quantity;
+      return result;
+   }
+
+   get isDropped() {
+      let current = this;
+      let result = false;
+      while (current) {
+         if (current.system.isDropped) {
+            result = true;
+            current = null;
+         } else if (this.actor && current.system.containerId) {
+            current = this.actor.items.get(current.system.containerId);
+         } else {
+            current = null;
+         }
+      }
       return result;
    }
 

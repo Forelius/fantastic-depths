@@ -1,12 +1,12 @@
 <div class='item collapsible-content{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}{{#unless (or item.system.quantityMax item.system.chargesMax)}} bottom-border{{/unless}}' data-item-id='{{item._id}}'>
    <div class="flexrow">
       <div class='item-name'>
-         <div class='item-image {{#if item.system.isUsable}}rollable2{{else}}chatable2{{/if}}' 
+         <div class='item-image {{#if item.system.isUsable}}rollable2{{else}}chatable2{{/if}}'
               data-action="rollItem"
               data-roll-type='item'>
             <img src='{{item.img}}' width='24' height='24' />
          </div>
-         {{#if item.system.container}}         
+         {{#if item.system.container}}
          <div class="category-caret" data-action="toggleContainer"><i class="fas {{#if item.system.isOpen}}fa-caret-down{{else}}fa-caret-right{{/if}}"></i></div>
          {{/if}}
          <a class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
@@ -15,13 +15,16 @@
             {{else}}
             {{item.system.unidentifiedName}}
             {{/if}}
-            {{#if (and rootobj.showCoinWeight item.containedEnc)}}
+            {{#if (and rootobj.showWeight item.containedEnc)}}
             <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
             {{/if}}
          </a>
+         {{#if item.system.isDropped}}
+         <div class="dropped-item"><img src="systems/fantastic-depths/assets/img/ui/drop.webp"/></div>
+         {{/if}}
       </div>
       <div class="item-40px item-prop"><label>{{infinity item.system.quantity}}</label></div>
-      {{#if rootobj.showCoinWeight}}
+      {{#if rootobj.showWeight}}
       <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
       {{/if}}
       <div class='item-controls'>

@@ -11,7 +11,7 @@
       <div class="item-40px">{{localize 'FADE.Weapon.mod.toHit.short'}}</div>
       <div class="item-60px">{{localize 'FADE.Weapon.damage.abbr'}}</div>
       <div class="item-40px">{{localize 'FADE.Weapon.mod.dmg.short'}}</div>
-      {{#if showCoinWeight}}
+      {{#if showWeight}}
       <div class="item-50px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       {{/if}}
       <div class='item-controls'>
@@ -45,7 +45,7 @@
          <div class="item-40px item-prop">{{item.system.mod.toHitText}}</div>
          <div class="item-60px item-prop">{{item.system.damageRoll}}</div>
          <div class="item-40px item-prop">{{item.system.mod.dmgText}}</div>
-         {{#if @root.showCoinWeight}}
+         {{#if @root.showWeight}}
          <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
          {{/if}}
          <div class='item-controls'>

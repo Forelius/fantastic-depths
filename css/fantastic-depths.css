@@ -1210,6 +1210,11 @@ table.compact-table input {
   transform: translate(-50%, -50%); /* Adjust position to truly center */
   font-size: 14px;
 }
+.system-fantastic-depths .actor .dropped-item {
+  width: 28px;
+  margin: 5px 0 0 6px;
+  filter: brightness(0) saturate(100%) invert(44%) sepia(49%) saturate(934%) hue-rotate(315deg) brightness(86%) contrast(91%);
+}
 .system-fantastic-depths .actor .category-info {
   font-weight: normal;
   margin-left: 10px;

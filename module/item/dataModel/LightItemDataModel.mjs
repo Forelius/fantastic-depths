@@ -39,7 +39,6 @@ export class LightItemDataModel extends GearItemDataModel {
       this.equippable = true;
       this.isLight = true;
       super.prepareBaseData();
-      //console.log(`${this.parent?.actor?.name}: ${this.parent.name} total weight: ${this.totalWeight} (${this.quantity}x${this.weight}) - LightItemDataModel.prepareBaseData`);
    }
 
    /** @override */
@@ -49,7 +48,6 @@ export class LightItemDataModel extends GearItemDataModel {
       if (this.light.type !== 'custom') {
          this.#setFromSettings();
       }
-      //console.log(`${this.parent?.actor?.name}: ${this.parent.name} total weight: ${this.totalWeight} (${this.quantity}x${this.weight}) - LightItemDataModel.prepareDerivedData`);
    }
 
    /**

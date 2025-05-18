@@ -43,7 +43,7 @@ export class WeaponItemSheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/shared/gmOnly.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
       }
    }
 

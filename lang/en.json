@@ -290,6 +290,11 @@
          "equipped": "Equipped",
          "unequip": "Unequip",
          "isEquippable": "Equippable",
+         "dropped": {
+            "name": "Dropped",
+            "hint": "A dropped item can't be used and does not count towards encumbrance."
+         },
+         "isDropped": "Dropped",
          "isUsable": {
             "name": "Usable",
             "hint": "Specify if item can be used, which will also enable usage tracking for the item."
@@ -310,13 +315,15 @@
             "maxLong": "Max. Charges"
          },
          "weight": {
-            "short": "Enc (cn)",
+            "short": "Enc",
             "short2": "Enc",
-            "long": "Encumbrance (cn)",
-            "long2": "Encumbrance",
-            "abbr": "cn",
+            "long": "Encumbrance",
             "abbrPlural": "cns",
-            "desc": "Encumbrance is the weight of an object measured in coin-weight."
+            "desc": "Encumbrance value of the item."
+         },
+         "weightEquipped": {
+            "short": "Enc Equipped",
+            "desc": "Encumbrance value of the item when worn or equipped."
          },
          "cost": {
             "abbr": "gp",
@@ -404,9 +411,7 @@
             "abbr": "Dmg",
             "short": "Damage",
             "type": "Damage Type",
-            "short2": "2-Hand Damage",
-            "long": "Damage Roll",
-            "long2": "Two-Handed Damage Roll. Only if weapon can be used one-handed, otherwise use damage roll field."
+            "long": "Damage Roll"
          },
          "ammo": {
             "short": "Ammo",
