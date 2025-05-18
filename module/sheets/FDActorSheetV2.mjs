@@ -43,6 +43,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          rollGeneric: FDActorSheetV2.#clickRollGeneric,
          rollAbility: FDActorSheetV2.#clickRollAbility,
          rollMorale: FDActorSheetV2.#clickRollMorale,
+         rollSave: FDActorSheetV2.#clickRollSave,
          createItem: FDActorSheetV2.#clickCreateItem,
          deleteItem: FDActorSheetV2.#clickDeleteItem,
          editItem: FDActorSheetV2.#clickEditItem,
@@ -297,51 +298,51 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @param {Event} event   The originating click event
     * @protected
     */
-   async _onRoll(event) {
-      event.preventDefault();
-      event.stopPropagation();
+   //async _onRoll(event) {
+   //   event.preventDefault();
+   //   event.stopPropagation();
 
-      const elem = event.currentTarget;
-      const dataset = elem.dataset;
-      let formula = dataset.formula;
-      let chatType = null;
-      let dialogResp = null;
+   //   const elem = event.currentTarget;
+   //   const dataset = elem.dataset;
+   //   let formula = dataset.formula;
+   //   let chatType = null;
+   //   let dialogResp = null;
 
-      if (dataset.rollType === 'item') {
-         // If clicking an item then have item handle roll.
-         const li = $(event.currentTarget).parents('.item');
-         const item = this.actor.items.get(li.data('itemId'));
-         // Directly roll item and skip the rest
-         if (item) await item.roll(dataset, null, event);
-      } else if (dataset.test === 'ability') {
-         await game.fade.registry.getSystem('abilityCheck').execute({ actor: this.actor, event });
-      } else if (dataset.test === 'morale') {
-         await game.fade.registry.getSystem('moraleCheck').execute({ actor: this.actor, event });
-      }
-      else if (dataset.test === 'save') {
-         this.actor.rollSavingThrow(dataset.type, event);
-      } else {
-         // Basic roll with roll formula and label
-         chatType = CHAT_TYPE.GENERIC_ROLL;
-      }
+   //   if (dataset.rollType === 'item') {
+   //      // If clicking an item then have item handle roll.
+   //      const li = $(event.currentTarget).parents('.item');
+   //      const item = this.actor.items.get(li.data('itemId'));
+   //      // Directly roll item and skip the rest
+   //      if (item) await item.roll(dataset, null, event);
+   //   } else if (dataset.test === 'ability') {
+   //      await game.fade.registry.getSystem('abilityCheck').execute({ actor: this.actor, event });
+   //   } else if (dataset.test === 'morale') {
+   //      await game.fade.registry.getSystem('moraleCheck').execute({ actor: this.actor, event });
+   //   }
+   //   else if (dataset.test === 'save') {
+   //      this.actor.rollSavingThrow(dataset.type, event);
+   //   } else {
+   //      // Basic roll with roll formula and label
+   //      chatType = CHAT_TYPE.GENERIC_ROLL;
+   //   }
 
-      if (chatType !== null) {
-         const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
-         const rolled = await new Roll(formula, rollContext).evaluate();
-         const chatData = {
-            dialogResp: dialogResp,
-            caller: this.actor,
-            context: this.actor,
-            mdata: dataset,
-            roll: rolled
-         };
-         const showResult = this.actor._getShowResult(event);
-         const builder = new ChatFactory(chatType, chatData, { showResult });
-         return builder.createChatMessage();
-      }
+   //   if (chatType !== null) {
+   //      const rollContext = { ...this.actor.getRollData(), ...dialogResp?.resp || {} };
+   //      const rolled = await new Roll(formula, rollContext).evaluate();
+   //      const chatData = {
+   //         dialogResp: dialogResp,
+   //         caller: this.actor,
+   //         context: this.actor,
+   //         mdata: dataset,
+   //         roll: rolled
+   //      };
+   //      const showResult = this.actor._getShowResult(event);
+   //      const builder = new ChatFactory(chatType, chatData, { showResult });
+   //      return builder.createChatMessage();
+   //   }
 
-      return false;
-   }
+   //   return false;
+   //}
 
    /**
     * Event handler for editable item fields.
@@ -794,6 +795,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const item = this._getItemFromActor(event);
       // Directly roll item and skip the rest
       if (item) await item.roll(dataset, null, event);
+   }
+
+   static async #clickRollSave(event) {
+      const item = this._getItemFromActor(event);
+      this.actor.rollSavingThrow(item.system.customSaveCode, event);
    }
 
    static async #clickRollAbility(event) {

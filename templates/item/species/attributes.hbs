@@ -26,7 +26,7 @@
             <div>{{localize 'FADE.name'}}</div>
             <div style="max-width:80px">{{localize 'FADE.Actor.maxLevel.name'}}</div>
             <div class='item-controls'>
-               <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Class")}}'
+               <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Class")}}' 
                   data-action="createItem"
                   data-type='class'>
                   <i class='fas fa-plus'></i>
@@ -44,8 +44,8 @@
                <input type="number" name="system.classes.{{index}}.maxLevel" value="{{item.maxLevel}}" data-dtype="Number" />
             </div>
             <div class='item-controls'>
-               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Class")}}'
-                  data-type='class'
+               <a class='item-control item-delete' data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Class")}}' 
+                  data-type='class' 
                   data-action="deleteItem"
                   data-index='{{index}}'>
                   <i class='fas fa-trash'></i>
