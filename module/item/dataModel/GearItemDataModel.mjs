@@ -58,11 +58,9 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
     * @inheritDoc
     */
    static migrateData(source) {
-      // TODO: Remove someday.
-      //if (source.weightEquipped && source.weightEquipped != source.weight) {
-      //   console.debug("Equipped:",source.weightEquipped, source);
-      //}
-      if (source.weightEquipped == null) {
+      // TODO: Remove someday.    
+      if ((source.weightEquipped === null || source.weightEquipped === undefined) && source.weight) {
+         //console.debug(`Setting equipped weight. Was ${source, source.weightEquipped} will be ${source.weight}`);
          source.weightEquipped = source.weight;
       }
       return super.migrateData(source);

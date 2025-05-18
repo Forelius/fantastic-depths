@@ -34,7 +34,10 @@ export class GearItem extends FDItem {
       if (this.system.container === true) {
          result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
       }
-      const weight = this.system.weight > 0 ? this.system.weight : 0;
+      let weight = this.system.weight ?? 0;
+      if (this.system.equipped) {
+         weight = this.system.weightEquipped ?? 0;
+      }
       const quantity = this.system.quantity > 0 ? this.system.quantity : 0;
       result += weight * quantity;
       return result;
@@ -100,7 +103,7 @@ export class GearItem extends FDItem {
                defaultChoice: "yes"
             }, this.actor);
             if (dialogResp?.resp?.result === true) {
-               isUsing = true;               
+               isUsing = true;
                if (this.#usesCharge()) {
                   await this.#tryUseCharge();
                } else {
