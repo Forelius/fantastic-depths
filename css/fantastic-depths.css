@@ -616,9 +616,19 @@ table.compact-table input {
 .dark-mode .application.actor .ability-scores .ability {
   border-color: #4b4a44;
 }
+.dark-mode .fantastic-depths button {
+  background: url("../assets/img/grungeyellow.jpg");
+  color: #ebeae4;
+  border: 1px solid #545140;
+}
 .dark-mode .fantastic-depths .window-content {
   color: #ebeae4;
   background: url("../assets/img/grunge2.jpg");
+  /*         button {
+     background: url('../assets/img/grungeyellow.jpg');
+     color: $lighterColor;
+     border: 1px solid #545140;
+  }*/
 }
 .dark-mode .fantastic-depths .window-content .editor-container {
   margin: 0 4px;
@@ -633,11 +643,6 @@ table.compact-table input {
 }
 .dark-mode .fantastic-depths .window-content .content-link {
   background: #2b2a24;
-}
-.dark-mode .fantastic-depths .window-content button {
-  background: url("../assets/img/grungeyellow.jpg");
-  color: #ebeae4;
-  border: 1px solid #545140;
 }
 .dark-mode .fantastic-depths .window-content a:hover {
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
@@ -1721,5 +1726,3 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

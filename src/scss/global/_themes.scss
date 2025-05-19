@@ -4,6 +4,7 @@
       border-color: $darkColor;
    }
 
+
    .item-piles-chat-card ul {
       color: #efefef;
    }
@@ -49,6 +50,12 @@
    }
 
    .fantastic-depths {
+      button {
+         background: url('../assets/img/grungeyellow.jpg');
+         color: $lighterColor;
+         border: 1px solid #545140;
+      }
+
       .window-content {
          color: $lighterColor;
          background: url('../assets/img/grunge2.jpg');
@@ -70,12 +77,11 @@
          .content-link {
             background: $darkerColor;
          }
-
-         button {
+         /*         button {
             background: url('../assets/img/grungeyellow.jpg');
             color: $lighterColor;
             border: 1px solid #545140;
-         }
+         }*/
 
          a:hover {
             text-shadow: $glowForDarkMode;
