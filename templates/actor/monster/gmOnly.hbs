@@ -2,57 +2,63 @@
    {{> "itemFlags"}}
    <div class="bordered">
       <div class="summary flexrow">
-         <div>
+         <div class="flex1">
             <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}" />
             <label for="system.encumbrance.max" data-tooltip="{{localize 'SETTINGS.EncMax.Hint2'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
             <label for="system.movement.max" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.movement2.max" value='{{system.movement2.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}" />
             <label for="system.movement2.max" data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}">{{localize 'SETTINGS.move.maxMove2.name'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.details.castAs" value='{{system.details.castAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}" />
             <label for="system.details.castAs" data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}">{{localize 'FADE.Actor.castAs.name'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.details.classAbilityAs" value='{{system.details.classAbilityAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.classAbilityAs.hint'}}" />
             <label for="system.details.classAbilityAs" data-tooltip="{{localize 'FADE.Actor.classAbilityAs.hint'}}">{{localize 'FADE.Actor.classAbilityAs.name'}}</label>
          </div>
-         <div style="max-width:60px;">
+         <div class="flex1" style="max-width:60px;">
             <input type="checkbox" name="system.isEnchanted" data-dtype="Boolean" {{#if system.isEnchanted}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}" />
             <label for="system.isEnchanted" data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}">{{localize 'FADE.Actor.enchanted.name'}}</label>
          </div>
-         <div style="max-width:60px;">
+         <div class="flex1" style="max-width:60px;">
             <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
             <label for="system.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
          </div>
+         {{#if weaponMasteryEnabled}}
+         <div class="flex1" style="max-width:60px;">
+            <input type="checkbox" name="system.combat.basicProficiency" data-dtype="Boolean" {{#if system.combat.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
+            <label for="system.combat.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>
+         </div>
+         {{/if}}
       </div>
       <div class="summary flexrow">
-         <div>
+         <div class="flex1" >
             <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
             <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
          </div>
-         <div>
+         <div class="flex1" >
             <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
             <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
          </div>
-         <div>
+         <div class="flex1" >
             <input type='text' name="system.combat.attAgainstH" value='{{system.combat.attAgainstH}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}" />
             <label for="system.combat.attAgainstH" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}">{{localize 'FADE.Actor.AT#Recv.nameH'}}</label>
          </div>
-         <div>
+         <div class="flex1" >
             <input type='text' name="system.combat.attAgainstM" value='{{system.combat.attAgainstM}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}" />
             <label for="system.combat.attAgainstM" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}">{{localize 'FADE.Actor.AT#Recv.nameM'}}</label>
          </div>
-         <div>
+         <div class="flex1" >
             <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
             <label for="system.combat.isDead" data-tooltip="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
          </div>
-         <div>
+         <div class="flex1" >
             <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}" />
             <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
          </div>

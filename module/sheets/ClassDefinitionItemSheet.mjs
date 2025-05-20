@@ -85,7 +85,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    async _prepareContext() {
       // Retrieve base data structure
       const context = await super._prepareContext();
-      context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery");
 
       // Add the item's data for easier access
       context.isSpellcaster = this.item.system.maxSpellLevel > 0;

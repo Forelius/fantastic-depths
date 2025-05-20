@@ -32,7 +32,7 @@
             <input type='text' name='system.key' value='{{system.key}}' data-dtype='String' />
             <label for="system.key" data-tooltip{{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
          </div>
-         {{#if weaponMastery}}
+         {{#if weaponMasteryEnabled}}
          <div class="flex1">
             <input type="checkbox" name="system.basicProficiency" data-dtype="Boolean" {{#if system.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
             <label for="system.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>

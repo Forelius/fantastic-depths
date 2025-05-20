@@ -10,7 +10,7 @@ export class ToHitSystemBase {
       };
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
-      this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      this.masterySystem = game.fade.registry.getSystem('weaponMastery');
    }
 
    /**

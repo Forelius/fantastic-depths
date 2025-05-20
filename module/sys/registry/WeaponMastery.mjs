@@ -1,10 +1,31 @@
-export class WeaponMasterySystem {
+/**
+ * Class representing weapon mastery mechanics for heroic-style play.
+ * 
+ * This class provides methods to manage and calculate weapon mastery effects,
+ * including attack roll modifiers, weapon ranges, and defense masteries based 
+ * on the actor's equipped weapons and their associated masteries.
+ * 
+ * Public Interface:
+ * 
+ * - getRanges(weapon): Retrieves the range of the given weapon, considering mastery if available.
+ * - getAttackRollMod(actor, weapon, options): Calculates the attack roll modifier for a given actor and weapon.
+ * - getWeaponTypes(weapon, attackerActor): Gets the target's potential weapon types based on the actor's mastery.
+ * - getActorWeaponType(actor): Attempts to determine the weapon type of the specified actor.
+ * - getDefenseMasteries(actor, ac): Calculates defense masteries for the given actor based on equipped weapons.
+ * - getOwnerMastery(weapon): Returns the mastery item for the given weapon, if it exists.
+ */
+export class WeaponMasteryBase {
    constructor() {
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
-      this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      this.masterySystem = game.fade.registry.getSystem('weaponMastery');
    }
 
+   /**
+    * Retrieves the range of the given weapon, considering mastery if available.
+    * @param {Object} weapon - The weapon for which to get the range.
+    * @returns {number} - The range of the weapon, potentially modified by mastery.
+    */
    getRanges(weapon) {
       let result = weapon.system.range;
       const mastery = this.getOwnerMastery(weapon);
@@ -14,24 +35,90 @@ export class WeaponMasterySystem {
       return result;
    }
 
+   /**
+    * Calculates the attack roll modifier for a given actor and weapon.
+    * This method considers weapon mastery and applies relevant modifiers based on 
+    * the weapon type and actor's characteristics. It returns an object containing 
+    * the total modifier and a digest of the applied modifications.
+    * @param {Object} actor - The actor making the attack.
+    * @param {Object} weapon - The weapon being used for the attack.
+    * @param {Object} options - Additional options for the attack.
+    * @param {string} options.targetWeaponType - The type of the target weapon.
+    * @param {string} options.attackType - The type of attack (e.g., melee, missile).
+    * @param {Object} options.target - The target of the attack.
+    * @returns {Object} - An object with the attack modifier and a digest of modifications.
+    */
    getAttackRollMod(actor, weapon, { targetWeaponType, attackType, target } = {}) {
       let result = { mod: 0, digest: [] };
 
       if (weapon?.system?.mastery?.length > 0) {
-         const masterySystem = this.getOwnerMastery(weapon)?.system;
-         if (masterySystem) {
-            const bIsPrimary = targetWeaponType === masterySystem.primaryType || masterySystem.primaryType === 'all';
+         const ownerMastery = this.getOwnerMastery(weapon)?.system;
+         if (ownerMastery) {
+            const bIsPrimary = targetWeaponType === ownerMastery.primaryType || ownerMastery.primaryType === 'all';
             // Get the to hit bonus, if any.
-            const toHitMod = bIsPrimary ? masterySystem.pToHit : masterySystem.sToHit;
+            const toHitMod = bIsPrimary ? ownerMastery.pToHit : ownerMastery.sToHit;
             if (toHitMod > 0) {
                result.mod += toHitMod;
                const primsec = bIsPrimary ? game.i18n.localize('FADE.Mastery.primary') : game.i18n.localize('FADE.Mastery.secondary');
                result.digest.push(game.i18n.format('FADE.Chat.rollMods.masteryMod', { primsec, mod: toHitMod }));
             }
-         } else if (attackType === "missile" && actor.type === "character" && actor.system.details.species === "Human") {
-            // Unskilled use for humans
-            result.mod -= 1;
-            result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
+         }
+
+         // Apply penalty for unskilled use if conditions are met
+         result = this.applyUnskilledToHitMod(actor, attackType, result);         
+      }
+
+      return result;
+   }
+
+   /**
+    * @private
+    * Calculate how owner's weapon mastery modifies this weapon's damage.
+    * @param {any} weapon The weapon that damage mods are being requested for.
+    * @param {any} targetWeaponType The target's weapon type
+    * @param {any} formula The current attack formula
+    * @returns
+    */
+   getDamageMods(weapon, targetWeaponType, formula, modifier) {
+      const attacker = weapon.actor;
+      let result = { formula, digest: [] };
+
+      if (weapon.system.mastery !== "" || weapon.system.natural) {
+         let attackerMastery = this.getOwnerMastery(weapon);
+
+         // If a no weapon mastery with this weapon, but basicProficiency in all weapons...
+         if (attackerMastery === undefined && attacker.system.combat.basicProficiency === true) {
+            // Give blanket basic skill usage.
+            attackerMastery = {
+               system: {
+                  primaryType: 'all',
+                  pDmgFormula: weapon.system.damageRoll
+               }
+            };
+         }
+
+         if (attackerMastery) {
+            if (attackerMastery.system.primaryType !== "all" && targetWeaponType === "primary") {
+               targetWeaponType = attackerMastery.system.primaryType;
+            }
+            // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
+            if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
+               result.formula = attackerMastery.system.pDmgFormula;
+               result.digest.push(game.i18n.format('FADE.Chat.rollMods.masteryPrimDmg'));
+            }
+            // Else if the secondary damage is specified...
+            else if (attackerMastery.system.sDmgFormula) {
+               result.formula = attackerMastery.system.sDmgFormula;
+               result.digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
+            }
+            else {
+               // Else use primary damage type.
+               result.formula = attackerMastery.system.pDmgFormula;
+               result.digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
+            }
+         } else {
+            // Call the private method to handle unskilled use.
+            result = this.applyUnskilledDamageMod(result, formula);
          }
       }
 
@@ -47,21 +134,7 @@ export class WeaponMasterySystem {
     * @returns
     */
    getDefenseACMod(attackerWeaponType, targetToken, attackType) {
-      let result = { ac: null, targetac: null };
-      const defenseMastery = this.#getBestDefenseMastery(targetToken.actor, attackerWeaponType);
-      if (defenseMastery && defenseMastery.acBonus !== Infinity) {
-         // Get the appropriate attacks against weapon type.
-         const attAgainst = attackerWeaponType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM;
-         // Get the appropriate total AC based on attack type.
-         const totalAC = attackType === 'melee' ? targetToken.actor.system.ac?.total : targetToken.actor.system.ac?.totalRanged;
-         // Normal AC/Mastery Def. AC
-         const useMasteryAC = (defenseMastery.acBonusAT === null || attAgainst < defenseMastery.acBonusAT) && totalAC > defenseMastery.total;
-         result.targetac = this.#getDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType);
-         if (useMasteryAC) {
-            result.ac = defenseMastery.total;
-         }
-      }
-      return result;
+      return { ac: null, targetac: null };
    }
 
    /**
@@ -103,61 +176,10 @@ export class WeaponMasterySystem {
    }
 
    /**
-    * @private
-    * Calculate how owner's weapon mastery modifies this weapon's damage.
-    * @param {any} weapon The weapon that damage mods are being requested for.
-    * @param {any} targetWeaponType The target's weapon type
-    * @param {any} formula The current attack formula
-    * @returns
+    * Determines the attack types (melee and ranged) available for the given weapon.
+    * @param {Object} weapon - The weapon to evaluate.
+    * @returns {Object} - An object indicating whether the weapon can be used for melee and ranged attacks.
     */
-   getDamageMods(weapon, targetWeaponType, formula, modifier) {
-      const attacker = weapon.actor;
-      let result = { formula, digest: [] };
-
-      //&& (weaponData.mastery !== "" || weaponData.natural)
-      if (weapon.system.mastery !== "" || weapon.system.natural) {
-         let attackerMastery = this.getOwnerMastery(weapon);
-
-         // If a monster and no weapon mastery with this weapon...
-         if (attackerMastery === undefined && (attacker.type === 'monster' || attacker.system.combat.basicProficiency === true)) {
-            // Give blanket basic skill usage.
-            attackerMastery = {
-               system: {
-                  primaryType: 'all',
-                  pDmgFormula: weapon.system.damageRoll
-               }
-            };
-         }
-
-         if (attackerMastery) {
-            if (attackerMastery.system.primaryType !== "all" && targetWeaponType === "primary") {
-               targetWeaponType = attackerMastery.system.primaryType;
-            }
-            // If the target weapon type matches the weapon mastery primary target type or mastery effects all weapon types the same...
-            if (targetWeaponType && (targetWeaponType === attackerMastery.system.primaryType || attackerMastery.system.primaryType === 'all')) {
-               result.formula = attackerMastery.system.pDmgFormula;
-               result.digest.push(game.i18n.format('FADE.Chat.rollMods.masteryPrimDmg'));
-            }
-            // Else if the secondary damage is specified...
-            else if (attackerMastery.system.sDmgFormula) {
-               result.formula = attackerMastery.system.sDmgFormula;
-               result.digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
-            }
-            else {
-               // Else use primary damage type.
-               result.formula = attackerMastery.system.pDmgFormula;
-               result.digest.push(game.i18n.format('FADE.Chat.rollMods.masterySecDmg'));
-            }
-         } else {
-            // Half damage if unskilled use.
-            result.formula = `floor(${formula}/2)`;
-            result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
-         }
-      }
-
-      return result;
-   }
-
    getAttackTypes(weapon) {
       const actor = weapon.actor;
       let result = { canMelee: weapon.system.canMelee, canRanged: weapon.system.canRanged };
@@ -171,11 +193,13 @@ export class WeaponMasterySystem {
    }
 
    /**
-    * Get this actor's defense masteries for all equipped weapons.
-    * @public
-    * @param {*} actor
-    * @param {any} ac
-    * @returns
+    * Calculates defense masteries for the given actor based on equipped weapons.
+    * This method checks the actor's equipped weapons and their associated masteries 
+    * to determine any applicable armor class (AC) bonuses. It returns an array of 
+    * objects containing the AC bonus details for each applicable mastery.
+    * @param {Object} actor - The actor for whom to calculate defense masteries.
+    * @param {Object} ac - The current armor class data of the actor.
+    * @returns {Array} - An array of objects with AC bonus details from applicable masteries.
     */
    getDefenseMasteries(actor, ac) {
       const results = [];
@@ -184,20 +208,20 @@ export class WeaponMasterySystem {
       // If the weapon mastery option is enabled then an array of mastery-related ac bonuses are added to the actor's system data.
       if (masteries?.length > 0 && equippedWeapons?.length > 0) {
          for (let weapon of equippedWeapons) {
-            const weaponMastery = masteries.find((mastery) => mastery.name === weapon.system.mastery);
-            if (weaponMastery) {
+            const ownerMastery = masteries.find((mastery) => mastery.name === weapon.system.mastery);
+            if (ownerMastery) {
                results.push({
                   // The type(s) of attack the AC bonus applies to.
-                  acBonusType: weaponMastery.system.acBonusType,
+                  acBonusType: ownerMastery.system.acBonusType,
                   // The AC bonus itself, specified as a negative number for better AC.
-                  acBonus: weaponMastery.system.acBonus || 0,
+                  acBonus: ownerMastery.system.acBonus || 0,
                   // The total of the AC with the mastery AC bonus.
-                  total: ac.total + (weaponMastery.system.acBonus || 0),
+                  total: ac.total + (ownerMastery.system.acBonus || 0),
                   // The total of the AAC with the mastery AC bonus.
-                  totalAAC: CONFIG.FADE.ToHit.BaseTHAC0 - ac.total + (weaponMastery.system.acBonus || 0),
+                  totalAAC: CONFIG.FADE.ToHit.BaseTHAC0 - ac.total + (ownerMastery.system.acBonus || 0),
                   // The number of attacks that this bonus applies to per round.
-                  acBonusAT: weaponMastery.system.acBonusAT,
-                  name: weaponMastery.name
+                  acBonusAT: ownerMastery.system.acBonusAT,
+                  name: ownerMastery.name
                });
             }
          }
@@ -206,28 +230,12 @@ export class WeaponMasterySystem {
    }
 
    /**
-    * Creates the DM's view of an attack result for the specified target. Also indicates how weapon mastery factored into AC calculation.
-    * @param {any} useMasteryAC Whether the system determined the weapon mastery defense bonus applied to this attack or not.
-    * @param {any} targetToken The token being attacked.
-    * @param {any} defenseMastery The token actor's most applicable defense mastery.
-    * @returns Localized html message;
+    * Returns the mastery item for the given weapon, if it exists.
+    * @param {Object} weapon - The weapon to check.
+    * @returns {Object|undefined} - The mastery item or undefined.
     */
-   #getDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType) {
-      return game.i18n.format('FADE.Chat.targetACDefMastery', {
-         cssClass: (useMasteryAC === false && attackType === 'melee' ? "style='color:green'" : ""),
-         cssClassMastery: (useMasteryAC ? "style='color:green'" : ""),
-         acTotal: this.isAAC ? targetToken.actor.system.ac?.totalAAC : targetToken.actor.system.ac?.total,
-         targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
-            ? game.i18n.format('FADE.Chat.targetRangedAC', {
-               acTotal: this.isAAC ? targetToken.actor.system.ac?.totalRangedAAC : targetToken.actor.system.ac?.totalRanged,
-               cssClass: (!useMasteryAC && attackType === 'missile' ? "style='color:green'" : "")
-            })
-            : "",
-         attAgainst: attackType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM,
-         maxAttAgainst: defenseMastery.acBonusAT,
-         defenseMasteryTotal: this.isAAC ? (CONFIG.FADE.ToHit.BaseTHAC0 - defenseMastery.total) : defenseMastery.total,
-         masteryName: defenseMastery.name
-      });
+   getOwnerMastery(weapon) {
+      return weapon?.actor.items.find(item => item.type === "mastery" && item.name === weapon?.system.mastery);
    }
 
    /**
@@ -250,7 +258,7 @@ export class WeaponMasterySystem {
     * @param {string} attackDirection - "front" or "rear"
     * @returns {object|null} The best defense mastery, or null if none qualifies.
     */
-   #getBestDefenseMastery(actor, attackerWeaponType, attackDirection = 'front') {
+   _getBestDefenseMastery(actor, attackerWeaponType, attackDirection = 'front') {
       let result = null;
       const defenseMasteries = actor.system.ac.mastery;
 
@@ -281,7 +289,89 @@ export class WeaponMasterySystem {
       return result;
    }
 
-   getOwnerMastery(weapon) {
-      return weapon?.actor.items.find(item => item.type === "mastery" && item.name === weapon?.system.mastery);
+   /**
+    * Applies the unskilled use modifier to the damage formula.
+    * @private
+    * @param {Object} result - The current damage result object.
+    * @param {string} formula - The original damage formula.
+    * @returns {Object} - The updated damage result object with the unskilled use modifier applied.
+    */
+   applyUnskilledDamageMod(result, formula) {      
+      return result;
    }
+
+   /**
+    * Applies the unskilled use penalty to the attack roll modifier if applicable.
+    * @private
+    * @param {Object} actor - The actor making the attack.
+    * @param {string} attackType - The type of attack (e.g., melee, missile).
+    * @param {Object} result - The current attack roll result object.
+    * @returns {Object} - The updated attack roll result object with the penalty applied.
+    */
+   applyUnskilledToHitMod(actor, attackType, result) {
+      if (actor.system.details.species === "Human") {
+         result.mod += -2;
+         result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-2" }));
+      }
+      return result;
+   }
+}
+
+export class WeaponMasteryHeroic extends WeaponMasteryBase {
+
+   /**
+    * Calculate the AC based on weapon mastery rules.
+    * @private
+    * @param {any} attackerWeaponType
+    * @param {any} targetResult
+    * @param {any} targetToken
+    * @returns
+    */
+   getDefenseACMod(attackerWeaponType, targetToken, attackType) {
+      let result = { ac: null, targetac: null };
+      const defenseMastery = this._getBestDefenseMastery(targetToken.actor, attackerWeaponType);
+      if (defenseMastery && defenseMastery.acBonus !== Infinity) {
+         // Get the appropriate attacks against weapon type.
+         const attAgainst = attackerWeaponType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM;
+         // Get the appropriate total AC based on attack type.
+         const totalAC = attackType === 'melee' ? targetToken.actor.system.ac?.total : targetToken.actor.system.ac?.totalRanged;
+         // Normal AC/Mastery Def. AC
+         const useMasteryAC = (defenseMastery.acBonusAT === null || attAgainst < defenseMastery.acBonusAT) && totalAC > defenseMastery.total;
+         result.targetac = this._getDefenseTargetAC(useMasteryAC, targetToken, defenseMastery, attackType);
+         if (useMasteryAC) {
+            result.ac = defenseMastery.total;
+         }
+      }
+      return result;
+   }
+
+   /**
+    * Applies the unskilled use modifier to the damage formula.
+    * @private
+    * @param {Object} result - The current damage result object.
+    * @param {string} formula - The original damage formula.
+    * @returns {Object} - The updated damage result object with the unskilled use modifier applied.
+    */
+   applyUnskilledDamageMod(result, formula) {
+      result.formula = `floor(${formula}/2)`;
+      result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "/2" }));
+      return result;
+   }
+
+   /**
+    * Applies the unskilled use penalty to the attack roll modifier if applicable.
+    * @private
+    * @param {Object} actor - The actor making the attack.
+    * @param {string} attackType - The type of attack (e.g., melee, missile).
+    * @param {Object} result - The current attack roll result object.
+    * @returns {Object} - The updated attack roll result object with the penalty applied.
+    */
+   applyUnskilledToHitMod(actor, attackType, result) {
+      if (attackType === "missile" && actor.type === "character" && actor.system.details.species === "Human") {
+         result.mod -= 1;
+         result.digest.push(game.i18n.format('FADE.Chat.rollMods.unskilledUse', { mod: "-1" }));
+      }
+      return result;
+   }
+
 }

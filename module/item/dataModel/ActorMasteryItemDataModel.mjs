@@ -34,6 +34,8 @@ export class ActorMasteryItemDataModel extends foundry.abstract.TypeDataModel {
          sToHit: new fields.NumberField({ required: true, initial: 0 }),
          // The number of advancement training attempts failed for the next level
          trainingFails: new fields.NumberField({ required: true, initial: 0 }),
+         basicProficiency: new fields.BooleanField({ required: true, initial: false }),
+         unskilledToHitMod: new fields.NumberField({ required: true, initial: -1 }),
       };
    }
 

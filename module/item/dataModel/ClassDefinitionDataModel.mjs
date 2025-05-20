@@ -31,6 +31,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          // If true the character or class has basic proficiency with all weapons.
          basicProficiency: new fields.BooleanField({ required: true, initial: false }),
+         unskilledToHitMod: new fields.NumberField({ required: true, initial: -1 }),
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
          description: new fields.StringField({ required: false, initial: "" }),

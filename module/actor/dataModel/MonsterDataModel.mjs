@@ -39,6 +39,8 @@ export class MonsterDataModel extends FDActorDM {
       super.prepareBaseData();
       this.details.alignment = this.details.alignment || "Chaotic";
       this.encumbrance.max = this.encumbrance.max || 0;
+      // Default all monsters with basic proficiency.
+      this.combat.basicProficiency = true;
       this._prepareTHAC0ToHitBonus();
       // Maybe this is the wrong place to do this. We may need to wait until after init.
       this.thbonus = CONFIG.FADE.ToHit.BaseTHAC0 - this.thac0.value;

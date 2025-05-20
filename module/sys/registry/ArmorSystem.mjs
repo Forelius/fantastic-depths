@@ -45,7 +45,7 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       this.prepareAAC(ac);
 
       // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
-      ac.mastery = game.fade.registry.getSystem('weaponMasterySystem')?.getDefenseMasteries(actor, ac) ?? ac.mastery;
+      ac.mastery = game.fade.registry.getSystem('weaponMastery')?.getDefenseMasteries(actor, ac) ?? ac.mastery;
 
       actor.system.ac = ac;
       actor.system.acDigest = acDigest;
