@@ -391,6 +391,7 @@ export class fadeSettings {
    }
 
    renderSettingsConfig(app, html, data) {
+      html = $(html);
       // Select the Initiative Mode dropdown by its name attribute
       const initiativeModeSetting = html.find(`select[name="${game.system.id}.initiativeMode"]`);
       // Select the Initiative Formula input by its name attribute
