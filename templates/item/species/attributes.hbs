@@ -62,7 +62,7 @@
             <input type="text" name="system.baseMovement" value="{{system.baseMovement}}" data-dtype="String" />
             <label for="system.baseMovement" data-tooltip="{{FADE.Actor.Movement.turnHint}}">{{localize 'FADE.Actor.Movement.moveTurn'}}</label>
          </div>
-         {{#if weaponMasteryEnabled}}
+         {{#if (eq masterySetting "heroic")}}
          <div class="flex1">
             <input type="checkbox" name="system.basicProficiency" data-dtype="Boolean" {{#if system.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
             <label for="system.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>

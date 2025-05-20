@@ -133,11 +133,11 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
          // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
          if (owner && masterySystem) {
-            const wmResult = masterySystem.getAttackTypes(this);
-            if (wmResult?.canRanged === true) {
+            const attackTypes = masterySystem.getAttackTypes(this);
+            if (attackTypes?.canRanged === true) {
                result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
             }
-            if (wmResult?.canMelee === true) {
+            if (attackTypes?.canMelee === true) {
                result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
             }
          }

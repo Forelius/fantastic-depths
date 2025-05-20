@@ -14,10 +14,16 @@
             <input type='text' name="system.movement2.max" value='{{system.movement2.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}" />
             <label for="system.movement2.max" data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}">{{localize 'SETTINGS.move.maxMove2.name'}}</label>
          </div>
-         {{#if weaponMasteryEnabled}}
+         {{#if (eq masterySetting "heroic")}}
          <div class="flex1">
             <input type="checkbox" name="system.combat.basicProficiency" data-dtype="Boolean" {{#if system.combat.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
             <label for="system.combat.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>
+         </div>
+         {{/if}}
+         {{#if (eq masterySetting "classic")}}
+         <div class="flex1" style="max-width:50px">
+            <input type='text' name='system.combat.unskilledToHitMod' value='{{system.combat.unskilledToHitMod}}' data-dtype='Number' />
+            <label for="system.combat.unskilledToHitMod" data-tooltip="{{localize 'FADE.class.unskilledToHitMod.hint'}}">{{localize 'FADE.class.unskilledToHitMod.name'}}</label>
          </div>
          {{/if}}
          <div class="flex1">

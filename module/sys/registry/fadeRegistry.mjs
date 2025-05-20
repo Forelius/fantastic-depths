@@ -5,7 +5,7 @@ import { DamageSystem } from './DamageSystem.mjs';
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
 import { IndivInit } from './IndivInit.mjs';
 import { GroupInit } from './GroupInit.mjs';
-import { WeaponMasteryHeroic } from './WeaponMastery.mjs';
+import { WeaponMasteryHeroic, WeaponMasteryBase } from './WeaponMastery.mjs';
 import { Wrestling } from "./Wrestling.mjs";
 import { Shove } from "./Shove.mjs";
 import { UserTables } from "./UserTables.mjs";
@@ -22,8 +22,10 @@ export class fadeRegistry {
       this.registerSystem('abilityCheck', new AbilityCheck(), AbilityCheck);
       this.registerSystem('armorSystem', new ClassicArmorSystem(), ClassicArmorSystem);
       this.registerSystem('damageSystem', new DamageSystem(), DamageSystem);
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (masteryEnabled) {
+      const masterySetting = game.settings.get(game.system.id, "weaponMastery");
+      if (masterySetting === "classic") {
+         this.registerSystem('weaponMastery', new WeaponMasteryBase(), WeaponMasteryBase);
+      } else if (masterySetting === "heroic") {
          this.registerSystem('weaponMastery', new WeaponMasteryHeroic(), WeaponMasteryHeroic);
       }
 

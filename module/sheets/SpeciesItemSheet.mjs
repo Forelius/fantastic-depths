@@ -75,7 +75,8 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
    async _prepareContext() {
       // Retrieve base data structure
       const context = await super._prepareContext();
-      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
+      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery") != "none";
 
       // Abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {

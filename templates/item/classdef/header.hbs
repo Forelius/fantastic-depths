@@ -32,7 +32,13 @@
             <input type='text' name='system.key' value='{{system.key}}' data-dtype='String' />
             <label for="system.key" data-tooltip{{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
          </div>
-         {{#if weaponMasteryEnabled}}
+         {{#if (eq masterySetting "classic")}}
+         <div class="flex1" style="max-width:50px">
+            <input type='text' name='system.unskilledToHitMod' value='{{system.unskilledToHitMod}}' data-dtype='Number' />
+            <label for="system.unskilledToHitMod" data-tooltip="{{localize 'FADE.class.unskilledToHitMod.hint'}}">{{localize 'FADE.class.unskilledToHitMod.name'}}</label>
+         </div>
+         {{/if}}
+         {{#if (eq masterySetting "heroic")}}
          <div class="flex1">
             <input type="checkbox" name="system.basicProficiency" data-dtype="Boolean" {{#if system.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
             <label for="system.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>

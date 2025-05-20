@@ -30,7 +30,7 @@
             <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
             <label for="system.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
          </div>
-         {{#if weaponMasteryEnabled}}
+         {{#if (eq masterySetting "heroic")}}
          <div class="flex1" style="max-width:60px;">
             <input type="checkbox" name="system.combat.basicProficiency" data-dtype="Boolean" {{#if system.combat.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
             <label for="system.combat.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>

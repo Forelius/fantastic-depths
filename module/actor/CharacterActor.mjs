@@ -156,7 +156,8 @@ export class CharacterActor extends FDActor {
          },
          combat: {
             // If false then take from class data, otherwise whatever character's value was set to.
-            basicProficiency: classData.basicProficiency
+            basicProficiency: classData.basicProficiency,
+            unskilledToHitMod: classData.unskilledToHitMod,
          },
          hp: {},
          thac0: {},

@@ -27,6 +27,7 @@ export class FDActorDM extends FDActorBaseDM {
          combat: new fields.SchemaField({
             // If true the character or class has basic proficiency with all weapons.
             basicProficiency: new fields.BooleanField({ required: true, initial: false }),
+            unskilledToHitMod: new fields.NumberField({ required: true, initial: -2 }),
             // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round

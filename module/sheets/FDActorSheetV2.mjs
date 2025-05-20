@@ -136,7 +136,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.isBasicEnc = encSetting === "basic";
       context.showWeight = encSetting === "expert" || encSetting === "classic";
       context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
-      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+      context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
+      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery") != "none";
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
       context.useAV = game.settings.get(game.system.id, "useArmorValue") && this.actor.system.ac.av?.length > 0;

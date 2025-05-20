@@ -14,7 +14,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
-         width: 680,
+         width: 700,
          height: 500,
       },
       window: {
@@ -85,7 +85,8 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    async _prepareContext() {
       // Retrieve base data structure
       const context = await super._prepareContext();
-      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery");
+
+      context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
 
       // Add the item's data for easier access
       context.isSpellcaster = this.item.system.maxSpellLevel > 0;
