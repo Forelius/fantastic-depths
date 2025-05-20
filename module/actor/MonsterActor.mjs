@@ -36,7 +36,7 @@ export class MonsterActor extends FDActor {
          await this._setupClassMagic();
       }
       if (updateData.system?.details?.saveAs?.length > 0) {
-         this._prepareSavingThrows();
+         await this._prepareSavingThrows();
       }
    }
 
