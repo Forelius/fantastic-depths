@@ -13,8 +13,6 @@ export class MonsterActor extends FDActor {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      this._prepareSavingThrows();
-      //this.system.wrestling = Wrestling.calculateWrestlingRating(this);
       this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
    }
 
@@ -36,6 +34,9 @@ export class MonsterActor extends FDActor {
       }
       if (updateData.system?.details?.castAs?.length > 0) {
          await this._setupClassMagic();
+      }
+      if (updateData.system?.details?.saveAs?.length > 0) {
+         this._prepareSavingThrows();
       }
    }
 
