@@ -314,9 +314,9 @@ export class FDActor extends FDActorBase {
     */
    async _setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
-      const promises = [];
+      let promises = [];
       // Get this actor's class ability items.
-      const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+      let actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
 
       // Determine which special abilities are missing and need to be added.
       const addItems = [];
@@ -336,10 +336,17 @@ export class FDActor extends FDActorBase {
             }
          }
       }
+
       // Add the missing special abilities.
       if (addItems.length > 0) {
          console.debug(`Adding ${addItems.length} special ability items to ${this.name}`);
          promises.push(this.createEmbeddedDocuments("Item", addItems));
+      }
+
+      if (promises.length > 0) {
+         await Promise.all(promises);
+         promises = [];
+         actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
       }
 
       // Iterate over ability items and set each one.
@@ -349,16 +356,17 @@ export class FDActor extends FDActorBase {
          if (target) {
             promises.push(specialAbility.update({ "system.target": target }));
          }
-         let changes = abilityData?.changes;
-         if (changes) {
+         if (abilityData?.changes) {
             try {
-               promises.push(specialAbility.update(JSON.parse(changes)));
+               const changes = JSON.parse(abilityData?.changes);
+               promises.push(specialAbility.update(changes));
             }
             catch (err) {
                console.error(`Invalid class ability changes specified for ${specialAbility.name}.`);
             }
          }
       }
+
       if (promises.length > 0) {
          await Promise.all(promises);
       }
