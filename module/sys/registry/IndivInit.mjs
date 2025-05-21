@@ -62,8 +62,8 @@ export class IndivInit{
          if (result === 0 && this.initiativeMode !== "simpleIndividual") {
             const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
             const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-            const aSlowEquipped = aWeapon?.system.isSlow;
-            const bSlowEquipped = bWeapon?.system.isSlow;
+            const aSlowEquipped = aWeapon?.system.isSlow === true;
+            const bSlowEquipped = bWeapon?.system.isSlow === true;
             // Compare slowEquipped, true comes after false
             if (aSlowEquipped !== bSlowEquipped) {
                result = aSlowEquipped ? 1 : -1;
