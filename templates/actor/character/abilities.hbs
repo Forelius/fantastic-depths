@@ -2,70 +2,43 @@
    <header class="sheet-header">
       <img class="profile-img" src="{{actor.img}}" data-edit="img" data-action="editImage" height="80" width="80" />
       <div class="header-fields">
-         <ul class="summary flexrow">
-            <li class="flex2">
+         <div class="summary flexrow">
+            <div class="flex2">
                <div class="charname">
                   <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
                   <label>{{localize 'Name'}}</label>
                </div>
-            </li>
-            <li style="max-width:70px;">
+            </div>
+            <div style="max-width:70px;">
                <input type="text" name="system.details.species" value="{{system.details.species}}" data-dtype="String" data-tooltip="{{system.details.species}}" />
                <label class="open-sheet" data-action="editSpecies">{{localize 'FADE.Actor.Species'}}</label>
-            </li>
-            <li style="max-width:90px;">
-               <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" data-tooltip="{{system.details.class}}" />
-               <label class="open-sheet" data-action="editClass" data-tooltip="{{localize 'FADE.Actor.ClassHint'}}">{{localize 'FADE.Actor.Class'}}</label>
-            </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li style="max-width: 40px" class="{{#if (gte system.details.xp.value system.details.xp.next)}} notify{{/if}}">
-               <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="Number" />
-               <label>{{localize 'FADE.Actor.Level'}}</label>
-            </li>
-            <li>
-               <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" data-tooltip="{{system.details.title}}" />
-               <label>{{localize 'FADE.Actor.Title'}}</label>
-            </li>
-            <li style="max-width: 90px">
+            </div>
+         
+         </div>
+         <div class="summary flexrow">
+            <div style="max-width: 90px">
                <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" data-tooltip="{{system.details.alignment}}" />
                <label>{{localize 'FADE.Actor.Alignment'}}</label>
-            </li>
-            <li style="max-width: 80px">
-               <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" />
-               <label class="hitdie rollable2" data-action="rollGeneric" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
-            </li>
-            <li style="max-width: 50px">
+            </div>
+            <div style="max-width: 50px">
                <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
                <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
-            </li>
-         </ul>
-         <ul class="summary flexrow">
-            <li class="flex2" style="max-width: 160px">
-               <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
-               <label>{{localize 'FADE.Actor.Experience'}}</label>
-            </li>
-            <li class="flex2" style="max-width: 160px">
-               <input type="text" name="system.details.xp.next" value="{{system.details.xp.next}}" data-dtype="Number" />
-               <label>{{localize 'FADE.Actor.NextLevel'}}</label>
-            </li>
-            <li class="flex1" style="min-width: 60px">
-               <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
-               <label>{{localize "FADE.Actor.XPBonus"}}</label>
-            </li>
-            <li class="flex1" style="max-width: 50px">
+            </div>
+         </div>
+         <div class="summary flexrow">
+            <div class="flex1" style="max-width: 50px">
                <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
                <label>{{localize "FADE.Actor.THAC0"}}</label>
-            </li>
-            <li class="flex1" style="max-width: 50px">
+            </div>
+            <div class="flex1" style="max-width: 50px">
                <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}" />
                <label>{{localize "FADE.Actor.THBonus"}}</label>
-            </li>
-            <li class="flex1" style="max-width:50px">
+            </div>
+            <div class="flex1" style="max-width:50px">
                <input type="text" name="system.details.attacks" value="{{system.details.attacks}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Attacks.long'}}" />
                <label data-tooltip="{{localize 'FADE.Actor.Attacks.long'}}">{{localize 'FADE.Actor.Attacks.abbr'}}</label>
-            </li>
-         </ul>
+            </div>
+         </div>
       </div>
    </header>
    {{> "abilityScores"}}

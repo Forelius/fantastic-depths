@@ -108,4 +108,12 @@ export class ClassDefinitionItem extends FDItem {
       }
       return highest;
    }
+
+   async createActorClass(owner) {
+      const result = await FDItem.create({
+         name: this.name,
+         type: "actorClass",
+      }, { parent: owner });
+      return result;
+   }
 }

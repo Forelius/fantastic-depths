@@ -1,4 +1,3 @@
-const { HandlebarsApplicationMixin } = foundry.applications.api;
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 
 /**

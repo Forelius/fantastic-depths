@@ -15,7 +15,8 @@ import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
 import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
-import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
+import { ActorMasteryItemDM } from './item/dataModel/ActorMasteryItemDM.mjs';
+import { ActorClassDataModel } from './item/dataModel/ActorClassDataModel.mjs';
 import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
 import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.mjs';
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
@@ -27,6 +28,7 @@ import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataMode
 import { SpeciesItemDataModel } from './item/dataModel/SpeciesItemDataModel.mjs';
 import { GearItemSheet } from './sheets/GearItemSheet.mjs';
 import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
+import { ActorClassSheet } from './sheets/ActorClassSheet.mjs';
 import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
 import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
 import { ClassDefinitionItemSheet } from './sheets/ClassDefinitionItemSheet.mjs';
@@ -104,7 +106,8 @@ Hooks.once('init', async function () {
       light: LightItemDataModel,
       spell: SpellItemDataModel,
       weapon: WeaponItemDataModel,
-      mastery: ActorMasteryItemDataModel,
+      mastery: ActorMasteryItemDM,
+      actorClass: ActorClassDataModel,
       class: ClassDefinitionDataModel,
       weaponMastery: MasteryDefinitionDataModel,
       specialAbility: SpecialAbilityDataModel,
@@ -152,6 +155,11 @@ function registerSheets() {
       label: 'FADE.SheetLabel.TreasureItem',
       makeDefault: true,
       types: ['treasure']
+   });
+   Items.registerSheet('fantastic-depths', ActorClassSheet, {
+      label: 'FADE.SheetLabel.ActorClassItem',
+      types: ['actorClass'],
+      makeDefault: true
    });
    Items.registerSheet('fantastic-depths', ActorMasterySheet, {
       label: 'FADE.SheetLabel.ActorMasteryItem',

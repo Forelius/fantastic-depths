@@ -12,6 +12,7 @@ export class SpeciesItemDataModel extends foundry.abstract.TypeDataModel {
          weightFormulaM: new fields.StringField({ nullable: true }),
          heightFormulaF: new fields.StringField({ nullable: true }),
          weightFormulaF: new fields.StringField({ nullable: true }),
+         ageFormula: new fields.StringField({ nullable: true }),
          // If true the character or class has basic proficiency with all weapons.
          basicProficiency: new fields.BooleanField({ required: true, initial: false }),
          classes: new fields.ArrayField(

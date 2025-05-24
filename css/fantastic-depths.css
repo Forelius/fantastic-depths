@@ -131,8 +131,8 @@
   width: 300px;
 }
 
-.fantastic-depths .window-content .tab {
-  /*height:100%;*/
+.fantastic-depths .window-content nav.tabs {
+  line-height: 1;
 }
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
   max-height: 26px;
@@ -1729,5 +1729,3 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */
