@@ -1,5 +1,5 @@
 <div class="item collapsible-content contained-item{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}{{#if item.system.container}} item-container{{/if}}" data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
-   <div {{#if item.system.container}} {{#unless item.system.quantityMax }} class="bottom-border" {{/unless}} {{/if}}>
+   <div {{#if item.system.container}}{{#unless (or item.system.quantityMax (and item.system.chargesMax (or @root.isGM item.system.isIdentified)))}}class="bottom-border" {{/unless}} {{/if}}>
       <div class="flexrow">
          <div class='item-name contained'>
             <div class='item-image {{#if item.system.isUsable}}rollable2{{else}}chatable2{{/if}}' 
@@ -58,7 +58,7 @@
       {{/times}}
    </div>
    {{/if}}
-   {{#if (and item.system.chargesMax @root.isGM)}}
+   {{#if (and item.system.chargesMax (or ../isGM item.system.isIdentified))}}
    <div class='flexrow item collapsible-content contained-item{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
       <div class="charges-counter contained">
          <label>{{localize 'FADE.Item.charges.long'}}</label>
