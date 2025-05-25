@@ -14,7 +14,7 @@
             <a class="item-control item-edit" 
                data-action="editItem" 
                data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
-               {{#if saveAbbr}}
+               {{#if @root.saveAbbr}}
                {{item.system.shortName}}
                {{else}}
                {{item.name}}
