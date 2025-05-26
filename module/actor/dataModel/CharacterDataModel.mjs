@@ -9,6 +9,14 @@ export class CharacterDataModel extends FDActorDM {
          details: new fields.SchemaField({
             morale: new fields.NumberField({ initial: 9 }),
             alignment: new fields.StringField({ initial: "Neutral" }),
+            species: new fields.StringField({ initial: "" }),
+            age: new fields.NumberField({ initial: 20 }),
+            sex: new fields.StringField({ initial: "" }),
+            height: new fields.StringField({ initial: "" }),            
+            eyes: new fields.StringField({ initial: "" }),
+            hair: new fields.StringField({ initial: "" }),
+            //---------------------------------------------------
+            // Removing...
             level: new fields.NumberField({ initial: 0 }),
             xp: new fields.SchemaField({
                value: new fields.NumberField({ initial: 0 }),
@@ -16,14 +24,9 @@ export class CharacterDataModel extends FDActorDM {
                next: new fields.NumberField({ initial: 0 }),
             }),
             class: new fields.StringField({ initial: "" }),
-            species: new fields.StringField({ initial: "" }),
             title: new fields.StringField({ initial: "" }),
-            age: new fields.NumberField({ initial: 20 }),
-            sex: new fields.StringField({ initial: "" }),
-            height: new fields.StringField({ initial: "" }),            
-            eyes: new fields.StringField({ initial: "" }),
-            hair: new fields.StringField({ initial: "" }),            
-         }),         
+            //---------------------------------------------------
+         }),
          retainer: new fields.SchemaField({
             max: new fields.NumberField({ initial: 0 }),
             morale: new fields.NumberField({ initial: 0 }),

@@ -195,6 +195,7 @@ export class CharacterActor extends FDActor {
             }
          }
       }
+
       await this.update({ system: update });
    }
 

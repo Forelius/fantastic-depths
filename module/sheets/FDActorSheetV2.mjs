@@ -464,7 +464,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const classAbilities = [];
       const savingThrows = [];
       const conditions = [];
-      const classes = [];
+      const actorClasses = [];
 
       for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
          spellSlots.push({ spells: [] })
@@ -524,7 +524,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          }
          // Append to classes.
          else if (item.type === "actorClass") {
-            classes.push(item);
+            actorClasses.push(item);
          }
          // Append to specialAbility.
          else if (item.type === "specialAbility") {
@@ -564,7 +564,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.exploration = exploration;
       context.savingThrows = savingThrows;
       context.conditions = conditions;
-      context.classes = classes;
+      context.actorClasses = actorClasses;
 
       Object.assign(context, game.fade.registry.getSystem("encumbranceSystem").calcCategoryEnc(this.actor.items));
    }
