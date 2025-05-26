@@ -62,7 +62,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
 
-
    /** @inheritDoc */
    async _renderFrame(options) {
       this._frame = await super._renderFrame(options);
@@ -205,11 +204,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             droppedItem.createActorWeaponMastery(this.actor);
          }
          // If the dropped item is a class definition item...
-         else if (droppedItem.type === "class") {
-            droppedItem.createActorClass(this.actor);
-            /*if (this.actor.type === "character") {*/
-            //   await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
-            //}
+         else if (droppedItem.type === "class" || droppedItem.type === "actorClass") {
+            if (this.actor.type === "character") {
+               droppedItem.createActorClass(this.actor);
+               //   await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
+            }
          }
          // If the drop target is a container...
          else if (droppedItem.type === "item" || droppedItem.type === "light" || droppedItem.type === "treasure") {

@@ -1,52 +1,4 @@
 <section class="tab {{tabs.description.cssClass}}" data-group="primary" data-tab="description">
-   <div class="bordered items-list">
-      {{! Classes }}
-      <div class='item flexrow items-header' data-action="toggleHeader">
-         <div class='item-name'>{{localize 'FADE.Actor.Class'}}</div>
-         <div style="max-width:60px">{{localize 'FADE.Actor.Level'}}</div>
-         <div style="max-width:120px">{{localize 'FADE.Actor.Experience'}}</div>
-         <div style="max-width:120px">{{localize 'FADE.Actor.NextLevel'}}</div>
-         <div class='item-controls'>
-            <a class='item-control item-create' data-tooltip='{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Class")}}'
-               data-action="createItem"
-               data-type='class'>
-               <i class='fas fa-plus'></i>
-               {{localize 'FADE.Actor.Class'}}
-            </a>
-         </div>
-      </div>
-      <!-- Class entries -->
-      {{#each actorClasses as |item id|}}
-      <div class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
-         <div class="flexrow">
-            <div class='item-name'>
-               <a class='item-control' data-action="expandDesc">{{item.name}}</a>
-            </div>
-            <div style="max-width:60px">
-               <input type="number" name="item.system.level" value="{{item.system.level}}" data-dtype="Number" />
-            </div>
-            <div style="max-width:120px">
-               <input type="number" name="item.system.xp" value="{{item.system.xp}}" data-dtype="Number" />
-            </div>
-            <div style="max-width:120px"></div>
-            <div class='item-controls2'>
-               <a class="item-control"
-                  data-action="editItem"
-                  data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
-                  <i class='fas fa-pencil'></i>
-               </a>
-               {{#if @root.isGM}}
-               <a class='item-control'
-                  data-action="deleteItem"
-                  data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.Skill.long")}}'>
-                  <i class='fas fa-trash'></i>
-               </a>
-               {{/if}}
-            </div>
-         </div>
-      </div>
-      {{/each}}
-   </div>
    <div class="bordered">
       <div class="summary flexrow">
          <div style="max-width: 100px;">
@@ -57,8 +9,10 @@
          </div>
       </div>
       <div class="summary flexrow">
-         <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
-         <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
+         <div>
+            <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
+            <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
+         </div>
       </div>
    </div>
    <div class="bordered">

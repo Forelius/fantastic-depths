@@ -68,6 +68,14 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       primary: "description"
    }
 
+   async createActorClass(owner) {
+      const result = await FDItem.create({
+         name: this.name,
+         type: "actorClass",
+      }, { parent: owner });
+      return result;
+   }
+
    /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default

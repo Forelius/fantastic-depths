@@ -8,11 +8,11 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          isPrimary: new fields.BooleanField({ required: true, initial: true }),
          key: new fields.StringField({ required: true }),
          level: new fields.NumberField({ required: true }),
-         xp: {
+         xp: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
             bonus: new fields.NumberField({ initial: 0 }),
             next: new fields.NumberField({ initial: 0 }),
-         },
+         }),
          thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
          thbonus: new fields.NumberField({ required: true, initial: 0 }),
          hd: new fields.StringField({ required: true, initial: '' }),
