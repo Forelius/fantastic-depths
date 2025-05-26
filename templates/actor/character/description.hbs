@@ -1,5 +1,7 @@
 <section class="tab {{tabs.description.cssClass}}" data-group="primary" data-tab="description">
    <div class="bordered">
+   </div>
+   <div class="bordered">
       <div class="summary flexrow">
          <div style="max-width: 100px;">
             <select name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
@@ -9,11 +11,11 @@
          </div>
       </div>
       <div class="summary flexrow">
-         <div>
-            <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
-            <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
-         </div>
+         <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />
+         <label for="system.languages">{{localize 'FADE.Actor.Languages'}}</label>
       </div>
+   </div>
+   <div class="bordered">
       {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
       <prose-mirror name="system.biography" data-document-u-u-i-d="{{actor.uuid}}" value="{{system.biography}}" collaborate="false" toggled="true">
          {{{enrichedBiography}}}
