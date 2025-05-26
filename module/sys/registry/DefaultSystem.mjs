@@ -5,7 +5,7 @@ export class MoraleCheck {
    async execute(data) {
       const { actor, event } = data;
       const ctrlKey = event.ctrlKey;
-      const dataset = event.currentTarget.dataset;
+      const dataset = event.target.dataset;
       dataset.formula = '2d6';
       dataset.pass = 'lte';
       dataset.dialog = 'generic';
