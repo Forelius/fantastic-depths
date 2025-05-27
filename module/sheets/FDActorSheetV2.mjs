@@ -613,10 +613,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          redirectToRoot: defaultImage ? [defaultImage] : [],
          callback: path => {
             target.src = path;
-            if (this.options.form.submitOnChange) {
-               const submit = new Event("submit");
-               this.element.dispatchEvent(submit);
-            }
+            this.submit();
          },
          top: this.position.top + 40,
          left: this.position.left + 10

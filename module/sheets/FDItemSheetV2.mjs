@@ -102,10 +102,7 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
          redirectToRoot: defaultImage ? [defaultImage] : [],
          callback: path => {
             target.src = path;
-            if (this.options.form.submitOnChange) {
-               const submit = new Event("submit");
-               this.element.dispatchEvent(submit);
-            }
+            this.submit();
          },
          top: this.position.top + 40,
          left: this.position.left + 10
