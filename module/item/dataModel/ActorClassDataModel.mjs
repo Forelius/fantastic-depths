@@ -15,7 +15,7 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          }),
          thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
          thbonus: new fields.NumberField({ required: true, initial: 0 }),
-         hd: new fields.StringField({ required: true, initial: '' }),
+         hd: new fields.StringField({ required: true, initial: "" }),
          hdcon: new fields.BooleanField({ required: true, initial: true }),
          title: new fields.StringField({ required: false, nullable: true }),
          attackRank: new fields.StringField({ required: false, nullable: true }),

@@ -27,13 +27,13 @@
                <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" data-tooltip="{{system.details.title}}" />
                <label>{{localize 'FADE.Actor.Title'}}</label>
             </li>
-            <li style="max-width: 90px">
-               <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" data-tooltip="{{system.details.alignment}}" />
-               <label>{{localize 'FADE.Actor.Alignment'}}</label>
-            </li>
             <li style="max-width: 80px">
                <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" />
                <label class="hitdie rollable2" data-action="rollGeneric" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
+            </li>
+            <li style="max-width: 90px">
+               <input type="text" name="system.details.alignment" value="{{system.details.alignment}}" data-dtype="String" data-tooltip="{{system.details.alignment}}" />
+               <label>{{localize 'FADE.Actor.Alignment'}}</label>
             </li>
             <li style="max-width: 50px">
                <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
@@ -53,14 +53,17 @@
                <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
                <label>{{localize "FADE.Actor.XPBonus"}}</label>
             </li>
-            <li class="flex1" style="max-width: 50px">
-               <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
-               <label>{{localize "FADE.Actor.THAC0"}}</label>
-            </li>
+            {{#if isAAC}}
             <li class="flex1" style="max-width: 50px">
                <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly data-tooltip="{{localize "FADE.Actor.THBonusHint"}}" />
                <label>{{localize "FADE.Actor.THBonus"}}</label>
             </li>
+            {{else}}
+            <li class="flex1" style="max-width: 50px">
+               <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+               <label>{{localize "FADE.Actor.THAC0"}}</label>
+            </li>
+            {{/if}}
             <li class="flex1" style="max-width:50px">
                <input type="text" name="system.details.attacks" value="{{system.details.attacks}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Attacks.long'}}" />
                <label data-tooltip="{{localize 'FADE.Actor.Attacks.long'}}">{{localize 'FADE.Actor.Attacks.abbr'}}</label>
