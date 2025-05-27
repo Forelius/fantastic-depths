@@ -70,6 +70,11 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.specialAbilities": specialAbilities });
    }
 
+   /**
+    * Class items are things like gear items. It is not referring to actor classes.
+    * @param {any} name
+    * @param {any} type
+    */
    async createClassItem(name="", type=null) {
       // Retrieve the array
       const items = this.system.classItems || [];
@@ -110,9 +115,23 @@ export class ClassDefinitionItem extends FDItem {
    }
 
    async createActorClass(owner) {
+      const classLevel = this.system.levels[0];
+      const nextClassLevel = this.system.levels[1];
       const result = await FDItem.create({
          name: this.name,
          type: "actorClass",
+         system: {
+            key: this.key,
+            level: classLevel?.level,
+            xp: {
+               value: classLevel?.xp,
+               next: nextClassLevel?.xp
+            },
+            hd: classLevel?.hd,
+            thac0: classLevel?.thac0,
+            thbonus: classLevel?.thbonus,
+            title: classLevel?.title,
+         },
       }, { parent: owner });
       return result;
    }
