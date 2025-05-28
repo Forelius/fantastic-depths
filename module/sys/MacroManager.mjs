@@ -60,7 +60,7 @@ export class MacroManager {
       }
 
       // Prevent Foundry's default behavior from creating an additional macro
-      if (data.type !== 'Item') return;
+      if (data.type !== 'Item') return true;
       if (!data.uuid.includes('Actor.') && !data.uuid.includes('Token.')) {
          return ui.notifications.warn(
             'You can only create macro buttons for owned Items'
