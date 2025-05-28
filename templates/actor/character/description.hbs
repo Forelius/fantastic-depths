@@ -1,6 +1,123 @@
 <section class="tab {{tabs.description.cssClass}}" data-group="primary" data-tab="description">
+   {{#if hasMultiClass}}
+   <div class="bordered items-list">
+      {{! Classes }}
+      <div class="item flexrow items-header" data-action="toggleHeader">
+         <div class="flex3 item-name">{{localize "FADE.Actor.Class"}}</div>
+         <div class="flex1">{{localize "FADE.Actor.Level"}}</div>
+         <div class="flex2">{{localize "FADE.Actor.Experience"}}</div>
+         <div class="flex2">{{localize "FADE.Actor.NextLevel"}}</div>
+         {{#if isAAC}}
+         <div class="flex1">{{localize "FADE.Actor.THBonus"}}</div>
+         {{else}}
+         <div class="flex1">{{localize "FADE.Actor.THAC0"}}</div>
+         {{/if}}
+         <div class="flex1">{{localize "FADE.Actor.HitDiceShort"}}</div>
+         <div class="item-controls">
+            <a class="item-control item-create" data-tooltip="{{localize "DOCUMENT.Create" type=(localize "FADE.Actor.Class")}}"
+               data-action="createItem"
+               data-type="actorClass">
+               <i class="fas fa-plus"></i>
+               {{localize "FADE.Actor.Class"}}
+            </a>
+         </div>
+      </div>
+      <!-- Class entries -->
+      {{#each actorClasses as |item id|}}
+      <div class="item collapsible-content bottom-border" data-item-id="{{item._id}}">
+         <div class="flexrow">
+            <div class="flex3 item-name">
+               <a class="item-control" style="margin-left:4px;" data-action="expandDesc">{{item.name}}</a>
+            </div>
+            <div class="flex1">
+               <input type="number" name="item.system.level" value="{{item.system.level}}" data-dtype="Number" />
+            </div>
+            <div class="flex2">
+               <input type="number" name="item.system.xp.value" value="{{item.system.xp.value}}" data-dtype="Number" />
+            </div>
+            <div class="flex2">
+               <input type="number" name="item.system.xp.next" value="{{item.system.xp.next}}" data-dtype="Number" />
+            </div>
+            {{#if isAAC}}
+            <div class="flex1">
+               <input type="number" name="item.system.thbonus" value="{{item.system.thbonus}}" data-dtype="Number" />
+            </div>
+            {{else}}
+            <div class="flex1">
+               <input type="number" name="item.system.thac0" value="{{item.system.thac0}}" data-dtype="Number" />
+            </div>
+            {{/if}}
+            <div class="flex1">
+               <input type="text" name="item.system.hd" value="{{item.system.hd}}" data-dtype="String" />
+            </div>
+            <div class="item-controls">
+               <a class="item-control"
+                  data-action="editItem"
+                  data-tooltip="{{localize "DOCUMENT.Update" type=(localize "FADE.Actor.Class")}}">
+                  <i class="fas fa-pencil"></i>
+               </a>
+               {{#if @root.isGM}}
+               <a class="item-control"
+                  data-action="deleteItem"
+                  data-tooltip="{{localize "DOCUMENT.Delete" type=(localize "FADE.Actor.Class")}}">
+                  <i class="fas fa-trash"></i>
+               </a>
+               {{/if}}
+            </div>
+         </div>
+      </div>
+      {{/each}}
+   </div>
+   {{/if}}
    <div class="bordered">
       <div class="summary flexrow">
+         <div>
+            <input type='text' name="system.details.sex" value='{{system.details.sex}}' data-dtype='String' />
+            <label for="system.details.sex">{{localize 'FADE.Actor.Sex'}}</label>
+         </div>
+         <div style="max-width:60px">
+            <input type='text' name="system.details.age" value='{{system.details.age}}' data-dtype='Number' />
+            <label for="system.details.age">{{localize 'FADE.Actor.Age'}}</label>
+         </div>
+         <div style="max-width:60px">
+            <input type='text' name="system.details.height" value='{{system.details.height}}' data-dtype='String' />
+            <label for="system.details.height">{{localize 'FADE.Actor.Height'}}</label>
+         </div>
+         <div style="max-width: 70px">
+            <input type='text' name="system.details.weight" value='{{system.details.weight}}' data-dtype='String' />
+            <label for="system.details.weight">{{localize 'FADE.Actor.Weight'}}</label>
+         </div>
+         {{#if system.isRetainer}}
+         <div style="max-width:60px;">
+            <input type="text" name="system.retainer.wage" value="{{system.retainer.wage}}" data-dtype="String" />
+            <label>{{localize 'FADE.Actor.RetainerWage'}}</label>
+         </div>
+         <div style="max-width:60px;">
+            <input type="text" name="system.retainer.loyalty" value="{{system.retainer.loyalty}}" data-dtype="String" />
+            <label class="rollable2" for="system.retainer.loyalty"
+                   data-test="morale"
+                   data-target="{{system.retainer.loyalty}}"
+                   data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                   data-action="rollMorale"
+                   data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">{{localize 'FADE.Actor.morale'}}</label>
+         </div>
+         {{else}}
+         <div style="max-width:60px;">
+            <input name="system.retainer.max" type="text" data-dtype="Number" value="{{system.retainer.max}}" />
+            <label for="system.retainer.max">{{localize 'FADE.Actor.Abilities.cha.retainer'}}</label>
+         </div>
+         <div style="max-width:60px;">
+            <label class="rollable2" for="system.retainer.morale"
+                   data-test="morale"
+                   data-action="rollMorale"
+                   data-target="{{system.retainer.morale}}"
+                   data-label="{{localize 'FADE.Actor.retainerMorale'}}"
+                   data-tooltip="{{localize 'FADE.Actor.retainerMoraleHint'}}">
+               {{localize 'FADE.Actor.retainerMorale'}}
+            </label>
+            <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
+         </div>
+         {{/if}}
          <div style="max-width: 100px;">
             <select name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
                {{selectOptions sizes selected=system.details.size}}

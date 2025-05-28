@@ -327,6 +327,20 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+      game.settings.register(game.system.id, "classSystem", {
+         name: "SETTINGS.classSystem.name",
+         hint: "SETTINGS.classSystem.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            "single": "SETTINGS.classSystem.choices.single",
+            "advanced": "SETTINGS.classSystem.choices.advanced",
+         },
+         default: "single",
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
    }
 
    #registerNonConfigSettings() {

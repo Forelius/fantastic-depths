@@ -651,7 +651,7 @@
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
-      "apps": {        
+      "apps": {
          "userTables": {
             "title": "User Tables",
             "tableId": "Table ID",
@@ -1199,6 +1199,14 @@
       "useArmorValue": {
          "name": "Use Armor Value",
          "hint": "Armor Value (AV) is an optional armor system attribute that allows for physical damage mitigation to be assigned to armor items. Enabling this will result in AV showing on actor sheets. Enabling will also result in AV being factored in when applying any damage."
+      },
+      "classSystem": {
+         "name": "Character Class System",
+         "hint": "Specify whether multiple classes are allowed per character. Selecting \"Single\" will disable multiple classes, and the UI for class data will remain unchanged. Choosing \"Advanced\" will enable multiple classes, allowing for manual configuration of elements related to each class being used. Due to the complex nature of multi-class characters, automation and display of hit dice and XP bonuses will be shown per class, and it will be up to the players and GM to handle the calculations.",
+         "choices": {
+            "single": "Single",
+            "advanced": "Advanced"
+         }
       }
    }
 }

@@ -10,7 +10,7 @@ import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { FDActor } from './actor/FDActor.mjs';
 import { CharacterSheet } from './sheets/CharacterSheet.mjs';
-import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
+import { CharacterSheetBase } from './sheets/CharacterSheetBase.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
@@ -135,8 +135,8 @@ function registerSheets() {
       types: ['character'],
       makeDefault: true
    });
-   Actors.registerSheet('fantastic-depths', CharacterSheet2, {
-      label: 'FADE.SheetLabel.Character2',
+   Actors.registerSheet('fantastic-depths', CharacterSheetBase, {
+      label: 'FADE.SheetLabel.CharacterSheetBase',
       types: ['character'],
       makeDefault: true
    });

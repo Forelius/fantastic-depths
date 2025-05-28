@@ -4,7 +4,7 @@ import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class CharacterSheet2 extends FDActorSheetV2 {
+export class CharacterSheetBase extends FDActorSheetV2 {
    constructor(object, options = {}) {
       super(object, options);
       this.editScores = false;
@@ -43,7 +43,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
          template: "templates/generic/tab-navigation.hbs",
       },
       abilities: {
-         template: "systems/fantastic-depths/templates/actor/character/abilities2.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/abilitiesNoHeader.hbs",
       },
       items: {
          template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
@@ -95,6 +95,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
    async _prepareContext(options) {
       const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
+      context.hasMultiClass = game.settings.get(game.system.id, "classSystem") !== "single";
       context.editScores = this.editScores;
       context.hasAbilityScoreMods = true;
       // Prepare the tabs.

@@ -1,10 +1,10 @@
-import { CharacterSheet2 } from './CharacterSheet2.mjs';
+import { CharacterSheetBase } from './CharacterSheetBase.mjs';
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
  * @extends {FDActorSheetV2}
  */
-export class CharacterSheet extends CharacterSheet2 {
+export class CharacterSheet extends CharacterSheetBase {
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
@@ -35,7 +35,7 @@ export class CharacterSheet extends CharacterSheet2 {
          template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
       },
       description: {
-         template: "systems/fantastic-depths/templates/actor/character/description2.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/description.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/actor/shared/effects.hbs",
