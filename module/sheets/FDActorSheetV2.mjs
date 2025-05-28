@@ -122,7 +122,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.actor = actor;
       context.actor.uuid = this.actor.uuid;
 
-      // Add the actor's data to context.data for easier access, as well as flags.
+      // Add the actor"s data to context.data for easier access, as well as flags.
       context.system = actor.system;
       context.flags = actor.flags;
       context.isSpellcaster = actor.system.config.maxSpellLevel > 0;
@@ -263,7 +263,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * Retrieves an item owned by the actor based on parent element's data-item-id.
+    * Retrieves an item owned by the actor based on parent element"s data-item-id.
     * @param {any} event
     * @returns 
     */
@@ -363,7 +363,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * Handler for clicking on a container item's collapse/expand icon.
+    * Handler for clicking on a container item"s collapse/expand icon.
     * @param {MouseEvent} event
     */
    async _toggleContainedItems(event) {
@@ -630,10 +630,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          redirectToRoot: defaultImage ? [defaultImage] : [],
          callback: path => {
             target.src = path;
-            if (this.options.form.submitOnChange) {
-               const submit = new Event("submit");
-               this.element.dispatchEvent(submit);
-            }
+            this.submit();
          },
          top: this.position.top + 40,
          left: this.position.left + 10
@@ -712,7 +709,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          system: data,
       };
 
-      // Remove the type from the dataset since it"s in the itemData.type prop.
+      // Remove the type from the dataset since it's in the itemData.type prop.
       delete itemData.system["type"];
 
       // Finally, create the item!
@@ -823,5 +820,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             descElem.empty();
          }
       }
+   }
+
+   #hasSameActorMastery(item) {
+      return this.actor.items.find(i => i.type === "mastery" && i.name === item.name) !== undefined;
    }
 }
