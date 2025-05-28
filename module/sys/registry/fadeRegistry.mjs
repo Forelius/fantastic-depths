@@ -9,6 +9,7 @@ import { WeaponMasteryHeroic, WeaponMasteryBase } from './WeaponMastery.mjs';
 import { Wrestling } from "./Wrestling.mjs";
 import { Shove } from "./Shove.mjs";
 import { UserTables } from "./UserTables.mjs";
+import { SingleClassSystem, MultiClassSystem } from "./ClassSystem.mjs";
 
 export class fadeRegistry {
    constructor() {
@@ -62,6 +63,13 @@ export class fadeRegistry {
       this.registerSystem('shove', Shove, Shove);
       this.registerSystem('userTables', new UserTables(), UserTables);
       this.registerSystem('actorMovement', ActorMovement, ActorMovement);
+
+      const classSystem = game.settings.get(game.system.id, "classSystem");
+      if (classSystem === "single") {
+         this.registerSystem('classSystem', new SingleClassSystem(), SingleClassSystem);
+      } else if (classSystem === "advanced") {
+         this.registerSystem('classSystem', new MultiClassSystem(), MultiClassSystem);
+      }
    }
 
    registerSystem(id, instance, type) {

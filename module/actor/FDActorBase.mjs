@@ -58,6 +58,11 @@ export class FDActorBase extends Actor {
    }
 
    async onUpdateActorItem(item, updateData, options, userId) {
+      if (this.id) {
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         await classSystem.onActorItemUpdate(this, item, updateData);
+      }
+
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");

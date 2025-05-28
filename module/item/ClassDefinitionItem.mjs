@@ -113,33 +113,4 @@ export class ClassDefinitionItem extends FDItem {
       }
       return highest;
    }
-
-   async createActorClass(owner) {
-      const classLevel = this.system.levels[0];
-      const nextClassLevel = this.system.levels[1];
-      const result = await FDItem.create({
-         name: this.name,
-         type: "actorClass",
-         system: {
-            key: this.system.key,
-            level: classLevel?.level,
-            maxLevel: this.system.maxLevel,
-            maxSpellLevel: this.system.maxSpellLevel,
-            xp: {
-               value: classLevel?.xp,
-               next: nextClassLevel?.xp,
-               bonus: 0
-            },
-            hd: classLevel?.hd,
-            hdcon: classLevel?.hdcon,
-            thac0: classLevel?.thac0,
-            thbonus: classLevel?.thbonus,
-            attackRank: classLevel?.attackRank,
-            title: classLevel?.title,
-            basicProficiency: this.system.basicProficiency,
-            unskilledToHitMod: this.system.unskilledToHitMod,
-         },
-      }, { parent: owner });
-      return result;
-   }
 }

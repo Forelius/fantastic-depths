@@ -238,40 +238,6 @@ export class FDActor extends FDActorBase {
       return result;
    }
 
-   async clearClassData(className) {
-      const classItem = await fadeFinder.getClass(className?.toLowerCase());
-      if (!classItem) {
-         console.warn(`Class not found ${className}.`);
-         return;
-      }
-      const update = {
-         details: {
-            title: "",
-            class: "",
-            xp: {
-               bonus: null,
-               next: null
-            }
-         },
-         thbonus: 0,
-         hp: { hd: "" },
-         thac0: { value: null },
-         config: { maxSpellLevel: 0 },
-         spellSlots: []
-      };
-      await this.update({ system: update });
-      const abilityNames = classItem.system.specialAbilities.map(item => item.name);
-      const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save' && abilityNames.includes(item.name));
-      for (let classAbility of actorAbilities) {
-         classAbility.delete();
-      }
-      const itemNames = classItem.system.classItems.map(item => item.name);
-      const actorItems = this.items.filter(item => (item.type === 'weapon' || item.type === 'armor') && itemNames.includes(item.name));
-      for (let classItem of actorItems) {
-         classItem.delete();
-      }
-   }
-
    /**
     * Prepares the used spells per level totals
     * @protected 

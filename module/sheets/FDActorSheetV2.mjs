@@ -195,7 +195,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
-
+      const classSystem = game.fade.registry.getSystem("classSystem");
       if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
          this._onSortItem(event, droppedItem);
       } else {
@@ -206,8 +206,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          // If the dropped item is a class definition item...
          else if ((droppedItem.type === "class" || droppedItem.type === "actorClass") && this.#hasSameActorClass(droppedItem) === false) {
             if (this.actor.type === "character") {
-               droppedItem.createActorClass(this.actor);
-               //   await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
+               classSystem.createActorClass(this.actor);
             }
          }
          // If the drop target is a container...
