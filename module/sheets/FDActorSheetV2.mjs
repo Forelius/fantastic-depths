@@ -820,9 +820,5 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             descElem.empty();
          }
       }
-   }
-
-   #hasSameActorMastery(item) {
-      return this.actor.items.find(i => i.type === "mastery" && i.name === item.name) !== undefined;
-   }
+   } 
 }
