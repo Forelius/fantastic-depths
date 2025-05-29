@@ -17,7 +17,7 @@ export class CharacterDataModel extends FDActorDM {
             hair: new fields.StringField({ initial: "" }),
             //---------------------------------------------------
             // Removing...
-            level: new fields.NumberField({ initial: 0 }),
+            level: new fields.StringField({ initial: "1" }),
             xp: new fields.SchemaField({
                value: new fields.NumberField({ initial: 0 }),
                bonus: new fields.NumberField({ initial: 0 }),

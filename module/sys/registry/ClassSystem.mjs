@@ -1,4 +1,9 @@
-               
+import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
+import { FDItem } from '/systems/fantastic-depths/module/item/FDItem.mjs';
+import { Formatter } from '/systems/fantastic-depths/module/utils/Formatter.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+
 export class ClassSystemBase {
    async onCharacterActorUpdate(actor, updateData) { }
    async onActorItemUpdate(actor, item, updateData) { }
@@ -36,6 +41,50 @@ export class ClassSystemBase {
          classItem.delete();
       }
    }
+
+   prepareSpellSlots(actor, classData) {
+      const update = {};
+      const classSpellsIdx = actor.system.details.level - 1;
+      if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
+         // Get the spell progression for the given character level
+         const spellProgression = classData.spells[classSpellsIdx];
+         if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
+            console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
+         } else {
+            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
+            for (let i = 0; i < update.spellSlots.length; i++) {
+               // Set the max value based on the class spell progression
+               update.spellSlots[i] = { max: spellProgression[i] };
+            }
+         }
+      }
+      return update;
+   }
+
+   async getClassData(className, actor) {
+      // Replace hyphen with underscore for "Magic-User"
+      const nameInput = className.toLowerCase();
+      const classItem = await fadeFinder.getClass(nameInput);
+      if (!classItem) {
+         if (nameInput !== null && nameInput !== '') {
+            console.warn(`Class not found ${actor.system.details.class}.`);
+         }
+         return;
+      }
+      const classData = classItem.system;
+      const currentLevel = Math.min(classData.maxLevel, Math.max(classData.firstLevel, actor.system.details.level));
+
+      // Make sure current level is within range of levels allowed for class.
+      return {
+         classItem,
+         classData,
+         currentLevel,
+         levelData: classData.levels.find(level => level.level === currentLevel),
+         prevLevelData: classData.levels.find(level => level.level === currentLevel - 1),
+         nextLevelData: classData.levels.find(level => level.level === currentLevel + 1),
+         nameLevel: classData.levels.find(level => level.level === 9),
+      }
+   }
 }
 
 export class SingleClassSystem extends ClassSystemBase {
@@ -61,73 +110,51 @@ export class SingleClassSystem extends ClassSystemBase {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
       if (game.user.isGM === false) return;
 
-      // Replace hyphen with underscore for "Magic-User"
-      const nameInput = actor.system.details.class?.toLowerCase();
-      const classItem = await fadeFinder.getClass(nameInput);
-      if (!classItem) {
-         if (nameInput !== null && nameInput !== '') {
-            console.warn(`Class not found ${actor.system.details.class}.`);
-         }
-         return;
-      }
+      const classDataObj = await this.getClassData(actor.system.details.class, actor);
+      if (classDataObj) {
+         const { classItem, classData, currentLevel, levelData, prevLevelData, nextLevelData, nameLevel } = classDataObj;
+         let update = {
+            details: {
+               level: currentLevel,
+               xp: {
+                  bonus: classItem.getXPBonus(actor.system.abilities)
+               }
+            },
+            combat: {
+               // If false then take from class data, otherwise whatever character's value was set to.
+               basicProficiency: classData.basicProficiency,
+               unskilledToHitMod: classData.unskilledToHitMod,
+            },
+            hp: {},
+            thac0: {},
+            spellSlots: []
+         };
 
-      // Make sure current level is within range of levels allowed for class.
-      const classData = classItem.system;
-      const currentLevel = Math.min(classData.maxLevel, Math.max(classData.firstLevel, actor.system.details.level));
-      actor.system.details.level = currentLevel;
-      const levelData = classData.levels.find(level => level.level === currentLevel);
-      const prevLevelData = classData.levels.find(level => level.level === currentLevel - 1);
-      const nextLevelData = classData.levels.find(level => level.level === currentLevel + 1);
-      const nameLevel = classData.levels.find(level => level.level === 9);
-      const update = {
-         details: {
-            xp: {
-               bonus: classItem.getXPBonus(actor.system.abilities)
-            }
-         },
-         combat: {
-            // If false then take from class data, otherwise whatever character's value was set to.
-            basicProficiency: classData.basicProficiency,
-            unskilledToHitMod: classData.unskilledToHitMod,
-         },
-         hp: {},
-         thac0: {},
-         spellSlots: []
-      };
-
-      // Level stuff
-      if (levelData) {
-         update.thbonus = levelData.thbonus;
-         update.hp.hd = levelData.hd;
-         update.thac0.value = levelData.thac0;
-         if (actor.system.details.title == "" || actor.system.details.title == null || actor.system.details.title == prevLevelData?.title) {
-            const ordinalized = Formatter.formatOrdinal(currentLevel);
-            update.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
-         }
-      }
-      if (nextLevelData) {
-         update.details.xp.next = nextLevelData.xp;
-      }
-      update.details.species = actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species;
-      update.config = { maxSpellLevel: classData.maxSpellLevel };
-
-      // Spells
-      const classSpellsIdx = actor.system.details.level - 1;
-      if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
-         // Get the spell progression for the given character level
-         const spellProgression = classData.spells[classSpellsIdx];
-         if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
-            console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
-         } else {
-            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
-            for (let i = 0; i < update.spellSlots.length; i++) {
-               // Set the max value based on the class spell progression
-               update.spellSlots[i] = { max: spellProgression[i] };
+         // Level stuff
+         if (levelData) {
+            update.thbonus = levelData.thbonus;
+            update.hp.hd = levelData.hd;
+            update.thac0.value = levelData.thac0;
+            if (actor.system.details.title == "" || actor.system.details.title == null || actor.system.details.title == prevLevelData?.title) {
+               const ordinalized = Formatter.formatOrdinal(currentLevel);
+               update.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
             }
          }
-      }
 
-      await actor.update({ system: update });
+         if (nextLevelData) {
+            update.details.xp.next = nextLevelData.xp;
+         }
+
+         update.details.species = actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species;
+         update.config = { maxSpellLevel: classData.maxSpellLevel };
+
+         // Spells
+         update = { ...update, ...this.prepareSpellSlots(actor, classData) };
+
+         await actor.update({ system: update });
+      } else {
+         ui.notifications.warn(`${actor.system.details.class} not found.`)
+      }
    }
 
    /**
@@ -166,7 +193,7 @@ export class SingleClassSystem extends ClassSystemBase {
                yesLabel: game.i18n.localize('FADE.dialog.yes'),
                noLabel: game.i18n.localize('FADE.dialog.no'),
                defaultChoice: "yes"
-            }, actor.actor);
+            }, actor);
 
             if (dialogResp?.resp?.result === true) {
                await actor._setupSpecialAbilities(abilitiesData);
@@ -182,13 +209,17 @@ export class SingleClassSystem extends ClassSystemBase {
 
 export class MultiClassSystem extends ClassSystemBase {
    async onActorItemUpdate(actor, item, updateData) {
-
+      if (item.type === "actorClass" &&
+         (updateData.system.level || updateData.name)) {
+         await this.updateActorClassData(actor, item, updateData);
+         await this.updateActorData(actor);
+      }
    }
 
    async createActorClass(actor, item) {
       const classLevel = item.system.levels[0];
       const nextClassLevel = item.system.levels[1];
-      const result = await FDItem.create({
+      const newItem = await FDItem.create({
          name: item.name,
          type: "actorClass",
          system: {
@@ -210,7 +241,25 @@ export class MultiClassSystem extends ClassSystemBase {
             basicProficiency: item.system.basicProficiency,
             unskilledToHitMod: item.system.unskilledToHitMod,
          },
-      }, { parent: owner });
-      return result;
+      }, { parent: actor });
+      await this.updateActorData(actor);
+      return newItem;
+   }
+
+   async updateActorClassData(actor, item, updateData) {
+
+   }
+
+   async updateActorData(actor) {
+      let classNames = "";
+      let hds = "";
+      let xps = "";
+      let nextXps = "";
+      let xpBonus = "";
+      for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
+         classNames += `\\${actorClass.name}`;
+      }
+      classNames = classNames.replace(/^\\/, '');
+      await actor.update({ "system.details.class": classNames });
    }
 }

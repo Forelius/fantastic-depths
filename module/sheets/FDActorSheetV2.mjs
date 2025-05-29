@@ -206,7 +206,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          // If the dropped item is a class definition item...
          else if ((droppedItem.type === "class" || droppedItem.type === "actorClass") && this.#hasSameActorClass(droppedItem) === false) {
             if (this.actor.type === "character") {
-               classSystem.createActorClass(this.actor);
+               classSystem.createActorClass(this.actor, droppedItem);
             }
          }
          // If the drop target is a container...
