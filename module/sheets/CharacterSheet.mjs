@@ -75,9 +75,6 @@ export class CharacterSheet extends CharacterSheetBase {
 
    async _prepareContext(options) {
       const context = await super._prepareContext();
-      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
-      context.editScores = this.editScores;
-      context.hasAbilityScoreMods = true;
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;

@@ -151,13 +151,19 @@ export class AwardXPDialog extends FormApplication {
          if (finalXP > 0) {
             // Add that to the actor's current XP
             const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
-            const updatedXP = currentXP + finalXP;
+            const updatedXP = Number(currentXP) + finalXP;
 
             const msg = game.i18n.format("FADE.dialog.awardXP.awardedCharacter", { name: actor.name, amount: finalXP });
             // Create a chat message only visible to the GM
             ChatMessage.create({ user: game.user.id, content: msg });
 
-            promises.push(actor.update({ "system.details.xp.value": updatedXP }));
+            const classSystem = game.settings.get(game.system.id, "classSystem");
+            if (classSystem === "single") {
+               promises.push(actor.update({ "system.details.xp.value": updatedXP }));
+            } else {
+               ui.notifications.warn("Award XP with multi-class system not yet supported.");
+            }
+
          }
       }
 

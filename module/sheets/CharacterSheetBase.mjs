@@ -98,6 +98,8 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       context.hasMultiClass = game.settings.get(game.system.id, "classSystem") !== "single";
       context.editScores = this.editScores;
       context.hasAbilityScoreMods = true;
+      context.currentXp = Number(this.actor.system.details.xp.value);
+      context.nextXp = Number(this.actor.system.details.xp.next);
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;

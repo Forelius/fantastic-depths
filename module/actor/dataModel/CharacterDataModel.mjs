@@ -16,12 +16,11 @@ export class CharacterDataModel extends FDActorDM {
             eyes: new fields.StringField({ initial: "" }),
             hair: new fields.StringField({ initial: "" }),
             //---------------------------------------------------
-            // Removing...
             level: new fields.StringField({ initial: "1" }),
             xp: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-               bonus: new fields.NumberField({ initial: 0 }),
-               next: new fields.NumberField({ initial: 0 }),
+               value: new fields.StringField({ initial: "0" }),
+               bonus: new fields.StringField({ initial: "0" }),
+               next: new fields.StringField({ initial: "0" }),
             }),
             class: new fields.StringField({ initial: "" }),
             title: new fields.StringField({ initial: "" }),

@@ -204,7 +204,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             droppedItem.createActorWeaponMastery(this.actor);
          }
          // If the dropped item is a class definition item...
-         else if ((droppedItem.type === "class" || droppedItem.type === "actorClass") && this.#hasSameActorClass(droppedItem) === false) {
+         else if (droppedItem.type === "class" && this.#hasSameActorClass(droppedItem) === false) {
             if (this.actor.type === "character") {
                classSystem.createActorClass(this.actor, droppedItem);
             }
@@ -232,8 +232,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                }
                super._onDropItem(event, item);
             }
-         }
-         else if (droppedItem.type === "species") {
+         } else if (droppedItem.type === "species") {
             if (this.actor.type === "character") {
                await this.actor.update({ "system.details.species": droppedItem.name });
             }
@@ -408,7 +407,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return this.actor.items.find(i => i.type === "mastery" && i.name === item.name) !== undefined;
    }
    #hasSameActorClass(item) {
-      return this.actor.items.find(i => i.type === "actorClass" && i.system.key === item.system.key) !== undefined;
+      return this.actor.items.find(i => i.type === "actorClass" && i.name === item.name) !== undefined;
    }
 
    /**
@@ -819,5 +818,5 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             descElem.empty();
          }
       }
-   } 
+   }
 }

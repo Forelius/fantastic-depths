@@ -14,7 +14,7 @@
          </div>        
       </div>
       <div class="summary flexrow">
-         <div class="flex1 {{#if (gte system.details.xp.value system.details.xp.next)}}notify{{/if}}" style="max-width: 80px">
+         <div class="flex1 {{#if (and (eq hasMultiClass false) (gte currentXp nextXp))}}notify{{/if}}" style="max-width: 80px">
             <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="String" />
             <label>{{localize 'FADE.Actor.Level'}}</label>
          </div>

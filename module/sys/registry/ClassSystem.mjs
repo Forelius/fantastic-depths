@@ -1,14 +1,14 @@
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
-import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
-import { FDItem } from '/systems/fantastic-depths/module/item/FDItem.mjs';
-import { Formatter } from '/systems/fantastic-depths/module/utils/Formatter.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { DialogFactory } from "/systems/fantastic-depths/module/dialog/DialogFactory.mjs";
+import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs";
+import { FDItem } from "/systems/fantastic-depths/module/item/FDItem.mjs";
+import { Formatter } from "/systems/fantastic-depths/module/utils/Formatter.mjs";
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
 export class ClassSystemBase {
    async onCharacterActorUpdate(actor, updateData) { }
    async onActorItemUpdate(actor, item, updateData) { }
 
-   async clearClassData(className) {
+   async clearClassData(actor, className) {
       const classItem = await fadeFinder.getClass(className?.toLowerCase());
       if (!classItem) {
          console.warn(`Class not found ${className}.`);
@@ -29,16 +29,18 @@ export class ClassSystemBase {
          config: { maxSpellLevel: 0 },
          spellSlots: []
       };
-      await this.update({ system: update });
+      await actor.update({ system: update });
       const abilityNames = classItem.system.specialAbilities.map(item => item.name);
-      const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save' && abilityNames.includes(item.name));
+      const actorAbilities = actor.items.filter(item => item.type === "specialAbility" && item.system.category !== "save" && abilityNames.includes(item.name));
       for (let classAbility of actorAbilities) {
          classAbility.delete();
       }
       const itemNames = classItem.system.classItems.map(item => item.name);
-      const actorItems = this.items.filter(item => (item.type === 'weapon' || item.type === 'armor') && itemNames.includes(item.name));
-      for (let classItem of actorItems) {
-         classItem.delete();
+      let actorItems = [...actor.items.filter(item => (item.type === "weapon" || item.type === "armor") && itemNames.includes(item.name)),
+      ...actor.items.filter(item=>item.type==="actorClass" && item.name===className)];
+
+      for (let actorItem of actorItems) {
+         actorItem.delete();
       }
    }
 
@@ -61,18 +63,19 @@ export class ClassSystemBase {
       return update;
    }
 
-   async getClassData(className, actor) {
+   async getClassData(className, actor, classLevel) {
       // Replace hyphen with underscore for "Magic-User"
       const nameInput = className.toLowerCase();
       const classItem = await fadeFinder.getClass(nameInput);
       if (!classItem) {
-         if (nameInput !== null && nameInput !== '') {
+         if (nameInput !== null && nameInput !== "") {
             console.warn(`Class not found ${actor.system.details.class}.`);
          }
          return;
       }
       const classData = classItem.system;
-      const currentLevel = Math.min(classData.maxLevel, Math.max(classData.firstLevel, actor.system.details.level));
+      classLevel = classLevel >= 0 ? classLevel : actor.system.details.level;
+      const currentLevel = Math.min(classData.maxLevel, Math.max(classData.firstLevel, classLevel));
 
       // Make sure current level is within range of levels allowed for class.
       return {
@@ -108,7 +111,7 @@ export class SingleClassSystem extends ClassSystemBase {
    */
    async #prepareClassInfo(actor) {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
-      if (game.user.isGM === false) return;
+      if (game.user.isGM === false) return; // needed?
 
       const classDataObj = await this.getClassData(actor.system.details.class, actor);
       if (classDataObj) {
@@ -176,7 +179,7 @@ export class SingleClassSystem extends ClassSystemBase {
          }
 
          // Class special abilities
-         const abilityNames = actor.items.filter(item => item.type === 'specialAbility').map(item => item.name);
+         const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
          const validItemTypes = ClassDefinitionItem.ValidItemTypes;
          const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
          const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
@@ -185,13 +188,13 @@ export class SingleClassSystem extends ClassSystemBase {
             || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
-               title: game.i18n.localize('FADE.dialog.specialAbilities.title'),
-               content: game.i18n.format('FADE.dialog.specialAbilities.content', {
+               title: game.i18n.localize("FADE.dialog.specialAbilities.title"),
+               content: game.i18n.format("FADE.dialog.specialAbilities.content", {
                   name: actor.system.details.class,
-                  type: game.i18n.localize('FADE.Actor.Class')
+                  type: game.i18n.localize("FADE.Actor.Class")
                }),
-               yesLabel: game.i18n.localize('FADE.dialog.yes'),
-               noLabel: game.i18n.localize('FADE.dialog.no'),
+               yesLabel: game.i18n.localize("FADE.dialog.yes"),
+               noLabel: game.i18n.localize("FADE.dialog.no"),
                defaultChoice: "yes"
             }, actor);
 
@@ -211,8 +214,8 @@ export class MultiClassSystem extends ClassSystemBase {
    async onActorItemUpdate(actor, item, updateData) {
       if (item.type === "actorClass" &&
          (updateData.system.level || updateData.name)) {
-         await this.updateActorClassData(actor, item, updateData);
-         await this.updateActorData(actor);
+         await this.#updateActorClassData(actor, item, updateData);
+         await this.#updateActorData(actor);
       }
    }
 
@@ -242,24 +245,79 @@ export class MultiClassSystem extends ClassSystemBase {
             unskilledToHitMod: item.system.unskilledToHitMod,
          },
       }, { parent: actor });
-      await this.updateActorData(actor);
+      await this.#updateActorData(actor);
       return newItem;
    }
 
-   async updateActorClassData(actor, item, updateData) {
+   async #updateActorClassData(actor, item, updateData) {
+      const classDataObj = await this.getClassData(item.name, actor, updateData.system?.level);
+      if (classDataObj) {
+         const { classItem, classData, currentLevel, levelData, nextLevelData, nameLevel } = classDataObj;
+         let update = {
+            key: classData.key,
+            level: currentLevel,
+            maxLevel: classData.maxLevel,
+            maxSpellLevel: classData.maxSpellLevel,
+            xp: {
+               bonus: classItem.getXPBonus(actor.system.abilities)
+            },
+            // If false then take from class data, otherwise whatever character's value was set to.
+            basicProficiency: classData.basicProficiency,
+            unskilledToHitMod: classData.unskilledToHitMod,
+         };
 
+         // Level stuff
+         if (levelData) {
+            update.hd = levelData.hd;
+            update.hdcon = levelData.hdcon;
+            update.thac0 = levelData.thac0;
+            update.thbonus = levelData.thbonus;
+            const ordinalized = Formatter.formatOrdinal(currentLevel);
+            update.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
+         }
+
+         if (nextLevelData) {
+            update.xp.next = nextLevelData.xp;
+         }
+
+         // Spells
+         // TODO: Update this for multi-class
+         //update = { ...update, ...this.prepareSpellSlots(actor, classData) };
+
+         await item.update({ system: update });
+      } else {
+         ui.notifications.warn(`${item.name} not found.`)
+      }
    }
 
-   async updateActorData(actor) {
+   async #updateActorData(actor) {
       let classNames = "";
+      let levels = "";
       let hds = "";
       let xps = "";
       let nextXps = "";
       let xpBonus = "";
       for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
          classNames += `\\${actorClass.name}`;
+         levels += `\\${actorClass.system.level}`;
+         hds += `\\${actorClass.system.hd}`;
+         xps += `\\${actorClass.system.xp.value}`;
+         nextXps += `\\${actorClass.system.xp.next}`;
+         xpBonus += `\\${actorClass.system.xp.bonus}`;
       }
-      classNames = classNames.replace(/^\\/, '');
-      await actor.update({ "system.details.class": classNames });
+      classNames = classNames.replace(/^\\/, "");
+      levels = levels.replace(/^\\/, "");
+      hds = hds.replace(/^\\/, "");
+      xps = xps.replace(/^\\/, "");
+      nextXps = nextXps.replace(/^\\/, "");
+      xpBonus = xpBonus.replace(/^\\/, "");
+      await actor.update({
+         "system.details.class": classNames,
+         "system.details.level": levels,
+         "system.hp.hd": hds,
+         "system.details.xp.value": xps,
+         "system.details.xp.next": nextXps,
+         "system.details.xp.bonus": xpBonus,
+      });
    }
 }
