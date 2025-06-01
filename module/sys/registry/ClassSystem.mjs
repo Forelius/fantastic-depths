@@ -44,7 +44,7 @@ export class ClassSystemBase {
       }
    }
 
-   prepareSpellSlots(actor, classData) {
+   prepareClassInfoSpellSlots(actor, classData) {
       const update = {};
       const classSpellsIdx = actor.system.details.level - 1;
       if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
@@ -104,6 +104,68 @@ export class SingleClassSystem extends ClassSystemBase {
       await actor.update({ "system.details.level": 1, "system.details.class": item.name });
    }
 
+   prepareSpellSlotsContext(actor) {
+      const spellSlots = [];
+      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
+         spellSlots.push({ spells: [] })
+      }
+      const items = [...actor.items.filter(item=>item.type==="spell")];
+      for (let item of items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         const spellLevel = Math.max(0, item.system.spellLevel - 1);
+         if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
+            spellSlots[spellLevel].spells.push(item);
+         } else {
+            console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
+         }
+      }
+      return spellSlots;
+   }
+
+   async resetSpells(actor, event) {
+      const spells = actor.items.filter((item) => item.type === "spell");
+      spells.forEach(async (spell) => {
+         spell.system.cast = 0;
+         await spell.update({ "system.cast": spell.system.cast });
+      });
+
+      const msg = game.i18n.format("FADE.Chat.resetSpells", { actorName: actor.name });
+      ui.notifications.info(msg);
+      // Create the chat message
+      await ChatMessage.create({ content: msg });
+   }
+
+   /**
+    * Prepares the used spells per level totals
+    * @public
+    */
+   prepareSpellsUsed(actor) {
+      if (actor.testUserPermission(game.user, "OWNER") === false) return;
+      const maxSpellLevel = actor.system.config.maxSpellLevel;
+      const spells = actor.items.filter((item) => item.type === 'spell');
+      let spellSlots = [...actor.system.spellSlots];
+      // Reset used spells to zero.
+      // Note: This is not how many times it has been cast, but how many slots have been used.
+      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
+         spellSlots[i] = spellSlots[i] || {};
+         spellSlots[i].used = 0;
+      }
+      if (spells.length > 0) {
+         for (let spell of spells) {
+            const spellLevel = Math.max(0, spell.system.spellLevel - 1);
+            if (spell.system.spellLevel > spellSlots.length) {
+               console.warn(`${actor.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${maxSpellLevel}.`);
+            } else if (spell.system.memorized > 0) {
+               spellSlots[spellLevel].used += spell.system.cast ?? 1;
+            }
+         }
+      }
+      if (spellSlots.length !== maxSpellLevel) {
+         console.warn(`${actor.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${maxSpellLevel}).`);
+      }
+      actor.system.spellSlots = spellSlots;
+   }
+
    /**
    * Prepares all derived class-related data when the class name is recognized.
    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
@@ -152,7 +214,7 @@ export class SingleClassSystem extends ClassSystemBase {
          update.config = { maxSpellLevel: classData.maxSpellLevel };
 
          // Spells
-         update = { ...update, ...this.prepareSpellSlots(actor, classData) };
+         update = { ...update, ...this.prepareClassInfoSpellSlots(actor, classData) };
 
          await actor.update({ system: update });
       } else {
@@ -248,6 +310,16 @@ export class MultiClassSystem extends ClassSystemBase {
       }, { parent: actor });
       await this.#updateActorData(actor);
       return newItem;
+   }
+
+   prepareSpellSlotsContext(actor) {
+   }
+
+   prepareSpellsUsed(actor) {
+   }
+
+   async resetSpells(actor, event) {
+
    }
 
    async #updateActorClassData(actor, item, updateData) {

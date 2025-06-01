@@ -24,8 +24,17 @@ export class ActorClassSheet extends FDItemSheetV2 {
 
    static PARTS = {
       header: {
-         template: "systems/fantastic-depths/templates/item/ActorClassSheet.hbs"
+         template: "systems/fantastic-depths/templates/item/actorClass/header.hbs"
       }     
+   }
+
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ['header']
    }
 
    /**

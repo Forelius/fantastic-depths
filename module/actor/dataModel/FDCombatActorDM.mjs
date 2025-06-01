@@ -38,6 +38,7 @@ export class FDCombatActorDM extends FDActorBaseDM {
             declaredAction: new fields.StringField({ initial: "attack" }),
          }),
          spellSlots: new fields.ArrayField(new fields.SchemaField({
+            spellClass: new fields.StringField({ initial: "" }),
             spellLevel: new fields.NumberField({ initial: 0 }),
             used: new fields.NumberField({ initial: 0 }),
             max: new fields.NumberField({ initial: 0 })
@@ -130,7 +131,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
-      this._prepareSpells();
       for (let [key, ability] of Object.entries(this.abilities)) {
          ability.total = ability.value + ability.tempMod;
       }
@@ -197,22 +197,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
       // Saving throw mods
       this.mod.save = {};
       this.mod.save.all = 0;
-   }
-
-   /**
-    * Prepares the spell slots used and max values.
-    * @protected
-    */
-   _prepareSpells() {
-      if (this.config.maxSpellLevel > 0) {
-         this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
-            spellLevel: index + 1,
-            used: 0,
-            max: this.spellSlots?.[index]?.max ?? 0
-         }));
-      } else {
-         this.spellSlots = [];
-      }
    }
 
    getParsedHD() {

@@ -450,7 +450,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const armor = [];
       const skills = [];
       const masteries = [];
-      const spellSlots = [];
       const treasure = [];
       const specialAbilities = [];
       const exploration = [];
@@ -458,10 +457,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const savingThrows = [];
       const conditions = [];
       const actorClasses = [];
-
-      for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
-         spellSlots.push({ spells: [] })
-      }
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -484,15 +479,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             if (item.type === "treasure") {
                // Also add to the treasure array
                treasure.push(item);
-            }
-         }
-         // Append to spells.
-         else if (item.type === "spell") {
-            const spellLevel = Math.max(0, item.system.spellLevel - 1);
-            if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
-               spellSlots[spellLevel].spells.push(item);
-            } else {
-               console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${this.actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
             }
          }
          // Append to weapons.
@@ -551,7 +537,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.masteries = masteries;
       context.treasure = treasure;
       context.treasureValue = this.getTreasureValue(context);
-      context.spellSlots = spellSlots;
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      context.spellSlots = classSystem.prepareSpellSlotsContext(this.actor);
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
@@ -581,16 +568,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    static async #clickResetSpells(event) {
-      const spells = this.actor.items.filter((item) => item.type === "spell");
-      spells.forEach(async (spell) => {
-         spell.system.cast = 0;
-         await spell.update({ "system.cast": spell.system.cast });
-      });
-
-      const msg = game.i18n.format("FADE.Chat.resetSpells", { actorName: this.actor.name });
-      ui.notifications.info(msg);
-      // Create the chat message
-      await ChatMessage.create({ content: msg });
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      context.spellSlots = await classSystem.resetSpells(this.actor, event);
    }
 
    static #clickDeleteTag(event) {

@@ -18,6 +18,7 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
          duration: new fields.StringField({ required: false, initial: "Instant" }),
          effect: new fields.StringField({ required: false, initial: "" }),
          memorized: new fields.NumberField({ nullable: true, initial: 0 }),
+         // How many times the spell has been cast or used
          cast: new fields.NumberField({ required: true, initial: 0 }),
          targetSelf: new fields.BooleanField({ required: false, initial: true }),
          targetOther: new fields.BooleanField({ required: false, initial: true }),

@@ -16,22 +16,12 @@
             <div class="item-80px flexrow">
                <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
                       name="system.spellSlots[{{@index}}].used" data-dtype="Number" placeholder="0" readonly
-                      data-tooltip="{{localize 'FADE.Spell.usedSlots'}}" />/
+                      data-tooltip="{{localize 'FADE.Spell.castSlots'}}" />/
                <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
                       name="system.spellSlots[{{@index}}].max" data-dtype="Number" placeholder="0"
                       data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
             </div>
-            <div class='item-controls2'>
-               {{#if @root.isGM}}
-               <a class='item-control'
-                  data-action="createItem"
-                  data-type='spell'
-                  data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}'>
-                  <i class='fas fa-plus'></i>
-                  {{localize 'FADE.Spell.AddLVL' level=(add @index 1)}}
-               </a>
-               {{/if}}
-            </div>
+            <div class='item-controls2'></div>
          </div>
          {{#each slot.spells as |item id|}}
          {{! Spell Item }}

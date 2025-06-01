@@ -69,7 +69,8 @@ export class FDCombatActor extends FDActorBase {
    prepareBaseData() {
       super.prepareBaseData();
       if (this.id) {
-         this._prepareSpellsUsed();
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         classSystem.prepareSpellsUsed(this);
       }
    }
 
@@ -237,41 +238,7 @@ export class FDCombatActor extends FDActorBase {
       }
       return result;
    }
-
-   /**
-    * Prepares the used spells per level totals
-    * @protected 
-    */
-   _prepareSpellsUsed() {
-      if (this.testUserPermission(game.user, "OWNER") === false) return;
-
-      const systemData = this.system;
-      const spells = this.items.filter((item) => item.type === 'spell');
-      let spellSlots = systemData.spellSlots || [];
-
-      // Reset used spells to zero.
-      // Note: This is not how many times it has been cast, but how many slots have been used.
-      for (let i = 0; i < systemData.config.maxSpellLevel; i++) {
-         spellSlots[i] = spellSlots[i] || {};
-         spellSlots[i].used = 0;
-      }
-
-      if (spells.length > 0) {
-         for (let spell of spells) {
-            const spellLevel = Math.max(0, spell.system.spellLevel - 1);
-            if (spell.system.spellLevel > spellSlots.length) {
-               console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
-            } else if (spell.system.memorized > 0) {
-               spellSlots[spellLevel].used += spell.system.memorized ?? 1;
-            }
-         }
-      }
-      if (spellSlots.length !== systemData.config.maxSpellLevel) {
-         console.warn(`${this.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${systemData.config.maxSpellLevel}).`);
-      }
-      systemData.spellSlots = spellSlots;
-   }
-
+   
    /**
     * @protected
     * Add and/or update the actor's class-given special abilities.

@@ -268,7 +268,7 @@
          "SpellLVL": "Spell Level {level}",
          "slots": "Slots",
          "resetSlots": "Reset memorized spells to zero casts. Memorized count will not be changed.",
-         "usedSlots": "Used slots",
+         "castSlots": "Spells cast",
          "availableSlots": "Available slots",
          "cast": "Spell has been cast this many times",
          "memorized": "Spell has been memorized this many times",
