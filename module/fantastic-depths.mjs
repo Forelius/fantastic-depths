@@ -8,7 +8,7 @@ import { fadeCompendium } from './sys/fadeCompendium.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
-import { FDActor } from './actor/FDActor.mjs';
+import { FDCombatActor } from './actor/FDCombatActor.mjs';
 import { CharacterSheet } from './sheets/CharacterSheet.mjs';
 import { CharacterSheetBase } from './sheets/CharacterSheetBase.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
@@ -255,7 +255,7 @@ Hooks.once('ready', async function () {
    $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
    $(document).on('click', '.apply-condition', async (event) => await SpellCastChatBuilder.clickApplyCondition(event));
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
-   $(document).on('click', '.saving-roll', FDActor.handleSavingThrowRequest);
+   $(document).on('click', '.saving-roll', FDCombatActor.handleSavingThrowRequest);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();

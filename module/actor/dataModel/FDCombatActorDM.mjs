@@ -1,6 +1,6 @@
 import { FDActorBaseDM } from "/systems/fantastic-depths/module/actor/dataModel/FDActorBaseDM.mjs";
 
-export class FDActorDM extends FDActorBaseDM {
+export class FDCombatActorDM extends FDActorBaseDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();

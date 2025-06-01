@@ -29,26 +29,26 @@
             <div class="flex3 item-name">
                <a class="item-control" style="margin-left:4px;" data-action="expandDesc">{{item.name}}</a>
             </div>
-            <div class="flex1">
-               <input type="number" name="item.system.level" value="{{item.system.level}}" data-dtype="Number" />
+            <div class="flex1 editable">
+               <input type="number" name="item.system.level" value="{{item.system.level}}" data-field="system.level" data-dtype="Number" />
+            </div>
+            <div class="flex2 editable">
+               <input type="number" name="item.system.xp.value" value="{{item.system.xp.value}}" data-field="system.xp.value" data-dtype="Number" />
             </div>
             <div class="flex2">
-               <input type="number" name="item.system.xp.value" value="{{item.system.xp.value}}" data-dtype="Number" />
-            </div>
-            <div class="flex2">
-               <input type="number" name="item.system.xp.next" value="{{item.system.xp.next}}" data-dtype="Number" />
+               <input type="number" name="item.system.xp.next" value="{{item.system.xp.next}}" readonly data-dtype="Number" />
             </div>
             {{#if isAAC}}
             <div class="flex1">
-               <input type="number" name="item.system.thbonus" value="{{item.system.thbonus}}" data-dtype="Number" />
+               <input type="number" name="item.system.thbonus" value="{{item.system.thbonus}}" readonly data-dtype="Number" />
             </div>
             {{else}}
             <div class="flex1">
-               <input type="number" name="item.system.thac0" value="{{item.system.thac0}}" data-dtype="Number" />
+               <input type="number" name="item.system.thac0" value="{{item.system.thac0}}" readonly data-dtype="Number" />
             </div>
             {{/if}}
             <div class="flex1">
-               <input type="text" name="item.system.hd" value="{{item.system.hd}}" data-dtype="String" />
+               <input type="text" name="item.system.hd" value="{{item.system.hd}}" readonly data-dtype="String" />
             </div>
             <div class="item-controls">
                <a class="item-control"

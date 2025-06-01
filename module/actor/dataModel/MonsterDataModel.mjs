@@ -1,8 +1,8 @@
-import { FDActorDM } from "./FDActorDM.mjs";
+import { FDCombatActorDM } from "./FDCombatActorDM.mjs";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
 import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
 
-export class MonsterDataModel extends FDActorDM {
+export class MonsterDataModel extends FDCombatActorDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();

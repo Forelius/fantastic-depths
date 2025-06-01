@@ -1,6 +1,6 @@
-import { FDActorDM } from "/systems/fantastic-depths/module/actor/dataModel/FDActorDM.mjs";
+import { FDCombatActorDM } from "/systems/fantastic-depths/module/actor/dataModel/FDCombatActorDM.mjs";
 
-export class CharacterDataModel extends FDActorDM {
+export class CharacterDataModel extends FDCombatActorDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();

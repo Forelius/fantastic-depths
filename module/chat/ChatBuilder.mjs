@@ -19,7 +19,7 @@ export class ChatBuilder {
     * @constructor
     * @throws {Error} - If instantiated directly.
     * @param {Object} dataset - The dataset object for the builder.
-    * @param {FDActor} dataset.caller - The actor the chat pertains to.
+    * @param {FDActorBase} dataset.caller - The actor the chat pertains to.
     * @param {FDItem} dataset.context - The item the chat pertains to.
     * @param {Roll} dataset.roll - A dice roll the chat pertains to.
     * @param {Object} dataset.resp - Data polled from the user from an Application.

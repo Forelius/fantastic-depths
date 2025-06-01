@@ -1,6 +1,6 @@
 ﻿<section class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
    {{> "itemFlags"}}
-   <section class="bordered">
+   <div class="bordered">
       <ul class="summary flexrow">
          <li class="flex3">
             {{! Not the same as ActiveEffects }}
@@ -38,5 +38,21 @@
             <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
          </li>
       </ul>
+   </div>
+   <section class="bordered tag-section">
+      
+      <div class="flexrow">
+         <div style="font-weight:600;margin-left:4px;max-width:70px;">{{localize "FADE.species.classes"}}:</div>
+         <ol class="tag-list" style="height:auto; line-height: 15px;">
+            {{#each system.classes as |item index|}}
+            <li class="tag" data-item-id='{{item._id}}'>
+               <span>{{item.name}}</span>
+               {{#if @root.isGM}}
+               <a class="tag-delete" data-action="deleteItem" data-type='class' data-index='{{index}}'><i class="fas fa-times"></i></a>
+               {{/if}}
+            </li>
+            {{/each}}
+         </ol>
+      </div>
    </section>
 </section>

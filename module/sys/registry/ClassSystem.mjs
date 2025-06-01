@@ -226,6 +226,7 @@ export class MultiClassSystem extends ClassSystemBase {
          name: item.name,
          type: "actorClass",
          system: {
+            classUuid: item.uuid,
             key: item.system.key,
             level: classLevel?.level,
             maxLevel: item.system.maxLevel,

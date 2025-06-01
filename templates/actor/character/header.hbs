@@ -15,29 +15,29 @@
       </div>
       <div class="summary flexrow">
          <div class="flex1 {{#if (and (eq hasMultiClass false) (gte currentXp nextXp))}}notify{{/if}}" style="max-width: 80px">
-            <input type="text" name="system.details.level" value="{{system.details.level}}" data-dtype="String" />
+            <input type="text" name="system.details.level" value="{{system.details.level}}" {{#if hasMultiClass}}readonly{{/if}} data-dtype="String" />
             <label>{{localize 'FADE.Actor.Level'}}</label>
          </div>
          <div class="flex2">
-            <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" data-tooltip="{{system.details.class}}" />
+            <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" data-tooltip="{{system.details.class}}" {{#if hasMultiClass}}readonly{{/if}}/>
             <label class="open-sheet" data-action="editClass" data-tooltip="{{localize 'FADE.Actor.ClassHint'}}">{{localize 'FADE.Actor.Class'}}</label>
          </div>
          <div class="flex2" style="max-width: 140px">
-            <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" />
+            <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" {{#if hasMultiClass}}readonly{{/if}}/>
             <label class="hitdie rollable2" data-action="rollGeneric" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
          </div>
       </div>
       <div class="summary flexrow">
          <div class="flex2" style="max-width: 130px">
-            <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="Number" />
+            <input type="text" name="system.details.xp.value" value="{{system.details.xp.value}}" data-dtype="String" {{#if hasMultiClass}}readonly{{/if}}/>
             <label>{{localize 'FADE.Actor.Experience'}}</label>
          </div>
          <div class="flex2" style="max-width: 130px">
-            <input type="text" name="system.details.xp.next" value="{{system.details.xp.next}}" data-dtype="Number" />
+            <input type="text" name="system.details.xp.next" value="{{system.details.xp.next}}" data-dtype="String" {{#if hasMultiClass}}readonly{{/if}}/>
             <label>{{localize 'FADE.Actor.NextLevel'}}</label>
          </div>
          <div class="flex1" style="min-width: 50px">
-            <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="Number" />
+            <input type="text" name="system.details.xp.bonus" value="{{@root.system.details.xp.bonus}}" data-dtype="String" {{#if hasMultiClass}}readonly{{/if}}/>
             <label>{{localize "FADE.Actor.XPBonus"}}</label>
          </div>
          <div class="flex2" style="max-width: 140px">

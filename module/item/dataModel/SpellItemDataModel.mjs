@@ -39,6 +39,15 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
                required: false,
                initial: []
             }),
+         classes: new fields.ArrayField(
+            new fields.SchemaField({
+               name: new fields.StringField({ required: true, initial: '' }),
+               uuid: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
       };
    }
 

@@ -305,20 +305,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       event.preventDefault();
       const item = this._getItemFromActor(event);
       const newVal = event.target.value === "" ? null : Number(event.target.value);
-      if (event.target.dataset.field === "quantity") {
-         result = await item.update({ "system.quantity": newVal ?? 0 });
-      } else if (event.target.dataset.field === "cast") {
-         result = await item.update({ "system.cast": newVal ?? 0 });
-      } else if (event.target.dataset.field === "memorized") {
-         result = await item.update({ "system.memorized": newVal });
-      } else if (event.target.dataset.field === "target") {
-         result = await item.update({ "system.target": newVal ?? 0 });
-      } else if (event.target.dataset.field === "waUsed") {
-         result = await item.update({ "system.attacks.used": newVal ?? 0 });
-      } else if (event.target.dataset.field === "waMax") {
-         result = await item.update({ "system.attacks.max": newVal });
-      }
-
+      const updateData = {};
+      updateData[`${event.target.dataset.field}`] = newVal ?? 0;
+      result = await item.update(updateData);
       return result;
    }
 

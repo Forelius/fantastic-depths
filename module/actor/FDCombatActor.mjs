@@ -8,7 +8,7 @@ import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
  * Extends the basic actor class with modifications for all system actors.
  * @extends {Actor}
  */
-export class FDActor extends FDActorBase {
+export class FDCombatActor extends FDActorBase {
    constructor(data, context) {
       super(data, context);
    }

@@ -23,26 +23,6 @@ export class ActorClassItem extends FDItem {
       }
    }
 
-   //async getClass(className, level) {
-   //   // Replace hyphen with underscore for "Magic-User"
-   //   const nameInput = className.toLowerCase();
-   //   const classItem = await fadeFinder.getClass(nameInput);
-   //   if (!classItem) {
-   //      if (nameInput !== null && nameInput !== '') {
-   //         console.warn(`Class not found ${this.system.details.class}.`);
-   //      }
-   //      return;
-   //   }
-   //   const levelData = classData.levels.find(level => level === currentLevel);
-   //   const nameLevel = classData.levels.find(level => level === 9);
-   //   let title = levelData.system.details.title;
-   //   if (title == "" || title == null || title == prevLevelData?.title) {
-   //      const ordinalized = Formatter.formatOrdinal(level);
-   //      title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
-   //   }
-   //   return { classItem, levelData, title };
-   //}
-
    async getInlineDescription() {
       let description = null;
       if ((description?.length > 0) !== true) {
