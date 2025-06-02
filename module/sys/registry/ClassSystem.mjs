@@ -44,25 +44,6 @@ export class ClassSystemBase {
       }
    }
 
-   prepareClassInfoSpellSlots(actor, classData) {
-      const update = {};
-      const classSpellsIdx = actor.system.details.level - 1;
-      if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
-         // Get the spell progression for the given character level
-         const spellProgression = classData.spells[classSpellsIdx];
-         if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
-            console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
-         } else {
-            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
-            for (let i = 0; i < update.spellSlots.length; i++) {
-               // Set the max value based on the class spell progression
-               update.spellSlots[i] = { max: spellProgression[i] };
-            }
-         }
-      }
-      return update;
-   }
-
    async getClassData(className, actor, classLevel) {
       // Replace hyphen with underscore for "Magic-User"
       const nameInput = className.toLowerCase();
@@ -91,6 +72,7 @@ export class ClassSystemBase {
 }
 
 export class SingleClassSystem extends ClassSystemBase {
+
    async onCharacterActorUpdate(actor, updateData) {
       if (updateData.system?.details?.class !== undefined
          || updateData.system?.details?.level !== undefined
@@ -167,6 +149,29 @@ export class SingleClassSystem extends ClassSystemBase {
    }
 
    /**
+    * Prepares class-related magic data when the class name is recognized.
+    * @public
+    */
+   async setupMonsterClassMagic(actor) {
+      if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
+
+      const promises = [];
+      const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+      // This this actor's level to be same as cast-as.
+      promises.push(actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) }));
+
+      // Get the class item
+      const classItem = await fadeFinder.getClass(null, parsed?.classId);
+      if (!classItem) {
+         console.warn(`Class not found for key ${actor.system.name}. Cast As: ${actor.system.details.castAs}.`);
+         return;
+      }
+      const update = this.#prepareClassInfoSpellSlots(actor, classItem.system);
+      await actor.update({ system: update });
+   }
+
+   /**
    * Prepares all derived class-related data when the class name is recognized.
    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
    * @protected
@@ -192,7 +197,6 @@ export class SingleClassSystem extends ClassSystemBase {
             },
             hp: {},
             thac0: {},
-            spellSlots: []
          };
 
          // Level stuff
@@ -211,15 +215,35 @@ export class SingleClassSystem extends ClassSystemBase {
          }
 
          update.details.species = actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species;
-         update.config = { maxSpellLevel: classData.maxSpellLevel };
 
-         // Spells
-         update = { ...update, ...this.prepareClassInfoSpellSlots(actor, classData) };
+         // Spells         
+         update = { ...update, ...this.#prepareClassInfoSpellSlots(actor, classData) };
 
          await actor.update({ system: update });
       } else {
          ui.notifications.warn(`${actor.system.details.class} not found.`)
       }
+   }
+
+   #prepareClassInfoSpellSlots(actor, classData) {
+      const update = {};
+      update.config = { maxSpellLevel: classData.maxSpellLevel };
+      update.spellSlots = [];
+      const classSpellsIdx = actor.system.details.level - 1;
+      if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
+         // Get the spell progression for the given character level
+         const spellProgression = classData.spells[classSpellsIdx];
+         if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
+            console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
+         } else {
+            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
+            for (let i = 0; i < update.spellSlots.length; i++) {
+               // Set the max value based on the class spell progression
+               update.spellSlots[i] = { max: spellProgression[i] };
+            }
+         }
+      }
+      return update;
    }
 
    /**
@@ -273,6 +297,7 @@ export class SingleClassSystem extends ClassSystemBase {
 }
 
 export class MultiClassSystem extends ClassSystemBase {
+
    async onActorItemUpdate(actor, item, updateData) {
       if (item.type === "actorClass" &&
          (updateData.system.level || updateData.name)) {
@@ -310,6 +335,29 @@ export class MultiClassSystem extends ClassSystemBase {
       }, { parent: actor });
       await this.#updateActorData(actor);
       return newItem;
+   }
+
+   /**
+    * Prepares class-related magic data when the class name is recognized.
+    * @public
+    */
+   async setupMonsterClassMagic(actor) {
+      if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
+
+      const promises = [];
+      const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+      // This this actor's level to be same as cast-as.
+      promises.push(actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) }));
+
+      // Get the class item
+      const classItem = await fadeFinder.getClass(null, parsed?.classId);
+      if (!classItem) {
+         console.warn(`Class not found for key ${actor.system.name}. Cast As: ${actor.system.details.castAs}.`);
+         return;
+      }
+      const update = this.#prepareClassInfoSpellSlots(actor, classItem.system);
+      await actor.update({ system: update });
    }
 
    prepareSpellSlotsContext(actor) {
