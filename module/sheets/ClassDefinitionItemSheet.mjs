@@ -100,8 +100,9 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       context.isSpellcaster = this.item.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
-      for (let i = 1; i <= this.item.system.maxSpellLevel; i++) {
-         context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
+      for (let i = this.item.system.firstSpellLevel; i <= this.item.system.maxSpellLevel; i++) {
+         //context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
+         context.spellLevelHeaders.push(i);
       }
       // Ability score abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
@@ -200,7 +201,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       } else {
          console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can't determine item type.`, item);
       }
-      
+
       if (type === 'classSave') {
          const saves = this.item.system.saves;
          // Handle deletion of a class save

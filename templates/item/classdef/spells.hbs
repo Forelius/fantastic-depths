@@ -10,7 +10,7 @@
       <!-- Spell Entries -->
       {{#each system.spells as |spellLevels levelIndex|}}
       <li class='item flexrow'>
-         <div class="align-left">{{add levelIndex 1}}</div>
+         <div class="align-left">{{add levelIndex @root.system.firstSpellLevel}}</div>
          {{#each spellLevels as |spellCount spellLevelIndex|}}
          <div class="align-left">
             <input type="number" name="system.spells.{{levelIndex}}.{{spellLevelIndex}}" value="{{spellCount}}" data-dtype="Number" />

@@ -5,6 +5,27 @@ import { Formatter } from "/systems/fantastic-depths/module/utils/Formatter.mjs"
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
 export class ClassSystemBase {
+   canCastSpells(actor) {
+      return actor.system.config.maxSpellLevel > 0;
+   }
+
+   isMultiClassSystem(actor) {
+      return false;
+   }
+
+   async resetSpells(actor, event) {
+      const spells = actor.items.filter((item) => item.type === "spell");
+      spells.forEach(async (spell) => {
+         spell.system.cast = 0;
+         await spell.update({ "system.cast": spell.system.cast });
+      });
+
+      const msg = game.i18n.format("FADE.Chat.resetSpells", { actorName: actor.name });
+      ui.notifications.info(msg);
+      // Create the chat message
+      await ChatMessage.create({ content: msg });
+   }
+
    async onCharacterActorUpdate(actor, updateData) { }
    async onActorItemUpdate(actor, item, updateData) { }
 
@@ -69,6 +90,22 @@ export class ClassSystemBase {
          nameLevel: classData.levels.find(level => level.level === 9),
       }
    }
+
+   _prepareSpellSlots(actor, spellItems, spellSlots) {      
+      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
+         spellSlots.push({ spells: [] })
+      }      
+      for (let spellItem of spellItems) {
+         spellItem.img = spellItem.img || Item.DEFAULT_ICON;
+         const spellLevel = Math.max(0, spellItem.system.spellLevel - 1);
+         if (spellItem.system.spellLevel !== undefined && spellSlots?.length >= spellItem.system.spellLevel) {
+            spellSlots[spellLevel].spells.push(spellItem);
+         } else {
+            console.warn(`Not able to add spell ${spellItem.name} of level ${spellItem.system.spellLevel} to ${actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
+         }
+      }
+      return spellSlots;
+   }
 }
 
 export class SingleClassSystem extends ClassSystemBase {
@@ -86,35 +123,13 @@ export class SingleClassSystem extends ClassSystemBase {
       await actor.update({ "system.details.level": 1, "system.details.class": item.name });
    }
 
+   /**
+    * Used to create context array of spells slots for actor sheet.
+    * @param {any} actor
+    * @returns
+    */
    prepareSpellSlotsContext(actor) {
-      const spellSlots = [];
-      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
-         spellSlots.push({ spells: [] })
-      }
-      const items = [...actor.items.filter(item=>item.type==="spell")];
-      for (let item of items) {
-         item.img = item.img || Item.DEFAULT_ICON;
-         const spellLevel = Math.max(0, item.system.spellLevel - 1);
-         if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
-            spellSlots[spellLevel].spells.push(item);
-         } else {
-            console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
-         }
-      }
-      return spellSlots;
-   }
-
-   async resetSpells(actor, event) {
-      const spells = actor.items.filter((item) => item.type === "spell");
-      spells.forEach(async (spell) => {
-         spell.system.cast = 0;
-         await spell.update({ "system.cast": spell.system.cast });
-      });
-
-      const msg = game.i18n.format("FADE.Chat.resetSpells", { actorName: actor.name });
-      ui.notifications.info(msg);
-      // Create the chat message
-      await ChatMessage.create({ content: msg });
+      return this._prepareSpellSlots(actor, [...actor.items.filter(item => item.type === "spell")], []);
    }
 
    /**
@@ -155,11 +170,10 @@ export class SingleClassSystem extends ClassSystemBase {
    async setupMonsterClassMagic(actor) {
       if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
 
-      const promises = [];
       const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
       const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
-      // This this actor's level to be same as cast-as.
-      promises.push(actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) }));
+      // Set this actor's level to be same as cast-as.
+      await actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) });
 
       // Get the class item
       const classItem = await fadeFinder.getClass(null, parsed?.classId);
@@ -229,8 +243,8 @@ export class SingleClassSystem extends ClassSystemBase {
       const update = {};
       update.config = { maxSpellLevel: classData.maxSpellLevel };
       update.spellSlots = [];
-      const classSpellsIdx = actor.system.details.level - 1;
-      if (classData.spells?.length > 0 && classSpellsIdx < classData.spells.length) {
+      const classSpellsIdx = actor.system.details.level;
+      if (classData.spells?.length > 0 && classSpellsIdx <= classData.spells.length) {
          // Get the spell progression for the given character level
          const spellProgression = classData.spells[classSpellsIdx];
          if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
@@ -297,6 +311,19 @@ export class SingleClassSystem extends ClassSystemBase {
 }
 
 export class MultiClassSystem extends ClassSystemBase {
+   canCastSpells(actor) {
+      let result = false;
+      if (actor.type === "monster") {
+         result = actor.system.config.maxSpellLevel > 0;
+      } else if (actor.type === "character") {
+         result = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0)?.length > 0;
+      }
+      return result;
+   }
+
+   isMultiClassSystem(actor) {
+      return true;
+   }
 
    async onActorItemUpdate(actor, item, updateData) {
       if (item.type === "actorClass" &&
@@ -344,29 +371,37 @@ export class MultiClassSystem extends ClassSystemBase {
    async setupMonsterClassMagic(actor) {
       if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
 
-      const promises = [];
       const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
       const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
-      // This this actor's level to be same as cast-as.
-      promises.push(actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) }));
-
-      // Get the class item
-      const classItem = await fadeFinder.getClass(null, parsed?.classId);
-      if (!classItem) {
-         console.warn(`Class not found for key ${actor.system.name}. Cast As: ${actor.system.details.castAs}.`);
-         return;
-      }
-      const update = this.#prepareClassInfoSpellSlots(actor, classItem.system);
-      await actor.update({ system: update });
+      // Set this actor's level to be same as cast-as.
+      await actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) });
    }
 
+   /**
+    * Used to create context array of spells slots for actor sheet.
+    * @param {any} actor
+    * @returns
+    */
    prepareSpellSlotsContext(actor) {
+      const spellClasses = [];
+      if (actor.type === "monster") {
+         spellClasses.push({
+            className: game.i18n.localize("Types.Actor.monster"),
+            slots: this._prepareSpellSlots(actor, [...actor.items.filter(item => item.type === "spell")], [])
+         });
+      } else {
+         const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
+         const casterClassNames = casterClasses.map(item => item.name);
+         for (let casterClass of casterClasses) {
+            const classSpells = actor.items.filter(item => item.type === "spell"
+               && item.system.classes.some(cls => casterClassNames.includes(cls.name)));
+            spellClasses.push({ className: casterClass.name, slots: this._prepareSpellSlots(actor, classSpells, []) });
+         }
+      }
+      return spellClasses;
    }
 
-   prepareSpellsUsed(actor) {
-   }
-
-   async resetSpells(actor, event) {
+   prepareSpellsUsed(actor) {      
 
    }
 

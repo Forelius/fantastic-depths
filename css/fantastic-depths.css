@@ -1592,7 +1592,7 @@ table.compact-table input {
 .system-fantastic-depths .items-list .item input, .system-fantastic-depths .items-list .item select {
   padding: 0 4px;
   width: calc(100% - 3px);
-  height: 26px;
+  height: 22px;
 }
 .system-fantastic-depths .items-list .item .item-description {
   margin: -3px 0 4px 0;
@@ -1644,6 +1644,9 @@ table.compact-table input {
   padding: 3px 1px;
   align-items: center;
   font-weight: bold;
+}
+.system-fantastic-depths .items-list .items-header input {
+  height: 18px;
 }
 .system-fantastic-depths .items-list .items-header > * {
   font-size: 12px;

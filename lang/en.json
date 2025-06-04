@@ -64,6 +64,10 @@
             "hint": "The highest level this class can attain.",
             "name": "Max Level"
          },
+         "firstSpellLevel": {
+            "hint": "The first spell level for this class.",
+            "name": "First Spell Level"
+         },
          "maxSpellLevel": {
             "hint": "The highest spell level for this class.",
             "name": "Max Spell Level"

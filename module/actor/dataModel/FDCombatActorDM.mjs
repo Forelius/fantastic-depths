@@ -10,6 +10,7 @@ export class FDCombatActorDM extends FDActorBaseDM {
             attacks: new fields.StringField({ initial: "1" }),
          }),
          config: new fields.SchemaField({
+            // Ignored by multi-class character
             maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
          thac0: new fields.SchemaField({

@@ -24,13 +24,13 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          hdcon: new fields.BooleanField({ required: true, initial: true }),
          title: new fields.StringField({ required: false, nullable: true }),
          attackRank: new fields.StringField({ required: false, nullable: true }),
-         spellSlots: new fields.ArrayField(new fields.SchemaField({
-            spellLevel: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 0 })
-         }), {
-            required: false,
-            initial: []
-         }),
+         //spellSlots: new fields.ArrayField(new fields.SchemaField({
+         //   spellLevel: new fields.NumberField({ initial: 0 }),
+         //   max: new fields.NumberField({ initial: 0 })
+         //}), {
+         //   required: false,
+         //   initial: []
+         //}),
       };
    }
 }

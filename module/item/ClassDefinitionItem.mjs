@@ -1,3 +1,4 @@
+import { ClassLevelData } from '/systems/fantastic-depths/module/item/dataModel/ClassDefinitionDataModel.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { SavingThrowsData } from './dataModel/ClassDefinitionDataModel.mjs';
 import { FDItem } from './FDItem.mjs';
@@ -52,7 +53,7 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.primeReqs": primeReqs });
    }
 
-   async createClassAbility(name="", classKey = null) {
+   async createClassAbility(name = "", classKey = null) {
       // Retrieve the array
       const specialAbilities = this.system.specialAbilities || [];
 
@@ -75,7 +76,7 @@ export class ClassDefinitionItem extends FDItem {
     * @param {any} name
     * @param {any} type
     */
-   async createClassItem(name="", type=null) {
+   async createClassItem(name = "", type = null) {
       // Retrieve the array
       const items = this.system.classItems || [];
 
@@ -112,5 +113,78 @@ export class ClassDefinitionItem extends FDItem {
          highest = isQualified && currentPerc > highest ? currentPerc : highest;
       }
       return highest;
+   }
+
+   /**
+    * @override
+    * @param {any} updateData
+    * @param {any} options
+    * @param {any} userId
+    */
+   _onUpdate(updateData, options, userId) {
+      super._onUpdate(updateData, options, userId);
+      if (updateData.system?.maxLevel !== undefined || updateData.system?.firstLevel !== undefined) {
+         // This is an async method
+         this.#updateLevels(updateData);
+         this.#updateSpellLevels(updateData);
+      }
+      if (updateData.system?.maxSpellLevel !== undefined || updateData.system?.firstSpellLevel !== undefined) {
+         this.#updateSpellLevels(updateData);
+      }
+   }
+
+   async #updateLevels(updateData) {
+      // This will filter out levels with a level of null or negative, because those need to be removed.
+      const levels = [...this.system.levels.filter(item => typeof item.level === typeof 0)];
+      const newFirstLevel = Math.max(0, this.system.firstLevel);
+      const newMaxLevel = Math.max(newFirstLevel, this.system.maxLevel);
+      const currentFirstLevel = this.system.levels?.[0]?.level;
+
+      // Pre-order in case levels are all screwed up
+      let levelNo = currentFirstLevel ?? newFirstLevel;
+      for (let level of levels) {
+         level.level = levelNo++;
+      }
+
+      // If we are starting with an empty array...
+      if (currentFirstLevel === undefined) {
+         // Insert
+         levels.unshift(...Array.from({ length: newMaxLevel - newFirstLevel },
+            (_, index) => {
+               return { level: index + newFirstLevel };
+            }
+         ));
+      } else if (newFirstLevel < currentFirstLevel) {
+         // Insert
+         levels.unshift(...Array.from({ length: currentFirstLevel - newFirstLevel },
+            (_, index) => {
+               return { level: index + newFirstLevel };
+            }
+         ));
+      } else if (newFirstLevel > currentFirstLevel) {
+         // Delete
+         levels.splice(0, newFirstLevel - currentFirstLevel);
+      }
+
+      const currentMaxLevel = this.system.levels.reduce((max, current) => {
+         return current.level > max ? current.level : max;
+      }, this.system.levels?.[0]?.level ?? 0);
+
+      if (newMaxLevel < currentMaxLevel) {
+         levels.splice(newMaxLevel - currentMaxLevel, currentMaxLevel - newMaxLevel);
+      } else if (newMaxLevel > currentMaxLevel) {
+         levels.push(...Array.from({ length: newMaxLevel - currentMaxLevel },
+            (_, index) => {
+               return { level: currentMaxLevel + index + 1 };
+            }));
+      }
+
+      await this.update({ "system.levels": levels });
+   }
+
+   async #updateSpellLevels(updateData) {
+      const spellLevels = [...this.system.spells];
+
+      await this.update({ "system.spells": spellLevels });
    }
 }

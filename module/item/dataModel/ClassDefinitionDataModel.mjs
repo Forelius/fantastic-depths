@@ -1,10 +1,10 @@
-class ClassLevelData {
-   constructor() {
-      this.level = 1;
+export class ClassLevelData {
+   constructor(options = {}) {
+      this.level = options?.level ?? 1;
       this.xp = 0;
-      this.thac0 = 20;
+      this.thac0 = CONFIG.FADE.ToHit.BaseTHAC0;
       this.thbonus = 1;
-      this.hd = '1d8';
+      this.hd = "";
       this.hdcon = true;
       this.title = null;
       this.femaleTitle = null;
@@ -28,6 +28,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          species: new fields.StringField({ required: true, initial: "Human" }),
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
+         firstSpellLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          // If true the character or class has basic proficiency with all weapons.
          basicProficiency: new fields.BooleanField({ required: true, initial: false }),
@@ -72,11 +73,11 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          ),
          levels: new fields.ArrayField(
             new fields.SchemaField({
-               level: new fields.NumberField({ required: true }),
-               xp: new fields.NumberField({ required: true, initial: 5 }),
+               level: new fields.NumberField({ required: true, initial: 1}),
+               xp: new fields.NumberField({ required: true, initial: 0 }),
                thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
                thbonus: new fields.NumberField({ required: true, initial: 0 }),
-               hd: new fields.StringField({ required: true, initial: '' }),
+               hd: new fields.StringField({ required: true, initial: "" }),
                hdcon: new fields.BooleanField({ required: true, initial: true }),
                title: new fields.StringField({ required: false, nullable: true }),
                femaleTitle: new fields.StringField({ required: false, nullable: true }),
@@ -85,9 +86,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
             {
                required: true,
                initial: Array.from({ length: this.maxLevel }, (_, index) => {
-                  const newLevel = new ClassLevelData();
-                  newLevel.level = index + this.firstLevel;
-                  return newLevel;
+                  return new ClassLevelData({ level: index + this.firstLevel });
                })
             }
          ),
@@ -106,16 +105,16 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
             {
                required: false,
                nullable: false,
-               initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: this.maxSpellLevel }))
+               initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: (this.maxSpellLevel + 1) - this.firstSpellLevel }))
             }
          ),
          specialAbilities: new fields.ArrayField(
             new fields.SchemaField({
-               name: new fields.StringField({ required: true, initial: '' }),
+               name: new fields.StringField({ required: true, initial: "" }),
                level: new fields.NumberField({ required: true }),
                target: new fields.NumberField({ required: true, nullable: true }),
                classKey: new fields.StringField({ nullable: true, initial: null }),
-               changes: new fields.StringField({ required: true, initial: '' }),
+               changes: new fields.StringField({ required: true, initial: "" }),
             }),
             {
                required: false,
@@ -124,9 +123,9 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          classItems: new fields.ArrayField(
             new fields.SchemaField({
                level: new fields.NumberField({ required: true, nullable: false }),
-               name: new fields.StringField({ required: true, initial: '' }),
-               type: new fields.StringField({ required: true, initial: '' }),
-               changes: new fields.StringField({ required: true, initial: '' }),
+               name: new fields.StringField({ required: true, initial: "" }),
+               type: new fields.StringField({ required: true, initial: "" }),
+               changes: new fields.StringField({ required: true, initial: "" }),
             }),
             {
                required: false,
@@ -141,7 +140,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
     * @inheritDoc
     */
    static migrateData(source) {
-      //const currentVersion = new MySystemVersion(source.version ?? '0.10.0-rc.5');
+      //const currentVersion = new MySystemVersion(source.version ?? "0.10.0-rc.5");
       if ((!source.specialAbilities || source.specialAbilities.length == 0) && source.classAbilities?.length > 0) {
          source.specialAbilities = source.classAbilities;
       }
@@ -150,21 +149,20 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
 
    /** @override */
    prepareBaseData() {
-      this.maxSpellLevel = Math.max(0, (this.maxSpellLevel ?? 0));
+      this.firstSpellLevel = Math.max(0, (this.firstSpellLevel ?? 0));
+      this.maxSpellLevel = Math.max(this.firstSpellLevel, (this.maxSpellLevel ?? 0));
       this.firstLevel = Math.max(0, (this.firstLevel ?? 1));
       this.maxLevel = Math.max(this.firstLevel, (this.maxLevel ?? this.firstLevel));
       super.prepareBaseData();
-      this.#prepareLevels();
-      this.#prepareSpellLevels();
+      //this.#prepareLevels();
+      //this.#prepareSpellLevels();
    }
 
    #prepareLevels() {
       const totalLevelCount = this.maxLevel - (this.firstLevel - 1);
       if (totalLevelCount !== this.levels.length) {
          const newLevels = Array.from({ length: totalLevelCount }, (_, index) => {
-            const newLevel = new ClassLevelData();
-            newLevel.level = index + this.firstLevel;
-            return newLevel;
+            return new ClassLevelData({ level: index + this.firstLevel });
          });
 
          // Try to preserve existing levels
@@ -189,7 +187,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    #prepareSpellLevels() {
       const totalLevelCount = this.maxLevel;
       const currentMaxSpellLevel = this.spells.length > 0 ? this.spells[0].length : 0;
-      if (this.maxSpellLevel <= 0) {
+      if ((this.maxSpellLevel > 0) === false) {
          this.spells = [];
       } else if (totalLevelCount !== this.spells.length || currentMaxSpellLevel !== this.maxSpellLevel) {
          const newLevels = Array.from({ length: totalLevelCount }, () => Array.from({ length: this.maxSpellLevel }, () => 0));

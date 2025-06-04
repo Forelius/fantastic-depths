@@ -1,0 +1,69 @@
+﻿<section class="tab {{tabs.spells.cssClass}}" data-group="primary" data-tab="spells">
+   <div name="spellItemsSection" class="items-list">
+      <a class="item-control item-reset"
+         data-tooltip='{{localize "FADE.Spell.resetSlots"}}'
+         data-action="resetSpells">
+         <i class="fas fa-sync"></i>
+      </a>
+      {{#each }}
+      <div></div>
+      {{#each spellSlots as |slot|}}
+      <div name="spellLevel{{add @index 1}}" class='items-list'>
+         {{! Spell Level Header}}
+         <div class='item flexrow items-header' data-action="toggleHeader">
+            <div class='item-name'>
+               {{localize 'FADE.Spell.SpellLVL' level=(add @index 1)}}
+            </div>
+            <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
+            <div class="item-80px flexrow">
+               <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
+                      name="system.spellSlots[{{@index}}].used" data-dtype="Number" placeholder="0" readonly
+                      data-tooltip="{{localize 'FADE.Spell.castSlots'}}" />/
+               <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
+                      name="system.spellSlots[{{@index}}].max" data-dtype="Number" placeholder="0"
+                      data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
+            </div>
+            <div class='item-controls2'></div>
+         </div>
+         {{#each slot.spells as |item id|}}
+         {{! Spell Item }}
+         <div class='item collapsible-content bottom-border' data-item-id='{{item._id}}'>
+            <div class="flexrow">
+               <div class='item-name flexrow'>
+                  <div class='item-image rollable2'
+                       data-action="rollItem"
+                       data-roll-type='item'>
+                     <img src='{{item.img}}' data-tooltip='{{item.name}}' width='24' height='24' />
+                  </div>
+                  <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
+               </div>
+               <div class="item-40px">{{localize 'FADE.Spell.casts'}}</div>
+               <div class="item-80px flexrow editable">
+                  <input type="text" value="{{item.system.cast}}" data-dtype="Number" placeholder="0" data-field="system.cast"
+                         data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
+                  <input type="text"
+                         value="{{item.system.memorized}}" data-field="system.memorized" data-dtype="Number" placeholder="∞"
+                         data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
+               </div>
+               <div class='item-controls2'>
+                  <a class="item-control"
+                     data-action="editItem"
+                     data-tooltip='{{localize "DOCUMENT.Update" type=(localize "TYPES.Item.spell")}}'>
+                     <i class='fas fa-pencil'></i>
+                  </a>
+                  {{#if @root.isGM}}
+                  <a class='item-control'
+                     data-action="deleteItem"
+                     data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}'>
+                     <i class='fas fa-trash'></i>
+                  </a>
+                  {{/if}}
+               </div>
+            </div>
+            <div class='item-description desc-collapsed bordered'></div>
+         </div>
+         {{/each}}
+      </div>
+      {{/each}}
+   </div>
+</section>
