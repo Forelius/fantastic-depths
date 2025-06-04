@@ -27,6 +27,7 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @protected
     */
    _onRender(context, options) {
+      super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
    }
 
