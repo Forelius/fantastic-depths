@@ -90,7 +90,7 @@ export class ToHitSystemBase {
             await weapon.update({ "system.attacks.used": weapon.system.attacks.used + 1 });
          }
 
-         const attackerWeaponType = weapon.type === 'weapon' ? weapon.system.weaponType : 'monster';
+         const attackerWeaponType = weapon.type === 'weapon' && weapon.system.weaponType ? weapon.system.weaponType : 'monster';
          const thac0 = attackingActor.system.thac0.value;
          const hitAC = this.getLowestACHit(this.getDiceSum(roll), roll.total, thac0);
          let hitACMessage = game.i18n.localize('FADE.Chat.attackACNone');
