@@ -11,6 +11,7 @@ export class FDCombatActorDM extends FDActorBaseDM {
          }),
          config: new fields.SchemaField({
             // Ignored by multi-class character
+            startSpellLevel: new fields.NumberField({ required: false, initial: 0 }),
             maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
          thac0: new fields.SchemaField({

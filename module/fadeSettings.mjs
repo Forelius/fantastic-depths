@@ -335,7 +335,7 @@ export class fadeSettings {
          type: String,
          choices: {
             "single": "SETTINGS.classSystem.choices.single",
-            //"advanced": "SETTINGS.classSystem.choices.advanced",
+            "advanced": "SETTINGS.classSystem.choices.advanced",
          },
          default: "single",
          requiresReload: true,

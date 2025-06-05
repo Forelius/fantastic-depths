@@ -5,12 +5,12 @@ import { Formatter } from "/systems/fantastic-depths/module/utils/Formatter.mjs"
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
 export class ClassSystemBase {
-   canCastSpells(actor) {
-      return actor.system.config.maxSpellLevel > 0;
+   get isMultiClassSystem() {
+      return false;
    }
 
-   isMultiClassSystem(actor) {
-      return false;
+   canCastSpells(actor) {
+      return actor.system.config.maxSpellLevel > 0;
    }
 
    async resetSpells(actor, event) {
@@ -58,7 +58,7 @@ export class ClassSystemBase {
       }
       const itemNames = classItem.system.classItems.map(item => item.name);
       let actorItems = [...actor.items.filter(item => (item.type === "weapon" || item.type === "armor") && itemNames.includes(item.name)),
-      ...actor.items.filter(item=>item.type==="actorClass" && item.name===className)];
+      ...actor.items.filter(item => item.type === "actorClass" && item.name === className)];
 
       for (let actorItem of actorItems) {
          actorItem.delete();
@@ -91,78 +91,6 @@ export class ClassSystemBase {
       }
    }
 
-   _prepareSpellSlots(actor, spellItems, spellSlots) {      
-      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
-         spellSlots.push({ spells: [] })
-      }      
-      for (let spellItem of spellItems) {
-         spellItem.img = spellItem.img || Item.DEFAULT_ICON;
-         const spellLevel = Math.max(0, spellItem.system.spellLevel - 1);
-         if (spellItem.system.spellLevel !== undefined && spellSlots?.length >= spellItem.system.spellLevel) {
-            spellSlots[spellLevel].spells.push(spellItem);
-         } else {
-            console.warn(`Not able to add spell ${spellItem.name} of level ${spellItem.system.spellLevel} to ${actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
-         }
-      }
-      return spellSlots;
-   }
-}
-
-export class SingleClassSystem extends ClassSystemBase {
-
-   async onCharacterActorUpdate(actor, updateData) {
-      if (updateData.system?.details?.class !== undefined
-         || updateData.system?.details?.level !== undefined
-         || updateData.system?.abilities !== undefined) {
-         await this.#prepareClassInfo(actor);
-         await this.#updateLevelClass(actor);
-      }
-   }
-
-   async createActorClass(actor, item) {
-      await actor.update({ "system.details.level": 1, "system.details.class": item.name });
-   }
-
-   /**
-    * Used to create context array of spells slots for actor sheet.
-    * @param {any} actor
-    * @returns
-    */
-   prepareSpellSlotsContext(actor) {
-      return this._prepareSpellSlots(actor, [...actor.items.filter(item => item.type === "spell")], []);
-   }
-
-   /**
-    * Prepares the used spells per level totals
-    * @public
-    */
-   prepareSpellsUsed(actor) {
-      if (actor.testUserPermission(game.user, "OWNER") === false) return;
-      const maxSpellLevel = actor.system.config.maxSpellLevel;
-      const spells = actor.items.filter((item) => item.type === 'spell');
-      let spellSlots = [...actor.system.spellSlots];
-      // Reset used spells to zero.
-      // Note: This is not how many times it has been cast, but how many slots have been used.
-      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
-         spellSlots[i] = spellSlots[i] || {};
-         spellSlots[i].used = 0;
-      }
-      if (spells.length > 0) {
-         for (let spell of spells) {
-            const spellLevel = Math.max(0, spell.system.spellLevel - 1);
-            if (spell.system.spellLevel > spellSlots.length) {
-               console.warn(`${actor.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${maxSpellLevel}.`);
-            } else if (spell.system.memorized > 0) {
-               spellSlots[spellLevel].used += spell.system.cast ?? 1;
-            }
-         }
-      }
-      if (spellSlots.length !== maxSpellLevel) {
-         console.warn(`${actor.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${maxSpellLevel}).`);
-      }
-      actor.system.spellSlots = spellSlots;
-   }
-
    /**
     * Prepares class-related magic data when the class name is recognized.
     * @public
@@ -185,6 +113,113 @@ export class SingleClassSystem extends ClassSystemBase {
       await actor.update({ system: update });
    }
 
+   /**
+    * Prepares the used spells per level totals for data model.
+    * @public
+    */
+   prepareSpellsUsed(actor) {
+      if (actor.testUserPermission(game.user, "OWNER") === false) return;
+      const startSpellLevel = actor.system.config.startSpellLevel;
+      const maxSpellLevel = actor.system.config.maxSpellLevel;
+      const spellLevelCount = maxSpellLevel - startSpellLevel;
+      const spells = actor.items.filter((item) => item.type === 'spell');
+      let spellSlots = [...actor.system.spellSlots];
+      // Reset used spells to zero.
+      // Note: This is not how many times it has been cast, but how many slots have been used.
+      for (let i = 0; i < spellLevelCount; i++) {
+         spellSlots[i] = spellSlots[i] || {};
+         spellSlots[i].used = 0;
+      }
+      if (spells.length > 0) {
+         for (let spell of spells) {
+            const spellLevel = Math.max(0, spell.system.spellLevel - 1);
+            if (spell.system.spellLevel > maxSpellLevel) {
+               console.warn(`${actor.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${maxSpellLevel}.`);
+            } else if ((spellLevel - startSpellLevel) < 0) {
+               console.warn(`${actor.name} trying to setup spell level ${spell.system.spellLevel} but startSpellLevel is ${startSpellLevel}.`);
+            } else if (spell.system.memorized > 0) {
+               spellSlots[spellLevel - startSpellLevel].used += spell.system.cast ?? 1;
+            }
+         }
+      }
+      if (spellSlots.length !== maxSpellLevel) {
+         console.warn(`${actor.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${maxSpellLevel}).`);
+      }
+      actor.system.spellSlots = spellSlots;
+   }
+
+   _prepareSpellSlots(actor, spellItems, spellSlots) {
+      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
+         spellSlots.push({ spells: [] })
+      }
+      for (let spellItem of spellItems) {
+         spellItem.img = spellItem.img || Item.DEFAULT_ICON;
+         const spellLevel = Math.max(0, spellItem.system.spellLevel - 1);
+         if (spellItem.system.spellLevel !== undefined && spellSlots?.length >= spellItem.system.spellLevel) {
+            spellSlots[spellLevel].spells.push(spellItem);
+         } else {
+            console.warn(`Not able to add spell ${spellItem.name} of level ${spellItem.system.spellLevel} to ${actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
+         }
+      }
+      return spellSlots;
+   }
+
+   _prepareClassInfoSpellSlots(actor, classData) {
+      const update = {};
+      update.config = { maxSpellLevel: classData.maxSpellLevel };
+      update.spellSlots = [];
+      const classSpellsIdx = actor.system.details.level;
+      if (classData.spells?.length > 0 && classSpellsIdx <= classData.spells.length) {
+         // Get the spell progression for the given character level
+         const spellProgression = classData.spells[classSpellsIdx];
+         if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
+            console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
+         } else {
+            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
+            for (let i = 0; i < update.spellSlots.length; i++) {
+               // Set the max value based on the class spell progression
+               update.spellSlots[i] = { max: spellProgression[i] };
+            }
+         }
+      }
+      return update;
+   }
+}
+
+export class SingleClassSystem extends ClassSystemBase {
+
+   async onCharacterActorUpdate(actor, updateData) {
+      if (updateData.system?.details?.class !== undefined
+         || updateData.system?.details?.level !== undefined
+         || updateData.system?.abilities !== undefined) {
+         await this.#prepareClassInfo(actor);
+         await this.#updateLevelClass(actor);
+      }
+   }
+
+   async createActorClass(actor, item) {
+      await actor.update({
+         "system.details.level": 1,
+         "system.details.class": item.name,
+         "system.config.startSpellLevel": item.system.startSpellLevel,
+         "system.config.maxSpellLevel": item.system.maxSpellLevel
+      });
+   }
+
+   /**
+    * Used to create context array of spells slots for actor sheet.
+    * @param {any} actor
+    * @returns
+    */
+   prepareSpellSlotsContext(actor) {
+      return [{
+         className: actor.system.details.class,
+         startSpellLevel: actor.system.config.startSpellLevel,
+         maxSpellLevel: actor.system.config.maxSpellLevel,
+         slots: this._prepareSpellSlots(actor, [...actor.items.filter(item => item.type === "spell")], [])
+      }];
+   }
+   
    /**
    * Prepares all derived class-related data when the class name is recognized.
    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
@@ -231,33 +266,12 @@ export class SingleClassSystem extends ClassSystemBase {
          update.details.species = actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species;
 
          // Spells         
-         update = { ...update, ...this.#prepareClassInfoSpellSlots(actor, classData) };
+         update = { ...update, ...this._prepareClassInfoSpellSlots(actor, classData) };
 
          await actor.update({ system: update });
       } else {
          ui.notifications.warn(`${actor.system.details.class} not found.`)
       }
-   }
-
-   #prepareClassInfoSpellSlots(actor, classData) {
-      const update = {};
-      update.config = { maxSpellLevel: classData.maxSpellLevel };
-      update.spellSlots = [];
-      const classSpellsIdx = actor.system.details.level;
-      if (classData.spells?.length > 0 && classSpellsIdx <= classData.spells.length) {
-         // Get the spell progression for the given character level
-         const spellProgression = classData.spells[classSpellsIdx];
-         if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
-            console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
-         } else {
-            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
-            for (let i = 0; i < update.spellSlots.length; i++) {
-               // Set the max value based on the class spell progression
-               update.spellSlots[i] = { max: spellProgression[i] };
-            }
-         }
-      }
-      return update;
    }
 
    /**
@@ -321,7 +335,7 @@ export class MultiClassSystem extends ClassSystemBase {
       return result;
    }
 
-   isMultiClassSystem(actor) {
+   get isMultiClassSystem() {
       return true;
    }
 
@@ -365,19 +379,6 @@ export class MultiClassSystem extends ClassSystemBase {
    }
 
    /**
-    * Prepares class-related magic data when the class name is recognized.
-    * @public
-    */
-   async setupMonsterClassMagic(actor) {
-      if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
-
-      const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
-      // Set this actor's level to be same as cast-as.
-      await actor.update({ 'system.details.level': (parsed?.classLevel ?? 1) });
-   }
-
-   /**
     * Used to create context array of spells slots for actor sheet.
     * @param {any} actor
     * @returns
@@ -391,17 +392,23 @@ export class MultiClassSystem extends ClassSystemBase {
          });
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
-         const casterClassNames = casterClasses.map(item => item.name);
          for (let casterClass of casterClasses) {
-            const classSpells = actor.items.filter(item => item.type === "spell"
-               && item.system.classes.some(cls => casterClassNames.includes(cls.name)));
-            spellClasses.push({ className: casterClass.name, slots: this._prepareSpellSlots(actor, classSpells, []) });
+            const classSpells = actor.items.filter(item =>
+               item.type === "spell" &&
+               item.system.classes?.some(cls => cls.name === casterClass.name)
+            );
+            spellClasses.push({
+               className: casterClass.name,
+               startSpellLevel: casterClass.system.startSpellLevel,
+               maxSpellLevel: casterClass.system.maxSpellLevel,
+               slots: this._prepareSpellSlots(actor, classSpells, [])
+            });
          }
       }
       return spellClasses;
    }
 
-   prepareSpellsUsed(actor) {      
+   prepareSpellsUsed(actor) {
 
    }
 

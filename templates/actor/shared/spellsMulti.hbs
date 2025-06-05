@@ -1,14 +1,14 @@
-﻿<section class="tab {{tabs.spells.cssClass}}" data-group="primary" data-tab="spells">
+﻿<section class="tab {{tabs.spells.cssClass}}" data-group="primary" data-tab="spells">   
    <div name="spellItemsSection" class="items-list">
       <a class="item-control item-reset"
          data-tooltip='{{localize "FADE.Spell.resetSlots"}}'
          data-action="resetSpells">
          <i class="fas fa-sync"></i>
       </a>
-      {{#each }}
-      <div></div>
-      {{#each spellSlots as |slot|}}
-      <div name="spellLevel{{add @index 1}}" class='items-list'>
+      {{#each spellClasses as |spellClass|}}
+   <h3>{{spellClass.className}}</h3>
+      {{#each spellClass.slots as |slot|}}
+      <div name="spellLevel{{add ../spellClass.startSpellLevel 1}}" class='items-list'>
          {{! Spell Level Header}}
          <div class='item flexrow items-header' data-action="toggleHeader">
             <div class='item-name'>
@@ -64,6 +64,7 @@
          </div>
          {{/each}}
       </div>
+      {{/each}}
       {{/each}}
    </div>
 </section>

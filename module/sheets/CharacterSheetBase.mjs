@@ -52,7 +52,8 @@ export class CharacterSheetBase extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
       },
       spells: {
-         template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
+         /*template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",*/
       },
       spellsMulti: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
@@ -87,7 +88,11 @@ export class CharacterSheetBase extends FDActorSheetV2 {
 
          const classSystem = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
-            options.parts.push('spells');
+            if (classSystem.isMultiClassSystem === true) {
+               options.parts.push('spellsMulti');
+            } else {
+               options.parts.push('spells');
+            }
          }
 
          options.parts.push('description');

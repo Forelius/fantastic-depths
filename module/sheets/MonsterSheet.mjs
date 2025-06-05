@@ -42,7 +42,7 @@ export class MonsterSheet extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
       },
       spells: {
-         template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
       },      
       description: {
          template: "systems/fantastic-depths/templates/actor/monster/description.hbs",

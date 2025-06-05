@@ -538,11 +538,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.treasure = treasure;
       context.treasureValue = this.getTreasureValue(context);
       const classSystem = game.fade.registry.getSystem("classSystem");
-      if (classSystem.isMultiClassSystem === true && this.actor.type !== "monster") {
+      //if (classSystem.isMultiClassSystem === true && this.actor.type !== "monster") {
          context.spellClasses = classSystem.prepareSpellSlotsContext(this.actor);
-      } else {
-         context.spellSlots = classSystem.prepareSpellSlotsContext(this.actor);
-      }
+      //} else {
+        // context.spellSlots = classSystem.prepareSpellSlotsContext(this.actor);
+      //}
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
