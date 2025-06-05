@@ -1,4 +1,4 @@
-import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
+import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -13,13 +13,13 @@ export class CharacterSheetBase extends FDActorSheetV2 {
    get title() {
       let result = super.title;
       const actorData = this.document.toObject(false);
-      const level = game.i18n.localize('FADE.Actor.Level');
+      const level = game.i18n.localize("FADE.Actor.Level");
       if (actorData.system.details.species === actorData.system.details.class) {
          result = `${result} (${actorData.system.details.class}, ${level} ${actorData.system.details.level})`;
       } else {
          result = `${result} (${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`;
       }
-      
+
       return result;
    }
 
@@ -32,7 +32,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       form: {
          submitOnChange: true
       },
-      classes: ['character'],
+      classes: ["character"],
    }
 
    static PARTS = {
@@ -52,10 +52,6 @@ export class CharacterSheetBase extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
       },
       spells: {
-         template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
-         /*template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",*/
-      },
-      spellsMulti: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
       },
       description: {
@@ -80,26 +76,22 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'abilities'];
+      options.parts = ["header", "tabnav", "abilities"];
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         options.parts.push('items');
-         options.parts.push('skills');
+         options.parts.push("items");
+         options.parts.push("skills");
 
          const classSystem = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
-            if (classSystem.isMultiClassSystem === true) {
-               options.parts.push('spellsMulti');
-            } else {
-               options.parts.push('spells');
-            }
+            options.parts.push("spells");
          }
 
-         options.parts.push('description');
-         options.parts.push('effects');
+         options.parts.push("description");
+         options.parts.push("effects");
       }
       if (game.user.isGM) {
-         options.parts.push('gmOnly');
+         options.parts.push("gmOnly");
       }
    }
 
@@ -121,29 +113,29 @@ export class CharacterSheetBase extends FDActorSheetV2 {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
-      const group = 'primary';
+      const group = "primary";
 
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+      if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
       const tabs = {
-         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: 'items', group, label: 'FADE.items' };
-         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+         tabs.items = { id: "items", group, label: "FADE.items" };
+         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
       }
 
-      tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
-      tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
+      tabs.description = { id: "description", group, label: "FADE.tabs.description" };
+      tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
 
       if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
       }
 
       for (const tab of Object.values(tabs)) {

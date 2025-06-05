@@ -8,7 +8,7 @@
       {{#each spellClasses as |spellClass|}}
    <h3>{{spellClass.className}}</h3>
       {{#each spellClass.slots as |slot|}}
-      <div name="spellLevel{{add ../spellClass.startSpellLevel 1}}" class='items-list'>
+      <div name="spellLevel{{add ../spellClass.firstSpellLevel 1}}" class='items-list'>
          {{! Spell Level Header}}
          <div class='item flexrow items-header' data-action="toggleHeader">
             <div class='item-name'>

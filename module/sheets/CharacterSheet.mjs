@@ -33,10 +33,6 @@ export class CharacterSheet extends CharacterSheetBase {
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
-         /*template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",*/
-      },
-      spellsMulti: {
-         template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
       },
       description: {
          template: "systems/fantastic-depths/templates/actor/character/description.hbs",
@@ -54,7 +50,6 @@ export class CharacterSheet extends CharacterSheetBase {
       primary: "abilities"
    }
 
-
    /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
@@ -68,11 +63,7 @@ export class CharacterSheet extends CharacterSheetBase {
          options.parts.push('skills');
          const classSystem = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
-            if (classSystem.isMultiClassSystem === true) {
-               options.parts.push('spellsMulti');
-            } else {
-               options.parts.push('spells');
-            }
+            options.parts.push('spells');
          }
          options.parts.push('description');
          options.parts.push('effects');
