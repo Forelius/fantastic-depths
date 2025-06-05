@@ -2,17 +2,17 @@
    <ol name="class-spells" class='items-list'>
       <!-- Header Row -->
       <li class='item flexrow items-header'>
-         <div>{{localize 'FADE.Actor.Level'}}</div>
-         {{#each spellLevelHeaders as |header|}}
-         <div>{{header}}</div>
+         <div class="flex1" style="max-width:80px;">{{localize 'FADE.Actor.Level'}}</div>
+         {{#each spellLevelHeaders as |header headerIndex|}}
+         <div class="flex1">{{header}}</div>
          {{/each}}
       </li>
       <!-- Spell Entries -->
-      {{#each system.spells as |spellLevels levelIndex|}}
+      {{#each system.spells as |level levelIndex|}}
       <li class='item flexrow'>
-         <div class="align-left">{{add levelIndex @root.system.firstSpellLevel}}</div>
-         {{#each spellLevels as |spellCount spellLevelIndex|}}
-         <div class="align-left">
+         <div class="flex1 align-center" style="max-width:80px">{{add levelIndex @root.system.firstLevel}}</div>
+         {{#each level as |spellCount spellLevelIndex|}}
+         <div class="flex1 align-left">
             <input type="number" name="system.spells.{{levelIndex}}.{{spellLevelIndex}}" value="{{spellCount}}" data-dtype="Number" />
          </div>
          {{/each}}
