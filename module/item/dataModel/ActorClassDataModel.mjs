@@ -9,7 +9,9 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          isPrimary: new fields.BooleanField({ required: true, initial: true }),
          key: new fields.StringField({ required: true }),
          level: new fields.NumberField({ required: true }),
-         maxLevel: new fields.NumberField({ required: true, initial: 0 }),
+         firstLevel: new fields.NumberField({ required: true, initial: 1 }),
+         maxLevel: new fields.NumberField({ required: true, initial: 1 }),
+         firstSpellLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          xp: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
@@ -24,13 +26,6 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          hdcon: new fields.BooleanField({ required: true, initial: true }),
          title: new fields.StringField({ required: false, nullable: true }),
          attackRank: new fields.StringField({ required: false, nullable: true }),
-         //spellSlots: new fields.ArrayField(new fields.SchemaField({
-         //   spellLevel: new fields.NumberField({ initial: 0 }),
-         //   max: new fields.NumberField({ initial: 0 })
-         //}), {
-         //   required: false,
-         //   initial: []
-         //}),
       };
    }
 }

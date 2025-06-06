@@ -32,10 +32,12 @@
          </div>
       </div>
       <div class="summary flexrow">
+         {{#if (eq hasMultiClass false)}}
          <div>
             <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
             <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
          </div>
+         {{/if}}
          <div>
             <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
             <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>

@@ -27,6 +27,15 @@ export class ClassSystemBase {
    }
 
    async onCharacterActorUpdate(actor, updateData) { }
+
+   /**
+    * Call when an actor item is updated and let this method decide if the update requires
+    * any class-related info to be updated.
+    * @public
+    * @param {any} actor The item's owning actor.
+    * @param {any} item The item being updated.
+    * @param {any} updateData The update data from the update event.
+    */
    async onActorItemUpdate(actor, item, updateData) { }
 
    async clearClassData(actor, className) {
@@ -65,40 +74,16 @@ export class ClassSystemBase {
       }
    }
 
-   async getClassData(className, classLevel) {
-      // Replace hyphen with underscore for "Magic-User"
-      const nameInput = className.toLowerCase();
-      const classItem = await fadeFinder.getClass(nameInput);
-      if (!classItem) {
-         if (nameInput !== null && nameInput !== "") {
-            console.warn(`Class not found ${className}.`);
-         }
-         return;
-      }
-      const classData = classItem.system;
-      const currentLevel = Math.min(classData.maxLevel, Math.max(classData.firstLevel, classLevel));
-
-      // Make sure current level is within range of levels allowed for class.
-      return {
-         classItem,
-         classData,
-         currentLevel,
-         levelData: classData.levels.find(level => level.level === currentLevel),
-         prevLevelData: classData.levels.find(level => level.level === currentLevel - 1),
-         nextLevelData: classData.levels.find(level => level.level === currentLevel + 1),
-         nameLevel: classData.levels.find(level => level.level === 9),
-      }
-   }
-
    /**
     * Prepares class-related magic data when the class name is recognized.
+    * Monsters use a single-class system no matter what.
     * @public
     */
    async setupMonsterClassMagic(actor) {
       if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
 
       const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;      
+      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
       // Get the class item
       const classItem = await fadeFinder.getClass(null, parsed?.classId);
       if (!classItem) {
@@ -122,7 +107,7 @@ export class ClassSystemBase {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
       const firstSpellLevel = actor.system.config.firstSpellLevel;
       const maxSpellLevel = actor.system.config.maxSpellLevel;
-      const spellLevelCount = maxSpellLevel - firstSpellLevel + 1;
+      const spellLevelCount = (maxSpellLevel - firstSpellLevel) + 1;
       let spellSlots = [];
       if (maxSpellLevel > 0) {
          const spells = actor.items.filter((item) => item.type === "spell");
@@ -155,40 +140,85 @@ export class ClassSystemBase {
       actor.system.spellSlots = spellSlots;
    }
 
-   _prepareSpellSlots(actor, spellItems, spellSlots) {
-      for (let i = 0; i < actor.system.config.maxSpellLevel; i++) {
+   /**
+    * @protected
+    * @param {any} className
+    * @param {any} classLevel
+    * @returns
+    */
+   async _getClassData(className, classLevel) {
+      // Replace hyphen with underscore for "Magic-User"
+      const nameInput = className.toLowerCase();
+      const classItem = await fadeFinder.getClass(nameInput);
+      if (!classItem) {
+         if (nameInput !== null && nameInput !== "") {
+            console.warn(`Class not found ${className}.`);
+         }
+         return;
+      }
+      const classData = classItem.system;
+      const currentLevel = Math.min(classData.maxLevel, Math.max(classData.firstLevel, classLevel));
+
+      // Make sure current level is within range of levels allowed for class.
+      return {
+         classItem,
+         classData,
+         currentLevel,
+         levelData: classData.levels.find(level => level.level === currentLevel),
+         prevLevelData: classData.levels.find(level => level.level === currentLevel - 1),
+         nextLevelData: classData.levels.find(level => level.level === currentLevel + 1),
+         nameLevel: classData.levels.find(level => level.level === 9),
+      }
+   }
+
+   /**
+    * @protected
+    * @param {any} firstSpellLevel
+    * @param {any} maxSpellLevel
+    * @param {any} spellItems
+    * @param {any} spellSlots
+    * @returns
+    */
+   _prepareSpellSlots(firstSpellLevel, maxSpellLevel, spellItems, spellSlots) {
+      const spellLevelCount = (maxSpellLevel - firstSpellLevel) + 1;
+      for (let i = 0; i < spellLevelCount; i++) {
          spellSlots.push({ spells: [] })
       }
       for (let spellItem of spellItems) {
          spellItem.img = spellItem.img || Item.DEFAULT_ICON;
-         const spellLevel = Math.max(0, spellItem.system.spellLevel - 1);
-         if (spellItem.system.spellLevel !== undefined && spellSlots?.length >= spellItem.system.spellLevel) {
-            spellSlots[spellLevel].spells.push(spellItem);
+         const slotIndex = spellItem.system.spellLevel - firstSpellLevel;
+         if (spellItem.system.spellLevel !== undefined && spellSlots?.length >= slotIndex && slotIndex >= 0) {
+            spellSlots[slotIndex].spells.push(spellItem);
          } else {
-            console.warn(`Not able to add spell ${spellItem.name} of level ${spellItem.system.spellLevel} to ${actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
+            console.warn(`Not able to add spell ${spellItem.name} of level ${spellItem.system.spellLevel}. Caster only has ${spellSlots.length} spell slot(s).`);
          }
       }
       return spellSlots;
    }
 
    /**
-    * Assumes single-class actor
+    * Assumes single-class actor.
+    * @protected
     * @param {any} actor
     * @param {any} classData
     * @returns
     */
    _prepareClassInfoSpellSlots(actor, classData) {
       const update = {};
-      update.config = { maxSpellLevel: classData.maxSpellLevel };
+      update.config = {
+         firstSpellLevel: classData.firstSpellLevel,
+         maxSpellLevel: classData.maxSpellLevel
+      };
       update.spellSlots = [];
-      const classSpellsIdx = actor.system.details.level;
-      if (classData.spells?.length > 0 && classSpellsIdx <= classData.spells.length) {
+      const spellSlotCount = (classData.maxSpellLevel - classData.firstSpellLevel) + 1;
+      const classSpellsIdx = actor.system.details.level - classData.firstSpellLevel;
+      if (classData.spells?.length > 0 && classSpellsIdx <= classData.spells.length && classSpellsIdx >= 0) {
          // Get the spell progression for the given character level
          const spellProgression = classData.spells[classSpellsIdx];
          if (spellProgression === undefined || spellProgression === null || spellProgression.length === 0) {
             console.warn(`Class spells are empty for spellcaster ${actor.name} (${actor.system.details.class}). Max spells per level cannot be set.`, classData.spells);
          } else {
-            update.spellSlots = Array.from({ length: classData.maxSpellLevel }, () => ({ max: 0 }));
+            update.spellSlots = Array.from({ length: spellSlotCount }, () => ({ max: 0 }));
             for (let i = 0; i < update.spellSlots.length; i++) {
                // Set the max value based on the class spell progression
                update.spellSlots[i] = { max: spellProgression[i] };
@@ -201,6 +231,11 @@ export class ClassSystemBase {
 
 export class SingleClassSystem extends ClassSystemBase {
 
+   /**
+    * @public
+    * @param {any} actor
+    * @param {any} updateData
+    */
    async onCharacterActorUpdate(actor, updateData) {
       if (updateData.system?.details?.class !== undefined
          || updateData.system?.details?.level !== undefined
@@ -210,6 +245,11 @@ export class SingleClassSystem extends ClassSystemBase {
       }
    }
 
+   /**
+    * @public
+    * @param {any} actor
+    * @param {any} item
+    */
    async createActorClass(actor, item) {
       await actor.update({
          "system.details.level": 1,
@@ -221,28 +261,32 @@ export class SingleClassSystem extends ClassSystemBase {
 
    /**
     * Used to create context array of spells slots for actor sheet.
+    * @public
     * @param {any} actor
     * @returns
     */
    prepareSpellSlotsContext(actor) {
-      return [{
+      const firstSpellLevel = actor.system.config.firstSpellLevel;
+      const maxSpellLevel = actor.system.config.maxSpellLevel;
+      const result = {
          className: actor.system.details.class,
-         firstSpellLevel: actor.system.config.firstSpellLevel,
-         maxSpellLevel: actor.system.config.maxSpellLevel,
-         slots: this._prepareSpellSlots(actor, [...actor.items.filter(item => item.type === "spell")], [])
-      }];
+         firstSpellLevel,
+         maxSpellLevel,
+         slots: this._prepareSpellSlots(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
+      };
+      return [result];
    }
-   
+
    /**
    * Prepares all derived class-related data when the class name is recognized.
    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
-   * @protected
+   * @private
    */
    async #prepareClassInfo(actor) {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
       if (game.user.isGM === false) return; // needed?
 
-      const classDataObj = await this.getClassData(actor.system.details.class, actor.system.details.level);
+      const classDataObj = await this._getClassData(actor.system.details.class, actor.system.details.level);
       if (classDataObj) {
          const { classItem, classData, currentLevel, levelData, prevLevelData, nextLevelData, nameLevel } = classDataObj;
          let update = {
@@ -289,7 +333,7 @@ export class SingleClassSystem extends ClassSystemBase {
 
    /**
     * Called by update actor event handler to update class and level data, if those changed.
-    * @protected
+    * @private
     */
    async #updateLevelClass(actor) {
       const className = actor.system.details.class?.toLowerCase();
@@ -338,6 +382,11 @@ export class SingleClassSystem extends ClassSystemBase {
 }
 
 export class MultiClassSystem extends ClassSystemBase {
+   /**
+    * @public
+    * @param {any} actor
+    * @returns
+    */
    canCastSpells(actor) {
       let result = false;
       if (actor.type === "monster") {
@@ -352,14 +401,27 @@ export class MultiClassSystem extends ClassSystemBase {
       return true;
    }
 
+   /**
+    * Call when an actor item is updated and let this method decide if the update requires
+    * any class-related info to be updated.
+    * @public
+    * @param {any} actor The item's owning actor.
+    * @param {any} item The item being updated.
+    * @param {any} updateData The update data from the update event.
+    */
    async onActorItemUpdate(actor, item, updateData) {
-      if (item.type === "actorClass" &&
-         (updateData.system.level || updateData.name)) {
+      if (item.type === "actorClass" && (updateData.system.level || updateData.name)) {
          await this.#updateActorClassData(actor, item, updateData);
          await this.#updateActorData(actor);
       }
    }
 
+   /**
+    * @public
+    * @param {any} actor
+    * @param {any} item
+    * @returns
+    */
    async createActorClass(actor, item) {
       const classLevel = item.system.levels[0];
       const nextClassLevel = item.system.levels[1];
@@ -370,7 +432,9 @@ export class MultiClassSystem extends ClassSystemBase {
             classUuid: item.uuid,
             key: item.system.key,
             level: classLevel?.level,
+            firstLevel: item.system.firstLevel,
             maxLevel: item.system.maxLevel,
+            firstSpellLevel: item.system.firstSpellLevel,
             maxSpellLevel: item.system.maxSpellLevel,
             xp: {
                value: classLevel?.xp,
@@ -393,15 +457,20 @@ export class MultiClassSystem extends ClassSystemBase {
 
    /**
     * Used to create context array of spells slots for actor sheet.
+    * @public
     * @param {any} actor
     * @returns
     */
    prepareSpellSlotsContext(actor) {
       const spellClasses = [];
       if (actor.type === "monster") {
+         const firstSpellLevel = actor.system.config.firstSpellLevel;
+         const maxSpellLevel = actor.system.config.maxSpellLevel;
          spellClasses.push({
             className: game.i18n.localize("Types.Actor.monster"),
-            slots: this._prepareSpellSlots(actor, [...actor.items.filter(item => item.type === "spell")], [])
+            firstSpellLevel,
+            maxSpellLevel,
+            slots: this._prepareSpellSlots(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
          });
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
@@ -410,11 +479,13 @@ export class MultiClassSystem extends ClassSystemBase {
                item.type === "spell" &&
                item.system.classes?.some(cls => cls.name === casterClass.name)
             );
+            const firstSpellLevel = casterClass.system.firstSpellLevel;
+            const maxSpellLevel = casterClass.system.maxSpellLevel;
             spellClasses.push({
                className: casterClass.name,
-               firstSpellLevel: casterClass.system.firstSpellLevel,
-               maxSpellLevel: casterClass.system.maxSpellLevel,
-               slots: this._prepareSpellSlots(actor, classSpells, [])
+               firstSpellLevel,
+               maxSpellLevel,
+               slots: this._prepareSpellSlots(firstSpellLevel, maxSpellLevel, classSpells, [])
             });
          }
       }
@@ -427,18 +498,21 @@ export class MultiClassSystem extends ClassSystemBase {
 
    /**
     * The ActorClass item has been updated.
+    * @private
     * @param {any} actor The owner of the updated actorClass.
     * @param {any} item The ActorClass item instance.
     * @param {any} updateData The updateData from the update event handler.
     */
    async #updateActorClassData(actor, item, updateData) {
-      const classDataObj = await this.getClassData(item.name, updateData.system?.level);
+      const classDataObj = await this._getClassData(item.name, updateData.system?.level);
       if (classDataObj) {
          const { classItem, classData, currentLevel, levelData, nextLevelData, nameLevel } = classDataObj;
          let update = {
             key: classData.key,
             level: currentLevel,
+            firstLevel: classData.firstLevel,
             maxLevel: classData.maxLevel,
+            firstSpellLevel: classData.firstSpellLevel,
             maxSpellLevel: classData.maxSpellLevel,
             xp: {
                bonus: classItem.getXPBonus(actor.system.abilities)
@@ -472,6 +546,10 @@ export class MultiClassSystem extends ClassSystemBase {
       }
    }
 
+   /**
+    * @private
+    * @param {any} actor
+    */
    async #updateActorData(actor) {
       let classNames = "";
       let levels = "";
@@ -479,7 +557,14 @@ export class MultiClassSystem extends ClassSystemBase {
       let xps = "";
       let nextXps = "";
       let xpBonus = "";
+      let savesData = null;
       for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
+         // Saving throws
+         const savesData = await fadeFinder.getClassSaves(actorClass.name, actorClass.system.level);
+         if (savesData) {
+            //await actor._setupSavingThrows(savesData);
+         }
+
          classNames += `\\${actorClass.name}`;
          levels += `\\${actorClass.system.level}`;
          hds += `\\${actorClass.system.hd}`;

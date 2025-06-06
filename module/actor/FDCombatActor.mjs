@@ -1,8 +1,8 @@
 import { FDActorBase } from "/systems/fantastic-depths/module/actor/FDActorBase.mjs";
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs";
+import { DialogFactory } from "/systems/fantastic-depths/module/dialog/DialogFactory.mjs";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -80,7 +80,7 @@ export class FDCombatActor extends FDActorBase {
       if (this.id) {
          // Apply the mastery level override, if present.
          if (this.system.mod.masteryLevelOverride) {
-            for (let mastery of this.items.filter(item => item.type === 'mastery')) {
+            for (let mastery of this.items.filter(item => item.type === "mastery")) {
                mastery.system.effectiveLevel = this.system.mod.masteryLevelOverride;
             }
          }
@@ -107,7 +107,7 @@ export class FDCombatActor extends FDActorBase {
       dataset.target = savingThrow.system.target;
       dataset.rollmode = savingThrow.system.rollMode;
       dataset.label = savingThrow.name;
-      if (this.type === 'character') {
+      if (this.type === "character") {
          dataset.type = type;
       }
 
@@ -121,7 +121,7 @@ export class FDCombatActor extends FDActorBase {
 
       if (dialogResp) {
          let rollMod = Number(dialogResp.mod) || 0;
-         if (dialogResp.action === 'magic') {
+         if (dialogResp.action === "magic") {
             rollMod += this.system.abilities?.wis?.mod ?? 0;
          }
          rollMod += this.system.mod.save[type] || 0;
@@ -153,7 +153,7 @@ export class FDCombatActor extends FDActorBase {
       const selected = Array.from(canvas.tokens.controlled);
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
@@ -203,7 +203,7 @@ export class FDCombatActor extends FDActorBase {
          && (item.system.quantity === null || item.system.quantity > 0));
       if (rangedWeapons?.length > 0) {
          if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
-            || (item.system.damageType === 'breath' || item.system.natural === true))) {
+            || (item.system.damageType === "breath" || item.system.natural === true))) {
             result.push("fire");
          } else {
             result.push("throw");
@@ -228,7 +228,7 @@ export class FDCombatActor extends FDActorBase {
          && (item.system.memorized === null || item.system.memorized > 0))?.length > 0) {
          result.push("spell");
       }
-      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.combatManeuver !== null)
+      const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null)
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
          const config = CONFIG.FADE.CombatManeuvers[ability];
@@ -249,7 +249,7 @@ export class FDCombatActor extends FDActorBase {
       if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
       let promises = [];
       // Get this actor's class ability items.
-      let actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+      let actorAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.category !== "save");
 
       // Determine which special abilities are missing and need to be added.
       const addItems = [];
@@ -279,7 +279,7 @@ export class FDCombatActor extends FDActorBase {
       if (promises.length > 0) {
          await Promise.all(promises);
          promises = [];
-         actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+         actorAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.category !== "save");
       }
 
       // Iterate over ability items and set each one.
@@ -358,27 +358,40 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Called by Character and Monster actor classes to update/add saving throws.
-    * @param {any} savesData The values to use for the saving throws.
+    * @param {any} savesData The values to use for the saving throws. This data normally
+    *    comes from the class definition item and is not the saving throw special ability
+    *    item itself.
     */
    async _setupSavingThrows(savesData) {
       if (game.user.isGM === false) return;
-      const promises = [];
+      const promises = []; 
+      // Get saving throw special ability items from finder.
       const savingThrowItems = await fadeFinder.getSavingThrows();
-      const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
+      // Get this actor's existing saving throw items.
+      const actorSavingThrows = this.items.filter(item => item.type === "specialAbility" && item.system.category === "save");
+
+      // ------------------------------------------------
+      // ADD SAVING THROWS IF NOT EXIST
+      // Convert savesData to an array
       const saveEntries = Object.entries(savesData);
       const addItems = [];
       for (const saveData of saveEntries) {
-         const stName = saveData[0];
-         if (stName !== 'level' && savingThrows.find(item => item.system.customSaveCode === stName) === undefined
+         // Get the saving throw property name. This will either be "level" or the customSaveCode of a saving throw.
+         const stName = saveData[0]; 
+         // If this is not the level property, it can't be found in this actor's saving throws collection 
+         // and has not already been added in this method call...
+         if (stName !== "level" && actorSavingThrows.find(item => item.system.customSaveCode === stName) === undefined
             && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
+            // Get the saving throw item from the pack/world collection.
             const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
+
             if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
                const newSave = saveItem.toObject();
                const saveTarget = savesData[newSave.system.customSaveCode];
                newSave.system.target = saveTarget ?? 15;
                addItems.push(newSave);
             } else if (savesData[saveItem.system.customSaveCode] > 0) {
-               console.warn(`The specified saving throw (${stName}) does not exist as a world item.`);
+               console.warn(`The specified saving throw (${stName}) does not exist as a pack/world item.`);
             }
          }
       }
@@ -386,8 +399,11 @@ export class FDCombatActor extends FDActorBase {
          //console.log(`Adding saving throw items to ${this.name}`);
          promises.push(this.createEmbeddedDocuments("Item", addItems));
       }
-      // Iterate over saving throw items and set each one.
-      for (const savingThrow of savingThrows) {
+
+      // ------------------------------------------------
+      // UPDATE SAVING THROW TARGETS
+      // Iterate over actor's saving throw items and set their target if specified in savesData.
+      for (const savingThrow of actorSavingThrows) {
          const saveTarget = savesData[savingThrow.system.customSaveCode];
          if (saveTarget) {
             promises.push(savingThrow.update({ "system.target": saveTarget }));
@@ -400,9 +416,11 @@ export class FDCombatActor extends FDActorBase {
    }
 
    #getSavingThrow(type) {
-      const result = this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
+      const result = this.items.find(item => item.type === "specialAbility"
+         && item.system.category === "save"
+         && item.system.customSaveCode === type);
       if (!result) {
-         ui.notifications.error(game.i18n.format('FADE.notification.missingSave', { type }));
+         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { type }));
       }
       return result;
    }
