@@ -356,65 +356,6 @@ export class FDCombatActor extends FDActorBase {
       }
    }
 
-   /**
-    * Called by Character and Monster actor classes to update/add saving throws.
-    * @param {any} savesData The values to use for the saving throws. This data normally
-    *    comes from the class definition item and is not the saving throw special ability
-    *    item itself.
-    */
-   async _setupSavingThrows(savesData) {
-      if (game.user.isGM === false) return;
-      const promises = []; 
-      // Get saving throw special ability items from finder.
-      const savingThrowItems = await fadeFinder.getSavingThrows();
-      // Get this actor's existing saving throw items.
-      const actorSavingThrows = this.items.filter(item => item.type === "specialAbility" && item.system.category === "save");
-
-      // ------------------------------------------------
-      // ADD SAVING THROWS IF NOT EXIST
-      // Convert savesData to an array
-      const saveEntries = Object.entries(savesData);
-      const addItems = [];
-      for (const saveData of saveEntries) {
-         // Get the saving throw property name. This will either be "level" or the customSaveCode of a saving throw.
-         const stName = saveData[0]; 
-         // If this is not the level property, it can't be found in this actor's saving throws collection 
-         // and has not already been added in this method call...
-         if (stName !== "level" && actorSavingThrows.find(item => item.system.customSaveCode === stName) === undefined
-            && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
-            // Get the saving throw item from the pack/world collection.
-            const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
-
-            if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
-               const newSave = saveItem.toObject();
-               const saveTarget = savesData[newSave.system.customSaveCode];
-               newSave.system.target = saveTarget ?? 15;
-               addItems.push(newSave);
-            } else if (savesData[saveItem.system.customSaveCode] > 0) {
-               console.warn(`The specified saving throw (${stName}) does not exist as a pack/world item.`);
-            }
-         }
-      }
-      if (addItems.length > 0) {
-         //console.log(`Adding saving throw items to ${this.name}`);
-         promises.push(this.createEmbeddedDocuments("Item", addItems));
-      }
-
-      // ------------------------------------------------
-      // UPDATE SAVING THROW TARGETS
-      // Iterate over actor's saving throw items and set their target if specified in savesData.
-      for (const savingThrow of actorSavingThrows) {
-         const saveTarget = savesData[savingThrow.system.customSaveCode];
-         if (saveTarget) {
-            promises.push(savingThrow.update({ "system.target": saveTarget }));
-         }
-      }
-
-      if (promises.length > 0) {
-         await Promise.all(promises);
-      }
-   }
-
    #getSavingThrow(type) {
       const result = this.items.find(item => item.type === "specialAbility"
          && item.system.category === "save"

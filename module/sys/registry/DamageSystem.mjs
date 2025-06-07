@@ -1,5 +1,10 @@
-export class DamageSystem {
-   construction(options) {
+export class DamageSystemInterface {
+   async applyDamage(actor, delta, damageType, attackType, damageSource = null) { throw new Error("Method not implemented."); }
+}
+
+export class DamageSystem extends DamageSystemInterface {
+   constructor(options) {
+      super(options);
       this.options = options;      
    }
 

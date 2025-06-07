@@ -3,8 +3,7 @@ import { MoraleCheck, AbilityCheck, ActorMovement } from './DefaultSystem.mjs'
 import { ClassicArmorSystem } from './ArmorSystem.mjs';
 import { DamageSystem } from './DamageSystem.mjs';
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
-import { IndivInit } from './IndivInit.mjs';
-import { GroupInit } from './GroupInit.mjs';
+import { IndivInit, GroupInit } from './InitiativeSystem.mjs';
 import { WeaponMasteryHeroic, WeaponMasteryBase } from './WeaponMastery.mjs';
 import { Wrestling } from "./Wrestling.mjs";
 import { Shove } from "./Shove.mjs";

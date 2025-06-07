@@ -4,7 +4,21 @@ import { FDItem } from "/systems/fantastic-depths/module/item/FDItem.mjs";
 import { Formatter } from "/systems/fantastic-depths/module/utils/Formatter.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
-export class ClassSystemBase {
+export class ClassSystemInterface {
+   async clearClassData(actor, className) { throw new Error("Method not implemented."); }
+   async createActorClass(actor, item) { throw new Error("Method not implemented."); }
+   canCastSpells(actor) { throw new Error("Method not implemented."); }
+   get isMultiClassSystem() { throw new Error("Method not implemented."); }
+   async onActorItemUpdate(actor, item, updateData) { throw new Error("Method not implemented."); }
+   async onCharacterActorUpdate(actor, updateData) { throw new Error("Method not implemented."); }
+   async resetSpells(actor, event) { throw new Error("Method not implemented."); }
+   async setupMonsterClassMagic(actor) { throw new Error("Method not implemented."); }
+   async setupSavingThrows(actor, savesData) { throw new Error("Method not implemented."); }
+   prepareSpellSlotsContext(actor) { throw new Error("Method not implemented."); }
+   prepareSpellsUsed(actor) { throw new Error("Method not implemented."); }
+}
+
+export class ClassSystemBase extends ClassSystemInterface {
    get isMultiClassSystem() {
       return false;
    }
@@ -13,6 +27,18 @@ export class ClassSystemBase {
       return actor.system.config.maxSpellLevel > 0;
    }
 
+   /**
+    * Resets the cast count for all spells associated with a given actor.
+    *
+    * This asynchronous method retrieves all spell items from the actor's inventory 
+    * and sets their cast count to zero. It then updates each spell item to reflect 
+    * this change. After resetting the spells, a notification message is displayed 
+    * to inform the user, and a chat message is created to log the reset action.
+    * @public
+    * @param {Object} actor - The actor object whose spells are to be reset.
+    * @param {Event} event - The event object associated with the action (if applicable).
+    * @returns {Promise<void>} - A promise that resolves when all spells have been reset and notifications are sent.
+    */
    async resetSpells(actor, event) {
       const spells = actor.items.filter((item) => item.type === "spell");
       spells.forEach(async (spell) => {
@@ -38,6 +64,20 @@ export class ClassSystemBase {
     */
    async onActorItemUpdate(actor, item, updateData) { }
 
+   /**
+    * Clears the class data for a specified actor and class name.
+    *
+    * This asynchronous method retrieves the class item based on the provided 
+    * class name and resets the actor's class-related data, including title, 
+    * experience points, attack bonuses, hit points, and spell slots. It also 
+    * deletes any special abilities associated with the class and removes 
+    * relevant items (weapons, armor, and class items) from the actor's inventory. 
+    * If the specified class is not found, a warning is logged.
+    * @public
+    * @param {Object} actor - The actor object whose class data is to be cleared.
+    * @param {string} className - The name of the class to be cleared from the actor.
+    * @returns {Promise<void>} - A promise that resolves when the class data has been cleared.
+    */
    async clearClassData(actor, className) {
       const classItem = await fadeFinder.getClass(className?.toLowerCase());
       if (!classItem) {
@@ -141,10 +181,79 @@ export class ClassSystemBase {
    }
 
    /**
+     * Called by Character and Monster actor classes to update/add saving throws.
+     * @param {*} actor The actor to setup saving throws for.
+     * @param {any} savesData The values to use for the saving throws. This data normally
+     *   comes from the class definition item and is not the saving throw special ability
+     *   item itself. The structure is a json object with a key/value pair for each saving
+     *   throw type. The key represents a customSaveCode.
+     */
+   async setupSavingThrows(actor, savesData) {
+      if (game.user.isGM === false) return;
+      const promises = [];
+      // Get saving throw special ability items from finder.
+      const savingThrowItems = await fadeFinder.getSavingThrows();
+      // Get this actor's existing saving throw items.
+      const actorSavingThrows = actor.items.filter(item => item.type === "specialAbility" && item.system.category === "save");
+
+      // ------------------------------------------------
+      // ADD SAVING THROWS IF NOT EXIST
+      // Convert savesData to an array
+      const saveEntries = Object.entries(savesData);
+      const addItems = [];
+      for (const saveData of saveEntries) {
+         // Get the saving throw property name. This will either be "level" or the customSaveCode of a saving throw.
+         const stName = saveData[0];
+         // If this is not the level property, it can't be found in this actor's saving throws collection 
+         // and has not already been added in this method call...
+         if (stName !== "level" && actorSavingThrows.find(item => item.system.customSaveCode === stName) === undefined
+            && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
+            // Get the saving throw item from the pack/world collection.
+            const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
+
+            if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
+               const newSave = saveItem.toObject();
+               const saveTarget = savesData[newSave.system.customSaveCode];
+               newSave.system.target = saveTarget ?? 15;
+               addItems.push(newSave);
+            } else if (savesData[saveItem.system.customSaveCode] > 0) {
+               console.warn(`The specified saving throw (${stName}) does not exist as a pack/world item.`);
+            }
+         }
+      }
+      if (addItems.length > 0) {
+         //console.log(`Adding saving throw items to ${actor.name}`);
+         promises.push(actor.createEmbeddedDocuments("Item", addItems));
+      }
+
+      // ------------------------------------------------
+      // UPDATE SAVING THROW TARGETS
+      // Iterate over actor's saving throw items and set their target if specified in savesData.
+      for (const savingThrow of actorSavingThrows) {
+         const saveTarget = savesData[savingThrow.system.customSaveCode];
+         if (saveTarget) {
+            promises.push(savingThrow.update({ "system.target": saveTarget }));
+         }
+      }
+
+      if (promises.length > 0) {
+         await Promise.all(promises);
+      }
+   }
+
+   /**
+    * Retrieves class data for a specified class name and level.
+    *
+    * This asynchronous method fetches the class item based on the provided class name 
+    * and determines the current level of the class, ensuring it falls within the valid 
+    * range defined by the class's first and maximum levels. It returns an object containing 
+    * the class item, class data, current level, and data for the current, previous, and 
+    * next levels, as well as the level data for level 9. If the class is not found, 
+    * a warning is logged.
     * @protected
-    * @param {any} className
-    * @param {any} classLevel
-    * @returns
+    * @param {string} className - The name of the class to retrieve data for.
+    * @param {number} classLevel - The level of the class to be validated and retrieved.
+    * @returns {Promise<Object|null>} - A promise that resolves to an object containing class data, or null if the class is not found.
     */
    async _getClassData(className, classLevel) {
       // Replace hyphen with underscore for "Magic-User"
@@ -172,12 +281,19 @@ export class ClassSystemBase {
    }
 
    /**
+    * Prepares and organizes spell slots for a given range of spell levels.
+    *
+    * This method initializes an array of spell slots based on the specified 
+    * first and maximum spell levels. It then populates each spell slot with 
+    * the corresponding spell items based on their spell levels. If a spell item's 
+    * level is outside the range of available spell slots, a warning is logged. 
+    * Each spell item is also assigned a default icon if none is provided.
     * @protected
-    * @param {any} firstSpellLevel
-    * @param {any} maxSpellLevel
-    * @param {any} spellItems
-    * @param {any} spellSlots
-    * @returns
+    * @param {number} firstSpellLevel - The lowest spell level for the spell slots.
+    * @param {number} maxSpellLevel - The highest spell level for the spell slots.
+    * @param {Array} spellItems - An array of spell item objects to be organized into slots.
+    * @param {Array} spellSlots - An array to be populated with organized spell slots.
+    * @returns {Array} - The updated array of spell slots containing organized spells.
     */
    _prepareSpellSlots(firstSpellLevel, maxSpellLevel, spellItems, spellSlots) {
       const spellLevelCount = (maxSpellLevel - firstSpellLevel) + 1;
@@ -197,11 +313,17 @@ export class ClassSystemBase {
    }
 
    /**
-    * Assumes single-class actor.
+    * Prepares the spell slot information for a given actor based on their class data.
+    *
+    * This method constructs an update object containing the spell slot configuration 
+    * for the actor's class. It calculates the number of spell slots available based 
+    * on the class's spell progression and the actor's current level. If the class has 
+    * spells defined, it populates the spell slots with the maximum number of spells 
+    * per level. If no spells are available for the actor's level, a warning is logged.
     * @protected
-    * @param {any} actor
-    * @param {any} classData
-    * @returns
+    * @param {Object} actor - The actor object for which spell slots are being prepared.
+    * @param {Object} classData - The class data object containing spell progression information.
+    * @returns {Object} - An object containing the updated spell slot configuration and counts.
     */
    _prepareClassInfoSpellSlots(actor, classData) {
       const update = {};
@@ -232,9 +354,16 @@ export class ClassSystemBase {
 export class SingleClassSystem extends ClassSystemBase {
 
    /**
+    * Handles updates to the character actor's data and prepares class information.
+    *
+    * This asynchronous method is triggered when the actor's data is updated. 
+    * It checks if the class, level, or abilities have been modified in the update data. 
+    * If any of these properties are present, it calls methods to prepare class information 
+    * and update the actor's level class accordingly.
     * @public
-    * @param {any} actor
-    * @param {any} updateData
+    * @param {Object} actor - The actor object representing the character being updated.
+    * @param {Object} updateData - The data object containing the updates to be applied to the actor.
+    * @returns {Promise<void>} - A promise that resolves when the class information and level updates are complete.
     */
    async onCharacterActorUpdate(actor, updateData) {
       if (updateData.system?.details?.class !== undefined
@@ -246,9 +375,16 @@ export class SingleClassSystem extends ClassSystemBase {
    }
 
    /**
+    * Initializes a new class for the specified actor.
+    *
+    * This asynchronous method updates the actor's system details to set the initial 
+    * class information, including the class name, level, and spell level configurations. 
+    * It sets the actor's level to 1 and configures the first and maximum spell levels 
+    * based on the provided class item.
     * @public
-    * @param {any} actor
-    * @param {any} item
+    * @param {Object} actor - The actor object to which the new class will be assigned.
+    * @param {Object} item - The class item object containing the class details to be applied.
+    * @returns {Promise<void>} - A promise that resolves when the actor's class data has been updated.
     */
    async createActorClass(actor, item) {
       await actor.update({
@@ -260,10 +396,16 @@ export class SingleClassSystem extends ClassSystemBase {
    }
 
    /**
-    * Used to create context array of spells slots for actor sheet.
+    * Prepares a context array of spell slots for the actor sheet.
+    *
+    * This public method constructs an object containing the actor's class name, 
+    * the first and maximum spell levels, and an array of spell slots populated 
+    * with the actor's spell items. It utilizes the `_prepareSpellSlots` method 
+    * to organize the spell items into the appropriate slots based on their levels. 
+    * The resulting object is returned as an array.
     * @public
-    * @param {any} actor
-    * @returns
+    * @param {Object} actor - The actor object for which the spell slots context is being prepared.
+    * @returns {Array} - An array containing the context object with spell slot information.
     */
    prepareSpellSlotsContext(actor) {
       const firstSpellLevel = actor.system.config.firstSpellLevel;
@@ -346,7 +488,7 @@ export class SingleClassSystem extends ClassSystemBase {
          // Saving throws
          const savesData = await fadeFinder.getClassSaves(className, currentLevel);
          if (savesData) {
-            await actor._setupSavingThrows(savesData);
+            await this.setupSavingThrows(actor, savesData);
          }
 
          // Class special abilities
@@ -382,11 +524,7 @@ export class SingleClassSystem extends ClassSystemBase {
 }
 
 export class MultiClassSystem extends ClassSystemBase {
-   /**
-    * @public
-    * @param {any} actor
-    * @returns
-    */
+
    canCastSpells(actor) {
       let result = false;
       if (actor.type === "monster") {
@@ -417,10 +555,16 @@ export class MultiClassSystem extends ClassSystemBase {
    }
 
    /**
+    * Creates a new actor class item and updates the associated actor's data.
+    *
+    * This asynchronous method takes an actor and an item representing a class,
+    * extracts relevant information from the item, and creates a new actor class
+    * item with the specified attributes. It then updates the actor's data to 
+    * reflect the newly added class. The method returns the newly created item.
     * @public
-    * @param {any} actor
-    * @param {any} item
-    * @returns
+    * @param {Object} actor - The actor object to which the new class will be added.
+    * @param {Object} item - The item object representing the class to be created.
+    * @returns {Promise<Object>} - A promise that resolves to the newly created actor class item.
     */
    async createActorClass(actor, item) {
       const classLevel = item.system.levels[0];
@@ -547,8 +691,38 @@ export class MultiClassSystem extends ClassSystemBase {
    }
 
    /**
+    * Updates the best saving throws based on the provided saves data.
+    *
+    * This method takes two objects: `savesData`, which contains the current saving throw values,
+    * and `bestSavesData`, which holds the best saving throw values recorded so far.
+    * It iterates through each saving throw in `savesData`, compares it with the corresponding
+    * value in `bestSavesData`, and updates `bestSavesData` with the minimum value.
     * @private
-    * @param {any} actor
+    * @param {Object} savesData - An object containing the current saving throw values.
+    * @param {Object} bestSavesData - An object containing the best saving throw values to be updated.
+    * @returns {Object} - The updated `bestSavesData` object with the best saving throw values.
+    */
+   #getBestSavingThrows(savesData, bestSavesData) {
+      const saveEntries = Object.entries(savesData).filter(item => item[0] !== "level");
+      for (const saveData of saveEntries) {
+         const saveName = saveData[0];
+         bestSavesData[saveName] = Math.min(savesData[saveName], bestSavesData[saveName] ?? 100);
+      }
+      return bestSavesData;
+   }
+
+   /**
+    * Updates the actor's data based on their class information and saving throws.
+    *
+    * This private asynchronous method retrieves and compiles various attributes 
+    * of the actor's classes, including class names, levels, hit dice (HD), 
+    * experience points (XP), and XP bonuses. It also calculates the best saving 
+    * throws for the actor based on their class data. The method then updates the 
+    * actor's system details with the compiled information.
+    *
+    * @private
+    * @param {any} actor - The actor object whose data is to be updated.
+    * @returns {Promise<void>} - A promise that resolves when the actor's data has been updated.
     */
    async #updateActorData(actor) {
       let classNames = "";
@@ -557,12 +731,13 @@ export class MultiClassSystem extends ClassSystemBase {
       let xps = "";
       let nextXps = "";
       let xpBonus = "";
-      let savesData = null;
+      let bestSavesData = {};
+
       for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
          // Saving throws
          const savesData = await fadeFinder.getClassSaves(actorClass.name, actorClass.system.level);
          if (savesData) {
-            //await actor._setupSavingThrows(savesData);
+            bestSavesData = this.#getBestSavingThrows(savesData, bestSavesData);
          }
 
          classNames += `\\${actorClass.name}`;
@@ -586,5 +761,7 @@ export class MultiClassSystem extends ClassSystemBase {
          "system.details.xp.next": nextXps,
          "system.details.xp.bonus": xpBonus,
       });
+
+      await this.setupSavingThrows(actor, bestSavesData);
    }
 }

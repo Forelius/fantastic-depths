@@ -1,8 +1,14 @@
+export class EncumbranceInterface {
+   async calcCategoryEnc(items) { throw new Error("Method not implemented."); }
+   async prepareDerivedData(actor) { throw new Error("Method not implemented."); }
+}
+
 /**
  * None or armor-only if used by itself.
  */
-export class BasicEncumbrance {
+export class BasicEncumbrance extends EncumbranceInterface {
    constructor(options) {
+      super(options);
       this.options = options;
       this.CONFIG = {
          armorChoices: {

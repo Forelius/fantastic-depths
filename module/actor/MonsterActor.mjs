@@ -37,17 +37,17 @@ export class MonsterActor extends FDCombatActor {
          await classSystem.setupMonsterClassMagic(this);
       }
       if (updateData.system?.details?.saveAs?.length > 0) {
-         this._prepareSavingThrows();
+         await this.#prepareSavingThrows(classSystem);
       }
    }
 
-   async _prepareSavingThrows() {
+   async #prepareSavingThrows(classSystem) {
       if (this.id) {
          const saveAs = this.system.details.saveAs ?? null;
          if (saveAs) {
             const savesData = await fadeFinder.getClassSavesByCode(saveAs, this);
             if (savesData) {
-               await this._setupSavingThrows(savesData);
+               await classSystem.setupSavingThrows(this, savesData);
             } else {
                console.warn(`Invalid save-as value ${saveAs} specified for ${this.name}.`);
             }
