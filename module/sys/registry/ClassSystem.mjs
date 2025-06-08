@@ -8,6 +8,7 @@ export class ClassSystemInterface {
    async clearClassData(actor, className) { throw new Error("Method not implemented."); }
    async createActorClass(actor, item) { throw new Error("Method not implemented."); }
    canCastSpells(actor) { throw new Error("Method not implemented."); }
+   getRollData() { throw new Error("Method not implemented."); }
    get isMultiClassSystem() { throw new Error("Method not implemented."); }
    async onActorItemUpdate(actor, item, updateData) { throw new Error("Method not implemented."); }
    async onCharacterActorUpdate(actor, updateData) { throw new Error("Method not implemented."); }
@@ -115,32 +116,40 @@ export class ClassSystemBase extends ClassSystemInterface {
    }
 
    /**
+    * Pass in a value like C2 and get back a class item and level.
+    * @public
+    */
+   async getClassItemForClassAs(classAs) {
+      const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
+      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+      // Get the class item
+      const classItem = await fadeFinder.getClass(null, parsed?.classId);
+      if (!classItem) {
+         console.warn(`Class not found for key ${classAs}.`);
+         return;
+      }
+      return { classItem, classLevel: parsed.classLevel };
+   }
+
+   /**
     * Prepares class-related magic data when the class name is recognized.
     * Monsters use a single-class system no matter what.
     * @public
     */
    async setupMonsterClassMagic(actor) {
       if (game.user.isGM === false || (actor.system.details.castAs?.length ?? 0) === 0) return;
-
-      const match = actor.system.details.castAs?.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
-      // Get the class item
-      const classItem = await fadeFinder.getClass(null, parsed?.classId);
-      if (!classItem) {
-         console.warn(`Class not found for key ${actor.system.name}. Cast As: ${actor.system.details.castAs}.`);
-         return;
+      const classAs = await this.getClassItemForClassAs(actor.system.details.castAs);
+      if (classAs) {
+         // Set this actor's level to be same as cast-as.
+         await actor.update({ "system.details.level": (classAs.classLevel ?? 1) });
+         const update = this._prepareClassInfoSpellSlots(actor, classAs.classItem.system);
+         await actor.update({ system: update });
       }
-
-      // Set this actor's level to be same as cast-as.
-      await actor.update({ "system.details.level": (parsed?.classLevel ?? 1) });
-
-      const update = this._prepareClassInfoSpellSlots(actor, classItem.system);
-      await actor.update({ system: update });
    }
 
    /**
     * Prepares the used spells per level totals for data model.
-    * This method assumes a single class.
+    * This method assumes a single class but does not lok at actor class, only firstSpellLevel and naxSpellLevel.
     * @public
     */
    prepareSpellsUsed(actor) {
@@ -390,6 +399,7 @@ export class SingleClassSystem extends ClassSystemBase {
       await actor.update({
          "system.details.level": 1,
          "system.details.class": item.name,
+         "system.details.castAsKey": item.system.castAsKey,
          "system.config.firstSpellLevel": item.system.firstSpellLevel,
          "system.config.maxSpellLevel": item.system.maxSpellLevel
       });
@@ -420,7 +430,30 @@ export class SingleClassSystem extends ClassSystemBase {
    }
 
    /**
-   * Prepares all derived class-related data when the class name is recognized.
+    * Prepares class-related roll data for evaluating rolls and formulas.
+    * @public
+    * @param {any} actor - The actor object for which the roll data is being prepared.
+    * @returns - An object with a class property that contains class level.
+    */
+   getRollData(actor) {
+      const result = {};
+      if (actor.type === "monster") {
+         const classAs = actor.system.details.castAs;
+         if ((classAs?.length ?? 0) >= 0) {
+            const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
+            const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+            if (parsed?.classId && typeof parsed?.classLevel === typeof 0) {
+               result[parsed.classId] = { level: parsed.classLevel };
+            }
+         }
+      } else if (actor.system.details?.class?.length > 0) {
+         result[actor.system.details.class] = { level: actor.system.details.level };
+      }
+      return result;
+   }
+
+   /**
+   * Prepares Character derived class-related data when the class name is recognized.
    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
    * @private
    */
@@ -434,6 +467,7 @@ export class SingleClassSystem extends ClassSystemBase {
          let update = {
             details: {
                level: currentLevel,
+               castAsKey: classData.castAsKey,
                xp: {
                   bonus: classItem.getXPBonus(actor.system.abilities)
                }
@@ -474,7 +508,7 @@ export class SingleClassSystem extends ClassSystemBase {
    }
 
    /**
-    * Called by update actor event handler to update class and level data, if those changed.
+    * Called by update Character event handler to update class and level data, if those changed.
     * @private
     */
    async #updateLevelClass(actor) {
@@ -512,11 +546,11 @@ export class SingleClassSystem extends ClassSystemBase {
             }, actor);
 
             if (dialogResp?.resp?.result === true) {
-               await actor._setupSpecialAbilities(abilitiesData);
+               await actor.setupSpecialAbilities(abilitiesData);
                await actor._setupItems(itemsData);
             }
          } else {
-            await actor._setupSpecialAbilities(abilitiesData);
+            await actor.setupSpecialAbilities(abilitiesData);
             await actor._setupItems(itemsData);
          }
       }
@@ -575,6 +609,7 @@ export class MultiClassSystem extends ClassSystemBase {
          system: {
             classUuid: item.uuid,
             key: item.system.key,
+            castAsKey: item.system.castAsKey,
             level: classLevel?.level,
             firstLevel: item.system.firstLevel,
             maxLevel: item.system.maxLevel,
@@ -597,6 +632,33 @@ export class MultiClassSystem extends ClassSystemBase {
       }, { parent: actor });
       await this.#updateActorData(actor);
       return newItem;
+   }
+
+   /**
+    * Prepares class-related roll data for evaluating rolls and formulas.
+    * @public
+    * @param {any} actor - The actor object for which the roll data is being prepared.
+    * @returns - An object with a class property that contains class level.
+    */
+   getRollData(actor) {
+      const result = {};
+
+      if (actor.type === "monster") {
+         const classAs = actor.system.details.castAs;
+         if ((classAs?.length ?? 0) >= 0) {
+            const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
+            const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+            if (parsed?.classId && typeof parsed?.classLevel === typeof 0) {
+               result[parsed.classId] = { level: parsed.classLevel };
+            }
+         }
+      } else {
+         for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
+            result[actorClass.system.key] = { level: actorClass.system.level };
+         }
+      }
+
+      return result;
    }
 
    /**
@@ -653,6 +715,7 @@ export class MultiClassSystem extends ClassSystemBase {
          const { classItem, classData, currentLevel, levelData, nextLevelData, nameLevel } = classDataObj;
          let update = {
             key: classData.key,
+            castAsKey: classData.castAsKey,
             level: currentLevel,
             firstLevel: classData.firstLevel,
             maxLevel: classData.maxLevel,

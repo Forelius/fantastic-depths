@@ -13,6 +13,8 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          maxLevel: new fields.NumberField({ required: true, initial: 1 }),
          firstSpellLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
+         // Only the class key, not the level like monster does for castAs
+         castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
          xp: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
             bonus: new fields.NumberField({ initial: 0 }),

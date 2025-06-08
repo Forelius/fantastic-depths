@@ -29,7 +29,7 @@ export class MonsterActor extends FDCombatActor {
       if (updateData.system?.details?.classAbilityAs?.length > 0) {
          const result = await fadeFinder.getClassAbilitiesByCode(this.system?.details?.classAbilityAs, this);
          if (result.classAbilityData) {
-            await this._setupSpecialAbilities(result.classAbilityData);
+            await this.setupSpecialAbilities(result.classAbilityData);
          }
       }
       if (updateData.system?.details?.castAs?.length > 0) {

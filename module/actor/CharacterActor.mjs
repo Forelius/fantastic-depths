@@ -154,7 +154,7 @@ export class CharacterActor extends FDCombatActor {
          }, this.actor);
 
          if (dialogResp?.resp?.result === true) {
-            await this._setupSpecialAbilities(abilitiesData);
+            await this.setupSpecialAbilities(abilitiesData);
          }
       }
    }

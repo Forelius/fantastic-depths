@@ -548,6 +548,10 @@
          "key": {
             "name": "Key",
             "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
+         },
+         "castAsKey": {
+            "name": "Cast As Key",
+            "hint": "They key of the class that this class casts as. For instance, Elf class can cast as M (Magic-User). Some classes allow casting at 1/3rd the level and these can be designated with /3 after the class key."
          }
       },
       "condition": {

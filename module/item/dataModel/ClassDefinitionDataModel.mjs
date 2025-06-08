@@ -1,4 +1,4 @@
-export class ClassLevelData {
+ export class ClassLevelData {
    constructor(options = {}) {
       this.level = options?.level ?? 1;
       this.xp = 0;
@@ -30,6 +30,8 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          firstSpellLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
+         // Only the class key, not the level like monster does for castAs
+         castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
          // If true the character or class has basic proficiency with all weapons.
          basicProficiency: new fields.BooleanField({ required: true, initial: false }),
          unskilledToHitMod: new fields.NumberField({ required: true, initial: -2 }),

@@ -24,6 +24,8 @@ export class CharacterDataModel extends FDCombatActorDM {
             }),
             class: new fields.StringField({ initial: "" }),
             title: new fields.StringField({ initial: "" }),
+            // Only the class key, not the level like monster does for castAs
+            castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
             //---------------------------------------------------
          }),
          retainer: new fields.SchemaField({

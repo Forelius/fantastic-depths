@@ -8,7 +8,7 @@
                </div>
                <label for="name">{{localize 'Name'}}</label>
             </div>
-            <div class="flex1">
+            <div class="flex1" style="max-width: 80px;">
                <input name='system.level' type='number' value='{{system.level}}' placeholder='Level' />
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </div>
@@ -32,6 +32,10 @@
          <div class="flex1">
             <input type='text' name='system.key' value='{{system.key}}' data-dtype='String' />
             <label for="system.key" data-tooltip{{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name='system.castAsKey' value='{{system.castAsKey}}' data-dtype='String' />
+            <label for="system.castAsKey" data-tooltip={{localize 'FADE.class.castAsKey.hint'}}>{{localize 'FADE.class.castAsKey.name'}}</label>
          </div>
          {{#if (eq masterySetting "classic")}}
          <div class="flex1" style="max-width:50px">

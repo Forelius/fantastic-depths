@@ -240,12 +240,12 @@ export class FDCombatActor extends FDActorBase {
    }
    
    /**
-    * @protected
+    * @public
     * Add and/or update the actor's class-given special abilities.
     * @param {any} abilitiesData The class ability array for the desired level.
     * @returns void
     */
-   async _setupSpecialAbilities(abilitiesData) {
+   async setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
       let promises = [];
       // Get this actor's class ability items.
@@ -259,7 +259,6 @@ export class FDCombatActor extends FDActorBase {
             const theItem = await fadeFinder.getClassAbility(abilityData.name, abilityData.classKey);
             if (theItem) {
                const newAbility = theItem.toObject();
-               //newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                if (abilityData.target != null) {
                   newAbility.system.target = abilityData.target;
                }
