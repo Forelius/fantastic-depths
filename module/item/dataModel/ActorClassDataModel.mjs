@@ -7,6 +7,7 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
       return {
          classUuid: new fields.StringField({ required: true }),
          isPrimary: new fields.BooleanField({ required: true, initial: true }),
+         // The class key
          key: new fields.StringField({ required: true }),
          level: new fields.NumberField({ required: true }),
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),

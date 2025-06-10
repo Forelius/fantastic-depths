@@ -33,28 +33,36 @@
       </div>
       <div class="summary flexrow">
          {{#if (eq hasMultiClass false)}}
-         <div>
+         <div class="flex1">
             <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
             <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
          </div>
+         <div class="flex1">
+            <input type='text' name='system.details.classKey' value='{{system.details.classKey}}' data-dtype='String' readonly/>
+            <label for="system.details.classKey" data-tooltip={{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name='system.details.castAsKey' value='{{system.details.castAsKey}}' data-dtype='String' readonly/>
+            <label for="system.details.castAsKey" data-tooltip={{localize 'FADE.class.castAsKey.hint'}}>{{localize 'FADE.class.castAsKey.name'}}</label>
+         </div>
          {{/if}}
-         <div>
+         <div class="flex1">
             <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
             <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.combat.attAgainstH" value='{{system.combat.attAgainstH}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}" />
             <label for="system.combat.attAgainstH" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}">{{localize 'FADE.Actor.AT#Recv.nameH'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.combat.attAgainstM" value='{{system.combat.attAgainstM}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}" />
             <label for="system.combat.attAgainstM" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}">{{localize 'FADE.Actor.AT#Recv.nameM'}}</label>
          </div>
-         <div>
+         <div class="flex1" style="max-width:50px;">
             <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
             <label for="system.combat.isDead" data-tooltip="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
          </div>
-         <div>
+         <div class="flex1">
             <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}" />
             <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
          </div>

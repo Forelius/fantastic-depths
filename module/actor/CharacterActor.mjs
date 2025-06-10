@@ -17,7 +17,6 @@ export class CharacterActor extends FDCombatActor {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      //this.system.wrestling = Wrestling.calculateWrestlingRating(this);
       this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
    }
 

@@ -358,31 +358,23 @@ export class ClassSystemBase extends ClassSystemInterface {
       }
       return update;
    }
+
+   _parseCastAsKey(castAsKey) {
+      const match = castAsKey.match(/^([A-Z]+)(\/)?(\d+)?$/i);
+      if (!match) return null;
+
+      const hasSymbol = match[2] === '/';
+      const hasNumber = match[3] !== undefined;
+
+      return {
+         classKey: match[1],
+         symbol: hasSymbol ? '/' : null,
+         number: hasNumber ? parseInt(match[3], 10) : null
+      };
+   }
 }
 
 export class SingleClassSystem extends ClassSystemBase {
-
-   /**
-    * Handles updates to the character actor's data and prepares class information.
-    *
-    * This asynchronous method is triggered when the actor's data is updated. 
-    * It checks if the class, level, or abilities have been modified in the update data. 
-    * If any of these properties are present, it calls methods to prepare class information 
-    * and update the actor's level class accordingly.
-    * @public
-    * @param {Object} actor - The actor object representing the character being updated.
-    * @param {Object} updateData - The data object containing the updates to be applied to the actor.
-    * @returns {Promise<void>} - A promise that resolves when the class information and level updates are complete.
-    */
-   async onCharacterActorUpdate(actor, updateData) {
-      if (updateData.system?.details?.class !== undefined
-         || updateData.system?.details?.level !== undefined
-         || updateData.system?.abilities !== undefined) {
-         await this.#prepareClassInfo(actor);
-         await this.#updateLevelClass(actor);
-      }
-   }
-
    /**
     * Initializes a new class for the specified actor.
     *
@@ -399,10 +391,32 @@ export class SingleClassSystem extends ClassSystemBase {
       await actor.update({
          "system.details.level": 1,
          "system.details.class": item.name,
+         "system.details.classKey": item.system.key,
          "system.details.castAsKey": item.system.castAsKey,
          "system.config.firstSpellLevel": item.system.firstSpellLevel,
          "system.config.maxSpellLevel": item.system.maxSpellLevel
       });
+   }
+
+   /**
+    * Handles updates to the character actor's data and prepares class information.
+    *
+    * This asynchronous method is triggered when the actor's data is updated. 
+    * It checks if the class, level, or abilities have been modified in the update data. 
+    * If any of these properties are present, it calls methods to prepare class information 
+    * and update the actor's level class accordingly.
+    * @public
+    * @param {Object} actor - The actor object representing the character being updated.
+    * @param {Object} updateData - The data object containing the updates to be applied to the actor.
+    * @returns {Promise<void>} - A promise that resolves when the class information and level updates are complete.
+    */
+   async onCharacterActorUpdate(actor, updateData, skipItems=false) {
+      if (updateData.system?.details?.class !== undefined
+         || updateData.system?.details?.level !== undefined
+         || updateData.system?.abilities !== undefined) {
+         await this.#prepareClassInfo(actor);
+         await this.#updateLevelClass(actor, skipItems);
+      }
    }
 
    /**
@@ -446,17 +460,20 @@ export class SingleClassSystem extends ClassSystemBase {
                result[parsed.classId] = { level: parsed.classLevel };
             }
          }
-      } else if (actor.system.details?.class?.length > 0) {
-         result[actor.system.details.class] = { level: actor.system.details.level };
+      } else if (actor.system.details?.classKey?.length > 0) {
+         result[actor.system.details.classKey] = { level: actor.system.details.level };
       }
       return result;
    }
 
    /**
-   * Prepares Character derived class-related data when the class name is recognized.
-   * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
-   * @private
-   */
+    * Prepares and updates the class information for a given actor.
+    * Ensures the actor has the necessary permissions and retrieves 
+    * relevant class data based on the actor's current class and level.
+    * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
+    * @private
+    * @param {Object} actor - The actor whose class information is to be prepared.
+    */
    async #prepareClassInfo(actor) {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
       if (game.user.isGM === false) return; // needed?
@@ -467,6 +484,7 @@ export class SingleClassSystem extends ClassSystemBase {
          let update = {
             details: {
                level: currentLevel,
+               classKey: classData.key,
                castAsKey: classData.castAsKey,
                xp: {
                   bonus: classItem.getXPBonus(actor.system.abilities)
@@ -503,15 +521,18 @@ export class SingleClassSystem extends ClassSystemBase {
 
          await actor.update({ system: update });
       } else {
-         ui.notifications.warn(`${actor.system.details.class} not found.`)
+         ui.notifications.warn(`${actor.name}: ${actor.system.details.class} not found.`)
       }
    }
 
    /**
-    * Called by update Character event handler to update class and level data, if those changed.
+    * Updates the class and level data for the given actor, including saving throws and special abilities.
+    * This method is called by the update Character event handler when class or level data changes.
     * @private
+    * @param {Object} actor - The actor whose class and level data is to be updated.
+    * @param {boolean} [skipItems=false] - Flag to skip updating items associated with the class.
     */
-   async #updateLevelClass(actor) {
+   async #updateLevelClass(actor, skipItems=false) {
       const className = actor.system.details.class?.toLowerCase();
       const classItem = await fadeFinder.getClass(className);
 
@@ -525,33 +546,35 @@ export class SingleClassSystem extends ClassSystemBase {
             await this.setupSavingThrows(actor, savesData);
          }
 
-         // Class special abilities
-         const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
-         const validItemTypes = ClassDefinitionItem.ValidItemTypes;
-         const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
-         const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
-         const itemsData = await fadeFinder.getClassItems(className, currentLevel);
-         if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
-            || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
-            const dialogResp = await DialogFactory({
-               dialog: "yesno",
-               title: game.i18n.localize("FADE.dialog.specialAbilities.title"),
-               content: game.i18n.format("FADE.dialog.specialAbilities.content", {
-                  name: actor.system.details.class,
-                  type: game.i18n.localize("FADE.Actor.Class")
-               }),
-               yesLabel: game.i18n.localize("FADE.dialog.yes"),
-               noLabel: game.i18n.localize("FADE.dialog.no"),
-               defaultChoice: "yes"
-            }, actor);
+         if (skipItems !== true) {
+            // Class special abilities
+            const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
+            const validItemTypes = ClassDefinitionItem.ValidItemTypes;
+            const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
+            const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
+            const itemsData = await fadeFinder.getClassItems(className, currentLevel);
+            if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
+               || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
+               const dialogResp = await DialogFactory({
+                  dialog: "yesno",
+                  title: game.i18n.localize("FADE.dialog.specialAbilities.title"),
+                  content: game.i18n.format("FADE.dialog.specialAbilities.content", {
+                     name: actor.system.details.class,
+                     type: game.i18n.localize("FADE.Actor.Class")
+                  }),
+                  yesLabel: game.i18n.localize("FADE.dialog.yes"),
+                  noLabel: game.i18n.localize("FADE.dialog.no"),
+                  defaultChoice: "yes"
+               }, actor);
 
-            if (dialogResp?.resp?.result === true) {
+               if (dialogResp?.resp?.result === true) {
+                  await actor.setupSpecialAbilities(abilitiesData);
+                  await actor._setupItems(itemsData);
+               }
+            } else {
                await actor.setupSpecialAbilities(abilitiesData);
                await actor._setupItems(itemsData);
             }
-         } else {
-            await actor.setupSpecialAbilities(abilitiesData);
-            await actor._setupItems(itemsData);
          }
       }
    }

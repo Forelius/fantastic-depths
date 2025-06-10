@@ -1,4 +1,4 @@
-﻿<section class="tab {{tabs.spells.cssClass}}" data-group="primary" data-tab="spells">   
+﻿<section class="tab {{tabs.spells.cssClass}}" data-group="primary" data-tab="spells">
    <div name="spellItemsSection" class="items-list">
       <a class="item-control item-reset"
          data-tooltip='{{localize "FADE.Spell.resetSlots"}}'
@@ -6,7 +6,7 @@
          <i class="fas fa-sync"></i>
       </a>
       {{#each spellClasses as |spellClass|}}
-   <h3>{{spellClass.className}}</h3>
+      <h3>{{spellClass.className}}</h3>
       {{#each spellClass.slots as |slot|}}
       <div name="spellLevel{{add ../spellClass.firstSpellLevel 1}}" class='items-list'>
          {{! Spell Level Header}}

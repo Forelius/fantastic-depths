@@ -24,20 +24,21 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
 
       return {
          // Required Fields
+         // The class key
          key: new fields.StringField({ required: true }),
          species: new fields.StringField({ required: true, initial: "Human" }),
          firstLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxLevel: new fields.NumberField({ required: true, initial: 0 }),
          firstSpellLevel: new fields.NumberField({ required: true, initial: 1 }),
          maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
-         // Only the class key, not the level like monster does for castAs
-         castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
          // If true the character or class has basic proficiency with all weapons.
          basicProficiency: new fields.BooleanField({ required: true, initial: false }),
          unskilledToHitMod: new fields.NumberField({ required: true, initial: -2 }),
          // Optional Fields
          alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
          description: new fields.StringField({ required: false, initial: "" }),
+         // Only the class key, not the level like monster does for castAs
+         castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
          // Ability scores
          abilities: new fields.SchemaField({
             str: new fields.SchemaField({

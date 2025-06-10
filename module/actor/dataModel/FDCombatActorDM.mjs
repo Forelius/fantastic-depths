@@ -40,7 +40,7 @@ export class FDCombatActorDM extends FDActorBaseDM {
             declaredAction: new fields.StringField({ initial: "attack" }),
          }),
          spellSlots: new fields.ArrayField(new fields.SchemaField({
-            spellClass: new fields.StringField({ initial: "" }),
+            //spellClass: new fields.StringField({ initial: "" }),
             spellLevel: new fields.NumberField({ initial: 0 }),
             used: new fields.NumberField({ initial: 0 }),
             max: new fields.NumberField({ initial: 0 })
@@ -162,6 +162,7 @@ export class FDCombatActorDM extends FDActorBaseDM {
       const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
       const hasAbilityScoreMods = abilityScoreSetting === "withmod";
 
+      // If this is a character or if monsters have ability score mods...
       if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
          // Initialize ability score modifiers
          const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");

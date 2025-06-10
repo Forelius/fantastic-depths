@@ -546,7 +546,7 @@
             "hint": "Unskilled weapon usage attack roll penalty."
          },
          "key": {
-            "name": "Key",
+            "name": "Class Key",
             "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
          },
          "castAsKey": {
