@@ -42,8 +42,8 @@ export class FDCombatActorDM extends FDActorBaseDM {
          spellSlots: new fields.ArrayField(new fields.SchemaField({
             //spellClass: new fields.StringField({ initial: "" }),
             spellLevel: new fields.NumberField({ initial: 0 }),
-            used: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 0 })
+            used: new fields.NumberField({ nullable:false, initial: 0 }),
+            max: new fields.NumberField({ nullable: true, initial: 0 })
          }), {
             required: false,
             initial: []

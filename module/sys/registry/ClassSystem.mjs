@@ -360,7 +360,7 @@ export class ClassSystemBase extends ClassSystemInterface {
    }
 
    _parseCastAsKey(castAsKey) {
-      const match = castAsKey.match(/^([A-Z]+)(\/)?(\d+)?$/i);
+      const match = castAsKey?.match(/^([A-Z]+)(\/)?(\d+)?$/i);
       if (!match) return null;
 
       const hasSymbol = match[2] === '/';
@@ -410,7 +410,7 @@ export class SingleClassSystem extends ClassSystemBase {
     * @param {Object} updateData - The data object containing the updates to be applied to the actor.
     * @returns {Promise<void>} - A promise that resolves when the class information and level updates are complete.
     */
-   async onCharacterActorUpdate(actor, updateData, skipItems=false) {
+   async onCharacterActorUpdate(actor, updateData, skipItems = false) {
       if (updateData.system?.details?.class !== undefined
          || updateData.system?.details?.level !== undefined
          || updateData.system?.abilities !== undefined) {
@@ -461,7 +461,28 @@ export class SingleClassSystem extends ClassSystemBase {
             }
          }
       } else if (actor.system.details?.classKey?.length > 0) {
-         result[actor.system.details.classKey] = { level: actor.system.details.level };
+         const classLevel = actor.system.details.level;
+         let castLevel = classLevel;
+         const classKey = actor.system.details.classKey;
+         result[classKey] = {
+            level: classLevel,
+            castLevel
+         };
+
+         const castAsParsed = this._parseCastAsKey(actor.system.details.castAsKey);
+         if (castAsParsed?.classKey) {
+            // If castAsKey is different than character's class key...
+            if (!result[castAsParsed.classKey]) {
+               // Initialize result for class.
+               result[castAsParsed.classKey] = { castLevel };
+            }
+            // If the castAsKey has a divisor...
+            if (castAsParsed.symbol == "/" && castAsParsed.number > 0) {
+               // Perform math calc and assign result to cast level.
+               castLevel = Math.floor(classLevel / castAsParsed.number);               
+               result[castAsParsed.classKey].castLevel = castLevel;
+            }
+         }
       }
       return result;
    }
@@ -532,7 +553,7 @@ export class SingleClassSystem extends ClassSystemBase {
     * @param {Object} actor - The actor whose class and level data is to be updated.
     * @param {boolean} [skipItems=false] - Flag to skip updating items associated with the class.
     */
-   async #updateLevelClass(actor, skipItems=false) {
+   async #updateLevelClass(actor, skipItems = false) {
       const className = actor.system.details.class?.toLowerCase();
       const classItem = await fadeFinder.getClass(className);
 

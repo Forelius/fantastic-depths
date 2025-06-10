@@ -302,11 +302,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    async _onDataChange(event) {
       let result = null;
-      event.preventDefault();
+      //event.preventDefault();
       const item = this._getItemFromActor(event);
       const newVal = event.target.value === "" ? null : Number(event.target.value);
       const updateData = {};
-      updateData[`${event.target.dataset.field}`] = newVal ?? 0;
+      updateData[`${event.target.dataset.field}`] = newVal;
       result = await item.update(updateData);
       return result;
    }
