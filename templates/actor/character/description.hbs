@@ -72,6 +72,30 @@
    {{/if}}
    <div class="bordered">
       <div class="summary flexrow">
+         <div class="flex2" style="max-width:120px;">
+            <input type='text' name="system.details.sex" value='{{system.details.sex}}' data-dtype='String' />
+            <label for="system.details.sex">{{localize 'FADE.Actor.Sex'}}</label>
+         </div>
+         <div class="flex1" style="max-width:70px">
+            <input type='text' name="system.details.age" value='{{system.details.age}}' data-dtype='Number' />
+            <label for="system.details.age">{{localize 'FADE.Actor.Age'}}</label>
+         </div>
+         <div class="flex1" style="max-width:70px">
+            <input type='text' name="system.details.height" value='{{system.details.height}}' data-dtype='String' />
+            <label for="system.details.height">{{localize 'FADE.Actor.Height'}}</label>
+         </div>
+         <div class="flex1" style="max-width: 80px">
+            <input type='text' name="system.details.weight" value='{{system.details.weight}}' data-dtype='String' />
+            <label for="system.details.weight">{{localize 'FADE.Actor.Weight'}}</label>
+         </div>
+         <div class="flex2" style="max-width: 120px;">
+            <select name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
+               {{selectOptions sizes selected=system.details.size}}
+            </select>
+            <label for="system.details.size">{{localize 'FADE.Size'}}</label>
+         </div>
+      </div>
+      <div class="summary flexrow">
          <div class="flex1" style="max-width: 60px">
             <input name="system.wrestling" type="text" data-dtype="Number" value="{{system.wrestling}}" />
             <label for="system.wrestling" data-tooltip="{{localize 'FADE.Actor.Wrestling.long'}}">{{localize 'FADE.Actor.Wrestling.short'}}</label>
@@ -107,7 +131,8 @@
             <input name="system.retainer.morale" type="text" data-dtype="Number" value="{{system.retainer.morale}}" />
          </div>
          {{/if}}
-         <div class="flex1" style="max-width:200px;">
+         {{#if (eq hasMultiClass false)}}
+         <div class="flex1">
             <input type="text" name="system.details.title" value="{{system.details.title}}" data-dtype="String" data-tooltip="{{system.details.title}}" />
             <label>{{localize 'FADE.Actor.Title'}}</label>
          </div>
@@ -122,31 +147,8 @@
             <label>{{localize "FADE.Actor.THAC0"}}</label>
          </div>
          {{/if}}
-      </div>
-      <div class="summary flexrow">
-         <div class="flex2" style="max-width:120px;">
-            <input type='text' name="system.details.sex" value='{{system.details.sex}}' data-dtype='String' />
-            <label for="system.details.sex">{{localize 'FADE.Actor.Sex'}}</label>
-         </div>
-         <div class="flex1" style="max-width:70px">
-            <input type='text' name="system.details.age" value='{{system.details.age}}' data-dtype='Number' />
-            <label for="system.details.age">{{localize 'FADE.Actor.Age'}}</label>
-         </div>
-         <div class="flex1" style="max-width:70px">
-            <input type='text' name="system.details.height" value='{{system.details.height}}' data-dtype='String' />
-            <label for="system.details.height">{{localize 'FADE.Actor.Height'}}</label>
-         </div>
-         <div class="flex1" style="max-width: 80px">
-            <input type='text' name="system.details.weight" value='{{system.details.weight}}' data-dtype='String' />
-            <label for="system.details.weight">{{localize 'FADE.Actor.Weight'}}</label>
-         </div>         
-         <div class="flex2" style="max-width: 120px;">
-            <select name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
-               {{selectOptions sizes selected=system.details.size}}
-            </select>
-            <label for="system.details.size">{{localize 'FADE.Size'}}</label>
-         </div>
-      </div>
+         {{/if}}
+      </div>      
       <div class="summary flexrow">
          <div>
             <input type='text' name="system.languages" value='{{system.languages}}' data-dtype='String' />

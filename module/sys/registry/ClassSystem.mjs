@@ -372,6 +372,31 @@ export class ClassSystemBase extends ClassSystemInterface {
          number: hasNumber ? parseInt(match[3], 10) : null
       };
    }
+
+   _getLevelAndCastAsLevel(classLevel, classKey, castAsKey) {
+      const result = {};
+      let castLevel = classLevel;
+      result[classKey] = {
+         level: classLevel,
+         castLevel
+      };
+
+      const castAsParsed = this._parseCastAsKey(castAsKey);
+      if (castAsParsed?.classKey) {
+         // If castAsKey is different than character's class key...
+         if (!result[castAsParsed.classKey]) {
+            // Initialize result for class.
+            result[castAsParsed.classKey] = { castLevel };
+         }
+         // If the castAsKey has a divisor...
+         if (castAsParsed.symbol == "/" && castAsParsed.number > 0) {
+            // Perform math calc and assign result to cast level.
+            castLevel = Math.floor(classLevel / castAsParsed.number);
+            result[castAsParsed.classKey].castLevel = castLevel;
+         }
+      }
+      return result;
+   }
 }
 
 export class SingleClassSystem extends ClassSystemBase {
@@ -450,7 +475,7 @@ export class SingleClassSystem extends ClassSystemBase {
     * @returns - An object with a class property that contains class level.
     */
    getRollData(actor) {
-      const result = {};
+      let result = {};
       if (actor.type === "monster") {
          const classAs = actor.system.details.castAs;
          if ((classAs?.length ?? 0) >= 0) {
@@ -461,28 +486,7 @@ export class SingleClassSystem extends ClassSystemBase {
             }
          }
       } else if (actor.system.details?.classKey?.length > 0) {
-         const classLevel = actor.system.details.level;
-         let castLevel = classLevel;
-         const classKey = actor.system.details.classKey;
-         result[classKey] = {
-            level: classLevel,
-            castLevel
-         };
-
-         const castAsParsed = this._parseCastAsKey(actor.system.details.castAsKey);
-         if (castAsParsed?.classKey) {
-            // If castAsKey is different than character's class key...
-            if (!result[castAsParsed.classKey]) {
-               // Initialize result for class.
-               result[castAsParsed.classKey] = { castLevel };
-            }
-            // If the castAsKey has a divisor...
-            if (castAsParsed.symbol == "/" && castAsParsed.number > 0) {
-               // Perform math calc and assign result to cast level.
-               castLevel = Math.floor(classLevel / castAsParsed.number);               
-               result[castAsParsed.classKey].castLevel = castLevel;
-            }
-         }
+         result = this._getLevelAndCastAsLevel(actor.system.details.level, actor.system.details.classKey, actor.system.details.castAsKey);
       }
       return result;
    }
@@ -685,7 +689,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @returns - An object with a class property that contains class level.
     */
    getRollData(actor) {
-      const result = {};
+      let result = {};
 
       if (actor.type === "monster") {
          const classAs = actor.system.details.castAs;
@@ -698,7 +702,7 @@ export class MultiClassSystem extends ClassSystemBase {
          }
       } else {
          for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
-            result[actorClass.system.key] = { level: actorClass.system.level };
+            result = { ...result, ...this._getLevelAndCastAsLevel(actorClass.system.level, actorClass.system.key, actorClass.system.castAsKey) };
          }
       }
 
@@ -787,10 +791,6 @@ export class MultiClassSystem extends ClassSystemBase {
             update.xp.next = nextLevelData.xp;
          }
 
-         // Spells
-         // TODO: Update this for multi-class
-         //update = { ...update, ...this.prepareSpellSlots(actor, classData) };
-
          await item.update({ system: update });
       } else {
          ui.notifications.warn(`${item.name} not found.`)
@@ -854,6 +854,8 @@ export class MultiClassSystem extends ClassSystemBase {
          nextXps += `\\${actorClass.system.xp.next}`;
          xpBonus += `\\${actorClass.system.xp.bonus}`;
       }
+      await this.setupSavingThrows(actor, bestSavesData);
+
       classNames = classNames.replace(/^\\/, "");
       levels = levels.replace(/^\\/, "");
       hds = hds.replace(/^\\/, "");
@@ -868,7 +870,5 @@ export class MultiClassSystem extends ClassSystemBase {
          "system.details.xp.next": nextXps,
          "system.details.xp.bonus": xpBonus,
       });
-
-      await this.setupSavingThrows(actor, bestSavesData);
    }
 }
