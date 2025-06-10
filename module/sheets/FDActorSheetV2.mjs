@@ -306,7 +306,14 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const item = this._getItemFromActor(event);
       const newVal = event.target.value === "" ? null : Number(event.target.value);
       const updateData = {};
-      updateData[`${event.target.dataset.field}`] = newVal;
+      const allowNull = ["system.memorized", "system.waMax"];
+      // If the field allows nulls...
+      if (allowNull.includes(event.target.dataset.field)) {
+         updateData[`${event.target.dataset.field}`] = newVal;
+      } else {
+         // Otherwise nulls become a zero.
+         updateData[`${event.target.dataset.field}`] = newVal ?? 0;
+      }
       result = await item.update(updateData);
       return result;
    }
