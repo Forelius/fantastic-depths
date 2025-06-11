@@ -16,12 +16,8 @@
             </div>
             <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
             <div class="item-80px flexrow">
-               <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
-                      name="system.spellSlots[{{@index}}].used" data-dtype="Number" placeholder="0" readonly
-                      data-tooltip="{{localize 'FADE.Spell.castSlots'}}" />/
-               <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
-                      name="system.spellSlots[{{@index}}].max" data-dtype="Number" placeholder="0"
-                      data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
+               <input type="text" value="{{slot.used}}" name="slot.used" data-dtype="Number" placeholder="0" readonly data-tooltip="{{localize 'FADE.Spell.castSlots'}}" />/
+               <input type="text" value="{{slot.max}}" name="slot.max" data-dtype="Number" placeholder="0" data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
             </div>
             <div class='item-controls2'></div>
          </div>

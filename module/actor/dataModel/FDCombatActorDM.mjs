@@ -39,15 +39,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
             isDead: new fields.BooleanField({ initial: false }),
             declaredAction: new fields.StringField({ initial: "attack" }),
          }),
-         spellSlots: new fields.ArrayField(new fields.SchemaField({
-            //spellClass: new fields.StringField({ initial: "" }),
-            spellLevel: new fields.NumberField({ initial: 0 }),
-            used: new fields.NumberField({ nullable:false, initial: 0 }),
-            max: new fields.NumberField({ nullable: true, initial: 0 })
-         }), {
-            required: false,
-            initial: []
-         }),
          mod: new fields.SchemaField({
             // mod is for items that modify AC (add/subtract only) but are not armor items.
             ac: new fields.NumberField({ initial: 0 }),

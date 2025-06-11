@@ -145,7 +145,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare shared actor data and items.
-      this.#prepareItems(context);
+      await this.#prepareItems(context);
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -450,7 +450,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     *
     * @param {object} context The context object to mutate
     */
-   #prepareItems(context) {
+   async #prepareItems(context) {
       // Initialize arrays.
       let gear = [];
       const weapons = [];
@@ -545,7 +545,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.treasure = treasure;
       context.treasureValue = this.getTreasureValue(context);
       const classSystem = game.fade.registry.getSystem("classSystem");
-      context.spellClasses = classSystem.prepareSpellSlotsContext(this.actor);
+      context.spellClasses = await classSystem.prepareSpellsContext(this.actor);
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
@@ -576,7 +576,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickResetSpells(event) {
       const classSystem = game.fade.registry.getSystem("classSystem");
-      context.spellSlots = await classSystem.resetSpells(this.actor, event);
+      await classSystem.resetSpells(this.actor, event);
    }
 
    static #clickDeleteTag(event) {

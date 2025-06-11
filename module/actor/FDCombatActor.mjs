@@ -69,8 +69,8 @@ export class FDCombatActor extends FDActorBase {
    prepareBaseData() {
       super.prepareBaseData();
       if (this.id) {
-         const classSystem = game.fade.registry.getSystem("classSystem");
-         classSystem.prepareSpellsUsed(this);
+         //const classSystem = game.fade.registry.getSystem("classSystem");
+         //classSystem.prepareSpellsUsed(this);
       }
    }
 
