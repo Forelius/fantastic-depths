@@ -206,6 +206,34 @@ export class ClassSystemBase extends ClassSystemInterface {
    }
 
    /**
+    * For single class only. Monster is always single class.
+    * @protected
+    * @param {any} actor
+    * @param {any} result
+    */
+   async _getUsedAndMaxSpells(actor, result) {
+      let actorLevel;
+      let classItem;
+
+      if (actor.type === "monster") {
+         const classAs = await this.getClassItemForClassAs(actor.system.details.castAs);
+         classItem = classAs?.classItem;
+         actorLevel = classAs?.classLevel;
+      } else if (actor.type === "character") {
+         actorLevel = Number(actor.system.details.level);
+         classItem = await fadeFinder.getClass(actor.system.details.class);
+      }
+
+      if (classItem && actorLevel >= classItem.system.firstLevel) {
+         const classLevelSpells = classItem.system.spells[actorLevel - classItem.system.firstLevel];
+         for (let i = 0; i < result.slots.length; i++) {
+            result.slots[i].max = classLevelSpells[i];
+            result.slots[i].used = result.slots[i].spells.reduce((used, spell) => used + spell.system.cast, 0);
+         }
+      }
+   }
+
+   /**
     * Retrieves class data for a specified class name and level.
     * This asynchronous method fetches the class item based on the provided class name 
     * and determines the current level of the class, ensuring it falls within the valid 
@@ -274,6 +302,11 @@ export class ClassSystemBase extends ClassSystemInterface {
       return spellLevels;
    }
 
+   /**
+    * Parses a "castAs" key string into its component parts: class key, optional symbol, and optional number.
+    * @param {any} castAsKey - The input string to parse.
+    * @returns {object|null} An object with `classKey`, `symbol`, and `number` fields, or `null` if the format is invalid.
+    */
    _parseCastAsKey(castAsKey) {
       const match = castAsKey?.match(/^([A-Z]+)(\/)?(\d+)?$/i);
       if (!match) return null;
@@ -381,33 +414,10 @@ export class SingleClassSystem extends ClassSystemBase {
          slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
       };
       // Determine used and max spells
-      await this.getUsedAndMaxSpells(actor, result);
-
+      await this._getUsedAndMaxSpells(actor, result);
       return [result];
    }
-
-   async getUsedAndMaxSpells(actor, result) {
-      let actorLevel;
-      let classItem;
-
-      if (actor.type === "monster") {
-         const classAs = await this.getClassItemForClassAs(actor.system.details.castAs);
-         classItem = classAs?.classItem;
-         actorLevel = classAs?.classLevel;
-      } else if (actor.type === "character") {
-         actorLevel = Number(actor.system.details.level);
-         classItem = await fadeFinder.getClass(actor.system.details.class);         
-      }
-
-      if (classItem && actorLevel >= classItem.system.firstLevel) {
-         const classLevelSpells = classItem.system.spells[actorLevel - classItem.system.firstLevel];
-         for (let i = 0; i < result.slots.length; i++) {
-            result.slots[i].max = classLevelSpells[i];
-            result.slots[i].used = result.slots[i].spells.reduce((used, spell) => used + spell.system.cast, 0);
-         }
-      }
-   }
-
+   
    /**
     * Prepares class-related roll data for evaluating rolls and formulas.
     * @public
@@ -664,18 +674,32 @@ export class MultiClassSystem extends ClassSystemBase {
             maxSpellLevel,
             slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
          });
+         // Determine used and max spells
+         await this._getUsedAndMaxSpells(actor, result);
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
          for (let casterClass of casterClasses) {
             const classSpells = actor.items.filter(item => item.type === "spell" && item.system.classes?.some(cls => cls.name === casterClass.name));
             const firstSpellLevel = casterClass.system.firstSpellLevel;
             const maxSpellLevel = casterClass.system.maxSpellLevel;
+            const slots = this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, classSpells, []);
             spellClasses.push({
                className: casterClass.name,
                firstSpellLevel,
                maxSpellLevel,
-               slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, classSpells, [])
+               slots
             });
+
+            const castAs = casterClass.system.castAsKey === "" || casterClass.system.castAsKey === null ? casterClass.system.key : casterClass.system.castAsKey;
+            const castAsParsed = this._parseCastAsKey(castAs);
+            if (castAsParsed?.classKey) {
+               const classItem = await fadeFinder.getClass(null, castAsParsed?.classKey);
+               const classLevelSpells = classItem.system.spells[casterClass.system.level - classItem.system.firstLevel];
+               for (let i = 0; i < slots.length; i++) {
+                  slots[i].max = classLevelSpells[i];
+                  slots[i].used = slots[i].spells.reduce((used, spell) => used + spell.system.cast, 0);
+               }
+            }
          }
       }
       return spellClasses;
