@@ -10,8 +10,8 @@ export class ClassSystemInterface {
    canCastSpells(actor) { throw new Error("Method not implemented."); }
    getRollData() { throw new Error("Method not implemented."); }
    get isMultiClassSystem() { throw new Error("Method not implemented."); }
-   async onActorItemUpdate(actor, item, updateData) { throw new Error("Method not implemented."); }
-   async onCharacterActorUpdate(actor, updateData) { throw new Error("Method not implemented."); }
+   async onActorItemUpdate(actor, item, updateData, skipItems = false) { throw new Error("Method not implemented."); }
+   async onCharacterActorUpdate(actor, updateData, skipItems = false) { throw new Error("Method not implemented."); }
    async resetSpells(actor, event) { throw new Error("Method not implemented."); }
    async setupMonsterClassMagic(actor) { throw new Error("Method not implemented."); }
    async setupSavingThrows(actor, savesData) { throw new Error("Method not implemented."); }
@@ -52,7 +52,7 @@ export class ClassSystemBase extends ClassSystemInterface {
       await ChatMessage.create({ content: msg });
    }
 
-   async onCharacterActorUpdate(actor, updateData) { }
+   async onCharacterActorUpdate(actor, updateData, skipItems = false) { }
 
    /**
     * Call when an actor item is updated and let this method decide if the update requires
@@ -62,7 +62,7 @@ export class ClassSystemBase extends ClassSystemInterface {
     * @param {any} item The item being updated.
     * @param {any} updateData The update data from the update event.
     */
-   async onActorItemUpdate(actor, item, updateData) { }
+   async onActorItemUpdate(actor, item, updateData, skipItems = false) { }
 
    /**
     * Clears the class data for a specified actor and class name.
@@ -114,7 +114,7 @@ export class ClassSystemBase extends ClassSystemInterface {
    }
 
    /**
-    * Pass in a value like C2 and get back a class item and level.
+    * Pass in a value like C2 and get back a class definition item and level.
     * @public
     */
    async getClassItemForClassAs(classAs) {
@@ -345,6 +345,36 @@ export class ClassSystemBase extends ClassSystemInterface {
       }
       return result;
    }
+
+   async _promptAddAbilityItems(actor, className, currentLevel) {
+      const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
+      const validItemTypes = ClassDefinitionItem.ValidItemTypes;
+      const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
+      const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
+      const itemsData = await fadeFinder.getClassItems(className, currentLevel);
+      if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
+         || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
+         const dialogResp = await DialogFactory({
+            dialog: "yesno",
+            title: game.i18n.localize("FADE.dialog.specialAbilities.title"),
+            content: game.i18n.format("FADE.dialog.specialAbilities.content", {
+               name: actor.system.details.class,
+               type: game.i18n.localize("FADE.Actor.Class")
+            }),
+            yesLabel: game.i18n.localize("FADE.dialog.yes"),
+            noLabel: game.i18n.localize("FADE.dialog.no"),
+            defaultChoice: "yes"
+         }, actor);
+
+         if (dialogResp?.resp?.result === true) {
+            await actor.setupSpecialAbilities(abilitiesData);
+            await actor.setupItems(itemsData);
+         }
+      } else {
+         await actor.setupSpecialAbilities(abilitiesData);
+         await actor.setupItems(itemsData);
+      }
+   }
 }
 
 export class SingleClassSystem extends ClassSystemBase {
@@ -520,33 +550,7 @@ export class SingleClassSystem extends ClassSystemBase {
 
          if (skipItems !== true) {
             // Class special abilities
-            const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
-            const validItemTypes = ClassDefinitionItem.ValidItemTypes;
-            const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
-            const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
-            const itemsData = await fadeFinder.getClassItems(className, currentLevel);
-            if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
-               || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
-               const dialogResp = await DialogFactory({
-                  dialog: "yesno",
-                  title: game.i18n.localize("FADE.dialog.specialAbilities.title"),
-                  content: game.i18n.format("FADE.dialog.specialAbilities.content", {
-                     name: actor.system.details.class,
-                     type: game.i18n.localize("FADE.Actor.Class")
-                  }),
-                  yesLabel: game.i18n.localize("FADE.dialog.yes"),
-                  noLabel: game.i18n.localize("FADE.dialog.no"),
-                  defaultChoice: "yes"
-               }, actor);
-
-               if (dialogResp?.resp?.result === true) {
-                  await actor.setupSpecialAbilities(abilitiesData);
-                  await actor._setupItems(itemsData);
-               }
-            } else {
-               await actor.setupSpecialAbilities(abilitiesData);
-               await actor._setupItems(itemsData);
-            }
+            await this._promptAddAbilityItems(actor, className, currentLevel);
          }
       }
    }
@@ -576,7 +580,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {any} item The item being updated.
     * @param {any} updateData The update data from the update event.
     */
-   async onActorItemUpdate(actor, item, updateData) {
+   async onActorItemUpdate(actor, item, updateData, skipItems = false) {
       if (item.type === "actorClass" && (updateData.system.level || updateData.name)) {
          await this.#updateActorClassData(actor, item, updateData);
          await this.#updateActorData(actor);
@@ -754,7 +758,6 @@ export class MultiClassSystem extends ClassSystemBase {
 
    /**
     * Updates the best saving throws based on the provided saves data.
-    *
     * This method takes two objects: `savesData`, which contains the current saving throw values,
     * and `bestSavesData`, which holds the best saving throw values recorded so far.
     * It iterates through each saving throw in `savesData`, compares it with the corresponding
@@ -775,18 +778,16 @@ export class MultiClassSystem extends ClassSystemBase {
 
    /**
     * Updates the actor's data based on their class information and saving throws.
-    *
     * This private asynchronous method retrieves and compiles various attributes 
     * of the actor's classes, including class names, levels, hit dice (HD), 
     * experience points (XP), and XP bonuses. It also calculates the best saving 
     * throws for the actor based on their class data. The method then updates the 
     * actor's system details with the compiled information.
-    *
     * @private
     * @param {any} actor - The actor object whose data is to be updated.
     * @returns {Promise<void>} - A promise that resolves when the actor's data has been updated.
     */
-   async #updateActorData(actor) {
+   async #updateActorData(actor, skipItems = false) {
       let classNames = "";
       let levels = "";
       let hds = "";
@@ -800,6 +801,11 @@ export class MultiClassSystem extends ClassSystemBase {
          const savesData = await fadeFinder.getClassSaves(actorClass.name, actorClass.system.level);
          if (savesData) {
             bestSavesData = this.#getBestSavingThrows(savesData, bestSavesData);
+         }
+
+         if (skipItems !== true) {
+            // Class special abilities
+            await this._promptAddAbilityItems(actor, actorClass.name, actorClass.system.level);
          }
 
          classNames += `\\${actorClass.name}`;

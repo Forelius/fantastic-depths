@@ -305,12 +305,12 @@ export class FDCombatActor extends FDActorBase {
    }
 
    /**
-  * @protected
+  * @public
   * Add and/or update the actor's class-given items.
   * @param {any} itemsData The class items array for the desired level.
   * @returns void
   */
-   async _setupItems(itemsData) {
+   async setupItems(itemsData) {
       if (game.user.isGM === false || itemsData == null || itemsData?.length == 0) return;
       const promises = [];
       // Get this actor's class ability items.
