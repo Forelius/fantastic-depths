@@ -557,6 +557,7 @@
       "condition": {
          "plural": "Conditions",
          "key": {
+            "name": "Key",
             "hint": "The key used for refering to this item. Can be one or more characters in length and should not include any special characters."
          },
          "addStatusEffect": {
@@ -576,7 +577,13 @@
          "Toggle": "Toggle Effect",
          "Temporary": "Temporary Effects",
          "Passive": "Passive Effects",
-         "Inactive": "Inactive Effects"
+         "Inactive": "Inactive Effects",
+         "status": {
+            "hasted": "Hasted",
+            "slowed": "Slowed",
+            "mirrorImaged": "Mirror Imaged",
+            "infravision": "Infravision"
+         }
       },
       "Tags": {
          "addTags": "Add tags",

@@ -57,7 +57,7 @@ export class MySystemVersion {
          result.isNextPatch = this.minor == version.minor && this.patch < version.patch;
          result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextPatch || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
-         //console.debug(this, version, result);
+         console.debug(this, version, result);
       } else {
          console.debug("Versions are same.", this, version);
       }
@@ -73,8 +73,9 @@ export class DataMigrator {
    }
 
    async migrate() {
+      let isMigrated = true;
       if (game.user.isGM) {
-         //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
+         console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
          if (this.oldVersion.lt(new MySystemVersion("0.10.0-rc.1"))) {
@@ -82,8 +83,16 @@ export class DataMigrator {
             const msg = "Fantastic Depths 0.10.0-rc.1 data migration complete.";
             ui.notifications.info(msg);
          }
-         // Set the new version after migration is complete
-         game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+         if (this.oldVersion.lt(new MySystemVersion("0.11.0-rc.7"))) {
+            await this.fixActorSpellClasses();
+            await this.fixActorClassKey()
+            const msg = "Fantastic Depths multi-class data migration complete.";
+            ui.notifications.info(msg);
+         }
+         if (isMigrated === true) {
+            // Set the new version after migration is complete
+            game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+         }
       }
    }
 
@@ -110,6 +119,85 @@ export class DataMigrator {
                "system.abilities.con.total": parseInt(monster.system.getParsedHD().base * 2 ?? 10),
             });
          }
+      }
+   }
+
+   async fixActorClassKey() {
+      // This is for single-class system only.
+      for (const actor of game.actors.contents) {
+         if (actor.type !== "character") continue;
+
+         await game.fade.registry
+            .getSystem("classSystem")
+            .onCharacterActorUpdate(actor, {
+               system: {
+                  details: {
+                     class: "test"
+                  }
+               }
+            }, true);
+      }
+   }
+   async fixActorSpellClasses() {
+      try {
+         const packs = game.packs.filter(p => p.metadata.type === 'Item');
+         const allClassItems = [];
+
+         // Step 1: Load all class items from all packs
+         for (const pack of packs) {
+            const items = await pack.getDocuments();
+            const classItems = items.filter(item => item.type === 'class');
+            allClassItems.push(...classItems);
+         }
+
+         // Step 2: Build class name lookup map
+         const classLookup = new Map();
+         for (const classItem of allClassItems) {
+            classLookup.set(classItem.name.toLowerCase(), {
+               name: classItem.name,
+               uuid: classItem.uuid
+            });
+         }
+
+         // Step 3: Process all world actors
+         let totalUpdated = 0;
+
+         for (const actor of game.actors.contents) {
+            const updates = [];
+
+            for (const item of actor.items) {
+               if (item.type !== 'spell') continue;
+
+               const tags = item.system?.tags || item.system?.properties || [];
+               const spellClasses = [];
+
+               for (const tag of tags) {
+                  const match = classLookup.get(tag.toLowerCase());
+                  if (match) {
+                     spellClasses.push({ name: match.name, uuid: match.uuid });
+                  }
+               }
+
+               // Only update if there are matching classes
+               if (spellClasses.length > 0) {
+                  updates.push({
+                     _id: item.id,
+                     'system.classes': spellClasses
+                  });
+               }
+            }
+
+            if (updates.length > 0) {
+               await actor.updateEmbeddedDocuments('Item', updates);
+               console.log(`Updated ${updates.length} spell(s) for actor "${actor.name}"`);
+               totalUpdated += updates.length;
+            }
+         }
+
+         ui.notifications.info(`Updated ${totalUpdated} spell items on world actors.`);
+      } catch (error) {
+         console.error('Error updating actor spell items:', error);
+         ui.notifications.error('Failed to update actor spell items. Check console.');
       }
    }
 
@@ -214,6 +302,7 @@ export class DataMigrator {
       //v4.lt(v3);
       //v4.lt(v5);
       v4.lt(v7);
+      v7.lt(v5);
       v7.lt(v4);
    }
 }

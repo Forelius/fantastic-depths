@@ -8,6 +8,13 @@ export class EffectManager {
       const path = 'systems/fantastic-depths/assets/img';
       //let allEffects = [];
 
+      CONFIG.statusEffects = [
+         ...CONFIG.statusEffects,
+         { id: "hasted", name: "FADE.Effect.status.hasted", img: `${path}/ui/sprint.svg` },
+         { id: "slowed", name: "FADE.Effect.status.slowed", img: `${path}/ui/snail.svg` },
+         { id: "infravision", name: "FADE.Effect.status.infravision", img: `${path}/ui/night-vision.svg` },
+         { id: "mirrorImaged", name: "FADE.Effect.status.mirrorImaged", img: `${path}/ui/two-shadows.svg` }
+      ];
       //// Filter the existing status effects to keep only the ones you want
       //if (allEffects.length === 0) {         
       //   const sfx = CONFIG.statusEffects;// CONFIG.statusEffects.filter(effect => effectsToKeep.includes(effect.id));
