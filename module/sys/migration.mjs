@@ -83,7 +83,7 @@ export class DataMigrator {
             const msg = "Fantastic Depths 0.10.0-rc.1 data migration complete.";
             ui.notifications.info(msg);
          }
-         if (this.oldVersion.lt(new MySystemVersion("0.11.0-rc.7"))) {
+         if (this.oldVersion.lt(new MySystemVersion("0.11.0-rc.8"))) {
             await this.fixActorSpellClasses();
             await this.fixActorClassKey()
             const msg = "Fantastic Depths multi-class data migration complete.";
