@@ -702,7 +702,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    static async #clickEditClass(event) {
-      const classItem = await fadeFinder.getClass(this.actor.system.details.class);
+      const dataset = event.target.dataset;
+      const classItem = await fadeFinder.getClass(dataset.classname);
       classItem?.sheet?.render(true)
    }
 

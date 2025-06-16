@@ -12,6 +12,10 @@
                <input name='system.level' type='number' value='{{system.level}}' placeholder='Level' />
                <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
             </div>
+            <div class="flex1" style="max-width: 50px;">
+               <input type="checkbox" name="system.isPrimary" data-dtype="Boolean" {{#if system.isPrimary}} checked{{/if}} />
+               <label data-tooltip="{{localize "FADE.class.primary.hint"}}">{{localize "FADE.class.primary.name"}}</label>
+            </div>
          </div>
       </div>
    </header>

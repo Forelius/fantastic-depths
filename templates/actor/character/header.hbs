@@ -20,7 +20,7 @@
          </div>
          <div class="flex2">
             <input type="text" name="system.details.class" value="{{system.details.class}}" data-dtype="String" data-tooltip="{{system.details.class}}" {{#if hasMultiClass}}readonly{{/if}}/>
-            <label class="open-sheet" data-action="editClass" data-tooltip="{{localize 'FADE.Actor.ClassHint'}}">{{localize 'FADE.Actor.Class'}}</label>
+            <label class="open-sheet" data-action="editClass" data-className="{{system.details.class}}" data-tooltip="{{localize 'FADE.Actor.ClassHint'}}">{{localize 'FADE.Actor.Class'}}</label>
          </div>
          <div class="flex2" style="max-width: 140px">
             <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" {{#if hasMultiClass}}readonly{{/if}}/>
