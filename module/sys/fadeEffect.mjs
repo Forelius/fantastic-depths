@@ -54,6 +54,7 @@ export class fadeEffect extends ActiveEffect {
    }
 
    #applyRollData(change, actor) {
+      const roll = new Roll(change.value, { actor: actor.getRollData() });
       if (Number(game.version) >= 12) {
          roll.evaluateSync();
       } else {
