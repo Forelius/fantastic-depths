@@ -16,6 +16,7 @@ export class ClassSystemInterface {
    async setupMonsterClassMagic(actor) { throw new Error("Method not implemented."); }
    async setupSavingThrows(actor, savesData) { throw new Error("Method not implemented."); }
    async prepareSpellsContext(actor) { throw new Error("Method not implemented."); }
+   async calcXPAward(actor, amount) { throw new Error("Method not implemented."); }
 }
 
 export class ClassSystemBase extends ClassSystemInterface {
@@ -471,6 +472,12 @@ export class SingleClassSystem extends ClassSystemBase {
       return result;
    }
 
+   async calcXPAward(actor, amount) {
+      // If there's a bonus % in actor.system.details.xp.bonus
+      const bonusPct = Number(actor.system.details?.xp?.bonus ?? 0) / 100;
+      return amount + Math.floor(amount * bonusPct);
+   }   
+
    /**
     * Prepares and updates the class information for a given actor.
     * Ensures the actor has the necessary permissions and retrieves 
@@ -581,7 +588,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {any} updateData The update data from the update event.
     */
    async onActorItemUpdate(actor, item, updateData, skipItems = false) {
-      if (item.type === "actorClass" && (updateData.system.level || updateData.name)) {
+      if (item.type === "actorClass" && (updateData.system.level !== undefined || updateData.name !== undefined || updateData.system.isPrimary !== undefined)) {
          await this.#updateActorClassData(actor, item, updateData);
          await this.#updateActorData(actor);
       }
@@ -709,6 +716,22 @@ export class MultiClassSystem extends ClassSystemBase {
       return spellClasses;
    }
 
+   async calcXPAward(actor, amount) {
+      const actorClasses = actor.items.filter(item => item.type === "actorClass");
+      const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
+      const primaries = actor.items.filter(item => item.type === "actorClass" && (item.system.isPrimary === true || hasPrimary === false));
+      const indivAmount = Math.floor(amount / (primaries?.length ?? 1));
+      const amounts = [];
+      for (let actorClass of actorClasses) {
+         if (hasPrimary === false || actorClass.system.isPrimary === true) {
+            amounts.push((Math.floor(Number((actorClass.system.xp.bonus ?? 0) / 100) * indivAmount)) + indivAmount);
+         } else {
+            amounts.push("--");
+         }
+      }
+      return amounts.join("/");
+   }
+
    /**
     * The ActorClass item has been updated.
     * @private
@@ -717,7 +740,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {any} updateData The updateData from the update event handler.
     */
    async #updateActorClassData(actor, item, updateData) {
-      const classDataObj = await this._getClassData(item.name, updateData.system?.level);
+      const classDataObj = await this._getClassData(item.name, (updateData.system?.level ?? item.system.level));
       if (classDataObj) {
          const { classItem, classData, currentLevel, levelData, nextLevelData, nameLevel } = classDataObj;
          let update = {
@@ -795,12 +818,16 @@ export class MultiClassSystem extends ClassSystemBase {
       let nextXps = "";
       let xpBonus = "";
       let bestSavesData = {};
+      const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
 
       for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
-         // Saving throws
-         const savesData = await fadeFinder.getClassSaves(actorClass.name, actorClass.system.level);
-         if (savesData) {
-            bestSavesData = this.#getBestSavingThrows(savesData, bestSavesData);
+         // If current actor class is a primary class or there are no primary classes...
+         if (hasPrimary === false || actorClass.system.isPrimary === true) {
+            // Saving throws
+            const savesData = await fadeFinder.getClassSaves(actorClass.name, actorClass.system.level);
+            if (savesData) {
+               bestSavesData = this.#getBestSavingThrows(savesData, bestSavesData);
+            }
          }
 
          if (skipItems !== true) {
@@ -812,8 +839,15 @@ export class MultiClassSystem extends ClassSystemBase {
          levels += `\\${actorClass.system.level}`;
          hds += `\\${actorClass.system.hd}`;
          xps += `\\${actorClass.system.xp.value}`;
-         nextXps += `\\${actorClass.system.xp.next}`;
-         xpBonus += `\\${actorClass.system.xp.bonus}`;
+         if (actorClass.system.isPrimary || hasPrimary === false) {
+            hds += `\\${actorClass.system.hd}`;
+            nextXps += `\\${actorClass.system.xp.next}`;
+            xpBonus += `\\${actorClass.system.xp.bonus}`;
+         } else {
+            hds += `\\--`;
+            nextXps += `\\--`;
+            xpBonus += `\\--`;
+         }
       }
       await this.setupSavingThrows(actor, bestSavesData);
 

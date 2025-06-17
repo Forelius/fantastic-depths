@@ -11,6 +11,7 @@ export class AwardXPDialog extends FormApplication {
       this._globalXP = 0;
       // Key: actorId => number (default 1)
       this._shareFactors = {};
+      this.classSystem = game.fade.registry.getSystem("classSystem");
    }
 
    static get defaultOptions() {
@@ -18,7 +19,7 @@ export class AwardXPDialog extends FormApplication {
          id: "award-xp-dialog",
          title: game.i18n.localize("FADE.dialog.awardXP.long"),
          template: `systems/${game.system.id}/templates/apps/award-xp.hbs`,
-         width: 400,
+         width: 450,
          height: "auto",
          closeOnSubmit: true,
          classes: ["fantastic-depths", ...super.defaultOptions.classes]
@@ -28,7 +29,7 @@ export class AwardXPDialog extends FormApplication {
    /**
     * Provide data to Handlebars
     */
-   getData(options) {
+   async getData(options) {
       const data = super.getData(options);
 
       // Retrieve Actor docs
@@ -47,18 +48,13 @@ export class AwardXPDialog extends FormApplication {
       }
 
       // Compute each actor's default XP from global XP + shareFactor + bonus
-      actors.forEach(actor => {
+      actors.forEach(async (actor) => {
          const factor = this._shareFactors[actor.id] || 1;
          let baseShare = 0;
          if (totalFactors > 0) {
             baseShare = Math.floor((this._globalXP * factor) / totalFactors);
          }
-         // If there's a bonus % in actor.system.details.xp.bonus
-         const bonusPct = Number(actor.system.details?.xp?.bonus ?? 0) / 100;
-         const totalXP = baseShare + Math.floor(baseShare * bonusPct);
-
-         // We'll pass this to Handlebars to pre-fill actorXP_{{id}}
-         actor.defaultXP = totalXP;
+         actor.defaultXP = await this.classSystem.calcXPAward(actor, baseShare);
          // We'll also store it in actor.shareFactor so Handlebars can fill in that input
          actor.shareFactor = this._shareFactors[actor.id];
       });
@@ -101,7 +97,7 @@ export class AwardXPDialog extends FormApplication {
     * Update each actorXP_{{id}} input in place (no full re-render).
     * We do the same math from getData(), but only to adjust the form fields.
     */
-   _updateActorXPFields(html) {
+  async _updateActorXPFields(html) {
       // 1) Gather the actor docs
       const actors = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
 
@@ -118,8 +114,7 @@ export class AwardXPDialog extends FormApplication {
          if (totalFactors > 0) {
             baseShare = Math.floor((this._globalXP * factor) / totalFactors);
          }
-         const bonusPct = Number(actor.system.details?.xp?.bonus ?? 0) / 100;
-         const totalXP = baseShare + Math.floor(baseShare * bonusPct);
+         const totalXP = await this.classSystem.calcXPAward(actor, baseShare);
 
          // 4) Update the actual input in the DOM
          const xpInputName = `actorXP_${actor.id}`;
