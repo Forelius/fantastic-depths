@@ -84,10 +84,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
       setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
 
-      const inputField = this.element.querySelector(`input[data-action="addTag"]`);
-      inputField?.addEventListener("keydown", (event) => {
-         if (event.key === "Enter") { // Check if the Enter key is pressed
-            const value = event.currentTarget.value; // Get the value of the input
+      const inputField = this.element.querySelector('input[data-action="addTag"]');
+      inputField?.addEventListener('keydown', (event) => {
+         if (event.key === 'Enter') { // Check if the Enter key is pressed
+            const value = event.target.value; // Get the value of the input
             this.actor.tagManager.pushTag(value); // Push the value to the tag manager
          }
       });

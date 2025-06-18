@@ -1,8 +1,9 @@
 import { FDActorBase } from "/systems/fantastic-depths/module/actor/FDActorBase.mjs";
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
-import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs";
-import { DialogFactory } from "/systems/fantastic-depths/module/dialog/DialogFactory.mjs";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
+import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -11,6 +12,7 @@ import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
 export class FDCombatActor extends FDActorBase {
    constructor(data, context) {
       super(data, context);
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    /**

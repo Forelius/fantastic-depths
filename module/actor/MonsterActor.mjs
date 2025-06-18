@@ -1,13 +1,11 @@
 // actor-character.mjs
 import { FDCombatActor } from './FDCombatActor.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 export class MonsterActor extends FDCombatActor {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context);
-      this.tagManager = new TagManager(this); // Initialize TagManager
+      super(data, context);      
    }
 
    /** @override */
