@@ -686,7 +686,7 @@ export class MultiClassSystem extends ClassSystemBase {
             slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
          });
          // Determine used and max spells
-         await this._getUsedAndMaxSpells(actor, result);
+         await this._getUsedAndMaxSpells(actor, spellClasses);
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
          for (let casterClass of casterClasses) {

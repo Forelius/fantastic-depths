@@ -2,6 +2,7 @@ export class FDActorBaseDM extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
       return {        
+         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
          biography: new fields.StringField({ initial: "" }),         
          details: new fields.SchemaField({
             weight: new fields.StringField({ initial: "" }),
