@@ -67,7 +67,7 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
          const inputField = this.element.querySelector('input[data-action="addTag"]');
          inputField?.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') { // Check if the Enter key is pressed
-               const value = event.currentTarget.value; // Get the value of the input
+               const value = event.target.value; // Get the value of the input
                this.item.tagManager.pushTag(value); // Push the value to the tag manager
             }
          });

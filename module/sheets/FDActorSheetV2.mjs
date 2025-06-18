@@ -88,7 +88,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const inputField = this.element.querySelector('input[data-action="addTag"]');
       inputField?.addEventListener('keydown', (event) => {
          if (event.key === 'Enter') { // Check if the Enter key is pressed
-            const value = event.currentTarget.value; // Get the value of the input
+            const value = event.target.value; // Get the value of the input
             this.actor.tagManager.pushTag(value); // Push the value to the tag manager
          }
       });
