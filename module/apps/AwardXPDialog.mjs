@@ -10,7 +10,8 @@ export class AwardXPDialog extends FormApplication {
       // Store global XP and share factors
       this._globalXP = 0;
       // Key: actorId => number (default 1)
-      this._shareFactors = {};
+      this.actorXPs = {};
+      //this._shareFactors = {};
       this.classSystem = game.fade.registry.getSystem("classSystem");
    }
 
@@ -40,26 +41,30 @@ export class AwardXPDialog extends FormApplication {
       // Sum all share factors
       let totalFactors = 0;
       for (const actor of actors) {
-         // If we haven't stored a factor for this actor, default to 1
-         if (this._shareFactors[actor.id] === undefined) {
-            this._shareFactors[actor.id] = 1;
+         if (this.actorXPs[actor.id] === undefined) {
+            this.actorXPs[actor.id] = {
+               id: actor.id,
+               name: actor.name,
+               shareFactor: 1,
+               xpBonus: actor.system.details.xp.bonus
+            };
          }
-         totalFactors += this._shareFactors[actor.id];
+         totalFactors += this.actorXPs[actor.id].shareFactor;
       }
 
       // Compute each actor's default XP from global XP + shareFactor + bonus
       actors.forEach(async (actor) => {
-         const factor = this._shareFactors[actor.id] || 1;
+         //const factor = this._shareFactors[actor.id] || 1;
+         const factor = this.actorXPs[actor.id].shareFactor || 1;
          let baseShare = 0;
          if (totalFactors > 0) {
             baseShare = Math.floor((this._globalXP * factor) / totalFactors);
          }
-         actor.defaultXP = await this.classSystem.calcXPAward(actor, baseShare);
-         // We'll also store it in actor.shareFactor so Handlebars can fill in that input
-         actor.shareFactor = this._shareFactors[actor.id];
+         this.actorXPs[actor.id].xps = await this.classSystem.calcXPAward(actor, baseShare);
+         this.actorXPs[actor.id].xpsText = this.actorXPs[actor.id].xps?.join("/");
       });
 
-      data.actors = actors;
+      data.actorxps = this.actorXPs;
       return data;
    }
 
@@ -85,8 +90,7 @@ export class AwardXPDialog extends FormApplication {
       html.find(".share-factor").on("change blur", event => {
          const input = event.currentTarget;
          const actorId = input.name.split("actorShareFactor_")[1];
-         const newFactor = Number(input.value) || 1;
-         this._shareFactors[actorId] = newFactor;
+         this.actorXPs[actorId].shareFactor = Number(input.value) || 1;
 
          // Recalculate the default XP for each actor
          this._updateActorXPFields(html);
@@ -97,29 +101,25 @@ export class AwardXPDialog extends FormApplication {
     * Update each actorXP_{{id}} input in place (no full re-render).
     * We do the same math from getData(), but only to adjust the form fields.
     */
-  async _updateActorXPFields(html) {
+   async _updateActorXPFields(html) {
       // 1) Gather the actor docs
       const actors = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
-
       // 2) Sum factors
-      let totalFactors = 0;
-      for (const actor of actors) {
-         totalFactors += this._shareFactors[actor.id] || 1;
-      }
-
+      let totalFactors = Object.values(this.actorXPs).reduce((sum, actor) => { return sum + (actor.shareFactor || 1) }, 0);
       // 3) For each actor, compute the new default XP
       for (const actor of actors) {
-         const factor = this._shareFactors[actor.id] || 1;
+         const factor = this.actorXPs[actor.id].shareFactor || 1;
          let baseShare = 0;
          if (totalFactors > 0) {
             baseShare = Math.floor((this._globalXP * factor) / totalFactors);
          }
-         const totalXP = await this.classSystem.calcXPAward(actor, baseShare);
+         this.actorXPs[actor.id].xps = await this.classSystem.calcXPAward(actor, baseShare);
+         this.actorXPs[actor.id].xpsText = this.actorXPs[actor.id].xps?.join("/");
 
          // 4) Update the actual input in the DOM
          const xpInputName = `actorXP_${actor.id}`;
          const $xpInput = html.find(`input[name="${xpInputName}"]`);
-         $xpInput.val(totalXP);
+         $xpInput.val(this.actorXPs[actor.id].xpsText);
       }
    }
 
@@ -128,40 +128,16 @@ export class AwardXPDialog extends FormApplication {
     */
    async _updateObject(event, formData) {
       event.preventDefault();
-
       // expandObject converts the formData into a JS object
       // e.g. { globalXP: "200", actorXP_ABC: "120", actorShareFactor_ABC: "2", ... }
       const data = foundry.utils.expandObject(formData);
 
-      // We'll gather update Promises
-      const promises = [];
-
       for (const actorId of this.actorIds) {
          const actor = game.actors.get(actorId);
          if (!actor) continue;
-
          // The final XP is in actorXP_<id>
          const fieldName = `actorXP_${actorId}`;
-         const finalXP = Number(data[fieldName] || 0);
-         if (finalXP > 0) {
-            // Add that to the actor's current XP
-            const currentXP = foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0;
-            const updatedXP = Number(currentXP) + finalXP;
-
-            const msg = game.i18n.format("FADE.dialog.awardXP.awardedCharacter", { name: actor.name, amount: finalXP });
-            // Create a chat message only visible to the GM
-            ChatMessage.create({ user: game.user.id, content: msg });
-
-            const classSystem = game.settings.get(game.system.id, "classSystem");
-            if (classSystem === "single") {
-               promises.push(actor.update({ "system.details.xp.value": updatedXP }));
-            } else {
-               ui.notifications.warn("Award XP with multi-class system not yet supported.");
-            }
-
-         }
+         this.classSystem.awardXP(actor, data[fieldName]);
       }
-
-      await Promise.all(promises);
    }
 }

@@ -250,7 +250,7 @@
       },
       "SheetLabel": {
          "Character": "Character Sheet (tabbed)",
-         "Character2": "Character Sheet",
+         "CharacterSheetBase": "Character Sheet",
          "Monster": "Monster Sheet",
          "ActorClassItem": "Actor Class Item Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",

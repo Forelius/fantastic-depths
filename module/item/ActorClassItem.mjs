@@ -9,10 +9,10 @@ export class ActorClassItem extends FDItem {
     */
    _onUpdate(updateData, options, userId) {
       super._onUpdate(updateData, options, userId);
-      if (updateData.system?.level !== undefined || updateData.system?.isPrimary !== undefined) {
+      //if (updateData.system?.level !== undefined || updateData.system?.isPrimary !== undefined) {
          // This is an async method
          this.updatePropertiesFromUpdate(updateData);
-      }
+      //}
    }
 
    //** Update item properties based on FADE.WeaponMastery */

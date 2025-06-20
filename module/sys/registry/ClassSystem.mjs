@@ -17,6 +17,7 @@ export class ClassSystemInterface {
    async setupSavingThrows(actor, savesData) { throw new Error("Method not implemented."); }
    async prepareSpellsContext(actor) { throw new Error("Method not implemented."); }
    async calcXPAward(actor, amount) { throw new Error("Method not implemented."); }
+   async awardXP(actor, amounts) { throw new Error("Method not implemented."); }
 }
 
 export class ClassSystemBase extends ClassSystemInterface {
@@ -475,8 +476,21 @@ export class SingleClassSystem extends ClassSystemBase {
    async calcXPAward(actor, amount) {
       // If there's a bonus % in actor.system.details.xp.bonus
       const bonusPct = Number(actor.system.details?.xp?.bonus ?? 0) / 100;
-      return amount + Math.floor(amount * bonusPct);
+      return [amount + Math.floor(amount * bonusPct)];
    }   
+
+   async awardXP(actor, amounts) {
+      const amount = Number(amounts || 0);
+      if (amount) {
+         const currentXP = Number(foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0);
+         const finalXP = currentXP + amount;
+         const msg = game.i18n.format("FADE.dialog.awardXP.awardedCharacter", { name: actor.name, amount });
+         ChatMessage.create({ user: game.user.id, content: msg });
+         await actor.update({ "system.details.xp.value": finalXP });
+      } else {
+         console.warn(`Invalid XP amount specified for ${actor.name}.`, amounts);
+      }
+   }
 
    /**
     * Prepares and updates the class information for a given actor.
@@ -530,7 +544,7 @@ export class SingleClassSystem extends ClassSystemBase {
 
          await actor.update({ system: update });
       } else {
-         ui.notifications.warn(`${actor.name}: ${actor.system.details.class} not found.`)
+         ui.notifications.warn(`${actor.name}: ${actor.system.details.class} not found.`);
       }
    }
 
@@ -588,8 +602,15 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {any} updateData The update data from the update event.
     */
    async onActorItemUpdate(actor, item, updateData, skipItems = false) {
-      if (item.type === "actorClass" && (updateData.system.level !== undefined || updateData.name !== undefined || updateData.system.isPrimary !== undefined)) {
+      if (item.type === "actorClass" && (updateData.system.level !== undefined
+         || updateData.name !== undefined
+         || updateData.system.isPrimary !== undefined)) {
          await this.#updateActorClassData(actor, item, updateData);
+      }
+      if (item.type === "actorClass" && (updateData.system.level !== undefined
+         || updateData.name !== undefined
+         || updateData.system.isPrimary !== undefined
+         || updateData.system.xp !== undefined)) {
          await this.#updateActorData(actor);
       }
    }
@@ -729,7 +750,29 @@ export class MultiClassSystem extends ClassSystemBase {
             amounts.push("--");
          }
       }
-      return amounts.join("/");
+      return amounts;
+   }
+
+   async awardXP(actor, amounts) {
+      let xps = (input => input.split('/').map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
+      const actorClasses = actor.items.filter(item => item.type === "actorClass");
+      if (xps?.length > 0 && xps?.length == actorClasses?.length) {
+         const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
+         let index = 0;
+         for (let actorClass of actorClasses) {
+            const currentXP = Number(foundry.utils.getProperty(actorClass, "system.xp.value") ?? 0);
+            const finalXP = Number(xps[index]) + currentXP;
+            if (hasPrimary === false || actorClass.system.isPrimary === true) {
+               await actorClass.update({ "system.xp.value": finalXP });
+               const msg = game.i18n.format("FADE.dialog.awardXP.awardedCharacter", { name: actor.name, amount: xps[index] });
+               ChatMessage.create({ user: game.user.id, content: msg });
+            }
+            index++;
+         }
+      } else {
+         ui.notifications.warn(`Invalid value specified for ${actor.name}. ${amounts}`);
+         console.warn(`Invalid XP amount specified for ${actor.name}.`, amounts);
+      }
    }
 
    /**
