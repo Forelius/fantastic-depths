@@ -53,9 +53,9 @@
       <div class="consumable-counter">
          <label>{{localize 'FADE.Item.uses'}}</label>
          {{#times item.system.quantity}}
-         <div class="full-mark" data-action="useCharge"></div>
+         <div class="full-mark" data-action="useConsumable"></div>
          {{/times}} {{#times (subtract item.system.quantityMax item.system.quantity)}}
-         <div class="empty-mark" data-action="addCharge"></div>
+         <div class="empty-mark" data-action="addConsumable"></div>
          {{/times}}
       </div>
    </div>
