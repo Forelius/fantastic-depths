@@ -120,15 +120,19 @@ export class ClassSystemBase extends ClassSystemInterface {
     * @public
     */
    async getClassItemForClassAs(classAs) {
-      const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
-      const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
-      // Get the class item
-      const classItem = await fadeFinder.getClass(null, parsed?.classId);
-      if (!classItem) {
-         console.warn(`Class not found for key ${classAs}.`);
-         return;
+      let result;
+      if (classAs && classAs.length > 0) {
+         const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
+         const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+         // Get the class item
+         const classItem = await fadeFinder.getClass(null, parsed?.classId);
+         if (!classItem) {
+            console.warn(`Class not found for key ${classAs}.`);
+         } else {
+            result = { classItem, classLevel: parsed.classLevel };
+         }
       }
-      return { classItem, classLevel: parsed.classLevel };
+      return result;
    }
 
    /**
@@ -700,14 +704,16 @@ export class MultiClassSystem extends ClassSystemBase {
          const firstSpellLevel = actor.system.config.firstSpellLevel;
          const maxSpellLevel = actor.system.config.maxSpellLevel;
          const classAs = await this.getClassItemForClassAs(actor.system.details.castAs);
-         spellClasses.push({
-            className: classAs?.classItem?.name,
-            firstSpellLevel,
-            maxSpellLevel,
-            slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
-         });
-         // Determine used and max spells
-         await this._getUsedAndMaxSpells(actor, spellClasses);
+         if (classAs) {
+            spellClasses.push({
+               className: classAs?.classItem?.name,
+               firstSpellLevel,
+               maxSpellLevel,
+               slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
+            });
+            // Determine used and max spells
+            await this._getUsedAndMaxSpells(actor, spellClasses);
+         }
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
          for (let casterClass of casterClasses) {
