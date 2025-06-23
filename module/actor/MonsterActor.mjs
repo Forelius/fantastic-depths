@@ -30,8 +30,8 @@ export class MonsterActor extends FDCombatActor {
             await this.setupSpecialAbilities(result.classAbilityData);
          }
       }
+      const classSystem = game.fade.registry.getSystem("classSystem");
       if (updateData.system?.details?.castAs?.length > 0) {
-         const classSystem = game.fade.registry.getSystem("classSystem");
          await classSystem.setupMonsterClassMagic(this);
       }
       if (updateData.system?.details?.saveAs?.length > 0) {
