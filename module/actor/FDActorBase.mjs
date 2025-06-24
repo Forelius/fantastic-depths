@@ -165,10 +165,12 @@ export class FDActorBase extends Actor {
     * @param {any} lightItemId An owned light item's id.
     */
    async setActiveLight(lightItemId) {
-      if (lightItemId === null || lightItemId === '' || lightItemId === undefined) {
-         await this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+      if (this.currentActiveToken) {
+         if (lightItemId === null || lightItemId === '' || lightItemId === undefined) {
+            await this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
+         }
+         await this.update({ "system.activeLight": lightItemId });
       }
-      await this.update({ "system.activeLight": lightItemId });
    }
 
    /**
