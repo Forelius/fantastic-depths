@@ -80,7 +80,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       }
       this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
       // If the quantity is zero or this item is contained in a container...
-      if (this.quantity === 0 || this.containerId?.length > 0) {
+      if (this.quantity === 0 || (this.containerId?.length > 0 && !this.system.ammoType)) {
          // It can't be equipped.
          this.equipped = false;
          // It can't be dropped.
