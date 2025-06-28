@@ -143,8 +143,9 @@ const DragDropMixin = (superclass) => class extends superclass {
    async _onDropActiveEffect(event, effect) {
       if (!this.actor.isOwner) return;
       if (!effect || (effect.target === this.actor)) return;
-      const keepId = !this.actor.effects.has(effect.id);
-      await ActiveEffect.create(effect.toObject(), { parent: this.actor, keepId });
+      const droppedEffect = await ActiveEffect.implementation.fromDropData(effect);
+      const keepId = !this.actor.effects.has(droppedEffect.id);
+      await ActiveEffect.create(droppedEffect.toObject(), { parent: this.actor, keepId });
    }
 
    /**
