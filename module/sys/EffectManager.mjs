@@ -5,7 +5,7 @@ export class EffectManager {
    }
 
    async OnGameInit() {
-      const path = 'systems/fantastic-depths/assets/img';
+      //const path = 'systems/fantastic-depths/assets/img';
       //let allEffects = [];
 
       //CONFIG.statusEffects = [
@@ -29,6 +29,7 @@ export class EffectManager {
    }
 
    async OnGameReady() {
+      const path = 'systems/fantastic-depths/assets/img';
       CONFIG.statusEffects = [
          ...CONFIG.statusEffects,
          { id: "hasted", name: "FADE.Effect.status.hasted", img: `${path}/ui/sprint.svg` },
