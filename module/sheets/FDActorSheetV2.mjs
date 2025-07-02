@@ -324,13 +324,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    async _restoreCollapsedState() {
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+      // Retrieve all flags that start with "collapsed-"
+      const flags = this.actor.flags[game.system.id] || {};
 
       if (rememberCollapsedState === true) {
-         const actor = game.actors.get(this.actor.id);
-
-         // Retrieve all flags that start with "collapsed-"
-         const flags = actor?.flags[game.system.id] || {};
-
          Object.keys(flags).forEach(async (key) => {
             // Only process flags that start with "collapsed-"
             if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
@@ -338,19 +335,25 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                const isCollapsed = flags[key];
                if (isCollapsed === true) {
                   // Find the collapsible section by the "name" attribute
-                  const target = document.querySelector(`[name="${sectionName}"]`);
+                  const target = this.element.querySelector(`[name="${sectionName}"]`);
                   if (target) {
-                     await this.#toggleContent($(target).children(".items-header"), true);
+                     await this.#toggleContent(target, true);
                   } else {
                      // Not found.
                      //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
-                     await actor.unsetFlag(game.system.id, key);
+                     await this.actor.unsetFlag(game.system.id, key);
                   }
                }
             } else if (key === "collapsed-undefined") {
                // Clean up any invalid flags (optional)
-               await actor.unsetFlag(game.system.id, key);
+               await this.actor.unsetFlag(game.system.id, key);
                console.warn("Removed invalid flag: collapsed-undefined");
+            }
+         });
+      } else {
+         Object.keys(flags).forEach(async (key) => {
+            if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
+               await this.actor.unsetFlag(game.system.id, key);
             }
          });
       }
@@ -412,35 +415,40 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @param {any} parent The clicked element as a jquery object.
     */
    async #toggleContent(parent) {
-      const collapsibleItems = parent.find(".collapsible-content");
-      const isCollapsed = $(collapsibleItems[0]).hasClass("collapsed");
+      const collapsibleItems = parent.querySelectorAll(".collapsible-content");
+      const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
 
       if (isCollapsed === true) {
          // Expand the content
-         collapsibleItems.each(async (index, content) => {
-            let $content = $(content);
-            $content.removeClass("collapsed");
-            $content.css("height", $content.prop("scrollHeight") + "px");
-            setTimeout(() => { $content.css("height", ""); }, 100); // Adjust to match CSS transition duration
+         collapsibleItems.forEach((content) => {
+            const contentElement = content; // The current content element
+            contentElement.classList.remove("collapsed");
+
+            contentElement.style.height = contentElement.scrollHeight + "px";
+
+            // Reset the height after the transition duration
+            setTimeout(() => { contentElement.style.height = ""; }, 100); // Adjust to match CSS transition duration
          });
       } else {
          // Collapse the content
-         collapsibleItems.each(async (index, content) => {
-            let $content = $(content);
-            $content.css("height", $content.height() + "px");
-            $content.addClass("collapsed");
-            setTimeout(() => { $content.css("height", "0"); }, 0);
+         collapsibleItems.forEach((content) => {
+            const contentElement = content; // The current content element
+
+            contentElement.style.height = contentElement.clientHeight + "px";
+            contentElement.classList.add("collapsed");
+
+            // Collapse the content by setting height to 0
+            setTimeout(() => { contentElement.style.height = "0"; }, 0);
          });
       }
 
       // If remember state is enabled, store the collapsed state
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       if (rememberCollapsedState === true) {
-         const sectionName = parent.parent().attr("name"); // Access the `name` attribute from the DOM element
+         const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
          //console.debug(`Remembering expanded state for ${sectionName}.`, target);
          if (sectionName !== undefined) {
-            const actor = game.actors.get(this.actor.id);
-            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+            await this.actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
          }
       }
    }
@@ -643,7 +651,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // If not the create item column...
       const parent = event.target.closest(".items-list");
       if (parent) {
-         await this.#toggleContent($(parent));
+         await this.#toggleContent(parent);
       }
    }
 
