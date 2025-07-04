@@ -53,9 +53,9 @@ export class FDCombatActorDM extends FDActorBaseDM {
             initiative: new fields.NumberField({ initial: 0 }),
             combat: new fields.SchemaField({
                toHit: new fields.NumberField({ initial: 0 }),
-               dmg: new fields.NumberField({ initial: 0 }),
+               dmg: new fields.StringField({ nullable: true, initial: null }),
                toHitRanged: new fields.NumberField({ initial: 0 }),
-               dmgRanged: new fields.NumberField({ initial: 0 }),
+               dmgRanged: new fields.StringField({ nullable: true, initial: null }),
                selfDmg: new fields.NumberField({ initial: 0 }),
                selfDmgRanged: new fields.NumberField({ initial: 0 }),
                selfDmgBreath: new fields.NumberField({ initial: 0 }),
