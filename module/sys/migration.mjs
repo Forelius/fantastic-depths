@@ -57,9 +57,9 @@ export class MySystemVersion {
          result.isNextPatch = this.minor == version.minor && this.patch < version.patch;
          result.isLessThan = result.isNextMajor || result.isNextMinor || result.isNextPatch || result.isNextRC
             || this.rc !== null && version.rc === null && this.eq(version, true);
-         console.debug(this, version, result);
+         //console.debug(this, version, result);
       } else {
-         console.debug("Versions are same.", this, version);
+         //console.debug("Versions are same.", this, version);
       }
 
       return result.isLessThan;
@@ -75,7 +75,7 @@ export class DataMigrator {
    async migrate() {
       let isMigrated = true;
       if (game.user.isGM) {
-         console.debug("FADE Migrate", this.oldVersion, this.newVersion);
+         //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
          if (this.oldVersion.lt(new MySystemVersion("0.10.0-rc.1"))) {

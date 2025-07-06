@@ -8,11 +8,11 @@
       {{#each spellClasses as |spellClass|}}
       <h3>{{spellClass.className}}</h3>
       {{#each spellClass.slots as |slot|}}
-      <div name="spellLevel{{add ../spellClass.firstSpellLevel 1}}" class='items-list'>
+      <div name="spellLevel{{add ../firstSpellLevel @index}}" class='items-list'>
          {{! Spell Level Header}}
          <div class='item flexrow items-header' data-action="toggleHeader">
             <div class='item-name'>
-               {{localize 'FADE.Spell.SpellLVL' level=(add @index 1)}}
+               {{localize 'FADE.Spell.SpellLVL' level=(add @index ../firstSpellLevel)}}
             </div>
             <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
             <div class="item-80px flexrow">
