@@ -1,10 +1,10 @@
-import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
+import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class CharacterSheet2 extends FDActorSheetV2 {
+export class CharacterSheetBase extends FDActorSheetV2 {
    constructor(object, options = {}) {
       super(object, options);
       this.editScores = false;
@@ -13,13 +13,13 @@ export class CharacterSheet2 extends FDActorSheetV2 {
    get title() {
       let result = super.title;
       const actorData = this.document.toObject(false);
-      const level = game.i18n.localize('FADE.Actor.Level');
+      const level = game.i18n.localize("FADE.Actor.Level");
       if (actorData.system.details.species === actorData.system.details.class) {
          result = `${result} (${actorData.system.details.class}, ${level} ${actorData.system.details.level})`;
       } else {
          result = `${result} (${actorData.system.details.species} ${actorData.system.details.class}, ${level} ${actorData.system.details.level})`;
       }
-      
+
       return result;
    }
 
@@ -32,7 +32,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
       form: {
          submitOnChange: true
       },
-      classes: ['character'],
+      classes: ["character"],
    }
 
    static PARTS = {
@@ -43,7 +43,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
          template: "templates/generic/tab-navigation.hbs",
       },
       abilities: {
-         template: "systems/fantastic-depths/templates/actor/character/abilities2.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/abilitiesNoHeader.hbs",
       },
       items: {
          template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
@@ -52,7 +52,7 @@ export class CharacterSheet2 extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
       },
       spells: {
-         template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
       },
       description: {
          template: "systems/fantastic-depths/templates/actor/character/description.hbs",
@@ -76,27 +76,33 @@ export class CharacterSheet2 extends FDActorSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'abilities'];
+      options.parts = ["header", "tabnav", "abilities"];
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         options.parts.push('items');
-         options.parts.push('skills');
-         if (this.actor.system.config.maxSpellLevel > 0) {
-            options.parts.push('spells');
+         options.parts.push("items");
+         options.parts.push("skills");
+
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         if (classSystem.canCastSpells(this.actor)) {
+            options.parts.push("spells");
          }
-         options.parts.push('description');
-         options.parts.push('effects');
+
+         options.parts.push("description");
+         options.parts.push("effects");
       }
       if (game.user.isGM) {
-         options.parts.push('gmOnly');
+         options.parts.push("gmOnly");
       }
    }
 
    async _prepareContext(options) {
       const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
+      context.hasMultiClass = game.settings.get(game.system.id, "classSystem") !== "single";
       context.editScores = this.editScores;
       context.hasAbilityScoreMods = true;
+      context.currentXp = Number(this.actor.system.details.xp.value);
+      context.nextXp = Number(this.actor.system.details.xp.next);
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;
@@ -107,29 +113,29 @@ export class CharacterSheet2 extends FDActorSheetV2 {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
-      const group = 'primary';
+      const group = "primary";
 
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+      if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
       const tabs = {
-         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: 'items', group, label: 'FADE.items' };
-         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+         tabs.items = { id: "items", group, label: "FADE.items" };
+         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
       }
 
-      tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
-      tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
+      tabs.description = { id: "description", group, label: "FADE.tabs.description" };
+      tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
 
       if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
       }
 
       for (const tab of Object.values(tabs)) {

@@ -42,14 +42,8 @@ export class ActorMasteryItem extends FDItem {
          medium: masteryLevel.range.medium,
          long: masteryLevel.range.long
       };
-      result.pDmgFormula = masteryLevel.pDmgFormula;
-      result.sDmgFormula = masteryLevel.sDmgFormula;
-      result.acBonusType = masteryLevel.acBonusType;
-      result.acBonus = masteryLevel.acBonus;
-      result.acBonusAT = masteryLevel.acBonusAT;
-      result.special = masteryLevel.special;
-      result.pToHit = masteryLevel.pToHit;
-      result.sToHit = masteryLevel.sToHit;
+
+      Object.assign(result, masteryLevel);
       result.trainingFails = 0;
 
       await this.update({ system: result });

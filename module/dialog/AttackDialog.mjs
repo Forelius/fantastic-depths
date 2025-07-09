@@ -14,7 +14,7 @@ export class AttackDialog {
       let result = null;
       const attackerToken = caller.currentActiveToken ?? caller;
       const attackerName = caller.token?.name || caller.name;
-      const masterySystem = game.fade.registry.getSystem("weaponMasterySystem");
+      const masterySystem = game.fade.registry.getSystem("weaponMastery");
       const toHitSystem = game.fade.registry.getSystem("toHitSystem");
       const targetToken = options.targetToken?.document ?? options.targetToken;
       const targetActor = options.targetToken?.actor;

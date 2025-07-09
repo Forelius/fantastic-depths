@@ -1,10 +1,10 @@
-import { CharacterSheet2 } from './CharacterSheet2.mjs';
+import { CharacterSheetBase } from './CharacterSheetBase.mjs';
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
  * @extends {FDActorSheetV2}
  */
-export class CharacterSheet extends CharacterSheet2 {
+export class CharacterSheet extends CharacterSheetBase {
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
@@ -32,7 +32,7 @@ export class CharacterSheet extends CharacterSheet2 {
          template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
       },
       spells: {
-         template: "systems/fantastic-depths/templates/actor/shared/spells.hbs",
+         template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
       },
       description: {
          template: "systems/fantastic-depths/templates/actor/character/description.hbs",
@@ -50,7 +50,6 @@ export class CharacterSheet extends CharacterSheet2 {
       primary: "abilities"
    }
 
-
    /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
@@ -62,7 +61,8 @@ export class CharacterSheet extends CharacterSheet2 {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          options.parts.push('items');
          options.parts.push('skills');
-         if (this.actor.system.config.maxSpellLevel > 0) {
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         if (classSystem.canCastSpells(this.actor)) {
             options.parts.push('spells');
          }
          options.parts.push('description');
@@ -75,9 +75,6 @@ export class CharacterSheet extends CharacterSheet2 {
 
    async _prepareContext(options) {
       const context = await super._prepareContext();
-      context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
-      context.editScores = this.editScores;
-      context.hasAbilityScoreMods = true;
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;

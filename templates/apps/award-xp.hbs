@@ -12,39 +12,32 @@
          <thead>
             <tr>
                <th>{{localize 'FADE.name'}}</th>
-               <th>{{localize 'FADE.dialog.awardXP.share'}}</th>
-               <th>{{localize 'FADE.dialog.awardXP.xpAmount'}}</th>
+               <th style="width: 50px;">{{localize 'FADE.dialog.awardXP.share'}}</th>
+               <th style="width: 120px;">{{localize 'FADE.dialog.awardXP.xpAmount'}}</th>
                <th>{{localize 'FADE.Actor.XPBonus'}}</th>
             </tr>
          </thead>
          <tbody>
-            {{#each actors}}
-            <tr class="party-member" data-actor-id="{{this.id}}">
-               <!-- NAME column -->
-               <td>{{this.name}}</td>
-
-               <!-- SHARE FACTOR column (e.g., 1, 0.5, 2, etc.) -->
+            {{#each actorxps as |actorxp|}}
+            <tr class="party-member" data-actor-id="{{actorxp.id}}">
+               <td>{{actorxp.name}}</td>
                <td>
                   <input class="share-factor"
                          type="number"
-                         name="actorShareFactor_{{this.id}}"
-                         value="{{this.shareFactor}}"
+                         name="actorShareFactor_{{actorxp.id}}"
+                         value="{{actorxp.shareFactor}}"
                          step="0.1"
-                         style="width: 60px;" />
+                         style="width: 46px;" />
                </td>
-
-               <!-- XP AMOUNT column (auto-filled, can be overridden) -->
                <td>
                   <input class="actor-xp"
-                         type="number"
-                         name="actorXP_{{this.id}}"
-                         value="{{this.defaultXP}}"
-                         style="width: 60px;" />
+                         type="text"
+                         name="actorXP_{{actorxp.id}}"
+                         value="{{actorxp.xpsText}}"
+                         style="width: 116px;" />
                </td>
-
-               <!-- BONUS column (just displays the actor’s xp.bonus%) -->
                <td data-tooltip="{{localize 'FADE.Actor.XPBonus'}}">
-                  {{this.system.details.xp.bonus}}%
+                  {{actorxp.xpBonus}}%
                </td>
             </tr>
             {{/each}}

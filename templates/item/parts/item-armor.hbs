@@ -8,7 +8,7 @@
          {{localize 'FADE.Armor.abbr'}}
          {{/if}}
       </div>
-      {{#if showCoinWeight}}
+      {{#if showWeight}}
       <div class="item-60px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       {{/if}}
       {{#if isBasicEnc}}
@@ -54,7 +54,7 @@
                {{/if}}
             </label>
          </div>
-         {{#if @root.showCoinWeight}}
+         {{#if @root.showWeight}}
          <div class="item-60px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.weight}}</label></div>
          {{/if}}
          {{#if @root.isBasicEnc}}
@@ -80,7 +80,7 @@
       </div>
       <div class='item-description desc-collapsed bordered'></div>
    </div>
-   {{#if (and item.system.chargesMax (or @root.isGM item.system.isIdentified))}}
+   {{#if (and item.system.chargesMax (or ../isGM item.system.isIdentified))}}
    <div class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="charges-counter">
          <label>{{localize 'FADE.Item.charges.long'}}</label>

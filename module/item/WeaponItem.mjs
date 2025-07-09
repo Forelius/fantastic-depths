@@ -24,7 +24,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
    getDamageRoll(attackType, resp, targetWeaponType) {
       const weaponData = this.system;
       const attackerData = this.parent.system;
-      const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      const masterySystem = game.fade.registry.getSystem('weaponMastery');
       let evaluatedRoll = this.getEvaluatedRollSync(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
       let digest = [];
@@ -73,8 +73,8 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       }
 
       // Check weapon mastery
-      if (hasDamage && weaponMasterySystem) {
-         const wmResult = weaponMasterySystem.getDamageMods(this, targetWeaponType, formula);
+      if (hasDamage && masterySystem) {
+         const wmResult = masterySystem.getDamageMods(this, targetWeaponType, formula, modifier);
          if (wmResult) {
             formula = wmResult?.formula ?? formula;
             digest = [...digest, ...wmResult.digest];
@@ -128,16 +128,16 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       if (isBreath) {
          result.push({ text: game.i18n.localize('FADE.dialog.attackType.breath'), value: "breath" });
       } else {
-         const weaponMasterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+         const masterySystem = game.fade.registry.getSystem('weaponMastery');
          const owner = this.actor ?? null;
 
          // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
-         if (owner && weaponMasterySystem) {
-            const wmResult = weaponMasterySystem.getAttackTypes(this);
-            if (wmResult?.canRanged === true) {
+         if (owner && masterySystem) {
+            const attackTypes = masterySystem.getAttackTypes(this);
+            if (attackTypes?.canRanged === true) {
                result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
             }
-            if (wmResult?.canMelee === true) {
+            if (attackTypes?.canMelee === true) {
                result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
             }
          }

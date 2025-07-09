@@ -1,8 +1,14 @@
+export class EncumbranceInterface {
+   async calcCategoryEnc(items) { throw new Error("Method not implemented."); }
+   async prepareDerivedData(actor) { throw new Error("Method not implemented."); }
+}
+
 /**
  * None or armor-only if used by itself.
  */
-export class BasicEncumbrance {
+export class BasicEncumbrance extends EncumbranceInterface {
    constructor(options) {
+      super(options);
       this.options = options;
       this.CONFIG = {
          armorChoices: {
@@ -60,6 +66,12 @@ export class BasicEncumbrance {
       return {};
    }
 
+   /**
+    * Calculated separately from totalEnc getter because some items may not be carried or this might
+    * be an alternate encumbrance system that only counts certain items.
+    * @param {any} actor
+    * @returns
+    */
    _getTotalEnc(actor) {
       return 0;
    }
@@ -112,9 +124,10 @@ export class ClassicEncumbrance extends BasicEncumbrance {
 
       // Gear
       results.gearEnc = 80 + items.filter(item => item.type === 'treasure' || item.system.isTreasure === true).reduce((sum, item) => {
-         const itemWeight = item.system.weight || 0;
-         const itemQuantity = item.system.quantity || 1;
-         return sum + (itemWeight * itemQuantity);
+         //const itemWeight = item.system.weight || 0;
+         //const itemQuantity = item.system.quantity || 1;
+         //return sum + (itemWeight * itemQuantity);
+         return sum + this._getItemEncumbrance(item);
       }, 0);
       // Weapons
       results.weaponsEnc = items.filter(item => item.type === 'weapon').reduce((sum, item) => {
@@ -128,13 +141,32 @@ export class ClassicEncumbrance extends BasicEncumbrance {
       return results;
    }
 
+   /**
+    * Calculated separately from totalEnc getter because some items may not be carried or this might
+    * be an alternate encumbrance system that only counts certain items.
+    * @param {any} actor
+    * @returns
+    */
    _getTotalEnc(actor) {
       return actor.items.filter(item => ['weapon', 'armor', 'treasure'].includes(item.type) || item.system.isTreasure === true)
          .reduce((sum, item) => {
-            const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
-            const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
-            return sum + (itemWeight * itemQuantity);
+            return sum + this._getItemEncumbrance(item);
          }, 80);
+   }
+
+   _getItemEncumbrance(item) {
+      let result = 0;
+      if (item.isDropped === false) {
+         let itemWeight = 0;
+         if (item.system.equipped === true) {
+            itemWeight = item.system.weightEquipped ?? 0;
+         } else if (item.system.weight > 0) {
+            itemWeight = item.system.weight;
+         }
+         const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
+         result = (itemWeight * itemQuantity);
+      }
+      return result;
    }
 
    _getEncTier(actor, totalEnc) {
@@ -169,24 +201,27 @@ export class ExpertEncumbrance extends ClassicEncumbrance {
     */
    calcCategoryEnc(items) {
       const results = super.calcCategoryEnc(items);
-
       // Gear
       const itemTypes = ['item', 'light', 'treasure']
       results.gearEnc = items.filter(item => itemTypes.includes(item.type))
          .reduce((sum, item) => {
-            const itemWeight = item.system.weight || 0;
-            const itemQuantity = item.system.quantity || 1;
-            return sum + (itemWeight * itemQuantity);
-         }, 0);      
-
+            //const itemWeight = item.system.weight || 0;
+            //const itemQuantity = item.system.quantity || 1;
+            //return sum + (itemWeight * itemQuantity);
+            return sum + this._getItemEncumbrance(item);
+         }, 0);
       return results;
    }
 
+   /**
+    * Calculated separately from totalEnc getter because some items may not be carried or this might
+    * be an alternate encumbrance system that only counts certain items.
+    * @param {any} actor
+    * @returns
+    */
    _getTotalEnc(actor) {
       return actor.items.reduce((sum, item) => {
-         const itemWeight = item.system.weight > 0 ? item.system.weight : 0;
-         const itemQuantity = item.system.quantity > 0 ? item.system.quantity : 0;
-         return sum + (itemWeight * itemQuantity);
+         return sum + this._getItemEncumbrance(item);
       }, 0);
    }
 }

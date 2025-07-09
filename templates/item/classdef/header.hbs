@@ -17,12 +17,16 @@
       </div>
       <div class="summary flexrow">
          <div class="flex1">
+            <input type='text' name='system.firstLevel' value='{{system.firstLevel}}' data-dtype='Number' />
+            <label for="system.firstLevel" data-tooltip="{{localize 'FADE.Actor.firstLevel.hint'}}">{{localize 'FADE.Actor.firstLevel.name'}}</label>
+         </div>
+         <div class="flex1">
             <input type='text' name='system.maxLevel' value='{{system.maxLevel}}' data-dtype='Number' />
             <label for="system.maxLevel" data-tooltip="{{localize 'FADE.Actor.maxLevel.hint'}}">{{localize 'FADE.Actor.maxLevel.name'}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name='system.firstLevel' value='{{system.firstLevel}}' data-dtype='Number' />
-            <label for="system.firstLevel" data-tooltip="{{localize 'FADE.Actor.firstLevel.hint'}}">{{localize 'FADE.Actor.firstLevel.name'}}</label>
+            <input type='text' name='system.firstSpellLevel' value='{{system.firstSpellLevel}}' data-dtype='Number' />
+            <label for="system.firstSpellLevel" data-tooltip="{{localize 'FADE.Actor.firstSpellLevel.hint'}}">{{localize 'FADE.Actor.firstSpellLevel.name'}}</label>
          </div>
          <div class="flex1">
             <input type='text' name='system.maxSpellLevel' value='{{system.maxSpellLevel}}' data-dtype='Number' />
@@ -30,9 +34,19 @@
          </div>
          <div class="flex1">
             <input type='text' name='system.key' value='{{system.key}}' data-dtype='String' />
-            <label for="system.key" data-tooltip{{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
+            <label for="system.key" data-tooltip={{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
          </div>
-         {{#if weaponMastery}}
+         <div class="flex1">
+            <input type='text' name='system.castAsKey' value='{{system.castAsKey}}' data-dtype='String' />
+            <label for="system.castAsKey" data-tooltip={{localize 'FADE.class.castAsKey.hint'}}>{{localize 'FADE.class.castAsKey.name'}}</label>
+         </div>
+         {{#if (eq masterySetting "classic")}}
+         <div class="flex1" style="max-width:50px">
+            <input type='text' name='system.unskilledToHitMod' value='{{system.unskilledToHitMod}}' data-dtype='Number' />
+            <label for="system.unskilledToHitMod" data-tooltip="{{localize 'FADE.class.unskilledToHitMod.hint'}}">{{localize 'FADE.class.unskilledToHitMod.name'}}</label>
+         </div>
+         {{/if}}
+         {{#if (eq masterySetting "heroic")}}
          <div class="flex1">
             <input type="checkbox" name="system.basicProficiency" data-dtype="Boolean" {{#if system.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
             <label for="system.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>

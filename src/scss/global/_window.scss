@@ -14,8 +14,8 @@
 
 .fantastic-depths {
    .window-content {
-      .tab {
-         /*height:100%;*/
+      nav.tabs{
+         line-height:1;
       }
       input, select {
          max-height: 26px;

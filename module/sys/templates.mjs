@@ -24,6 +24,7 @@ export const preloadHandlebarsTemplates = async function () {
       actorExploration: 'systems/fantastic-depths/templates/actor/parts/actor-exploration.hbs',
       actorClassAbilities: 'systems/fantastic-depths/templates/item/parts/item-classAbilities.hbs',
       actorSaves: 'systems/fantastic-depths/templates/actor/parts/actor-saves.hbs',
+      actorHeader: 'systems/fantastic-depths/templates/actor/character/header.hbs',
       // Item partials
       itemEffects: 'systems/fantastic-depths/templates/item/parts/item-effects.hbs',
       itemContained: 'systems/fantastic-depths/templates/item/parts/item-contained.hbs',

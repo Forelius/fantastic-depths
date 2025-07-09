@@ -1,13 +1,21 @@
 ﻿<section class='tab {{tabs.gmOnly.cssClass}}' data-group='primary' data-tab='gmOnly'>
    <div class="bordered">
       <div class="summary flexrow">
-         <div style="max-width:60px;">
-            <div class="text-center">{{system.totalAC}}</div>
+         <div class="flex1 width-80">
+            <div>{{system.totalAC}}</div>
             <label>{{localize 'FADE.Armor.total'}}</label>
          </div>
-         <div style="max-width:60px;">
-            <div class="item-info">{{system.mod}}</div>
+         <div class="flex1 width-80">
+            <div>{{system.mod}}</div>
             <label>{{localize 'FADE.Armor.mod'}}</label>
+         </div>
+         <div class="flex1 width-80">
+            <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
+            <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
+         </div>
+         <div class="flex1 width-80">
+            <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
+            <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
          </div>
       </div>
    </div>

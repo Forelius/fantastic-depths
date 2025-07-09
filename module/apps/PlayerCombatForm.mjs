@@ -27,7 +27,7 @@ export class PlayerCombatForm extends FormApplication {
    getData() {
       const context = super.getData();
       context.ownedCombatants = game.combat.ownedCombatants;
-      context.useMastery = game.settings.get(game.system.id, "weaponMastery");
+      context.heroicMastery = game.settings.get(game.system.id, "weaponMastery") === "heroic";
       return context;
    }
 

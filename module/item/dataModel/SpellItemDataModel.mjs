@@ -17,7 +17,8 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
          range: new fields.StringField({ required: false, initial: "" }),
          duration: new fields.StringField({ required: false, initial: "Instant" }),
          effect: new fields.StringField({ required: false, initial: "" }),
-         memorized: new fields.NumberField({ nullable: true, initial: 0 }),
+         memorized: new fields.NumberField({ required: false, nullable: true, initial: 0 }),
+         // How many times the spell has been cast or used
          cast: new fields.NumberField({ required: true, initial: 0 }),
          targetSelf: new fields.BooleanField({ required: false, initial: true }),
          targetOther: new fields.BooleanField({ required: false, initial: true }),
@@ -31,6 +32,15 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
          attackType: new fields.StringField({ required: false, initial: "" }),
          damageType: new fields.StringField({ required: false, initial: "" }),
          conditions: new fields.ArrayField(
+            new fields.SchemaField({
+               name: new fields.StringField({ required: true, initial: '' }),
+               uuid: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
+         classes: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: '' }),
                uuid: new fields.StringField({ required: true, initial: '' }),

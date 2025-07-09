@@ -5,7 +5,7 @@
    {{> "actorTreasure"}}
    <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
       <span class="flex3">
-         {{#if showCoinWeight}}
+         {{#if showWeight}}
          {{localize 'FADE.Actor.Movement.total'}}: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
          {{/if}}
          {{#if isBasicEnc}}

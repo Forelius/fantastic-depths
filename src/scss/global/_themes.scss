@@ -4,6 +4,7 @@
       border-color: $darkColor;
    }
 
+
    .item-piles-chat-card ul {
       color: #efefef;
    }
@@ -76,6 +77,11 @@
          .content-link {
             background: $darkerColor;
          }
+         /*         button {
+            background: url('../assets/img/grungeyellow.jpg');
+            color: $lighterColor;
+            border: 1px solid #545140;
+         }*/
 
          a:hover {
             text-shadow: $glowForDarkMode;

@@ -14,7 +14,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    static DEFAULT_OPTIONS = {
       position: {
          top: 150,
-         width: 680,
+         width: 700,
          height: 500,
       },
       window: {
@@ -68,6 +68,14 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       primary: "description"
    }
 
+   async createActorClass(owner) {
+      const result = await FDItem.create({
+         name: this.name,
+         type: "actorClass",
+      }, { parent: owner });
+      return result;
+   }
+
    /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
@@ -85,14 +93,16 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    async _prepareContext() {
       // Retrieve base data structure
       const context = await super._prepareContext();
-      context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+
+      context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
 
       // Add the item's data for easier access
       context.isSpellcaster = this.item.system.maxSpellLevel > 0;
       // Generate spell level headers
       context.spellLevelHeaders = [];
-      for (let i = 1; i <= this.item.system.maxSpellLevel; i++) {
-         context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
+      for (let i = this.item.system.firstSpellLevel; i <= this.item.system.maxSpellLevel; i++) {
+         //context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
+         context.spellLevelHeaders.push(i);
       }
       // Ability score abilities
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
@@ -191,7 +201,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       } else {
          console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can't determine item type.`, item);
       }
-      
+
       if (type === 'classSave') {
          const saves = this.item.system.saves;
          // Handle deletion of a class save

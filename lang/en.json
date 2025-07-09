@@ -64,6 +64,10 @@
             "hint": "The highest level this class can attain.",
             "name": "Max Level"
          },
+         "firstSpellLevel": {
+            "hint": "The first spell level for this class.",
+            "name": "First Spell Level"
+         },
          "maxSpellLevel": {
             "hint": "The highest spell level for this class.",
             "name": "Max Spell Level"
@@ -246,8 +250,9 @@
       },
       "SheetLabel": {
          "Character": "Character Sheet (tabbed)",
-         "Character2": "Character Sheet",
+         "CharacterSheetBase": "Character Sheet",
          "Monster": "Monster Sheet",
+         "ActorClassItem": "Actor Class Item Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
          "ClassDefinitionItem": "Class Definition Item Sheet",
@@ -267,7 +272,7 @@
          "SpellLVL": "Spell Level {level}",
          "slots": "Slots",
          "resetSlots": "Reset memorized spells to zero casts. Memorized count will not be changed.",
-         "usedSlots": "Used slots",
+         "castSlots": "Spells cast",
          "availableSlots": "Available slots",
          "cast": "Spell has been cast this many times",
          "memorized": "Spell has been memorized this many times",
@@ -290,6 +295,11 @@
          "equipped": "Equipped",
          "unequip": "Unequip",
          "isEquippable": "Equippable",
+         "dropped": {
+            "name": "Dropped",
+            "hint": "A dropped item can't be used and does not count towards encumbrance."
+         },
+         "isDropped": "Dropped",
          "isUsable": {
             "name": "Usable",
             "hint": "Specify if item can be used, which will also enable usage tracking for the item."
@@ -310,13 +320,15 @@
             "maxLong": "Max. Charges"
          },
          "weight": {
-            "short": "Enc (cn)",
+            "short": "Enc",
             "short2": "Enc",
-            "long": "Encumbrance (cn)",
-            "long2": "Encumbrance",
-            "abbr": "cn",
+            "long": "Encumbrance",
             "abbrPlural": "cns",
-            "desc": "Encumbrance is the weight of an object measured in coin-weight."
+            "desc": "Encumbrance value of the item."
+         },
+         "weightEquipped": {
+            "short": "Enc Equipped",
+            "desc": "Encumbrance value of the item when worn or equipped."
          },
          "cost": {
             "abbr": "gp",
@@ -404,9 +416,7 @@
             "abbr": "Dmg",
             "short": "Damage",
             "type": "Damage Type",
-            "short2": "2-Hand Damage",
-            "long": "Damage Roll",
-            "long2": "Two-Handed Damage Roll. Only if weapon can be used one-handed, otherwise use damage roll field."
+            "long": "Damage Roll"
          },
          "ammo": {
             "short": "Ammo",
@@ -531,14 +541,27 @@
          }
       },
       "class": {
-         "key": {
-            "name": "Key",
-            "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
-         }
-      },
+         "primary": {
+            "name": "Primary",
+            "hint": "When a class is designated as primary, it will be considered when awarding XP and determining which class's saving throws to use. If multiple classes are designated as primary, XP is divided evenly, up to one point away from the next level, and saving throws are determined by taking the best from all primary classes."
+         },
+            "unskilledToHitMod": {
+               "name": "U/S Mod",
+               "hint": "Unskilled weapon usage attack roll penalty."
+            },
+            "key": {
+               "name": "Class Key",
+               "hint": "The key used for single-letter references to a class. Example for a Fighter would be 'F'."
+            },
+            "castAsKey": {
+               "name": "Cast As Key",
+               "hint": "They key of the class that this class casts as. For instance, Elf class can cast as M (Magic-User). Some classes allow casting at 1/3rd the level and these can be designated with /3 after the class key."
+            }
+         },
       "condition": {
          "plural": "Conditions",
          "key": {
+            "name": "Key",
             "hint": "The key used for refering to this item. Can be one or more characters in length and should not include any special characters."
          },
          "addStatusEffect": {
@@ -558,7 +581,13 @@
          "Toggle": "Toggle Effect",
          "Temporary": "Temporary Effects",
          "Passive": "Passive Effects",
-         "Inactive": "Inactive Effects"
+         "Inactive": "Inactive Effects",
+         "status": {
+            "hasted": "Hasted",
+            "slowed": "Slowed",
+            "mirrorImaged": "Mirror Imaged",
+            "infravision": "Infravision"
+         }
       },
       "Tags": {
          "addTags": "Add tags",
@@ -641,7 +670,7 @@
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
          "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
       },
-      "apps": {        
+      "apps": {
          "userTables": {
             "title": "User Tables",
             "tableId": "Table ID",
@@ -1028,9 +1057,10 @@
          "skill": "General Skill",
          "light": "Light",
          "mastery": "Actor Weapon Mastery",
+         "actorClass": "Actor Class",
          "specialAbility": "Special Ability",
          "treasure": "Treasure",
-         "class": "Character Class",
+         "class": "Character Class Definition",
          "weaponMastery": "Weapon Mastery Definition",
          "condition": "Condition",
          "species": "Ancestry"
@@ -1120,7 +1150,12 @@
       },
       "weaponMastery": {
          "name": "Weapon Mastery",
-         "hint": "If enabled, weapon mastery rules will be used."
+         "hint": "The weapon mastery system is optional and allows characters to specialize in specific weapon types. None will disable weapon mastery. Classic provides simple proficiency rules where, depending on the class, unskilled weapon usage incurs a penalty and specializing in a weapon results in an attack and damge roll bonus. Heroic is a complex system where there are multiple levels of mastery, mastery-based skills, AC bonus and other combat mechanics.",
+         "choices": {
+            "none": "None",
+            "classic": "Classic",
+            "heroic": "Heroic"
+         }
       },
       "toHitSystem": {
          "name": "To-Hit System",
@@ -1183,6 +1218,14 @@
       "useArmorValue": {
          "name": "Use Armor Value",
          "hint": "Armor Value (AV) is an optional armor system attribute that allows for physical damage mitigation to be assigned to armor items. Enabling this will result in AV showing on actor sheets. Enabling will also result in AV being factored in when applying any damage."
+      },
+      "classSystem": {
+         "name": "Character Class System",
+         "hint": "Specify whether multiple classes are allowed per character. Selecting \"Single\" will disable multiple classes, and the UI for class data will remain unchanged. Choosing \"Advanced\" will enable multiple classes, allowing for manual configuration of elements related to each class being used. Due to the complex nature of multi-class characters, automation and display of hit dice and XP bonuses will be shown per class, and it will be up to the players and GM to handle the calculations.",
+         "choices": {
+            "single": "Single",
+            "advanced": "Advanced"
+         }
       }
    }
 }

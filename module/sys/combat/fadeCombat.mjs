@@ -219,12 +219,6 @@ export class fadeCombat extends Combat {
       }
    }
 
-   #tryShowPlayerCombatForm() {
-      if (this.declaredActions === true) {
-         SocketManager.sendToAllUsers("showPlayerCombat", { combatid: this.id });
-      }
-   }
-
    tryClosePlayerCombatForm(userIds = []) {
       if (this.declaredActions === true) {
          if (userIds.length > 0) {
@@ -232,6 +226,12 @@ export class fadeCombat extends Combat {
          } else {
             SocketManager.sendToAllUsers("closePlayerCombat", { combatid: this.id });
          }
+      }
+   }
+
+   #tryShowPlayerCombatForm() {
+      if (this.declaredActions === true) {
+         SocketManager.sendToAllUsers("showPlayerCombat", { combatid: this.id });
       }
    }
 

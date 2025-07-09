@@ -59,7 +59,7 @@ textarea{
       height: 34px;
 
       input, select {
-         font-size: 22px;
+         font-size: 24px;
          font-weight: 500;
          max-height: 30px;
          height: 30px;
@@ -143,25 +143,8 @@ textarea{
    list-style: none;
    border-top: none;
 
-   div {
+   div, li {
       height: calc(100% - 5px);
-      margin: 2px 2px;
-      padding: 0;
-      line-height: 30px;
-      position: relative;
-
-      label {
-         line-height: 6px;
-         position: absolute;
-         font-size: 10px;
-         top: 32px;
-         left: 2px;
-      }
-   }
-
-   li {
-      height: calc(100% - 5px);
-      float: left;
       margin: 2px 2px;
       padding: 0;
       line-height: 30px;
@@ -181,5 +164,15 @@ textarea{
             animation: 0.8s ease-in 1s infinite alternate notify;
          }
       }
+   }
+}
+
+@keyframes notify {
+   from {
+      opacity: 0.5;
+   }
+
+   to {
+      opacity: 1;
    }
 }

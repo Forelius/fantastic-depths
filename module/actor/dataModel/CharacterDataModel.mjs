@@ -1,6 +1,6 @@
-import { FDActorDM } from "/systems/fantastic-depths/module/actor/dataModel/FDActorDM.mjs";
+import { FDCombatActorDM } from "/systems/fantastic-depths/module/actor/dataModel/FDCombatActorDM.mjs";
 
-export class CharacterDataModel extends FDActorDM {
+export class CharacterDataModel extends FDCombatActorDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
@@ -9,21 +9,26 @@ export class CharacterDataModel extends FDActorDM {
          details: new fields.SchemaField({
             morale: new fields.NumberField({ initial: 9 }),
             alignment: new fields.StringField({ initial: "Neutral" }),
-            level: new fields.NumberField({ initial: 0 }),
-            xp: new fields.SchemaField({
-               value: new fields.NumberField({ initial: 0 }),
-               bonus: new fields.NumberField({ initial: 0 }),
-               next: new fields.NumberField({ initial: 0 }),
-            }),
-            class: new fields.StringField({ initial: "" }),
             species: new fields.StringField({ initial: "" }),
-            title: new fields.StringField({ initial: "" }),
             age: new fields.NumberField({ initial: 20 }),
             sex: new fields.StringField({ initial: "" }),
             height: new fields.StringField({ initial: "" }),            
             eyes: new fields.StringField({ initial: "" }),
-            hair: new fields.StringField({ initial: "" }),            
-         }),         
+            hair: new fields.StringField({ initial: "" }),
+            //---------------------------------------------------
+            level: new fields.StringField({ initial: "1" }),
+            xp: new fields.SchemaField({
+               value: new fields.StringField({ initial: "0" }),
+               bonus: new fields.StringField({ initial: "0" }),
+               next: new fields.StringField({ initial: "0" }),
+            }),
+            class: new fields.StringField({ initial: "" }),
+            title: new fields.StringField({ initial: "" }),
+            // Only the class key, not the level like monster does for castAs
+            classKey: new fields.StringField({ required: false, nullable: true, initial: null }),
+            castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
+            //---------------------------------------------------
+         }),
          retainer: new fields.SchemaField({
             max: new fields.NumberField({ initial: 0 }),
             morale: new fields.NumberField({ initial: 0 }),

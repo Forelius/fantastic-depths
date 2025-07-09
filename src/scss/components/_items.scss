@@ -141,7 +141,7 @@
       input, select {
          padding: 0 4px;
          width: calc(100% - 3px);
-         height: 26px;
+         height: 22px;
       }
 
       .item-description {
@@ -203,6 +203,10 @@
       padding: 3px 1px;
       align-items: center;
       font-weight: bold;
+
+      input{
+         height:18px;
+      }
 
       > * {
          font-size: 12px;

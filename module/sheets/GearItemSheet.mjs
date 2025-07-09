@@ -39,7 +39,7 @@ export class GearItemSheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/shared/gmOnly.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
       }
    }
 
@@ -79,7 +79,7 @@ export class GearItemSheet extends FDItemSheetV2 {
          context.lightTypes = lightTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
          context.animationTypes = CONFIG.Canvas.lightAnimations;
          const lightData = this.item.system.light;
-         context.isCustom = lightData.type === 'custom';
+         context.isCustom = lightData.type === "custom";
          const turnsRemaining = (lightData.secondsRemain / turnDuration);
          const stTurnsRemaining = (lightData.secondsRemain > 0 || this.item.system.light.enabled) ? (turnsRemaining).toFixed(1) : '-';
          context.turnsRemaining = `${stTurnsRemaining}`;

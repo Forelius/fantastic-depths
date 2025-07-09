@@ -1,8 +1,8 @@
-import { FDActorDM } from "./FDActorDM.mjs";
+import { FDCombatActorDM } from "./FDCombatActorDM.mjs";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
 import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
 
-export class MonsterDataModel extends FDActorDM {
+export class MonsterDataModel extends FDCombatActorDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
@@ -39,6 +39,8 @@ export class MonsterDataModel extends FDActorDM {
       super.prepareBaseData();
       this.details.alignment = this.details.alignment || "Chaotic";
       this.encumbrance.max = this.encumbrance.max || 0;
+      // Default all monsters with basic proficiency.
+      this.combat.basicProficiency = true;
       this._prepareTHAC0ToHitBonus();
       // Maybe this is the wrong place to do this. We may need to wait until after init.
       this.thbonus = CONFIG.FADE.ToHit.BaseTHAC0 - this.thac0.value;

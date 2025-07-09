@@ -235,6 +235,7 @@ export class fadeFinder {
 
    /**
     * Gets the class saving throw data for the specified level.
+    * NOTE: Class saving throw data is not the same as the saving throw special ability item itself.
     * @param {any} className The class item's full and case-sensitive name.
     * @param {any} classLevel The class level
     * @returns The saving throw data for the specified class and level, otherwise undefined

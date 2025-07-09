@@ -250,10 +250,15 @@ export class fadeSettings {
          hint: "SETTINGS.weaponMastery.hint",
          scope: "world",
          config: true,
-         type: Boolean,
-         default: true,
+         type: String,
+         default: "heroic",
          requiresReload: true,
-         restricted: true // Only the GM can change this setting
+         restricted: true, // Only the GM can change this setting
+         choices: {
+            "none": "SETTINGS.weaponMastery.choices.none",
+            "classic": "SETTINGS.weaponMastery.choices.classic",
+            "heroic": "SETTINGS.weaponMastery.choices.heroic"
+         },
       });
       game.settings.register(game.system.id, "toHitSystem", {
          name: "SETTINGS.toHitSystem.name",
@@ -319,6 +324,20 @@ export class fadeSettings {
          config: true,
          type: Boolean,
          default: false,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
+      game.settings.register(game.system.id, "classSystem", {
+         name: "SETTINGS.classSystem.name",
+         hint: "SETTINGS.classSystem.hint",
+         scope: "world",
+         config: true,
+         type: String,
+         choices: {
+            "single": "SETTINGS.classSystem.choices.single",
+            "advanced": "SETTINGS.classSystem.choices.advanced",
+         },
+         default: "single",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });

@@ -1,10 +1,10 @@
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-import { DragDropMixin } from './mixins/DragDropMixin.mjs';
-import { EffectManager } from '../sys/EffectManager.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { FDItem } from '../item/FDItem.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
+import { EffectManager } from "../sys/EffectManager.mjs";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
+import { FDItem } from "../item/FDItem.mjs";
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -30,7 +30,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       form: {
          submitOnChange: true
       },
-      classes: ['fantastic-depths', 'sheet', 'actor'],
+      classes: ["fantastic-depths", "sheet", "actor"],
       actions: {
          deleteTag: FDActorSheetV2.#clickDeleteTag,
          createEffect: FDActorSheetV2.#clickEffect,
@@ -61,7 +61,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
-
 
    /** @inheritDoc */
    async _renderFrame(options) {
@@ -98,11 +97,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Drag events for macros.
       const dragStartHandler = (event) => this._onDragStart(event);
-      html.find('div.item').each((i, li) => {
+      html.find("div.item").each((i, li) => {
          // If not an inventory header...
-         if (li.classList.contains('items-header') == false) {
-            li.setAttribute('draggable', true);
-            li.addEventListener('dragstart', dragStartHandler, false);
+         if (li.classList.contains("items-header") == false) {
+            li.setAttribute("draggable", true);
+            li.addEventListener("dragstart", dragStartHandler, false);
          }
       });
 
@@ -123,7 +122,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.actor = actor;
       context.actor.uuid = this.actor.uuid;
 
-      // Add the actor's data to context.data for easier access, as well as flags.
+      // Add the actor"s data to context.data for easier access, as well as flags.
       context.system = actor.system;
       context.flags = actor.flags;
       context.isSpellcaster = actor.system.config.maxSpellLevel > 0;
@@ -134,9 +133,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.config = CONFIG.FADE;
       const encSetting = game.settings.get(game.system.id, "encumbrance");
       context.isBasicEnc = encSetting === "basic";
-      context.showCoinWeight = encSetting === "expert" || encSetting === "classic";
+      context.showWeight = encSetting === "expert" || encSetting === "classic";
       context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
-      context.weaponMastery = game.settings.get(game.system.id, "weaponMastery");
+      context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
+      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery") != "none";
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
       context.useAV = game.settings.get(game.system.id, "useArmorValue") && this.actor.system.ac.av?.length > 0;
@@ -145,7 +145,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare shared actor data and items.
-      this.#prepareItems(context);
+      await this.#prepareItems(context);
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -164,7 +164,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const attackGroups = [];
       for (let item of this.actor.items) {
          item.img = item.img || Item.DEFAULT_ICON;
-         if (item.type === 'weapon' && item.system.equipped === true) {
+         if (item.type === "weapon" && item.system.equipped === true) {
             const group = item.system.attacks.group;
             if (!attackGroups[group]) {
                attackGroups[group] = [];
@@ -195,16 +195,22 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
-
+      const classSystem = game.fade.registry.getSystem("classSystem");
       if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
          this._onSortItem(event, droppedItem);
       } else {
          // If the dropped item is a weapon mastery definition item...
-         if (droppedItem.type === 'weaponMastery') {
+         if (droppedItem.type === "weaponMastery" && this.#hasSameActorMastery(droppedItem) === false) {
             droppedItem.createActorWeaponMastery(this.actor);
          }
+         // If the dropped item is a class definition item...
+         else if (droppedItem.type === "class" && this.#hasSameActorClass(droppedItem) === false) {
+            if (this.actor.type === "character") {
+               classSystem.createActorClass(this.actor, droppedItem);
+            }
+         }
          // If the drop target is a container...
-         else if (droppedItem.type === 'item' || droppedItem.type === 'light' || droppedItem.type === 'treasure') {
+         else if (droppedItem.type === "item" || droppedItem.type === "light" || droppedItem.type === "treasure") {
             if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
                const itemData = droppedItem.toObject();
                if (droppedItem.actor == null) {
@@ -226,15 +232,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                }
                super._onDropItem(event, item);
             }
-         } else if (droppedItem.type === "class") {
-            if (this.actor.type === 'character') {
-               await this.actor.update({ "system.details.level": 1, "system.details.class": droppedItem.name });
-            }
          } else if (droppedItem.type === "species") {
-            if (this.actor.type === 'character') {
+            if (this.actor.type === "character") {
                await this.actor.update({ "system.details.species": droppedItem.name });
             }
-         } else if (droppedItem.type === 'effect') {
+         } else if (droppedItem.type === "effect") {
          }
          else {
             super._onDropItem(event, item);
@@ -259,13 +261,13 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * Retrieves an item owned by the actor based on parent element's data-item-id.
+    * Retrieves an item owned by the actor based on parent element"s data-item-id.
     * @param {any} event
     * @returns 
     */
    _getItemFromActor(event) {
-      const parent = $(event.target).parents('.item');
-      return this.actor.items.get(parent.data('itemId'));
+      const parent = $(event.target).parents(".item");
+      return this.actor.items.get(parent.data("itemId"));
    }
 
    /**
@@ -300,23 +302,19 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    async _onDataChange(event) {
       let result = null;
-      event.preventDefault();
+      //event.preventDefault();
       const item = this._getItemFromActor(event);
-      const newVal = event.target.value === '' ? null : Number(event.target.value);
-      if (event.target.dataset.field === "quantity") {
-         result = await item.update({ "system.quantity": newVal ?? 0 });
-      } else if (event.target.dataset.field === "cast") {
-         result = await item.update({ "system.cast": newVal ?? 0 });
-      } else if (event.target.dataset.field === "memorized") {
-         result = await item.update({ "system.memorized": newVal });
-      } else if (event.target.dataset.field === "target") {
-         result = await item.update({ "system.target": newVal ?? 0 });
-      } else if (event.target.dataset.field === "waUsed") {
-         result = await item.update({ "system.attacks.used": newVal ?? 0 });
-      } else if (event.target.dataset.field === "waMax") {
-         result = await item.update({ "system.attacks.max": newVal });
+      const newVal = event.target.value === "" ? null : Number(event.target.value);
+      const updateData = {};
+      const allowNull = ["system.memorized", "system.waMax"];
+      // If the field allows nulls...
+      if (allowNull.includes(event.target.dataset.field)) {
+         updateData[`${event.target.dataset.field}`] = newVal;
+      } else {
+         // Otherwise nulls become a zero.
+         updateData[`${event.target.dataset.field}`] = newVal ?? 0;
       }
-
+      result = await item.update(updateData);
       return result;
    }
 
@@ -326,40 +324,43 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    async _restoreCollapsedState() {
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+      // Retrieve all flags that start with "collapsed-"
+      const flags = this.actor.flags[game.system.id] || {};
 
       if (rememberCollapsedState === true) {
-         const actor = game.actors.get(this.actor.id);
-
-         // Retrieve all flags that start with 'collapsed-'
-         const flags = actor?.flags[game.system.id] || {};
-
          Object.keys(flags).forEach(async (key) => {
-            // Only process flags that start with 'collapsed-'
-            if (key.startsWith('collapsed-') && key !== 'collapsed-undefined') {
-               const sectionName = key.replace('collapsed-', ''); // Extract section name
+            // Only process flags that start with "collapsed-"
+            if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
+               const sectionName = key.replace("collapsed-", ""); // Extract section name
                const isCollapsed = flags[key];
                if (isCollapsed === true) {
-                  // Find the collapsible section by the 'name' attribute
-                  const target = document.querySelector(`[name="${sectionName}"]`);
+                  // Find the collapsible section by the "name" attribute
+                  const target = this.element.querySelector(`[name="${sectionName}"]`);
                   if (target) {
-                     await this.#toggleContent($(target).children('.items-header'), true);
+                     await this.#toggleContent(target, true);
                   } else {
                      // Not found.
                      //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
-                     await actor.unsetFlag(game.system.id, key);
+                     await this.actor.unsetFlag(game.system.id, key);
                   }
                }
-            } else if (key === 'collapsed-undefined') {
+            } else if (key === "collapsed-undefined") {
                // Clean up any invalid flags (optional)
-               await actor.unsetFlag(game.system.id, key);
+               await this.actor.unsetFlag(game.system.id, key);
                console.warn("Removed invalid flag: collapsed-undefined");
+            }
+         });
+      } else {
+         Object.keys(flags).forEach(async (key) => {
+            if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
+               await this.actor.unsetFlag(game.system.id, key);
             }
          });
       }
    }
 
    /**
-    * Handler for clicking on a container item's collapse/expand icon.
+    * Handler for clicking on a container item"s collapse/expand icon.
     * @param {MouseEvent} event
     */
    async _toggleContainedItems(event) {
@@ -401,41 +402,53 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       this.actor.updateEmbeddedDocuments("Item", updates);
    }
 
+   #hasSameActorMastery(item) {
+      return this.actor.items.find(i => i.type === "mastery" && i.name === item.name) !== undefined;
+   }
+   #hasSameActorClass(item) {
+      return this.actor.items.find(i => i.type === "actorClass" && i.name === item.name) !== undefined;
+   }
+
    /**
     * Toggles the collapsible content based on the isCollapsed state.
     * This method is separate from the event handler because it is also called to restore expanded state when opening the sheet.
     * @param {any} parent The clicked element as a jquery object.
     */
    async #toggleContent(parent) {
-      const collapsibleItems = parent.find('.collapsible-content');
-      const isCollapsed = $(collapsibleItems[0]).hasClass('collapsed');
+      const collapsibleItems = parent.querySelectorAll(".collapsible-content");
+      const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
 
       if (isCollapsed === true) {
          // Expand the content
-         collapsibleItems.each(async (index, content) => {
-            let $content = $(content);
-            $content.removeClass('collapsed');
-            $content.css('height', $content.prop('scrollHeight') + 'px');
-            setTimeout(() => { $content.css('height', ''); }, 100); // Adjust to match CSS transition duration
+         collapsibleItems.forEach((content) => {
+            const contentElement = content; // The current content element
+            contentElement.classList.remove("collapsed");
+
+            contentElement.style.height = contentElement.scrollHeight + "px";
+
+            // Reset the height after the transition duration
+            setTimeout(() => { contentElement.style.height = ""; }, 100); // Adjust to match CSS transition duration
          });
       } else {
          // Collapse the content
-         collapsibleItems.each(async (index, content) => {
-            let $content = $(content);
-            $content.css('height', $content.height() + 'px');
-            $content.addClass('collapsed');
-            setTimeout(() => { $content.css('height', '0'); }, 0);
+         collapsibleItems.forEach((content) => {
+            const contentElement = content; // The current content element
+
+            contentElement.style.height = contentElement.clientHeight + "px";
+            contentElement.classList.add("collapsed");
+
+            // Collapse the content by setting height to 0
+            setTimeout(() => { contentElement.style.height = "0"; }, 0);
          });
       }
 
       // If remember state is enabled, store the collapsed state
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       if (rememberCollapsedState === true) {
-         const sectionName = parent.parent().attr('name'); // Access the `name` attribute from the DOM element
+         const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
          //console.debug(`Remembering expanded state for ${sectionName}.`, target);
          if (sectionName !== undefined) {
-            const actor = game.actors.get(this.actor.id);
-            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+            await this.actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
          }
       }
    }
@@ -445,31 +458,27 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     *
     * @param {object} context The context object to mutate
     */
-   #prepareItems(context) {
+   async #prepareItems(context) {
       // Initialize arrays.
       let gear = [];
       const weapons = [];
       const armor = [];
       const skills = [];
       const masteries = [];
-      const spellSlots = [];
       const treasure = [];
       const specialAbilities = [];
       const exploration = [];
       const classAbilities = [];
       const savingThrows = [];
       const conditions = [];
-
-      for (let i = 0; i < this.actor.system.config.maxSpellLevel; i++) {
-         spellSlots.push({ spells: [] })
-      }
+      const actorClasses = [];
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
       for (let item of items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
-         if (item.type === 'item' || item.type === 'light' || item.type === 'treasure') {
+         if (item.type === "item" || item.type === "light" || item.type === "treasure") {
             // If a contained item...
             if (item.system.containerId?.length > 0) {
                // Check to see if container still exists.
@@ -482,47 +491,43 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                gear.push(item);
             }
             // If this is a treasure item...
-            if (item.type === 'treasure') {
+            if (item.type === "treasure") {
                // Also add to the treasure array
                treasure.push(item);
             }
          }
-         // Append to spells.
-         else if (item.type === 'spell') {
-            const spellLevel = Math.max(0, item.system.spellLevel - 1);
-            if (item.system.spellLevel !== undefined && spellSlots?.length >= item.system.spellLevel) {
-               spellSlots[spellLevel].spells.push(item);
-            } else {
-               console.warn(`Not able to add spell ${item.name} of level ${item.system.spellLevel} to ${this.actor.name}. Caster only has ${spellSlots.length} spell slot(s).`);
-            }
-         }
          // Append to weapons.
-         else if (item.type === 'weapon') {
+         else if (item.type === "weapon") {
             weapons.push(item);
          }
          // Append to armor.
-         else if (item.type === 'armor') {
+         else if (item.type === "armor") {
             armor.push(item);
          }
          // Append to skills.
-         else if (item.type === 'skill') {
+         else if (item.type === "skill") {
             skills.push(item);
          }
          // Append to conditions.
-         else if (item.type === 'condition') {
+         else if (item.type === "condition") {
             conditions.push(item);
          }
          // Append to masteries.
-         else if (item.type === 'mastery') {
+         else if (item.type === "mastery") {
             masteries.push(item);
-         }// Append to specialAbility.
-         else if (item.type === 'specialAbility') {
+         }
+         // Append to classes.
+         else if (item.type === "actorClass") {
+            actorClasses.push(item);
+         }
+         // Append to specialAbility.
+         else if (item.type === "specialAbility") {
             const operators = {
-               eq: '=',
-               gt: '&gt;',
-               lt: '&lt;',
-               gte: '&gt;=',
-               lte: '&lt;='
+               eq: "=",
+               gt: "&gt;",
+               lt: "&lt;",
+               gte: "&gt;=",
+               lte: "&lt;="
             };
             if (item.system.category === "explore") {
                exploration.push({ item, op: operators[item.system.operator] });
@@ -547,14 +552,16 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.masteries = masteries;
       context.treasure = treasure;
       context.treasureValue = this.getTreasureValue(context);
-      context.spellSlots = spellSlots;
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      context.spellClasses = await classSystem.prepareSpellsContext(this.actor);
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
       context.savingThrows = savingThrows;
       context.conditions = conditions;
+      context.actorClasses = actorClasses;
 
-      Object.assign(context, game.fade.registry.getSystem('encumbranceSystem').calcCategoryEnc(this.actor.items));
+      Object.assign(context, game.fade.registry.getSystem("encumbranceSystem").calcCategoryEnc(this.actor.items));
    }
 
    #mapContainer(item) {
@@ -565,6 +572,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             this.#mapContainer(innerItem);
          }
          item.contained = docItem?.containedItems || [];
+         // For displaying the containers total weight, including contained items.
          item.containedEnc = docItem?.totalEnc || 0;
       }
       return item;
@@ -575,20 +583,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    static async #clickResetSpells(event) {
-      const spells = this.actor.items.filter((item) => item.type === 'spell');
-      spells.forEach(async (spell) => {
-         spell.system.cast = 0;
-         await spell.update({ "system.cast": spell.system.cast });
-      });
-
-      const msg = game.i18n.format('FADE.Chat.resetSpells', { actorName: this.actor.name });
-      ui.notifications.info(msg);
-      // Create the chat message
-      await ChatMessage.create({ content: msg });
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      await classSystem.resetSpells(this.actor, event);
    }
 
    static #clickDeleteTag(event) {
-      const tag = event.target.closest('.tag-delete').dataset.tag;
+      const tag = event.target.closest(".tag-delete").dataset.tag;
       this.actor.tagManager.popTag(tag);
    }
 
@@ -597,7 +597,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    * @this {DocumentSheetV2}
    * @type {ApplicationClickAction}
    */
-   static async #onEditImage(event, target) {
+   static async #onEditImage(_event, target) {
       if (target.nodeName !== "IMG") {
          throw new Error("The editImage action is available only for IMG elements.");
       }
@@ -611,7 +611,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          redirectToRoot: defaultImage ? [defaultImage] : [],
          callback: path => {
             target.src = path;
-               this.submit();
+            this.submit();
          },
          top: this.position.top + 40,
          left: this.position.left + 10
@@ -638,7 +638,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             if (otherSameTypeArmor) {
                await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
             }
-         } else if (item.system.isAmmo === false && (item.type === "item" || item.type === 'light')) {
+         } else if (item.system.isAmmo === false && (item.type === "item" || item.type === "light")) {
             updateObj["system.containerId"] = null;
          }
 
@@ -649,9 +649,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickToggleHeader(event) {
       // If not the create item column...
-      const parent = event.target.closest('.items-list');
+      const parent = event.target.closest(".items-list");
       if (parent) {
-         await this.#toggleContent($(parent));
+         await this.#toggleContent(parent);
       }
    }
 
@@ -666,7 +666,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    static async #clickCreateItem(event) {
       event.preventDefault();
-      const target = event.target.closest('.item-control');
+      const target = event.target.closest(".item-control");
       // Get the type of item to create.
       const type = target.dataset.type;
       // Grab any data associated with this control.
@@ -674,7 +674,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // If tags are specified
       if (target.dataset.tags?.length > 0) {
-         data.tags = target.dataset.tags.split(',');
+         data.tags = target.dataset.tags.split(",");
       }
 
       // Localize the type
@@ -691,7 +691,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       };
 
       // Remove the type from the dataset since it's in the itemData.type prop.
-      delete itemData.system['type'];
+      delete itemData.system["type"];
 
       // Finally, create the item!
       return await FDItem.create(itemData, { parent: this.actor });
@@ -699,8 +699,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickDeleteItem(event) {
       const item = this._getItemFromActor(event);
-      if (item.type === 'condition' && game.user.isGM === false) return;
-      const parent = $(event.target).parents('.item');
+      if (item.type === "condition" && game.user.isGM === false) return;
+      const parent = $(event.target).parents(".item");
       item.delete();
       parent.slideUp(200, () => this.render(false));
    }
@@ -710,7 +710,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    static async #clickEditClass(event) {
-      const classItem = await fadeFinder.getClass(this.actor.system.details.class);
+      const dataset = event.target.dataset;
+      const classItem = await fadeFinder.getClass(dataset.classname);
       classItem?.sheet?.render(true)
    }
 
@@ -749,12 +750,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    static async #clickRollAbility(event) {
-      const abilityCheckSys = await game.fade.registry.getSystem('abilityCheck');
+      const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
       abilityCheckSys.execute({ actor: this.actor, event });
    }
 
    static async #clickRollMorale(event) {
-      const moraleCheckSys = await game.fade.registry.getSystem('moraleCheck');
+      const moraleCheckSys = await game.fade.registry.getSystem("moraleCheck");
       moraleCheckSys.execute({ actor: this.actor, event });
    }
 
@@ -776,28 +777,28 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickEditAbilityScores(event) {
       this.editScores = !this.editScores;
-      $(event.currentTarget).find('.ability-score-input, .ability-score, .ability-mod').toggle();
+      $(event.currentTarget).find(".ability-score-input, .ability-score, .ability-mod").toggle();
    }
 
    static async #clickExpandDesc(event) {
       // If not the create item column...
-      const descElem = $(event.target).parents('.item').find('.item-description');
+      const descElem = $(event.target).parents(".item").find(".item-description");
       if (descElem) {
-         const isCollapsed = $(descElem[0]).hasClass('desc-collapsed');
+         const isCollapsed = $(descElem[0]).hasClass("desc-collapsed");
          if (isCollapsed === true) {
-            descElem.removeClass('desc-collapsed');
-            const itemElement = $(event.target).parents('.item');
-            const item = this.actor.items.get(itemElement.data('itemId'));
+            descElem.removeClass("desc-collapsed");
+            const itemElement = $(event.target).parents(".item");
+            const item = this.actor.items.get(itemElement.data("itemId"));
             if (item !== null) {
                const enrichedDesc = await item.getInlineDescription();
-               if (enrichedDesc.startsWith('<') === false) {
+               if (enrichedDesc.startsWith("<") === false) {
                   descElem.append(enrichedDesc);
                } else {
                   descElem.append($(enrichedDesc));
                }
             }
          } else {
-            descElem.addClass('desc-collapsed');
+            descElem.addClass("desc-collapsed");
             descElem.empty();
          }
       }

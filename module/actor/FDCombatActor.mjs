@@ -3,14 +3,16 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
  * @extends {Actor}
  */
-export class FDActor extends FDActorBase {
+export class FDCombatActor extends FDActorBase {
    constructor(data, context) {
       super(data, context);
+      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    /**
@@ -69,7 +71,8 @@ export class FDActor extends FDActorBase {
    prepareBaseData() {
       super.prepareBaseData();
       if (this.id) {
-         this._prepareSpellsUsed();
+         //const classSystem = game.fade.registry.getSystem("classSystem");
+         //classSystem.prepareSpellsUsed(this);
       }
    }
 
@@ -79,7 +82,7 @@ export class FDActor extends FDActorBase {
       if (this.id) {
          // Apply the mastery level override, if present.
          if (this.system.mod.masteryLevelOverride) {
-            for (let mastery of this.items.filter(item => item.type === 'mastery')) {
+            for (let mastery of this.items.filter(item => item.type === "mastery")) {
                mastery.system.effectiveLevel = this.system.mod.masteryLevelOverride;
             }
          }
@@ -106,7 +109,7 @@ export class FDActor extends FDActorBase {
       dataset.target = savingThrow.system.target;
       dataset.rollmode = savingThrow.system.rollMode;
       dataset.label = savingThrow.name;
-      if (this.type === 'character') {
+      if (this.type === "character") {
          dataset.type = type;
       }
 
@@ -120,7 +123,7 @@ export class FDActor extends FDActorBase {
 
       if (dialogResp) {
          let rollMod = Number(dialogResp.mod) || 0;
-         if (dialogResp.action === 'magic') {
+         if (dialogResp.action === "magic") {
             rollMod += this.system.abilities?.wis?.mod ?? 0;
          }
          rollMod += this.system.mod.save[type] || 0;
@@ -152,7 +155,7 @@ export class FDActor extends FDActorBase {
       const selected = Array.from(canvas.tokens.controlled);
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
       } else {
          for (let target of selected) {
             // Apply damage to the token's actor
@@ -202,7 +205,7 @@ export class FDActor extends FDActorBase {
          && (item.system.quantity === null || item.system.quantity > 0));
       if (rangedWeapons?.length > 0) {
          if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
-            || (item.system.damageType === 'breath' || item.system.natural === true))) {
+            || (item.system.damageType === "breath" || item.system.natural === true))) {
             result.push("fire");
          } else {
             result.push("throw");
@@ -227,7 +230,7 @@ export class FDActor extends FDActorBase {
          && (item.system.memorized === null || item.system.memorized > 0))?.length > 0) {
          result.push("spell");
       }
-      const specialAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.combatManeuver !== null)
+      const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null)
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
          const config = CONFIG.FADE.CombatManeuvers[ability];
@@ -237,86 +240,18 @@ export class FDActor extends FDActorBase {
       }
       return result;
    }
-
-   async clearClassData(className) {
-      const classItem = await fadeFinder.getClass(className?.toLowerCase());
-      if (!classItem) {
-         console.warn(`Class not found ${className}.`);
-         return;
-      }
-      const update = {
-         details: {
-            title: "",
-            class: "",
-            xp: {
-               bonus: null,
-               next: null
-            }
-         },
-         thbonus: 0,
-         hp: { hd: "" },
-         thac0: { value: null },
-         config: { maxSpellLevel: 0 },
-         spellSlots: []
-      };
-      await this.update({ system: update });
-      const abilityNames = classItem.system.specialAbilities.map(item => item.name);
-      const actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save' && abilityNames.includes(item.name));
-      for (let classAbility of actorAbilities) {
-         classAbility.delete();
-      }
-      const itemNames = classItem.system.classItems.map(item => item.name);
-      const actorItems = this.items.filter(item => (item.type === 'weapon' || item.type === 'armor') && itemNames.includes(item.name));
-      for (let classItem of actorItems) {
-         classItem.delete();
-      }
-   }
-
+   
    /**
-    * Prepares the used spells per level totals
-    * @protected 
-    */
-   _prepareSpellsUsed() {
-      if (this.testUserPermission(game.user, "OWNER") === false) return;
-
-      const systemData = this.system;
-      const spells = this.items.filter((item) => item.type === 'spell');
-      let spellSlots = systemData.spellSlots || [];
-
-      // Reset used spells to zero.
-      // Note: This is not how many times it has been cast, but how many slots have been used.
-      for (let i = 0; i < systemData.config.maxSpellLevel; i++) {
-         spellSlots[i] = spellSlots[i] || {};
-         spellSlots[i].used = 0;
-      }
-
-      if (spells.length > 0) {
-         for (let spell of spells) {
-            const spellLevel = Math.max(0, spell.system.spellLevel - 1);
-            if (spell.system.spellLevel > spellSlots.length) {
-               console.warn(`${this.name} trying to setup spell level ${spell.system.spellLevel} but only has maxSpellLevel of ${systemData.config.maxSpellLevel}.`);
-            } else if (spell.system.memorized > 0) {
-               spellSlots[spellLevel].used += spell.system.memorized ?? 1;
-            }
-         }
-      }
-      if (spellSlots.length !== systemData.config.maxSpellLevel) {
-         console.warn(`${this.name} has incorrect number of spell slots (${spellSlots.length}). Max spell level is (${systemData.config.maxSpellLevel}).`);
-      }
-      systemData.spellSlots = spellSlots;
-   }
-
-   /**
-    * @protected
+    * @public
     * Add and/or update the actor's class-given special abilities.
     * @param {any} abilitiesData The class ability array for the desired level.
     * @returns void
     */
-   async _setupSpecialAbilities(abilitiesData) {
+   async setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
       let promises = [];
       // Get this actor's class ability items.
-      let actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+      let actorAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.category !== "save");
 
       // Determine which special abilities are missing and need to be added.
       const addItems = [];
@@ -326,7 +261,6 @@ export class FDActor extends FDActorBase {
             const theItem = await fadeFinder.getClassAbility(abilityData.name, abilityData.classKey);
             if (theItem) {
                const newAbility = theItem.toObject();
-               //newAbility.system.target = abilitiesData.find(item => item.name === newAbility.name)?.target;
                if (abilityData.target != null) {
                   newAbility.system.target = abilityData.target;
                }
@@ -346,7 +280,7 @@ export class FDActor extends FDActorBase {
       if (promises.length > 0) {
          await Promise.all(promises);
          promises = [];
-         actorAbilities = this.items.filter(item => item.type === 'specialAbility' && item.system.category !== 'save');
+         actorAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.category !== "save");
       }
 
       // Iterate over ability items and set each one.
@@ -373,12 +307,12 @@ export class FDActor extends FDActorBase {
    }
 
    /**
-  * @protected
+  * @public
   * Add and/or update the actor's class-given items.
   * @param {any} itemsData The class items array for the desired level.
   * @returns void
   */
-   async _setupItems(itemsData) {
+   async setupItems(itemsData) {
       if (game.user.isGM === false || itemsData == null || itemsData?.length == 0) return;
       const promises = [];
       // Get this actor's class ability items.
@@ -423,53 +357,12 @@ export class FDActor extends FDActorBase {
       }
    }
 
-   /**
-    * Called by Character and Monster actor classes to update/add saving throws.
-    * @param {any} savesData The values to use for the saving throws.
-    */
-   async _setupSavingThrows(savesData) {
-      if (game.user.isGM === false) return;
-      const promises = [];
-      const savingThrowItems = await fadeFinder.getSavingThrows();
-      const savingThrows = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'save');
-      const saveEntries = Object.entries(savesData);
-      const addItems = [];
-      for (const saveData of saveEntries) {
-         const stName = saveData[0];
-         if (stName !== 'level' && savingThrows.find(item => item.system.customSaveCode === stName) === undefined
-            && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
-            const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
-            if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
-               const newSave = saveItem.toObject();
-               const saveTarget = savesData[newSave.system.customSaveCode];
-               newSave.system.target = saveTarget ?? 15;
-               addItems.push(newSave);
-            } else if (savesData[saveItem.system.customSaveCode] > 0) {
-               console.warn(`The specified saving throw (${stName}) does not exist as a world item.`);
-            }
-         }
-      }
-      if (addItems.length > 0) {
-         //console.log(`Adding saving throw items to ${this.name}`);
-         promises.push(this.createEmbeddedDocuments("Item", addItems));
-      }
-      // Iterate over saving throw items and set each one.
-      for (const savingThrow of savingThrows) {
-         const saveTarget = savesData[savingThrow.system.customSaveCode];
-         if (saveTarget) {
-            promises.push(savingThrow.update({ "system.target": saveTarget }));
-         }
-      }
-
-      if (promises.length > 0) {
-         await Promise.all(promises);
-      }
-   }
-
    #getSavingThrow(type) {
-      const result = this.items.find(item => item.type === 'specialAbility' && item.system.category === 'save' && item.system.customSaveCode === type);
+      const result = this.items.find(item => item.type === "specialAbility"
+         && item.system.category === "save"
+         && item.system.customSaveCode === type);
       if (!result) {
-         ui.notifications.error(game.i18n.format('FADE.notification.missingSave', { type }));
+         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { type }));
       }
       return result;
    }

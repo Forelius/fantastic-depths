@@ -3,12 +3,12 @@ import { MoraleCheck, AbilityCheck, ActorMovement } from './DefaultSystem.mjs'
 import { ClassicArmorSystem } from './ArmorSystem.mjs';
 import { DamageSystem } from './DamageSystem.mjs';
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
-import { IndivInit } from './IndivInit.mjs';
-import { GroupInit } from './GroupInit.mjs';
-import { WeaponMasterySystem } from './WeaponMastery.mjs';
+import { IndivInit, GroupInit } from './InitiativeSystem.mjs';
+import { WeaponMasteryHeroic, WeaponMasteryBase } from './WeaponMastery.mjs';
 import { Wrestling } from "./Wrestling.mjs";
 import { Shove } from "./Shove.mjs";
 import { UserTables } from "./UserTables.mjs";
+import { SingleClassSystem, MultiClassSystem } from "./ClassSystem.mjs";
 
 export class fadeRegistry {
    constructor() {
@@ -22,9 +22,11 @@ export class fadeRegistry {
       this.registerSystem('abilityCheck', new AbilityCheck(), AbilityCheck);
       this.registerSystem('armorSystem', new ClassicArmorSystem(), ClassicArmorSystem);
       this.registerSystem('damageSystem', new DamageSystem(), DamageSystem);
-      const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
-      if (masteryEnabled) {
-         this.registerSystem('weaponMasterySystem', new WeaponMasterySystem(), WeaponMasterySystem);
+      const masterySetting = game.settings.get(game.system.id, "weaponMastery");
+      if (masterySetting === "classic") {
+         this.registerSystem('weaponMastery', new WeaponMasteryBase(), WeaponMasteryBase);
+      } else if (masterySetting === "heroic") {
+         this.registerSystem('weaponMastery', new WeaponMasteryHeroic(), WeaponMasteryHeroic);
       }
 
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");
@@ -60,6 +62,13 @@ export class fadeRegistry {
       this.registerSystem('shove', Shove, Shove);
       this.registerSystem('userTables', new UserTables(), UserTables);
       this.registerSystem('actorMovement', ActorMovement, ActorMovement);
+
+      const classSystem = game.settings.get(game.system.id, "classSystem");
+      if (classSystem === "single") {
+         this.registerSystem('classSystem', new SingleClassSystem(), SingleClassSystem);
+      } else if (classSystem === "advanced") {
+         this.registerSystem('classSystem', new MultiClassSystem(), MultiClassSystem);
+      }
    }
 
    registerSystem(id, instance, type) {

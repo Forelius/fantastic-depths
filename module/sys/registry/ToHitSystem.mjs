@@ -1,8 +1,16 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { SocketManager } from '/systems/fantastic-depths/module/sys/SocketManager.mjs'
 
-export class ToHitSystemBase {
+export class ToHitInterface {
+   getAttackRoll(actor, weapon, attackType, options = {}) { throw new Error("Method not implemented."); }
+   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') { throw new Error("Method not implemented."); }
+   getDiceSum(roll) { throw new Error("Method not implemented."); }
+   getLowestACHit(roll, rollTotal, thac0) { throw new Error("Method not implemented."); }
+}
+
+export class ToHitSystemBase extends ToHitInterface {
    constructor() {
+      super();
       this.rangeModifiers = {
          short: 1,
          medium: 0,
@@ -10,7 +18,7 @@ export class ToHitSystemBase {
       };
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
-      this.masterySystem = game.fade.registry.getSystem('weaponMasterySystem');
+      this.masterySystem = game.fade.registry.getSystem('weaponMastery');
    }
 
    /**

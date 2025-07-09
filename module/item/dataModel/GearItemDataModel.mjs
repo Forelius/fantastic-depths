@@ -17,9 +17,10 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          quantity: new fields.NumberField({ required: true, initial: 1 }),
          quantityMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
          // Some items can be used multiple times and it doesn't effect the total weight or cost
-         charges: new fields.NumberField({ required: true, initial: 0}),
+         charges: new fields.NumberField({ required: true, initial: 0 }),
          chargesMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
          weight: new fields.NumberField({ required: false, initial: 1 }),
+         weightEquipped: new fields.NumberField({ required: false, initial: null }),
          cost: new fields.NumberField({ required: false, initial: 0 }),
          totalWeight: new fields.NumberField({ required: false, initial: 0 }),
          totalCost: new fields.NumberField({ required: false, initial: 0 }),
@@ -38,7 +39,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          unidentifiedDesc: new fields.StringField({ required: false, initial: "" }),
          isIdentified: new fields.BooleanField({ required: false, initial: true }),
          isCursed: new fields.BooleanField({ required: false, initial: false }),
-         isCarried: new fields.BooleanField({ required: true, initial: true }),
+         isDropped: new fields.BooleanField({ required: true, initial: false }),
          // Items with associated actions
          savingThrow: new fields.StringField({ nullable: true, initial: null }),
          dmgFormula: new fields.StringField({ nullable: true, initial: null }),
@@ -51,6 +52,20 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       };
    }
 
+   /**
+    * Migrate source data from some prior format into a new specification.
+    * The source parameter is either original data retrieved from disk or provided by an update operation.
+    * @inheritDoc
+    */
+   static migrateData(source) {
+      // TODO: Remove someday.    
+      if ((source.weightEquipped === null || source.weightEquipped === undefined) && source.weight) {
+         //console.debug(`Setting equipped weight. Was ${source, source.weightEquipped} will be ${source.weight}`);
+         source.weightEquipped = source.weight;
+      }
+      return super.migrateData(source);
+   }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -60,9 +75,21 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+      if (this.weight === 0) {
+         this.weightEquipped = 0;
+      }
       this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
-      if (this.quantity === 0) {
+      // If the quantity is zero or this item is contained in a container...
+      if (this.quantity === 0 || (this.containerId?.length > 0 && this.isAmmo == false)) {
+         // It can't be equipped.
          this.equipped = false;
+         // It can't be dropped.
+         this.isDropped = false;
+      }
+      // If this is a container then do not allow quantity other than 1.
+      if (this.container) {
+         this.quantity = 1;
+         this.quantityMax = 0;
       }
 
       if (this.chargesMax === null) {
@@ -73,6 +100,6 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
 
       // This allows for items to be usable even if there is no saving throw, damage formula or healing formula specified.
       // The purpose for making an item usable anyways, is that the usage would be tracked.
-      this.isUsable = this.isUsable ||  (this.savingThrow || this.dmgFormula || this.healFormula)?.length > 0 || this.chargesMax > 0 || this.chargesMax === null;
-   }  
+      this.isUsable = this.isUsable || (this.savingThrow || this.dmgFormula || this.healFormula)?.length > 0 || this.chargesMax > 0 || this.chargesMax === null;
+   }
 }

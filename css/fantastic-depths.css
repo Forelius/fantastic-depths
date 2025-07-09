@@ -131,8 +131,8 @@
   width: 300px;
 }
 
-.fantastic-depths .window-content .tab {
-  /*height:100%;*/
+.fantastic-depths .window-content nav.tabs {
+  line-height: 1;
 }
 .fantastic-depths .window-content input, .fantastic-depths .window-content select {
   max-height: 26px;
@@ -624,6 +624,11 @@ table.compact-table input {
 .dark-mode .fantastic-depths .window-content {
   color: #ebeae4;
   background: url("../assets/img/grunge2.jpg");
+  /*         button {
+     background: url('../assets/img/grungeyellow.jpg');
+     color: $lighterColor;
+     border: 1px solid #545140;
+  }*/
 }
 .dark-mode .fantastic-depths .window-content .editor-container {
   margin: 0 4px;
@@ -855,6 +860,9 @@ table.compact-table input {
 .chat-message .message-content button {
   margin: 0.4rem 0.1rem;
   width: 100%;
+}
+.chat-message .message-content .content-link, .chat-message .message-content .inline-roll {
+  color: #e9c68b;
 }
 .chat-message .message-content .digest {
   margin-bottom: 6px;
@@ -1210,6 +1218,11 @@ table.compact-table input {
   transform: translate(-50%, -50%); /* Adjust position to truly center */
   font-size: 14px;
 }
+.system-fantastic-depths .actor .dropped-item {
+  width: 28px;
+  margin: 5px 0 0 6px;
+  filter: brightness(0) saturate(100%) invert(44%) sepia(49%) saturate(934%) hue-rotate(315deg) brightness(86%) contrast(91%);
+}
 .system-fantastic-depths .actor .category-info {
   font-weight: normal;
   margin-left: 10px;
@@ -1373,7 +1386,7 @@ table.compact-table input {
   height: 34px;
 }
 .system-fantastic-depths .sheet-header .charname input, .system-fantastic-depths .sheet-header .charname select {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 500;
   max-height: 30px;
   height: 30px;
@@ -1440,38 +1453,31 @@ table.compact-table input {
   list-style: none;
   border-top: none;
 }
-.system-fantastic-depths .summary div {
+.system-fantastic-depths .summary div, .system-fantastic-depths .summary li {
   height: calc(100% - 5px);
   margin: 2px 2px;
   padding: 0;
   line-height: 30px;
   position: relative;
 }
-.system-fantastic-depths .summary div label {
+.system-fantastic-depths .summary div label, .system-fantastic-depths .summary li label {
   line-height: 6px;
   position: absolute;
   font-size: 10px;
   top: 32px;
   left: 2px;
 }
-.system-fantastic-depths .summary li {
-  height: calc(100% - 5px);
-  float: left;
-  margin: 2px 2px;
-  padding: 0;
-  line-height: 30px;
-  position: relative;
-}
-.system-fantastic-depths .summary li label {
-  line-height: 6px;
-  position: absolute;
-  font-size: 10px;
-  top: 32px;
-  left: 2px;
-}
-.system-fantastic-depths .summary li.notify input {
+.system-fantastic-depths .summary div.notify input, .system-fantastic-depths .summary li.notify input {
   font-weight: bold;
   animation: 0.8s ease-in 1s infinite alternate notify;
+}
+@keyframes notify {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .system-fantastic-depths .items-list {
   margin: 0 !important;
@@ -1586,7 +1592,7 @@ table.compact-table input {
 .system-fantastic-depths .items-list .item input, .system-fantastic-depths .items-list .item select {
   padding: 0 4px;
   width: calc(100% - 3px);
-  height: 26px;
+  height: 22px;
 }
 .system-fantastic-depths .items-list .item .item-description {
   margin: -3px 0 4px 0;
@@ -1638,6 +1644,9 @@ table.compact-table input {
   padding: 3px 1px;
   align-items: center;
   font-weight: bold;
+}
+.system-fantastic-depths .items-list .items-header input {
+  height: 18px;
 }
 .system-fantastic-depths .items-list .items-header > * {
   font-size: 12px;

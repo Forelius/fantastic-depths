@@ -1,6 +1,6 @@
 import { FDActorBaseDM } from "/systems/fantastic-depths/module/actor/dataModel/FDActorBaseDM.mjs";
 
-export class FDActorDM extends FDActorBaseDM {
+export class FDCombatActorDM extends FDActorBaseDM {
    static defineSchema() {
       const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
@@ -10,6 +10,8 @@ export class FDActorDM extends FDActorBaseDM {
             attacks: new fields.StringField({ initial: "1" }),
          }),
          config: new fields.SchemaField({
+            // Ignored by multi-class character
+            firstSpellLevel: new fields.NumberField({ required: false, initial: 1 }),
             maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
          thac0: new fields.SchemaField({
@@ -27,6 +29,7 @@ export class FDActorDM extends FDActorBaseDM {
          combat: new fields.SchemaField({
             // If true the character or class has basic proficiency with all weapons.
             basicProficiency: new fields.BooleanField({ required: true, initial: false }),
+            unskilledToHitMod: new fields.NumberField({ required: true, initial: -2 }),
             // This is how many attacks the character has made for the current round
             attacks: new fields.NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round
@@ -35,14 +38,6 @@ export class FDActorDM extends FDActorBaseDM {
             deathCount: new fields.NumberField({ initial: 0 }),
             isDead: new fields.BooleanField({ initial: false }),
             declaredAction: new fields.StringField({ initial: "attack" }),
-         }),
-         spellSlots: new fields.ArrayField(new fields.SchemaField({
-            spellLevel: new fields.NumberField({ initial: 0 }),
-            used: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 0 })
-         }), {
-            required: false,
-            initial: []
          }),
          mod: new fields.SchemaField({
             // mod is for items that modify AC (add/subtract only) but are not armor items.
@@ -58,9 +53,9 @@ export class FDActorDM extends FDActorBaseDM {
             initiative: new fields.NumberField({ initial: 0 }),
             combat: new fields.SchemaField({
                toHit: new fields.NumberField({ initial: 0 }),
-               dmg: new fields.NumberField({ initial: 0 }),
+               dmg: new fields.StringField({ nullable: true, initial: null }),
                toHitRanged: new fields.NumberField({ initial: 0 }),
-               dmgRanged: new fields.NumberField({ initial: 0 }),
+               dmgRanged: new fields.StringField({ nullable: true, initial: null }),
                selfDmg: new fields.NumberField({ initial: 0 }),
                selfDmgRanged: new fields.NumberField({ initial: 0 }),
                selfDmgBreath: new fields.NumberField({ initial: 0 }),
@@ -129,7 +124,6 @@ export class FDActorDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
-      this._prepareSpells();
       for (let [key, ability] of Object.entries(this.abilities)) {
          ability.total = ability.value + ability.tempMod;
       }
@@ -159,6 +153,7 @@ export class FDActorDM extends FDActorBaseDM {
       const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
       const hasAbilityScoreMods = abilityScoreSetting === "withmod";
 
+      // If this is a character or if monsters have ability score mods...
       if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
          // Initialize ability score modifiers
          const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
@@ -196,22 +191,6 @@ export class FDActorDM extends FDActorBaseDM {
       // Saving throw mods
       this.mod.save = {};
       this.mod.save.all = 0;
-   }
-
-   /**
-    * Prepares the spell slots used and max values.
-    * @protected
-    */
-   _prepareSpells() {
-      if (this.config.maxSpellLevel > 0) {
-         this.spellSlots = Array.from({ length: this.config.maxSpellLevel }, (_, index) => ({
-            spellLevel: index + 1,
-            used: 0,
-            max: this.spellSlots?.[index]?.max ?? 0
-         }));
-      } else {
-         this.spellSlots = [];
-      }
    }
 
    getParsedHD() {

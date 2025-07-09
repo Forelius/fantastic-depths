@@ -4,15 +4,7 @@
          <div class="flex1 width-180">
             <input type='text' name="system.av" value='{{system.av}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} placeholder="0" />
             <label for="system.av" data-tooltip="{{localize 'FADE.Armor.av.hint'}}">{{localize 'FADE.Armor.av.short'}}</label>
-         </div>
-         <div class="flex1 width-80">
-            <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
-            <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
-         </div>
-         <div class="flex1 width-80">
-            <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
-            <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
-         </div>
+         </div>         
       </div>
    </div>
    {{> "itemIdentified"}}

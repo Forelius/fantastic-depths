@@ -5,33 +5,21 @@
          data-action="resetSpells">
          <i class="fas fa-sync"></i>
       </a>
-      {{#each spellSlots as |slot|}}
-      <div name="spellLevel{{add @index 1}}" class='items-list'>
+      {{#each spellClasses as |spellClass|}}
+      <h3>{{spellClass.className}}</h3>
+      {{#each spellClass.slots as |slot|}}
+      <div name="spellLevel{{add ../firstSpellLevel @index}}" class='items-list'>
          {{! Spell Level Header}}
          <div class='item flexrow items-header' data-action="toggleHeader">
             <div class='item-name'>
-               {{localize 'FADE.Spell.SpellLVL' level=(add @index 1)}}
+               {{localize 'FADE.Spell.SpellLVL' level=(add @index ../firstSpellLevel)}}
             </div>
             <div class="item-40px">{{localize 'FADE.Spell.slots'}}</div>
             <div class="item-80px flexrow">
-               <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'used'}}"
-                      name="system.spellSlots[{{@index}}].used" data-dtype="Number" placeholder="0" readonly
-                      data-tooltip="{{localize 'FADE.Spell.usedSlots'}}" />/
-               <input type="text" value="{{lookup (lookup @root.system.spellSlots @index) 'max'}}"
-                      name="system.spellSlots[{{@index}}].max" data-dtype="Number" placeholder="0"
-                      data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
+               <input type="text" value="{{slot.used}}" name="slot.used" data-dtype="Number" placeholder="0" readonly data-tooltip="{{localize 'FADE.Spell.castSlots'}}" />/
+               <input type="text" value="{{slot.max}}" name="slot.max" data-dtype="Number" placeholder="0" data-tooltip="{{localize 'FADE.Spell.availableSlots'}}" />
             </div>
-            <div class='item-controls2'>
-               {{#if @root.isGM}}
-               <a class='item-control'
-                  data-action="createItem"
-                  data-type='spell'
-                  data-tooltip='{{localize "DOCUMENT.Create" type=(localize "TYPES.Item.spell")}}'>
-                  <i class='fas fa-plus'></i>
-                  {{localize 'FADE.Spell.AddLVL' level=(add @index 1)}}
-               </a>
-               {{/if}}
-            </div>
+            <div class='item-controls2'></div>
          </div>
          {{#each slot.spells as |item id|}}
          {{! Spell Item }}
@@ -47,10 +35,10 @@
                </div>
                <div class="item-40px">{{localize 'FADE.Spell.casts'}}</div>
                <div class="item-80px flexrow editable">
-                  <input type="text" value="{{item.system.cast}}" data-dtype="Number" placeholder="0" data-field="cast"
+                  <input type="text" value="{{item.system.cast}}" data-dtype="Number" placeholder="0" data-field="system.cast"
                          data-tooltip="{{localize 'FADE.Spell.cast'}}" />/
                   <input type="text"
-                         value="{{item.system.memorized}}" data-field="memorized" data-dtype="Number" placeholder="∞"
+                         value="{{item.system.memorized}}" data-field="system.memorized" data-dtype="Number" placeholder="∞"
                          data-tooltip="{{localize 'FADE.Spell.memorized'}}" />
                </div>
                <div class='item-controls2'>
@@ -72,6 +60,7 @@
          </div>
          {{/each}}
       </div>
+      {{/each}}
       {{/each}}
    </div>
 </section>

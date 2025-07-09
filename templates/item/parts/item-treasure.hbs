@@ -3,7 +3,7 @@
       <div class='item-name'>{{localize 'TYPES.Item.treasure'}} <span class="category-info">({{treasureValue}} {{localize 'FADE.Item.cost.abbr'}})</span></div>
       <div class="item-60px">{{localize 'FADE.Item.cost.abbr'}}</div>
       <div class="item-60px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
-      {{#if showCoinWeight}}
+      {{#if showWeight}}
       <div class="item-40px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short2'}}</div>
       {{/if}}
    </div>
@@ -21,9 +21,9 @@
       </div>
       <div class="item-60px item-prop" data-tooltip="{{localize 'FADE.Item.cost.long'}}"><label>{{item.system.totalCost}}</label></div>
       <div class="item-60px item-prop editable">
-         <input type="text" value="{{item.system.quantity}}" data-dtype="Number" placeholder="0" data-field="quantity" data-tooltip="{{localize 'FADE.Item.quantity.long'}}" />
+         <input type="text" value="{{item.system.quantity}}" data-dtype="Number" placeholder="0" data-field="system.quantity" data-tooltip="{{localize 'FADE.Item.quantity.long'}}" />
       </div>
-      {{#if @root.showCoinWeight}}
+      {{#if @root.showWeight}}
       <div class="item-40px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
       {{/if}}
    </div>

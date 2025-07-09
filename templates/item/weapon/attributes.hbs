@@ -70,15 +70,7 @@
          <div style="max-width:70px;">
             <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
             <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
-         </div>
-         <div style="max-width:70px;">
-            <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
-            <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
-         </div>
-         <div style="max-width:70px;">
-            <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
-            <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
-         </div>
+         </div>         
       </div>
    </div>
    {{> "itemIdentified"}}

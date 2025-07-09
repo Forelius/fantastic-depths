@@ -1,5 +1,15 @@
-/** Not sure where this is going yet, but breaking into own system. */
-export class ArmorSystemBase {
+export class ArmorSystemInterface {
+   async getArmorPieces(actor) { throw new Error("Method not implemented."); }
+   async prepareAAC(ac) { throw new Error("Method not implemented."); }
+   async prepareACMod(actor, acDigest, ac) { throw new Error("Method not implemented."); }
+   async prepareDerivedData(actor) { throw new Error("Method not implemented."); }
+   async prepareEquippedArmor(equippedArmor, ac, dexMod, acDigest) { throw new Error("Method not implemented."); }
+   async prepareNaturalArmor(naturalArmor, ac, dexMod, acDigest) { throw new Error("Method not implemented."); }
+   async prepareShield(equippedShield, ac, acDigest) { throw new Error("Method not implemented."); }
+   async reset(actor) { throw new Error("Method not implemented."); }
+}
+
+export class ArmorSystemBase extends ArmorSystemInterface {
 
    reset(actor) {
       const dexMod = (actor.system.abilities?.dex.mod ?? 0);
@@ -45,7 +55,7 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       this.prepareAAC(ac);
 
       // Weapon mastery defense bonuses. These do not change the AC on the character sheet.
-      ac.mastery = game.fade.registry.getSystem('weaponMasterySystem')?.getDefenseMasteries(actor, ac) ?? ac.mastery;
+      ac.mastery = game.fade.registry.getSystem('weaponMastery')?.getDefenseMasteries(actor, ac) ?? ac.mastery;
 
       actor.system.ac = ac;
       actor.system.acDigest = acDigest;

@@ -8,14 +8,15 @@ import { fadeCompendium } from './sys/fadeCompendium.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
-import { FDActor } from './actor/FDActor.mjs';
+import { FDCombatActor } from './actor/FDCombatActor.mjs';
 import { CharacterSheet } from './sheets/CharacterSheet.mjs';
-import { CharacterSheet2 } from './sheets/CharacterSheet2.mjs';
+import { CharacterSheetBase } from './sheets/CharacterSheetBase.mjs';
 import { MonsterSheet } from './sheets/MonsterSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
 import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
-import { ActorMasteryItemDataModel } from './item/dataModel/ActorMasteryItemDataModel.mjs';
+import { ActorMasteryItemDM } from './item/dataModel/ActorMasteryItemDM.mjs';
+import { ActorClassDataModel } from './item/dataModel/ActorClassDataModel.mjs';
 import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
 import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.mjs';
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
@@ -27,6 +28,7 @@ import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataMode
 import { SpeciesItemDataModel } from './item/dataModel/SpeciesItemDataModel.mjs';
 import { GearItemSheet } from './sheets/GearItemSheet.mjs';
 import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
+import { ActorClassSheet } from './sheets/ActorClassSheet.mjs';
 import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
 import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
 import { ClassDefinitionItemSheet } from './sheets/ClassDefinitionItemSheet.mjs';
@@ -104,7 +106,8 @@ Hooks.once('init', async function () {
       light: LightItemDataModel,
       spell: SpellItemDataModel,
       weapon: WeaponItemDataModel,
-      mastery: ActorMasteryItemDataModel,
+      mastery: ActorMasteryItemDM,
+      actorClass: ActorClassDataModel,
       class: ClassDefinitionDataModel,
       weaponMastery: MasteryDefinitionDataModel,
       specialAbility: SpecialAbilityDataModel,
@@ -132,10 +135,10 @@ function registerSheets() {
       types: ['character'],
       makeDefault: true
    });
-   Actors.registerSheet('fantastic-depths', CharacterSheet2, {
-      label: 'FADE.SheetLabel.Character2',
+   Actors.registerSheet('fantastic-depths', CharacterSheetBase, {
+      label: 'FADE.SheetLabel.CharacterSheetBase',
       types: ['character'],
-      makeDefault: true
+      makeDefault: false
    });
    Actors.registerSheet('fantastic-depths', MonsterSheet, {
       label: 'FADE.SheetLabel.Monster',
@@ -152,6 +155,11 @@ function registerSheets() {
       label: 'FADE.SheetLabel.TreasureItem',
       makeDefault: true,
       types: ['treasure']
+   });
+   Items.registerSheet('fantastic-depths', ActorClassSheet, {
+      label: 'FADE.SheetLabel.ActorClassItem',
+      types: ['actorClass'],
+      makeDefault: true
    });
    Items.registerSheet('fantastic-depths', ActorMasterySheet, {
       label: 'FADE.SheetLabel.ActorMasteryItem',
@@ -247,7 +255,7 @@ Hooks.once('ready', async function () {
    $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
    $(document).on('click', '.apply-condition', async (event) => await SpellCastChatBuilder.clickApplyCondition(event));
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
-   $(document).on('click', '.saving-roll', FDActor.handleSavingThrowRequest);
+   $(document).on('click', '.saving-roll', FDCombatActor.handleSavingThrowRequest);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();
