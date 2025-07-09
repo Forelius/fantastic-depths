@@ -192,7 +192,7 @@ export class GroupInit extends InitiativeInterface {
       let groups = messageOptions?.group ? [messageOptions?.group] : [];
       if (groups.length === 0 && ids.length > 0) {
          const rollingCombatants = combat.combatants.filter(combatant => ids?.includes(combatant.id));
-         groups = [...new Set(rollingCombatants.map(combatant => combatant.group))];
+         groups = [...new Set(rollingCombatants.map(combatant => combatant.getGroup()))];
       }
       if (game.user.isGM === true) {
          for (const group of groups) {
