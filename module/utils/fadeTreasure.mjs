@@ -55,7 +55,7 @@ export class fadeTreasure {
       const chatMsgData = {
          content: chatContentArray.join('')
       };
-      ChatMessage.applyRollMode(chatMsgData, "blindroll");
+      ChatMessage.applyRollMode(chatMsgData, "gmroll");
       ChatMessage.create(chatMsgData);
    }
 
