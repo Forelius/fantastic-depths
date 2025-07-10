@@ -230,7 +230,7 @@ export class FDCombatActor extends FDActorBase {
          && (item.system.memorized === null || item.system.memorized > 0))?.length > 0) {
          result.push("spell");
       }
-      const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null)
+      const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null && item.system.combatManeuver !== "null")
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
          const config = CONFIG.FADE.CombatManeuvers[ability];

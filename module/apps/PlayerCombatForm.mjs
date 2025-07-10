@@ -100,7 +100,7 @@ export class PlayerCombatForm extends FormApplication {
     * @param {any} event
     */
    async #onPlayerChangedAction(event) {
-      console.debug(event);
+      //console.debug(event);
       const tokenId = event.currentTarget.dataset.tokenId;
       const actor = game.combat.combatants.find(combatant => combatant.token.id === tokenId)?.actor;
       const updateData = { "system.combat.declaredAction": event.currentTarget.value };
