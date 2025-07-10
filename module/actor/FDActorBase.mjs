@@ -1,4 +1,3 @@
-import { TagManager } from '../sys/TagManager.mjs';
 import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 
 /**
@@ -16,7 +15,6 @@ export class FDActorBase extends Actor {
             await token?.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
          };
       }
-      this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
    get currentActiveToken() {
