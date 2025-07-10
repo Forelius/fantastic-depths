@@ -6,6 +6,7 @@ export class fadeCombatant extends Combatant {
     */
    constructor(data, context) {
       super(data, context);
+      this._availableActions = [];
    }
 
    get declaredAction() {
@@ -27,15 +28,24 @@ export class fadeCombatant extends Combatant {
       return game.user.isGM === true || this.initiative === null;
    }
    get availableActions() {
-      const actions = this.actor.getAvailableActions();
-      return Object.entries(CONFIG.FADE.CombatManeuvers)
-         .filter(action => actions.includes(action[0]))
-         .map(([key, value]) => ({
-            text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
-            value: key,
-         }))
-         .sort((a, b) => a.text.localeCompare(b.text))
-         .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {}); // Sort by the `text` property
+      if (this.initiative == null) {
+         const actions = this.actor.getAvailableActions();
+
+         // If the current action isn't available, change it.
+         if (actions.find(action => action == this.actor?.system.combat.declaredAction) === undefined) {
+            this.actor.update({ 'system.combat.declaredAction': "nothing" });
+         }
+
+         this._availableActions = Object.entries(CONFIG.FADE.CombatManeuvers)
+            .filter(action => actions.includes(action[0]))
+            .map(([key, value]) => ({
+               text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
+               value: key,
+            }))
+            .sort((a, b) => a.text.localeCompare(b.text))
+            .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {}); // Sort by the `text` property
+      }
+      return this._availableActions;
    }
 
    /**
@@ -72,7 +82,7 @@ export class fadeCombatant extends Combatant {
       return result;
    }
 
-   async roundReset(isExit=false) {
+   async roundReset(isExit = false) {
       const promises = [];
 
       // Reset weapon attacks to zero
