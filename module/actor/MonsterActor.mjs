@@ -37,9 +37,6 @@ export class MonsterActor extends FDCombatActor {
       if (updateData.system?.details?.saveAs?.length > 0) {
          await this.#prepareSavingThrows(classSystem);
       }
-      if (updateData.system?.details?.saveAs?.length > 0) {
-         await this._prepareSavingThrows();
-      }
    }
 
    async #prepareSavingThrows(classSystem) {
