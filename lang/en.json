@@ -874,7 +874,7 @@
             "label": "Combat Manuever",
             "nothing": {
                "name": "Nothing",
-               "description": "Combatant does absolutely nothing this round. No move, no attack, no nothing."
+               "description": "Combatant does absolutely nothing this round. No move and no attack."
             },
             "moveOnly": {
                "name": "Move Only",
@@ -886,15 +886,15 @@
             },
             "throw": {
                "name": "Throw",
-               "description": "Combatant throws a suitable weapon, applying Dexterity and magic bonuses to the attack roll and Strength and magic bonuses to damage, provided the target is within range."
+               "description": "Combatant may move and then throw a suitable weapon, applying Dexterity and magic bonuses to the attack roll and Strength and magic bonuses to damage, provided the target is within range."
             },
             "fire": {
                "name": "Fire/Shoot",
-               "description": "Combatant uses a ranged weapon, such as a bow or breath weapon, provided the target is within the weapon’s range."
+               "description": "Combatant may move and then use a ranged weapon, such as a bow or breath weapon, provided the target is within the weapon’s range."
             },
             "spell": {
                "name": "Cast Spell",
-               "description": "Combatant casts a memorized spell. Monsters use this action for magical attacks that aren't ranged or melee."
+               "description": "Combatant casts a memorized spell. Monsters use this action for magical attacks that aren't ranged or melee. No movement is allowed."
             },
             "magicItem": {
                "name": "Magic Item",
@@ -902,11 +902,11 @@
             },
             "attack": {
                "name": "Attack",
-               "description": "Combatant makes a melee attack, adding Strength and magic bonuses to both the attack roll and damage."
+               "description": "Combatant may move and then make a melee attack, adding Strength and magic bonuses to both the attack roll and damage."
             },
             "withdrawal": {
                "name": "Withdrawal",
-               "description": "Combatant backs away from an enemy at 5 feet per round, attacking only if the enemy follows and moves into range during its movement phase."
+               "description": "Combatant backs away from an enemy at half the normal movement rate, attacking only if the enemy follows and moves into range during its movement phase."
             },
             "retreat": {
                "name": "Retreat",
@@ -918,7 +918,7 @@
             },
             "multiAttack": {
                "name": "Multi-Attack",
-               "description": "Combatant makes multiple attacks per round, which can include any combination of attacks, throws, disarms, or lance attacks."
+               "description": "Combatant may move and then make multiple attacks per round, which can include any combination of attacks, throws, disarms, or lance attacks."
             },
             "setSpear": {
                "name": "Set vs Charge",
