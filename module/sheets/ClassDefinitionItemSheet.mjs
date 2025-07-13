@@ -1,7 +1,7 @@
-import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
-import { DragDropMixin } from './mixins/DragDropMixin.mjs';
+import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs";
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
+import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -22,7 +22,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
          minimizable: false,
          contentClasses: ["scroll-body"]
       },
-      classes: ['fantastic-depths', 'sheet', 'item'],
+      classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
       },
@@ -82,10 +82,10 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'levels', 'description', 'saves', 'primereqs', 'abilities', 'items']
+      options.parts = ["header", "tabnav", "levels", "description", "saves", "primereqs", "abilities", "items"]
 
       if (this.item.system.maxSpellLevel > 0) {
-         options.parts.push('spells');
+         options.parts.push("spells");
       }
    }
 
@@ -126,21 +126,21 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
-      const group = 'primary';
+      const group = "primary";
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+      if (!this.tabGroups[group]) this.tabGroups[group] = "description";
 
       const tabs = {
-         levels: { id: 'levels', group, label: 'FADE.tabs.levels' },
-         description: { id: 'description', group, label: 'FADE.tabs.description' },
-         saves: { id: 'saves', group, label: 'FADE.Actor.Saves.long' },
-         primereqs: { id: 'primereqs', group, label: 'FADE.tabs.primeRequisites' },
-         abilities: { id: 'abilities', group, label: 'FADE.SpecialAbility.plural' },
-         items: { id: 'items', group, label: 'FADE.items' },
+         levels: { id: "levels", group, label: "FADE.tabs.levels" },
+         description: { id: "description", group, label: "FADE.tabs.description" },
+         saves: { id: "saves", group, label: "FADE.Actor.Saves.long" },
+         primereqs: { id: "primereqs", group, label: "FADE.tabs.primeRequisites" },
+         abilities: { id: "abilities", group, label: "FADE.SpecialAbility.plural" },
+         items: { id: "items", group, label: "FADE.items" },
       }
 
       if (this.item.system.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
       }
 
       for (const tab of Object.values(tabs)) {
@@ -157,13 +157,13 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       const droppedItem = await Item.implementation.fromDropData(data);
 
       // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === 'specialAbility') {
-         if (droppedItem.system.category === 'save') {
+      if (droppedItem.type === "specialAbility") {
+         if (droppedItem.system.category === "save") {
          } else {
             this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
          }
       } else if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
-         this.item.createClassItem(droppedItem.name, droppedItem.type);
+         this.item.createItem(droppedItem.name, droppedItem.type);
       }
    }
 
@@ -176,14 +176,14 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       event.preventDefault();
       const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
 
-      if (type === 'classSave') {
+      if (type === "classSave") {
          await this.item.createClassSave();
-      } else if (type === 'primeReq') {
+      } else if (type === "primeReq") {
          await this.item.createPrimeReq();
-      } else if (type === 'specialAbility') {
+      } else if (type === "specialAbility") {
          await this.item.createClassAbility();
-      } else if (type === 'item') {
-         await this.item.createClassItem();
+      } else if (type === "item") {
+         await this.item.createItem();
       }
       this.render();
    }
@@ -199,27 +199,27 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
          type = event.target.parentElement.dataset.type;
          index = parseInt(event.target.parentElement.dataset.index);
       } else {
-         console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can't determine item type.`, item);
+         console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can"t determine item type.`, item);
       }
 
-      if (type === 'classSave') {
+      if (type === "classSave") {
          const saves = this.item.system.saves;
          // Handle deletion of a class save
          saves.splice(index, 1);
          await this.item.update({ "system.saves": saves });
-      } else if (type === 'primeReq') {
+      } else if (type === "primeReq") {
          const primeReqs = this.item.system.primeReqs;
          if (primeReqs.length > index) {
             primeReqs.splice(index, 1);
             await this.item.update({ "system.primeReqs": primeReqs });
          }
-      } else if (type === 'specialAbility') {
+      } else if (type === "specialAbility") {
          const specialAbilities = this.item.system.specialAbilities;
          if (specialAbilities.length > index) {
             specialAbilities.splice(index, 1);
             await this.item.update({ "system.specialAbilities": specialAbilities });
          }
-      } else if (type === 'item') {
+      } else if (type === "item") {
          const items = this.item.system.classItems;
          if (items.length > index) {
             items.splice(index, 1);

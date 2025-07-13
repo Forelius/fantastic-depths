@@ -28,7 +28,7 @@ export class fadeCombatant extends Combatant {
       return game.user.isGM === true || this.initiative === null;
    }
    get availableActions() {
-      if (this.initiative == null) {
+      if (this.initiative == null || this._availableActions.length == 0) {
          const actions = this.actor.getAvailableActions();
 
          // If the current action isn't available, change it.

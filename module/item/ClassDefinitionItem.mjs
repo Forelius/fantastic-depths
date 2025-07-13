@@ -75,7 +75,7 @@ export class ClassDefinitionItem extends FDItem {
     * @param {any} name
     * @param {any} type
     */
-   async createClassItem(name = "", type = null) {
+   async createItem(name = "", type = null) {
       // Retrieve the array
       const items = this.system.classItems || [];
 

@@ -219,7 +219,7 @@ export class fadeFinder {
    /**
     * Retrieves class items from the class. This is not an array of items, just the data from the class.
     * @param {any} className The class name.
-    * @param {any} classLevel The level to retrieve abilities for.
+    * @param {any} classLevel The level to retrieve items for.
     * @returns An array or undefined.
     */
    static async getClassItems(className, classLevel) {
@@ -227,6 +227,23 @@ export class fadeFinder {
       let result;
       if (classItem) {
          result = classItem.system.classItems.filter(a => a.level <= classLevel)
+            .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
+         result = result ? Object.values(result) : null;
+      }
+      return result?.length > 0 ? result : undefined;
+   }
+
+   /**
+    * Retrieves class items from the species/ancestry. This is not an array of items, just the data from the species.
+    * @param {any} speciesName The species name.
+    * @param {any} classLevel The level to retrieve items for.
+    * @returns An array or undefined.
+    */
+   static async getSpeciesItems(speciesName, classLevel) {
+      const speciesItem = await fadeFinder.getSpecies(speciesName);
+      let result;
+      if (speciesItem) {
+         result = speciesItem.system.ancestryItems.filter(a => a.level <= classLevel)
             .reduce((acc, a) => ((acc[a.name] = !acc[a.name] || a.level > acc[a.name].level ? a : acc[a.name]), acc), {});
          result = result ? Object.values(result) : null;
       }

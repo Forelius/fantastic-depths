@@ -129,16 +129,19 @@ export class CharacterActor extends FDCombatActor {
       }
 
       if (!speciesItem) {
-         //console.warn(`Class not found ${this.system.details.class}. Make sure to import item compendium.`);
+         //console.warn(`Species not found ${nameInput}.`);
          return;
       }
 
       const itemData = [speciesItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
 
-      // Class special abilities
+      // Species special abilities
       const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
       const abilitiesData = (await SpeciesItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
+      const itemNames = actor.items.filter(item => SpeciesItem.ValidItemTypes.includes(item.type)).map(item => item.name);
+      const itemsData = await fadeFinder.getSpeciesItems(nameInput, effectiveLevel);
+
       if (abilitiesData) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",

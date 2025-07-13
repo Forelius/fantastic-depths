@@ -354,8 +354,7 @@ export class ClassSystemBase extends ClassSystemInterface {
 
    async _promptAddAbilityItems(actor, className, currentLevel) {
       const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
-      const validItemTypes = ClassDefinitionItem.ValidItemTypes;
-      const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
+      const itemNames = actor.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
       const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
       const itemsData = await fadeFinder.getClassItems(className, currentLevel);
       if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)

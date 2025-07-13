@@ -12,8 +12,8 @@
             </a>
          </div>
       </div>
-      <!-- Class Item Entries -->
-      {{#each system.classItems as |item index|}}
+      <!-- Ancestry Item Entries -->
+      {{#each system.ancestryItems as |item index|}}
       <ldiv class='item flexrow' data-item-id='{{item._id}}'>
          <div style="max-width:50px">
             <input type="number" name="system.classItems.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
