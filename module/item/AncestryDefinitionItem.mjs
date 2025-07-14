@@ -2,7 +2,7 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { FDItem } from './FDItem.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
-export class SpeciesItem extends FDItem {
+export class AncestryDefinitionItem extends FDItem {
    static ValidItemTypes = ['item', 'weapon', 'armor'];
 
    constructor(data, context) {
@@ -62,7 +62,7 @@ export class SpeciesItem extends FDItem {
    }
 
    static async getSpecialAbilities(name) {
-      const theItem = await fadeFinder.getSpecies(name);
+      const theItem = await fadeFinder.getAncestrry(name);
       let result;
       if (theItem) {
          result = theItem.system.specialAbilities.reduce((acc, a) => ((acc[a.name] = !acc[a.name] ? a : acc[a.name]), acc), {});

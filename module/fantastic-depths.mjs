@@ -25,7 +25,7 @@ import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
 import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
-import { SpeciesItemDataModel } from './item/dataModel/SpeciesItemDataModel.mjs';
+import { AncestryDefinitionDM } from './item/dataModel/AncestryDefinitionDM.mjs';
 import { GearItemSheet } from './sheets/GearItemSheet.mjs';
 import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
 import { ActorClassSheet } from './sheets/ActorClassSheet.mjs';
@@ -38,7 +38,7 @@ import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
 import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
 import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 import { ConditionItemSheet } from './sheets/ConditionItemSheet.mjs';
-import { SpeciesItemSheet } from './sheets/SpeciesItemSheet.mjs';
+import { AncestryDefinitionSheet } from './sheets/AncestryDefinitionSheet.mjs';
 
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
@@ -112,7 +112,7 @@ Hooks.once('init', async function () {
       weaponMastery: MasteryDefinitionDataModel,
       specialAbility: SpecialAbilityDataModel,
       condition: ConditionItemDataModel,
-      species: SpeciesItemDataModel
+      species: AncestryDefinitionDM
    };
 
    // Active Effects are never copied to the Actor,
@@ -206,8 +206,8 @@ function registerSheets() {
       types: ['condition'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', SpeciesItemSheet, {
-      label: 'FADE.SheetLabel.SpeciesItem',
+   Items.registerSheet('fantastic-depths', AncestryDefinitionSheet, {
+      label: 'FADE.SheetLabel.AncestryDefinitionItem',
       types: ['species'],
       makeDefault: true
    });

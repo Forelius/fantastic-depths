@@ -48,7 +48,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          deleteItem: FDActorSheetV2.#clickDeleteItem,
          editItem: FDActorSheetV2.#clickEditItem,
          editClass: FDActorSheetV2.#clickEditClass,
-         editSpecies: FDActorSheetV2.#clickEditSpecies,
+         editAncestry: FDActorSheetV2.#clickEditAncestry,
          toggleEquipped: FDActorSheetV2.#clickToggleEquipped,
          toggleHeader: FDActorSheetV2.#clickToggleHeader,
          toggleContainer: FDActorSheetV2.#clickToggleContainer,
@@ -715,9 +715,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       classItem?.sheet?.render(true)
    }
 
-   static async #clickEditSpecies(event) {
-      const speciesItem = await fadeFinder.getSpecies(this.actor.system.details.species);
-      speciesItem?.sheet?.render(true)
+   static async #clickEditAncestry(event) {
+      const ancestryItem = await fadeFinder.getAncestry(this.actor.system.details.species);
+      ancestryItem?.sheet?.render(true)
    }
 
    static async #clickRollGeneric(event) {

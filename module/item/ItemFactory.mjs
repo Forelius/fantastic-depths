@@ -10,7 +10,7 @@ import { ActorMasteryItem } from '../item/ActorMasteryItem.mjs';
 import { ClassDefinitionItem } from '../item/ClassDefinitionItem.mjs';
 import { MasteryDefinitionItem } from '../item/MasteryDefinitionItem.mjs';
 import { ConditionItem } from '../item/ConditionItem.mjs';
-import { SpeciesItem } from '../item/SpeciesItem.mjs';
+import { AncestryDefinitionItem } from '../item/AncestryDefinitionItem.mjs';
 import { ActorClassItem } from '../item/ActorClassItem.mjs';
 
 const handler = {
@@ -28,7 +28,7 @@ const handler = {
       else if (args[0]?.type === 'class') result = new ClassDefinitionItem(...args);
       else if (args[0]?.type === 'weaponMastery') result = new MasteryDefinitionItem(...args);
       else if (args[0]?.type === 'condition') result = new ConditionItem(...args);
-      else if (args[0]?.type === 'species') result = new SpeciesItem(...args);
+      else if (args[0]?.type === 'species') result = new AncestryDefinitionItem(...args);
       else if (args[0]?.type === 'actorClass') result = new ActorClassItem(...args);
       else throw new Error(`Item constructor error: Type=${args[0]?.type} not defined by ItemFactory.`);
       return result;

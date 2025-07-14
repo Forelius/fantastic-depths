@@ -1,4 +1,4 @@
-import { SpeciesItem } from "/systems/fantastic-depths/module/item/SpeciesItem.mjs";
+import { AncestryDefinitionItem } from "/systems/fantastic-depths/module/item/AncestryDefinitionItem.mjs";
 import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 import { EffectManager } from "../sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
@@ -8,7 +8,7 @@ import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
+export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */
@@ -27,17 +27,17 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
          submitOnChange: true
       },
       actions: {
-         deleteLanguage: SpeciesItemSheet.#clickDeleteLanguage,
-         createItem: SpeciesItemSheet.#onCreateChild,
-         deleteItem: SpeciesItemSheet.#onDeleteChild,
-         clickRoll: SpeciesItemSheet.#clickRoll,
+         deleteLanguage: AncestryDefinitionSheet.#clickDeleteLanguage,
+         createItem: AncestryDefinitionSheet.#onCreateChild,
+         deleteItem: AncestryDefinitionSheet.#onDeleteChild,
+         clickRoll: AncestryDefinitionSheet.#clickRoll,
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
 
    static PARTS = {
       header: {
-         template: "systems/fantastic-depths/templates/item/species/header.hbs",
+         template: "systems/fantastic-depths/templates/item/ancestry/header.hbs",
       },
       tabnav: {
          template: "templates/generic/tab-navigation.hbs",
@@ -46,13 +46,13 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/shared/description.hbs",
       },
       attributes: {
-         template: "systems/fantastic-depths/templates/item/species/attributes.hbs",
+         template: "systems/fantastic-depths/templates/item/ancestry/attributes.hbs",
       },
       abilities: {
          template: "systems/fantastic-depths/templates/item/classdef/abilities.hbs",
       },
       items: {
-         template: "systems/fantastic-depths/templates/item/species/items.hbs",
+         template: "systems/fantastic-depths/templates/item/ancestry/items.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
@@ -148,7 +148,7 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
          } else {
             this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
          }
-      } else if (SpeciesItem.ValidItemTypes.includes(droppedItem.type)) {
+      } else if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
       }
    }

@@ -1,5 +1,5 @@
 ﻿import { FDCombatActor } from './FDCombatActor.mjs';
-import { SpeciesItem } from "../item/SpeciesItem.mjs";
+import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
@@ -44,7 +44,7 @@ export class CharacterActor extends FDCombatActor {
          await classSystem.onCharacterActorUpdate(this, updateData);
 
          if (updateData.system?.details?.species !== undefined) {
-            await this._updateSpecies();
+            await this._updateAncestry();
          }
       }
    }
@@ -116,31 +116,31 @@ export class CharacterActor extends FDCombatActor {
    }
 
    /**
-    * Called by update actor to update species-related data.
+    * Called by update actor to update ancestry-related data.
     */
-   async _updateSpecies() {
+   async _updateAncestry() {
       const nameInput = this.system.details.species?.toLowerCase();
-      const speciesItem = await fadeFinder.getSpecies(nameInput);
+      const ancestryDefItem = await fadeFinder.getAncestryDefinition(nameInput);
       const actorItems = this.items.filter(item => item.type === 'species');
 
-      // Manage the species embedded item
+      // Manage the ancestry embedded item
       if (actorItems?.length > 0) {
          for (let actorItem of actorItems) actorItem.delete();
       }
 
-      if (!speciesItem) {
-         //console.warn(`Species not found ${nameInput}.`);
+      if (!ancestryDefItem) {
+         //console.warn(`Ancestry definition not found ${nameInput}.`);
          return;
       }
 
-      const itemData = [speciesItem.toObject()];
+      const itemData = [ancestryDefItem.toObject()];
       await this.createEmbeddedDocuments("Item", itemData);
 
-      // Species special abilities
+      // Ancestry special abilities
       const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
-      const abilitiesData = (await SpeciesItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
-      const itemNames = actor.items.filter(item => SpeciesItem.ValidItemTypes.includes(item.type)).map(item => item.name);
-      const itemsData = await fadeFinder.getSpeciesItems(nameInput, effectiveLevel);
+      const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
+      const itemNames = actor.items.filter(item => AncestryDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
+      const itemsData = await fadeFinder.getAncestryItems(nameInput, effectiveLevel);
 
       if (abilitiesData) {
          const dialogResp = await DialogFactory({
@@ -148,7 +148,7 @@ export class CharacterActor extends FDCombatActor {
             title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: this.system.details.species }),
             content: game.i18n.format('FADE.dialog.specialAbilities.content', {
                name: this.system.details.species,
-               type: game.i18n.localize('FADE.Actor.Species')
+               type: game.i18n.localize('FADE.Actor.Ancestry')
             }),
             yesLabel: game.i18n.localize('FADE.dialog.yes'),
             noLabel: game.i18n.localize('FADE.dialog.no'),

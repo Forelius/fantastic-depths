@@ -14,7 +14,7 @@
          "Alignment": "Alignment",
          "Class": "Class",
          "ClassHint": "<p>Class can be selected by manually typing the class name or drag/droppping the class item onto the character sheet. It is possible to type any value, but class data will only be synched if the class name matches exactly.</p><p><i>Click label to view class sheet.</i></p>",
-         "Species": "Race",
+         "Ancestry": "Race",
          "Sex": "Sex",
          "Age": "Age",
          "Height": "Height",
@@ -265,7 +265,7 @@
          "WeaponItem": "Weapon Item Sheet",
          "TreasureItem": "Treasure Item Sheet",
          "ConditionItem": "Condition Item Sheet",
-         "SpeciesItem": "Ancestry Item Sheet"
+         "AncestryDefinitionItem": "Ancestry Definition Item Sheet"
       },
       "Spell": {
          "casts": "casts",
@@ -569,7 +569,7 @@
             "hint": "If checked, the condition will be added as a status effect."
          }
       },
-      "species": {
+      "ancestry": {
          "requiredScores": "Required Ability Scores",
          "classes": "Classes",
          "male": "Male",
@@ -1063,7 +1063,7 @@
          "class": "Character Class Definition",
          "weaponMastery": "Weapon Mastery Definition",
          "condition": "Condition",
-         "species": "Ancestry"
+         "species": "Ancestry Definition"
       }
    },
 

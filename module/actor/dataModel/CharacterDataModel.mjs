@@ -9,6 +9,7 @@ export class CharacterDataModel extends FDCombatActorDM {
          details: new fields.SchemaField({
             morale: new fields.NumberField({ initial: 9 }),
             alignment: new fields.StringField({ initial: "Neutral" }),
+            // Aka ancestry
             species: new fields.StringField({ initial: "" }),
             age: new fields.NumberField({ initial: 20 }),
             sex: new fields.StringField({ initial: "" }),
