@@ -153,7 +153,7 @@ export class LightItemDataModel extends GearItemDataModel {
             lightSettings = { dim: 0, bright: 0 }; // Turn off light
             break;
          default:
-            console.warn(`No settings defined for ${type}.`);
+            console.warn(`No settings defined for ${lightData.type}.`);
             lightSettings = null;
       }
 
