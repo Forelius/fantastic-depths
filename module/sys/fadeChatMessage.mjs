@@ -54,8 +54,8 @@ export class fadeChatMessage extends ChatMessage {
       const chatData = { conditions, durationSec };
       // TODO: Remove after v12 support.
       const content = foundry?.applications?.handlebars?.renderTemplate ?
-         await foundry.applications.handlebars.renderTemplate('systems/fantastic-depths/templates/chat/spell-conditions.hbs', chatData)
-         : await renderTemplate('systems/fantastic-depths/templates/chat/spell-conditions.hbs', chatData);
+         await foundry.applications.handlebars.renderTemplate("systems/fantastic-depths/templates/chat/spell-conditions.hbs", chatData)
+         : await renderTemplate("systems/fantastic-depths/templates/chat/spell-conditions.hbs", chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);

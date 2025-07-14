@@ -128,85 +128,94 @@ Hooks.once('init', async function () {
 });
 
 function registerSheets() {
+   // TODO: Remove after v12 support.
+   const gActors = foundry?.documents?.collections?.Actors ? foundry.documents.collections.Actors : Actors;
+   const gItems = foundry?.documents?.collections?.Items ? foundry.documents.collections.Items : Items;
+
    // Register sheet application classes
-   Actors.unregisterSheet('core', ActorSheet);
-   Actors.registerSheet('fantastic-depths', CharacterSheet, {
+
+   // TODO: Remove after v12 support.
+   const gActorSheet = foundry?.appv1?.sheets?.ActorSheet ? foundry.appv1.sheets.ActorSheet : ActorSheet;
+   gActors.unregisterSheet('core', gActorSheet);
+   gActors.registerSheet('fantastic-depths', CharacterSheet, {
       label: 'FADE.SheetLabel.Character',
       types: ['character'],
       makeDefault: true
    });
-   Actors.registerSheet('fantastic-depths', CharacterSheetBase, {
+   gActors.registerSheet('fantastic-depths', CharacterSheetBase, {
       label: 'FADE.SheetLabel.CharacterSheetBase',
       types: ['character'],
       makeDefault: false
    });
-   Actors.registerSheet('fantastic-depths', MonsterSheet, {
+   gActors.registerSheet('fantastic-depths', MonsterSheet, {
       label: 'FADE.SheetLabel.Monster',
       types: ['monster'],
       makeDefault: true
    });
-   Items.unregisterSheet('core', ItemSheet);
-   Items.registerSheet('fantastic-depths', GearItemSheet, {
+   // TODO: Remove after v12 support.
+   const gItemSheet = foundry?.appv1?.sheets?.ItemSheet ? foundry.appv1.sheets.ItemSheet : ItemSheet;
+   gItems.unregisterSheet('core', gItemSheet);
+   gItems.registerSheet('fantastic-depths', GearItemSheet, {
       label: 'FADE.SheetLabel.Item',
       makeDefault: true,
       types: ['item', 'light']
    });
-   Items.registerSheet('fantastic-depths', TreasureItemSheet, {
+   gItems.registerSheet('fantastic-depths', TreasureItemSheet, {
       label: 'FADE.SheetLabel.TreasureItem',
       makeDefault: true,
       types: ['treasure']
    });
-   Items.registerSheet('fantastic-depths', ActorClassSheet, {
+   gItems.registerSheet('fantastic-depths', ActorClassSheet, {
       label: 'FADE.SheetLabel.ActorClassItem',
       types: ['actorClass'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', ActorMasterySheet, {
+   gItems.registerSheet('fantastic-depths', ActorMasterySheet, {
       label: 'FADE.SheetLabel.ActorMasteryItem',
       types: ['mastery'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', ArmorItemSheet, {
+   gItems.registerSheet('fantastic-depths', ArmorItemSheet, {
       label: 'FADE.SheetLabel.ArmorItem',
       types: ['armor'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', ClassDefinitionItemSheet, {
+   gItems.registerSheet('fantastic-depths', ClassDefinitionItemSheet, {
       label: 'FADE.SheetLabel.ClassDefinitionItem',
       types: ['class'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', MasteryDefinitionSheet, {
+   gItems.registerSheet('fantastic-depths', MasteryDefinitionSheet, {
       label: 'FADE.SheetLabel.MasteryDefinitionItem',
       types: ['weaponMastery'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', SkillItemSheet, {
+   gItems.registerSheet('fantastic-depths', SkillItemSheet, {
       label: 'FADE.SheetLabel.SkillItem',
       types: ['skill'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', SpecialAbilitySheet, {
+   gItems.registerSheet('fantastic-depths', SpecialAbilitySheet, {
       label: 'FADE.SheetLabel.SpecialAbilityItem',
       types: ['specialAbility'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', SpellItemSheet, {
+   gItems.registerSheet('fantastic-depths', SpellItemSheet, {
       label: 'FADE.SheetLabel.SpellItem',
       types: ['spell'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', WeaponItemSheet, {
+   gItems.registerSheet('fantastic-depths', WeaponItemSheet, {
       label: 'FADE.SheetLabel.WeaponItem',
       types: ['weapon'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', ConditionItemSheet, {
+   gItems.registerSheet('fantastic-depths', ConditionItemSheet, {
       label: 'FADE.SheetLabel.ConditionItem',
       types: ['condition'],
       makeDefault: true
    });
-   Items.registerSheet('fantastic-depths', AncestryDefinitionSheet, {
+   gItems.registerSheet('fantastic-depths', AncestryDefinitionSheet, {
       label: 'FADE.SheetLabel.AncestryDefinitionItem',
       types: ['species'],
       makeDefault: true
