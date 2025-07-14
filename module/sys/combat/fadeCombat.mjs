@@ -132,7 +132,10 @@ export class fadeCombat extends Combat {
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
       let templateData = { combatant };
 
-      const controlsContent = await renderTemplate(template, templateData);
+      // TODO: Remove after v12 support.
+      const controlsContent = foundry?.applications?.handlebars?.renderTemplate ?
+         await foundry.applications.handlebars.renderTemplate(template, templateData)
+         : await renderTemplate(template, templateData);
       combatantControls.insertAdjacentHTML("afterbegin", controlsContent);
    }
 
