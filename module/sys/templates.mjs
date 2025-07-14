@@ -4,7 +4,9 @@
  * @return {Promise}
  */
 export const preloadHandlebarsTemplates = async function () {
-   await loadTemplates({
+   // TODO: Remove after v12 support.
+   const fn = foundry?.applications?.handlebars?.loadTemplates ? foundry.applications.handlebars.loadTemplates : loadTemplates;
+   await fn({
       // Chat
       chatSaveHealDamage: 'systems/fantastic-depths/templates/chat/save-heal-dmg.hbs',
       // Actor partials
