@@ -38,7 +38,10 @@ export class fadeChatMessage extends ChatMessage {
       const attackData = this.getFlag(game.system.id, "attackdata");
       if (!game.user.isGM || !attackData) return;
       const chatData = { attackData };
-      let content = await renderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
+      // TODO: Remove after v12 support.
+      const content = foundry?.applications?.handlebars?.renderTemplate ?
+         await foundry.applications.handlebars.renderTemplate("systems/fantastic-depths/templates/chat/damage-buttons.hbs", chatData)
+         : await renderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);
@@ -49,7 +52,10 @@ export class fadeChatMessage extends ChatMessage {
       const durationSec = this.getFlag(game.system.id, "durationSec");
       if (!game.user.isGM || !conditions) return;
       const chatData = { conditions, durationSec };
-      let content = await renderTemplate('systems/fantastic-depths/templates/chat/spell-conditions.hbs', chatData);
+      // TODO: Remove after v12 support.
+      const content = foundry?.applications?.handlebars?.renderTemplate ?
+         await foundry.applications.handlebars.renderTemplate("systems/fantastic-depths/templates/chat/spell-conditions.hbs", chatData)
+         : await renderTemplate("systems/fantastic-depths/templates/chat/spell-conditions.hbs", chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);
