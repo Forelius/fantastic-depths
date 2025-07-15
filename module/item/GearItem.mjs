@@ -124,9 +124,12 @@ export class GearItem extends FDItem {
    }
 
    async getInlineDescription() {
+      // TODO: Remove after v12 support.
+      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+
       let description = this.system.isIdentified === true ?
          await super.getInlineDescription()
-         : await TextEditor.enrichHTML(this.system.unidentifiedDesc, {
+         : await textEditorImp.enrichHTML(this.system.unidentifiedDesc, {
             secrets: false,
             // Necessary in v11, can be removed in v12
             async: true,

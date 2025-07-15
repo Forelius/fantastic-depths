@@ -32,15 +32,19 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    async _prepareContext(options) {
       const context = await super._prepareContext(options);
       const rollData = this.item.getRollData();
+
+      // TODO: Remove after v12 support.
+      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+
       // Enrich description info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedDesc = await TextEditor.enrichHTML(this.item.system.description, {
+      context.enrichedDesc = await textEditorImp.enrichHTML(this.item.system.description, {
          secrets: this.document.isOwner,
          rollData,
          relativeTo: this.item,
       });
       if (this.item.system.unidentifiedDesc !== undefined) {
-         context.enrichedUIDesc = await TextEditor.enrichHTML(this.item.system.unidentifiedDesc, {
+         context.enrichedUIDesc = await textEditorImp.enrichHTML(this.item.system.unidentifiedDesc, {
             secrets: this.document.isOwner,
             rollData,
             relativeTo: this.item,
