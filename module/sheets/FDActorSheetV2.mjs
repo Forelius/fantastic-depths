@@ -149,7 +149,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
-      context.enrichedBiography = await TextEditor.enrichHTML(this.actor.system.biography, {
+      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+      context.enrichedBiography = await textEditorImp.enrichHTML(this.actor.system.biography, {
          secrets: this.document.isOwner,
          rollData: this.actor.getRollData(),
          relativeTo: this.actor,
