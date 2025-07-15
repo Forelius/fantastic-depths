@@ -234,7 +234,7 @@ export class FDCombatActor extends FDActorBase {
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
          const config = CONFIG.FADE.CombatManeuvers[ability];
-         if (config === undefined || config.needWeapon === false || (config.needWeapon === true && hasEquippedWeapon === true)) {
+         if (config === undefined || (config.needWeapon ?? false) === false || (config.needWeapon === true && hasEquippedWeapon === true)) {
             result.push(ability);
          }
       }
