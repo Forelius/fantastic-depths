@@ -128,15 +128,17 @@ const DragDropMixin = (superclass) => class extends superclass {
             dragover: this._onDragOver.bind(this),
             drop: this._onDrop.bind(this),
          };
-         return new DragDrop(d);
+         // TODO: Remove after v12 support.
+         const dragDropImp = foundry?.applications?.ux?.DragDrop?.implementation ? foundry.applications.ux.DragDrop.implementation : DragDrop;
+         return new dragDropImp(d);
       });
    }
 
    /**
     * Handle a dropped Active Effect on the Actor Sheet.
     * The default implementation creates an Active Effect embedded document on the Actor.
-    * @param {DragEvent} event       The initiating drop event
-    * @param {ActiveEffect} effect   The dropped ActiveEffect document
+    * @param {DragEvent} event      The initiating drop event
+    * @param {ActiveEffect} effect  The dropped ActiveEffect document
     * @returns {Promise<void>}
     * @protected
     */
