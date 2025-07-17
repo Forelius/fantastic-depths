@@ -811,12 +811,20 @@ export class MultiClassSystem extends ClassSystemBase {
          return super.getHighestHD(actor);
       }
       let hd = null;
+      let highestBase = 0;
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
       for (let actorClass of actorClasses) {
          if (hasPrimary === false || actorClass.system.isPrimary === true) {
-            const { base, modifier, dieSides, sign } = this.getParsedHD(actorClass.system.hd);
-            hd = ((hd ?? 0) < base) ? base : hd;
+            if (actorClass.system.hd) {
+               const { base, modifier, dieSides, sign } = this.getParsedHD(actorClass.system.hd);
+               if (highestBase < base) {
+                  highestBase = base;
+                  hd = actorClass.system.hd;
+               }
+            } else {
+               console.warning(`Actor class for ${actor.name} has no hit dice.`);
+            }
          }
       }
       return hd ?? actor.system.hp.hd;
