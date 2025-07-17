@@ -152,13 +152,9 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
 
    /** @override */
    prepareBaseData() {
-      //this.firstSpellLevel = Math.min(this.maxSpellLevel, Math.max(0, (this.firstSpellLevel ?? 0)));
-      //this.maxSpellLevel = Math.max(this.firstSpellLevel, (this.maxSpellLevel ?? 0));
       this.firstLevel = Math.max(0, (this.firstLevel ?? 1));
       this.maxLevel = Math.max(this.firstLevel, (this.maxLevel ?? this.firstLevel));
       super.prepareBaseData();
-      //this.#prepareLevels();
-      //this.#prepareSpellLevels();
    }
 
    #prepareLevels() {

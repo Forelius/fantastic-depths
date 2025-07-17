@@ -18,6 +18,7 @@ export class ClassSystemInterface {
    async prepareSpellsContext(actor) { throw new Error("Method not implemented."); }
    async calcXPAward(actor, amount) { throw new Error("Method not implemented."); }
    async awardXP(actor, amounts) { throw new Error("Method not implemented."); }
+   getHighestHD(actor) { throw new Error("Method not implemented."); }
 }
 
 export class ClassSystemBase extends ClassSystemInterface {
@@ -211,6 +212,31 @@ export class ClassSystemBase extends ClassSystemInterface {
       }
    }
 
+   getParsedHD(hd) {
+      // Regular expression to check for a dice specifier like d<number>
+      const diceRegex = /d(\d+)/;
+      // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
+      const modifierRegex = /([+\-*/]\d+)$/;
+      const match = hd.match(diceRegex);
+      let dieSides = 8;
+      if (match) {
+         dieSides = parseInt(match[1], 10);
+      } else {
+         dieSides = 8;
+      }
+      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
+      let base = hd.replace(modifierRegex, ''); // Extract base number
+      let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
+      base = parseFloat(base);
+      modifier = parseInt(modifier, 10);
+      const sign = modifier <= 0 ? "" : "+";
+      return { base, modifier, dieSides, sign };
+   }
+
+   getHighestHD(actor) {
+      return actor.system.hp.hd;
+   }
+
    /**
     * For single class only. Monster is always single class.
     * @protected
@@ -354,8 +380,7 @@ export class ClassSystemBase extends ClassSystemInterface {
 
    async _promptAddAbilityItems(actor, className, currentLevel) {
       const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
-      const validItemTypes = ClassDefinitionItem.ValidItemTypes;
-      const itemNames = actor.items.filter(item => validItemTypes.includes(item.type)).map(item => item.name);
+      const itemNames = actor.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
       const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
       const itemsData = await fadeFinder.getClassItems(className, currentLevel);
       if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
@@ -453,7 +478,7 @@ export class SingleClassSystem extends ClassSystemBase {
       await this._getUsedAndMaxSpells(actor, result);
       return [result];
    }
-   
+
    /**
     * Prepares class-related roll data for evaluating rolls and formulas.
     * @public
@@ -481,7 +506,7 @@ export class SingleClassSystem extends ClassSystemBase {
       // If there's a bonus % in actor.system.details.xp.bonus
       const bonusPct = Number(actor.system.details?.xp?.bonus ?? 0) / 100;
       return [amount + Math.floor(amount * bonusPct)];
-   }   
+   }
 
    async awardXP(actor, amounts) {
       const amount = Number(amounts || 0);
@@ -781,6 +806,30 @@ export class MultiClassSystem extends ClassSystemBase {
       }
    }
 
+   getHighestHD(actor) {
+      if (actor.type === "monster") {
+         return super.getHighestHD(actor);
+      }
+      let hd = null;
+      let highestBase = 0;
+      const actorClasses = actor.items.filter(item => item.type === "actorClass");
+      const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
+      for (let actorClass of actorClasses) {
+         if (hasPrimary === false || actorClass.system.isPrimary === true) {
+            if (actorClass.system.hd) {
+               const { base, modifier, dieSides, sign } = this.getParsedHD(actorClass.system.hd);
+               if (highestBase < base) {
+                  highestBase = base;
+                  hd = actorClass.system.hd;
+               }
+            } else {
+               console.warning(`Actor class for ${actor.name} has no hit dice.`);
+            }
+         }
+      }
+      return hd ?? actor.system.hp.hd;
+   }
+
    /**
     * The ActorClass item has been updated.
     * @private
@@ -886,7 +935,7 @@ export class MultiClassSystem extends ClassSystemBase {
 
          classNames += `\\${actorClass.name}`;
          levels += `\\${actorClass.system.level}`;
-         hds += `\\${actorClass.system.hd}`;
+         //hds += `\\${actorClass.system.hd}`;
          xps += `\\${actorClass.system.xp.value}`;
          if (actorClass.system.isPrimary || hasPrimary === false) {
             hds += `\\${actorClass.system.hd}`;

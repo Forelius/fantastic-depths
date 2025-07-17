@@ -10,7 +10,7 @@
          </div>
          <div class="flex1" style="max-width:90px;">
             <input type="text" name="system.details.species" value="{{system.details.species}}" data-dtype="String" data-tooltip="{{system.details.species}}" />
-            <label class="open-sheet" data-action="editSpecies">{{localize 'FADE.Actor.Species'}}</label>
+            <label class="open-sheet" data-action="editAncestry">{{localize 'FADE.Actor.Ancestry'}}</label>
          </div>        
       </div>
       <div class="summary flexrow">
@@ -23,7 +23,7 @@
             <label class="open-sheet" data-action="editClass" data-className="{{system.details.class}}" data-tooltip="{{localize 'FADE.Actor.ClassHint'}}">{{localize 'FADE.Actor.Class'}}</label>
          </div>
          <div class="flex2" style="max-width: 140px">
-            <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" {{#if hasMultiClass}}readonly{{/if}}/>
+            <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{system.hp.hd}}" {{#if hasMultiClass}}readonly{{/if}}/>
             <label class="hitdie rollable2" data-action="rollGeneric" data-formula="{{system.hp.hd}}" data-label="{{localize 'FADE.Actor.HitDice'}}">{{localize 'FADE.Actor.HitDiceShort'}}</label>
          </div>
       </div>

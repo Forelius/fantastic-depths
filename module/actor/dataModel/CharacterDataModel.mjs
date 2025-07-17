@@ -9,6 +9,7 @@ export class CharacterDataModel extends FDCombatActorDM {
          details: new fields.SchemaField({
             morale: new fields.NumberField({ initial: 9 }),
             alignment: new fields.StringField({ initial: "Neutral" }),
+            // Aka ancestry
             species: new fields.StringField({ initial: "" }),
             age: new fields.NumberField({ initial: 20 }),
             sex: new fields.StringField({ initial: "" }),
@@ -49,6 +50,12 @@ export class CharacterDataModel extends FDCombatActorDM {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
+   }
+
+
+   getParsedHD() {
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      return classSystem.getParsedHD(classSystem.getHighestHD(this.parent));
    }
 
    _prepareDerivedAbilities() {

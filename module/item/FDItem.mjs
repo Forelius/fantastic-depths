@@ -75,6 +75,7 @@ export class FDItem extends Item {
    async getInlineDescription() {
       // TODO: Remove after v12 support.
       const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+
       let description = await textEditorImp.enrichHTML(this.system.description, {
          // Whether to show secret blocks in the finished html
          secrets: false,

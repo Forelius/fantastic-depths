@@ -136,6 +136,7 @@ export class fadeCombat extends Combat {
       const controlsContent = foundry?.applications?.handlebars?.renderTemplate ?
          await foundry.applications.handlebars.renderTemplate(template, templateData)
          : await renderTemplate(template, templateData);
+
       combatantControls.insertAdjacentHTML("afterbegin", controlsContent);
    }
 

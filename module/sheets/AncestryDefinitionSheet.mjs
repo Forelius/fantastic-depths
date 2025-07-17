@@ -1,21 +1,20 @@
-import { DragDropMixin } from './mixins/DragDropMixin.mjs';
-import { EffectManager } from '../sys/EffectManager.mjs';
-import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { AncestryDefinitionItem } from "/systems/fantastic-depths/module/item/AncestryDefinitionItem.mjs";
+import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
+import { EffectManager } from "../sys/EffectManager.mjs";
+import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
-   static ValidItemTypes = ['item', 'weapon', 'armor'];
-
+export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */
    static DEFAULT_OPTIONS = {
       position: {
-         width: 600,
+         width: 650,
          height: 500,
       },
       window: {
@@ -23,22 +22,22 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
          minimizable: false,
          contentClasses: ["scroll-body"]
       },
-      classes: ['fantastic-depths', 'sheet', 'item'],
+      classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
       },
       actions: {
-         deleteLanguage: SpeciesItemSheet.#clickDeleteLanguage,
-         createItem: SpeciesItemSheet.#onCreateChild,
-         deleteItem: SpeciesItemSheet.#onDeleteChild,
-         clickRoll: SpeciesItemSheet.#clickRoll,
+         deleteLanguage: AncestryDefinitionSheet.#clickDeleteLanguage,
+         createItem: AncestryDefinitionSheet.#onCreateChild,
+         deleteItem: AncestryDefinitionSheet.#onDeleteChild,
+         clickRoll: AncestryDefinitionSheet.#clickRoll,
       },
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
 
    static PARTS = {
       header: {
-         template: "systems/fantastic-depths/templates/item/species/header.hbs",
+         template: "systems/fantastic-depths/templates/item/ancestry/header.hbs",
       },
       tabnav: {
          template: "templates/generic/tab-navigation.hbs",
@@ -47,10 +46,13 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/shared/description.hbs",
       },
       attributes: {
-         template: "systems/fantastic-depths/templates/item/species/attributes.hbs",
+         template: "systems/fantastic-depths/templates/item/ancestry/attributes.hbs",
       },
       abilities: {
          template: "systems/fantastic-depths/templates/item/classdef/abilities.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/item/ancestry/items.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
@@ -68,7 +70,7 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description', 'attributes', 'abilities', 'effects']
+      options.parts = ["header", "tabnav", "description", "attributes", "abilities", "effects", "items"]
    }
 
    /** @override */
@@ -98,14 +100,15 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
-      const group = 'primary';
+      const group = "primary";
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+      if (!this.tabGroups[group]) this.tabGroups[group] = "description";
       const tabs = {
-         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' },
-         attributes: { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' },
-         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities', cssClass: 'item' },
-         effects: { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' }
+         description: { id: "description", group, label: "FADE.tabs.description", cssClass: "item" },
+         attributes: { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" },
+         abilities: { id: "abilities", group, label: "FADE.tabs.abilities", cssClass: "item" },
+         items: { id: "items", group, label: "FADE.items" },
+         effects: { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" },
       }
       for (const v of Object.values(tabs)) {
          v.active = this.tabGroups[v.group] === v.id;
@@ -124,9 +127,9 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
    _onRender(context, options) {
       super._onRender(context, options);
       if (this.isEditable) {
-         const inputField = this.element.querySelector('input[data-action="addLanguage"]');
-         inputField?.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') { // Check if the Enter key is pressed
+         const inputField = this.element.querySelector(`input[data-action="addLanguage"]`);
+         inputField?.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") { // Check if the Enter key is pressed
                const value = event.currentTarget.value; // Get the value of the input
                this.item.languageManager.pushTag(value); // Push the value to the language manager
             }
@@ -140,15 +143,14 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
       const droppedItem = await Item.implementation.fromDropData(data);
 
       // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === 'specialAbility') {
-         if (droppedItem.system.category === 'save') {
+      if (droppedItem.type === "specialAbility") {
+         if (droppedItem.system.category === "save") {
          } else {
             this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
          }
+      } else if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
+         this.item.createItem(droppedItem.name, droppedItem.type);
       }
-      //   else if (SpeciesDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
-      //      this.item.createClassItem(droppedItem.name, droppedItem.type);
-      //   }
    }
 
    /**
@@ -185,10 +187,12 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
    static async #onCreateChild(event) {
       event.preventDefault();
       const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
-      if (type === 'specialAbility') {
+      if (type === "specialAbility") {
          this.item.createSpecialAbility();
-      } else if (type === 'class') {
+      } else if (type === "class") {
          this.item.createClass();
+      } else if (type === "item") {
+         await this.item.createItem();
       }
       this.render();
    }
@@ -198,24 +202,30 @@ export class SpeciesItemSheet extends DragDropMixin(FDItemSheetV2) {
       const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
       const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
 
-      if (type === 'specialAbility') {
+      if (type === "specialAbility") {
          const items = this.item.system.specialAbilities;
          if (items.length > index) {
             items.splice(index, 1);
             await this.item.update({ "system.specialAbilities": items });
          }
-      } else if (type === 'class') {
+      } else if (type === "class") {
          const items = this.item.system.classes;
          if (items.length > index) {
             items.splice(index, 1);
             await this.item.update({ "system.classes": items });
+         }
+      } else if (type === "item") {
+         const items = this.item.system.ancestryItems;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.ancestryItems": items });
          }
       }
       this.render();
    }
 
    static #clickDeleteLanguage(event) {
-      const tag = event.target.closest('.tag').dataset.tag;
+      const tag = event.target.closest(".tag").dataset.tag;
       this.item.languageManager.popTag(tag);
    }
 }

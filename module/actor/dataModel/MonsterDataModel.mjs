@@ -66,6 +66,11 @@ export class MonsterDataModel extends FDCombatActorDM {
       return super.migrateData(source);
    }
 
+   getParsedHD() {
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      return classSystem.getParsedHD(this.hp.hd);
+   }
+
    /**
     * @override
     * Calculate average hitpoints based on hitdice.

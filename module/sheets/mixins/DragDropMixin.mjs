@@ -137,8 +137,8 @@ const DragDropMixin = (superclass) => class extends superclass {
    /**
     * Handle a dropped Active Effect on the Actor Sheet.
     * The default implementation creates an Active Effect embedded document on the Actor.
-    * @param {DragEvent} event       The initiating drop event
-    * @param {ActiveEffect} effect   The dropped ActiveEffect document
+    * @param {DragEvent} event      The initiating drop event
+    * @param {ActiveEffect} effect  The dropped ActiveEffect document
     * @returns {Promise<void>}
     * @protected
     */

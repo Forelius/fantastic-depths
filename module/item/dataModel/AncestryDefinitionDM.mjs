@@ -1,4 +1,4 @@
-export class SpeciesItemDataModel extends foundry.abstract.TypeDataModel {
+export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const { fields } = foundry.data;
 
