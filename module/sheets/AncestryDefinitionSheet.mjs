@@ -70,7 +70,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ["header", "tabnav", "description", "attributes", "abilities", "effects", "items"]
+      options.parts = ["header", "tabnav", "description", "attributes", "abilities", "effects"]//, "items"]
    }
 
    /** @override */
