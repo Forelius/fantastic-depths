@@ -192,27 +192,4 @@ export class FDCombatActorDM extends FDActorBaseDM {
       this.mod.save = {};
       this.mod.save.all = 0;
    }
-
-   getParsedHD() {
-      // Regular expression to check for a dice specifier like d<number>
-      const diceRegex = /d(\d+)/;
-      // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
-      const modifierRegex = /([+\-*/]\d+)$/;
-
-      const match = this.hp.hd.match(diceRegex);
-      let dieSides = 8;
-      if (match) {
-         dieSides = parseInt(match[1], 10);
-      } else {
-         dieSides = 8;
-      }
-
-      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      let base = this.hp.hd.replace(modifierRegex, ''); // Extract base number
-      let modifier = this.hp.hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
-      base = parseFloat(base);
-      modifier = parseInt(modifier, 10);
-      const sign = modifier <= 0 ? "" : "+";
-      return { base, modifier, dieSides, sign };
-   }
 }

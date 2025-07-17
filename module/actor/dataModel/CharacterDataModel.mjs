@@ -52,6 +52,12 @@ export class CharacterDataModel extends FDCombatActorDM {
       super.prepareDerivedData();
    }
 
+
+   getParsedHD() {
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      return classSystem.getParsedHD(classSystem.getHighestHD(this.parent));
+   }
+
    _prepareDerivedAbilities() {
       super._prepareDerivedAbilities();
       const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
