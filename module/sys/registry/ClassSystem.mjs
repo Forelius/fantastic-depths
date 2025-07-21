@@ -19,6 +19,7 @@ export class ClassSystemInterface {
    async calcXPAward(actor, amount) { throw new Error("Method not implemented."); }
    async awardXP(actor, amounts) { throw new Error("Method not implemented."); }
    getHighestHD(actor) { throw new Error("Method not implemented."); }
+   getHighestLevel(actor) { throw new Error("Method not implemented."); }
 }
 
 export class ClassSystemBase extends ClassSystemInterface {
@@ -235,6 +236,16 @@ export class ClassSystemBase extends ClassSystemInterface {
 
    getHighestHD(actor) {
       return actor.system.hp.hd;
+   }
+
+   getHighestLevel(actor) {
+      let result = 1;
+      if (actor.type === "monster") {
+         result = Number(actor.system.hp.hd ?? 1 < 1 ? 1 : actor.system.hp.hd);
+      } else if (actor.type === "character") {
+         result = Number(actor.system.details.level);
+      }
+      return result;
    }
 
    /**
@@ -813,21 +824,37 @@ export class MultiClassSystem extends ClassSystemBase {
       let hd = null;
       let highestBase = 0;
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
-      const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
       for (let actorClass of actorClasses) {
-         if (hasPrimary === false || actorClass.system.isPrimary === true) {
-            if (actorClass.system.hd) {
-               const { base, modifier, dieSides, sign } = this.getParsedHD(actorClass.system.hd);
-               if (highestBase < base) {
-                  highestBase = base;
-                  hd = actorClass.system.hd;
-               }
-            } else {
-               console.warning(`Actor class for ${actor.name} has no hit dice.`);
+         if (actorClass.system.hd) {
+            const { base, modifier, dieSides, sign } = this.getParsedHD(actorClass.system.hd);
+            if (highestBase < base) {
+               highestBase = base;
+               hd = actorClass.system.hd;
             }
+         } else {
+            console.warning(`Actor class ${actorClass?.name} for ${actor.name} has no hit dice.`);
          }
       }
       return hd ?? actor.system.hp.hd;
+   }
+
+   getHighestLevel(actor) {
+      let result = 1;
+      if (actor.type === "monster") {
+         result = super.getHighestLevel(actor);
+      } else if (actor.type === "character") {
+         const actorClasses = actor.items.filter(item => item.type === "actorClass");
+         for (let actorClass of actorClasses) {
+            if (actorClass.system.level) {
+               if (result < actorClass.system.level) {
+                  result = actorClass.system.level;
+               }
+            } else {
+               console.warning(`Actor class ${actorClass?.name} for ${actor.name} has no level.`);
+            }
+         }
+      }
+      return result;
    }
 
    /**

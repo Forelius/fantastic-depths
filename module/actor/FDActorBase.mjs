@@ -22,6 +22,10 @@ export class FDActorBase extends Actor {
       return this.getActiveTokens()?.[0].document;
    }
 
+   get highestLevel() {
+      return game.fade.registry.getSystem("classSystem")?.getHighestLevel(this);
+   }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();

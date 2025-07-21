@@ -70,10 +70,6 @@ export class FDCombatActor extends FDActorBase {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      if (this.id) {
-         //const classSystem = game.fade.registry.getSystem("classSystem");
-         //classSystem.prepareSpellsUsed(this);
-      }
    }
 
    /** @override */
@@ -307,18 +303,18 @@ export class FDCombatActor extends FDActorBase {
    }
 
    /**
-  * @public
-  * Add and/or update the actor's class-given items.
-  * @param {any} itemsData The class items array for the desired level.
-  * @returns void
-  */
+    * @public
+    * Add and/or update the actor's class-given items.
+    * @param {any} itemsData The class items array for the desired level.
+    * @returns void
+    */
    async setupItems(itemsData) {
       if (game.user.isGM === false || itemsData == null || itemsData?.length == 0) return;
       const promises = [];
       // Get this actor's class ability items.
       let actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
 
-      // Determine which special abilities are missing and need to be added.
+      // Determine which items are missing and need to be added.
       const addItems = [];
       for (const itemData of itemsData) {
          if (actorItems.find(item => item.name === itemData.name) === undefined
@@ -332,15 +328,15 @@ export class FDCombatActor extends FDActorBase {
             }
          }
       }
-      // Add the missing special abilities.
+      // Add the missing items.
       if (addItems.length > 0) {
-         console.debug(`Adding ${addItems.length} class items to ${this.name}`);
+         console.debug(`Adding ${addItems.length} items to ${this.name}`);
          await this.createEmbeddedDocuments("Item", addItems);
       }
 
       actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
 
-      // Iterate over ability items and set each one.
+      // Iterate over items and set each one.
       for (const actorItem of actorItems) {
          let changes = itemsData.find(item => item.name === actorItem.name)?.changes;
          if (changes) {
@@ -348,7 +344,7 @@ export class FDCombatActor extends FDActorBase {
                promises.push(actorItem.update(JSON.parse(changes)));
             }
             catch (err) {
-               console.error(`Invalid class item changes specified for ${actorItem.name}.`);
+               console.error(`Invalid item changes specified for ${actorItem.name}.`);
             }
          }
       }
