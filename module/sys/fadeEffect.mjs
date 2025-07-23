@@ -10,7 +10,7 @@ export class fadeEffect extends ActiveEffect {
    apply(actor, change) {
       if (change.value.startsWith("{")) {
          this.#handleAdvancedApply(actor, change);
-      } else if (change.value.includes("@actor")) {
+      } else if (change.value.includes("@actor") || change.value.includes("@system")) {
          this.#applyRollData(change, actor);
       }
 
@@ -41,6 +41,7 @@ export class fadeEffect extends ActiveEffect {
          if (parsedChange?.type === "userTableLookup") {
             const userTables = game.fade.registry.getSystem("userTables");
             const roll = new Roll(parsedChange.value, { actor: actor.getRollData() });
+            // TODO: Change when no longer supporting v12
             if (Number(game.version) >= 12) {
                roll.evaluateSync();
             } else {
@@ -54,7 +55,8 @@ export class fadeEffect extends ActiveEffect {
    }
 
    #applyRollData(change, actor) {
-      const roll = new Roll(change.value, { actor: actor.getRollData() });
+      const roll = new Roll(change.value, { actor: actor.getRollData(), system: this.parent.system });
+      // TODO: Change when no longer supporting v12
       if (Number(game.version) >= 12) {
          roll.evaluateSync();
       } else {
