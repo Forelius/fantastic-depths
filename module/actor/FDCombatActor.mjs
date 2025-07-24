@@ -306,20 +306,21 @@ export class FDCombatActor extends FDActorBase {
     * @public
     * Add and/or update the actor's class-given items.
     * @param {any} itemsData The class items array for the desired level.
+    * @param {any} validItemTypes The array of item type names that are valid.
     * @returns void
     */
-   async setupItems(itemsData) {
+   async setupItems(itemsData, validItemTypes) {
       if (game.user.isGM === false || itemsData == null || itemsData?.length == 0) return;
       const promises = [];
-      // Get this actor's class ability items.
-      let actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
+      // Get this actor's class-given items.
+      let actorItems = this.items.filter(item => validItemTypes.includes(item.type));
 
       // Determine which items are missing and need to be added.
       const addItems = [];
       for (const itemData of itemsData) {
          if (actorItems.find(item => item.name === itemData.name) === undefined
             && addItems.find(item => item.name === itemData.name) === undefined) {
-            const theItem = await fadeFinder.getItem(itemData.name, ClassDefinitionItem.ValidItemTypes);
+            const theItem = await fadeFinder.getItem(itemData.name, validItemTypes);
             if (theItem) {
                const newItem = theItem.toObject();
                addItems.push(newItem);
@@ -334,7 +335,7 @@ export class FDCombatActor extends FDActorBase {
          await this.createEmbeddedDocuments("Item", addItems);
       }
 
-      actorItems = this.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type));
+      actorItems = this.items.filter(item => validItemTypes.includes(item.type));
 
       // Iterate over items and set each one.
       for (const actorItem of actorItems) {

@@ -43,7 +43,8 @@ export class CharacterActor extends FDCombatActor {
          const classSystem = game.fade.registry.getSystem("classSystem");
          await classSystem.onCharacterActorUpdate(this, updateData);
 
-         if (updateData.system?.details?.species !== undefined) {
+         if (updateData.system?.details?.species !== undefined
+            || updateData.system?.details?.level !== undefined) {
             await this._updateAncestry();
          }
       }
@@ -120,7 +121,7 @@ export class CharacterActor extends FDCombatActor {
     */
    async _updateAncestry() {
       const nameInput = this.system.details.species?.toLowerCase();
-      const ancestryDefItem = await fadeFinder.getAncestryDefinition(nameInput);
+      const ancestryDefItem = await fadeFinder.getAncestry(nameInput);
       const actorItems = this.items.filter(item => item.type === 'species');
 
       // Manage the ancestry embedded item
@@ -139,10 +140,10 @@ export class CharacterActor extends FDCombatActor {
       // Ancestry special abilities
       const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
       const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
-      const itemNames = actor.items.filter(item => AncestryDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
-      const itemsData = await fadeFinder.getAncestryItems(nameInput, effectiveLevel);
+      //const itemNames = actor.items.filter(item => AncestryDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
+      const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
 
-      if (abilitiesData) {
+      if (abilitiesData || itemsData) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: this.system.details.species }),
@@ -157,6 +158,7 @@ export class CharacterActor extends FDCombatActor {
 
          if (dialogResp?.resp?.result === true) {
             await this.setupSpecialAbilities(abilitiesData);
+            await this.setupItems(itemsData, AncestryDefinitionItem.ValidItemTypes);
          }
       }
    }

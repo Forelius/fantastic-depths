@@ -62,7 +62,7 @@ export class AncestryDefinitionItem extends FDItem {
    }
 
    static async getSpecialAbilities(name) {
-      const theItem = await fadeFinder.getAncestrry(name);
+      const theItem = await fadeFinder.getAncestry(name);
       let result;
       if (theItem) {
          result = theItem.system.specialAbilities.reduce((acc, a) => ((acc[a.name] = !acc[a.name] ? a : acc[a.name]), acc), {});
