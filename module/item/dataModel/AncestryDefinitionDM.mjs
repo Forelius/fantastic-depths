@@ -57,7 +57,7 @@ export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
                level: new fields.NumberField({ required: true, nullable: false }),
                name: new fields.StringField({ required: true, initial: '' }),
                type: new fields.StringField({ required: true, initial: '' }),
-               changes: new fields.StringField({ required: true, initial: '' }),
+               changes: new fields.StringField({ required: false, initial: '' }),
             }),
             {
                required: false,

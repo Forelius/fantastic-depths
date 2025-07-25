@@ -410,11 +410,11 @@ export class ClassSystemBase extends ClassSystemInterface {
 
          if (dialogResp?.resp?.result === true) {
             await actor.setupSpecialAbilities(abilitiesData);
-            await actor.setupItems(itemsData);
+            await actor.setupItems(itemsData, ClassDefinitionItem.ValidItemTypes);
          }
       } else {
          await actor.setupSpecialAbilities(abilitiesData);
-         await actor.setupItems(itemsData);
+         await actor.setupItems(itemsData, ClassDefinitionItem.ValidItemTypes);
       }
    }
 }

@@ -205,9 +205,6 @@ export class ExpertEncumbrance extends ClassicEncumbrance {
       const itemTypes = ['item', 'light', 'treasure']
       results.gearEnc = items.filter(item => itemTypes.includes(item.type))
          .reduce((sum, item) => {
-            //const itemWeight = item.system.weight || 0;
-            //const itemQuantity = item.system.quantity || 1;
-            //return sum + (itemWeight * itemQuantity);
             return sum + this._getItemEncumbrance(item);
          }, 0);
       return results;

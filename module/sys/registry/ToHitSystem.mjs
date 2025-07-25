@@ -36,7 +36,7 @@ export class ToHitSystemBase extends ToHitInterface {
    getAttackRoll(actor, weapon, attackType, options = {}) {
       const weaponData = weapon.system;
       const targetData = options.target?.system;
-      let formula = options.attackRoll ?? '1d20';
+      let formula = options.attackRoll ?? game.settings.get(game.system.id, "attackRollFormula");;
       let digest = [];
       let modifier = 0;
       const toHitSystem = game.settings.get(game.system.id, "toHitSystem");

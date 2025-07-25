@@ -19,7 +19,7 @@ export class AttackDialog {
       const targetToken = options.targetToken?.document ?? options.targetToken;
       const targetActor = options.targetToken?.actor;
 
-      dialogData.attackRoll = "1d20";
+      dialogData.attackRoll = game.settings.get(game.system.id, "attackRollFormula");
       dialogData.extraRollOptions = game.settings.get(game.system.id, "extraRollOptions");
       dialogData.weapon = weapon;
       dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;

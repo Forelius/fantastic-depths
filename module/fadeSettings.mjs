@@ -111,6 +111,15 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
+      game.settings.register(game.system.id, "attackRollFormula", {
+         name: "SETTINGS.attackRollFormula.name",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "1d20",  // Default formula, using DEX modifier
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
+      });
       game.settings.register(game.system.id, "abilityCheckFormula", {
          name: "SETTINGS.abilityCheckFormula.name",
          scope: "world",   // This means the setting is stored globally for the world
