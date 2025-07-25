@@ -1175,6 +1175,9 @@
             "darkdungeons": "Dark Dungeons"
          }
       },
+      "attackRollFormula": {
+         "name": "Attack Roll Formula"
+      },
       "abilityCheckFormula": {
          "name": "Ability Check Roll Formula"
       },
