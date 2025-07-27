@@ -321,7 +321,6 @@
          },
          "weight": {
             "short": "Enc",
-            "short2": "Enc",
             "long": "Encumbrance",
             "abbrPlural": "cns",
             "desc": "Encumbrance value of the item."
