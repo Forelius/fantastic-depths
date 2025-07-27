@@ -1080,8 +1080,7 @@
          "name": "Die Roll Toasts"
       },
       "EncMax": {
-         "Hint": "The maximum amount a character may carry, in coins, and still be able to move.",
-         "Hint2": "The maximum amount, in coins, that can be carried while still able to move.",
+         "Hint": "The maximum weight that can be carried while still able to move.",
          "Name": "Encumbrance Max"
       },
       "Theme": {
