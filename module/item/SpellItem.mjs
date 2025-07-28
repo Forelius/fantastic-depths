@@ -94,7 +94,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          if (this.system.attackType === 'melee') {
             rollAttackResult = await this.rollAttack();
          }
-         const durationResult = await this.#getDurationText();
+         const durationResult = await this.#getDurationResult();
 
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource
@@ -108,10 +108,13 @@ export class SpellItem extends RollAttackMixin(FDItem) {
                digest: rollAttackResult?.digest,
             };
 
+            const conditions = foundry.utils.deepClone(this.system.conditions);
+            for (let condition of conditions) {
+               condition.duration = durationResult.durationSec;
+            }
             const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, {
                durationMsg: durationResult.text,
-               conditions: this.system.conditions,
-               durationSec: durationResult.durationSec,
+               conditions
             });
             await builder.createChatMessage();
          }
@@ -137,7 +140,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       return result;
    }
 
-   async #getDurationText() {
+   async #getDurationResult() {
       let result = {
          text: `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`
       };

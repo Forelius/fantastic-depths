@@ -49,9 +49,8 @@ export class fadeChatMessage extends ChatMessage {
 
    async #addApplyCondition(html) {
       const conditions = this.getFlag(game.system.id, "conditions");
-      const durationSec = this.getFlag(game.system.id, "durationSec");
       if (!game.user.isGM || !conditions) return;
-      const chatData = { conditions, durationSec: durationSec };
+      const chatData = { conditions};
       // TODO: Remove after v12 support.
       const content = foundry?.applications?.handlebars?.renderTemplate ?
          await foundry.applications.handlebars.renderTemplate("systems/fantastic-depths/templates/chat/apply-conditions.hbs", chatData)

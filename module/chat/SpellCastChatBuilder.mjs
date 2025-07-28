@@ -62,8 +62,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          targets: targetTokens,
          showTargets: !roll,
          save,
-         durationMsg: options.durationMsg,
-         durationSec: options.durationSec
+         durationMsg: options.durationMsg
       };
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
@@ -74,8 +73,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          flags: {
             [game.system.id]: {
                targets: toHitResult.targetResults,
-               conditions: options.conditions,
-               durationSec: options.durationSec
+               conditions: options.conditions
             }
          }
       });

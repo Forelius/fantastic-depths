@@ -76,8 +76,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          flags: {
             [game.system.id]: {
                targets: toHitResult.targetResults,
-               conditions: options.conditions,
-               durationSec: options.durationSec
+               conditions: options.conditions
             }
          }
       });

@@ -1,7 +1,7 @@
-import { FDItem } from './FDItem.mjs';
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
+import { FDItem } from "./FDItem.mjs";
+import { DialogFactory } from "../dialog/DialogFactory.mjs";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
+import { TagManager } from "../sys/TagManager.mjs";
 
 export class SpecialAbilityItem extends FDItem {
    constructor(data, context) {
@@ -11,7 +11,7 @@ export class SpecialAbilityItem extends FDItem {
    }
 
    get targetSummary() {
-      let summary = '';
+      let summary = "";
       if (this.system.rollFormula?.length > 0 && this.system.target?.length > 0) {
          summary = `${CONFIG.FADE.Operators[this.system.operator]} ${this.system.target}`;
       }
@@ -25,12 +25,12 @@ export class SpecialAbilityItem extends FDItem {
       const digest = [];
       let modifier = 0;
       let hasDamage = true;
-      const type = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);
+      const type = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
 
       if (resp?.mod && resp?.mod !== 0) {
          formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: resp.mod }));
       }
 
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
@@ -113,10 +113,17 @@ export class SpecialAbilityItem extends FDItem {
             context: instigator,
             roll
          };
+         const conditions = foundry.utils.deepClone(this.system.conditions);
+         const durationMsgs = [];
+         for (let condition of conditions) {
+            const durationResult = await this.#getDurationResult(condition.name, condition.durationFormula);
+            condition.duration = durationResult.durationSec;
+            durationMsgs.push(durationResult.text);
+         }
          const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, {
             showResult,
-            conditions: this.system.conditions,
-            durationSec: null
+            conditions,
+            durationMsgs
          });
          result = builder.createChatMessage();
       }
@@ -126,8 +133,24 @@ export class SpecialAbilityItem extends FDItem {
 
    async getInlineDescription() {
       const description = await super.getInlineDescription();
-      const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : '';
+      const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : "";
       return `${summary}${description}`;
+   }
+
+   async #getDurationResult(name, durationFormula) {
+      let result = {
+         text: (durationFormula !== "-" && durationFormula !== null) ?
+            `${name} ${game.i18n.localize("FADE.Spell.duration")}: ${durationFormula} ${game.i18n.localize("FADE.rounds")}`
+            : ""
+      };
+      if (durationFormula !== "-" && durationFormula !== null) {
+         const rollData = this.getRollData();
+         const rollEval = await new Roll(durationFormula, rollData).evaluate();
+         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
+         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+         result.durationSec = rollEval.total * roundSeconds;
+      }
+      return result;
    }
 
    /**
@@ -148,7 +171,7 @@ export class SpecialAbilityItem extends FDItem {
       }
       // If there are no usages remaining, show a UI notification
       if (hasUse === false) {
-         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name });
+         const message = game.i18n.format("FADE.notification.zeroQuantity", { itemName: this.name });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
       }

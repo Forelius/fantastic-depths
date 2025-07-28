@@ -44,7 +44,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/specialAbility/attributes.hbs",
       },
       effects: {
-         template: "systems/fantastic-depths/templates/item/shared/conditions.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/conditionswd.hbs",
       }
    }
 
@@ -183,6 +183,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       // Define the new data
       const newItem = {
          name: droppedItem.name,
+         durationFormula: null,
          uuid: droppedItem.uuid
       };
       // Add the new item to the array

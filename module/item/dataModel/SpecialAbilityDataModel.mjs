@@ -37,6 +37,7 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          conditions: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: '' }),
+               durationFormula: new fields.StringField({ required: false, nullable:true, initial: null }),
                uuid: new fields.StringField({ required: true, initial: '' }),
             }),
             {
