@@ -44,7 +44,7 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/spell/attributes.hbs",
       },
       effects: {
-         template: "systems/fantastic-depths/templates/item/spell/conditions.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/conditions.hbs",
       }
    }
 
@@ -97,7 +97,7 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare active effects for easier access
-      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+      //context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       context.tabs = this.#getTabs();
 

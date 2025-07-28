@@ -1,3 +1,4 @@
+import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
@@ -5,7 +6,7 @@ import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 /**
  * Sheet class for SpecialAbilityItem.
  */
-export class SpecialAbilitySheet extends FDItemSheetV2 {
+export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */
@@ -22,7 +23,11 @@ export class SpecialAbilitySheet extends FDItemSheetV2 {
       classes: ['fantastic-depths', 'sheet', 'item'],
       form: {
          submitOnChange: true
-      }
+      },
+      actions: {
+         deleteItem: SpecialAbilitySheet.#onDeleteChild,
+      },
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
    }
 
    static PARTS = {
@@ -39,7 +44,7 @@ export class SpecialAbilitySheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/specialAbility/attributes.hbs",
       },
       effects: {
-         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/conditions.hbs",
       }
    }
 
@@ -125,6 +130,17 @@ export class SpecialAbilitySheet extends FDItemSheetV2 {
       return context;
    }
 
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a weapon mastery definition item...
+      if (droppedItem.type === "condition") {
+         // Retrieve the array
+         await this.#onDropConditionItem(droppedItem);
+      }
+   }
+
    /**
    * Prepare an array of form header tabs.
    * @returns {Record<string, Partial<ApplicationTab>>}
@@ -145,5 +161,32 @@ export class SpecialAbilitySheet extends FDItemSheetV2 {
          v.cssClass = v.active ? "active" : "";
       }
       return tabs;
+   }
+
+   static async #onDeleteChild(event) {
+      event.preventDefault();
+      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
+      const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
+
+      if (type === "condition") {
+         const items = this.item.system.conditions;
+         if (items.length > index) {
+            items.splice(index, 1);
+            await this.item.update({ "system.conditions": items });
+         }
+      }
+      this.render();
+   }
+
+   async #onDropConditionItem(droppedItem) {
+      const items = this.item.system.conditions || [];
+      // Define the new data
+      const newItem = {
+         name: droppedItem.name,
+         uuid: droppedItem.uuid
+      };
+      // Add the new item to the array
+      items.push(newItem);
+      await this.item.update({ "system.conditions": items });
    }
 }

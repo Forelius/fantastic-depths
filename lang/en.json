@@ -585,7 +585,9 @@
             "hasted": "Hasted",
             "slowed": "Slowed",
             "mirrorImaged": "Mirror Imaged",
-            "infravision": "Infravision"
+            "infravision": "Infravision",
+            "possessed": "Possessed",
+            "confused": "Confused"
          }
       },
       "Tags": {

@@ -34,6 +34,15 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
          showResult: new fields.BooleanField({ required: false, initial: true }),
          quantity: new fields.NumberField({ required: false, initial: 1, nullable: true }),
          quantityMax: new fields.NumberField({ required: false, initial: null, nullable: true }),
+         conditions: new fields.ArrayField(
+            new fields.SchemaField({
+               name: new fields.StringField({ required: true, initial: '' }),
+               uuid: new fields.StringField({ required: true, initial: '' }),
+            }),
+            {
+               required: false,
+               initial: []
+            })
       };
    }
 

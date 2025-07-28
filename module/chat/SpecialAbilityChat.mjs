@@ -58,12 +58,28 @@ export class SpecialAbilityChat extends ChatBuilder {
       // Render the content using the template
       const content = await renderTemplate(this.template, chatData);
 
+      // Add targets for DM chat message
+      let toHitResult = { targetResults: [], message: '' };
+      for (let targetToken of targetTokens) {
+         toHitResult.targetResults.push({
+            targetid: targetToken.id,
+            targetname: targetToken.name
+         });
+      }
+
       // Prepare chat message data, including rollMode
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode: item.system.rollMode, // Pass the determined rollMode
+         flags: {
+            [game.system.id]: {
+               targets: toHitResult.targetResults,
+               conditions: options.conditions,
+               durationSec: options.durationSec
+            }
+         }
       });
       // Create the chat message
       await ChatMessage.create(chatMessageData);
