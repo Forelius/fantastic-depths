@@ -418,6 +418,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    async #toggleContent(parent) {
       const collapsibleItems = parent.querySelectorAll(".collapsible-content");
+      if (!collapsibleItems) return;
       const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
 
       if (isCollapsed === true) {
