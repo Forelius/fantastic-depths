@@ -9,9 +9,7 @@ export class AwardXPDialog extends FormApplication {
 
       // Store global XP and share factors
       this._globalXP = 0;
-      // Key: actorId => number (default 1)
       this.actorXPs = {};
-      //this._shareFactors = {};
       this.classSystem = game.fade.registry.getSystem("classSystem");
    }
 
@@ -35,9 +33,7 @@ export class AwardXPDialog extends FormApplication {
 
       // Retrieve Actor docs
       const actors = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
-
       data.globalXP = this._globalXP || 0;
-
       // Sum all share factors
       let totalFactors = 0;
       for (const actor of actors) {
@@ -54,10 +50,9 @@ export class AwardXPDialog extends FormApplication {
 
       // Compute each actor's default XP from global XP + shareFactor + bonus
       actors.forEach(async (actor) => {
-         //const factor = this._shareFactors[actor.id] || 1;
-         const factor = this.actorXPs[actor.id].shareFactor || 1;
+         const factor = this.actorXPs[actor.id].shareFactor || 0;
          let baseShare = 0;
-         if (totalFactors > 0) {
+         if (totalFactors > 0 && factor > 0) {
             baseShare = Math.floor((this._globalXP * factor) / totalFactors);
          }
          this.actorXPs[actor.id].xps = await this.classSystem.calcXPAward(actor, baseShare);
@@ -90,7 +85,7 @@ export class AwardXPDialog extends FormApplication {
       html.find(".share-factor").on("change blur", event => {
          const input = event.currentTarget;
          const actorId = input.name.split("actorShareFactor_")[1];
-         this.actorXPs[actorId].shareFactor = Number(input.value) || 1;
+         this.actorXPs[actorId].shareFactor = Number(input.value) || 0;
 
          // Recalculate the default XP for each actor
          this._updateActorXPFields(html);
@@ -105,12 +100,12 @@ export class AwardXPDialog extends FormApplication {
       // 1) Gather the actor docs
       const actors = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
       // 2) Sum factors
-      let totalFactors = Object.values(this.actorXPs).reduce((sum, actor) => { return sum + (actor.shareFactor || 1) }, 0);
+      let totalFactors = Object.values(this.actorXPs).reduce((sum, actor) => { return sum + (actor.shareFactor || 0) }, 0);
       // 3) For each actor, compute the new default XP
       for (const actor of actors) {
-         const factor = this.actorXPs[actor.id].shareFactor || 1;
+         const factor = this.actorXPs[actor.id].shareFactor || 0;
          let baseShare = 0;
-         if (totalFactors > 0) {
+         if (totalFactors > 0 && factor > 0) {
             baseShare = Math.floor((this._globalXP * factor) / totalFactors);
          }
          this.actorXPs[actor.id].xps = await this.classSystem.calcXPAward(actor, baseShare);
