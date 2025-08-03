@@ -647,6 +647,15 @@
             "initRoll": "{name} rolled {roll} {mod}.",
             "rollFormula": "Initiative Rolls (Base Formula: {formula})"
          },
+         "abilityCheck": {
+            "tieredResults": {
+               "criticalFail": "<div class='attack-fail text-size16b'>Critical Fail!</div>",
+               "fail": "<div class='attack-fail text-size16'>Fail</div>",
+               "partialSuccess": "<div class='attack-success text-size16'>Partial Success</div>",
+               "success": "<div class='attack-success text-size16'>Success</div>",
+               "criticalSuccess": "<div class='attack-success text-size16b'>Critical Success!</div>"
+            }
+         },
          "targets": "Targets",
          "apply": "Apply",
          "applyDamageDesc": "Apply damage to selected token or target.",
@@ -802,6 +811,16 @@
          "specialAbilities": {
             "title": "Add special abilities?",
             "content": "Would you like to automatically add the related special abilities from {type} {name}?"
+         },
+         "difficulty": {
+            "name": "Difficulty",
+            "levels": {
+               "easy": "Easy",
+               "medium": "Medium",
+               "hard": "Hard",
+               "veryHard": "Very Hard",
+               "absurd": "Absurd"
+            }
          }
       },
       "tabs": {
@@ -1155,6 +1174,14 @@
             "none": "None",
             "classic": "Classic",
             "heroic": "Heroic"
+         }
+      },
+      "abilityCheckSystem": {
+         "name": "Ability Check System",
+         "hint": "The Ability Check System determines how ability checks are handled. Basic requires a d20 roll that must be under the relevant ability score value to be considered successful. A roll of 20 is always a failure.",
+         "choices": {
+            "basic": "Basic",
+            "tiered": "Tiered"
          }
       },
       "toHitSystem": {

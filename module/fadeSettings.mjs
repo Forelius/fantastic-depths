@@ -80,6 +80,21 @@ export class fadeSettings {
          },
          restricted: true // Only the GM can change this setting         
       });
+      // Ability check system
+      game.settings.register(game.system.id, "abilityCheck", {
+         name: "SETTINGS.abilityCheckSystem.name",
+         hint: "SETTINGS.abilityCheckSystem.hint",
+         scope: "world",
+         config: true,
+         default: "basic",
+         type: String,
+         requiresReload: true,
+         choices: {
+            basic: "SETTINGS.abilityCheckSystem.choices.basic",
+            tiered: "SETTINGS.abilityCheckSystem.choices.tiered"
+         },
+         restricted: true // Only the GM can change this setting         
+      });
       // Ability score modifier system
       game.settings.register(game.system.id, "abilityScoreModSystem", {
          name: "SETTINGS.abilityScoreModSystem.name",
@@ -108,15 +123,6 @@ export class fadeSettings {
             withmod: "SETTINGS.monsterAbilityScores.choices.withmod",
          },
          default: "none",
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "attackRollFormula", {
-         name: "SETTINGS.attackRollFormula.name",
-         scope: "world",   // This means the setting is stored globally for the world
-         config: true,     // This makes it appear in the Settings menu
-         default: "1d20",  // Default formula, using DEX modifier
-         type: String,
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });
@@ -268,6 +274,15 @@ export class fadeSettings {
             "classic": "SETTINGS.weaponMastery.choices.classic",
             "heroic": "SETTINGS.weaponMastery.choices.heroic"
          },
+      });
+      game.settings.register(game.system.id, "attackRollFormula", {
+         name: "SETTINGS.attackRollFormula.name",
+         scope: "world",   // This means the setting is stored globally for the world
+         config: true,     // This makes it appear in the Settings menu
+         default: "1d20",  // Default formula, using DEX modifier
+         type: String,
+         requiresReload: true,
+         restricted: true // Only the GM can change this setting
       });
       game.settings.register(game.system.id, "toHitSystem", {
          name: "SETTINGS.toHitSystem.name",

@@ -1,0 +1,17 @@
+<div>
+   <div class="form-group">
+      <label for="formula" style="min-width:120px">{{localize "FADE.rollFormula"}}</label>
+      <input name="formula" style="max-width:120px" placeholder="{{formula}}" type="text" {{#unless editFormula}} readonly{{/unless}} />
+   </div>
+   <div class="form-group">
+      <label for="mod" style="min-width:120px">{{localize "FADE.modifier"}}</label>
+      <input name="mod" style="max-width:120px" placeholder=0 type="number" />
+   </div>
+   <div class="form-group">
+      <!-- Dropdown for selecting damage type -->
+      <label for="difficulty">{{localize 'FADE.dialog.difficulty.name'}}</label>
+      <select name="difficulty">
+         {{selectOptions difficultyLevels selected=difficulty}}
+      </select>
+   </div>
+</div>

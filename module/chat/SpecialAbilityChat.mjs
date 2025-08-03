@@ -108,7 +108,7 @@ export class SpecialAbilityChat extends ChatBuilder {
             autofail: systemData.autoFail,
             autosuccess: systemData.autoSuccess
          });
-         result.message = this.getBoolResult(testResult);
+         result.message = this.getBoolResultHTML(testResult);
          result.target = target;
          result.operator = systemData.operator;
       }

@@ -19,7 +19,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
             target: mdata.score,
             operator: mdata.pass
          });
-         resultString = this.getBoolResult(testResult);
+         resultString = this.getBoolResultHTML(testResult);
       }
 
       // Get the actor and user names

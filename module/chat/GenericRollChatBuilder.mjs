@@ -94,7 +94,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
             autofail: mdata.autofail,
             autosuccess: mdata.autosuccess
          });
-         resultString = this.getBoolResult(testResult);
+         resultString = this.getBoolResultHTML(testResult);
       } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {
          resultString = mdata.resultstring;
       }

@@ -1,5 +1,5 @@
 import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './ToHitSystem.mjs';
-import { MoraleCheck, AbilityCheck, ActorMovement } from './DefaultSystem.mjs'
+import { MoraleCheck, ActorMovement } from './DefaultSystem.mjs'
 import { ClassicArmorSystem } from './ArmorSystem.mjs';
 import { DamageSystem } from './DamageSystem.mjs';
 import { BasicEncumbrance, ClassicEncumbrance, ExpertEncumbrance } from './EncSystem.mjs';
@@ -9,6 +9,7 @@ import { Wrestling } from "./Wrestling.mjs";
 import { Shove } from "./Shove.mjs";
 import { UserTables } from "./UserTables.mjs";
 import { SingleClassSystem, MultiClassSystem } from "./ClassSystem.mjs";
+import { AbilityCheck, TieredAbilityCheck } from "./AbilityCheck.mjs";
 
 export class fadeRegistry {
    constructor() {
@@ -19,7 +20,12 @@ export class fadeRegistry {
    // TODO: These if/else blocks shouldn't be necessary. Registry should know how to handle or move out of registry.
    async registerDefaultSystems() {
       this.registerSystem('moraleCheck', new MoraleCheck(), MoraleCheck);
-      this.registerSystem('abilityCheck', new AbilityCheck(), AbilityCheck);
+      const abilityCheckSetting = game.settings.get(game.system.id, "abilityCheck");
+      if (abilityCheckSetting === "basic") {
+         this.registerSystem('abilityCheck', new AbilityCheck(), AbilityCheck);
+      } else if (abilityCheckSetting === "tiered") {
+         this.registerSystem('abilityCheck', new TieredAbilityCheck(), TieredAbilityCheck);
+      }
       this.registerSystem('armorSystem', new ClassicArmorSystem(), ClassicArmorSystem);
       this.registerSystem('damageSystem', new DamageSystem(), DamageSystem);
       const masterySetting = game.settings.get(game.system.id, "weaponMastery");

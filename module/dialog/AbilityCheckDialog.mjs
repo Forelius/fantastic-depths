@@ -4,21 +4,33 @@ export class AbilityCheckDialog {
    static async getDialog(dataset, caller) {
       const dialogData = {};
       let dialogResp = null;
-
-      dialogData.ability = dataset.ability;
-      dialogData.formula = dataset.formula;
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
-      const title = `${caller.name}: ${localizeAbility} ${game.i18n.localize('FADE.roll')}`;
-      const template = 'systems/fantastic-depths/templates/dialog/generic-roll.hbs';
+      const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
+      const template = abilityCheckSys.dialogTemplate;
+      const templateContent = await renderTemplate(template, {
+         difficulty: "medium",
+         difficultyLevels: Object.entries(CONFIG.FADE.DifficultyLevel).reduce((acc, [key, value]) => {
+            acc[key] = game.i18n.localize(`FADE.dialog.difficulty.levels.${key}`);
+            return acc;
+         }, {}),
+         ability: dataset.ability,
+         formula: dataset.formula
+      });
 
       dialogResp = await DialogV2.wait({
-         window: { title },
+         window: { 
+            title: `${caller.name}: ${localizeAbility} ${game.i18n.localize("FADE.roll")}`
+         },
+         position: {
+            width: 300,
+            height: "auto"
+         },
          rejectClose: false,
-         content: await renderTemplate(template, dialogData),
+         content: templateContent,
          buttons: [
             {
-               action: 'check',
-               label: game.i18n.localize('FADE.dialog.abilityCheck'),
+               action: "check",
+               label: game.i18n.localize("FADE.dialog.abilityCheck"),
                callback: (event, button, dialog) => new FormDataExtended(button.form).object,
                default: true
             },
