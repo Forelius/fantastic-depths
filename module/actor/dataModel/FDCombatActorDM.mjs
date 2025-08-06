@@ -40,8 +40,11 @@ export class FDCombatActorDM extends FDActorBaseDM {
             declaredAction: new fields.StringField({ initial: "attack" }),
          }),
          mod: new fields.SchemaField({
-            // mod is for items that modify AC (add/subtract only) but are not armor items.
+            // For items that modify AC (add/subtract only) but are not armor items.
             ac: new fields.NumberField({ initial: 0 }),
+            // For items that modify ranged AC (add/subtract only) but are not armor items.
+            // Cumulative with mod.ac, otherwise not backwards compatible.
+            rangedAc: new fields.NumberField({ initial: 0 }),
             // Modifies the natural/naked AC.
             baseAc: new fields.NumberField({ initial: 0 }),
             // Upgrades the AC if better, otherwise does nothing.
@@ -141,10 +144,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
     * @inheritDoc
     */
    static migrateData(source) {
-      // TODO: Remove someday.
-      if (!source.movement2) {
-         source.movement2 = source.flight;
-      }
       return super.migrateData(source);
    }
 

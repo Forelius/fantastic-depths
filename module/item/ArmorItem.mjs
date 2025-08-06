@@ -25,10 +25,15 @@ export class ArmorItem extends GearItem {
       if (data.isShield) {
          // Add the modifier to the ac value of the shield. 
          data.totalAC = data.ac + data.mod;
+         data.totalRangedAC = data.ac + data.modRanged;
          data.totalAAC = data.totalAC;
+         data.totalRangedAAC = data.totalRangedAC;
       } else {
          data.totalAC = data.ac - data.mod;
-         data.totalAAC = data.isShield ? data.totalAC : CONFIG.FADE.ToHit.BaseTHAC0 - data.totalAC;
+         // The ranged mod is cumulative with non-ranged for backwards compatibility.
+         data.totalRangedAC = data.totalAC - data.modRanged;
+         data.totalAAC = CONFIG.FADE.ToHit.BaseTHAC0 - data.totalAC;
+         data.totalRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - data.totalRangedAC;
       }
    }
 }

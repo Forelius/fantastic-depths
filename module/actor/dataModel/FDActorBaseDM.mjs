@@ -70,10 +70,6 @@ export class FDActorBaseDM extends foundry.abstract.TypeDataModel {
     * @inheritDoc
     */
    static migrateData(source) {
-      // TODO: Remove someday.
-      if (!source.movement2) {
-         source.movement2 = source.flight;
-      }
       return super.migrateData(source);
    }
 }
