@@ -18,8 +18,15 @@ export class FDActorBase extends Actor {
    }
 
    get currentActiveToken() {
+      let result = null;
+      const activeTokens = this.getActiveTokens();
       // Get the first active token.
-      return this.getActiveTokens()?.[0].document;
+      if (!activeTokens || activeTokens.length == 0) {
+         console.warn("No active tokens found for this actor.");
+      } else {
+         result = activeTokens[0].document;
+      }
+      return result;
    }
 
    get highestLevel() {
