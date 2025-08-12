@@ -61,6 +61,8 @@ export class FDActorBaseDM extends foundry.abstract.TypeDataModel {
             // mod is an accumulator for armor AC mods only. All other items that modify armor must do so via actor's system.mod.ac.
             mod: new fields.NumberField({ initial: 0 })
          }),
+         // Stores one or more values from FADE.ActorGroups.
+         actorGroups: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
       };
    }
 

@@ -246,6 +246,23 @@
             "GHint": "Creatures between 12 and under 25 feet tall, such as frost giants and rocs.",
             "I": "Immense",
             "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
+         },
+         "actorGroups": {
+            "bugs": "Bugs",
+            "constructs": "Constructs",
+            "dragonkind": "Dragonkind",
+            "enchanted": "Enchanted",
+            "fey": "Fey",
+            "giantkind": "Giantkind",
+            "lycanthropes": "Lycanthropes",
+            "planar": "Planar",
+            "regenerating": "Regenerating",
+            "reptiles-dinosaurs": "Reptiles and dinosaurs",
+            "spell-immune": "Spell-immune",
+            "spellcasters": "Spellcasters",
+            "undead": "Undead",
+            "water-breathing": "Water-breathing",
+            "weapon-using": "Weapon-using"
          }
       },
       "SheetLabel": {
@@ -901,7 +918,7 @@
             },
             "moveOnly": {
                "name": "Move Only",
-               "description": "Combatant is moving and not attacking this round. This is not a 'Retreat'."
+               "description": "Combatant is moving and not attacking this round. This is not a 'Retreat'. This includes actions that are not specifically name in the list."
             },
             "readyWeapon": {
                "name": "Ready Weapon",
@@ -921,7 +938,7 @@
             },
             "magicItem": {
                "name": "Magic Item",
-               "description": "Combatant activates a non-weapon magical item, such as a potion, wand, ring, or the passive ability of another magical item."
+               "description": "Combatant activates a magical item, such as a potion, wand, ring, or the passive ability of another magical item."
             },
             "attack": {
                "name": "Attack",
