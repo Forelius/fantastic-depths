@@ -835,7 +835,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       
       // Create a simple dialog to select which group to add
       const selectedGroup = await DialogV2.wait({
-         window: { title: game.i18n.localize("FADE.Actor.actorGroups.addGroupButton") },
+         window: { title: game.i18n.localize("FADE.Actor.actorGroups.group") },
          position: {
             width: 300,
             height: "auto"

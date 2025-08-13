@@ -248,7 +248,9 @@
             "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
          },
          "actorGroups": {
-            "addGroupButton": "Add Group",
+            "noGroupMod": "No group modifiers configured.",
+            "addVsGroupButton": "Group Modifier",
+            "group": "Group",
             "bugs": "Bugs",
             "constructs": "Constructs",
             "dragonkind": "Dragonkind",

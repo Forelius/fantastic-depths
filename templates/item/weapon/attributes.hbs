@@ -70,8 +70,55 @@
          <div style="max-width:70px;">
             <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
             <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
-         </div>         
+         </div>
       </div>
    </div>
+   {{!-- VS Group Modifiers --}}
+   {{#if isGM}}
+   <div class="bordered">
+      <div class="add-tag">
+         <button type="button" data-action="addVsGroup">
+            <i class="fas fa-plus"></i> {{localize 'FADE.Actor.actorGroups.addVsGroupButton'}}
+         </button>
+      </div>
+      <div class="flexrow tag-section">
+         <div class="flex3">
+            {{#if vsGroupData}}
+            <table class="table table-striped">
+               <thead>
+                  <tr>
+                     <th>{{localize 'FADE.Actor.actorGroups.group'}}</th>
+                     <th>{{localize 'FADE.Weapon.mod.dmg.short'}}</th>
+                     <th>{{localize 'FADE.Weapon.mod.toHit.short'}}</th>
+                     <th></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {{#each vsGroupData as |group|}}
+                  <tr data-group-id="{{group.id}}">
+                     <td>{{group.name}}</td>
+                     <td>
+                        <input type="number" name="system.mod.vsGroup.{{group.id}}.dmg" value="{{group.dmg}}" data-dtype="Number" style="width: 60px;" />
+                     </td>
+                     <td>
+                        <input type="number" name="system.mod.vsGroup.{{group.id}}.toHit" value="{{group.toHit}}" data-dtype="Number" style="width: 60px;" />
+                     </td>
+                     <td>
+                        <a class="item-control" data-action="deleteVsGroup" data-group-id="{{group.id}}">
+                           <i class="fas fa-times"></i>
+                        </a>
+                     </td>
+                  </tr>
+                  {{/each}}
+               </tbody>
+            </table>
+            {{else}}
+            <p><em>{{localize 'FADE.Actor.actorGroups.noGroupMod'}}</em></p>
+
+            {{/if}}
+         </div>
+      </div>
+   </div>
+   {{/if}}
    {{> "itemIdentified"}}
 </section>
