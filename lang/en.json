@@ -248,7 +248,6 @@
             "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
          },
          "actorGroups": {
-            "addGroup": "Add group",
             "addGroupButton": "Add Group",
             "bugs": "Bugs",
             "constructs": "Constructs",
