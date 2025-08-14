@@ -249,7 +249,7 @@
          },
          "actorGroups": {
             "noGroupMod": "No group modifiers configured.",
-            "addVsGroupButton": "Group Modifier",
+            "addVsGroupButton": "Group Mod",
             "group": "Group",
             "bugs": "Bugs",
             "constructs": "Constructs",

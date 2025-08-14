@@ -1,5 +1,6 @@
 export class DamageSystemInterface {
    async applyDamage(actor, delta, damageType, attackType, damageSource = null) { throw new Error("Method not implemented."); }
+   GetVsGroupMod(token, weaponItem) { throw new Error("Method not implemented."); }
 }
 
 export class DamageSystem extends DamageSystemInterface {
@@ -83,6 +84,67 @@ export class DamageSystem extends DamageSystemInterface {
          }
       }
       return result;
+   }
+
+   /**
+    * Calculate damage modifier based on token's actor groups and weapon's VS Group modifiers
+    * @param {Token} token - The target token
+    * @param {Item} weaponItem - The weapon item with VS Group modifiers
+    * @returns {number} - Total damage modifier
+    */
+   GetVsGroupMod(token, weaponItem) {
+      if (!token?.actor || !weaponItem?.system?.mod?.vsGroup) {
+         return 0;
+      }
+
+      const actorGroups = token.actor.system.actorGroups || [];
+      const vsGroupMods = weaponItem.system.mod.vsGroup;
+      let totalMod = 0;
+
+      // Check each VS Group modifier on the weapon
+      for (const [groupId, modData] of Object.entries(vsGroupMods)) {
+         // Find the group definition in CONFIG.FADE.ActorGroups
+         const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
+         
+         // Check if group applies: start with group membership, then check special rule if needed
+         const isMember = actorGroups.includes(groupId);
+         const groupApplies = isMember || (groupDef?.rule && this.#checkSpecialRule(token, groupDef.rule));
+            
+         if (groupApplies) {
+            totalMod += modData.dmg || 0;
+         }
+      }
+
+      return totalMod;
+   }
+
+   /**
+    * Check if a token meets the criteria for a special rule
+    * @param {Token} token - The target token
+    * @param {string} rule - The rule to check
+    * @returns {boolean} - Whether the token meets the rule criteria
+    * @private
+    */
+   #checkSpecialRule(token, rule) {
+      const actor = token.actor;
+      
+      switch (rule) {
+         case "enchanted":
+            // Check if actor is enchanted
+            return actor.system.isEnchanted === true;
+            
+         case "spellcaster":
+            // Check if actor can cast spells (has spell levels > 0)
+            return actor.system.config?.maxSpellLevel > 0;
+            
+         case "equippedWeapon":
+            // Check if actor has any equipped weapons
+            return actor.items.some(item => item.type === "weapon" && item.system.equipped === true);
+            
+         default:
+            console.warn(`Unknown special rule: ${rule}`);
+            return false;
+      }
    }
 
    #sendChatAndToast(source, digest) {

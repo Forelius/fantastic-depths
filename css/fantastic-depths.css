@@ -323,7 +323,7 @@ table.compact-table input {
 }
 
 .editor {
-  height: 100%;
+  /*height:100%;*/
   /*min-height: 50px;*/
 }
 
@@ -1433,7 +1433,7 @@ table.compact-table input {
   overflow-y: auto;
 }
 .system-fantastic-depths .sheet-body .tab .editor {
-  height: 100%;
+  /*height: 100%;*/
   min-height: 32px;
 }
 .system-fantastic-depths .tox .tox-editor-container {

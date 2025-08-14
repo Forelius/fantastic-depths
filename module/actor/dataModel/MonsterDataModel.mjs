@@ -25,9 +25,7 @@ export class MonsterDataModel extends FDCombatActorDM {
             wandering: new fields.StringField({ initial: "1d6" }),
             lair: new fields.StringField({ initial: "" }),
          }),
-         treasure: new fields.StringField({ initial: "" }),
-         // If enchanted, can only hit with magic weapons or spells.
-         isEnchanted: new fields.BooleanField({ initial: false }),
+         treasure: new fields.StringField({ initial: "" })         
       };
       foundry.utils.mergeObject(monsterSchema, baseSchema);
       return monsterSchema;
