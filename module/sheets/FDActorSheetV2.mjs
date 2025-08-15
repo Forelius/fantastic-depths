@@ -18,7 +18,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static DEFAULT_OPTIONS = {
       position: {
-         top: 150,
+         //top: 150,
          width: 650,
          height: 500,
       },

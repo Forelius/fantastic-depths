@@ -16,7 +16,7 @@ export class MasteryDefinitionSheet extends FDItemSheetV2 {
       },
       classes: ['fantastic-depths', 'sheet', 'item'],
       position: {
-         top: 150,
+         //top: 150,
          width: 540,
          height: 500
       },

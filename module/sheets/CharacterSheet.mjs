@@ -7,7 +7,7 @@ import { CharacterSheetBase } from './CharacterSheetBase.mjs';
 export class CharacterSheet extends CharacterSheetBase {
    static DEFAULT_OPTIONS = {
       position: {
-         top: 150,
+         //top: 150,
          width: 650,
          height: 600,
       },

@@ -13,7 +13,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    */
    static DEFAULT_OPTIONS = {
       position: {
-         top: 150,
+         //top: 150,
          width: 700,
          height: 500,
       },
