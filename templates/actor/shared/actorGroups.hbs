@@ -1,0 +1,26 @@
+{{! Actor Groups }}
+<div class="bordered">
+   <div class="flexrow tag-section">
+      <div class="flex1 add-tag">
+         {{#if isGM}}
+         <button type="button" data-action="addActorGroup">
+            <i class="fas fa-plus"></i> {{localize 'FADE.Actor.actorGroups.group'}}
+         </button>
+         {{/if}}
+      </div>
+      <div class="flex3">
+         <div class="flexrow">
+            <ol class="tag-list" style="height:auto;line-height: 15px;">
+               {{#each system.actorGroups as |group|}}
+               <li class="tag" data-tag="{{group}}">
+                  <span>{{localize (concat "FADE.Actor.actorGroups." group)}}</span>
+                  {{#if @root.isGM}}
+                  <a data-action="deleteActorGroup" data-tag="{{group}}"><i class="fas fa-times"></i></a>
+                  {{/if}}
+               </li>
+               {{/each}}
+            </ol>
+         </div>
+      </div>
+   </div>
+</div>

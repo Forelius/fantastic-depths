@@ -16,6 +16,7 @@ export const preloadHandlebarsTemplates = async function () {
       actorMovement2: 'systems/fantastic-depths/templates/actor/parts/movement2.hbs',
       actorEquippedWeapons: "systems/fantastic-depths/templates/actor/parts/equipped-weapons.hbs",
       attackGroups: "systems/fantastic-depths/templates/actor/parts/attack-groups.hbs",
+      actorGroups: 'systems/fantastic-depths/templates/actor/shared/actorGroups.hbs',
       actorSpecialAbilities: 'systems/fantastic-depths/templates/item/parts/item-specialAbilities.hbs',
       actorWeapons: 'systems/fantastic-depths/templates/item/parts/item-weapons.hbs',
       actorSkills: 'systems/fantastic-depths/templates/item/parts/item-skills.hbs',
@@ -33,5 +34,6 @@ export const preloadHandlebarsTemplates = async function () {
       itemGear: 'systems/fantastic-depths/templates/item/parts/item-gear.hbs',
       itemFlags: 'systems/fantastic-depths/templates/item/parts/item-flags.hbs',
       itemIdentified: 'systems/fantastic-depths/templates/item/parts/item-identified.hbs',
+      vsGroupMod: 'systems/fantastic-depths/templates/item/shared/vsGroupMod.hbs',
    });
 };

@@ -118,6 +118,8 @@ export class FDCombatActorDM extends FDActorBaseDM {
                tempMod: new fields.NumberField({ initial: 0 }),
             }),
          }),
+         // If enchanted, can only hit with magic weapons or spells.
+         isEnchanted: new fields.BooleanField({ initial: false }),
       };
       foundry.utils.mergeObject(schema, baseSchema);
       return schema;
