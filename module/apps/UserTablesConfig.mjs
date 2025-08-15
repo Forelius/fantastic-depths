@@ -25,7 +25,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          contentClasses: ["scroll-body"]
       },
       position: {
-         top: 80,
          width: 500,
          height: 400
       },
@@ -115,7 +114,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
 
       const dialogResp = await DialogV2.wait({
          window: { title: game.i18n.localize('FADE.apps.userTables.actions.createTable') },
-         position: { top: 100 },
          content: `<form>
           <div class="form-group">
                 <label for="tableId">${game.i18n.localize('FADE.apps.userTables.tableId')}:</label>
@@ -176,7 +174,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       const prompt = game.i18n.localize('FADE.apps.userTables.removePrompt');
       const proceed = await foundry.applications.api.DialogV2.confirm({
          window: prompt,
-         position: { top: 100 },
          content: `<p>${prompt}</p>`,
          modal: true
       });

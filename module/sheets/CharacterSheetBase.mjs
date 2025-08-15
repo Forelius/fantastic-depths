@@ -25,7 +25,6 @@ export class CharacterSheetBase extends FDActorSheetV2 {
 
    static DEFAULT_OPTIONS = {
       position: {
-         top: 150,
          width: 650,
          height: 600,
       },
