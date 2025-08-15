@@ -74,8 +74,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
     * @param {any} dataset
     */
    static async handleDamageRoll(ev, dataset) {
-      const { weaponuuid, attacktype, damagetype, targetweapontype } = dataset;
+      const { weaponuuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
       const theItem = await fromUuid(weaponuuid);
+      const targetActor = await fromUuid(targetactoruuid);
       const instigator = theItem.actor.token ?? theItem.actor;
       let rolling = true;
       let dialogResp = null;
@@ -84,8 +85,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
+      // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(attacktype, null, targetweapontype);
+         damageRoll = theItem.getDamageRoll(attacktype, null, targetweapontype, targetActor);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
          damageRoll = theItem.getDamageRoll(null);
       }
@@ -99,7 +101,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       rolling = dialogResp != null;
 
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(attacktype, dialogResp, targetweapontype);
+         damageRoll = theItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
          damageRoll = theItem.getDamageRoll(dialogResp);
       }

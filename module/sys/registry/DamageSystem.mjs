@@ -92,14 +92,15 @@ export class DamageSystem extends DamageSystemInterface {
     * @param {Item} weaponItem - The weapon item with VS Group modifiers
     * @returns {number} - Total damage modifier
     */
-   GetVsGroupMod(token, weaponItem) {
-      if (!token?.actor || !weaponItem?.system?.mod?.vsGroup) {
-         return 0;
+   GetVsGroupMod(targetActor, weaponItem) {
+      if (!targetActor || !weaponItem?.system?.mod?.vsGroup) {
+         return null;
       }
 
-      const actorGroups = token.actor.system.actorGroups || [];
+      const actorGroups = targetActor.system.actorGroups || [];
       const vsGroupMods = weaponItem.system.mod.vsGroup;
       let totalMod = 0;
+      const digest = [];
 
       // Check each VS Group modifier on the weapon
       for (const [groupId, modData] of Object.entries(vsGroupMods)) {
@@ -112,10 +113,11 @@ export class DamageSystem extends DamageSystemInterface {
             
          if (groupApplies) {
             totalMod += modData.dmg || 0;
+            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { mod: modData.dmg }));
          }
       }
 
-      return totalMod;
+      return { mod: totalMod, digest };
    }
 
    /**

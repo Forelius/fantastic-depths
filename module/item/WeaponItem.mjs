@@ -21,7 +21,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       this._prepareDamageLabel();
    }
 
-   getDamageRoll(attackType, resp, targetWeaponType) {
+   getDamageRoll(attackType, resp, targetWeaponType, targetTokens) {
       const weaponData = this.system;
       const attackerData = this.parent.system;
       const masterySystem = game.fade.registry.getSystem('weaponMastery');
@@ -44,6 +44,14 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
             modifier += attackerData.mod.combat.dmg;
             digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmg }));
+         }
+         if (targetTokens?.length > 0) {
+            const dmgSys = game.fade.registry.getSystem("damageSystem");
+            const vsGroupResult = dmgSys.GetVsGroupMod(targetTokens[0], this);
+            if (vsGroupResult != null && vsGroupResult.mod != 0) {
+               modifier += vsGroupResult.mod;
+               digest = [...digest, ...vsGroupResult.digest];
+            }
          }
       } else if (attackType === 'missile') {
          if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
