@@ -113,7 +113,7 @@ export class DamageSystem extends DamageSystemInterface {
             
          if (groupApplies) {
             totalMod += modData.dmg || 0;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { mod: modData.dmg }));
+            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.dmg }));
          }
       }
 

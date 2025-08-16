@@ -646,7 +646,7 @@
             "strengthMod": "Strength mod: {mod}",
             "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",
-            "vsGroupMod": "Vs. Group mod: {mod}",
+            "vsGroupMod": "Vs. {group} mod: {mod}",
             "masteryMod": "Mastery {primsec} mod: {mod}",
             "unskilledUse": "Unskilled weapon use: {mod}",
             "masteryPrimDmg": "Weapon mastery primary damage.",

@@ -123,11 +123,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const chatData = {
             context: instigator,
             mdata: dataset,
-            roll: roll,
+            roll,
             digest: damageRoll.digest
          };
          const options = {
-            damage: damage,
+            damage,
             resultString,
             attackName,
          };
