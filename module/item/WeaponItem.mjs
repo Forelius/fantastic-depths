@@ -38,33 +38,33 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
-            modifier += attackerData.abilities.str.mod;
+            modifier += Number(attackerData.abilities.str.mod);
             digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));
          }
          if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
-            modifier += attackerData.mod.combat.dmg;
+            modifier += Number(attackerData.mod.combat.dmg);
             digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmg }));
          }
          if (targetActor) {
             const dmgSys = game.fade.registry.getSystem("damageSystem");
             const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
             if (vsGroupResult != null && vsGroupResult.mod != 0) {
-               modifier += vsGroupResult.mod;
+               modifier += Number(vsGroupResult.mod);
                digest = [...digest, ...vsGroupResult.digest];
             }
          }
       } else if (attackType === 'missile') {
          if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
-            modifier += weaponData.mod.dmgRanged;
+            modifier += Number(weaponData.mod.dmgRanged);
             digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.dmgRanged }));
          }
          // If the attacker has ability scores...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
-            modifier += attackerData.abilities.str.mod;
+            modifier += Number(attackerData.abilities.str.mod);
             digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));
          }
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
-            modifier += attackerData.mod.combat.dmgRanged;
+            modifier += Number(attackerData.mod.combat.dmgRanged);
             digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmgRanged }));
          }
       } else if (attackType === "breath") {
@@ -72,7 +72,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       }
 
       if (resp?.mod && resp?.mod !== 0) {
-         modifier += resp.mod;
+         modifier += Number(resp.mod);
          digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
       }
 

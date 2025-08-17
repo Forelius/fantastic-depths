@@ -109,7 +109,7 @@ export class DamageSystem extends DamageSystemInterface {
          
          // Check if group applies: start with group membership, then check special rule if needed
          const isMember = actorGroups.includes(groupId);
-         const groupApplies = isMember || (groupDef?.rule && this.#checkSpecialRule(token, groupDef.rule));
+         const groupApplies = isMember || (groupDef?.rule && this.checkSpecialRule(targetActor, groupDef.rule));
             
          if (groupApplies) {
             totalMod += modData.dmg || 0;
@@ -117,7 +117,7 @@ export class DamageSystem extends DamageSystemInterface {
          }
       }
 
-      return { mod: totalMod, digest };
+      return { mod: Number(totalMod), digest };
    }
 
    /**
@@ -127,9 +127,7 @@ export class DamageSystem extends DamageSystemInterface {
     * @returns {boolean} - Whether the token meets the rule criteria
     * @private
     */
-   #checkSpecialRule(token, rule) {
-      const actor = token.actor;
-      
+   checkSpecialRule(actor, rule) {
       switch (rule) {
          case "enchanted":
             // Check if actor is enchanted

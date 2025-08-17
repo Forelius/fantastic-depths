@@ -53,7 +53,7 @@ export class ToHitSystemBase extends ToHitInterface {
       }
 
       if (attackType === "melee") {
-         modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, targetData);
+         modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, options.target);
       } else {
          // Missile attack
          modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammo);
@@ -228,7 +228,8 @@ export class ToHitSystemBase extends ToHitInterface {
       return result;
    }
 
-   #getMeleeAttackRollMods(actor, weaponData, digest, targetData) {
+   #getMeleeAttackRollMods(actor, weaponData, digest, target) {
+      const targetData = target?.system;
       let result = 0;
       const systemData = actor.system;
       const targetMods = targetData?.mod.combat;
@@ -250,6 +251,28 @@ export class ToHitSystemBase extends ToHitInterface {
       if (targetMods && targetMods.selfToHit !== 0) {
          result += targetMods.selfToHit;
          digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
+      }
+
+      if (target) {
+         const dmgSys = game.fade.registry.getSystem("damageSystem");
+         // vsGroup tohit modifier
+         const actorGroups = targetData.actorGroups || [];
+         const vsGroupMods = weaponData.mod.vsGroup;
+
+         // Check each VS Group modifier on the weapon
+         for (const [groupId, modData] of Object.entries(vsGroupMods)) {
+            // Find the group definition in CONFIG.FADE.ActorGroups
+            const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
+
+            // Check if group applies: start with group membership, then check special rule if needed
+            const isMember = actorGroups.includes(groupId);
+            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
+
+            if (groupApplies) {
+               result += modData.toHit || 0;
+               digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
+            }
+         }
       }
 
       return result;
