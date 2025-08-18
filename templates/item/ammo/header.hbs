@@ -1,0 +1,48 @@
+﻿<header class='sheet-header'>
+   <img class='profile-img-sm' src='{{item.img}}' data-edit="img" data-action="editImage" />
+   <div class='header-fields'>
+      <div class="summary flexrow">
+         <div>
+            <div class='charname'>
+               {{#if (or isGM system.isIdentified)}}
+               <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+               {{else}}
+               <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
+               {{/if}}
+            </div>
+         </div>
+      </div>
+      <div class="summary flexrow">
+         <div class="flex1">
+            <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+            <label for="system.quantity">{{localize 'FADE.Item.quantity.long'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+            <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxLong'}}</label>
+         </div>
+         <div class="flex1">
+            {{#if (or isGM system.isIdentified)}}
+            <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+            {{else}}
+            <input type='text' value='?' data-dtype='Number' readonly />
+            {{/if}}
+            <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name="system.weight" value='{{system.weight}}' data-dtype='Number' {{#unless item.isOwner}} readonly{{/unless}} />
+            <label for="system.weight" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</label>
+         </div>
+         <div class="flex1">
+            <input type='text' name="system.weightEquipped" value='{{system.weightEquipped}}' data-dtype='Number' {{#unless item.isOwner}} readonly{{/unless}} />
+            <label for="system.weightEquipped" data-tooltip="{{localize 'FADE.Item.weightEquipped.desc'}}">{{localize 'FADE.Item.weightEquipped.short'}}</label>
+         </div>
+         {{#if (eq item.isContained false)}}
+         <div class="flex1">
+            <input type="checkbox" name="system.isDropped" data-dtype="Boolean" {{#if system.isDropped}} checked{{/if}} />
+            <label for="system.isDropped" data-tooltip="{{localize "FADE.Item.dropped.hint"}}">{{localize "FADE.Item.dropped.name"}}</label>
+         </div>
+         {{/if}}
+      </div>
+   </div>
+</header>

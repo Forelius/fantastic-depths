@@ -22,6 +22,7 @@ import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
 import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
 import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
+import { AmmoItemDataModel } from './item/dataModel/AmmoItemDataModel.mjs';
 import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
@@ -38,6 +39,7 @@ import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
 import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
 import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 import { ConditionItemSheet } from './sheets/ConditionItemSheet.mjs';
+import { AmmoItemSheet } from './sheets/AmmoItemSheet.mjs';
 import { AncestryDefinitionSheet } from './sheets/AncestryDefinitionSheet.mjs';
 
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
@@ -104,6 +106,7 @@ Hooks.once('init', async function () {
       armor: ArmorItemDataModel,
       skill: SkillItemDataModel,
       light: LightItemDataModel,
+      ammo: AmmoItemDataModel,
       spell: SpellItemDataModel,
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDM,
@@ -213,6 +216,11 @@ function registerSheets() {
    gItems.registerSheet('fantastic-depths', ConditionItemSheet, {
       label: 'FADE.SheetLabel.ConditionItem',
       types: ['condition'],
+      makeDefault: true
+   });
+   gItems.registerSheet('fantastic-depths', AmmoItemSheet, {
+      label: 'FADE.SheetLabel.AmmoItem',
+      types: ['ammo'],
       makeDefault: true
    });
    gItems.registerSheet('fantastic-depths', AncestryDefinitionSheet, {

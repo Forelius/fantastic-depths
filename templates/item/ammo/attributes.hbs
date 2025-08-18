@@ -1,0 +1,48 @@
+﻿<section class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
+   <div>
+      {{> "itemFlags"}}
+   </div>
+   <div class="bordered">
+      <ul class="summary flexrow">
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.container" data-dtype="Boolean" {{#if system.container}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isContainer"}}" />
+            <label for="system.container" data-tooltip="{{localize "FADE.Item.isContainer"}}">{{localize "FADE.Item.isContainer"}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.equippable" data-dtype="Boolean" {{#if system.equippable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isEquippable"}}" />
+            <label for="system.equippable" data-tooltip="{{localize "FADE.Item.isEquippable"}}">{{localize "FADE.Item.isEquippable"}}</label>
+         </li>
+         <li style="max-width: 60px;">
+            <input type="checkbox" name="system.isUsable" data-dtype="Boolean" {{#if system.isUsable}} checked{{/if}} data-tooltip="{{localize "FADE.Item.isUsable.hint"}}" />
+            <label for="system.isUsable" data-tooltip="{{localize "FADE.Item.isUsable.hint"}}">{{localize "FADE.Item.isUsable.name"}}</label>
+         </li>
+         <li class="flex1">
+            <input name="system.ammoType" type="text" data-dtype="String" value="{{system.ammoType}}" />
+            <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions savingThrows selected=system.savingThrow}}
+            </select>
+            <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+            <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+         </li>
+         <li>
+            <input type='text' name='system.dmgFormula' value='{{system.dmgFormula}}' data-dtype='String' />
+            <label for="system.dmgFormula">{{localize 'FADE.Weapon.damage.long'}}</label>
+         </li>
+         <li>
+            <select name="system.damageType" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions damageTypes selected=system.damageType}}
+            </select>
+            <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+         </li>
+      </ul>
+   </div>
+   {{> "vsGroupMod"}}
+</section>

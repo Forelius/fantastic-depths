@@ -1,12 +1,13 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
+import { VsGroupModMixin } from './mixins/VsGroupModMixin.mjs';
 
 
 /**
  * Sheet class for WeaponItem.
  */
-export class WeaponItemSheet extends FDItemSheetV2 {
+export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */
@@ -23,10 +24,6 @@ export class WeaponItemSheet extends FDItemSheetV2 {
       classes: ['fantastic-depths', 'sheet', 'item'],
       form: {
          submitOnChange: true
-      },
-      actions: {
-         addVsGroup: WeaponItemSheet.#clickAddVsGroup,
-         deleteVsGroup: WeaponItemSheet.#clickDeleteVsGroup
       }
    }
 
@@ -99,23 +96,6 @@ export class WeaponItemSheet extends FDItemSheetV2 {
          weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
          weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.long'), value: 'all' });
          context.weaponTypes = weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-         
-         // Prepare vsGroup data for actor groups that have been added
-         const vsGroupData = [];
-         const vsGroupObj = this.item.system.mod.vsGroup || {};
-         for (const [groupId, groupData] of Object.entries(vsGroupObj)) {
-            const group = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
-            if (group) {
-               const groupName = game.i18n.localize(`FADE.Actor.actorGroups.${groupId}`);
-               vsGroupData.push({
-                  id: groupId,
-                  name: groupName,
-                  dmg: groupData.dmg || 0,
-                  toHit: groupData.toHit || 0
-               });
-            }
-         }
-         context.vsGroupData = vsGroupData;
          context.isGM = game.user.isGM;
          // TODO: Magic damage type  indicates that a different set of parameters is passed to getDamageRoll.
          // This is not a good design, but not addressing it at the moment, so remove this option.
@@ -172,87 +152,5 @@ export class WeaponItemSheet extends FDItemSheetV2 {
       }
 
       return tabs;
-   }
-
-   /**
-    * Handle adding a new VS Group modifier
-    * @param {Event} event The originating click event
-    * @private
-    */
-   static async #clickAddVsGroup(event) {
-      event.preventDefault();
-      
-      // Get available actor groups that aren't already in the vsGroup
-      const currentVsGroups = Object.keys(this.item.system.mod.vsGroup || {});
-      const availableGroups = CONFIG.FADE.ActorGroups
-         .filter(group => !currentVsGroups.includes(group.id))
-         .map(group => ({
-            value: group.id,
-            label: game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`)
-         }));
-      
-      if (availableGroups.length === 0) {
-         ui.notifications.warn("All actor groups are already configured.");
-         return;
-      }
-      
-      // Create dialog to select actor group
-      const content = `
-         <form>
-            <div class="form-group">
-               <label>Select Actor Group:</label>
-               <select name="actorGroup">
-                  ${availableGroups.map(group => 
-                     `<option value="${group.value}">${group.label}</option>`
-                  ).join('')}
-               </select>
-            </div>
-         </form>
-      `;
-      
-      const result = await foundry.applications.api.DialogV2.wait({
-         window: { title: "Add VS Group Modifier" },
-         content,
-         buttons: [
-            {
-               action: "add",
-               label: "Add",
-               default: true,
-               callback: (event, button, dialog) => {
-                   const formData = new FormDataExtended(button.form).object;
-                   return formData.actorGroup;
-                }
-            },
-            {
-               action: "cancel",
-               label: "Cancel",
-               callback: () => null
-            }
-         ],
-         close: () => null,
-         classes: ["fantastic-depths"]
-      });
-      
-      if (result) {
-         const updateData = {
-            [`system.mod.vsGroup.${result}`]: { dmg: 0, toHit: 0 }
-         };
-         await this.item.update(updateData);
-      }
-   }
-   
-   /**
-    * Handle deleting a VS Group modifier
-    * @param {Event} event The originating click event
-    * @private
-    */
-   static async #clickDeleteVsGroup(event) {
-      event.preventDefault();
-      
-      const groupId = event.target.closest('[data-group-id]').dataset.groupId;
-      const updateData = {
-         [`system.mod.vsGroup.-=${groupId}`]: null
-      };
-      await this.item.update(updateData);
    }
 }

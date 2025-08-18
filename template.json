@@ -17,7 +17,8 @@
          "light",
          "condition",
          "treasure",
-         "species"
+         "species",
+         "ammo"
       ] 
    }
 }
