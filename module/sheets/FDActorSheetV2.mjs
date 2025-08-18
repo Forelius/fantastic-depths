@@ -144,7 +144,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.sizes = CONFIG.FADE.ActorSizes
          .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-      
+
       // Prepare actor groups for button-based selection
       const actorGroupsOptions = {};
       CONFIG.FADE.ActorGroups.forEach(group => {
@@ -473,6 +473,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Initialize arrays.
       let gear = [];
       const weapons = [];
+      const ammo = [];
       const armor = [];
       const skills = [];
       const masteries = [];
@@ -510,6 +511,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          // Append to weapons.
          else if (item.type === "weapon") {
             weapons.push(item);
+         }
+         // Append to ammo.
+         else if (item.type === "ammo") {
+            ammo.push(item);
          }
          // Append to armor.
          else if (item.type === "armor") {
@@ -558,6 +563,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Assign and return
       context.gear = gear;
       context.weapons = weapons;
+      context.ammo = ammo;
       context.armor = armor;
       context.skills = skills;
       context.masteries = masteries;
@@ -818,7 +824,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    static async #clickAddActorGroup(event) {
       const actor = this.actor;
       const currentGroups = actor.system.actorGroups || [];
-      
+
       // Get available groups that aren't already added
       const availableGroups = CONFIG.FADE.ActorGroups
          .filter(group => !currentGroups.includes(group.id))
@@ -826,12 +832,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             value: group.id,
             label: game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`)
          }));
-      
+
       if (availableGroups.length === 0) {
          ui.notifications.info("All actor groups have already been added.");
          return;
       }
-      
+
       // Create a simple dialog to select which group to add
       const selectedGroup = await DialogV2.wait({
          window: { title: game.i18n.localize("FADE.Actor.actorGroups.group") },
@@ -868,7 +874,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          close: () => null,
          classes: ["fantastic-depths"]
       });
-      
+
       if (selectedGroup) {
          const newGroups = [...currentGroups, selectedGroup];
          await actor.update({ "system.actorGroups": newGroups });
