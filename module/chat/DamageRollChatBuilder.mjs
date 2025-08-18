@@ -74,10 +74,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
     * @param {any} dataset
     */
    static async handleDamageRoll(ev, dataset) {
-      const { weaponuuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
-      const theItem = await fromUuid(weaponuuid);
+      const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
+      const weaponItem = await fromUuid(weaponuuid);
+      const ammoItem = await fromUuid(ammouuid);
       const targetActor = await fromUuid(targetactoruuid);
-      const instigator = theItem.actor.token ?? theItem.actor;
+      const instigator = weaponItem.actor.token ?? weaponItem.actor;
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
@@ -87,9 +88,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
       // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(attacktype, null, targetweapontype, targetActor);
+         damageRoll = weaponItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(null);
+         damageRoll = weaponItem.getDamageRoll(null);
       }
 
       dialogResp = await DialogFactory({
@@ -97,13 +98,13 @@ export class DamageRollChatBuilder extends ChatBuilder {
          label: isHeal ? "Heal" : "Damage",
          formula: damageRoll.formula,
          editFormula: game.user.isGM
-      }, theItem);
+      }, weaponItem);
       rolling = dialogResp != null;
 
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor);
+         damageRoll = weaponItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(dialogResp);
+         damageRoll = weaponItem.getDamageRoll(dialogResp);
       }
 
       if (rolling === true) {
@@ -111,7 +112,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const roll = new Roll(damageRoll.formula);
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
-         const attackName = (theItem.system.isIdentified !== false) ? theItem.name : theItem.system.unidentifiedName;
+         const attackName = (weaponItem.system.isIdentified !== false) ? weaponItem.name : weaponItem.system.unidentifiedName;
          const descData = {
             attacker: instigator.name,
             weapon: attackName,

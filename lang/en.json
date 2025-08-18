@@ -642,6 +642,7 @@
       },
       "Chat": {
          "rollMods": {
+            "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
             "strengthMod": "Strength mod: {mod}",

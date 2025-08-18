@@ -21,7 +21,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       this._prepareDamageLabel();
    }
 
-   getDamageRoll(attackType, resp, targetWeaponType, targetActor) {
+   getDamageRoll(attackType, resp, targetWeaponType, targetActor, ammoItem) {
       const weaponData = this.system;
       const attackerData = this.parent.system;
       const masterySystem = game.fade.registry.getSystem('weaponMastery');
@@ -66,6 +66,10 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
             modifier += Number(attackerData.mod.combat.dmgRanged);
             digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmgRanged }));
+         }
+         if (Math.abs(ammoItem?.system.mod.dmgRanged) > 0) {
+            modifier += Number(ammoItem?.system.mod.dmgRanged);
+            digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem?.system.mod.dmgRanged }));
          }
       } else if (attackType === "breath") {
 
