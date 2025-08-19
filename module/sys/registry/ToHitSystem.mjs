@@ -35,7 +35,6 @@ export class ToHitSystemBase extends ToHitInterface {
     */
    getAttackRoll(actor, weapon, attackType, options = {}) {
       const weaponData = weapon.system;
-      const targetData = options.target?.system;
       let formula = options.attackRoll ?? game.settings.get(game.system.id, "attackRollFormula");;
       let digest = [];
       let modifier = 0;
@@ -56,7 +55,7 @@ export class ToHitSystemBase extends ToHitInterface {
          modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, options.target);
       } else {
          // Missile attack
-         modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammoItem);
+         modifier += this.#getMissileAttackRollMods(actor, weapon, digest, options.target, options?.ammoItem);
       }
 
       // If there is a registered weapon mastery system...
@@ -225,17 +224,20 @@ export class ToHitSystemBase extends ToHitInterface {
       }
 
       if (target) {
-         result += this.#getVsGroupMod(targetData, weaponData, target, digest);
+         result += this.#getVsGroupMod(weaponData, target, digest);
       }
 
       return result;
    }
 
-   #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammoItem) {
+   #getMissileAttackRollMods(actor, weapon, digest, target, ammoItem) {
       let result = 0;
+      const weaponData = weapon.system;
+      const targetData = target?.system;
       const systemData = actor.system;
       const targetMods = targetData?.mod.combat;
       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+      const ammoIsNotWeapon = ammoItem && ammoItem.id != weapon.id;
 
       if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
          result += weaponData.mod.toHitRanged;
@@ -245,7 +247,7 @@ export class ToHitSystemBase extends ToHitInterface {
          result += systemData.mod.combat.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
       }
-      if (Math.abs(ammoItem?.system.mod.toHitRanged) > 0) {
+      if (ammoIsNotWeapon && Math.abs(ammoItem?.system.mod.toHitRanged) > 0) {
          result += ammoItem.system.mod.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
       }
@@ -262,11 +264,22 @@ export class ToHitSystemBase extends ToHitInterface {
          result += targetMods.selfToHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
       }
+
+      if (target) {
+         // Thrown weapons
+         result += this.#getVsGroupMod(weaponData, target, digest);
+         if (ammoIsNotWeapon) {
+            // Ammunition
+            result += this.#getVsGroupMod(ammoItem.system, target, digest);
+         }
+      }
+
       return result;
    }
 
-   #getVsGroupMod(targetData, weaponData, target, digest) {
+   #getVsGroupMod(weaponData, target, digest) {
       let result = 0;
+      const targetData = target?.system;
       const dmgSys = game.fade.registry.getSystem("damageSystem");
       // vsGroup tohit modifier
       const actorGroups = targetData.actorGroups || [];
