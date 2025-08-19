@@ -58,7 +58,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
             modifier += Number(weaponData.mod.dmgRanged);
             digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.dmgRanged }));
          }
-         // If the attacker has ability scores...
+         // If the attacker has ability scores and the weapon is thrown...
          if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
             modifier += Number(attackerData.abilities.str.mod);
             digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));

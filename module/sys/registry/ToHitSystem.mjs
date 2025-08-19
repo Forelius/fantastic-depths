@@ -213,7 +213,11 @@ export class ToHitSystemBase extends ToHitInterface {
          result += systemData.mod.combat.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
       }
-      // If the attacker has ability scores...
+      if (Math.abs(ammoItem?.system.mod.toHitRanged) > 0) {
+         result += ammoItem.system.mod.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
+      }
+      // If the attacker has ability scores and weapon is thrown...
       if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
          result += systemData.abilities.str.mod;
          digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
