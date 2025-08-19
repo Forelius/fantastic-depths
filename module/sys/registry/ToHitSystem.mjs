@@ -199,6 +199,38 @@ export class ToHitSystemBase extends ToHitInterface {
       return sum;
    }
 
+   #getMeleeAttackRollMods(actor, weaponData, digest, target) {
+      const targetData = target?.system;
+      let result = 0;
+      const systemData = actor.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+
+      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
+         result += weaponData.mod.toHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
+      }
+      if (systemData.mod?.combat.toHit !== 0) {
+         result += systemData.mod.combat.toHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
+      }
+      // If the attacker has ability scores...
+      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
+         result += systemData.abilities.str.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+      }
+      if (targetMods && targetMods.selfToHit !== 0) {
+         result += targetMods.selfToHit;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
+      }
+
+      if (target) {
+         result += this.#getVsGroupMod(targetData, weaponData, target, digest);
+      }
+
+      return result;
+   }
+
    #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammoItem) {
       let result = 0;
       const systemData = actor.system;
@@ -233,53 +265,27 @@ export class ToHitSystemBase extends ToHitInterface {
       return result;
    }
 
-   #getMeleeAttackRollMods(actor, weaponData, digest, target) {
-      const targetData = target?.system;
+   #getVsGroupMod(targetData, weaponData, target, digest) {
       let result = 0;
-      const systemData = actor.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+      const dmgSys = game.fade.registry.getSystem("damageSystem");
+      // vsGroup tohit modifier
+      const actorGroups = targetData.actorGroups || [];
+      const vsGroupMods = weaponData.mod.vsGroup;
 
-      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
-         result += weaponData.mod.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
-      }
-      if (systemData.mod?.combat.toHit !== 0) {
-         result += systemData.mod.combat.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
-      }
-      // If the attacker has ability scores...
-      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-         result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
-      }
-      if (targetMods && targetMods.selfToHit !== 0) {
-         result += targetMods.selfToHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
-      }
+      // Check each VS Group modifier on the weapon
+      for (const [groupId, modData] of Object.entries(vsGroupMods)) {
+         // Find the group definition in CONFIG.FADE.ActorGroups
+         const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
 
-      if (target) {
-         const dmgSys = game.fade.registry.getSystem("damageSystem");
-         // vsGroup tohit modifier
-         const actorGroups = targetData.actorGroups || [];
-         const vsGroupMods = weaponData.mod.vsGroup;
+         // Check if group applies: start with group membership, then check special rule if needed
+         const isMember = actorGroups.includes(groupId);
+         const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
 
-         // Check each VS Group modifier on the weapon
-         for (const [groupId, modData] of Object.entries(vsGroupMods)) {
-            // Find the group definition in CONFIG.FADE.ActorGroups
-            const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
-
-            // Check if group applies: start with group membership, then check special rule if needed
-            const isMember = actorGroups.includes(groupId);
-            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
-
-            if (groupApplies) {
-               result += modData.toHit || 0;
-               digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
-            }
+         if (groupApplies) {
+            result += modData.toHit || 0;
+            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
          }
       }
-
       return result;
    }
 
