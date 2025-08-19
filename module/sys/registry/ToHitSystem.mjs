@@ -56,7 +56,7 @@ export class ToHitSystemBase extends ToHitInterface {
          modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, options.target);
       } else {
          // Missile attack
-         modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammo);
+         modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammoItem);
       }
 
       // If there is a registered weapon mastery system...
@@ -199,7 +199,7 @@ export class ToHitSystemBase extends ToHitInterface {
       return sum;
    }
 
-   #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammo) {
+   #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammoItem) {
       let result = 0;
       const systemData = actor.system;
       const targetMods = targetData?.mod.combat;
@@ -217,7 +217,7 @@ export class ToHitSystemBase extends ToHitInterface {
          result += ammoItem.system.mod.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
       }
-      // If the attacker has ability scores and weapon is thrown...
+      // If thrown and attacker has ability scores...
       if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
          result += systemData.abilities.str.mod;
          digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
@@ -225,6 +225,7 @@ export class ToHitSystemBase extends ToHitInterface {
          result += systemData.abilities.dex.mod;
          digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
       }
+      // Target modifiers
       if (targetMods && targetMods.selfToHitRanged !== 0) {
          result += targetMods.selfToHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));

@@ -1,6 +1,5 @@
 import { FDActorBase } from "/systems/fantastic-depths/module/actor/FDActorBase.mjs";
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { ClassDefinitionItem } from '/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs';
 import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
@@ -177,8 +176,9 @@ export class FDCombatActor extends FDActorBase {
       } else if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
          ammoItem = weapon;
       } else {
+         const ammoItems = ["item", "ammo"];
          // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
-         ammoItem = this.items.find(item => item.type === "item" && item.system.equipped === true
+         ammoItem = this.items.find(item => ammoItems.includes(item.type) && item.system.equipped === true
             && item.system.ammoType == ammoType && item.system.quantity !== 0);
       }
 

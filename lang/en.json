@@ -281,6 +281,7 @@
          "SpellItem": "Spell Item Sheet",
          "SkillItem": "Skill Item Sheet",
          "LightItem": "Light Item Sheet",
+         "AmmoItem": "Ammo Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
          "WeaponItem": "Weapon Item Sheet",
          "TreasureItem": "Treasure Item Sheet",
@@ -641,6 +642,7 @@
       },
       "Chat": {
          "rollMods": {
+            "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
             "strengthMod": "Strength mod: {mod}",
@@ -1100,6 +1102,7 @@
          "spell": "Spell",
          "skill": "General Skill",
          "light": "Light",
+         "ammo": "Ammo",
          "mastery": "Actor Weapon Mastery",
          "actorClass": "Actor Class",
          "specialAbility": "Special Ability",

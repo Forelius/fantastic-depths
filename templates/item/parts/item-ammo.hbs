@@ -1,0 +1,14 @@
+<div name="ammoItems" class='gear-items items-list'>
+   <div class='item flexrow items-header'>
+      <div class='item-name'>{{localize 'FADE.Weapon.ammo.long'}} {{#if gearEnc}}<span class="category-info">({{ammoEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>{{/if}}</div>
+      <div class="item-40px">{{localize 'FADE.Item.quantity.abbr2'}}</div>
+      {{#if showWeight}}
+      <div class="item-50px" data-tooltip="{{localize 'FADE.Item.weight.desc'}}">{{localize 'FADE.Item.weight.short'}}</div>
+      {{/if}}
+      <div class='item-controls'>
+      </div>
+   </div>
+   {{#each ammo as |item id|}}
+   {{> "itemGear" item=item id=id rootobj=@root}}
+   {{/each}}
+</div>
