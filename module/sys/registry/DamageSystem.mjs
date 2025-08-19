@@ -89,16 +89,16 @@ export class DamageSystem extends DamageSystemInterface {
    /**
     * Calculate damage modifier based on token's actor groups and weapon's VS Group modifiers
     * @param {Token} token - The target token
-    * @param {Item} weaponItem - The weapon item with VS Group modifiers
+    * @param {Item} modierItem - The weapon/ammo item with VS Group modifiers
     * @returns {number} - Total damage modifier
     */
-   GetVsGroupMod(targetActor, weaponItem) {
-      if (!targetActor || !weaponItem?.system?.mod?.vsGroup) {
+   GetVsGroupMod(targetActor, modierItem) {
+      if (!targetActor || !modierItem?.system?.mod?.vsGroup) {
          return null;
       }
 
       const actorGroups = targetActor.system.actorGroups || [];
-      const vsGroupMods = weaponItem.system.mod.vsGroup;
+      const vsGroupMods = modierItem.system.mod.vsGroup;
       let totalMod = 0;
       const digest = [];
 

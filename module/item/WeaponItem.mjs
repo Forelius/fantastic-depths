@@ -30,6 +30,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       let digest = [];
       let modifier = 0;
       let hasDamage = true;
+      const dmgSys = game.fade.registry.getSystem("damageSystem");
 
       if (attackType === 'melee') {
          if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
@@ -46,7 +47,6 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
             digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmg }));
          }
          if (targetActor) {
-            const dmgSys = game.fade.registry.getSystem("damageSystem");
             const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
             if (vsGroupResult != null && vsGroupResult.mod != 0) {
                modifier += Number(vsGroupResult.mod);
@@ -67,9 +67,28 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
             modifier += Number(attackerData.mod.combat.dmgRanged);
             digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmgRanged }));
          }
-         if (Math.abs(ammoItem?.system.mod.dmgRanged) > 0) {
-            modifier += Number(ammoItem?.system.mod.dmgRanged);
-            digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem?.system.mod.dmgRanged }));
+         // Bow, sling or thrown has vs group modifier?
+         if (targetActor) {
+            const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
+            if (vsGroupResult != null && vsGroupResult.mod != 0) {
+               modifier += Number(vsGroupResult.mod);
+               digest = [...digest, ...vsGroupResult.digest];
+            }
+         }
+         // If there is an ammo item and it isn't the weapon itself (thrown)...
+         if (ammoItem && ammoItem?.id != this.id) {
+            if (Math.abs(ammoItem?.system.mod.dmgRanged) > 0) {
+               modifier += Number(ammoItem?.system.mod.dmgRanged);
+               digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem?.system.mod.dmgRanged }));
+            }
+            // Non-thrown ammo item vs group modifier
+            if (targetActor) {
+               const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
+               if (vsGroupResult != null && vsGroupResult.mod != 0) {
+                  modifier += Number(vsGroupResult.mod);
+                  digest = [...digest, ...vsGroupResult.digest];
+               }
+            }
          }
       } else if (attackType === "breath") {
 
