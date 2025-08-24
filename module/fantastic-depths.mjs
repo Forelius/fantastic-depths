@@ -1,3 +1,4 @@
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
@@ -363,7 +364,7 @@ Hooks.on("renderSidebarTab", async (object, html) => {
    if (object instanceof Settings) {
       const gamesystem = html.find("#game-details");
       const template = `/systems/fantastic-depths/templates/sidebar/general-info.hbs`;
-      const rendered = await renderTemplate(template);
+      const rendered = await CodeMigrate.RenderTemplate(template);
       gamesystem.find(".system").after(rendered);
    }
 });

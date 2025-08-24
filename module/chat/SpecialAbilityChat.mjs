@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
@@ -56,7 +57,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          attackType: 'specialAbility'
       };
       // Render the content using the template
-      const content = await renderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Add targets for DM chat message
       let toHitResult = { targetResults: [], message: '' };

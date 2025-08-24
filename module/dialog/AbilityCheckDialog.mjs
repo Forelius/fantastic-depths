@@ -1,4 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class AbilityCheckDialog {
    static async getDialog(dataset, caller) {
@@ -7,7 +8,7 @@ export class AbilityCheckDialog {
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
       const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
       const template = abilityCheckSys.dialogTemplate;
-      const templateContent = await renderTemplate(template, {
+      const templateContent = await CodeMigrate.RenderTemplate(template, {
          difficulty: "medium",
          difficultyLevels: Object.entries(CONFIG.FADE.DifficultyLevel).reduce((acc, [key, value]) => {
             acc[key] = game.i18n.localize(`FADE.dialog.difficulty.levels.${key}`);
@@ -31,7 +32,7 @@ export class AbilityCheckDialog {
             {
                action: "check",
                label: game.i18n.localize("FADE.dialog.abilityCheck"),
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
                default: true
             },
          ],

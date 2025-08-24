@@ -1,5 +1,6 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -58,8 +59,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          targetWeaponType: resp.targetWeaponType,
          targetActor
       };
-
-      let content = await renderTemplate(this.template, chatData);
+      let content = await CodeMigrate.RenderTemplate(this.template, chatData);
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 

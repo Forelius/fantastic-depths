@@ -247,7 +247,7 @@ export class ToHitSystemBase extends ToHitInterface {
          result += systemData.mod.combat.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
       }
-      if (ammoIsNotWeapon && Math.abs(ammoItem?.system.mod.toHitRanged) > 0) {
+      if (ammoIsNotWeapon && Math.abs(ammoItem?.system.mod?.toHitRanged) > 0) {
          result += ammoItem.system.mod.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
       }
@@ -283,20 +283,21 @@ export class ToHitSystemBase extends ToHitInterface {
       const dmgSys = game.fade.registry.getSystem("damageSystem");
       // vsGroup tohit modifier
       const actorGroups = targetData.actorGroups || [];
-      const vsGroupMods = weaponData.mod.vsGroup;
+      const vsGroupMods = weaponData.mod?.vsGroup;
+      if (vsGroupMods) {
+         // Check each VS Group modifier on the weapon
+         for (const [groupId, modData] of Object.entries(vsGroupMods)) {
+            // Find the group definition in CONFIG.FADE.ActorGroups
+            const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
 
-      // Check each VS Group modifier on the weapon
-      for (const [groupId, modData] of Object.entries(vsGroupMods)) {
-         // Find the group definition in CONFIG.FADE.ActorGroups
-         const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
+            // Check if group applies: start with group membership, then check special rule if needed
+            const isMember = actorGroups.includes(groupId);
+            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
 
-         // Check if group applies: start with group membership, then check special rule if needed
-         const isMember = actorGroups.includes(groupId);
-         const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
-
-         if (groupApplies) {
-            result += modData.toHit || 0;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
+            if (groupApplies) {
+               result += modData.toHit || 0;
+               digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
+            }
          }
       }
       return result;

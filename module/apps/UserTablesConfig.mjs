@@ -1,4 +1,5 @@
 const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) {
    constructor() {
@@ -140,7 +141,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
             },
             {
                label: "FADE.apps.userTables.actions.createTable",
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object
             },
          ],
          rejectClose: false,

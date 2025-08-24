@@ -123,7 +123,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       }
       // If there is an ammo item and it isn't the weapon itself (thrown)...
       if (ammoItem) {
-         if (Math.abs(ammoItem?.system.mod.dmgRanged) > 0) {
+         if (Math.abs(ammoItem?.system.mod?.dmgRanged) > 0) {
             modifier += Number(ammoItem?.system.mod.dmgRanged);
             digest.push(game.i18n.format("FADE.Chat.rollMods.ammoMod", { mod: ammoItem?.system.mod.dmgRanged }));
          }

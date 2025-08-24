@@ -1,4 +1,5 @@
-import { ChatBuilder } from './ChatBuilder.mjs';
+import { ChatBuilder } from "./ChatBuilder.mjs";
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = "dummy";
@@ -43,8 +44,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
          const toast = `${actorName}: ${abilityName} check.${resultString ?? ''}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
-
-      const content = await renderTemplate(abilityCheckSys.chatTemplate, chatData);
+      const content = await CodeMigrate.RenderTemplate(abilityCheckSys.chatTemplate, chatData);
       const chatMessageData = this.getChatMessageData({ content, rolls });
       await ChatMessage.create(chatMessageData);
    }

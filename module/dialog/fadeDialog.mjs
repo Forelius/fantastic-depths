@@ -1,7 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-//const { renderTemplate } = foundry.applications.handlebars;
-//const { FormDataExtended } = foundry.applications.ux;
 import { rollTableDialog } from '/systems/fantastic-depths/module/dialog/rollTableDialog.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class fadeDialog {
    static async getGenericDialog(dataset, caller) {
@@ -16,13 +15,13 @@ export class fadeDialog {
       dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
-         content: await renderTemplate(template, dialogData),
+         content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {
                action: "roll",
                default: true,
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
             }
          ],
          close: () => { },
@@ -50,16 +49,17 @@ export class fadeDialog {
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
+
             result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
-               content: await renderTemplate(template, dialogData),
+               content: await CodeMigrate.RenderTemplate(template, dialogData),
                buttons: [
                   {
                      action: "attack",
                      label: game.i18n.localize('FADE.combat.maneuvers.attack.name'),
                      default: true,
-                     callback: (event, button, dialog) => new FormDataExtended(button.form).object
+                     callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object
                   },
                   {
                      action: "close",
@@ -100,12 +100,13 @@ export class fadeDialog {
             dialogData.spellItems = spellItems.reduce((acc, item) => {
                acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
                return acc;
-            }, {});;
+            }, {});
+
             let result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
                position: { width: 460 },
-               content: await renderTemplate(template, dialogData),
+               content: await CodeMigrate.RenderTemplate(template, dialogData),
                buttons: [
                   {
                      action: 'cast',
@@ -113,7 +114,7 @@ export class fadeDialog {
                      callback: (event, button, dialog) => {
                         return {
                            action: button.dataset?.action,
-                           data: new FormDataExtended(button.form).object
+                           data: new CodeMigrate.FormDataExtended(button.form).object
                         }
                      },
                      default: true
@@ -124,7 +125,7 @@ export class fadeDialog {
                      callback: (event, button, dialog) => {
                         return {
                            action: button.dataset?.action,
-                           data: new FormDataExtended(button.form).object
+                           data: new CodeMigrate.FormDataExtended(button.form).object
                         }
                      }
                   },

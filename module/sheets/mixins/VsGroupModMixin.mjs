@@ -1,3 +1,5 @@
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+
 /**
  * A mixin for adding VS Group modifier support to an ApplicationV2 class.
  * @param {any} superclass
@@ -91,7 +93,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
                label: "Add",
                default: true,
                callback: (event, button, dialog) => {
-                   const formData = new FormDataExtended(button.form).object;
+                   const formData = new CodeMigrate.FormDataExtended(button.form).object;
                    return formData.actorGroup;
                 }
             },

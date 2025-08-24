@@ -1,5 +1,6 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
@@ -37,7 +38,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       // Render the content using the template, now with messageId
-      let content = await renderTemplate(this.template, renderData);
+      let content = await CodeMigrate.RenderTemplate(this.template, renderData);
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 

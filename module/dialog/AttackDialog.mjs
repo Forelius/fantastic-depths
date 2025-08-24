@@ -1,4 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class AttackDialog {
    /**
@@ -65,13 +66,13 @@ export class AttackDialog {
             height: "auto"
          },
          rejectClose: false,
-         content: await renderTemplate(template, dialogData),
+         content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {
                action: "check",
                label: game.i18n.localize("FADE.roll"),
                default: true,
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
             },
          ],
          close: () => { },

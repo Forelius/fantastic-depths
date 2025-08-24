@@ -1,4 +1,5 @@
 import { GenericRollChatBuilder } from './GenericRollChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SkillRollChatBuilder extends GenericRollChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/skill-roll.hbs';
@@ -43,7 +44,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
          attackType: 'skill'
       };
       // Render the content using the template
-      const content = await renderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({

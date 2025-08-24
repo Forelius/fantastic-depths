@@ -5,6 +5,7 @@ import { EffectManager } from "../sys/EffectManager.mjs";
 import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
 import { FDItem } from "../item/FDItem.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -862,7 +863,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                icon: "fas fa-plus",
                label: game.i18n.localize("FADE.apps.userTables.actions.new"),
                default: true,
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object.actorGroup
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
             },
             {
                action: "cancel",
