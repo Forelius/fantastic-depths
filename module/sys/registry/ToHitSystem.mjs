@@ -198,6 +198,35 @@ export class ToHitSystemBase extends ToHitInterface {
       return sum;
    }
 
+   getDistance(token1, token2) {
+      let result = 0;
+      if (token1 && token2) {
+         const waypoints = [token1.object.center, token2.object.center];
+         result = canvas.grid.measurePath(waypoints)?.distance;
+         if (token1.elevation !== token2.elevation) {
+            const h_diff = token2.elevation > token1.elevation
+               ? token2.elevation - token1.elevation
+               : token1.elevation - token2.elevation;
+            result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
+         }
+      }
+      return Math.floor(result);
+   }
+
+   getRange(distance, ranges) {
+      let result = null;
+      if (distance < 6) {
+         result = "close";
+      } else if (distance <= ranges.short) {
+         result = "short";
+      } else if (distance <= ranges.medium) {
+         result = "medium";
+      } else if (distance <= ranges.long) {
+         result = "long";
+      }
+      return result;
+   }
+
    #getMeleeAttackRollMods(actor, weaponData, digest, target) {
       const targetData = target?.system;
       let result = 0;

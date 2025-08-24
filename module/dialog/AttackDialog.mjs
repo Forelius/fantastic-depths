@@ -30,8 +30,9 @@ export class AttackDialog {
          return acc;
       }, {});
       dialogData.attackType = dialogData.attackTypes.melee ? "melee" : "missile";
+      // Get a shallow copy of the ranges.
+      let ranges = { ...weapon.system.range };
 
-      let ranges = weapon.system.range;
       if (masterySystem) {
          // Get the available target types.
          dialogData.targetWeaponTypes = masterySystem.getWeaponTypes(weapon, caller);
@@ -39,15 +40,18 @@ export class AttackDialog {
          dialogData.selectedWeaponType = masterySystem.getActorWeaponType(targetActor);
          ranges = masterySystem.getRanges(weapon);
       }
+      ranges.short *= (weapon.system.mod.rangeMultiplier ?? 1);
+      ranges.medium *= (weapon.system.mod.rangeMultiplier ?? 1);
+      ranges.long *= (weapon.system.mod.rangeMultiplier ?? 1);
 
-      const distance = AttackDialog.getDistance(attackerToken, targetToken);
+      const distance = toHitSystem.getDistance(attackerToken, targetToken);
       dialogData.attackDistance = distance;
       dialogData.rangeChoices = {
          short: `${game.i18n.localize("FADE.Weapon.range.short")} (${ranges.short})`,
          medium: `${game.i18n.localize("FADE.Weapon.range.medium")} (${ranges.medium})`,
          long: `${game.i18n.localize("FADE.Weapon.range.long")} (${ranges.long})`
       };
-      dialogData.rangeSelected = AttackDialog.getRange(distance, ranges);
+      dialogData.rangeSelected = toHitSystem.getRange(distance, ranges);
       dialogData.modifier = dialogData.attackType === "melee" ? 0 : toHitSystem.rangeModifiers[dialogData.rangeSelected];
       dialogData.rollChoices = {
          normal: "FADE.dialog.rollFormulaType.normal",
@@ -91,35 +95,6 @@ export class AttackDialog {
             });
          }
       });
-      return result;
-   }
-
-   static getDistance(token1, token2) {
-      let result = 0;
-      if (token1 && token2) {
-         const waypoints = [token1.object.center, token2.object.center];
-         result = canvas.grid.measurePath(waypoints)?.distance;
-         if (token1.elevation !== token2.elevation) {
-            const h_diff = token2.elevation > token1.elevation
-               ? token2.elevation - token1.elevation
-               : token1.elevation - token2.elevation;
-            result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
-         }
-      }
-      return Math.floor(result);
-   }
-
-   static getRange(distance, ranges) {
-      let result = null;
-      if (distance < 6) {
-         result = "close";
-      } else if (distance <= ranges.short) {
-         result = "short";
-      } else if (distance <= ranges.medium) {
-         result = "medium";
-      } else if (distance <= ranges.long) {
-         result = "long";
-      }
       return result;
    }
 

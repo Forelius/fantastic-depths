@@ -30,11 +30,12 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       let digest = [];
       let modifier = 0;
       let hasDamage = true;
+      const dmgSys = game.fade.registry.getSystem("damageSystem");
 
       if (attackType === "melee") {
-         modifier += this.getMeleeDamageMod(digest, attackerData, targetActor);
+         modifier += dmgSys.getMeleeDamageMod(this, digest, attackerData, targetActor);
       } else if (attackType === "missile") {
-         modifier += this.getMissileDamageMod(digest, attackerData, targetActor, ammoItem);
+         modifier += dmgSys.getMissileDamageMod(this, digest, attackerData, targetActor, ammoItem);
       } else if (attackType === "breath") {
 
       }
@@ -65,80 +66,6 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       }
 
       return { formula, type: weaponData.damageType, digest, hasDamage };
-   }
-
-   getMeleeDamageMod(digest, attackerData, targetActor) {
-      let modifier = 0;
-      const weaponData = this.system;
-      const dmgSys = game.fade.registry.getSystem("damageSystem");
-
-      if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
-         modifier += weaponData.mod.dmg;
-         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.dmg }));
-      }
-      // If the attacker has ability scores...
-      if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
-         modifier += Number(attackerData.abilities.str.mod);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.strengthMod", { mod: attackerData.abilities.str.mod }));
-      }
-      if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
-         modifier += Number(attackerData.mod.combat.dmg);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: attackerData.mod.combat.dmg }));
-      }
-      if (targetActor) {
-         const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
-         if (vsGroupResult != null && vsGroupResult.mod != 0) {
-            modifier += Number(vsGroupResult.mod);
-            digest.push(...vsGroupResult.digest);
-         }
-      }
-      return modifier;
-   }
-
-   getMissileDamageMod(digest, attackerData, targetActor, ammoItem) {
-      let modifier = 0;
-      const weaponData = this.system;
-      const dmgSys = game.fade.registry.getSystem("damageSystem");
-
-      if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
-         modifier += Number(weaponData.mod.dmgRanged);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.dmgRanged }));
-      }
-      // If the attacker has ability scores...
-      if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
-         modifier += Number(attackerData.abilities.str.mod);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.strengthMod", { mod: attackerData.abilities.str.mod }));
-      }
-      if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
-         modifier += Number(attackerData.mod.combat.dmgRanged);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: attackerData.mod.combat.dmgRanged }));
-      }
-      // Bow, sling or thrown has vs group modifier?
-      if (targetActor) {
-         const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
-         if (vsGroupResult != null && vsGroupResult.mod != 0) {
-            modifier += Number(vsGroupResult.mod);
-            digest.push(...vsGroupResult.digest);
-         }
-      }
-      // If there is an ammo item and it isn't the weapon itself (thrown)...
-      if (ammoItem) {
-         if (Math.abs(ammoItem?.system.mod?.dmgRanged) > 0) {
-            modifier += Number(ammoItem?.system.mod.dmgRanged);
-            digest.push(game.i18n.format("FADE.Chat.rollMods.ammoMod", { mod: ammoItem?.system.mod.dmgRanged }));
-         }
-         if (ammoItem?.id != this.id) {
-            // Non-thrown ammo item vs group modifier
-            if (targetActor) {
-               const vsGroupResult = dmgSys.GetVsGroupMod(targetActor, this);
-               if (vsGroupResult != null && vsGroupResult.mod != 0) {
-                  modifier += Number(vsGroupResult.mod);
-                  digest.push(...vsGroupResult.digest);
-               }
-            }
-         }
-      }
-      return modifier;
    }
 
    /**
