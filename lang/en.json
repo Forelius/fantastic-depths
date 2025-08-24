@@ -424,6 +424,10 @@
             "toHitRanged": {
                "long": "Ranged To-Hit Modifier",
                "short": "Rng. Hit+"
+            },
+            "rangeMultiplier": {
+               "long": "Range Multiplier",
+               "short": "Rng. Mult."
             }
          },
          "range": {

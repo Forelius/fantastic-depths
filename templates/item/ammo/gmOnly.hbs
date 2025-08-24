@@ -1,0 +1,27 @@
+﻿<section class='tab {{tabs.gmOnly.cssClass}}' data-group='primary' data-tab='gmOnly'>
+   {{> "itemFlags"}}
+   <div class="summary flexrow">
+      <div class="flex1 width-80">
+         <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
+         <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
+      </div>
+      <div class="flex1 width-80">
+         <input type='text' name="system.chargesMax" value='{{system.chargesMax}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.chargesMax null)}}∞{{/if}}" />
+         <label for="system.chargesMax">{{localize 'FADE.Item.charges.maxLong'}}</label>
+      </div>
+      <div class="flex1">
+         <input name="system.mod.toHitRanged" type="text" data-dtype="Number" value="{{system.mod.toHitRanged}}" />
+         <label for="system.mod.toHitRanged" data-tooltip="{{localize "FADE.Weapon.mod.toHitRanged.long"}}">{{localize "FADE.Weapon.mod.toHitRanged.short"}}</label>
+      </div>
+      <div class="flex1">
+         <input name="system.mod.dmgRanged" type="text" data-dtype="Number" value="{{system.mod.dmgRanged}}" />
+         <label for="system.mod.dmgRanged" data-tooltip="{{localize "FADE.Weapon.mod.dmgRanged.long"}}">{{localize "FADE.Weapon.mod.dmgRanged.short"}}</label>
+      </div>
+      <div class="flex1">
+         <input name="system.mod.rangeMultiplier" type="text" data-dtype="Number" value="{{system.mod.rangeMultiplier}}" />
+         <label for="system.mod.rangeMultiplier" data-tooltip="{{localize "FADE.Weapon.mod.rangeMultiplier.long"}}">{{localize "FADE.Weapon.mod.rangeMultiplier.short"}}</label>
+      </div>
+   </div>
+   <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
+   <textarea id="gm-notes" name="system.gm.notes" rows="5">{{system.gm.notes}}</textarea>
+</section>

@@ -224,10 +224,10 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
    _prepareEffects() {
       // Reset mod values.
-      this.system.mod.dmg = 0;
-      this.system.mod.toHit = 0;
-      this.system.mod.dmgRanged = 0;
-      this.system.mod.toHitRanged = 0;
+      //this.system.mod.dmg = 0;
+      //this.system.mod.toHit = 0;
+      //this.system.mod.dmgRanged = 0;
+      //this.system.mod.toHitRanged = 0;
       this._processNonTransferActiveEffects();
    }
 

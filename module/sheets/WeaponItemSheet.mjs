@@ -44,7 +44,7 @@ export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
+         template: "systems/fantastic-depths/templates/item/weapon/gmOnly.hbs",
       }
    }
 

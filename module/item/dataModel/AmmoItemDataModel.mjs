@@ -12,6 +12,9 @@ export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
          gm: new fields.SchemaField({
             notes: new fields.StringField({ required: false, initial: "" })
          }),
+         // Some items can be used multiple times and it doesn't effect the total weight or cost
+         charges: new fields.NumberField({ required: true, initial: 0 }),
+         chargesMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
          // Fields from the "physical" template
          quantity: new fields.NumberField({ required: true, initial: 1 }),
          quantityMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
@@ -39,6 +42,7 @@ export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
          mod: new fields.SchemaField({
             dmgRanged: new fields.NumberField({ initial: 0 }),
             toHitRanged: new fields.NumberField({ initial: 0 }),
+            rangeMultiplier: new fields.NumberField({ initial: 1 }),
             vsGroup: new fields.ObjectField({}),
          })
       };

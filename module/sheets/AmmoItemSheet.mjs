@@ -39,7 +39,7 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/ammo/attributes.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
+         template: "systems/fantastic-depths/templates/item/ammo/gmOnly.hbs",
       }
    }
 

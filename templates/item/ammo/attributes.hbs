@@ -14,17 +14,7 @@
             </select>
             <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
          </li>
-         <li class="flex1">
-            <input name="system.mod.toHitRanged" type="text" data-dtype="String" value="{{system.mod.toHitRanged}}" />
-            <label for="system.mod.toHitRanged" data-tooltip="{{localize "FADE.Weapon.mod.toHitRanged.long"}}">{{localize "FADE.Weapon.mod.toHitRanged.short"}}</label>
-         </li>
-         <li class="flex1">
-            <input name="system.mod.dmgRanged" type="text" data-dtype="String" value="{{system.mod.dmgRanged}}" />
-            <label for="system.mod.dmgRanged" data-tooltip="{{localize "FADE.Weapon.mod.dmgRanged.long"}}">{{localize "FADE.Weapon.mod.dmgRanged.short"}}</label>
-         </li>
-      </ul>
-      <ul class="summary flexrow">
-         <li class="flex1">
+         <li class="flex1" >
             <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
                {{selectOptions savingThrows selected=system.savingThrow}}
             </select>
