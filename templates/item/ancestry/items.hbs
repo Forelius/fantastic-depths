@@ -14,7 +14,7 @@
       </div>
       <!-- Ancestry Item Entries -->
       {{#each system.ancestryItems as |item index|}}
-      <ldiv class='item flexrow' data-item-id='{{item._id}}'>
+      <div class='item flexrow' data-item-id='{{item._id}}' style="padding:2px;">
          <div style="max-width:50px">
             <input type="number" name="system.ancestryItems.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
          </div>
@@ -32,7 +32,7 @@
                <i class='fas fa-trash'></i>
             </a>
          </div>
-      </ldiv>
+      </div>
       {{/each}}
    </div>
 </section>

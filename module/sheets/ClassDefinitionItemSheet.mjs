@@ -2,12 +2,13 @@ import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/Class
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
+import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
+export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
    */
@@ -51,8 +52,8 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       primereqs: {
          template: "systems/fantastic-depths/templates/item/classdef/primereqs.hbs",
       },
-      abilities: {
-         template: "systems/fantastic-depths/templates/item/classdef/abilities.hbs",
+      specialAbilities: {
+         template: "systems/fantastic-depths/templates/item/shared/specialAbilities.hbs",
       },
       items: {
          template: "systems/fantastic-depths/templates/item/classdef/items.hbs",
@@ -81,7 +82,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ["header", "tabnav", "levels", "description", "saves", "primereqs", "abilities", "items"]
+      options.parts = ["header", "tabnav", "levels", "description", "saves", "primereqs", "specialAbilities", "items"]
 
       if (this.item.system.maxSpellLevel > 0) {
          options.parts.push("spells");
@@ -100,7 +101,6 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
       // Generate spell level headers
       context.spellLevelHeaders = [];
       for (let i = this.item.system.firstSpellLevel; i <= this.item.system.maxSpellLevel; i++) {
-         //context.spellLevelHeaders.push(game.i18n.format(`FADE.Spell.SpellLVL`, { level: i }));
          context.spellLevelHeaders.push(i);
       }
       // Ability score abilities
@@ -134,7 +134,7 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
          description: { id: "description", group, label: "FADE.tabs.description" },
          saves: { id: "saves", group, label: "FADE.Actor.Saves.long" },
          primereqs: { id: "primereqs", group, label: "FADE.tabs.primeRequisites" },
-         abilities: { id: "abilities", group, label: "FADE.SpecialAbility.plural" },
+         specialAbilities: { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" },
          items: { id: "items", group, label: "FADE.items" },
       }
 
@@ -152,16 +152,10 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
+      super._onDrop(event);
       const data = TextEditor.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-
-      // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === "specialAbility") {
-         if (droppedItem.system.category === "save") {
-         } else {
-            this.item.createClassAbility(droppedItem.name, droppedItem.system.classKey);
-         }
-      } else if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
+      if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
       }
    }
@@ -179,8 +173,6 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
          await this.item.createClassSave();
       } else if (type === "primeReq") {
          await this.item.createPrimeReq();
-      } else if (type === "specialAbility") {
-         await this.item.createClassAbility();
       } else if (type === "item") {
          await this.item.createItem();
       }
@@ -211,12 +203,6 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
          if (primeReqs.length > index) {
             primeReqs.splice(index, 1);
             await this.item.update({ "system.primeReqs": primeReqs });
-         }
-      } else if (type === "specialAbility") {
-         const specialAbilities = this.item.system.specialAbilities;
-         if (specialAbilities.length > index) {
-            specialAbilities.splice(index, 1);
-            await this.item.update({ "system.specialAbilities": specialAbilities });
          }
       } else if (type === "item") {
          const items = this.item.system.classItems;
