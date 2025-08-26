@@ -171,6 +171,28 @@ export class GearItem extends FDItem {
    }
 
    /**
+ * Creates a special ability child item for this item.
+ * @param {any} name
+ * @param {any} classKey
+ */
+   async createSpecialAbility(name = "", classKey = null) {
+      // Retrieve the array
+      const specialAbilities = this.system.specialAbilities || [];
+
+      // Define the new data
+      const newItem = {
+         name,
+         target: 0,
+         changes: "",
+         classKey: classKey
+      };
+
+      // Add the new item to the array
+      specialAbilities.push(newItem);
+      await this.update({ "system.specialAbilities": specialAbilities });
+   }
+
+   /**
     * Determines if any uses are available and if so decrements quantity by one
     * @private
     * @param {any} getOnly If true, does not use, just gets.
