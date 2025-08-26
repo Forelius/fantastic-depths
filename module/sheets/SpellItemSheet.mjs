@@ -26,8 +26,7 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
       },
       actions: {
          deleteItem: SpellItemSheet.#onDeleteChild,
-      },
-      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+      }
    }
 
    static PARTS = {

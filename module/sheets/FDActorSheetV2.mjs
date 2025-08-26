@@ -60,8 +60,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          addCharge: FDActorSheetV2.#clickAddCharge,
          editAbilityScores: FDActorSheetV2.#clickEditAbilityScores,
          expandDesc: FDActorSheetV2.#clickExpandDesc,
-      },
-      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+      }
    }
 
    /** @inheritDoc */

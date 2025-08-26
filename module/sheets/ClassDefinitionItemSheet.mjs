@@ -29,8 +29,7 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       actions: {
          createItem: ClassDefinitionItemSheet.#onCreateChild,
          deleteItem: ClassDefinitionItemSheet.#onDeleteChild,
-      },
-      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+      }
    }
 
    static PARTS = {
@@ -176,7 +175,6 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       } else if (type === "item") {
          await this.item.createItem();
       }
-      this.render();
    }
 
    static async #onDeleteChild(event) {
@@ -205,12 +203,11 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
             await this.item.update({ "system.primeReqs": primeReqs });
          }
       } else if (type === "item") {
-         const items = this.item.system.classItems;
+         const items = [...this.item.system.classItems];
          if (items.length > index) {
             items.splice(index, 1);
             await this.item.update({ "system.classItems": items });
          }
       }
-      this.render();
    }
 }

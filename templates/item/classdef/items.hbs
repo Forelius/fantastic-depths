@@ -14,7 +14,7 @@
       </div>
       <!-- Class Item Entries -->
       {{#each system.classItems as |item index|}}
-      <ldiv class='item flexrow' data-item-id='{{item._id}}'>
+      <ldiv class='item flexrow' data-item-id='{{item._id}}' style="padding:2px;">
          <div style="max-width:50px">
             <input type="number" name="system.classItems.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
          </div>

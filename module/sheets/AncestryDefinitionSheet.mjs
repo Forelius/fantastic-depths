@@ -32,8 +32,7 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
          createItem: AncestryDefinitionSheet.#onCreateChild,
          deleteItem: AncestryDefinitionSheet.#onDeleteChild,
          clickRoll: AncestryDefinitionSheet.#clickRoll,
-      },
-      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+      }
    }
 
    static PARTS = {
