@@ -233,46 +233,59 @@ export class fadeDialog {
         </form>
     `;
 
-      // Create the dialog
-      new Dialog({
-         title: "Roll Special Ability",
+      // Create the dialog using DialogV2
+      let result = await DialogV2.wait({
+         window: { title: "Roll Special Ability" },
+         rejectClose: false,
+         position: { width: 400 },
          content: content,
-         buttons: {
-            roll: {
+         buttons: [
+            {
+               action: 'roll',
                label: "Roll",
-               callback: async (html) => {
-                  const selectedAbilityId = html.find("#abilitySelect").val();
-                  const selectedAbility = specialAbilities.find(item => item.id === selectedAbilityId);
-                  const modifier = parseInt(html.find("#modifierInput").val()) || 0; // Get the modifier value
-
-                  if (selectedAbility && selectedAbility.roll) {
-                     // Prepare the dataset
-                     const dataset = {
-                        test: 'specialAbility',
-                        rollType: 'item',
-                        label: `${selectedAbility.name} ${game.i18n.localize('FADE.SpecialAbility.short')}`
-                     };
-
-                     // Prepare the dialog response
-                     const dialogResp = {
-                        mod: modifier, // Include the modifier in the dialog response
-                        rolling: true
-                     };
-
-                     // Call the roll method with dataset and dialogResp
-                     await selectedAbility.roll(dataset, dialogResp);
-                  } else {
-                     ui.notifications.error("Selected ability does not have a roll method.");
+               callback: (event, button, dialog) => {
+                  return {
+                     action: button.dataset?.action,
+                     data: new CodeMigrate.FormDataExtended(button.form).object
                   }
-               }
+               },
+               default: false
             },
-            cancel: {
+            {
+               action: 'cancel',
                label: "Cancel",
-               callback: () => { }
+               callback: function (event, button, dialog) { return null; },
+               default: true
             }
-         },
-         default: "cancel",
-         close: () => { }
-      }).render(true);
+         ],
+         close: () => { return null; },
+         classes: ["fantastic-depths"]
+      });
+
+      if (result?.action === 'roll') {
+         const selectedAbilityId = result.data.abilitySelect;
+         const selectedAbility = specialAbilities.find(item => item.id === selectedAbilityId);
+         const modifier = parseInt(result.data.modifierInput) || 0;
+
+         if (selectedAbility && selectedAbility.roll) {
+            // Prepare the dataset
+            const dataset = {
+               test: 'specialAbility',
+               rollType: 'item',
+               label: `${selectedAbility.name} ${game.i18n.localize('FADE.SpecialAbility.short')}`
+            };
+
+            // Prepare the dialog response
+            const dialogResp = {
+               mod: modifier, // Include the modifier in the dialog response
+               rolling: true
+            };
+
+            // Call the roll method with dataset and dialogResp
+            await selectedAbility.roll(dataset, dialogResp);
+         } else {
+            ui.notifications.error("Selected ability does not have a roll method.");
+         }
+      }
    }
 }
