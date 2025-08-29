@@ -246,6 +246,26 @@
             "GHint": "Creatures between 12 and under 25 feet tall, such as frost giants and rocs.",
             "I": "Immense",
             "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
+         },
+         "actorGroups": {
+            "noGroupMod": "No group modifiers configured.",
+            "addVsGroupButton": "Group Mod",
+            "group": "Group",
+            "bugs": "Bugs",
+            "constructs": "Constructs",
+            "dragonkind": "Dragonkind",
+            "enchanted": "Enchanted",
+            "fey": "Fey",
+            "giantkind": "Giantkind",
+            "lycanthropes": "Lycanthropes",
+            "planar": "Planar",
+            "regenerating": "Regenerating",
+            "reptiles-dinosaurs": "Reptiles and dinosaurs",
+            "spell-immune": "Spell-immune",
+            "spellcasters": "Spellcasters",
+            "undead": "Undead",
+            "water-breathing": "Water-breathing",
+            "weapon-using": "Weapon-using"
          }
       },
       "SheetLabel": {
@@ -261,6 +281,7 @@
          "SpellItem": "Spell Item Sheet",
          "SkillItem": "Skill Item Sheet",
          "LightItem": "Light Item Sheet",
+         "AmmoItem": "Ammo Item Sheet",
          "SpecialAbilityItem": "Special Ability Item Sheet",
          "WeaponItem": "Weapon Item Sheet",
          "TreasureItem": "Treasure Item Sheet",
@@ -321,7 +342,6 @@
          },
          "weight": {
             "short": "Enc",
-            "short2": "Enc",
             "long": "Encumbrance",
             "abbrPlural": "cns",
             "desc": "Encumbrance value of the item."
@@ -404,6 +424,10 @@
             "toHitRanged": {
                "long": "Ranged To-Hit Modifier",
                "short": "Rng. Hit+"
+            },
+            "rangeMultiplier": {
+               "long": "Range Multiplier",
+               "short": "Rng. Mult."
             }
          },
          "range": {
@@ -441,7 +465,9 @@
          "abbr": "AC",
          "abbrAAC": "AAC",
          "total": "Total AC",
+         "totalRanged": "Total Ranged AC",
          "totalAAC": "Total AAC",
+         "totalRangedAAC": "Total Ranged AAC",
          "hintTotal": "<b>Total Armor Class</b><p>This is the total armor class and it includes modifiers from effects.</p>",
          "rangedAC": "Ranged AC",
          "rangedAAC": "Ranged AAC",
@@ -455,6 +481,7 @@
             "desc": "This is considered a natural part of its owner."
          },
          "mod": "AC Mod",
+         "modRanged": "Ranged AC Mod",
          "modBase": "Base AC Mod",
          "dexterityBonus": "Dexterity bonus: {bonus}",
          "armorWeight": {
@@ -586,7 +613,9 @@
             "hasted": "Hasted",
             "slowed": "Slowed",
             "mirrorImaged": "Mirror Imaged",
-            "infravision": "Infravision"
+            "infravision": "Infravision",
+            "possessed": "Possessed",
+            "confused": "Confused"
          }
       },
       "Tags": {
@@ -617,11 +646,13 @@
       },
       "Chat": {
          "rollMods": {
+            "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
             "strengthMod": "Strength mod: {mod}",
             "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",
+            "vsGroupMod": "Vs. {group} mod: {mod}",
             "masteryMod": "Mastery {primsec} mod: {mod}",
             "unskilledUse": "Unskilled weapon use: {mod}",
             "masteryPrimDmg": "Weapon mastery primary damage.",
@@ -645,6 +676,15 @@
             "initHeld": "Round {round} started. Initiative held for all combatants.",
             "initRoll": "{name} rolled {roll} {mod}.",
             "rollFormula": "Initiative Rolls (Base Formula: {formula})"
+         },
+         "abilityCheck": {
+            "tieredResults": {
+               "criticalFail": "<div class='attack-fail text-size16b'>Critical Fail!</div>",
+               "fail": "<div class='attack-fail text-size16'>Fail</div>",
+               "partialSuccess": "<div class='attack-success text-size16'>Partial Success</div>",
+               "success": "<div class='attack-success text-size16'>Success</div>",
+               "criticalSuccess": "<div class='attack-success text-size16b'>Critical Success!</div>"
+            }
          },
          "targets": "Targets",
          "apply": "Apply",
@@ -801,6 +841,16 @@
          "specialAbilities": {
             "title": "Add special abilities?",
             "content": "Would you like to automatically add the related special abilities from {type} {name}?"
+         },
+         "difficulty": {
+            "name": "Difficulty",
+            "levels": {
+               "easy": "Easy",
+               "medium": "Medium",
+               "hard": "Hard",
+               "veryHard": "Very Hard",
+               "absurd": "Absurd"
+            }
          }
       },
       "tabs": {
@@ -878,7 +928,7 @@
             },
             "moveOnly": {
                "name": "Move Only",
-               "description": "Combatant is moving and not attacking this round. This is not a 'Retreat'."
+               "description": "Combatant is moving and not attacking this round. This is not a 'Retreat'. This includes actions that are not specifically name in the list."
             },
             "readyWeapon": {
                "name": "Ready Weapon",
@@ -898,7 +948,7 @@
             },
             "magicItem": {
                "name": "Magic Item",
-               "description": "Combatant activates a non-weapon magical item, such as a potion, wand, ring, or the passive ability of another magical item."
+               "description": "Combatant activates a magical item, such as a potion, wand, ring, or the passive ability of another magical item."
             },
             "attack": {
                "name": "Attack",
@@ -1056,6 +1106,7 @@
          "spell": "Spell",
          "skill": "General Skill",
          "light": "Light",
+         "ammo": "Ammo",
          "mastery": "Actor Weapon Mastery",
          "actorClass": "Actor Class",
          "specialAbility": "Special Ability",
@@ -1081,8 +1132,7 @@
          "name": "Die Roll Toasts"
       },
       "EncMax": {
-         "Hint": "The maximum amount a character may carry, in coins, and still be able to move.",
-         "Hint2": "The maximum amount, in coins, that can be carried while still able to move.",
+         "Hint": "The maximum weight that can be carried while still able to move.",
          "Name": "Encumbrance Max"
       },
       "Theme": {
@@ -1155,6 +1205,14 @@
             "none": "None",
             "classic": "Classic",
             "heroic": "Heroic"
+         }
+      },
+      "abilityCheckSystem": {
+         "name": "Ability Check System",
+         "hint": "The Ability Check System determines how ability checks are handled. Basic requires a d20 roll that must be under the relevant ability score value to be considered successful. A roll of 20 is always a failure.",
+         "choices": {
+            "basic": "Basic",
+            "tiered": "Tiered"
          }
       },
       "toHitSystem": {

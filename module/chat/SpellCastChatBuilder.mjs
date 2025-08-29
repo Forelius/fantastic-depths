@@ -1,6 +1,7 @@
 import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SpellCastChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/spell-cast.hbs';
@@ -62,11 +63,10 @@ export class SpellCastChatBuilder extends ChatBuilder {
          targets: targetTokens,
          showTargets: !roll,
          save,
-         durationMsg: options.durationMsg,
-         durationSec: options.durationSec
+         durationMsg: options.durationMsg
       };
       // Render the content using the template
-      const content = await renderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
@@ -74,8 +74,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          flags: {
             [game.system.id]: {
                targets: toHitResult.targetResults,
-               conditions: options.conditions,
-               durationSec: options.durationSec
+               conditions: options.conditions
             }
          }
       });

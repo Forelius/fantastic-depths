@@ -3,12 +3,13 @@ import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 import { EffectManager } from "../sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
+import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
+export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
    */
@@ -31,8 +32,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
          createItem: AncestryDefinitionSheet.#onCreateChild,
          deleteItem: AncestryDefinitionSheet.#onDeleteChild,
          clickRoll: AncestryDefinitionSheet.#clickRoll,
-      },
-      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+      }
    }
 
    static PARTS = {
@@ -48,8 +48,8 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
       attributes: {
          template: "systems/fantastic-depths/templates/item/ancestry/attributes.hbs",
       },
-      abilities: {
-         template: "systems/fantastic-depths/templates/item/classdef/abilities.hbs",
+      specialAbilities: {
+         template: "systems/fantastic-depths/templates/item/shared/specialAbilities.hbs",
       },
       items: {
          template: "systems/fantastic-depths/templates/item/ancestry/items.hbs",
@@ -70,7 +70,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ["header", "tabnav", "description", "attributes", "abilities", "effects"]//, "items"]
+      options.parts = ["header", "tabnav", "description", "attributes", "specialAbilities", "effects", "items"]
    }
 
    /** @override */
@@ -80,7 +80,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
       context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
       context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery") != "none";
 
-      // Abilities
+      // Abilities (ability score)
       context.abilities = [...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
       })].reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
@@ -106,7 +106,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
       const tabs = {
          description: { id: "description", group, label: "FADE.tabs.description", cssClass: "item" },
          attributes: { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" },
-         abilities: { id: "abilities", group, label: "FADE.tabs.abilities", cssClass: "item" },
+         specialAbilities: { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural", cssClass: "item" },
          items: { id: "items", group, label: "FADE.items" },
          effects: { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" },
       }
@@ -139,16 +139,11 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
+      super._onDrop(event);
       const data = TextEditor.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-
       // If the dropped item is a weapon mastery definition item...
-      if (droppedItem.type === "specialAbility") {
-         if (droppedItem.system.category === "save") {
-         } else {
-            this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
-         }
-      } else if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
+      if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
       }
    }
@@ -187,9 +182,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
    static async #onCreateChild(event) {
       event.preventDefault();
       const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
-      if (type === "specialAbility") {
-         this.item.createSpecialAbility();
-      } else if (type === "class") {
+      if (type === "class") {
          this.item.createClass();
       } else if (type === "item") {
          await this.item.createItem();
@@ -202,13 +195,7 @@ export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
       const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
       const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
 
-      if (type === "specialAbility") {
-         const items = this.item.system.specialAbilities;
-         if (items.length > index) {
-            items.splice(index, 1);
-            await this.item.update({ "system.specialAbilities": items });
-         }
-      } else if (type === "class") {
+      if (type === "class") {
          const items = this.item.system.classes;
          if (items.length > index) {
             items.splice(index, 1);

@@ -34,40 +34,6 @@ export class MoraleCheck {
    }
 }
 
-/** Ability checks are often implemented differently for different systems. */
-export class AbilityCheck {
-   async execute(data) {
-      const { actor, event } = data;
-      const ctrlKey = event.ctrlKey;
-      const dataset = event.target.dataset;
-      let dialogResp = null;
-      let chatType = CHAT_TYPE.ABILITY_CHECK;
-
-      dataset.formula = game.settings.get(game.system.id, "abilityCheckFormula");
-      dataset.dialog = dataset.test;
-
-      if (ctrlKey === false) {
-         dialogResp = await DialogFactory(dataset, actor);
-         if (dialogResp) {
-            dialogResp.formula = dialogResp.formula?.length > 0 ? dialogResp.formula : dataset.formula;
-            dataset.formula = Number(dialogResp.mod) != 0 ? `${dialogResp.formula}+@mod` : dialogResp.formula;
-         } else {
-            // This will stop the process below.
-            chatType = null;
-         }
-      }
-
-      if (chatType !== null) {
-         const rollContext = { ...actor.getRollData(), ...dialogResp || {} };
-         const rolled = await new Roll(dataset.formula, rollContext).evaluate();
-         const chatData = { caller: actor, context: actor, mdata: dataset, roll: rolled };
-         const showResult = actor._getShowResult(event);
-         const builder = new ChatFactory(chatType, chatData, { showResult });
-         builder.createChatMessage();
-      }
-   }
-}
-
 export class ActorMovement {
    static prepareMovementRates(actor) {
       const roundDivisor = game.settings.get(game.system.id, "mvRoundDivisor") ?? 3;

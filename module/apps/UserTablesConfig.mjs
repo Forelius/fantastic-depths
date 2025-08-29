@@ -1,4 +1,5 @@
 const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) {
    constructor() {
@@ -25,7 +26,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          contentClasses: ["scroll-body"]
       },
       position: {
-         top: 80,
          width: 500,
          height: 400
       },
@@ -115,7 +115,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
 
       const dialogResp = await DialogV2.wait({
          window: { title: game.i18n.localize('FADE.apps.userTables.actions.createTable') },
-         position: { top: 100 },
          content: `<form>
           <div class="form-group">
                 <label for="tableId">${game.i18n.localize('FADE.apps.userTables.tableId')}:</label>
@@ -142,7 +141,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
             },
             {
                label: "FADE.apps.userTables.actions.createTable",
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object
             },
          ],
          rejectClose: false,
@@ -176,7 +175,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       const prompt = game.i18n.localize('FADE.apps.userTables.removePrompt');
       const proceed = await foundry.applications.api.DialogV2.confirm({
          window: prompt,
-         position: { top: 100 },
          content: `<p>${prompt}</p>`,
          modal: true
       });

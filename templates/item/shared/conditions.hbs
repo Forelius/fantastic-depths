@@ -1,5 +1,5 @@
 <section class="tab {{tabs.effects.cssClass}}" data-group="primary" data-tab="effects">
-   <div name="spell-conditions" class='items-list'>
+   <div name="item-conditions" class='items-list'>
       <!-- Header Row -->
       <div class='item flexrow items-header' data-action="toggleHeader">
          <div>{{localize 'TYPES.Item.condition'}}</div>
@@ -19,4 +19,9 @@
       </div>
       {{/each}}
    </div>
+   {{#if effects}}
+   <div class="tab {{tabs.effects.cssClass}}" data-group="primary" data-tab="effects">
+      {{> "itemEffects"}}
+   </div>
+   {{/if}}
 </section>

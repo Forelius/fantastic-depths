@@ -52,7 +52,12 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.primeReqs": primeReqs });
    }
 
-   async createClassAbility(name = "", classKey = null) {
+   /**
+    * Creates a special ability child item for this item.
+    * @param {any} name
+    * @param {any} classKey
+    */
+   async createSpecialAbility(name = "", classKey = null) {
       // Retrieve the array
       const specialAbilities = this.system.specialAbilities || [];
 

@@ -11,6 +11,10 @@ const DragDropMixin = (superclass) => class extends superclass {
       this.#dragDrop = this.#createDragDropHandlers();
    }
 
+   static DEFAULT_OPTIONS = {
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }]
+   }
+
    /**
     * Returns an array of DragDrop instances
     * @type {DragDrop[]}
@@ -171,7 +175,7 @@ const DragDropMixin = (superclass) => class extends superclass {
       if (!this.actor.isOwner) return;
       const droppedItem = await Item.implementation.fromDropData(item);
       if (this.actor.uuid === droppedItem?.parent?.uuid) return this._onSortItem(event, droppedItem);
-      const keepId = !this.actor.items.has(droppedItem.id);
+      const keepId = !this.actor.items?.has(droppedItem.id);
       await Item.create(droppedItem.toObject(), { parent: this.actor, keepId });
    }
 

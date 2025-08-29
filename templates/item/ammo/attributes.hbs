@@ -1,0 +1,30 @@
+﻿<section class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
+   <div>
+      {{> "itemFlags"}}
+   </div>
+   <div class="bordered">
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <input name="system.ammoType" type="text" data-dtype="String" value="{{system.ammoType}}" />
+            <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+         </li>
+         <li class="flex1" style="min-width:140px;">
+            <select name="system.damageType" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions damageTypes selected=system.damageType}}
+            </select>
+            <label for="system.damageType">{{localize 'FADE.DamageTypes.name'}}</label>
+         </li>
+         <li class="flex1" >
+            <select name="system.savingThrow" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               {{selectOptions savingThrows selected=system.savingThrow}}
+            </select>
+            <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
+         </li>
+         <li class="flex1">
+            <input type='text' name='system.healFormula' value='{{system.healFormula}}' data-dtype='String' />
+            <label for="system.healFormula">{{localize 'FADE.Spell.healFormula'}}</label>
+         </li>
+      </ul>
+   </div>
+   {{> "vsGroupMod"}}
+</section>

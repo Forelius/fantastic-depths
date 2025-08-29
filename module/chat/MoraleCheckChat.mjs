@@ -1,4 +1,5 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/ability-check.hbs';
@@ -19,7 +20,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
             target: mdata.score,
             operator: mdata.pass
          });
-         resultString = this.getBoolResult(testResult);
+         resultString = this.getBoolResultHTML(testResult);
       }
 
       // Get the actor and user names
@@ -42,7 +43,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      const content = await renderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
       const chatMessageData = this.getChatMessageData({ content, rolls });
       await ChatMessage.create(chatMessageData);
    }

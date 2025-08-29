@@ -1,11 +1,12 @@
 export class DamageSystemInterface {
    async applyDamage(actor, delta, damageType, attackType, damageSource = null) { throw new Error("Method not implemented."); }
+   GetVsGroupMod(token, weaponItem) { throw new Error("Method not implemented."); }
 }
 
 export class DamageSystem extends DamageSystemInterface {
    constructor(options) {
       super(options);
-      this.options = options;      
+      this.options = options;
    }
 
    /**
@@ -26,7 +27,7 @@ export class DamageSystem extends DamageSystemInterface {
       let finalHP = Math.min((systemData.hp.value + finalDelta), systemData.hp.max);
       let digest = [];
       const isHeal = delta > 0;
-     
+
       if (isHeal) {
          // Restoring HP
          digest.push(game.i18n.format("FADE.Chat.damageRoll.restored", { hp: (finalHP - prevHP), tokenName: tokenName }));
@@ -79,10 +80,143 @@ export class DamageSystem extends DamageSystemInterface {
                avMitigated += av;
             }
             // Blocks at least 1 point.
-            result = Math.min(avMitigated, -(delta+1));
+            result = Math.min(avMitigated, -(delta + 1));
          }
       }
       return result;
+   }
+
+   /**
+    * Calculate damage modifier based on token's actor groups and weapon's VS Group modifiers
+    * @param {Token} token - The target token
+    * @param {Item} modierItem - The weapon/ammo item with VS Group modifiers
+    * @returns {number} - Total damage modifier
+    */
+   GetVsGroupMod(targetActor, modierItem) {
+      if (!targetActor || !modierItem?.system?.mod?.vsGroup) {
+         return null;
+      }
+
+      const actorGroups = targetActor.system.actorGroups || [];
+      const vsGroupMods = modierItem.system.mod.vsGroup;
+      let totalMod = 0;
+      const digest = [];
+
+      // Check each VS Group modifier on the weapon
+      for (const [groupId, modData] of Object.entries(vsGroupMods)) {
+         // Find the group definition in CONFIG.FADE.ActorGroups
+         const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
+
+         // Check if group applies: start with group membership, then check special rule if needed
+         const isMember = actorGroups.includes(groupId);
+         const groupApplies = isMember || (groupDef?.rule && this.checkSpecialRule(targetActor, groupDef.rule));
+
+         if (groupApplies) {
+            totalMod += modData.dmg || 0;
+            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.dmg }));
+         }
+      }
+
+      return { mod: Number(totalMod), digest };
+   }
+
+   /**
+    * Check if a token meets the criteria for a special rule
+    * @param {Token} token - The target token
+    * @param {string} rule - The rule to check
+    * @returns {boolean} - Whether the token meets the rule criteria
+    * @private
+    */
+   checkSpecialRule(actor, rule) {
+      switch (rule) {
+         case "enchanted":
+            // Check if actor is enchanted
+            return actor.system.isEnchanted === true;
+
+         case "spellcaster":
+            // Check if actor can cast spells (has spell levels > 0)
+            return actor.system.config?.maxSpellLevel > 0;
+
+         case "equippedWeapon":
+            // Check if actor has any equipped weapons
+            return actor.items.some(item => item.type === "weapon" && item.system.equipped === true && item.system.natural === false);
+
+         default:
+            console.warn(`Unknown special rule: ${rule}`);
+            return false;
+      }
+   }
+
+   getMeleeDamageMod(weapon, digest, attackerData, targetActor) {
+      let modifier = 0;
+      const weaponData = weapon.system;
+
+      if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
+         modifier += weaponData.mod.dmg;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.dmg }));
+      }
+      // If the attacker has ability scores...
+      if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
+         modifier += Number(attackerData.abilities.str.mod);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.strengthMod", { mod: attackerData.abilities.str.mod }));
+      }
+      if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
+         modifier += Number(attackerData.mod.combat.dmg);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: attackerData.mod.combat.dmg }));
+      }
+      if (targetActor) {
+         const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
+         if (vsGroupResult != null && vsGroupResult.mod != 0) {
+            modifier += Number(vsGroupResult.mod);
+            digest.push(...vsGroupResult.digest);
+         }
+      }
+      return modifier;
+   }
+
+   getMissileDamageMod(weapon, digest, attackerData, targetActor, ammoItem) {
+      let modifier = 0;
+      const weaponData = weapon.system;
+
+      if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
+         modifier += Number(weaponData.mod.dmgRanged);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.dmgRanged }));
+      }
+      // If the attacker has ability scores...
+      if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
+         modifier += Number(attackerData.abilities.str.mod);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.strengthMod", { mod: attackerData.abilities.str.mod }));
+      }
+      if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
+         modifier += Number(attackerData.mod.combat.dmgRanged);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: attackerData.mod.combat.dmgRanged }));
+      }
+      // Bow, sling or thrown has vs group modifier?
+      if (targetActor) {
+         const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
+         if (vsGroupResult != null && vsGroupResult.mod != 0) {
+            modifier += Number(vsGroupResult.mod);
+            digest.push(...vsGroupResult.digest);
+         }
+      }
+      // If there is an ammo item and it isn't the weapon itself (thrown)...
+      if (ammoItem) {
+         if (Math.abs(ammoItem?.system.mod?.dmgRanged) > 0) {
+            modifier += Number(ammoItem?.system.mod.dmgRanged);
+            digest.push(game.i18n.format("FADE.Chat.rollMods.ammoMod", { mod: ammoItem?.system.mod.dmgRanged }));
+         }
+         if (ammoItem?.id != weapon.id) {
+            // Non-thrown ammo item vs group modifier
+            if (targetActor) {
+               const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
+               if (vsGroupResult != null && vsGroupResult.mod != 0) {
+                  modifier += Number(vsGroupResult.mod);
+                  digest.push(...vsGroupResult.digest);
+               }
+            }
+         }
+      }
+      return modifier;
    }
 
    #sendChatAndToast(source, digest) {

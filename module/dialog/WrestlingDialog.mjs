@@ -1,4 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class WrestlingDialog {
    static async getDialog(dataset, caller, options) {
@@ -23,7 +24,7 @@ export class WrestlingDialog {
 
       // Render dialog
       const template = 'systems/fantastic-depths/templates/dialog/wrestling.hbs';
-      const content = await renderTemplate(template, dialogData);
+      const content = await CodeMigrate.RenderTemplate(template, dialogData);
 
       let dialogResp = await DialogV2.wait({
          window: { title: game.i18n.localize("FADE.dialog.wrestling.wrestlingContest") },
@@ -35,7 +36,7 @@ export class WrestlingDialog {
                label: game.i18n.localize('FADE.roll'),
                default: true,
                callback: (event, button, dialog) => {
-                  return { action: button.dataset.action, ...(new FormDataExtended(button.form).object) }
+                  return { action: button.dataset.action, ...(new CodeMigrate.FormDataExtended(button.form).object) }
                }
             },
             {

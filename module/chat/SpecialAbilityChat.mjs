@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
@@ -56,7 +57,16 @@ export class SpecialAbilityChat extends ChatBuilder {
          attackType: 'specialAbility'
       };
       // Render the content using the template
-      const content = await renderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
+
+      // Add targets for DM chat message
+      let toHitResult = { targetResults: [], message: '' };
+      for (let targetToken of targetTokens) {
+         toHitResult.targetResults.push({
+            targetid: targetToken.id,
+            targetname: targetToken.name
+         });
+      }
 
       // Prepare chat message data, including rollMode
       const rolls = roll ? [roll] : null;
@@ -64,6 +74,12 @@ export class SpecialAbilityChat extends ChatBuilder {
          content,
          rolls,
          rollMode: item.system.rollMode, // Pass the determined rollMode
+         flags: {
+            [game.system.id]: {
+               targets: toHitResult.targetResults,
+               conditions: options.conditions
+            }
+         }
       });
       // Create the chat message
       await ChatMessage.create(chatMessageData);
@@ -93,7 +109,7 @@ export class SpecialAbilityChat extends ChatBuilder {
             autofail: systemData.autoFail,
             autosuccess: systemData.autoSuccess
          });
-         result.message = this.getBoolResult(testResult);
+         result.message = this.getBoolResultHTML(testResult);
          result.target = target;
          result.operator = systemData.operator;
       }

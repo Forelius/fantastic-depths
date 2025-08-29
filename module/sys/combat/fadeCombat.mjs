@@ -1,5 +1,6 @@
 // fadeCombat.mjs
 import { SocketManager } from '../SocketManager.mjs'
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 // Custom Combat class
 export class fadeCombat extends Combat {
@@ -132,10 +133,7 @@ export class fadeCombat extends Combat {
       const template = 'systems/fantastic-depths/templates/sidebar/combatant-controls.hbs';
       let templateData = { combatant };
 
-      // TODO: Remove after v12 support.
-      const controlsContent = foundry?.applications?.handlebars?.renderTemplate ?
-         await foundry.applications.handlebars.renderTemplate(template, templateData)
-         : await renderTemplate(template, templateData);
+      const controlsContent = await CodeMigrate.RenderTemplate(template, templateData);
 
       combatantControls.insertAdjacentHTML("afterbegin", controlsContent);
    }

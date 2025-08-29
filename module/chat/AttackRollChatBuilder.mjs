@@ -1,5 +1,6 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -16,6 +17,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const attacker = context;
       const attackerName = attacker.token?.name ?? attacker.name;
       const targetTokens = Array.from(game.user.targets);
+      const targetActor = targetTokens?.length > 0 ? targetTokens[0].actor : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       const weapon = caller;
       const descData = {
@@ -31,7 +33,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       }
 
       const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weapon, targetTokens, roll, resp.attackType);
-      const damageRoll = weapon.getDamageRoll(resp.attackType, null, resp.targetWeaponType);
+      const damageRoll = weapon.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetActor);
 
       if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
@@ -55,9 +57,9 @@ export class AttackRollChatBuilder extends ChatBuilder {
          save,
          ammoItem: options?.ammoItem,
          targetWeaponType: resp.targetWeaponType,
+         targetActor
       };
-
-      let content = await renderTemplate(this.template, chatData);
+      let content = await CodeMigrate.RenderTemplate(this.template, chatData);
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
@@ -73,5 +75,5 @@ export class AttackRollChatBuilder extends ChatBuilder {
          }
       });
       const chatMsg = await ChatMessage.create(chatMessageData);
-   }   
+   }
 }

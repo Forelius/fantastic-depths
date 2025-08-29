@@ -10,6 +10,14 @@
             <label>{{localize 'FADE.Armor.mod'}}</label>
          </div>
          <div class="flex1 width-80">
+            <div>{{system.totalRangedAC}}</div>
+            <label>{{localize 'FADE.Armor.rangedAC'}}</label>
+         </div>
+         <div class="flex1 width-80">
+            <div>{{system.modRanged}}</div>
+            <label>{{localize 'FADE.Armor.modRanged'}}</label>
+         </div>
+         <div class="flex1 width-80">
             <input type='text' name="system.charges" value='{{system.charges}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} placeholder="{{#if (eq system.charges null)}}∞{{/if}}" />
             <label for="system.charges">{{localize 'FADE.Item.charges.long'}}</label>
          </div>

@@ -1,7 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-//const { renderTemplate } = foundry.applications.handlebars;
-//const { FormDataExtended } = foundry.applications.ux;
 import { rollTableDialog } from '/systems/fantastic-depths/module/dialog/rollTableDialog.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class fadeDialog {
    static async getGenericDialog(dataset, caller) {
@@ -16,13 +15,13 @@ export class fadeDialog {
       dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
-         content: await renderTemplate(template, dialogData),
+         content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {
                action: "roll",
                default: true,
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => new FormDataExtended(button.form).object,
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
             }
          ],
          close: () => { },
@@ -50,16 +49,17 @@ export class fadeDialog {
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
+
             result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
-               content: await renderTemplate(template, dialogData),
+               content: await CodeMigrate.RenderTemplate(template, dialogData),
                buttons: [
                   {
                      action: "attack",
                      label: game.i18n.localize('FADE.combat.maneuvers.attack.name'),
                      default: true,
-                     callback: (event, button, dialog) => new FormDataExtended(button.form).object
+                     callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object
                   },
                   {
                      action: "close",
@@ -100,12 +100,13 @@ export class fadeDialog {
             dialogData.spellItems = spellItems.reduce((acc, item) => {
                acc[item.id] = item.name; // Use the "id" as the key and "name" as the value
                return acc;
-            }, {});;
+            }, {});
+
             let result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
                position: { width: 460 },
-               content: await renderTemplate(template, dialogData),
+               content: await CodeMigrate.RenderTemplate(template, dialogData),
                buttons: [
                   {
                      action: 'cast',
@@ -113,7 +114,7 @@ export class fadeDialog {
                      callback: (event, button, dialog) => {
                         return {
                            action: button.dataset?.action,
-                           data: new FormDataExtended(button.form).object
+                           data: new CodeMigrate.FormDataExtended(button.form).object
                         }
                      },
                      default: true
@@ -124,7 +125,7 @@ export class fadeDialog {
                      callback: (event, button, dialog) => {
                         return {
                            action: button.dataset?.action,
-                           data: new FormDataExtended(button.form).object
+                           data: new CodeMigrate.FormDataExtended(button.form).object
                         }
                      }
                   },
@@ -232,46 +233,59 @@ export class fadeDialog {
         </form>
     `;
 
-      // Create the dialog
-      new Dialog({
-         title: "Roll Special Ability",
+      // Create the dialog using DialogV2
+      let result = await DialogV2.wait({
+         window: { title: "Roll Special Ability" },
+         rejectClose: false,
+         position: { width: 400 },
          content: content,
-         buttons: {
-            roll: {
+         buttons: [
+            {
+               action: 'roll',
                label: "Roll",
-               callback: async (html) => {
-                  const selectedAbilityId = html.find("#abilitySelect").val();
-                  const selectedAbility = specialAbilities.find(item => item.id === selectedAbilityId);
-                  const modifier = parseInt(html.find("#modifierInput").val()) || 0; // Get the modifier value
-
-                  if (selectedAbility && selectedAbility.roll) {
-                     // Prepare the dataset
-                     const dataset = {
-                        test: 'specialAbility',
-                        rollType: 'item',
-                        label: `${selectedAbility.name} ${game.i18n.localize('FADE.SpecialAbility.short')}`
-                     };
-
-                     // Prepare the dialog response
-                     const dialogResp = {
-                        mod: modifier, // Include the modifier in the dialog response
-                        rolling: true
-                     };
-
-                     // Call the roll method with dataset and dialogResp
-                     await selectedAbility.roll(dataset, dialogResp);
-                  } else {
-                     ui.notifications.error("Selected ability does not have a roll method.");
+               callback: (event, button, dialog) => {
+                  return {
+                     action: button.dataset?.action,
+                     data: new CodeMigrate.FormDataExtended(button.form).object
                   }
-               }
+               },
+               default: false
             },
-            cancel: {
+            {
+               action: 'cancel',
                label: "Cancel",
-               callback: () => { }
+               callback: function (event, button, dialog) { return null; },
+               default: true
             }
-         },
-         default: "cancel",
-         close: () => { }
-      }).render(true);
+         ],
+         close: () => { return null; },
+         classes: ["fantastic-depths"]
+      });
+
+      if (result?.action === 'roll') {
+         const selectedAbilityId = result.data.abilitySelect;
+         const selectedAbility = specialAbilities.find(item => item.id === selectedAbilityId);
+         const modifier = parseInt(result.data.modifierInput) || 0;
+
+         if (selectedAbility && selectedAbility.roll) {
+            // Prepare the dataset
+            const dataset = {
+               test: 'specialAbility',
+               rollType: 'item',
+               label: `${selectedAbility.name} ${game.i18n.localize('FADE.SpecialAbility.short')}`
+            };
+
+            // Prepare the dialog response
+            const dialogResp = {
+               mod: modifier, // Include the modifier in the dialog response
+               rolling: true
+            };
+
+            // Call the roll method with dataset and dialogResp
+            await selectedAbility.roll(dataset, dialogResp);
+         } else {
+            ui.notifications.error("Selected ability does not have a roll method.");
+         }
+      }
    }
 }

@@ -1,3 +1,4 @@
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
@@ -22,6 +23,7 @@ import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.
 import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
 import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
 import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
+import { AmmoItemDataModel } from './item/dataModel/AmmoItemDataModel.mjs';
 import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
@@ -38,6 +40,7 @@ import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
 import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
 import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
 import { ConditionItemSheet } from './sheets/ConditionItemSheet.mjs';
+import { AmmoItemSheet } from './sheets/AmmoItemSheet.mjs';
 import { AncestryDefinitionSheet } from './sheets/AncestryDefinitionSheet.mjs';
 
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
@@ -104,6 +107,7 @@ Hooks.once('init', async function () {
       armor: ArmorItemDataModel,
       skill: SkillItemDataModel,
       light: LightItemDataModel,
+      ammo: AmmoItemDataModel,
       spell: SpellItemDataModel,
       weapon: WeaponItemDataModel,
       mastery: ActorMasteryItemDM,
@@ -213,6 +217,11 @@ function registerSheets() {
    gItems.registerSheet('fantastic-depths', ConditionItemSheet, {
       label: 'FADE.SheetLabel.ConditionItem',
       types: ['condition'],
+      makeDefault: true
+   });
+   gItems.registerSheet('fantastic-depths', AmmoItemSheet, {
+      label: 'FADE.SheetLabel.AmmoItem',
+      types: ['ammo'],
       makeDefault: true
    });
    gItems.registerSheet('fantastic-depths', AncestryDefinitionSheet, {
@@ -355,7 +364,7 @@ Hooks.on("renderSidebarTab", async (object, html) => {
    if (object instanceof Settings) {
       const gamesystem = html.find("#game-details");
       const template = `/systems/fantastic-depths/templates/sidebar/general-info.hbs`;
-      const rendered = await renderTemplate(template);
+      const rendered = await CodeMigrate.RenderTemplate(template);
       gamesystem.find(".system").after(rendered);
    }
 });

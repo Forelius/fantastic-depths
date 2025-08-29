@@ -1,8 +1,13 @@
 {{#if actorName}}
 <div class="text-size16">{{actorName}}</div>
 {{/if}}
-<div>{{localize (concat 'FADE.Actor.Abilities.' mdata.ability '.long')}} ({{mdata.score}})</div>
+<div class="flexrow">
+   <div class="flex1">{{localize (concat 'FADE.Actor.Abilities.' mdata.ability '.long')}} ({{mdata.score}})</div>
+   <div class="flex1">{{localize 'FADE.dialog.difficulty.name'}}: {{localize (concat 'FADE.dialog.difficulty.levels.' context.difficulty)}}</div>
+</div>
 {{#if resultString}}
-{{{resultString}}}
+<div style="margin-top:6px;">
+   {{{resultString}}}
+</div>
 {{/if}}
 {{{rollContent}}}

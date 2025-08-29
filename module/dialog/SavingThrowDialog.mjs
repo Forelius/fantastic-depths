@@ -1,4 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SavingThrowDialog {
    static async getDialog(dataset, caller) {
@@ -6,24 +7,25 @@ export class SavingThrowDialog {
       let dialogResp = null;
       const title = `${caller.name}: ${dialogData.label} ${game.i18n.localize('FADE.roll')}`;
       const template = 'systems/fantastic-depths/templates/dialog/save-roll.hbs';
+
       dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
-         content: await renderTemplate(template, dialogData),
+         content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {
                action: 'roll',
                label: game.i18n.localize('FADE.roll'),
                default: true,
                callback: (event, button, dialog) => {
-                  return { action: button.dataset.action, ...(new FormDataExtended(button.form).object) }
+                  return { action: button.dataset.action, ...(new CodeMigrate.FormDataExtended(button.form).object) }
                }
             },
             {
                action: 'magic',
                label: game.i18n.localize('FADE.vsMagic'),
                callback: (event, button, dialog) => {
-                  return { action: button.dataset.action, ...(new FormDataExtended(button.form).object) }
+                  return { action: button.dataset.action, ...(new CodeMigrate.FormDataExtended(button.form).object) }
                }
             }
          ],

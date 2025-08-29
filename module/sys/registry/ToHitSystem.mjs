@@ -35,7 +35,6 @@ export class ToHitSystemBase extends ToHitInterface {
     */
    getAttackRoll(actor, weapon, attackType, options = {}) {
       const weaponData = weapon.system;
-      const targetData = options.target?.system;
       let formula = options.attackRoll ?? game.settings.get(game.system.id, "attackRollFormula");;
       let digest = [];
       let modifier = 0;
@@ -53,10 +52,10 @@ export class ToHitSystemBase extends ToHitInterface {
       }
 
       if (attackType === "melee") {
-         modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, targetData);
+         modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, options.target);
       } else {
          // Missile attack
-         modifier += this.#getMissileAttackRollMods(actor, weaponData, digest, targetData, options?.ammo);
+         modifier += this.#getMissileAttackRollMods(actor, weapon, digest, options.target, options?.ammoItem);
       }
 
       // If there is a registered weapon mastery system...
@@ -199,36 +198,37 @@ export class ToHitSystemBase extends ToHitInterface {
       return sum;
    }
 
-   #getMissileAttackRollMods(actor, weaponData, digest, targetData, ammo) {
+   getDistance(token1, token2) {
       let result = 0;
-      const systemData = actor.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+      if (token1 && token2) {
+         const waypoints = [token1.object.center, token2.object.center];
+         result = canvas.grid.measurePath(waypoints)?.distance;
+         if (token1.elevation !== token2.elevation) {
+            const h_diff = token2.elevation > token1.elevation
+               ? token2.elevation - token1.elevation
+               : token1.elevation - token2.elevation;
+            result = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(result, 2));
+         }
+      }
+      return Math.floor(result);
+   }
 
-      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
-         result += weaponData.mod.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
-      }
-      if (systemData.mod.combat?.toHitRanged !== 0) {
-         result += systemData.mod.combat.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
-      }
-      // If the attacker has ability scores...
-      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
-         result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
-      } else if (systemData.abilities && systemData.abilities.dex.mod) {
-         result += systemData.abilities.dex.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
-      }
-      if (targetMods && targetMods.selfToHitRanged !== 0) {
-         result += targetMods.selfToHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
+   getRange(distance, ranges) {
+      let result = null;
+      if (distance < 6) {
+         result = "close";
+      } else if (distance <= ranges.short) {
+         result = "short";
+      } else if (distance <= ranges.medium) {
+         result = "medium";
+      } else if (distance <= ranges.long) {
+         result = "long";
       }
       return result;
    }
 
-   #getMeleeAttackRollMods(actor, weaponData, digest, targetData) {
+   #getMeleeAttackRollMods(actor, weaponData, digest, target) {
+      const targetData = target?.system;
       let result = 0;
       const systemData = actor.system;
       const targetMods = targetData?.mod.combat;
@@ -252,6 +252,83 @@ export class ToHitSystemBase extends ToHitInterface {
          digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
       }
 
+      if (target) {
+         result += this.#getVsGroupMod(weaponData, target, digest);
+      }
+
+      return result;
+   }
+
+   #getMissileAttackRollMods(actor, weapon, digest, target, ammoItem) {
+      let result = 0;
+      const weaponData = weapon.system;
+      const targetData = target?.system;
+      const systemData = actor.system;
+      const targetMods = targetData?.mod.combat;
+      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+      const ammoIsNotWeapon = ammoItem && ammoItem.id != weapon.id;
+
+      if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
+         result += weaponData.mod.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
+      }
+      if (systemData.mod.combat?.toHitRanged !== 0) {
+         result += systemData.mod.combat.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
+      }
+      if (ammoIsNotWeapon && Math.abs(ammoItem?.system.mod?.toHitRanged) > 0) {
+         result += ammoItem.system.mod.toHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
+      }
+      // If thrown and attacker has ability scores...
+      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
+         result += systemData.abilities.str.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+      } else if (systemData.abilities && systemData.abilities.dex.mod) {
+         result += systemData.abilities.dex.mod;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
+      }
+      // Target modifiers
+      if (targetMods && targetMods.selfToHitRanged !== 0) {
+         result += targetMods.selfToHitRanged;
+         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
+      }
+
+      if (target) {
+         // Thrown weapons
+         result += this.#getVsGroupMod(weaponData, target, digest);
+         if (ammoIsNotWeapon) {
+            // Ammunition
+            result += this.#getVsGroupMod(ammoItem.system, target, digest);
+         }
+      }
+
+      return result;
+   }
+
+   #getVsGroupMod(weaponData, target, digest) {
+      let result = 0;
+      const targetData = target?.system;
+      const dmgSys = game.fade.registry.getSystem("damageSystem");
+      // vsGroup tohit modifier
+      const actorGroups = targetData.actorGroups || [];
+      const vsGroupMods = weaponData.mod?.vsGroup;
+      if (vsGroupMods) {
+         // Check each VS Group modifier on the weapon
+         for (const [groupId, modData] of Object.entries(vsGroupMods)) {
+            // Find the group definition in CONFIG.FADE.ActorGroups
+            const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
+
+            // Check if group applies: start with group membership, then check special rule if needed
+            const isMember = actorGroups.includes(groupId);
+            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
+
+            if (groupApplies) {
+               result += modData.toHit || 0;
+               digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
+            }
+         }
+      }
       return result;
    }
 

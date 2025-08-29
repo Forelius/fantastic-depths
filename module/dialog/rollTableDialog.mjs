@@ -1,5 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class rollTableDialog {
    async getDialog() {
@@ -32,7 +32,7 @@ export class rollTableDialog {
          window: { title: "Roll Table with Modifier" },
          rejectClose: false,
          position: { width: 400 },
-         content: await renderTemplate(template, { folders, tables, rollModes }),
+         content: await CodeMigrate.RenderTemplate(template, { folders, tables, rollModes }),
          buttons: [
             {
                action: 'roll',
@@ -40,7 +40,7 @@ export class rollTableDialog {
                callback: (event, button, dialog) => {
                   return {
                      action: button.dataset?.action,
-                     data: new FormDataExtended(button.form).object
+                     data: new CodeMigrate.FormDataExtended(button.form).object
                   }
                },
                default: true

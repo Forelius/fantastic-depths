@@ -1,3 +1,5 @@
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+
 export class Shove {
    static ActorSizes = [
       { id: "T", shoveResist: 1 },  // Tiny: Up to 2 feet
@@ -79,7 +81,7 @@ export class Shove {
             .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`) + ` (< ${size.maxFeet}')`, value: size.id } })
             .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {})
       };
-      const content = await renderTemplate(template, dialogData);
+      const content = await CodeMigrate.RenderTemplate(template, dialogData);
 
       return await new Promise((resolve) => {
          new Dialog({

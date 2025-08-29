@@ -1,6 +1,6 @@
-import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
-import { RollAttackMixin } from './mixins/RollAttackMixin.mjs';
-import { GearItem } from './GearItem.mjs';
+import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
+import { RollAttackMixin } from "./mixins/RollAttackMixin.mjs";
+import { GearItem } from "./GearItem.mjs";
 
 export class WeaponItem extends RollAttackMixin(GearItem) {
    constructor(data, context) {
@@ -21,51 +21,28 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       this._prepareDamageLabel();
    }
 
-   getDamageRoll(attackType, resp, targetWeaponType) {
+   getDamageRoll(attackType, resp, targetWeaponType, targetActor, ammoItem) {
       const weaponData = this.system;
       const attackerData = this.parent.system;
-      const masterySystem = game.fade.registry.getSystem('weaponMastery');
+      const masterySystem = game.fade.registry.getSystem("weaponMastery");
       let evaluatedRoll = this.getEvaluatedRollSync(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
       let digest = [];
       let modifier = 0;
       let hasDamage = true;
+      const dmgSys = game.fade.registry.getSystem("damageSystem");
 
-      if (attackType === 'melee') {
-         if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
-            modifier += weaponData.mod.dmg;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.dmg }));
-         }
-         // If the attacker has ability scores...
-         if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
-            modifier += attackerData.abilities.str.mod;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));
-         }
-         if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
-            modifier += attackerData.mod.combat.dmg;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmg }));
-         }
-      } else if (attackType === 'missile') {
-         if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
-            modifier += weaponData.mod.dmgRanged;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.dmgRanged }));
-         }
-         // If the attacker has ability scores...
-         if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
-            modifier += attackerData.abilities.str.mod;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: attackerData.abilities.str.mod }));
-         }
-         if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
-            modifier += attackerData.mod.combat.dmgRanged;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: attackerData.mod.combat.dmgRanged }));
-         }
+      if (attackType === "melee") {
+         modifier += dmgSys.getMeleeDamageMod(this, digest, attackerData, targetActor);
+      } else if (attackType === "missile") {
+         modifier += dmgSys.getMissileDamageMod(this, digest, attackerData, targetActor, ammoItem);
       } else if (attackType === "breath") {
 
       }
 
       if (resp?.mod && resp?.mod !== 0) {
-         modifier += resp.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
+         modifier += Number(resp.mod);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: resp.mod }));
       }
 
       if (modifier <= 0 && evaluatedRoll?.total <= 0) {
@@ -126,26 +103,26 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       const isBreath = this.system.breath?.length > 0 && this.system.savingThrow === "breath";
 
       if (isBreath) {
-         result.push({ text: game.i18n.localize('FADE.dialog.attackType.breath'), value: "breath" });
+         result.push({ text: game.i18n.localize("FADE.dialog.attackType.breath"), value: "breath" });
       } else {
-         const masterySystem = game.fade.registry.getSystem('weaponMastery');
+         const masterySystem = game.fade.registry.getSystem("weaponMastery");
          const owner = this.actor ?? null;
 
          // Weapon mastery is enabled, so weapons can gain the ability to do ranged at certain levels.
          if (owner && masterySystem) {
             const attackTypes = masterySystem.getAttackTypes(this);
             if (attackTypes?.canRanged === true) {
-               result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
+               result.push({ text: game.i18n.localize("FADE.dialog.attackType.missile"), value: "missile" });
             }
             if (attackTypes?.canMelee === true) {
-               result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
+               result.push({ text: game.i18n.localize("FADE.dialog.attackType.melee"), value: "melee" });
             }
          }
 
          if (result.length === 0) {
             // Simple mode. Either the weapon can melee, missile or both, or not.
-            if (this.system.canRanged) result.push({ text: game.i18n.localize('FADE.dialog.attackType.missile'), value: "missile" });
-            if (this.system.canMelee) result.push({ text: game.i18n.localize('FADE.dialog.attackType.melee'), value: "melee" });
+            if (this.system.canRanged) result.push({ text: game.i18n.localize("FADE.dialog.attackType.missile"), value: "missile" });
+            if (this.system.canMelee) result.push({ text: game.i18n.localize("FADE.dialog.attackType.melee"), value: "melee" });
          }
       }
 
@@ -174,10 +151,10 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
    _prepareEffects() {
       // Reset mod values.
-      this.system.mod.dmg = 0;
-      this.system.mod.toHit = 0;
-      this.system.mod.dmgRanged = 0;
-      this.system.mod.toHitRanged = 0;
+      //this.system.mod.dmg = 0;
+      //this.system.mod.toHit = 0;
+      //this.system.mod.dmgRanged = 0;
+      //this.system.mod.toHitRanged = 0;
       this._processNonTransferActiveEffects();
    }
 

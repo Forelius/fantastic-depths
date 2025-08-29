@@ -812,7 +812,7 @@ export class MultiClassSystem extends ClassSystemBase {
             index++;
          }
       } else {
-         ui.notifications.warn(`Invalid value specified for ${actor.name}. ${amounts}`);
+         //ui.notifications.warn(`Invalid value specified for ${actor.name}. ${amounts}`);
          console.warn(`Invalid XP amount specified for ${actor.name}.`, amounts);
       }
    }

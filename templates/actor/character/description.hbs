@@ -70,6 +70,7 @@
    </div>
    {{else}}
    {{/if}}
+   {{> actorGroups}}
    <div class="bordered">
       <div class="summary flexrow">
          <div class="flex2" style="max-width:120px;">
@@ -156,6 +157,7 @@
          </div>
       </div>
    </div>
+   <!-- Biography -->
    <div class="bordered">
       {{! Editors must receive enriched text data from getData to properly handle rolls, UUID links, etc. }}
       <prose-mirror name="system.biography" data-document-u-u-i-d="{{actor.uuid}}" value="{{system.biography}}" collaborate="false" toggled="true">

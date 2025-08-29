@@ -17,9 +17,11 @@ export class ArmorSystemBase extends ArmorSystemInterface {
       let ac = {};
       ac.nakedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - baseAC;
       ac.naked = baseAC;
+      ac.nakedRanged = ac.naked;
       // AC value is used for wrestling rating and should not include Dexterity bonus.
       ac.value = CONFIG.FADE.Armor.acNaked;
       ac.total = baseAC;
+      ac.totalRanged = baseAC;
       ac.mod = 0;
       ac.shield = 0;
       return ac;
@@ -65,11 +67,13 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
          ac.naked = naturalArmor.system.totalAC - dexMod;
+         ac.nakedRanged = naturalArmor.system.totalRangedAC - dexMod;
          ac.value = ac.naked;
          ac.total = ac.naked;
+         ac.totalRanged = naturalArmor.system.totalRangedAC - dexMod;
          ac.av = naturalArmor.system.av;
          naturalArmor.system.equipped = true;
-         acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}`);
+         acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}/${naturalArmor.system.totalRangedAC}`);
       }
    }
 
@@ -83,9 +87,11 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.value = equippedArmor.system.ac;
          // What was ac.mod for??
          ac.mod += equippedArmor.system.mod ?? 0;
+         ac.modRanged += (ac.mod + equippedArmor.system.modRanged ?? 0) ?? 0;
          // Reapply dexterity mod, since overwriting ac.total here.
          ac.total = equippedArmor.system.totalAC - dexMod;
-         acDigest.push(`${equippedArmor.name}: ${equippedArmor.system.totalAC}`);
+         ac.totalRanged = equippedArmor.system.totalRangedAC - dexMod;
+         acDigest.push(`${equippedArmor.name}: ${equippedArmor.system.totalAC}/${equippedArmor.system.totalRangedAC}`);
       }
    }
 
@@ -95,6 +101,7 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.value -= equippedShield.system.ac;
          ac.shield = equippedShield.system.totalAC;
          ac.total -= equippedShield.system.totalAC;
+         ac.totalRanged -= equippedShield.system.totalRangedAC;
          acDigest.push(`${equippedShield.name}: ${equippedShield.system.totalAC}`);
       }
    }
@@ -109,15 +116,22 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.total -= actor.system.mod.ac;
          acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${actor.system.mod.ac}`);
       }
-      ac.nakedRanged = ac.total;
-      ac.totalRanged = ac.total;
+      if (actor.system.mod.rangedAc != 0) {
+         // Apply actor's ranged ac modifier to total
+         ac.totalRanged -= actor.system.mod.rangedAc;
+         acDigest.push(`${game.i18n.localize('FADE.Armor.modRanged')}: ${actor.system.mod.rangedAc}`);
+      }
+      //ac.nakedRanged = ac.total;
+      //ac.totalRanged = ac.total;
 
-      if (actor.system.mod.upgradeAc && actor.system.mod.upgradeAc < ac.total) {
+      // Handle the upgradeAc modifier
+      if (actor.system.mod.upgradeAc !== null && actor.system.mod.upgradeAc < ac.total) {
          ac.total = actor.system.mod.upgradeAc;
          ac.naked = actor.system.mod.upgradeAc;
          acDigest.push(`AC upgraded to ${actor.system.mod.upgradeAc}`);
       }
-      if (actor.system.mod.upgradeRangedAc && actor.system.mod.upgradeRangedAc < ac.totalRanged) {
+      // Handle the upgradeRangedAc modifier
+      if (actor.system.mod.upgradeRangedAc !== null && actor.system.mod.upgradeRangedAc < ac.totalRanged) {
          ac.totalRanged = actor.system.mod.upgradeRangedAc;
          ac.nakedRanged = actor.system.mod.upgradeRangedAc;
          acDigest.push(`Ranged AC upgraded to ${actor.system.mod.upgradeRangedAc}`);

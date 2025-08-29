@@ -1,3 +1,5 @@
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+
 export class fadeChatMessage extends ChatMessage {
    /** @inheritDoc */
    async getHTML(options) {
@@ -9,9 +11,9 @@ export class fadeChatMessage extends ChatMessage {
             // In case jquery, due to v12/v13 inconsistency
             html = html[0];
          }
-         this.#addAttackTargets(html);
          await this.#addApplyDamage(html);
          await this.#addApplyCondition(html);
+         this.#addAttackTargets(html);
       }
       return html;
    }
@@ -24,9 +26,9 @@ export class fadeChatMessage extends ChatMessage {
          // In case jquery, due to v12/v13 inconsistency
          html = html[0];
       }
-      this.#addAttackTargets(html);
       await this.#addApplyDamage(html);
       await this.#addApplyCondition(html);
+      this.#addAttackTargets(html);
       return html;
    }
 
@@ -38,10 +40,7 @@ export class fadeChatMessage extends ChatMessage {
       const attackData = this.getFlag(game.system.id, "attackdata");
       if (!game.user.isGM || !attackData) return;
       const chatData = { attackData };
-      // TODO: Remove after v12 support.
-      const content = foundry?.applications?.handlebars?.renderTemplate ?
-         await foundry.applications.handlebars.renderTemplate("systems/fantastic-depths/templates/chat/damage-buttons.hbs", chatData)
-         : await renderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
+      const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);
@@ -49,13 +48,9 @@ export class fadeChatMessage extends ChatMessage {
 
    async #addApplyCondition(html) {
       const conditions = this.getFlag(game.system.id, "conditions");
-      const durationSec = this.getFlag(game.system.id, "durationSec");
       if (!game.user.isGM || !conditions) return;
-      const chatData = { conditions, durationSec };
-      // TODO: Remove after v12 support.
-      const content = foundry?.applications?.handlebars?.renderTemplate ?
-         await foundry.applications.handlebars.renderTemplate("systems/fantastic-depths/templates/chat/spell-conditions.hbs", chatData)
-         : await renderTemplate("systems/fantastic-depths/templates/chat/spell-conditions.hbs", chatData);
+      const chatData = { conditions};
+      const content = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/chat/apply-conditions.hbs", chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);

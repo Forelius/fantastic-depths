@@ -222,19 +222,34 @@ FADE.ToHit = {
    /** Represents THAC0 for Normal Man */
    BaseTHAC0: 19
 }
-FADE.MonsterTypes = [
-   'bugs',
-   'constructs',
-   'dragonkind',
-   'enchanted',
-   'giantkind',
-   'lycanthropes',
-   'planar',
-   'regenerating',
-   'reptiles-dinosaurs',
-   'spell-immune',
-   'spellcasters',
-   'undead',
-   'water-breathing',
-   'weapon-using'
+FADE.ActorGroups = [
+   { id: "bugs" },
+   { id: "constructs" },
+   { id: "dragonkind" },
+   { id: "enchanted", rule: "enchanted" },
+   { id: "fey" },
+   { id: "giantkind" },
+   { id: "lycanthropes" },
+   { id: "planar" },
+   { id: "regenerating" },
+   { id: "reptiles-dinosaurs" },
+   { id: "spell-immune" },
+   { id: "spellcasters", rule: "spellcaster" },
+   { id: "undead" },
+   { id: "water-breathing" },
+   { id: "weapon-using", rule: "equippedWeapon" },
 ];
+FADE.DifficultyLevel = {
+   easy: -4,
+   medium: 0,
+   hard: 4,
+   veryHard: 8,
+   absurd: 12
+}
+FADE.TieredResults = {
+   criticalFail: 5,
+   fail: 1,
+   partialSuccess: 0,
+   success: -4,
+   criticalSuccess: -5
+}

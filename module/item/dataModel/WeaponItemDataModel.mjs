@@ -39,6 +39,8 @@ export class WeaponItemDataModel extends GearItemDataModel {
             toHit: new fields.NumberField({ initial: 0 }),
             dmgRanged: new fields.NumberField({ initial: 0 }),
             toHitRanged: new fields.NumberField({ initial: 0 }),
+            rangeMultiplier: new fields.NumberField({ initial: 1 }),
+            vsGroup: new fields.ObjectField({}),
          }),
          attacks: new fields.SchemaField({
             used: new fields.NumberField({ initial: 0 }),

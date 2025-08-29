@@ -1,5 +1,6 @@
 <form style="display:flex">
    <style>
+      #party-tracker-form .scroll-body { padding: 1px; }
       .character-name {
          font-weight: 600;
          font-size: 15px;
@@ -18,13 +19,13 @@
       <div class="party-tracker-list">
          <!-- Toolbar with XP Button -->
          <div class="party-tracker-toolbar">
-            <button class="award-xp-button">{{localize 'FADE.dialog.awardXP.short'}}</button>
+            <button data-action="awardXP">{{localize 'FADE.dialog.awardXP.short'}}</button>
          </div>
 
          {{#each trackedActors}}
          <div class="party-member bordered {{ifThen system.combat.isDead "is-dead" "alive"}}" data-actor-id="{{id}}">
             <!-- Delete button positioned in the top-right corner -->
-            <span class="delete-actor" data-tooltip="Remove Actor"><i class="fas fa-trash"></i></span>
+            <span class="delete-actor" data-action="deleteActor" data-tooltip="Remove Actor"><i class="fas fa-trash"></i></span>
             <!-- Actor details -->
             <div>
                <span class="character-name">{{name}}</span>
@@ -46,5 +47,4 @@
          {{/each}}
       </div>
    </div>
-
 </form>

@@ -1,5 +1,9 @@
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 import { AwardXPDialog } from "./AwardXPDialog.mjs"
-export class PartyTrackerForm extends FormApplication {
+
+export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
+   #dragDrop;
+
    constructor(object = {}, options = {}) {
       super(object, options);
       this.isGM = game.user.isGM;
@@ -9,78 +13,106 @@ export class PartyTrackerForm extends FormApplication {
 
       // Store the updated tracked actor IDs
       this.trackedActorIds = storedData;
+      this.#dragDrop = this.#createDragDropHandlers();
    }
 
-   static get defaultOptions() {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         id: "party-tracker-form",
-         title: "Party Tracker",
-         classes: ["fantastic-depths", ...super.defaultOptions.classes],
-         template: `systems/${game.system.id}/templates/apps/party-tracker.hbs`,
-         width: 300,
-         height: 450,
+   get title() {
+      return "Party Tracker";
+   }
+
+   static DEFAULT_OPTIONS = {
+      id: "party-tracker-form",
+      tag: 'form',
+      window: {
          resizable: true,
-         dragDrop: [
-            { dragSelector: ".actor-list .actor", dropSelector: ".party-tracker" },
-         ],
-         closeOnSubmit: false,
-      });
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      position: {
+         width: 280,
+         height: 450,
+      },
+      form: {
+         handler: PartyTrackerForm.#onSubmit,
+         submitOnChange: false,
+         closeOnSubmit: false
+      },
+      actions: {
+         deleteActor: PartyTrackerForm.#deleteActor,
+         awardXP: PartyTrackerForm.#awardXP,
+      },
+      classes: ['fantastic-depths'],
+      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }]
+   }
+
+   static PARTS = {
+      main: {
+         template: `systems/fantastic-depths/templates/apps/party-tracker.hbs`,
+      }
    }
 
    /** 
     * Fetch data for the form, such as tracked actors 
     */
-   async getData() {
-      const context = await super.getData();
+   async _prepareContext(_options) {
+      const context = {};
       // Fetch actor data dynamically based on stored IDs
       context.trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
       return context;
    }
 
-   /** 
-    * Attach event listeners to elements in the form 
-    */
-   activateListeners(html) {
-      super.activateListeners(html);
+   /**
+   * Actions performed after any render of the Application.
+   * Post-render steps are not awaited by the render process.
+   * @param {ApplicationRenderContext} context      Prepared context data
+   * @param {RenderOptions} options                 Provided render options
+   * @protected
+   */
+   _onRender(context, options) {
       if (game.user.isGM) {
-         html.find(".delete-actor").on("click", (event) => {
-            const actorId = $(event.currentTarget).closest(".party-member").data("actor-id");
-            this._removeTrackedActor(actorId);
-         });
-
+         Hooks.off('updateActor', this._updateTrackedActor);
          Hooks.on('updateActor', this._updateTrackedActor);
 
-         // **New**: Double-click on a party member to open their actor sheet
-         html.find(".party-member").on("dblclick", (event) => {
-            const actorId = $(event.currentTarget).data("actor-id");
-            const actor = game.actors.get(actorId);
-            if (!actor) return;
-            actor.sheet.render(true);
-         });
+         // Bind drag and drop handlers
+         this.#dragDrop.forEach((d) => d.bind(this.element));
 
-         // **New**: Open "Award XP" dialog
-         html.find(".award-xp-button").on("click", (event) => {
-            new AwardXPDialog({}, { actorIds: this.trackedActorIds }).render(true);
+         // Add double-click listener for opening actor sheets
+         this.element.querySelectorAll(".party-member").forEach(element => {
+            element.addEventListener("dblclick", (event) => {
+               const actorId = event.currentTarget.dataset.actorId;
+               const actor = game.actors.get(actorId);
+               if (!actor) return;
+               actor.sheet.render(true);
+            });
          });
       }
+   }
+
+   /**
+    * Define whether a user is able to begin a dragstart workflow for a given element
+    * @param {string} selector       The candidate HTML selector for dragging
+    * @returns {boolean}             Can the current user drag this element?
+    * @protected
+    */
+   _canDragStart(selector) {
+      return game.user.isGM;
+   }
+
+   /**
+    * Define whether a user is able to conclude a drag-and-drop workflow for a given element
+    * @param {string} selector       The candidate HTML selector for the drop target
+    * @returns {boolean}             Can the current user drop on this element?
+    * @protected
+    */
+   _canDragDrop(selector) {
+      return game.user.isGM;
    }
 
    /** 
     * Handle the drop event for actors 
     */
    async _onDrop(event) {
-      event.preventDefault();
-
-      let data = null;
-      let actor = null;
-
-      try {
-         data = JSON.parse(event.dataTransfer.getData("text/plain"));
-      } catch (err) {
-         console.error("Failed to parse drop data:", err);
-         ui.notifications.warn("Invalid data dropped.");
-         return;
-      }
+      const data = TextEditor.getDragEventData(event);
 
       if (data.type !== "Actor" || !data.uuid) {
          console.error("Dropped data is not a valid actor.");
@@ -88,6 +120,7 @@ export class PartyTrackerForm extends FormApplication {
          return;
       }
 
+      let actor;
       try {
          actor = await fromUuid(data.uuid);
          if (!actor || actor.documentName !== "Actor") {
@@ -134,16 +167,88 @@ export class PartyTrackerForm extends FormApplication {
     * @param {Event} event - The initial triggering submission event
     * @param {object} formData - The object of validated form data with which to update the object
     */
-   // eslint-disable-next-line no-underscore-dangle
    async _updateObject(event, formData) {
       event.preventDefault();
+      // Handle any form data updates if needed
    }
 
    /** 
     * Clean up hooks when the form is closed 
     */
-   async close() {
+   close(options) {
       Hooks.off('updateActor', this._updateTrackedActor);
-      super.close();
+      return super.close(options);
+   }
+
+   /**
+    * Process form submission for the sheet
+    * @this {PartyTrackerForm}             The handler is called with the application as its bound scope
+    * @param {SubmitEvent} event            The originating form submission event
+    * @param {HTMLFormElement} form         The form element that was submitted
+    * @param {FormDataExtended} formData    Processed data for the submitted form
+    * @returns {Promise<void>}
+    */
+   static async #onSubmit(event, form, formData) {
+      event.preventDefault();
+      // Handle form submission if needed
+   }
+
+   /**
+    * Handle delete actor action
+    * @param {Event} event - The click event
+    */
+   static async #deleteActor(event) {
+      event.preventDefault();
+      const actorId = event.target.closest(".party-member").dataset.actorId;
+      this._removeTrackedActor(actorId);
+   }
+
+   /**
+    * Handle award XP action
+    * @param {Event} event - The click event
+    */
+   static async #awardXP(event) {
+      event.preventDefault();
+      new AwardXPDialog({}, { actorIds: this.trackedActorIds }).render(true);
+   }
+
+   /**
+    * Create drag-and-drop workflow handlers for this Application
+    * @returns {DragDrop[]}     An array of DragDrop handlers
+    * @private
+    */
+   #createDragDropHandlers() {
+      return this.options.dragDrop.map((d) => {
+         d.permissions = {
+            dragstart: this._canDragStart.bind(this),
+            drop: this._canDragDrop.bind(this),
+         };
+         d.callbacks = {
+            dragstart: this._onDragStart.bind(this),
+            dragover: this._onDragOver.bind(this),
+            drop: this._onDrop.bind(this),
+         };
+         // TODO: Remove after v12 support.
+         const dragDropImp = foundry?.applications?.ux?.DragDrop?.implementation ? foundry.applications.ux.DragDrop.implementation : DragDrop;
+         return new dragDropImp(d);
+      });
+   }
+
+   /**
+    * Callback actions which occur at the beginning of a drag start workflow.
+    * @param {DragEvent} event       The originating DragEvent
+    * @protected
+    */
+   _onDragStart(event) {
+      // For party tracker, we don't need to handle drag start since we only accept drops
+   }
+
+   /**
+    * Callback actions which occur when a dragged element is over a drop target.
+    * @param {DragEvent} event       The originating DragEvent
+    * @protected
+    */
+   _onDragOver(event) {
+      // Default behavior is fine
    }
 }

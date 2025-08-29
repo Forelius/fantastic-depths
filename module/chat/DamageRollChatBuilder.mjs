@@ -1,5 +1,6 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
@@ -37,7 +38,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       // Render the content using the template, now with messageId
-      let content = await renderTemplate(this.template, renderData);
+      let content = await CodeMigrate.RenderTemplate(this.template, renderData);
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
@@ -74,9 +75,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
     * @param {any} dataset
     */
    static async handleDamageRoll(ev, dataset) {
-      const { weaponuuid, attacktype, damagetype, targetweapontype } = dataset;
-      const theItem = await fromUuid(weaponuuid);
-      const instigator = theItem.actor.token ?? theItem.actor;
+      const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
+      const weaponItem = await fromUuid(weaponuuid);
+      const ammoItem = await fromUuid(ammouuid);
+      const targetActor = await fromUuid(targetactoruuid);
+      const instigator = weaponItem.actor.token ?? weaponItem.actor;
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
@@ -84,10 +87,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
+      // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(attacktype, null, targetweapontype);
+         damageRoll = weaponItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(null);
+         damageRoll = weaponItem.getDamageRoll(null);
       }
 
       dialogResp = await DialogFactory({
@@ -95,13 +99,13 @@ export class DamageRollChatBuilder extends ChatBuilder {
          label: isHeal ? "Heal" : "Damage",
          formula: damageRoll.formula,
          editFormula: game.user.isGM
-      }, theItem);
+      }, weaponItem);
       rolling = dialogResp != null;
 
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(attacktype, dialogResp, targetweapontype);
+         damageRoll = weaponItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = theItem.getDamageRoll(dialogResp);
+         damageRoll = weaponItem.getDamageRoll(dialogResp);
       }
 
       if (rolling === true) {
@@ -109,7 +113,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const roll = new Roll(damageRoll.formula);
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
-         const attackName = (theItem.system.isIdentified !== false) ? theItem.name : theItem.system.unidentifiedName;
+         const attackName = (weaponItem.system.isIdentified !== false) ? weaponItem.name : weaponItem.system.unidentifiedName;
          const descData = {
             attacker: instigator.name,
             weapon: attackName,
@@ -121,11 +125,11 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const chatData = {
             context: instigator,
             mdata: dataset,
-            roll: roll,
+            roll,
             digest: damageRoll.digest
          };
          const options = {
-            damage: damage,
+            damage,
             resultString,
             attackName,
          };

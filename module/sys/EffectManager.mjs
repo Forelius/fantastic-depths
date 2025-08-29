@@ -32,10 +32,12 @@ export class EffectManager {
       const path = 'systems/fantastic-depths/assets/img';
       CONFIG.statusEffects = [
          ...CONFIG.statusEffects,
+         { id: "confused", name: "FADE.Effect.status.confused", img: `${path}/ui/confused.png` },
          { id: "hasted", name: "FADE.Effect.status.hasted", img: `${path}/ui/sprint.png` },
-         { id: "slowed", name: "FADE.Effect.status.slowed", img: `${path}/ui/snail.png` },
          { id: "infravision", name: "FADE.Effect.status.infravision", img: `${path}/ui/night-vision.png` },
-         { id: "mirrorImaged", name: "FADE.Effect.status.mirrorImaged", img: `${path}/ui/two-shadows.png` }
+         { id: "mirrorImaged", name: "FADE.Effect.status.mirrorImaged", img: `${path}/ui/two-shadows.png` },
+         { id: "possessed", name: "FADE.Effect.status.possessed", img: `${path}/ui/possessed.png` },
+         { id: "slowed", name: "FADE.Effect.status.slowed", img: `${path}/ui/snail.png` }
       ];
       //let globalEffects = game.settings.get(game.system.id, 'globalEffects') || [];
 

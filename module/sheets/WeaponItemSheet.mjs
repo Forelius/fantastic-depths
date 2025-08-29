@@ -1,12 +1,13 @@
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { EffectManager } from '../sys/EffectManager.mjs';
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
+import { VsGroupModMixin } from './mixins/VsGroupModMixin.mjs';
 
 
 /**
  * Sheet class for WeaponItem.
  */
-export class WeaponItemSheet extends FDItemSheetV2 {
+export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
    /**
    * Get the default options for the sheet.
    */
@@ -43,7 +44,7 @@ export class WeaponItemSheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
+         template: "systems/fantastic-depths/templates/item/weapon/gmOnly.hbs",
       }
    }
 
@@ -95,6 +96,7 @@ export class WeaponItemSheet extends FDItemSheetV2 {
          weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.handheld.long'), value: 'handheld' });
          weaponTypes.push({ text: game.i18n.localize('FADE.Mastery.weaponTypes.all.long'), value: 'all' });
          context.weaponTypes = weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.isGM = game.user.isGM;
          // TODO: Magic damage type  indicates that a different set of parameters is passed to getDamageRoll.
          // This is not a good design, but not addressing it at the moment, so remove this option.
          //context.damageTypes.push({ text: game.i18n.localize('FADE.DamageTypes.types.magic'), value: 'magic' });

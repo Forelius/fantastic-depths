@@ -1,4 +1,4 @@
-{{#if isGM}}
+{{#if (and isGM (ne system.isIdentified undefined))}}
 <div class="bordered">
    <h4>{{localize 'FADE.unidentified'}}</h4>
    <div class="summary flexrow">

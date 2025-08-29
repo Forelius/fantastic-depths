@@ -1,4 +1,4 @@
-﻿<section class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
+<section class='tab {{tabs.attributes.cssClass}}' data-group='primary' data-tab='attributes'>
    <div class="bordered">
       <div class="summary flexrow">
          <div class="flex2" style="max-width:90px;">
@@ -23,9 +23,13 @@
             </select>
             <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
          </div>
+         <div class="flex1" style="max-width:40px;">
+            <input type="checkbox" name="system.isSlow" data-dtype="Boolean" {{#if system.isSlow}} checked{{/if}} data-tooltip="{{localize "FADE.Weapon.isSlow.desc"}}" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.isSlow" data-tooltip="{{localize "FADE.Weapon.isSlow.desc"}}">{{localize "FADE.Weapon.isSlow.label"}}</label>
+         </div>
       </div>
       <div class="summary flexrow">
-         <div class="flex2">
+         <div class="flex1">
             <input type="text" name="system.breath" value='{{system.breath}}' data-dtype="String" />
             <label for="system.breath">{{localize 'FADE.DamageTypes.types.breath'}}</label>
          </div>
@@ -35,43 +39,37 @@
             </select>
             <label for="system.savingThrow">{{localize 'FADE.Actor.Saves.singular'}}</label>
          </div>
-         <div class="flex2">
+         <div class="flex1">
             <input type='text' name="system.saveDmgFormula" value='{{system.saveDmgFormula}}' data-dtype='String' />
             <label for="system.saveDmgFormula">{{localize 'FADE.Actor.Saves.short'}} {{localize 'FADE.Weapon.damage.short'}}</label>
          </div>
+         <div class="flex1" style="max-width:60px;">
+            <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
+            <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
+         </div>
+         <div class="flex1" style="max-width:60px;">
+            <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
+            <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
+         </div>
       </div>
       <div class="summary flexrow">
-         <div class="flex1" style="margin-left:3px;">
+         <div class="flex1" style="margin-left:3px;max-width:90px;">
             <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
             <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
          </div>
-         <div class="flex1">
+         <div class="flex1" style="max-width: 90px;">
             <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
             <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
          </div>
-         <div class="flex1">
+         <div class="flex1" style="max-width: 90px;">
             <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
             <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
          </div>
          <div class="flex2" style="margin-left:3px;">
             <input type='text' name="system.ammoType" value='{{system.ammoType}}' data-dtype='String' />
             <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
-         </div>
-         <div style="max-width:40px;">
-            <input type="checkbox" name="system.isSlow" data-dtype="Boolean" {{#if system.isSlow}} checked{{/if}} data-tooltip="{{localize "FADE.Weapon.isSlow.desc"}}" {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.isSlow" data-tooltip="{{localize "FADE.Weapon.isSlow.desc"}}">{{localize "FADE.Weapon.isSlow.label"}}</label>
-         </div>
-      </div>
-      <div class="summary flexrow">
-         <div style="max-width:70px;">
-            <input type='text' name="system.quantity" value='{{system.quantity}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantity null)}}∞{{/if}}" />
-            <label for="system.quantity">{{localize 'FADE.Item.quantity.abbr'}}</label>
-         </div>
-         <div style="max-width:70px;">
-            <input type='text' name="system.quantityMax" value='{{system.quantityMax}}' data-dtype='Number' {{#if system.container}} readonly{{/if}} placeholder="{{#if (eq system.quantityMax null)}}∞{{/if}}" />
-            <label for="system.quantityMax">{{localize 'FADE.Item.quantity.maxAbbr'}}</label>
-         </div>         
+         </div>        
       </div>
    </div>
-   {{> "itemIdentified"}}
+   {{> "vsGroupMod"}}
 </section>

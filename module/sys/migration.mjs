@@ -306,3 +306,8 @@ export class DataMigrator {
       v7.lt(v4);
    }
 }
+
+export class CodeMigrate {
+   static FormDataExtended = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
+   static RenderTemplate = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+}

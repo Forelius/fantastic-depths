@@ -33,7 +33,7 @@ export class ChatBuilder {
       if (new.target === ChatBuilder) {
          throw new Error('ChatBuilder cannot be instantiated directly.');
       }
-
+      // TODO: not sure this is required anymore.
       if (!new.target.template) {
          throw new Error('Subclasses must define a static template property.');
       }
@@ -81,7 +81,7 @@ export class ChatBuilder {
     * @param {Symbol} rv - Result symbol of type RESULT_TYPE.
     * @returns {string} HTML string for result type.
     */
-   getBoolResult(rv) {
+   getBoolResultHTML(rv) {
       //if (!rv || rv === RESULT_TYPE.NONE) return false;
       ChatBuilder.resultCache ||= ChatBuilder.initializeResultCache();
       return ChatBuilder.resultCache[rv] || `Unknown result type: <b>${rv}</b>`;

@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class GenericRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/generic-roll.hbs';
@@ -62,7 +63,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          save
       };
       // Render the content using the template
-      const content = await renderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
@@ -94,7 +95,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
             autofail: mdata.autofail,
             autosuccess: mdata.autosuccess
          });
-         resultString = this.getBoolResult(testResult);
+         resultString = this.getBoolResultHTML(testResult);
       } else if (mdata.resultstring !== undefined && mdata.resultstring !== null) {
          resultString = mdata.resultstring;
       }

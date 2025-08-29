@@ -1,10 +1,11 @@
-const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 import { EffectManager } from "../sys/EffectManager.mjs";
 import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
 import { FDItem } from "../item/FDItem.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -18,7 +19,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static DEFAULT_OPTIONS = {
       position: {
-         top: 150,
          width: 650,
          height: 500,
       },
@@ -33,6 +33,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       classes: ["fantastic-depths", "sheet", "actor"],
       actions: {
          deleteTag: FDActorSheetV2.#clickDeleteTag,
+         addActorGroup: FDActorSheetV2.#clickAddActorGroup,
+         deleteActorGroup: FDActorSheetV2.#clickDeleteActorGroup,
          createEffect: FDActorSheetV2.#clickEffect,
          editEffect: FDActorSheetV2.#clickEffect,
          deleteEffect: FDActorSheetV2.#clickEffect,
@@ -58,8 +60,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          addCharge: FDActorSheetV2.#clickAddCharge,
          editAbilityScores: FDActorSheetV2.#clickEditAbilityScores,
          expandDesc: FDActorSheetV2.#clickExpandDesc,
-      },
-      dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }],
+      }
    }
 
    /** @inheritDoc */
@@ -143,6 +144,13 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.sizes = CONFIG.FADE.ActorSizes
          .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      // Prepare actor groups for button-based selection
+      const actorGroupsOptions = {};
+      CONFIG.FADE.ActorGroups.forEach(group => {
+         actorGroupsOptions[group.id] = game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`);
+      });
+      context.actorGroups = actorGroupsOptions;
 
       // Prepare shared actor data and items.
       await this.#prepareItems(context);
@@ -339,7 +347,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                   // Find the collapsible section by the "name" attribute
                   const target = this.element.querySelector(`[name="${sectionName}"]`);
                   if (target) {
-                     await this.#toggleContent(target, true);
+                     await FDActorSheetV2.#toggleContent(this.actor, target, true);
                   } else {
                      // Not found.
                      //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
@@ -416,8 +424,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * This method is separate from the event handler because it is also called to restore expanded state when opening the sheet.
     * @param {any} parent The clicked element as a jquery object.
     */
-   async #toggleContent(parent) {
+   static async #toggleContent(actor, parent) {
       const collapsibleItems = parent.querySelectorAll(".collapsible-content");
+      if (!collapsibleItems) return;
       const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
 
       if (isCollapsed === true) {
@@ -450,7 +459,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
          //console.debug(`Remembering expanded state for ${sectionName}.`, target);
          if (sectionName !== undefined) {
-            await this.actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
          }
       }
    }
@@ -464,6 +473,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Initialize arrays.
       let gear = [];
       const weapons = [];
+      const ammo = [];
       const armor = [];
       const skills = [];
       const masteries = [];
@@ -501,6 +511,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          // Append to weapons.
          else if (item.type === "weapon") {
             weapons.push(item);
+         }
+         // Append to ammo.
+         else if (item.type === "ammo") {
+            ammo.push(item);
          }
          // Append to armor.
          else if (item.type === "armor") {
@@ -549,6 +563,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Assign and return
       context.gear = gear;
       context.weapons = weapons;
+      context.ammo = ammo;
       context.armor = armor;
       context.skills = skills;
       context.masteries = masteries;
@@ -653,7 +668,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // If not the create item column...
       const parent = event.target.closest(".items-list");
       if (parent) {
-         await this.#toggleContent(parent);
+         await FDActorSheetV2.#toggleContent(this.actor, parent);
       }
    }
 
@@ -803,6 +818,75 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             descElem.addClass("desc-collapsed");
             descElem.empty();
          }
+      }
+   }
+
+   static async #clickAddActorGroup(event) {
+      const actor = this.actor;
+      const currentGroups = actor.system.actorGroups || [];
+
+      // Get available groups that aren't already added
+      const availableGroups = CONFIG.FADE.ActorGroups
+         .filter(group => !currentGroups.includes(group.id))
+         .map(group => ({
+            value: group.id,
+            label: game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`)
+         }));
+
+      if (availableGroups.length === 0) {
+         ui.notifications.info("All actor groups have already been added.");
+         return;
+      }
+
+      // Create a simple dialog to select which group to add
+      const selectedGroup = await DialogV2.wait({
+         window: { title: game.i18n.localize("FADE.Actor.actorGroups.group") },
+         position: {
+            width: 300,
+            height: "auto"
+         },
+         rejectClose: false,
+         content: `
+            <form>
+               <div class="form-group">
+                  <label>Select Actor Group:</label>
+                  <select name="actorGroup">
+                     ${availableGroups.map(group => `<option value="${group.value}">${group.label}</option>`).join('')}
+                  </select>
+               </div>
+            </form>
+         `,
+         buttons: [
+            {
+               action: "add",
+               icon: "fas fa-plus",
+               label: game.i18n.localize("FADE.apps.userTables.actions.new"),
+               default: true,
+               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
+            },
+            {
+               action: "cancel",
+               icon: "fas fa-times",
+               label: game.i18n.localize("FADE.dialog.cancel"),
+               callback: () => null
+            }
+         ],
+         close: () => null,
+         classes: ["fantastic-depths"]
+      });
+
+      if (selectedGroup) {
+         const newGroups = [...currentGroups, selectedGroup];
+         await actor.update({ "system.actorGroups": newGroups });
+      }
+   }
+
+   static async #clickDeleteActorGroup(event) {
+      const groupToDelete = event.target.closest("[data-tag]").dataset.tag;
+      if (groupToDelete) {
+         const currentGroups = this.actor.system.actorGroups || [];
+         const newGroups = currentGroups.filter(group => group !== groupToDelete);
+         await this.actor.update({ "system.actorGroups": newGroups });
       }
    }
 }
