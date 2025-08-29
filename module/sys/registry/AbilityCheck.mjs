@@ -27,6 +27,11 @@ export class AbilityCheck {
             // This will stop the process below.
             chatType = null;
          }
+      } else {
+         dialogResp = {
+            formula: dataset.formula,
+            difficulty: "medium"
+         };
       }
 
       if (chatType !== null) {
