@@ -40,6 +40,6 @@ export class ArmorItemDataModel extends GearItemDataModel {
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
-      this.equipped = this.natural ?? this.equipped;
+      this.equipped = this.natural === true ? true : this.equipped
    }
 }
