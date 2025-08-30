@@ -4,14 +4,13 @@ import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
 import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 
-//export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
-export class GearItemSheet extends FDItemSheetV2 {
+export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
    */
    static DEFAULT_OPTIONS = {
       position: {
-         width: 570,
+         width: 600,
          height: 400,
       },
       window: {
@@ -38,9 +37,9 @@ export class GearItemSheet extends FDItemSheetV2 {
       attributes: {
          template: "systems/fantastic-depths/templates/item/gear/attributes.hbs",
       },
-      //specialAbilities: {
-      //   template: "systems/fantastic-depths/templates/item/shared/specialAbilities.hbs",
-      //},
+      specialAbilities: {
+         template: "systems/fantastic-depths/templates/item/shared/specialAbilities.hbs",
+      },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
@@ -64,7 +63,7 @@ export class GearItemSheet extends FDItemSheetV2 {
 
       if (game.user.isGM) {
          options.parts.push("attributes");
-         //options.parts.push("specialAbilities");
+         options.parts.push("specialAbilities");
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
@@ -132,7 +131,7 @@ export class GearItemSheet extends FDItemSheetV2 {
       };
       if (game.user.isGM) {
          tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" };
-         //tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
+         tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" };
          tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly", cssClass: "item" };
       }
