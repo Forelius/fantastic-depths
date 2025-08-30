@@ -175,16 +175,16 @@ export class GearItem extends FDItem {
  * @param {any} name
  * @param {any} classKey
  */
-   async createSpecialAbility(name = "", classKey = null) {
+   async createSpecialAbility(item) {
       // Retrieve the array
       const specialAbilities = this.system.specialAbilities || [];
 
       // Define the new data
       const newItem = {
-         name,
-         target: 0,
-         changes: "",
-         classKey: classKey
+         name: item.name,
+         uuid: item.uuid,
+         target: item.system.target,
+         changes: ""
       };
 
       // Add the new item to the array

@@ -1,3 +1,4 @@
+import { SpecialAbilityField } from '/systems/fantastic-depths/module/item/fields/specialAbilityField.mjs';
 /**
  * Data model for a special ability item.
  */

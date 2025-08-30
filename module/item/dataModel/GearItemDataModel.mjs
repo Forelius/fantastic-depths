@@ -52,6 +52,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          specialAbilities: new fields.ArrayField(
             new fields.SchemaField({
                name: new fields.StringField({ required: true, initial: "" }),
+               uuid: new fields.StringField({ required: true, initial: "" }),
                target: new fields.NumberField({ required: true, nullable: true }),
                classKey: new fields.StringField({ nullable: true, initial: null }),
                changes: new fields.StringField({ required: true, initial: "" }),
