@@ -2,8 +2,8 @@ import { AncestryDefinitionItem } from "/systems/fantastic-depths/module/item/An
 import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
 import { EffectManager } from "../sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
-import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
+import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
+import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

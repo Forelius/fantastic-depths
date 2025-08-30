@@ -1,5 +1,5 @@
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
-import { VsGroupModMixin } from './mixins/VsGroupModMixin.mjs';
+import { VsGroupModMixin } from '/systems/fantastic-depths/module/sheets/mixins/VsGroupModMixin.mjs';
 import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**

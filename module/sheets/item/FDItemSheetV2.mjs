@@ -1,6 +1,6 @@
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
-import { EffectManager } from '../sys/EffectManager.mjs';
+import { EffectManager } from '/systems/fantastic-depths/module/sys/EffectManager.mjs';
 
 /**
  * Base sheet class for FDItem.

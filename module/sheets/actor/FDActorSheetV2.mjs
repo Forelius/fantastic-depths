@@ -1,9 +1,9 @@
 const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
-import { EffectManager } from "../sys/EffectManager.mjs";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
-import { FDItem } from "../item/FDItem.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
+import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
+import { FDItem } from "/systems/fantastic-depths/module/item/FDItem.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 

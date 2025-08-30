@@ -1,8 +1,8 @@
-import { EffectManager } from "../sys/EffectManager.mjs";
+import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
-import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
+import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
 
 export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
    /**

@@ -1,4 +1,4 @@
-import { EffectManager } from '../sys/EffectManager.mjs';
+import { EffectManager } from '/systems/fantastic-depths/module/sys/EffectManager.mjs';
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
 /**
  * Sheet class for SkillItem.
