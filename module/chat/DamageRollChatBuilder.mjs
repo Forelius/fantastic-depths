@@ -77,8 +77,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
    static async handleDamageRoll(ev, dataset) {
       const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
       const weaponItem = await fromUuid(weaponuuid);
-      const ammoItem = await fromUuid(ammouuid);
-      const targetActor = await fromUuid(targetactoruuid);
+      const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
+      const targetActor = targetactoruuid ? await fromUuid(targetactoruuid) : undefined;
       const instigator = weaponItem.actor.token ?? weaponItem.actor;
       let rolling = true;
       let dialogResp = null;
