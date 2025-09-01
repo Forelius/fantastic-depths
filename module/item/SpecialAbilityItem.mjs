@@ -53,79 +53,83 @@ export class SpecialAbilityItem extends FDItem {
    async roll(dataset, dialogResp = null, event = null) {
       let result = null;
       const systemData = this.system;
-      const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
+      const owner = dataset.owneruuid ? await fromUuid(dataset.owneruuid) : null;
+      const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
       const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
-      //let rolled = null;
-      let roll = null;
-      if (await this.#tryUseUsage(true) === false) {
-         canProceed = false;
-      } else if (hasRoll === true) {
-         // Retrieve roll data.
-         dataset.dialog = "generic";
-         dataset.rollmode = systemData.rollMode;
-         dataset.formula = systemData.rollFormula;
 
-         if (dialogResp) {
-            dialogResp.rolling === true
-         } else if (ctrlKey === true) {
-            dialogResp = {
-               rolling: true,
-               mod: 0,
-               formula: systemData.rollFormula,
-               editFormula: game.user.isGM
-            };
-         } else {
-            dialogResp = await DialogFactory(dataset, this.actor);
-            if (dialogResp) {
-               dialogResp.rolling = true;
-               dialogResp.mod = Number(dialogResp.mod);
-            }
-         }
-
-         if (dialogResp?.rolling === true) {
-            dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
-            if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
-               dialogResp.mod -= systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
-            } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
-               dialogResp.mod += systemData.abilityMod?.length > 0 ? this.actor.system.abilities[systemData.abilityMod].mod : 0;
-            }
-         } else {
+      if (instigator) {
+         //let rolled = null;
+         let roll = null;
+         if (await this.#tryUseUsage(true) === false) {
             canProceed = false;
+         } else if (hasRoll === true) {
+            // Retrieve roll data.
+            dataset.dialog = "generic";
+            dataset.rollmode = systemData.rollMode;
+            dataset.formula = systemData.rollFormula;
+
+            if (dialogResp) {
+               dialogResp.rolling === true
+            } else if (ctrlKey === true) {
+               dialogResp = {
+                  rolling: true,
+                  mod: 0,
+                  formula: systemData.rollFormula,
+                  editFormula: game.user.isGM
+               };
+            } else {
+               dialogResp = await DialogFactory(dataset, instigator);
+               if (dialogResp) {
+                  dialogResp.rolling = true;
+                  dialogResp.mod = Number(dialogResp.mod);
+               }
+            }
+
+            if (dialogResp?.rolling === true) {
+               dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
+               if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
+                  dialogResp.mod -= systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
+               } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
+                  dialogResp.mod += systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
+               }
+            } else {
+               canProceed = false;
+            }
+
+            rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
+            const rollContext = { ...rollData, ...dialogResp || {} };
+            roll = await new Roll(rollData.formula, rollContext);
          }
 
-         rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
-         const rollContext = { ...rollData, ...dialogResp || {} };
-         roll = await new Roll(rollData.formula, rollContext);
-      }
-
-      if (canProceed === true) {
-         canProceed = await this.#tryUseUsage();
-      }
-
-      if (canProceed === true) {
-         const chatData = {
-            caller: this,
-            resp: dialogResp,
-            context: instigator,
-            roll
-         };
-         const conditions = foundry.utils.deepClone(this.system.conditions);
-         const durationMsgs = [];
-         for (let condition of conditions) {
-            const durationResult = await this.#getDurationResult(condition.name, condition.durationFormula);
-            condition.duration = durationResult.durationSec;
-            durationMsgs.push(durationResult.text);
+         if (canProceed === true) {
+            canProceed = await this.#tryUseUsage();
          }
-         const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, {
-            showResult,
-            conditions,
-            durationMsgs
-         });
-         result = builder.createChatMessage();
+
+         if (canProceed === true) {
+            const chatData = {
+               caller: this,
+               resp: dialogResp,
+               context: instigator,
+               roll
+            };
+            const conditions = foundry.utils.deepClone(this.system.conditions);
+            const durationMsgs = [];
+            for (let condition of conditions) {
+               const durationResult = await this.#getDurationResult(condition.name, condition.durationFormula);
+               condition.duration = durationResult.durationSec;
+               durationMsgs.push(durationResult.text);
+            }
+            const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, {
+               showResult,
+               conditions,
+               durationMsgs
+            });
+            result = builder.createChatMessage();
+         }
       }
 
       return result;

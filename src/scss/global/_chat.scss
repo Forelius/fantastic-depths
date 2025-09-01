@@ -180,5 +180,16 @@
             background: rgb(10, 86, 170);
          }
       }
+
+      .action-roll {
+         background: url('../assets/img/grungeyellow2.jpg');
+         border: 1px solid $darkColor;
+         box-shadow: none;
+         color: $lighterColor;
+
+         &:hover {
+            background: rgb(170, 86, 10);
+         }
+      }
    }
 }

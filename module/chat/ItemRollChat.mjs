@@ -49,7 +49,13 @@ export class ItemRollChat extends ChatBuilder {
       }
       for (let ability of item?.system.specialAbilities) {
          const abilityItem = await fromUuid(ability.uuid);
-         actions.push({ type: abilityItem.system.category, item: abilityItem });
+         if (abilityItem) {
+            actions.push({
+               type: abilityItem.system.category,
+               item: abilityItem,
+               owneruuid: caller.uuid
+            });
+         }
       }
 
       // Prepare data for the chat template
