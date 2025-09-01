@@ -89,6 +89,7 @@ export class GearItem extends FDItem {
       // Initialize chat data.
       const rollMode = game.settings.get('core', 'rollMode');
       let isUsing = false;
+      let isCanceled = false;
 
       if (this.system.isUsable === true) {
          // If this item has a quantity and either has charges or doesn't use charges...
@@ -102,7 +103,8 @@ export class GearItem extends FDItem {
                noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
                defaultChoice: "yes"
             }, this.actor);
-            if (dialogResp?.resp?.result === true) {
+            if (dialogResp?.resp == null) { isCanceled = true; }
+            else if (dialogResp?.resp?.result === true) {
                isUsing = true;
                if (this.#usesCharge()) {
                   await this.#tryUseCharge();
@@ -113,14 +115,16 @@ export class GearItem extends FDItem {
          }
       }
 
-      const chatData = {
-         caller: this,
-         context: this.actor,
-         rollMode
-      };
+      if (isCanceled === false) {
+         const chatData = {
+            caller: this,
+            context: this.actor,
+            rollMode
+         };
 
-      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { isUsing });
-      return await builder.createChatMessage();
+         const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData, { isUsing });
+         return await builder.createChatMessage();
+      }
    }
 
    async getInlineDescription() {
@@ -168,28 +172,6 @@ export class GearItem extends FDItem {
          digest,
          hasDamage
       };
-   }
-
-   /**
- * Creates a special ability child item for this item.
- * @param {any} name
- * @param {any} classKey
- */
-   async createSpecialAbility(item) {
-      // Retrieve the array
-      const specialAbilities = this.system.specialAbilities || [];
-
-      // Define the new data
-      const newItem = {
-         name: item.name,
-         uuid: item.uuid,
-         target: item.system.target,
-         changes: ""
-      };
-
-      // Add the new item to the array
-      specialAbilities.push(newItem);
-      await this.update({ "system.specialAbilities": specialAbilities });
    }
 
    /**

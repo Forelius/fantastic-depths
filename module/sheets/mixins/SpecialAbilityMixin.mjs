@@ -13,10 +13,10 @@ const SpecialAbilityMixin = (superclass) => {
 
          // If the dropped item is a weapon mastery definition item...
          if (droppedItem.type === "specialAbility") {
-            if (droppedItem.system.category === "save") {
-            } else {
-               await this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
-            }
+            //if (droppedItem.system.category === "save") {
+            /*} else {*/
+               await this.createSpecialAbility(droppedItem);
+            //}
          }
       }
 
@@ -27,7 +27,7 @@ const SpecialAbilityMixin = (superclass) => {
        */
       static async _clickAddSpecialAbility(event) {
          event.preventDefault();
-         await this.item.createSpecialAbility();
+         await this.createSpecialAbility();
          //this.render();
       }
 
@@ -53,6 +53,31 @@ const SpecialAbilityMixin = (superclass) => {
          }
          this.render();
       }
+
+      /**
+       * Creates a special ability child item for this item.
+       * @param {any} name
+       * @param {any} classKey
+       */
+      async createSpecialAbility(item) {
+         // Retrieve the array
+         const specialAbilities = [...this.item.system.specialAbilities || []];
+
+         // Define the new data
+         const newItem = {
+            level: 0,
+            name: item?.name ?? "",
+            uuid: item?.uuid ?? "",
+            target: item?.system.target,
+            changes: "",
+            classKey: item?.system.classKey ?? ""
+         };
+
+         // Add the new item to the array
+         specialAbilities.push(newItem);
+         await this.item.update({ "system.specialAbilities": specialAbilities });
+      }
+
    }
 
    SpecialAbilityMixinClass.DEFAULT_OPTIONS = {

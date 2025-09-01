@@ -1,13 +1,3 @@
-{{#if item.system.savingThrow}}
-<div style="margin-top:6px;">
-   <button class="saving-roll"
-           data-type="{{item.system.savingThrow}}"
-           data-weaponuuid="{{item.uuid}}">
-      <i class="fa-solid fa-life-ring"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{save.system.shortName}}</span>
-   </button>
-</div>
-{{/if}}
 {{#if damageRoll.hasDamage}}
 {{#if isHeal}}
 <div style="margin-top:8px;">
@@ -37,3 +27,26 @@
 </div>
 {{/if}}
 {{/if}}
+{{#each actions as |action|}}
+{{#if (eq action.type "save")}}
+<div style="margin-top:6px;">
+   <button class="saving-roll"
+           data-type="{{action.item.system.customSaveCode}}"
+           data-weaponuuid="{{action.item.uuid}}">
+      <i class="fa-solid fa-life-ring"></i>
+      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{action.item.system.shortName}}</span>
+   </button>
+</div>
+{{/if}}
+{{#if (eq action.type "")}}
+{{/if}}
+<div style="margin-top:6px;">
+   <button class="action-roll"
+           data-type="{{action.type}}"
+           data-savecode="{{action.item.system.customSaveCode}}"
+           data-itemuuid="{{action.item.uuid}}">
+      <i class="fa-solid fa-life-ring"></i>
+      <span style="margin-left:4px;">{{action.item.name}}</span>
+   </button>
+</div>
+{{/each}}
