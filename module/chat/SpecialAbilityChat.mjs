@@ -36,9 +36,9 @@ export class SpecialAbilityChat extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
-      let save = null;
-      if (item.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
+      const actions = [];
+      if (item?.system.savingThrow?.length > 0) {
+         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
       }
 
       // Prepare data for the chat template
@@ -52,8 +52,8 @@ export class SpecialAbilityChat extends ChatBuilder {
          isHeal: damageRoll.type === "heal",
          damageRoll,
          targets: targetTokens,
-         showTargets: !roll,
-         save,
+         showTargets: true,//!roll,
+         actions,
          attackType: 'specialAbility'
       };
       // Render the content using the template

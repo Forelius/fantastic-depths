@@ -45,9 +45,9 @@ export class SpellCastChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let save = null;
-      if (item.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
+      const actions = [];
+      if (item?.system.savingThrow?.length > 0) {
+         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
       }
 
       // Prepare data for the chat template
@@ -62,7 +62,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          isHeal: damageRoll.type === "heal",
          targets: targetTokens,
          showTargets: !roll,
-         save,
+         actions,
          durationMsg: options.durationMsg
       };
       // Render the content using the template

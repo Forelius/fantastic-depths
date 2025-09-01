@@ -39,14 +39,14 @@
 </div>
 {{/if}}
 {{#if (eq action.type "")}}
-{{/if}}
 <div style="margin-top:6px;">
    <button class="action-roll"
            data-type="{{action.type}}"
            data-savecode="{{action.item.system.customSaveCode}}"
            data-itemuuid="{{action.item.uuid}}">
-      <i class="fa-solid fa-life-ring"></i>
+      <i class="fa-solid fa-play"></i>
       <span style="margin-left:4px;">{{action.item.name}}</span>
    </button>
 </div>
+{{/if}}
 {{/each}}

@@ -103,7 +103,9 @@ export class GearItem extends FDItem {
                noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
                defaultChoice: "yes"
             }, this.actor);
-            if (dialogResp?.resp == null) { isCanceled = true; }
+            if (dialogResp?.resp == null) {
+               isCanceled = true;
+            }
             else if (dialogResp?.resp?.result === true) {
                isUsing = true;
                if (this.#usesCharge()) {

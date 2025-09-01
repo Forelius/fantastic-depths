@@ -958,10 +958,13 @@ table.compact-table input {
   align-self: center;
 }
 .chat-message .message-content .apply-condition {
-  background: url("../assets/img/grungeblue.jpg");
+  background: url("../assets/img/grungeyellow2.jpg");
   color: #ebeae4;
   box-shadow: none;
-  border: 1px solid #303050;
+  border: 1px solid #605050;
+}
+.chat-message .message-content .apply-condition:hover {
+  background: rgb(170, 86, 10);
 }
 .chat-message .message-content .heal-roll, .chat-message .message-content .apply-heal {
   background: url("../assets/img/grungegreen.jpg");
@@ -969,17 +972,26 @@ table.compact-table input {
   box-shadow: none;
   border: 1px solid #447744;
 }
+.chat-message .message-content .heal-roll:hover, .chat-message .message-content .apply-heal:hover {
+  background: rgb(26, 180, 20);
+}
 .chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
   box-shadow: none;
   border: 1px solid #774444;
 }
+.chat-message .message-content .damage-roll:hover, .chat-message .message-content .apply-damage:hover {
+  background: rgb(180, 26, 20);
+}
 .chat-message .message-content .saving-roll {
   background: url("../assets/img/grungeblue.jpg");
   border: 1px solid #4b4a44;
   box-shadow: none;
   color: #ebeae4;
+}
+.chat-message .message-content .saving-roll:hover {
+  background: rgb(10, 86, 170);
 }
 
 .combatant.disposition-friendly::before {
@@ -1725,3 +1737,5 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

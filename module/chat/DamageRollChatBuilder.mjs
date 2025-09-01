@@ -77,16 +77,16 @@ export class DamageRollChatBuilder extends ChatBuilder {
    static async handleDamageRoll(ev, dataset) {
       const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
       const weaponItem = await fromUuid(weaponuuid);
-      const ammoItem = await fromUuid(ammouuid);
-      const targetActor = await fromUuid(targetactoruuid);
-      const instigator = weaponItem.actor.token ?? weaponItem.actor;
+      const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
+      const targetActor = targetactoruuid ? await fromUuid(targetactoruuid): undefined;
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
-
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
+      let instigator = weaponItem.actor?.token ?? weaponItem.actor;
+
       // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
          damageRoll = weaponItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);

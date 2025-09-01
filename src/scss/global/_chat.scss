@@ -21,6 +21,7 @@
       .content-link, .inline-roll {
          color: $lightColor2
       }
+
       .digest {
          margin-bottom: 6px;
       }
@@ -137,10 +138,14 @@
       }
 
       .apply-condition {
-         background: url('../assets/img/grungeblue.jpg');
+         background: url('../assets/img/grungeyellow2.jpg');
          color: $lighterColor;
          box-shadow: none;
-         border: 1px solid #303050;
+         border: 1px solid #605050;
+
+         &:hover {
+            background: rgb(170, 86, 10);
+         }
       }
 
       .heal-roll, .apply-heal {
@@ -148,6 +153,10 @@
          color: $lighterColor;
          box-shadow: none;
          border: 1px solid #447744;
+
+         &:hover {
+            background: rgb(26, 180, 20);
+         }
       }
 
       .damage-roll, .apply-damage {
@@ -155,6 +164,10 @@
          color: $lighterColor;
          box-shadow: none;
          border: 1px solid #774444;
+
+         &:hover {
+            background: rgb(180, 26, 20);
+         }
       }
 
       .saving-roll {
@@ -162,6 +175,10 @@
          border: 1px solid $darkColor;
          box-shadow: none;
          color: $lighterColor;
+
+         &:hover {
+            background: rgb(10, 86, 170);
+         }
       }
    }
 }

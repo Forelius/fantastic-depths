@@ -43,9 +43,9 @@ export class GenericRollChatBuilder extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let save = null;
+      const actions = [];
       if (item?.system.savingThrow?.length > 0 && options?.isUsing === true) {
-         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
+         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
       }
 
       // Prepare data for the chat template
@@ -60,7 +60,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          isGM: game.user.isGM,
          isHeal: damageRoll.type === "heal",
          damageRoll,
-         save
+         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
