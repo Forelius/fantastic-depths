@@ -564,7 +564,8 @@
          "categories": {
             "explore": "Exploration",
             "class": "Class Ability",
-            "save": "Saving Throw"
+            "save": "Saving Throw",
+            "spellcasting": "Spellcasting"
          }
       },
       "class": {

@@ -484,6 +484,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const savingThrows = [];
       const conditions = [];
       const actorClasses = [];
+      const spellcasting = {};
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -545,8 +546,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                gte: "&gt;=",
                lte: "&lt;="
             };
-            if (item.system.category === "explore") {
-               exploration.push({ item, op: operators[item.system.operator] });
+            if (item.system.category === "explore" || item.system.category === "spellcasting") {
+               exploration.push({ item, op: operators[item.system.operator] });               
             } else if (item.system.category === "class") {
                classAbilities.push(item);
             } else if (item.system.category === "save") {
@@ -799,24 +800,36 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickExpandDesc(event) {
       // If not the create item column...
-      const descElem = $(event.target).parents(".item").find(".item-description");
+      //const itemElement = event.target.closest(".item");
+      let currentElement = event.target;
+      let descElem = null;
+      while (currentElement && !descElem) {
+         descElem = currentElement.querySelector(".item-description");
+         currentElement = currentElement.parentElement;
+      }
+
       if (descElem) {
-         const isCollapsed = $(descElem[0]).hasClass("desc-collapsed");
+         const isCollapsed = descElem.classList.contains("desc-collapsed");
          if (isCollapsed === true) {
-            descElem.removeClass("desc-collapsed");
-            const itemElement = $(event.target).parents(".item");
-            const item = this.actor.items.get(itemElement.data("itemId"));
+            descElem.classList.remove("desc-collapsed");
+            const itemElement = event.target.closest('[data-item-id]');
+            const itemId = itemElement?.dataset.itemId;
+            const item = this.actor.items.get(itemId);
             if (item !== null) {
                const enrichedDesc = await item.getInlineDescription();
                if (enrichedDesc.startsWith("<") === false) {
-                  descElem.append(enrichedDesc);
+                  descElem.appendChild(document.createTextNode(enrichedDesc));
                } else {
-                  descElem.append($(enrichedDesc));
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = enrichedDesc;
+                  while (tempDiv.firstChild) {
+                     descElem.appendChild(tempDiv.firstChild);
+                  }
                }
             }
          } else {
-            descElem.addClass("desc-collapsed");
-            descElem.empty();
+            descElem.classList.add("desc-collapsed");
+            descElem.innerHTML = '';
          }
       }
    }

@@ -481,6 +481,7 @@ export class SingleClassSystem extends ClassSystemBase {
       const maxSpellLevel = actor.system.config.maxSpellLevel;
       const result = {
          className: actor.system.details.class,
+         spellcasting: actor.items.find(i => i.type === "specialAbility" && i.system.category==="spellcasting"),
          firstSpellLevel,
          maxSpellLevel,
          slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
