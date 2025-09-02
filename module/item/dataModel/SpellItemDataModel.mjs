@@ -1,55 +1,11 @@
+import { SpellData } from '/systems/fantastic-depths/module/item/fields/SpellField.mjs';
 
 /**
  * Data model for a spell item.
  */
 export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
-      const { fields } = foundry.data;
-      return {
-         // Fields from the "base" template
-         tags: new fields.ArrayField(new fields.StringField({ required: false }), { initial: [] }),
-         description: new fields.StringField({ required: false, initial: "" }),
-         gm: new fields.SchemaField({
-            notes: new fields.StringField({ required: false, initial: "" })
-         }),
-         // Fields specific to the "spell" template
-         spellLevel: new fields.NumberField({ required: true, initial: 1 }),
-         range: new fields.StringField({ required: false, initial: "" }),
-         duration: new fields.StringField({ required: false, initial: "Instant" }),
-         effect: new fields.StringField({ required: false, initial: "" }),
-         memorized: new fields.NumberField({ required: false, nullable: true, initial: 0 }),
-         // How many times the spell has been cast or used
-         cast: new fields.NumberField({ required: true, initial: 0 }),
-         targetSelf: new fields.BooleanField({ required: false, initial: true }),
-         targetOther: new fields.BooleanField({ required: false, initial: true }),
-         dmgFormula: new fields.StringField({ nullable: true, initial: null }),
-         healFormula: new fields.StringField({ nullable: true, initial: null }),
-         maxTargetFormula: new fields.StringField({ required: false, initial: "1" }),
-         // Specified in rounds (10 seconds)
-         durationFormula: new fields.StringField({ nullable: true, initial: null }),
-         savingThrow: new fields.StringField({ nullable: true, initial: null }),
-         saveDmgFormula: new fields.StringField({ nullable: true, initial: null }),
-         attackType: new fields.StringField({ required: false, initial: "" }),
-         damageType: new fields.StringField({ required: false, initial: "" }),
-         conditions: new fields.ArrayField(
-            new fields.SchemaField({
-               name: new fields.StringField({ required: true, initial: '' }),
-               uuid: new fields.StringField({ required: true, initial: '' }),
-            }),
-            {
-               required: false,
-               initial: []
-            }),
-         classes: new fields.ArrayField(
-            new fields.SchemaField({
-               name: new fields.StringField({ required: true, initial: '' }),
-               uuid: new fields.StringField({ required: true, initial: '' }),
-            }),
-            {
-               required: false,
-               initial: []
-            }),
-      };
+      return SpellData.defineSchema();
    }
 
    /** @override */

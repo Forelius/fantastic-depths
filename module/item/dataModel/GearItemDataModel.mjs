@@ -55,7 +55,17 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
                name: new fields.StringField({ required: true, initial: "" }),
                target: new fields.NumberField({ required: true, nullable: true }),
                classKey: new fields.StringField({ nullable: true, initial: null }),
-               changes: new fields.StringField({ required: true, initial: "" }),
+            }),
+            {
+               required: false,
+               initial: []
+            }),
+         spells: new fields.ArrayField(
+            new fields.SchemaField({
+               // The level the spell is cast as.
+               level: new fields.NumberField({ required: true, initial: 1 }),
+               uuid: new fields.StringField({ required: true, initial: "" }),
+               name: new fields.StringField({ required: true, initial: "" }),
             }),
             {
                required: false,

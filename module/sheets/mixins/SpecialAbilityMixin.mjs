@@ -8,31 +8,28 @@ const SpecialAbilityMixin = (superclass) => {
    class SpecialAbilityMixinClass extends superclass {
       async _onDrop(event) {
          if (!this.item.isOwner) return false;
+         await super._onDrop(event);
          const data = TextEditor.getDragEventData(event);
          const droppedItem = await Item.implementation.fromDropData(data);
 
-         // If the dropped item is a weapon mastery definition item...
+         // If the dropped item is a special ability item...
          if (droppedItem.type === "specialAbility") {
-            //if (droppedItem.system.category === "save") {
-            /*} else {*/
-               await this.createSpecialAbility(droppedItem);
-            //}
+            await this.createSpecialAbility(droppedItem);
          }
       }
 
       /**
-       * Handle adding a new VS Group modifier
+       * Handle adding a new special ability
        * @param {Event} event The originating click event
        * @protected
        */
       static async _clickAddSpecialAbility(event) {
          event.preventDefault();
          await this.createSpecialAbility();
-         //this.render();
       }
 
       /**
-       * Handle deleting a VS Group modifier
+       * Handle deleting a special ability
        * @param {Event} event The originating click event
        * @protected
        */

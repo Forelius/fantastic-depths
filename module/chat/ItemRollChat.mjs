@@ -43,20 +43,7 @@ export class ItemRollChat extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      const actions = [];
-      if (item?.system.savingThrow?.length > 0 && options?.isUsing === true) {
-         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
-      }
-      for (let ability of item?.system.specialAbilities) {
-         const abilityItem = await fromUuid(ability.uuid);
-         if (abilityItem) {
-            actions.push({
-               type: abilityItem.system.category,
-               item: abilityItem,
-               owneruuid: caller.uuid
-            });
-         }
-      }
+      const actions = await this.#setupActions(options, item, caller);      
 
       // Prepare data for the chat template
       const chatData = {
@@ -111,4 +98,36 @@ export class ItemRollChat extends ChatBuilder {
       }
       return resultString;
    }
+
+   async #setupActions(options, item, caller) {
+      const actions = [];
+      if (options?.isUsing === true) {
+         if (item?.system.savingThrow?.length > 0) {
+            actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
+         }
+         for (let ability of item?.system.specialAbilities) {
+            const abilityItem = await fromUuid(ability.uuid);
+            if (abilityItem) {
+               actions.push({
+                  type: abilityItem.system.category,
+                  item: abilityItem,
+                  owneruuid: caller.uuid
+               });
+            }
+         }
+         for (let spell of item?.system.spells) {
+            const spellItem = await fromUuid(spell.uuid);
+            if (spellItem) {
+               actions.push({
+                  type: "spell",
+                  item: spellItem,
+                  level: spell.level,
+                  owneruuid: caller.uuid
+               });
+            }
+         }
+      }
+      return actions;
+   }
+
 }

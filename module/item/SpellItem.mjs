@@ -74,7 +74,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          if (dialogResp?.resp?.result === false) {
             super.roll(dataset);
          } else if (dialogResp?.resp?.result === true) {
-            await this.doSpellcast();
+            await this.doSpellcast(dataset);
          }
       } else {
          ui.notifications.warn(game.i18n.localize('FADE.notification.spellSelectToken'));
@@ -83,8 +83,10 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       return null;
    }
 
-   async doSpellcast() {
-      const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
+   async doSpellcast(dataset = null) {
+      const owner = dataset.owneruuid ? await fromUuid(dataset.owneruuid) : null;
+      const castAsLevel = dataset.level;
+      const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
 

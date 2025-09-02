@@ -993,6 +993,15 @@ table.compact-table input {
 .chat-message .message-content .saving-roll:hover {
   background: rgb(10, 86, 170);
 }
+.chat-message .message-content .spell-cast {
+  background: url("../assets/img/grungepurple.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
+}
+.chat-message .message-content .spell-cast:hover {
+  background: rgb(86, 10, 170);
+}
 .chat-message .message-content .action-roll {
   background: url("../assets/img/grungeyellow2.jpg");
   border: 1px solid #4b4a44;

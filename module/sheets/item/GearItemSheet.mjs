@@ -2,9 +2,10 @@ import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManage
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
+import { SpellMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpellMixin.mjs";
 import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
 
-export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
+export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2))) {
    /**
    * Get the default options for the sheet.
    */
@@ -38,7 +39,10 @@ export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheet
          template: "systems/fantastic-depths/templates/item/gear/attributes.hbs",
       },
       specialAbilities: {
-         template: "systems/fantastic-depths/templates/item/shared/specialAbilities.hbs",
+         template: "systems/fantastic-depths/templates/item/gear/specialAbilities.hbs",
+      },
+      spells: {
+         template: "systems/fantastic-depths/templates/item/gear/spells.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
@@ -64,6 +68,7 @@ export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheet
       if (game.user.isGM) {
          options.parts.push("attributes");
          options.parts.push("specialAbilities");
+         options.parts.push("spells");
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
@@ -132,6 +137,7 @@ export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheet
       if (game.user.isGM) {
          tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" };
          tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
+         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" };
          tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly", cssClass: "item" };
       }
