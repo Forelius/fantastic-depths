@@ -7,13 +7,16 @@ const SpellMixin = (superclass) => {
    class SpellMixinClass extends superclass {
       async _onDrop(event) {
          if (!this.item.isOwner) return false;
-         await super._onDrop(event);
-         const data = TextEditor.getDragEventData(event);
-         const droppedItem = await Item.implementation.fromDropData(data);
+         let droppedItem = await super._onDrop(event);
+         if (!droppedItem) {
+            const data = TextEditor.getDragEventData(event);
+            droppedItem = await Item.implementation.fromDropData(data);
+         }
          // If the dropped item is a spell item...
          if (droppedItem.type === "spell") {
             await this.createSpell(droppedItem);
          }
+         return droppedItem;
       }
 
       /**
@@ -60,7 +63,7 @@ const SpellMixin = (superclass) => {
 
          // Define the new data
          const newItem = {
-            level: 0,
+            level: 1,
             name: item?.name ?? "",
             uuid: item?.uuid ?? "",
          };

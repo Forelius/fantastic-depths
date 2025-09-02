@@ -43,7 +43,10 @@ export class ItemRollChat extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      const actions = await this.#setupActions(options, item, caller);      
+      let actions = [];
+      if (options?.isUsing === true) {
+         actions = await this.#setupActions(item, context);
+      }
 
       // Prepare data for the chat template
       const chatData = {
@@ -99,35 +102,34 @@ export class ItemRollChat extends ChatBuilder {
       return resultString;
    }
 
-   async #setupActions(options, item, caller) {
+   async #setupActions(actionItem, owner) {
       const actions = [];
-      if (options?.isUsing === true) {
-         if (item?.system.savingThrow?.length > 0) {
-            actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
+      if (actionItem?.system.savingThrow?.length > 0) {
+         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
+      }
+      for (let ability of [...actionItem?.system.specialAbilities]) {
+         let item = await fromUuid(ability.uuid);
+         if (item) {
+            item = foundry.utils.deepClone(item);
+            actions.push({
+               type: item.system.category,
+               item: item,
+               owneruuid: owner.uuid
+            });
          }
-         for (let ability of item?.system.specialAbilities) {
-            const abilityItem = await fromUuid(ability.uuid);
-            if (abilityItem) {
-               actions.push({
-                  type: abilityItem.system.category,
-                  item: abilityItem,
-                  owneruuid: caller.uuid
-               });
-            }
-         }
-         for (let spell of item?.system.spells) {
-            const spellItem = await fromUuid(spell.uuid);
-            if (spellItem) {
-               actions.push({
-                  type: "spell",
-                  item: spellItem,
-                  level: spell.level,
-                  owneruuid: caller.uuid
-               });
-            }
+      }
+      for (let spell of [...actionItem?.system.spells || []]) {
+         let item =  await fromUuid(spell.uuid);
+         if (item) {
+            item = foundry.utils.deepClone(item);
+            actions.push({
+               type: "spell",
+               item: item,
+               level: spell.level,
+               owneruuid: owner.uuid
+            });
          }
       }
       return actions;
    }
-
 }

@@ -53,7 +53,7 @@ export class SpecialAbilityItem extends FDItem {
    async roll(dataset, dialogResp = null, event = null) {
       let result = null;
       const systemData = this.system;
-      const owner = dataset.owneruuid ? await fromUuid(dataset.owneruuid) : null;
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
@@ -71,6 +71,7 @@ export class SpecialAbilityItem extends FDItem {
             dataset.dialog = "generic";
             dataset.rollmode = systemData.rollMode;
             dataset.formula = systemData.rollFormula;
+            dataset.label = this.name;
 
             if (dialogResp) {
                dialogResp.rolling === true

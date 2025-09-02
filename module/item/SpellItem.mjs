@@ -58,10 +58,11 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    * @private
    */
    async roll(dataset) {
-      const caster = this.actor || canvas.tokens.controlled?.[0];
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor || canvas.tokens.controlled?.[0];
       if (dataset?.skipdlg === true) {
          super.roll(dataset);
-      } else if (caster) {
+      } else if (instigator) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.localize('FADE.dialog.spellcast.title'),
@@ -69,7 +70,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
             yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
             defaultChoice: "yes"
-         }, this.actor);
+         }, instigator);
 
          if (dialogResp?.resp?.result === false) {
             super.roll(dataset);
@@ -84,13 +85,15 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    }
 
    async doSpellcast(dataset = null) {
-      const owner = dataset.owneruuid ? await fromUuid(dataset.owneruuid) : null;
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const ownerIsItem = this.parent == null;
       const castAsLevel = dataset.level;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
 
-      if (systemData.cast < systemData.memorized || systemData.memorized === null) {
+      // If the item is not owned by an actor then assume it is owned by another item.
+      if (ownerIsItem || systemData.cast < systemData.memorized || systemData.memorized === null) {
          let rollAttackResult = null;
 
          if (this.system.attackType === 'melee') {
@@ -122,7 +125,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          }
       }
       else {
-         const msg = game.i18n.format('FADE.notification.notMemorized', { actorName: this.actor.name, spellName: this.name });
+         const msg = game.i18n.format('FADE.notification.notMemorized', { actorName: instigator.name, spellName: this.name });
          ui.notifications.warn(msg);
 
          // Create the chat message

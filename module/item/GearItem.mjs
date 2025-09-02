@@ -91,7 +91,7 @@ export class GearItem extends FDItem {
       let isUsing = false;
       let isCanceled = false;
 
-      if (this.system.isUsable === true) {
+      if (this.system.isUsable === true && this.system.isIdentified === true) {
          // If this item has a quantity and either has charges or doesn't use charges...
          if ((await this.#tryUseUsage(true)) === true
             && (this.#usesCharge() === false || await this.#tryUseCharge(true))) {
