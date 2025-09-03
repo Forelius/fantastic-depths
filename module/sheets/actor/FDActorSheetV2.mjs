@@ -546,9 +546,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                gte: "&gt;=",
                lte: "&lt;="
             };
-            if (item.system.category === "explore" || item.system.category === "spellcasting") {
+            if (item.system.category === "explore") {
                exploration.push({ item, op: operators[item.system.operator] });               
-            } else if (item.system.category === "class") {
+            } else if (item.system.category === "class" || item.system.category === "spellcasting") {
                classAbilities.push(item);
             } else if (item.system.category === "save") {
                savingThrows.push(item);

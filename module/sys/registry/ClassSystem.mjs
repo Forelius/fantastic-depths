@@ -226,7 +226,7 @@ export class ClassSystemBase extends ClassSystemInterface {
          dieSides = 8;
       }
       // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      let base = hd.replace(modifierRegex, ''); // Extract base number
+      let base = hd.replace(modifierRegex, ""); // Extract base number
       let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
       base = parseFloat(base);
       modifier = parseInt(modifier, 10);
@@ -354,12 +354,12 @@ export class ClassSystemBase extends ClassSystemInterface {
       const match = castAsKey?.match(/^([A-Z]+)(\/)?(\d+)?$/i);
       if (!match) return null;
 
-      const hasSymbol = match[2] === '/';
+      const hasSymbol = match[2] === "/";
       const hasNumber = match[3] !== undefined;
 
       return {
          classKey: match[1],
-         symbol: hasSymbol ? '/' : null,
+         symbol: hasSymbol ? "/" : null,
          number: hasNumber ? parseInt(match[3], 10) : null
       };
    }
@@ -481,7 +481,7 @@ export class SingleClassSystem extends ClassSystemBase {
       const maxSpellLevel = actor.system.config.maxSpellLevel;
       const result = {
          className: actor.system.details.class,
-         spellcasting: actor.items.find(i => i.type === "specialAbility" && i.system.category==="spellcasting"),
+         spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting")?.id,
          firstSpellLevel,
          maxSpellLevel,
          slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
@@ -746,6 +746,7 @@ export class MultiClassSystem extends ClassSystemBase {
                className: classAs?.classItem?.name,
                firstSpellLevel,
                maxSpellLevel,
+               spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting")?.id,
                slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
             });
             // Determine used and max spells
@@ -762,6 +763,7 @@ export class MultiClassSystem extends ClassSystemBase {
                className: casterClass.name,
                firstSpellLevel,
                maxSpellLevel,
+               spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting")?.id,
                slots
             });
 
@@ -797,7 +799,7 @@ export class MultiClassSystem extends ClassSystemBase {
    }
 
    async awardXP(actor, amounts) {
-      let xps = (input => input.split('/').map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
+      let xps = (input => input.split("/").map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       if (xps?.length > 0 && xps?.length == actorClasses?.length) {
          const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
