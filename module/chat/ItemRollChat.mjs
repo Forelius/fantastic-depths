@@ -125,7 +125,7 @@ export class ItemRollChat extends ChatBuilder {
             actions.push({
                type: "spell",
                item: item,
-               level: spell.level,
+               castas: spell.castAs,
                owneruuid: owner.uuid
             });
          }

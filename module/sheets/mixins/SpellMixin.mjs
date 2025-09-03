@@ -63,7 +63,7 @@ const SpellMixin = (superclass) => {
 
          // Define the new data
          const newItem = {
-            level: 1,
+            castAs: "",
             name: item?.name ?? "",
             uuid: item?.uuid ?? "",
          };

@@ -61,6 +61,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const instigator = owner || this.actor || canvas.tokens.controlled?.[0];
       if (dataset?.skipdlg === true) {
+         // I'm not sure this condition ever happens.
          super.roll(dataset);
       } else if (instigator) {
          const dialogResp = await DialogFactory({
@@ -87,7 +88,6 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    async doSpellcast(dataset = null) {
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const ownerIsItem = this.parent == null;
-      const castAsLevel = dataset.level;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
@@ -99,7 +99,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          if (this.system.attackType === 'melee') {
             rollAttackResult = await this.rollAttack();
          }
-         const durationResult = await this.#getDurationResult();
+         const durationResult = await this.#getDurationResult(dataset);
 
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource
@@ -145,12 +145,18 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       return result;
    }
 
-   async #getDurationResult() {
+   async #getDurationResult(dataset) {
       let result = {
          text: `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`
       };
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
          const rollData = this.getRollData();
+         // If a castAs override is specified, like from a magic item with spellcasting abilities...
+         if (dataset.castas) {
+            const classSystem = game.fade.registry.getSystem("classSystem");
+            const parsed = classSystem.parseClassAs(dataset.castas);
+            rollData.classes[parsed.classId] = { castLevel: parsed.classLevel };
+         }
          const rollEval = await new Roll(this.system.durationFormula, rollData).evaluate();
          result.text = `${result.text} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
          const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
