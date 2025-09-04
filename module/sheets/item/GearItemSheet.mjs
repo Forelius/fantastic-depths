@@ -123,6 +123,19 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
       return context;
    }
 
+
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      let droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a spell item...
+      if (droppedItem?.type === "spell") {
+         await this.createSpell(droppedItem);
+      } else if (droppedItem?.type === "specialAbility") {
+         await this.createSpecialAbility(droppedItem);
+      }
+   }
+
    /**
    * Prepare an array of form header tabs.
    * @returns {Record<string, Partial<ApplicationTab>>}

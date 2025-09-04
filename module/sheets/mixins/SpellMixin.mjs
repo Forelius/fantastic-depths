@@ -5,20 +5,6 @@
  */
 const SpellMixin = (superclass) => {
    class SpellMixinClass extends superclass {
-      async _onDrop(event) {
-         if (!this.item.isOwner) return false;
-         let droppedItem = await super._onDrop(event);
-         if (!droppedItem) {
-            const data = TextEditor.getDragEventData(event);
-            droppedItem = await Item.implementation.fromDropData(data);
-         }
-         // If the dropped item is a spell item...
-         if (droppedItem.type === "spell") {
-            await this.createSpell(droppedItem);
-         }
-         return droppedItem;
-      }
-
       /**
        * Handle adding a new spell
        * @param {Event} event The originating click event

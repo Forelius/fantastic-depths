@@ -93,6 +93,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       let result = null;
 
       // If the item is not owned by an actor then assume it is owned by another item.
+      // If owned by another item then this step would not be reached if there were zero charges remaining.
       if (ownerIsItem || systemData.cast < systemData.memorized || systemData.memorized === null) {
          let rollAttackResult = null;
 
@@ -113,6 +114,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
                digest: rollAttackResult?.digest,
             };
 
+            // Set condition durations.
             const conditions = foundry.utils.deepClone(this.system.conditions);
             for (let condition of conditions) {
                condition.duration = durationResult.durationSec;
