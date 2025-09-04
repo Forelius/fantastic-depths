@@ -48,44 +48,6 @@ export class DamageSystem extends DamageSystemInterface {
       this.#sendChatAndToast(damageSource, digest);
    }
 
-   #mitigateDamage(damageType, actor, delta) {
-      let result = 0;
-      const combatMods = actor.system.mod.combat;
-      const physicalTypes = ["physical", "fire", "frost", "piercing", "breath", "corrosive", ""];
-      if (physicalTypes.includes(damageType)) {
-         result += this.#getPhysicalMitigation(actor, damageType, delta);
-      }
-      if (damageType === "breath") {
-         result += combatMods.selfDmgBreath;
-         result += -delta * combatMods.selfDmgBreathScale;
-      }
-      if (damageType === "magic") {
-         result += combatMods.selfDmgMagic;
-      }
-      // Don't allow addition of damage via damage mitigation
-      // And don't allow mitigation of more damage than was caused.
-      result = Math.min(result, -delta);
-      return result;
-   }
-
-   #getPhysicalMitigation(actor, damageType, delta) {
-      let result = actor.system.mod.combat.selfDmg;
-      if (this.useAV) {
-         const av = actor.getEvaluatedRollSync(actor.system.ac.av)?.total;
-         if (av > 0) {
-            let avMitigated = 0;
-            if (damageType === 'piercing') {
-               avMitigated += Math.floor(av / 2);
-            } else {
-               avMitigated += av;
-            }
-            // Blocks at least 1 point.
-            result = Math.min(avMitigated, -(delta + 1));
-         }
-      }
-      return result;
-   }
-
    /**
     * Calculate damage modifier based on token's actor groups and weapon's VS Group modifiers
     * @param {Token} token - The target token
@@ -217,6 +179,44 @@ export class DamageSystem extends DamageSystemInterface {
          }
       }
       return modifier;
+   }
+
+   #mitigateDamage(damageType, actor, delta) {
+      let result = 0;
+      const combatMods = actor.system.mod.combat;
+      const physicalTypes = ["physical", "fire", "frost", "piercing", "breath", "corrosive", ""];
+      if (physicalTypes.includes(damageType)) {
+         result += this.#getPhysicalMitigation(actor, damageType, delta);
+      }
+      if (damageType === "breath") {
+         result += combatMods.selfDmgBreath;
+         result += -delta * combatMods.selfDmgBreathScale;
+      }
+      if (damageType === "magic") {
+         result += combatMods.selfDmgMagic;
+      }
+      // Don't allow addition of damage via damage mitigation
+      // And don't allow mitigation of more damage than was caused.
+      result = Math.min(result, -delta);
+      return result;
+   }
+
+   #getPhysicalMitigation(actor, damageType, delta) {
+      let result = actor.system.mod.combat.selfDmg;
+      if (this.useAV) {
+         const av = actor.getEvaluatedRollSync(actor.system.ac.av)?.total;
+         if (av > 0) {
+            let avMitigated = 0;
+            if (damageType === 'piercing') {
+               avMitigated += Math.floor(av / 2);
+            } else {
+               avMitigated += av;
+            }
+            // Blocks at least 1 point.
+            result = Math.min(avMitigated, -(delta + 1));
+         }
+      }
+      return result;
    }
 
    #sendChatAndToast(source, digest) {

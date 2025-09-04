@@ -49,23 +49,23 @@ export class DamageRollChatBuilder extends ChatBuilder {
             damage: options.damage
          }
       });
-      const chatMsg = await ChatMessage.create(chatMessageData);
+      await ChatMessage.create(chatMessageData);
    }
 
    /**
    * Click event handler for damage/heal roll buttons.
-   * @param {any} ev
+   * @param {any} event
    */
-   static async clickDamageRoll(ev) {
-      const element = ev.currentTarget;
+   static async clickDamageRoll(event) {
+      const element = event.currentTarget;
       const dataset = element.dataset;
 
       // Custom behavior for damage rolls      
       if (dataset.type === "damage" || dataset.type==="heal") {
-         ev.preventDefault(); // Prevent the default behavior
-         ev.stopPropagation(); // Stop other handlers from triggering the event
+         event.preventDefault(); // Prevent the default behavior
+         event.stopPropagation(); // Stop other handlers from triggering the event
 
-         await DamageRollChatBuilder.handleDamageRoll(ev, dataset);
+         await DamageRollChatBuilder.handleDamageRoll(event, dataset);
       }
    }
 
@@ -76,7 +76,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
     */
    static async handleDamageRoll(ev, dataset) {
       const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid, owneruuid } = dataset;
-      const weaponItem = await fromUuid(weaponuuid);
+      const damagerItem = await fromUuid(weaponuuid);
       const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
       const targetActor = targetactoruuid ? await fromUuid(targetactoruuid) : undefined;
       const owner = owneruuid ? await fromUuid(owneruuid) : undefined;
@@ -86,13 +86,13 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
-      let instigator = owner || weaponItem.actor?.token || weaponItem.actor;
+      let instigator = owner || damagerItem.actor?.token || damagerItem.actor;
 
       // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);
+         damageRoll = damagerItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(null);
+         damageRoll = damagerItem.getDamageRoll(null);
       }
 
       dialogResp = await DialogFactory({
@@ -100,13 +100,13 @@ export class DamageRollChatBuilder extends ChatBuilder {
          label: isHeal ? "Heal" : "Damage",
          formula: damageRoll.formula,
          editFormula: game.user.isGM
-      }, weaponItem);
+      }, damagerItem);
       rolling = dialogResp != null;
 
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
+         damageRoll = damagerItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(dialogResp);
+         damageRoll = damagerItem.getDamageRoll(dialogResp);
       }
 
       if (rolling === true) {
@@ -114,7 +114,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          const roll = new Roll(damageRoll.formula);
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
-         const attackName = (weaponItem.system.isIdentified !== false) ? weaponItem.name : weaponItem.system.unidentifiedName;
+         const attackName = (damagerItem.system.isIdentified !== false) ? damagerItem.name : damagerItem.system.unidentifiedName;
          const descData = {
             attacker: instigator.name,
             weapon: attackName,

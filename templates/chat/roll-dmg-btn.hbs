@@ -1,0 +1,11 @@
+<button class="damage-roll"
+        data-damagetype="{{damageType}}"
+        data-attacktype="{{attackType}}"
+        data-label="Damage"
+        data-type="damage"
+        data-weaponuuid="{{itemuuid}}"
+        data-owneruuid="{{owneruuid}}"
+        data-tooltip="<b>{{localize 'FADE.Weapon.damage.long'}}:</b> {{damageFormula}}">
+   <i class="fa-solid fa-burst"></i>
+   <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}}</span> <span class="small-text">{{localize (concat 'FADE.DamageTypes.types.' damageType)}}</span>
+</button>

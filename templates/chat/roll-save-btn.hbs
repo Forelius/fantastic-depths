@@ -1,0 +1,11 @@
+{{#each actions as |action|}}
+{{#if (eq action.type "save")}}
+<button class="saving-roll"
+        data-type="{{action.item.system.customSaveCode}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-weaponuuid="{{action.item.uuid}}">
+   <i class="fa-solid fa-life-ring"></i>
+   <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{action.item.system.shortName}}</span>
+</button>
+{{/if}}
+{{/each}}

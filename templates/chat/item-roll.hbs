@@ -1,5 +1,5 @@
 {{#if actorName}}
-<div class="text-size16">{{actorName}}</div>
+<div class="text-size16">{{actorName}} ({{userName}}</div>
 {{/if}}
 {{#if mdata.label}}
 <div>{{mdata.label}}{{#if mdata.target}} ({{mdata.target}}){{/if}}</div>
@@ -33,8 +33,8 @@
 {{/if}}
 {{{rollContent}}}
 {{#if item}}
-   {{#if (eq item.system.isIdentified true)}}
-   {{> "chatSaveHealDamage"}}
-   {{/if}}
+{{#if (eq item.system.isIdentified true)}}
+{{> "rollSaveBtn"}}
+{{/if}}
 {{/if}}
 

@@ -1,0 +1,23 @@
+{{#each actions as |action|}}
+{{#if (eq action.type "")}}
+<button class="action-roll"
+        data-type="{{action.type}}"
+        data-level="{{action.level}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <i class="fa-solid fa-play"></i>
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "spell")}}
+<button class="spell-cast"
+        data-type="{{action.type}}"
+        data-castas="{{action.castAs}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <i class="fa-solid fa-wand-sparkles"></i>
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{/if}}
+{{/each}}

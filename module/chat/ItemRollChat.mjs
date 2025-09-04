@@ -19,10 +19,11 @@ export class ItemRollChat extends ChatBuilder {
       const rolls = roll ? [roll] : [];
       let rollContent = null;
       const item = caller;
-      let damageRoll = { hasDamage: false };
+      let dmgHealRoll = { hasDamage: false };
+      const targetTokens = Array.from(game.user.targets);
 
       if (item?.getDamageRoll && options?.isUsing === true) {
-         damageRoll = item?.getDamageRoll(null);
+         dmgHealRoll = item?.getDamageRoll(null);
       }
 
       if (roll && options.showResult !== false) {
@@ -57,19 +58,29 @@ export class ItemRollChat extends ChatBuilder {
          resultString,
          actorName,
          userName,
-         isGM: game.user.isGM,
-         isHeal: damageRoll.type === "heal",
-         damageRoll,
-         actions
+         actions // only saving throws are used here.
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
+
+      const damageRoll = dmgHealRoll.type === "heal" ? undefined : { damageType: dmgHealRoll.type, damageFormula: dmgHealRoll.formula };
+      const healRoll = dmgHealRoll.type === "heal" ? { healType: dmgHealRoll.type, healFormula: dmgHealRoll.formula } : undefined;
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode, // Pass the determined rollMode
+         flags: {
+            [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: item.uuid,
+               targets: targetTokens.map(i => ({ targetid: i.id, targetname: i.name })),
+               damageRoll,
+               healRoll, 
+               actions
+            }
+         }
       });
 
       // Create the chat message
@@ -108,24 +119,28 @@ export class ItemRollChat extends ChatBuilder {
          actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
       }
       for (let ability of [...actionItem?.system.specialAbilities]) {
-         let item = await fromUuid(ability.uuid);
-         if (item) {
-            item = foundry.utils.deepClone(item);
+         let sourceItem = await fromUuid(ability.uuid);
+         if (sourceItem) {
+            sourceItem = foundry.utils.deepClone(sourceItem);
             actions.push({
-               type: item.system.category,
-               item: item,
+               type: sourceItem.system.category,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               itemName: ability.name,
+               itemuuid: ability.uuid,
                owneruuid: owner.uuid
             });
          }
       }
       for (let spell of [...actionItem?.system.spells || []]) {
-         let item =  await fromUuid(spell.uuid);
-         if (item) {
-            item = foundry.utils.deepClone(item);
+         let sourceItem = await fromUuid(spell.uuid);
+         if (sourceItem) {
+            sourceItem = foundry.utils.deepClone(sourceItem);
             actions.push({
                type: "spell",
-               item: item,
-               castas: spell.castAs,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               itemName: spell.name,
+               itemuuid: spell.uuid,
+               castAs: spell.castAs,
                owneruuid: owner.uuid
             });
          }

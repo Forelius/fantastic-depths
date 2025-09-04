@@ -646,6 +646,9 @@
          "partyRests": "The party rests."
       },
       "Chat": {
+         "actions": {
+            "name": "Actions"
+         },
          "rollMods": {
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",

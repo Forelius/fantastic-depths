@@ -9,6 +9,7 @@ export const preloadHandlebarsTemplates = async function () {
    await fn({
       // Chat
       chatSaveHealDamage: 'systems/fantastic-depths/templates/chat/save-heal-dmg.hbs',
+      rollSaveBtn: 'systems/fantastic-depths/templates/chat/roll-save-btn.hbs',
       // Actor partials
       abilityScores: 'systems/fantastic-depths/templates/actor/parts/ability-scores.hbs',
       actorHpAc:'systems/fantastic-depths/templates/actor/parts/hp-ac.hbs',
