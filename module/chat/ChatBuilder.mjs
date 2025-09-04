@@ -1,3 +1,5 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
@@ -230,4 +232,40 @@ export class ChatBuilder {
       content = tempDiv.innerHTML;
       return content;
    }
+
+   async _setupActions(actionItem, owner) {
+      const actions = [];
+      if (actionItem?.system.savingThrow?.length > 0) {
+         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
+      }
+      for (let ability of [...actionItem?.system.specialAbilities]) {
+         let sourceItem = await fromUuid(ability.uuid);
+         if (sourceItem) {
+            sourceItem = foundry.utils.deepClone(sourceItem);
+            actions.push({
+               type: sourceItem.system.category,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               itemName: ability.name,
+               itemuuid: ability.uuid,
+               owneruuid: owner.uuid
+            });
+         }
+      }
+      for (let spell of [...actionItem?.system.spells || []]) {
+         let sourceItem = await fromUuid(spell.uuid);
+         if (sourceItem) {
+            sourceItem = foundry.utils.deepClone(sourceItem);
+            actions.push({
+               type: "spell",
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               itemName: spell.name,
+               itemuuid: spell.uuid,
+               castAs: spell.castAs,
+               owneruuid: owner.uuid
+            });
+         }
+      }
+      return actions;
+   }
+
 }

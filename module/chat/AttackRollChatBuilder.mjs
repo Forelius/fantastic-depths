@@ -19,11 +19,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const targetTokens = Array.from(game.user.targets);
       const targetActor = targetTokens?.length > 0 ? targetTokens[0].actor : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
-      const weapon = caller;
+      const weaponItem = caller;
       const descData = {
          attacker: attackerName,
          attackType: game.i18n.localize(`FADE.dialog.attackType.${resp.attackType}`).toLowerCase(),
-         weapon: weapon.system.isIdentified === true ? weapon.name : weapon.system.unidentifiedName
+         weapon: weaponItem.system.isIdentified === true ? weaponItem.name : weaponItem.system.unidentifiedName
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
 
@@ -32,29 +32,30 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weapon, targetTokens, roll, resp.attackType);
-      const damageRoll = weapon.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetActor);
+      const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weaponItem, targetTokens, roll, resp.attackType);
+      const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetActor);
 
       if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let save = null;
-      if (weapon.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(weapon.system.savingThrow);
-      }
+      //let save = null;
+      //if (weapon.system.savingThrow?.length > 0) {
+      //   save = await fadeFinder.getSavingThrow(weapon.system.savingThrow);
+      //}
+
+      let actions = await this._setupActions(weaponItem, context);
 
       const chatData = {
-         damageRoll,
          rollContent,
          description,
          descData,
          toHitResult,
          digest: digest,
-         weapon,
+         weapon: weaponItem,
          resp,
-         save,
+         //save,
          ammoItem: options?.ammoItem,
          targetWeaponType: resp.targetWeaponType,
          targetActor
@@ -70,10 +71,14 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollMode,
          flags: {
             [game.system.id]: {
-               targets: toHitResult.targetResults
+               owneruuid: context.uuid,
+               itemuuid: weaponItem.uuid,
+               damageRoll,
+               targets: toHitResult.targetResults,
+               actions
             }
          }
       });
-      const chatMsg = await ChatMessage.create(chatMessageData);
+      await ChatMessage.create(chatMessageData);
    }
 }

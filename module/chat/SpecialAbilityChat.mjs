@@ -9,7 +9,7 @@ export class SpecialAbilityChat extends ChatBuilder {
       const { context, caller, roll, options } = this.data;
       const targetTokens = Array.from(game.user.targets);
       const item = caller;
-      const damageRoll = item.getDamageRoll(null);
+      const dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "" };
       let description = '?';
@@ -49,11 +49,6 @@ export class SpecialAbilityChat extends ChatBuilder {
          item,
          description,
          itemDescription: await item.getInlineDescription(),
-         isHeal: damageRoll.type === "heal",
-         damageRoll,
-         targets: targetTokens,
-         showTargets: true,//!roll,
-         actions,
          attackType: 'specialAbility'
       };
       // Render the content using the template
@@ -69,6 +64,8 @@ export class SpecialAbilityChat extends ChatBuilder {
       }
 
       // Prepare chat message data, including rollMode
+      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
          content,
@@ -76,8 +73,13 @@ export class SpecialAbilityChat extends ChatBuilder {
          rollMode: item.system.rollMode, // Pass the determined rollMode
          flags: {
             [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: item?.uuid,
                targets: toHitResult.targetResults,
-               conditions: options.conditions
+               conditions: options.conditions,
+               damageRoll,
+               healRoll,
+               actions
             }
          }
       });

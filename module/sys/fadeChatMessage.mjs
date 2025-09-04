@@ -60,7 +60,7 @@ export class fadeChatMessage extends ChatMessage {
       let result = "";
       const data = this.getFlag(game.system.id, "actions");
       const owneruuid = this.getFlag(game.system.id, "owneruuid");
-      if (!data || !owneruuid) return result;
+      if (!data || data?.length == 0 || !owneruuid) return result;
       const owner = await fromUuid(owneruuid);
       // Only those with permission make it past here.
       if (owner?.testUserPermission(game.user, "OWNER")) {

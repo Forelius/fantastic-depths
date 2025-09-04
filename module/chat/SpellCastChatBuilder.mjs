@@ -15,7 +15,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { context, caller, roll, options } = this.data;
-      const damageRoll = caller.getDamageRoll(null);
+      const dmgHealRoll = caller.getDamageRoll(null);
       const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
@@ -58,23 +58,25 @@ export class SpellCastChatBuilder extends ChatBuilder {
          item, // spell item
          attackType: 'spell',
          caster,
-         damageRoll,
-         isHeal: damageRoll.type === "heal",
-         targets: targetTokens,
-         showTargets: !roll,
-         actions,
          durationMsg: options.durationMsg
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
+      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          flags: {
             [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: item?.uuid,
                targets: toHitResult.targetResults,
-               conditions: options.conditions
+               conditions: options.conditions,
+               damageRoll,
+               healRoll,
+               actions
             }
          }
       });

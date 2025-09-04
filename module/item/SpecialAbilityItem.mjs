@@ -21,14 +21,14 @@ export class SpecialAbilityItem extends FDItem {
    getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
-      let formula = evaluatedRoll?.formula;
+      let damageFormula = evaluatedRoll?.formula;
       const digest = [];
       let modifier = 0;
       let hasDamage = true;
-      const type = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
+      const damageType = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
 
       if (resp?.mod && resp?.mod !== 0) {
-         formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
+         damageFormula = damageFormula ? `${damageFormula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
          digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: resp.mod }));
       }
@@ -37,12 +37,7 @@ export class SpecialAbilityItem extends FDItem {
          hasDamage = false;
       }
 
-      return {
-         formula,
-         type,
-         digest,
-         hasDamage
-      };
+      return { damageFormula, damageType, digest, hasDamage };
    }
 
    /**

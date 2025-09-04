@@ -58,20 +58,3 @@
    </button>
 </div>
 {{/if}}
-{{#if damageRoll.hasDamage}}
-<div style="margin-top:8px;">
-   <button class="damage-roll"
-           data-attacktype="{{resp.attackType}}"
-           data-damagetype="{{damageRoll.type}}"
-           data-label="Damage"
-           data-type="damage"
-           data-targetactoruuid="{{targetActor.uuid}}"
-           data-targetweapontype="{{targetWeaponType}}"
-           data-weaponuuid="{{weapon.uuid}}"
-           data-ammouuid="{{ammoItem.uuid}}"
-           data-tooltip="<b>{{localize 'FADE.Weapon.damage.long'}}:</b> {{damageRoll.formula}}">
-      <i class="fa-solid fa-burst"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Chat.damageRoll.name'}}</span> <span class="small-text">{{localize (concat 'FADE.DamageTypes.types.' damageRoll.type)}}</span>
-   </button>
-</div>
-{{/if}}

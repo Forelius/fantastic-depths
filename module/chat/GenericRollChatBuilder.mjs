@@ -19,10 +19,10 @@ export class GenericRollChatBuilder extends ChatBuilder {
       const rolls = roll ? [roll] : [];
       let rollContent = null;
       const item = caller.type === "character" || caller.type === "monster" ? null : caller;
-      let damageRoll = { hasDamage: false };
-
-      if (item?.getDamageRoll && options?.isUsing === true) {
-         damageRoll = item?.getDamageRoll(null);
+      let dmgHealRoll = { hasDamage: false };
+      const isSave = item?.system?.category === "save";
+      if (isSave == false && item?.getDamageRoll && options?.isUsing === true) {
+         dmgHealRoll = item?.getDamageRoll(null);
       }
 
       if (roll && options.showResult !== false) {
@@ -58,18 +58,27 @@ export class GenericRollChatBuilder extends ChatBuilder {
          actorName,
          userName,
          isGM: game.user.isGM,
-         isHeal: damageRoll.type === "heal",
-         damageRoll,
-         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Prepare chat message data, including rollMode from mdata
+      const targetTokens = isSave ? [] : Array.from(game.user.targets);
+      const damageRoll = isSave ? undefined : dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+      const healRoll = isSave ? undefined : dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode, // Pass the determined rollMode
+         flags: {
+            [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: item?.uuid,
+               targets: targetTokens?.map(i => ({ targetid: i.id, targetname: i.name })),
+               damageRoll,
+               healRoll,
+            }
+         }
       });
 
       // Create the chat message

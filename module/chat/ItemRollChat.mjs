@@ -1,5 +1,4 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class ItemRollChat extends ChatBuilder {
@@ -46,7 +45,7 @@ export class ItemRollChat extends ChatBuilder {
 
       let actions = [];
       if (options?.isUsing === true) {
-         actions = await this.#setupActions(item, context);
+         actions = await this._setupActions(item, context);
       }
 
       // Prepare data for the chat template
@@ -63,8 +62,8 @@ export class ItemRollChat extends ChatBuilder {
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
-      const damageRoll = dmgHealRoll.type === "heal" ? undefined : { damageType: dmgHealRoll.type, damageFormula: dmgHealRoll.formula };
-      const healRoll = dmgHealRoll.type === "heal" ? { healType: dmgHealRoll.type, healFormula: dmgHealRoll.formula } : undefined;
+      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
@@ -111,40 +110,5 @@ export class ItemRollChat extends ChatBuilder {
          resultString = mdata.resultstring;
       }
       return resultString;
-   }
-
-   async #setupActions(actionItem, owner) {
-      const actions = [];
-      if (actionItem?.system.savingThrow?.length > 0) {
-         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
-      }
-      for (let ability of [...actionItem?.system.specialAbilities]) {
-         let sourceItem = await fromUuid(ability.uuid);
-         if (sourceItem) {
-            sourceItem = foundry.utils.deepClone(sourceItem);
-            actions.push({
-               type: sourceItem.system.category,
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: ability.name,
-               itemuuid: ability.uuid,
-               owneruuid: owner.uuid
-            });
-         }
-      }
-      for (let spell of [...actionItem?.system.spells || []]) {
-         let sourceItem = await fromUuid(spell.uuid);
-         if (sourceItem) {
-            sourceItem = foundry.utils.deepClone(sourceItem);
-            actions.push({
-               type: "spell",
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: spell.name,
-               itemuuid: spell.uuid,
-               castAs: spell.castAs,
-               owneruuid: owner.uuid
-            });
-         }
-      }
-      return actions;
    }
 }

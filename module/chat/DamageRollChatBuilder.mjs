@@ -76,17 +76,17 @@ export class DamageRollChatBuilder extends ChatBuilder {
     */
    static async handleDamageRoll(ev, dataset) {
       const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid, owneruuid } = dataset;
-      const damagerItem = await fromUuid(weaponuuid);
       const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
       const targetActor = targetactoruuid ? await fromUuid(targetactoruuid) : undefined;
+      const damagerItem = await fromUuid(weaponuuid);
       const owner = owneruuid ? await fromUuid(owneruuid) : undefined;
+      let instigator = owner || damagerItem.actor?.token || damagerItem.actor;
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
-      let instigator = owner || damagerItem.actor?.token || damagerItem.actor;
 
       // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
@@ -98,7 +98,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       dialogResp = await DialogFactory({
          dialog: "generic",
          label: isHeal ? "Heal" : "Damage",
-         formula: damageRoll.formula,
+         formula: damageRoll.damageFormula,
          editFormula: game.user.isGM
       }, damagerItem);
       rolling = dialogResp != null;
@@ -111,7 +111,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
       if (rolling === true) {
          // Roll the damage and wait for the result
-         const roll = new Roll(damageRoll.formula);
+         const roll = new Roll(damageRoll.damageFormula);
          await roll.evaluate(); // Wait for the roll result
          const damage = Math.max(roll.total, 0);
          const attackName = (damagerItem.system.isIdentified !== false) ? damagerItem.name : damagerItem.system.unidentifiedName;

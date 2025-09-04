@@ -30,12 +30,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       const digest = [];
-      let formula = evaluatedRoll?.formula;
+      let damageFormula = evaluatedRoll?.formula;
       let modifier = 0;
       let hasDamage = true;
 
       if (resp?.mod && resp?.mod !== 0) {
-         formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
+         damageFormula = damageFormula ? `${damageFormula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
          digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
       }
@@ -44,12 +44,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          hasDamage = false;
       }
 
-      return {
-         formula,
-         type: isHeal ? "heal" : "magic",
-         digest,
-         hasDamage
-      };
+      return { damageFormula, damageType: isHeal ? "heal" : "magic", digest, hasDamage };
    }
 
    /**
@@ -86,7 +81,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    }
 
    async doSpellcast(dataset = null) {
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const ownerIsItem = this.parent == null;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;

@@ -9,7 +9,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const actor = context;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
-      const damageRoll = caller.getDamageRoll(null);
+      const dmgHealRoll = caller.getDamageRoll(null);
       let targetNumber = Number(mdata.target); // Ensure the target number is a number
       const targetTokens = Array.from(game.user.targets);
 
@@ -30,9 +30,6 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
 
       // Prepare data for the chat template
       const chatData = {
-         damageRoll,
-         isHeal: damageRoll.type === "heal",
-         targets: targetTokens,
          rollContent,
          mdata,
          resultString,
@@ -47,12 +44,23 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Prepare chat message data, including rollMode from mdata
+      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       const chatMessageData = this.getChatMessageData({
          caller,
          content,
          rolls,
          rollMode, // Pass the determined rollMode
-      });
+         flags: {
+            [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: caller.uuid,
+               targets: targetTokens.map(i => ({ targetid: i.id, targetname: i.name })),
+               damageRoll,
+               healRoll,
+            }
+         }
+});
 
       // Create the chat message
       await ChatMessage.create(chatMessageData);
