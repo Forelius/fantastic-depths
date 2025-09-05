@@ -40,10 +40,11 @@ export class AttackDialog {
          dialogData.selectedWeaponType = masterySystem.getActorWeaponType(targetActor);
          ranges = masterySystem.getRanges(weapon);
       }
-      ranges.short *= (weapon.system.mod.rangeMultiplier ?? 1);
-      ranges.medium *= (weapon.system.mod.rangeMultiplier ?? 1);
-      ranges.long *= (weapon.system.mod.rangeMultiplier ?? 1);
-
+      if (ranges && weapon.system?.mod) {
+         ranges.short *= (weapon.system.mod.rangeMultiplier ?? 1);
+         ranges.medium *= (weapon.system.mod.rangeMultiplier ?? 1);
+         ranges.long *= (weapon.system.mod.rangeMultiplier ?? 1);
+      }
       const distance = toHitSystem.getDistance(attackerToken, targetToken);
       dialogData.attackDistance = distance;
       dialogData.rangeChoices = {
