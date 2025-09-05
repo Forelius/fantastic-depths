@@ -19,5 +19,39 @@
    <i class="fa-solid fa-wand-sparkles"></i>
    <span style="margin-left:4px;">{{action.itemName}}</span>
 </button>
+{{else if (eq action.type "melee")}}
+<button class="attack-roll melee-attack"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "shoot")}}
+<button class="attack-roll shoot-attack"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "throw")}}
+<button class="attack-roll throw-attack"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+<!--
+{{else if (eq action.type "save")}}
+<button class="saving-roll"
+        data-type="{{action.item.system.customSaveCode}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-weaponuuid="{{action.item.uuid}}">
+   <i class="fa-solid fa-life-ring"></i>
+   <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{action.item.system.shortName}}</span>
+</button>
+-->
 {{/if}}
 {{/each}}

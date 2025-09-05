@@ -91,31 +91,31 @@ export class GearItem extends FDItem {
       let isUsing = false;
       let isCanceled = false;
 
-      if (this.system.isUsable === true && this.system.isIdentified === true) {
-         // If this item has a quantity and either has charges or doesn't use charges...
-         if ((await this.#tryUseUsage(true)) === true
-            && (this.#usesCharge() === false || await this.#tryUseCharge(true))) {
-            const dialogResp = await DialogFactory({
-               dialog: "yesno",
-               title: game.i18n.localize('FADE.dialog.useItem.title'),
-               content: game.i18n.localize('FADE.dialog.useItem.content'),
-               yesLabel: game.i18n.localize('FADE.dialog.useItem.yesLabel'),
-               noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
-               defaultChoice: "yes"
-            }, this.actor);
-            if (dialogResp?.resp == null) {
-               isCanceled = true;
-            }
-            else if (dialogResp?.resp?.result === true) {
-               isUsing = true;
-               if (this.#usesCharge()) {
-                  await this.#tryUseCharge();
-               } else {
-                  await this.#tryUseUsage();
-               }
-            }
-         }
-      }
+      //if (this.system.isUsable === true && this.system.isIdentified === true) {
+      //   // If this item has a quantity and either has charges or doesn't use charges...
+      //   if ((await this.#tryUseUsage(true)) === true
+      //      && (this.#usesCharge() === false || await this.#tryUseCharge(true))) {
+      //      const dialogResp = await DialogFactory({
+      //         dialog: "yesno",
+      //         title: game.i18n.localize('FADE.dialog.useItem.title'),
+      //         content: game.i18n.localize('FADE.dialog.useItem.content'),
+      //         yesLabel: game.i18n.localize('FADE.dialog.useItem.yesLabel'),
+      //         noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
+      //         defaultChoice: "yes"
+      //      }, this.actor);
+      //      if (dialogResp?.resp == null) {
+      //         isCanceled = true;
+      //      }
+      //      else if (dialogResp?.resp?.result === true) {
+      //         isUsing = true;
+      //         if (this.#usesCharge()) {
+      //            await this.#tryUseCharge();
+      //         } else {
+      //            await this.#tryUseUsage();
+      //         }
+      //      }
+      //   }
+      //}
 
       if (isCanceled === false) {
          const chatData = {
@@ -123,8 +123,7 @@ export class GearItem extends FDItem {
             context: this.actor,
             rollMode
          };
-         const { conditions, durationMsgs } = await this._getConditionsForChat();
-         const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData, { isUsing, conditions, durationMsgs });
+         const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData, { isUsing });
          return await builder.createChatMessage();
       }
    }

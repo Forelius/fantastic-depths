@@ -233,40 +233,95 @@ export class ChatBuilder {
       return content;
    }
 
-   async _setupActions(actionItem, owner) {
+   async _getActionsForChat(actionItem, owner, skipAttacks = false) {
       const actions = [];
-      if (actionItem?.system.savingThrow?.length > 0) {
-         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
-      }
-      for (let ability of [...actionItem?.system.specialAbilities]) {
-         let sourceItem = await fromUuid(ability.uuid);
-         if (sourceItem) {
-            sourceItem = foundry.utils.deepClone(sourceItem);
-            actions.push({
-               type: sourceItem.system.category,
-               owneruuid: owner.uuid,
-               itemuuid: ability.uuid,
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: ability.name,
-               mod: ability.mod,
-            });
+      if (actionItem) {
+         if (skipAttacks === true && actionItem.system.savingThrow?.length > 0) {
+            actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
          }
-      }
-      for (let spell of [...actionItem?.system.spells || []]) {
-         let sourceItem = await fromUuid(spell.uuid);
-         if (sourceItem) {
-            sourceItem = foundry.utils.deepClone(sourceItem);
+         if (skipAttacks === false && actionItem.canMelee === true) {
             actions.push({
-               type: "spell",
+               type: "melee",
                owneruuid: owner.uuid,
-               itemuuid: spell.uuid,
+               itemuuid: actionItem.uuid,
                actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: spell.name,
-               castAs: spell.castAs,
-            });
+               itemName: "Melee",
+            })
+         }
+         if (skipAttacks === false && actionItem.canShoot === true) {
+            actions.push({
+               type: "shoot",
+               owneruuid: owner.uuid,
+               itemuuid: actionItem.uuid,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               itemName: "Shoot",
+            })
+         }
+         if (skipAttacks === false && actionItem.canThrow === true) {
+            actions.push({
+               type: "throw",
+               owneruuid: owner.uuid,
+               itemuuid: actionItem.uuid,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               itemName: "Throw",
+            })
+         }
+         for (let ability of [...actionItem.system.specialAbilities]) {
+            let sourceItem = await fromUuid(ability.uuid);
+            if (sourceItem) {
+               sourceItem = foundry.utils.deepClone(sourceItem);
+               actions.push({
+                  type: sourceItem.system.category,
+                  owneruuid: owner.uuid,
+                  itemuuid: ability.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: ability.name,
+                  mod: ability.mod,
+               });
+            }
+         }
+         for (let spell of [...actionItem.system.spells || []]) {
+            let sourceItem = await fromUuid(spell.uuid);
+            if (sourceItem) {
+               sourceItem = foundry.utils.deepClone(sourceItem);
+               actions.push({
+                  type: "spell",
+                  owneruuid: owner.uuid,
+                  itemuuid: spell.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: spell.name,
+                  castAs: spell.castAs,
+               });
+            }
          }
       }
       return actions;
    }
 
+   async _getConditionsForChat(item) {
+      const conditions = foundry.utils.deepClone(item.system.conditions);
+      const durationMsgs = [];
+      for (let condition of conditions) {
+         const durationResult = await this._getDurationResult(condition.name, condition.durationFormula);
+         condition.duration = durationResult?.durationSec ?? condition.duration;
+         durationMsgs.push(durationResult.text);
+      }
+      return { conditions, durationMsgs };
+   }
+
+   async _getDurationResult(name, durationFormula) {
+      let result = {
+         text: (durationFormula !== "-" && durationFormula !== null) ?
+            `${name} ${game.i18n.localize("FADE.Spell.duration")}: ${durationFormula} ${game.i18n.localize("FADE.rounds")}`
+            : ""
+      };
+      if (durationFormula !== "-" && durationFormula !== null) {
+         const rollData = this.getRollData();
+         const rollEval = await new Roll(durationFormula, rollData).evaluate();
+         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
+         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+         result.durationSec = rollEval.total * roundSeconds;
+      }
+      return result;
+   }
 }

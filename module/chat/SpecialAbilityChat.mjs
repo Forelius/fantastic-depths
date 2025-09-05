@@ -57,11 +57,10 @@ export class SpecialAbilityChat extends ChatBuilder {
       // Add targets for DM chat message
       let toHitResult = { targetResults: [], message: '' };
       for (let targetToken of targetTokens) {
-         toHitResult.targetResults.push({
-            targetid: targetToken.id,
-            targetname: targetToken.name
-         });
+         toHitResult.targetResults.push({ targetid: targetToken.id, targetname: targetToken.name });
       }
+
+      const { conditions, durationMsgs } = await this._getConditionsForChat(item);
 
       // Prepare chat message data, including rollMode
       const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
@@ -76,7 +75,7 @@ export class SpecialAbilityChat extends ChatBuilder {
                owneruuid: context.uuid,
                itemuuid: item?.uuid,
                targets: toHitResult.targetResults,
-               conditions: options.conditions,
+               conditions,
                damageRoll,
                healRoll,
                actions

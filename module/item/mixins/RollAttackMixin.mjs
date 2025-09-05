@@ -8,10 +8,9 @@
 const RollAttackMixin = (superclass) => class extends superclass {
    /**
    * Handle clickable rolls.
-   * @override
-   * @param {Event} event The originating click event
+   * @param {object} dataset
    */
-   async rollAttack() {
+   async rollAttack(dataset) {
       const systemData = this.system;
       // The selected token, not the actor
       let attackType;

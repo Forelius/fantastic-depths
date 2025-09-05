@@ -8,7 +8,6 @@ export const preloadHandlebarsTemplates = async function () {
    const fn = foundry?.applications?.handlebars?.loadTemplates ? foundry.applications.handlebars.loadTemplates : loadTemplates;
    await fn({
       // Chat
-      chatSaveHealDamage: 'systems/fantastic-depths/templates/chat/save-heal-dmg.hbs',
       rollSaveBtn: 'systems/fantastic-depths/templates/chat/roll-save-btn.hbs',
       // Actor partials
       abilityScores: 'systems/fantastic-depths/templates/actor/parts/ability-scores.hbs',

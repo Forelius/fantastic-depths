@@ -859,7 +859,7 @@ table.compact-table input {
 }
 .chat-message .message-content button {
   margin: 0.4rem 0.1rem;
-  width: 100%;
+  width: 98%;
 }
 .chat-message .message-content .content-link, .chat-message .message-content .inline-roll {
   color: #e9c68b;
@@ -975,13 +975,13 @@ table.compact-table input {
 .chat-message .message-content .heal-roll:hover, .chat-message .message-content .apply-heal:hover {
   background: rgb(26, 180, 20);
 }
-.chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
+.chat-message .message-content .attack-roll, .chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
   box-shadow: none;
   border: 1px solid #774444;
 }
-.chat-message .message-content .damage-roll:hover, .chat-message .message-content .apply-damage:hover {
+.chat-message .message-content .attack-roll:hover, .chat-message .message-content .damage-roll:hover, .chat-message .message-content .apply-damage:hover {
   background: rgb(180, 26, 20);
 }
 .chat-message .message-content .saving-roll {

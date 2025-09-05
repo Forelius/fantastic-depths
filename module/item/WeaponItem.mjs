@@ -8,6 +8,8 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       super(data, context);
    }
 
+   get isWeaponItem() { return true }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -75,15 +77,6 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          targetWeaponType,
          ammouuid: ammoItem?.uuid
       };
-   }
-
-   /**
-   * Handle clickable rolls.
-   * @override
-   * @param {Event} event The originating click event
-   */
-   async roll() {
-      return await this.rollAttack();
    }
 
    async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {

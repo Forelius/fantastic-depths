@@ -18,12 +18,8 @@ export class ItemRollChat extends ChatBuilder {
       const rolls = roll ? [roll] : [];
       let rollContent = null;
       const item = caller;
-      let dmgHealRoll = { hasDamage: false };
+      let dmgHealRoll = null;
       const targetTokens = Array.from(game.user.targets);
-
-      if (item?.getDamageRoll && options?.isUsing === true) {
-         dmgHealRoll = item?.getDamageRoll(null);
-      }
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
@@ -43,10 +39,8 @@ export class ItemRollChat extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let actions = [];
-      if (options?.isUsing === true) {
-         actions = await this._setupActions(item, context);
-      }
+      let actions = await this._getActionsForChat(item, context);
+      const { conditions, durationMsgs } = await this._getConditionsForChat(item);
 
       // Prepare data for the chat template
       const chatData = {
@@ -61,9 +55,12 @@ export class ItemRollChat extends ChatBuilder {
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
-
-      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
-      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
+          
+      if (item?.isWeaponItem !== true && item?.getDamageRoll && options?.isUsing === true) {
+         dmgHealRoll = item?.getDamageRoll(null);
+      }
+      const damageRoll = dmgHealRoll?.damageType === "heal" ? undefined : dmgHealRoll;
+      const healRoll = dmgHealRoll?.damageType === "heal" ? dmgHealRoll : undefined;
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
@@ -78,7 +75,7 @@ export class ItemRollChat extends ChatBuilder {
                damageRoll,
                healRoll, 
                actions,
-               conditions: options?.conditions,
+               conditions,
             }
          }
       });

@@ -20,6 +20,10 @@ export class FDItem extends Item {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
 
+   get canMelee() { return this.system.canMelee === true }
+   get canShoot() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0 }
+   get canThrow() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0 }
+
    /** @override
     * @protected */
    prepareBaseData() {
@@ -228,33 +232,6 @@ export class FDItem extends Item {
       const shiftKey = event?.originalEvent?.shiftKey ?? false;
       if (game.user.isGM === true) {
          result = shiftKey === false && result === true;
-      }
-      return result;
-   }
-
-   async _getConditionsForChat() {
-      const conditions = foundry.utils.deepClone(this.system.conditions);
-      const durationMsgs = [];
-      for (let condition of conditions) {
-         const durationResult = await this._getDurationResult(condition.name, condition.durationFormula);
-         condition.duration = durationResult?.durationSec ?? condition.duration;
-         durationMsgs.push(durationResult.text);
-      }
-      return { conditions, durationMsgs };
-   }
-
-   async _getDurationResult(name, durationFormula) {
-      let result = {
-         text: (durationFormula !== "-" && durationFormula !== null) ?
-            `${name} ${game.i18n.localize("FADE.Spell.duration")}: ${durationFormula} ${game.i18n.localize("FADE.rounds")}`
-            : ""
-      };
-      if (durationFormula !== "-" && durationFormula !== null) {
-         const rollData = this.getRollData();
-         const rollEval = await new Roll(durationFormula, rollData).evaluate();
-         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
-         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
-         result.durationSec = rollEval.total * roundSeconds;
       }
       return result;
    }

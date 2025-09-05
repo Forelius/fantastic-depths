@@ -113,12 +113,7 @@ export class SpecialAbilityItem extends FDItem {
                context: instigator,
                roll
             };
-            const { conditions, durationMsgs } = await this._getConditionsForChat();
-            const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, {
-               showResult,
-               conditions,
-               durationMsgs
-            });
+            const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
             result = builder.createChatMessage();
          }
       }

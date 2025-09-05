@@ -274,7 +274,7 @@ Hooks.once('ready', async function () {
    $(document).on('click', '.apply-condition', async (event) => await SpellCastChatBuilder.clickApplyCondition(event));
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
    $(document).on('click', '.saving-roll', FDCombatActor.handleSavingThrowRequest);
-   $(document).on('click', '.action-roll, .spell-cast', FDCombatActor.handleActionRoll);
+   $(document).on('click', '.action-roll, .spell-cast, .attack-roll', FDCombatActor.handleActionRoll);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();

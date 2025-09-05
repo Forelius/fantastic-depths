@@ -160,7 +160,7 @@ export class FDCombatActor extends FDActorBase {
    }
 
    /**
-    * Static event handler for click on the saving throw button in chat.
+    * Static event handler for click on an action button in chat.
     * @public
     * @param {any} event
     */
@@ -172,14 +172,14 @@ export class FDCombatActor extends FDActorBase {
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
          ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
+      } else if (dataset?.type === "melee" || dataset?.type === "shoot" || dataset?.type === "throw") {
+         const item = await fromUuid(dataset.itemuuid);
+         // Directly roll item and skip the rest
+         if (item) await item.rollAttack(dataset);
       } else {
          const item = await fromUuid(dataset.itemuuid);
          // Directly roll item and skip the rest
          if (item) await item.roll(dataset, null, event);
-         //for (let target of selected) {
-         // Apply damage to the token's actor
-         //target[0].actor.rollSavingThrow(dataset.type, event);
-         //}
       }
    }
 

@@ -45,7 +45,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       //   save = await fadeFinder.getSavingThrow(weapon.system.savingThrow);
       //}
 
-      let actions = await this._setupActions(weaponItem, context);
+      let actions = await this._getActionsForChat(weaponItem, context, true);
 
       const chatData = {
          rollContent,

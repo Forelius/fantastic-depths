@@ -74,7 +74,7 @@ export class fadeDialog {
             if (result) {
                const item = attackerActor.items.get(result.selectedid);
                // Call item's roll method.
-               item.roll();
+               item.rollAttack();
             }
          }
       } else {
