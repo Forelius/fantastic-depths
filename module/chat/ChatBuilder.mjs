@@ -244,10 +244,11 @@ export class ChatBuilder {
             sourceItem = foundry.utils.deepClone(sourceItem);
             actions.push({
                type: sourceItem.system.category,
+               owneruuid: owner.uuid,
+               itemuuid: ability.uuid,
                actionuuid: actionItem.uuid, // this is the owning item's uuid
                itemName: ability.name,
-               itemuuid: ability.uuid,
-               owneruuid: owner.uuid
+               mod: ability.mod,
             });
          }
       }
@@ -257,11 +258,11 @@ export class ChatBuilder {
             sourceItem = foundry.utils.deepClone(sourceItem);
             actions.push({
                type: "spell",
+               owneruuid: owner.uuid,
+               itemuuid: spell.uuid,
                actionuuid: actionItem.uuid, // this is the owning item's uuid
                itemName: spell.name,
-               itemuuid: spell.uuid,
                castAs: spell.castAs,
-               owneruuid: owner.uuid
             });
          }
       }

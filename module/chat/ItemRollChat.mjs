@@ -77,7 +77,8 @@ export class ItemRollChat extends ChatBuilder {
                targets: targetTokens.map(i => ({ targetid: i.id, targetname: i.name })),
                damageRoll,
                healRoll, 
-               actions
+               actions,
+               conditions: options?.conditions,
             }
          }
       });

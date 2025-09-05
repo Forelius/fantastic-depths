@@ -58,7 +58,7 @@ export class fadeChatMessage extends ChatMessage {
 
    async #getActionRollButtons() {
       let result = "";
-      const data = this.getFlag(game.system.id, "actions");
+      const data = this.getFlag(game.system.id, "actions")?.filter(i => i.type !== "save");
       const owneruuid = this.getFlag(game.system.id, "owneruuid");
       if (!data || data?.length == 0 || !owneruuid) return result;
       const owner = await fromUuid(owneruuid);

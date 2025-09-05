@@ -1,0 +1,62 @@
+<section class="tab {{tabs.specialAbilities.cssClass}}" data-group="primary" data-tab="specialAbilities">
+   <div>
+      <h3>{{localize "FADE.SpecialAbility.plural"}}</h3>
+      <div style="padding:0 2px;">
+         <ol name="class-abilities" class="items-list">
+            <!-- Header Row -->
+            <li class="item flexrow items-header">
+               <div>{{localize "FADE.name"}}</div>
+               <div style="max-width:50px">{{localize "FADE.Actor.Mod"}}</div>
+               <div class="item-controls" style="max-width:30px;"></div>
+            </li>
+            <!-- Special Ability Entries -->
+            {{#each system.specialAbilities as |item index|}}
+            <li class="item flexrow" data-item-id="{{item.uuid}}">
+               <input type="text" name="system.specialAbilities.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
+               <div>
+                  <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+               </div>
+               <div style="max-width:50px">
+                  <input type="number" name="system.specialAbilities.{{index}}.mod" value="{{item.mod}}" data-dtype="Number" />
+               </div>
+               <div class="item-controls" style="max-width:30px;">
+                  <a class="item-control" data-action="deleteSpecialAbility" data-tooltip="{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}" data-type="specialAbility" data-index="{{index}}">
+                     <i class="fas fa-trash"></i>
+                  </a>
+               </div>
+            </li>
+            {{/each}}
+         </ol>
+      </div>
+   </div>
+   <div>
+      <h3>{{localize "FADE.tabs.spells"}}</h3>
+      <div style="padding:0 2px;">
+         <ol name="spells" class="items-list">
+            <!-- Header Row -->
+            <li class="item flexrow items-header">
+               <div style="max-width:60px">{{localize 'FADE.class.castAsKey.name'}}</div>
+               <div>{{localize "FADE.name"}}</div>
+               <div class="item-controls" style="max-width:30px;"></div>
+            </li>
+            <!-- Spell Entries -->
+            {{#each system.spells as |item index|}}
+            <li class="item flexrow" data-item-id="{{item.uuid}}">
+               <input type="text" name="system.spells.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
+               <div style="max-width:60px">
+                  <input type="text" name="system.spells.{{index}}.castAs" value="{{item.castAs}}" data-dtype="String" />
+               </div>
+               <div>
+                  <input type="text" style="text-align:left;" name="system.spells.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+               </div>
+               <div class="item-controls" style="max-width:30px;">
+                  <a class="item-control" data-action="deleteSpell" data-tooltip="{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}" data-type="spell" data-index="{{index}}">
+                     <i class="fas fa-trash"></i>
+                  </a>
+               </div>
+            </li>
+            {{/each}}
+         </ol>
+      </div>
+   </div>
+</section>

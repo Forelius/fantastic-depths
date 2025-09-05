@@ -1,20 +1,10 @@
 /**
- * A mixin for adding VS Group modifier support to an FDItemSheetV2 class.
+ * A mixin for adding spells to an FDItemSheetV2 class.
  * @param {any} superclass
  * @returns
  */
 const SpellMixin = (superclass) => {
    class SpellMixinClass extends superclass {
-      /**
-       * Handle adding a new spell
-       * @param {Event} event The originating click event
-       * @protected
-       */
-      static async _clickAddSpell(event) {
-         event.preventDefault();
-         await this.createSpell();
-      }
-
       /**
        * Handle deleting a spell
        * @param {Event} event The originating click event
@@ -35,7 +25,6 @@ const SpellMixin = (superclass) => {
             spells.splice(index, 1);
             await this.item.update({ "system.spells": spells });
          }
-         this.render();
       }
 
       /**
@@ -43,15 +32,15 @@ const SpellMixin = (superclass) => {
        * @param {any} name
        * @param {any} classKey
        */
-      async createSpell(item) {
+      async onDropSpellItem(droppedItem) {
          // Retrieve the array
          const spells = [...this.item.system.spells || []];
 
          // Define the new data
          const newItem = {
             castAs: "",
-            name: item?.name ?? "",
-            uuid: item?.uuid ?? "",
+            name: droppedItem?.name ?? "",
+            uuid: droppedItem?.uuid ?? "",
          };
 
          // Add the new item to the array
@@ -62,7 +51,6 @@ const SpellMixin = (superclass) => {
 
    SpellMixinClass.DEFAULT_OPTIONS = {
       actions: {
-         addSpell: SpellMixinClass._clickAddSpell,
          deleteSpell: SpellMixinClass._clickDeleteSpell
       }
    };

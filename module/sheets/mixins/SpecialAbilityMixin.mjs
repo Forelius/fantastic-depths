@@ -1,21 +1,10 @@
 /**
- * A mixin for adding VS Group modifier support to an FDItemSheetV2 class.
- * The sheet's item class must define a createSpecialAbility async method.
+ * A mixin for aspecial abilities to an FDItemSheetV2 class.
  * @param {any} superclass
  * @returns
  */
 const SpecialAbilityMixin = (superclass) => {
    class SpecialAbilityMixinClass extends superclass {
-
-      /**
-       * Handle adding a new special ability
-       * @param {Event} event The originating click event
-       * @protected
-       */
-      static async _clickAddSpecialAbility(event) {
-         event.preventDefault();
-         await this.createSpecialAbility();
-      }
 
       /**
        * Handle deleting a special ability
@@ -30,14 +19,13 @@ const SpecialAbilityMixin = (superclass) => {
          } else if (event.target.parentElement.dataset.type) {
             index = parseInt(event.target.parentElement.dataset.index);
          } else {
-            console.error(`SpecialAbilityMixin._clickDeleteSpecialAbility Can't determine item type.`, item);
+            console.error(`SpecialAbilityMixin._clickDeleteSpecialAbility can't determine item type.`, item);
          }
          const specialAbilities = [...this.item.system.specialAbilities];
          if (specialAbilities.length > index) {
             specialAbilities.splice(index, 1);
             await this.item.update({ "system.specialAbilities": specialAbilities });
          }
-         this.render();
       }
 
       /**
@@ -45,18 +33,15 @@ const SpecialAbilityMixin = (superclass) => {
        * @param {any} name
        * @param {any} classKey
        */
-      async createSpecialAbility(item) {
+      async onDropSpecialAbilityItem(droppedItem) {
          // Retrieve the array
          const specialAbilities = [...this.item.system.specialAbilities || []];
 
          // Define the new data
          const newItem = {
-            level: 1,
-            name: item?.name ?? "",
-            uuid: item?.uuid ?? "",
-            target: item?.system.target,
-            changes: "",
-            classKey: item?.system.classKey ?? ""
+            name: droppedItem?.name ?? "",
+            uuid: droppedItem?.uuid ?? "",
+            mod: 0,
          };
 
          // Add the new item to the array
@@ -68,7 +53,6 @@ const SpecialAbilityMixin = (superclass) => {
 
    SpecialAbilityMixinClass.DEFAULT_OPTIONS = {
       actions: {
-         addSpecialAbility: SpecialAbilityMixinClass._clickAddSpecialAbility,
          deleteSpecialAbility: SpecialAbilityMixinClass._clickDeleteSpecialAbility
       }
    };

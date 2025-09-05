@@ -2,18 +2,21 @@ import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { VsGroupModMixin } from "/systems/fantastic-depths/module/sheets/mixins/VsGroupModMixin.mjs";
-
+import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
+import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
+import { SpellMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpellMixin.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
 
 /**
  * Sheet class for WeaponItem.
  */
-export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
+export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(VsGroupModMixin(FDItemSheetV2))))) {
    /**
    * Get the default options for the sheet.
    */
    static DEFAULT_OPTIONS = {
       position: {
-         width: 570,
+         width: 600,
          height: 400,
       },
       window: {
@@ -40,8 +43,11 @@ export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       attributes: {
          template: "systems/fantastic-depths/templates/item/weapon/attributes.hbs",
       },
+      specialAbilities: {
+         template: "systems/fantastic-depths/templates/item/shared/specAbilitiesAndSpells.hbs",
+      },
       effects: {
-         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/conditionswd.hbs",
       },
       gmOnly: {
          template: "systems/fantastic-depths/templates/item/weapon/gmOnly.hbs",
@@ -63,6 +69,7 @@ export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
 
       if (game.user.isGM) {
          options.parts.push("attributes");
+         options.parts.push("specialAbilities");
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
@@ -128,6 +135,20 @@ export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       return context;
    }
 
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      let droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a spell item...
+      if (droppedItem?.type === "spell") {
+         await this.onDropSpellItem(droppedItem);
+      } else if (droppedItem?.type === "specialAbility") {
+         await this.onDropSpecialAbilityItem(droppedItem);
+      } else if (droppedItem?.type === "condition") {
+         await this.onDropConditionItem(droppedItem);
+      }
+   }
+
    /**
    * Prepare an array of form header tabs.
    * @returns {Record<string, Partial<ApplicationTab>>}
@@ -142,6 +163,7 @@ export class WeaponItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       }
       if (game.user.isGM) {
          tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes" };
+         tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
          tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
       }

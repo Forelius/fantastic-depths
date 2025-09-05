@@ -74,7 +74,7 @@ export class SpecialAbilityItem extends FDItem {
             } else if (ctrlKey === true) {
                dialogResp = {
                   rolling: true,
-                  mod: 0,
+                  mod: (Number(dataset.mod) || 0),
                   formula: systemData.rollFormula,
                   editFormula: game.user.isGM
                };
@@ -82,7 +82,7 @@ export class SpecialAbilityItem extends FDItem {
                dialogResp = await DialogFactory(dataset, instigator);
                if (dialogResp) {
                   dialogResp.rolling = true;
-                  dialogResp.mod = Number(dialogResp.mod);
+                  dialogResp.mod = Number(dialogResp.mod) + (Number(dataset.mod) || 0);
                }
             }
 
@@ -113,13 +113,7 @@ export class SpecialAbilityItem extends FDItem {
                context: instigator,
                roll
             };
-            const conditions = foundry.utils.deepClone(this.system.conditions);
-            const durationMsgs = [];
-            for (let condition of conditions) {
-               const durationResult = await this.#getDurationResult(condition.name, condition.durationFormula);
-               condition.duration = durationResult.durationSec;
-               durationMsgs.push(durationResult.text);
-            }
+            const { conditions, durationMsgs } = await this._getConditionsForChat();
             const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, {
                showResult,
                conditions,
@@ -136,22 +130,6 @@ export class SpecialAbilityItem extends FDItem {
       const description = await super.getInlineDescription();
       const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : "";
       return `${summary}${description}`;
-   }
-
-   async #getDurationResult(name, durationFormula) {
-      let result = {
-         text: (durationFormula !== "-" && durationFormula !== null) ?
-            `${name} ${game.i18n.localize("FADE.Spell.duration")}: ${durationFormula} ${game.i18n.localize("FADE.rounds")}`
-            : ""
-      };
-      if (durationFormula !== "-" && durationFormula !== null) {
-         const rollData = this.getRollData();
-         const rollEval = await new Roll(durationFormula, rollData).evaluate();
-         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
-         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
-         result.durationSec = rollEval.total * roundSeconds;
-      }
-      return result;
    }
 
    /**

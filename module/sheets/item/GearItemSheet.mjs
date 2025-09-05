@@ -1,11 +1,12 @@
 import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
 import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
 import { SpellMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpellMixin.mjs";
 import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
 
-export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2))) {
+export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)))) {
    /**
    * Get the default options for the sheet.
    */
@@ -39,13 +40,10 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
          template: "systems/fantastic-depths/templates/item/gear/attributes.hbs",
       },
       specialAbilities: {
-         template: "systems/fantastic-depths/templates/item/gear/specialAbilities.hbs",
-      },
-      spells: {
-         template: "systems/fantastic-depths/templates/item/gear/spells.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/specAbilitiesAndSpells.hbs",
       },
       effects: {
-         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/conditionswd.hbs",
       },
       gmOnly: {
          template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
@@ -68,7 +66,6 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
       if (game.user.isGM) {
          options.parts.push("attributes");
          options.parts.push("specialAbilities");
-         options.parts.push("spells");
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
@@ -123,16 +120,17 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
       return context;
    }
 
-
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
       let droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...
       if (droppedItem?.type === "spell") {
-         await this.createSpell(droppedItem);
+         await this.onDropSpellItem(droppedItem);
       } else if (droppedItem?.type === "specialAbility") {
-         await this.createSpecialAbility(droppedItem);
+         await this.onDropSpecialAbilityItem(droppedItem);
+      } else if (droppedItem?.type === "condition") {
+         await this.onDropConditionItem(droppedItem);
       }
    }
 
@@ -150,7 +148,6 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
       if (game.user.isGM) {
          tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" };
          tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
-         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" };
          tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly", cssClass: "item" };
       }

@@ -123,8 +123,8 @@ export class GearItem extends FDItem {
             context: this.actor,
             rollMode
          };
-
-         const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData, { isUsing });
+         const { conditions, durationMsgs } = await this._getConditionsForChat();
+         const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData, { isUsing, conditions, durationMsgs });
          return await builder.createChatMessage();
       }
    }

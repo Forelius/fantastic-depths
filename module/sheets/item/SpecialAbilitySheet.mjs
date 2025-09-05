@@ -1,4 +1,5 @@
 import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
@@ -6,7 +7,7 @@ import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 /**
  * Sheet class for SpecialAbilityItem.
  */
-export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
+export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
    */
@@ -23,9 +24,6 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      },
-      actions: {
-         deleteItem: SpecialAbilitySheet.#onDeleteChild,
       }
    }
 
@@ -136,7 +134,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === "condition") {
          // Retrieve the array
-         await this.#onDropConditionItem(droppedItem);
+         await this.onDropConditionItem(droppedItem);
       }
    }
 
@@ -160,33 +158,5 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
          v.cssClass = v.active ? "active" : "";
       }
       return tabs;
-   }
-
-   static async #onDeleteChild(event) {
-      event.preventDefault();
-      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
-      const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
-
-      if (type === "condition") {
-         const items = this.item.system.conditions;
-         if (items.length > index) {
-            items.splice(index, 1);
-            await this.item.update({ "system.conditions": items });
-         }
-      }
-      this.render();
-   }
-
-   async #onDropConditionItem(droppedItem) {
-      const items = this.item.system.conditions || [];
-      // Define the new data
-      const newItem = {
-         name: droppedItem.name,
-         durationFormula: null,
-         uuid: droppedItem.uuid
-      };
-      // Add the new item to the array
-      items.push(newItem);
-      await this.item.update({ "system.conditions": items });
    }
 }
