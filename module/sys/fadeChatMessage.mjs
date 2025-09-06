@@ -13,16 +13,15 @@ export class fadeChatMessage extends ChatMessage {
 
    /** @inheritDoc */
    async renderHTML(options) {
-      return await this.#getForRender(html);
-   }
-
-   async #getForRender(html) {
-      this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
+      let html = await super.renderHTML(options);
       if (html instanceof Element === false) {
          // In case jquery, due to v12/v13 inconsistency
          html = html[0];
       }
+      return await this.#getForRender(html);
+   }
 
+   async #getForRender(html) {
       // Damage and heal buttons
       let dmgHeal = await this.#addDamageRollButton();
       dmgHeal += await this.#addHealRollButton();
