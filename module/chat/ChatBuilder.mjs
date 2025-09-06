@@ -236,17 +236,19 @@ export class ChatBuilder {
    _getDamageHealRolls(dmgHealRoll) {
       let damageRoll;
       let healRoll;
-      if (dmgHealRoll?.length > 0) {
+      if (dmgHealRoll?.damageFormula?.length > 0) {
          damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
          healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       }
       return { damageRoll, healRoll };
    }
 
-   async _getActionsForChat(actionItem, owner, skipAttacks = false) {
+   async _getActionsForChat(actionItem, owner, options = {}) {
+      // Merge default options with provided options
+      options = { ...{ attacks: true, abilities: true, saves: true }, ...options };
       const actions = [];
       if (actionItem) {
-         if (skipAttacks === true && actionItem.system.savingThrow?.length > 0) {
+         if (options.saves === true && actionItem.system.savingThrow?.length > 0) {
             const save = await fadeFinder.getSavingThrow(actionItem.system.savingThrow);
             actions.push({
                type: "save",
@@ -257,59 +259,63 @@ export class ChatBuilder {
                customSaveCode: save?.system.customSaveCode,
             });
          }
-         if (skipAttacks === false && actionItem.canMelee === true) {
-            actions.push({
-               type: "melee",
-               owneruuid: owner.uuid,
-               itemuuid: actionItem.uuid,
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: "Melee",
-            })
-         }
-         if (skipAttacks === false && actionItem.canShoot === true) {
-            actions.push({
-               type: "shoot",
-               owneruuid: owner.uuid,
-               itemuuid: actionItem.uuid,
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: "Shoot",
-            })
-         }
-         if (skipAttacks === false && actionItem.canThrow === true) {
-            actions.push({
-               type: "throw",
-               owneruuid: owner.uuid,
-               itemuuid: actionItem.uuid,
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               itemName: "Throw",
-            })
-         }
-         for (let ability of [...actionItem.system.specialAbilities || []]) {
-            let sourceItem = await fromUuid(ability.uuid);
-            if (sourceItem) {
-               sourceItem = foundry.utils.deepClone(sourceItem);
+         if (options.attacks === true) {
+            if (actionItem.canMelee === true) {
                actions.push({
-                  type: sourceItem.system.category,
+                  type: "melee",
                   owneruuid: owner.uuid,
-                  itemuuid: ability.uuid,
+                  itemuuid: actionItem.uuid,
                   actionuuid: actionItem.uuid, // this is the owning item's uuid
-                  itemName: ability.name,
-                  mod: ability.mod,
-               });
+                  itemName: "Melee",
+               })
             }
-         }
-         for (let spell of [...actionItem.system.spells || []]) {
-            let sourceItem = await fromUuid(spell.uuid);
-            if (sourceItem) {
-               sourceItem = foundry.utils.deepClone(sourceItem);
+            if (actionItem.canShoot === true) {
                actions.push({
-                  type: "spell",
+                  type: "shoot",
                   owneruuid: owner.uuid,
-                  itemuuid: spell.uuid,
+                  itemuuid: actionItem.uuid,
                   actionuuid: actionItem.uuid, // this is the owning item's uuid
-                  itemName: spell.name,
-                  castAs: spell.castAs,
-               });
+                  itemName: "Shoot",
+               })
+            }
+            if (actionItem.canThrow === true) {
+               actions.push({
+                  type: "throw",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: "Throw",
+               })
+            }
+         } 
+         if (options.abilities === true) {
+            for (let ability of [...actionItem.system.specialAbilities || []]) {
+               let sourceItem = await fromUuid(ability.uuid);
+               if (sourceItem) {
+                  sourceItem = foundry.utils.deepClone(sourceItem);
+                  actions.push({
+                     type: sourceItem.system.category,
+                     owneruuid: owner.uuid,
+                     itemuuid: ability.uuid,
+                     actionuuid: actionItem.uuid, // this is the owning item's uuid
+                     itemName: ability.name,
+                     mod: ability.mod,
+                  });
+               }
+            }
+            for (let spell of [...actionItem.system.spells || []]) {
+               let sourceItem = await fromUuid(spell.uuid);
+               if (sourceItem) {
+                  sourceItem = foundry.utils.deepClone(sourceItem);
+                  actions.push({
+                     type: "spell",
+                     owneruuid: owner.uuid,
+                     itemuuid: spell.uuid,
+                     actionuuid: actionItem.uuid, // this is the owning item's uuid
+                     itemName: spell.name,
+                     castAs: spell.castAs,
+                  });
+               }
             }
          }
       }

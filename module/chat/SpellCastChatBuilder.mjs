@@ -16,11 +16,10 @@ export class SpellCastChatBuilder extends ChatBuilder {
    async createChatMessage() {
       const { context, caller, roll, options } = this.data;
       const dmgHealRoll = caller.getDamageRoll(null);
-      const targetTokens = Array.from(game.user.targets);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
       const item = caller;
-
+      const targetTokens = Array.from(game.user.targets);
       const descData = { caster: caster.name, spell: item.name };
       const description = game.i18n.format('FADE.Chat.spellCast', descData);
 
@@ -70,7 +69,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
             [game.system.id]: {
                owneruuid: context.uuid,
                itemuuid: item?.uuid,
-               targets: toHitResult.targetResults,
+               targets: toHitResult?.targetResults,
                conditions: options.conditions,
                damageRoll,
                healRoll,
@@ -92,7 +91,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          if (!sourceCondition) {
             sourceCondition = await game.fade.fadeFinder.getCondition(dataset.name);
          }
-         if (sourceCondition) {                      
+         if (sourceCondition) {
             // Get targets
             const selected = Array.from(canvas.tokens.controlled);
             const targeted = Array.from(game.user.targets);
@@ -137,7 +136,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
                   if (target.actor.isOwner === true) {
                      const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
                      if (Number.isNaN(durationSec) === false) {
-                        for(let condition of conditions){
+                        for (let condition of conditions) {
                            condition.setEffectsDuration(durationSec);
                         }
                      }

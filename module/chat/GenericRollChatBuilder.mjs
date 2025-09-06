@@ -18,7 +18,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
-      const item = caller.type === "character" || caller.type === "monster" ? null : caller;
+      let item = caller.type === "character" || caller.type === "monster" ? null : caller;
       let dmgHealRoll = { hasDamage: false };
       const isSave = item?.system?.category === "save";
       if (isSave == false && item?.getDamageRoll && options?.isUsing === true) {
@@ -43,7 +43,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, false);
+      let actions = await this._getActionsForChat(item, context, { saves: false });
 
       // Prepare data for the chat template
       const chatData = {
@@ -60,7 +60,10 @@ export class GenericRollChatBuilder extends ChatBuilder {
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
-      const targetTokens = isSave ? [] : Array.from(game.user.targets);
+      let targetTokens;
+      if (item.hasTargets === true) {
+         targetTokens = isSave ? [] : Array.from(game.user.targets);
+      }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode from mdata

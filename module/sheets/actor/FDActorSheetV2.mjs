@@ -815,7 +815,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             const itemElement = event.target.closest('[data-item-id]');
             const itemId = itemElement?.dataset.itemId;
             const item = this.actor.items.get(itemId);
-            if (item !== null) {
+            if (item != null) {
                const enrichedDesc = await item.getInlineDescription();
                if (enrichedDesc.startsWith("<") === false) {
                   descElem.appendChild(document.createTextNode(enrichedDesc));

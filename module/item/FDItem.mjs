@@ -99,16 +99,17 @@ export class FDItem extends Item {
    /**
     * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
     * does not override this message the result is a chat message with the item description.
-    * @param {dataset} event The data- tag values from the clicked element
-    * @private
+    * @public
+    * @param {dataset} dataset The data- tag values from the clicked element
+    * @param {object} owner (Optional) Owner of the item. This could be a compendium item referenced as sub-item.
     */
-   async roll(dataset) {
+   async roll(dataset, owner) {
       // Initialize chat data.
       //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = game.settings.get('core', 'rollMode');
       const chatData = {
          caller: this,
-         context: this.actor,
+         context: this.actor || owner,
          rollMode
       };
       const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);

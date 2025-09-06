@@ -6,6 +6,10 @@ export class AmmoItem extends FDItem {
       super(data, context);
    }
 
+   get hasTargets() {
+      return false;
+   }
+
    get ownerToken() {
       //console.debug(`Get ownerToken ${this.name} (${this.actor?.name}/${this.parent.name})`);
       return this.actor ? this.actor.currentActiveToken : null;

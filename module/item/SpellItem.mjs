@@ -11,6 +11,10 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
+   get hasTargets() {
+      return false; // The spell itself does not have targets.
+   }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -69,7 +73,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          }, instigator);
 
          if (dialogResp?.resp?.result === false) {
-            super.roll(dataset);
+            super.roll(dataset, owner);
          } else if (dialogResp?.resp?.result === true) {
             await this.doSpellcast(dataset);
          }
@@ -86,6 +90,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       const systemData = this.system;
       let result = null;
+      //let hasCharge = 
 
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.

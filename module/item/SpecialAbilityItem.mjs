@@ -18,6 +18,11 @@ export class SpecialAbilityItem extends FDItem {
       return summary;
    }
 
+   get hasTargets() {
+      const noTargets = ["save", "explore"];
+      return noTargets.includes(this.system.category);
+   }
+
    getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
@@ -39,7 +44,7 @@ export class SpecialAbilityItem extends FDItem {
 
       if (hasDamage) {
          damageType = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
-      }      
+      }
 
       return hasDamage ? { damageFormula, damageType, digest, hasDamage } : null;
    }

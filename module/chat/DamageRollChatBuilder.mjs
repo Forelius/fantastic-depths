@@ -80,7 +80,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const targetActor = targetactoruuid ? await fromUuid(targetactoruuid) : undefined;
       const damagerItem = await fromUuid(weaponuuid);
       const owner = owneruuid ? await fromUuid(owneruuid) : undefined;
-      let instigator = owner || damagerItem.actor?.token || damagerItem.actor;
+      const instigator = owner || damagerItem.actor?.token || damagerItem.actor;
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";

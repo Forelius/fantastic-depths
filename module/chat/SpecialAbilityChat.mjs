@@ -1,5 +1,4 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SpecialAbilityChat extends ChatBuilder {
@@ -36,7 +35,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, true);
+      let actions = await this._getActionsForChat(item, context, { attacks: false });
 
       // Prepare data for the chat template
       const chatData = {
@@ -54,8 +53,11 @@ export class SpecialAbilityChat extends ChatBuilder {
 
       // Add targets for DM chat message
       let toHitResult = { targetResults: [], message: '' };
-      for (let targetToken of targetTokens) {
-         toHitResult.targetResults.push({ targetid: targetToken.id, targetname: targetToken.name });
+      const noTargets = ["save", "explore"]; // some categories don't have targets.
+      if (noTargets.includes(item.system.category) === false) {
+         for (let targetToken of targetTokens) {
+            toHitResult.targetResults.push({ targetid: targetToken.id, targetname: targetToken.name });
+         }
       }
 
       const { conditions, durationMsgs } = await this._getConditionsForChat(item);

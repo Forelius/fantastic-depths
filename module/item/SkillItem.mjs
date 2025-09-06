@@ -8,6 +8,10 @@ export class SkillItem extends FDItem {
       super(data, context);
    }
 
+   get hasTargets() {
+      return true;
+   }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -31,7 +35,7 @@ export class SkillItem extends FDItem {
       const isHeal = this.system.healFormula?.length > 0;
       let damageFormula = null;
       let modifier = 0;
-      let hasDamage = false; // Has heals or damage
+      let hasDamage = true; // Has heals or damage
 
       if (isHeal) {
          damageFormula = this.getEvaluatedRollSync(this.system.healFormula)?.formula;

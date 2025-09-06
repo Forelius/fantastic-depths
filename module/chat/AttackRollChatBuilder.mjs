@@ -39,7 +39,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let actions = await this._getActionsForChat(weaponItem, context, true);
+      let actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
 
       const chatData = {
          rollContent,
@@ -58,6 +58,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
+      const { conditions, durationMsgs } = await this._getConditionsForChat(weaponItem);
+
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
          content,
@@ -69,7 +71,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
                itemuuid: weaponItem.uuid,
                damageRoll,
                targets: toHitResult.targetResults,
-               actions
+               actions,
+               conditions,
             }
          }
       });

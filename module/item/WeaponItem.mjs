@@ -10,6 +10,11 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
    get isWeaponItem() { return true }
 
+   get hasTargets() {
+      return false; // The weapon item itself does not have targets.
+   }
+
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -80,7 +85,6 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
    }
 
    async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {
-
       const chatData = {
          resp: dialogResp,
          caller: this,

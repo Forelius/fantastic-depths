@@ -12,6 +12,10 @@ export class ItemRollChat extends ChatBuilder {
       }
    }
 
+   /**
+    * Called when an item is rolled from the actor sheet.
+    * Weapons also call this when clicked from sheet.
+    */
    async createChatMessage() {
       const { context, mdata, roll, caller, options } = this.data;
       let resultString = null;
@@ -19,7 +23,7 @@ export class ItemRollChat extends ChatBuilder {
       let rollContent = null;
       const item = caller;
       let dmgHealRoll = null;
-      const targetTokens = Array.from(game.user.targets);
+      const targetTokens = item.hasTargets ? Array.from(game.user.targets) : null;
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
@@ -39,8 +43,7 @@ export class ItemRollChat extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context);
-      const { conditions, durationMsgs } = await this._getConditionsForChat(item);
+      let actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, abilities: true, saves: !item.isWeaponItem });
 
       // Prepare data for the chat template
       const chatData = {
@@ -55,9 +58,13 @@ export class ItemRollChat extends ChatBuilder {
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
-          
-      if (item?.isWeaponItem !== true && item?.getDamageRoll && options?.isUsing === true) {
-         dmgHealRoll = item?.getDamageRoll(null);
+
+      let condsForChat = null;
+      if (item?.isWeaponItem !== true) {
+         condsForChat = await this._getConditionsForChat(item);
+         if (item?.getDamageRoll && options?.isUsing === true) {
+            dmgHealRoll = item?.getDamageRoll(null);
+         }
       }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
@@ -70,11 +77,11 @@ export class ItemRollChat extends ChatBuilder {
             [game.system.id]: {
                owneruuid: context.uuid,
                itemuuid: item.uuid,
-               targets: targetTokens.map(i => ({ targetid: i.id, targetname: i.name })),
+               targets: targetTokens?.map(i => ({ targetid: i.id, targetname: i.name })),
                damageRoll,
-               healRoll, 
+               healRoll,
                actions,
-               conditions,
+               conditions: condsForChat?.conditions
             }
          }
       });
