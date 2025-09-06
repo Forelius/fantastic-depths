@@ -45,10 +45,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      const actions = [];
-      if (item?.system.savingThrow?.length > 0) {
-         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
-      }
+      let actions = await this._getActionsForChat(item, context, true);
 
       // Prepare data for the chat template
       const chatData = {
@@ -58,14 +55,15 @@ export class SpellCastChatBuilder extends ChatBuilder {
          item, // spell item
          attackType: 'spell',
          caster,
-         durationMsg: options.durationMsg
+         durationMsg: options.durationMsg,
+         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
-      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
-      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
       const rolls = roll ? [roll] : null;
+
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          flags: {

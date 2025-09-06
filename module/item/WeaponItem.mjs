@@ -67,7 +67,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          }
       }
 
-      return {
+      return hasDamage ? {
          damageFormula: formula,
          damageType: weaponData.damageType,
          digest,
@@ -76,7 +76,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          targetActorUuid: targetActor?.uuid,
          targetWeaponType,
          ammouuid: ammoItem?.uuid
-      };
+      } : null;
    }
 
    async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {

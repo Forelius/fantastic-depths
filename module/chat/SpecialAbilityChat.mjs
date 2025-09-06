@@ -9,7 +9,7 @@ export class SpecialAbilityChat extends ChatBuilder {
       const { context, caller, roll, options } = this.data;
       const targetTokens = Array.from(game.user.targets);
       const item = caller;
-      const dmgHealRoll = item.getDamageRoll(null);
+      let dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "" };
       let description = '?';
@@ -36,10 +36,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
-      const actions = [];
-      if (item?.system.savingThrow?.length > 0) {
-         actions.push({ type: "save", item: await fadeFinder.getSavingThrow(item.system.savingThrow) });
-      }
+      let actions = await this._getActionsForChat(item, context, true);
 
       // Prepare data for the chat template
       const chatData = {
@@ -49,7 +46,8 @@ export class SpecialAbilityChat extends ChatBuilder {
          item,
          description,
          itemDescription: await item.getInlineDescription(),
-         attackType: 'specialAbility'
+         attackType: 'specialAbility',
+         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
@@ -61,10 +59,9 @@ export class SpecialAbilityChat extends ChatBuilder {
       }
 
       const { conditions, durationMsgs } = await this._getConditionsForChat(item);
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode
-      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
-      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
          content,

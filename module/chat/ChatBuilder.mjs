@@ -233,6 +233,16 @@ export class ChatBuilder {
       return content;
    }
 
+   _getDamageHealRolls(dmgHealRoll) {
+      let damageRoll;
+      let healRoll;
+      if (dmgHealRoll?.length > 0) {
+         damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+         healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
+      }
+      return { damageRoll, healRoll };
+   }
+
    async _getActionsForChat(actionItem, owner, skipAttacks = false) {
       const actions = [];
       if (actionItem) {
@@ -274,7 +284,7 @@ export class ChatBuilder {
                itemName: "Throw",
             })
          }
-         for (let ability of [...actionItem.system.specialAbilities]) {
+         for (let ability of [...actionItem.system.specialAbilities || []]) {
             let sourceItem = await fromUuid(ability.uuid);
             if (sourceItem) {
                sourceItem = foundry.utils.deepClone(sourceItem);

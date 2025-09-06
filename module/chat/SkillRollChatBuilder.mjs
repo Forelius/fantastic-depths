@@ -43,9 +43,9 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
+
       // Prepare chat message data, including rollMode from mdata
-      const damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
-      const healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
       const chatMessageData = this.getChatMessageData({
          caller,
          content,

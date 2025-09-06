@@ -44,7 +44,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          hasDamage = false;
       }
 
-      return { damageFormula, damageType: isHeal ? "heal" : "magic", digest, hasDamage };
+      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : "magic", digest, hasDamage } : null;
    }
 
    /**

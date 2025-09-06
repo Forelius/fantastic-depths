@@ -59,8 +59,7 @@ export class ItemRollChat extends ChatBuilder {
       if (item?.isWeaponItem !== true && item?.getDamageRoll && options?.isUsing === true) {
          dmgHealRoll = item?.getDamageRoll(null);
       }
-      const damageRoll = dmgHealRoll?.damageType === "heal" ? undefined : dmgHealRoll;
-      const healRoll = dmgHealRoll?.damageType === "heal" ? dmgHealRoll : undefined;
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({

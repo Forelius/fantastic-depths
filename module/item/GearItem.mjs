@@ -167,7 +167,7 @@ export class GearItem extends FDItem {
          hasDamage = false;
       }
 
-      return { damageFormula, damageType, digest, hasDamage };
+      return hasDamage ? { damageFormula, damageType, digest, hasDamage } : null;
    }
 
    /**

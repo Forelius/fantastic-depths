@@ -61,7 +61,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const dataset = element.dataset;
 
       // Custom behavior for damage rolls      
-      if (dataset.type === "damage" || dataset.type==="heal") {
+      if (dataset.type === "damage" || dataset.type === "heal") {
          event.preventDefault(); // Prevent the default behavior
          event.stopPropagation(); // Stop other handlers from triggering the event
 
@@ -95,47 +95,49 @@ export class DamageRollChatBuilder extends ChatBuilder {
          damageRoll = damagerItem.getDamageRoll(null);
       }
 
-      dialogResp = await DialogFactory({
-         dialog: "generic",
-         label: isHeal ? "Heal" : "Damage",
-         formula: damageRoll.damageFormula,
-         editFormula: game.user.isGM
-      }, damagerItem);
-      rolling = dialogResp != null;
+      if (damageRoll) {
+         dialogResp = await DialogFactory({
+            dialog: "generic",
+            label: isHeal ? "Heal" : "Damage",
+            formula: damageRoll.damageFormula,
+            editFormula: game.user.isGM
+         }, damagerItem);
+         rolling = dialogResp != null;
 
-      if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = damagerItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
-      } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = damagerItem.getDamageRoll(dialogResp);
-      }
+         if (weaponDamageTypes.includes(dataset.damagetype)) {
+            damageRoll = damagerItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
+         } else if (otherDamageTypes.includes(dataset.damagetype)) {
+            damageRoll = damagerItem.getDamageRoll(dialogResp);
+         }
 
-      if (rolling === true) {
-         // Roll the damage and wait for the result
-         const roll = new Roll(damageRoll.damageFormula);
-         await roll.evaluate(); // Wait for the roll result
-         const damage = Math.max(roll.total, 0);
-         const attackName = (damagerItem.system.isIdentified !== false) ? damagerItem.name : damagerItem.system.unidentifiedName;
-         const descData = {
-            attacker: instigator.name,
-            weapon: attackName,
-            damage
-         };
-         const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
-         dataset.desc = dataset.desc ? dataset.desc : resultString;
+         if (rolling === true) {
+            // Roll the damage and wait for the result
+            const roll = new Roll(damageRoll.damageFormula);
+            await roll.evaluate(); // Wait for the roll result
+            const damage = Math.max(roll.total, 0);
+            const attackName = (damagerItem.system.isIdentified !== false) ? damagerItem.name : damagerItem.system.unidentifiedName;
+            const descData = {
+               attacker: instigator.name,
+               weapon: attackName,
+               damage
+            };
+            const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
+            dataset.desc = dataset.desc ? dataset.desc : resultString;
 
-         const chatData = {
-            context: instigator,
-            mdata: dataset,
-            roll,
-            digest: damageRoll.digest
-         };
-         const options = {
-            damage,
-            resultString,
-            attackName,
-         };
-         const builder = new DamageRollChatBuilder(chatData, options);
-         builder.createChatMessage();
+            const chatData = {
+               context: instigator,
+               mdata: dataset,
+               roll,
+               digest: damageRoll.digest
+            };
+            const options = {
+               damage,
+               resultString,
+               attackName,
+            };
+            const builder = new DamageRollChatBuilder(chatData, options);
+            builder.createChatMessage();
+         }
       }
    }
 

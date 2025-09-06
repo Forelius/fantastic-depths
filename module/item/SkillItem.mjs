@@ -30,12 +30,18 @@ export class SkillItem extends FDItem {
    getDamageRoll() {
       const isHeal = this.system.healFormula?.length > 0;
       let damageFormula = null;
+      let modifier = 0;
+      let hasDamage = false; // Has heals or damage
 
       if (isHeal) {
          damageFormula = this.getEvaluatedRollSync(this.system.healFormula)?.formula;
       }
 
-      return { damageFormula, damageType: isHeal ? "heal" : null, digest: [], hasDamage: isHeal === true };
+      if (modifier <= 0 && (damageFormula == null || damageFormula?.total <= 0)) {
+         hasDamage = false;
+      }
+
+      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : null, digest: [], hasDamage: isHeal === true } : null;
    }
 
    /**

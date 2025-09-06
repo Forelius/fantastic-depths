@@ -25,7 +25,7 @@ export class SpecialAbilityItem extends FDItem {
       const digest = [];
       let modifier = 0;
       let hasDamage = true;
-      const damageType = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
+      let damageType = null;
 
       if (resp?.mod && resp?.mod !== 0) {
          damageFormula = damageFormula ? `${damageFormula}+${resp.mod}` : `${resp.mod}`;
@@ -37,7 +37,11 @@ export class SpecialAbilityItem extends FDItem {
          hasDamage = false;
       }
 
-      return { damageFormula, damageType, digest, hasDamage };
+      if (hasDamage) {
+         damageType = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
+      }      
+
+      return hasDamage ? { damageFormula, damageType, digest, hasDamage } : null;
    }
 
    /**

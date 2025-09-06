@@ -82,9 +82,9 @@ export class TieredAbilityCheck extends AbilityCheck {
       let result = "?";
 
       if (autosuccess !== null && autosuccess !== undefined && naturalTotal == autosuccess) {
-         result = game.i18n.localize(FADE.Chat.abilityCheck.tieredResults.criticalSuccess);
+         result = game.i18n.localize("FADE.Chat.abilityCheck.tieredResults.criticalSuccess");
       } else if (autofail !== null && autofail !== undefined && naturalTotal == autofail) {
-         result = game.i18n.localize(FADE.Chat.abilityCheck.tieredResults.criticalFail);
+         result = game.i18n.localize("FADE.Chat.abilityCheck.tieredResults.criticalFail");
       } else {
          let tierName;
          switch (operator) {
