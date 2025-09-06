@@ -6,7 +6,7 @@ import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
  */
 export class FDItem extends Item {
    constructor(data, context) {
-      super(data, context);      
+      super(data, context);
    }
 
    get ownerToken() {
@@ -235,5 +235,78 @@ export class FDItem extends Item {
          result = shiftKey === false && result === true;
       }
       return result;
+   }
+
+   /**
+    * Some items may have charges and quantity uses both. if the item has the charges property then
+    * charges are used, otherwise quantity is used.
+    * @param {any} getOnly If true, does not use, just gets.
+    * @param {any} actionItem The item that owns this item, or null.
+    */
+   async _tryUseChargeThenUsage(getOnly = false, actionItem) {
+      let result = false;
+      let item = actionItem || this;
+      if (item.system.charges !== undefined) {
+         result = await this._tryUseCharge(getOnly, actionItem);
+      } else {
+         result = await this._tryUseUsage(getOnly, actionItem);
+      }
+      return result;
+   }
+
+   /**
+    * Determines if any charges are available and if so decrements charges by one
+    * @private
+    * @param {any} getOnly If true, does not use, just gets.
+    * @param {object} actionItem The item that owns this item, or null.
+    * @returns True if quantity is above zero.
+    */
+   async _tryUseCharge(getOnly = false, actionItem) {
+      let item = actionItem || this;
+      let hasCharge = item.system.charges > 0;
+
+      if (getOnly !== true) {
+         // Deduct 1 if not infinite and not zero
+         if (hasCharge === true && item.system.chargesMax !== null) {
+            const newCharges = Math.max(0, item.system.charges - 1);
+            await item.update({ "system.charges": newCharges });
+         }
+      }
+      // If there are no charges remaining, show a UI notification
+      if (hasCharge === false) {
+         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
+      }
+
+      return hasCharge;
+   }
+
+   /**
+    * Determines if any uses are available and if so decrements quantity by one
+    * @private
+    * @param {any} getOnly If true, does not use, just gets.
+    * @param {object} actionItem The item that owns this item, or null.
+    * @returns True if quantity is above zero.
+    */
+   async _tryUseUsage(getOnly = false, actionItem) {
+      let item = actionItem || this;
+      let hasUse = item.system.quantity > 0;
+
+      if (getOnly === false) {
+         // Deduct 1 if not infinite and not zero
+         if (hasUse === true && item.system.quantityMax !== null) {
+            const newQuantity = Math.max(0, item.system.quantity - 1);
+            await item.update({ "system.quantity": newQuantity });
+         }
+      }
+      // If there are no usages remaining, show a UI notification
+      if (hasUse === false) {
+         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: item.actor.name } });
+      }
+
+      return hasUse;
    }
 }

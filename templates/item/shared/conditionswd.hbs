@@ -1,4 +1,4 @@
-﻿<!-- Conditions with duration -->
+﻿<!-- Conditions WITHOUT duration -->
 <section class="tab {{tabs.effects.cssClass}}" data-group="primary" data-tab="effects">
    <div name="item-conditions" class="items-list">
       <!-- Header Row -->
@@ -10,6 +10,7 @@
       <!-- Class Ability Entries -->
       {{#each system.conditions as |item index|}}
       <div class="item flexrow" data-item-id="{{item._id}}" style="margin-top:2px;">
+         <input type="text" name="system.conditions.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
          <div>
             <input type="text" style="text-align:left;" name="system.conditions.{{index}}.name" value="{{item.name}}" data-dtype="String" />
          </div>

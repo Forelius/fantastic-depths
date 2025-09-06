@@ -62,9 +62,9 @@ export class ItemRollChat extends ChatBuilder {
       let condsForChat = null;
       if (item?.isWeaponItem !== true) {
          condsForChat = await this._getConditionsForChat(item);
-         if (item?.getDamageRoll && options?.isUsing === true) {
-            dmgHealRoll = item?.getDamageRoll(null);
-         }
+         //if (item?.getDamageRoll && options?.isUsing === true) {
+         //   dmgHealRoll = item?.getDamageRoll(null);
+         //}
       }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 

@@ -58,6 +58,7 @@ export class SpecialAbilityItem extends FDItem {
       let result = null;
       const systemData = this.system;
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
@@ -66,65 +67,64 @@ export class SpecialAbilityItem extends FDItem {
       const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
 
-      if (instigator) {
-         //let rolled = null;
-         let roll = null;
-         if (await this.#tryUseUsage(true) === false) {
-            canProceed = false;
-         } else if (hasRoll === true) {
-            // Retrieve roll data.
-            dataset.dialog = "generic";
-            dataset.rollmode = systemData.rollMode;
-            dataset.formula = systemData.rollFormula;
-            dataset.label = this.name;
+      if (!instigator) return result;
 
-            if (dialogResp) {
-               dialogResp.rolling === true
-            } else if (ctrlKey === true) {
-               dialogResp = {
-                  rolling: true,
-                  mod: (Number(dataset.mod) || 0),
-                  formula: systemData.rollFormula,
-                  editFormula: game.user.isGM
-               };
-            } else {
-               dialogResp = await DialogFactory(dataset, instigator);
-               if (dialogResp) {
-                  dialogResp.rolling = true;
-                  dialogResp.mod = Number(dialogResp.mod) + (Number(dataset.mod) || 0);
-               }
-            }
+      let roll = null;
+      if (await this._tryUseChargeThenUsage(true, actionItem) === false) {
+         canProceed = false;
+      } else if (hasRoll === true) {
+         // Retrieve roll data.
+         dataset.dialog = "generic";
+         dataset.rollmode = systemData.rollMode;
+         dataset.formula = systemData.rollFormula;
+         dataset.label = this.name;
 
-            if (dialogResp?.rolling === true) {
-               dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
-               if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
-                  dialogResp.mod -= systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
-               } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
-                  dialogResp.mod += systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
-               }
-            } else {
-               canProceed = false;
-            }
-
-            rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
-            const rollContext = { ...rollData, ...dialogResp || {} };
-            roll = await new Roll(rollData.formula, rollContext);
-         }
-
-         if (canProceed === true) {
-            canProceed = await this.#tryUseUsage();
-         }
-
-         if (canProceed === true) {
-            const chatData = {
-               caller: this,
-               resp: dialogResp,
-               context: instigator,
-               roll
+         if (dialogResp) {
+            dialogResp.rolling === true
+         } else if (ctrlKey === true) {
+            dialogResp = {
+               rolling: true,
+               mod: (Number(dataset.mod) || 0),
+               formula: systemData.rollFormula,
+               editFormula: game.user.isGM
             };
-            const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
-            result = builder.createChatMessage();
+         } else {
+            dialogResp = await DialogFactory(dataset, instigator);
+            if (dialogResp) {
+               dialogResp.rolling = true;
+               dialogResp.mod = Number(dialogResp.mod) + (Number(dataset.mod) || 0);
+            }
          }
+
+         if (dialogResp?.rolling === true) {
+            dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
+            if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
+               dialogResp.mod -= systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
+            } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
+               dialogResp.mod += systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
+            }
+         } else {
+            canProceed = false;
+         }
+
+         rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
+         const rollContext = { ...rollData, ...dialogResp || {} };
+         roll = await new Roll(rollData.formula, rollContext);        
+      }
+
+      if (canProceed === true) {
+         canProceed = await this._tryUseChargeThenUsage(false, actionItem);
+      }
+
+      if (canProceed === true) {
+         const chatData = {
+            caller: this,
+            resp: dialogResp,
+            context: instigator,
+            roll
+         };
+         const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
+         result = builder.createChatMessage();
       }
 
       return result;
@@ -134,31 +134,5 @@ export class SpecialAbilityItem extends FDItem {
       const description = await super.getInlineDescription();
       const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : "";
       return `${summary}${description}`;
-   }
-
-   /**
-    * Determines if any uses are available and if so decrements quantity by one
-    * @private
-    * @param {any} getOnly If true, does not use, just gets.
-    * @returns True if quantity is above zero.
-    */
-   async #tryUseUsage(getOnly = false) {
-      let hasUse = this.system.quantity > 0;
-
-      if (getOnly !== true) {
-         // Deduct 1 if not infinite and not zero
-         if (hasUse === true && this.system.quantityMax !== null && this.system.quantityMax > 0) {
-            const newQuantity = Math.max(0, this.system.quantity - 1);
-            await this.update({ "system.quantity": newQuantity });
-         }
-      }
-      // If there are no usages remaining, show a UI notification
-      if (hasUse === false) {
-         const message = game.i18n.format("FADE.notification.zeroQuantity", { itemName: this.name });
-         ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
-      }
-
-      return hasUse;
    }
 }

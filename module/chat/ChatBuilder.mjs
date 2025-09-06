@@ -287,7 +287,7 @@ export class ChatBuilder {
                   itemName: "Throw",
                })
             }
-         } 
+         }
          if (options.abilities === true) {
             for (let ability of [...actionItem.system.specialAbilities || []]) {
                let sourceItem = await fromUuid(ability.uuid);
@@ -326,22 +326,22 @@ export class ChatBuilder {
       const conditions = foundry.utils.deepClone(item.system.conditions);
       const durationMsgs = [];
       for (let condition of conditions) {
-         const durationResult = await this._getDurationResult(condition.name, condition.durationFormula);
+         const durationResult = await this._getConditionDurationResult(condition, item);
          condition.duration = durationResult?.durationSec ?? condition.duration;
          durationMsgs.push(durationResult.text);
       }
       return { conditions, durationMsgs };
    }
 
-   async _getDurationResult(name, durationFormula) {
+   async _getConditionDurationResult(condition, item) {
       let result = {
-         text: (durationFormula !== "-" && durationFormula !== null) ?
-            `${name} ${game.i18n.localize("FADE.Spell.duration")}: ${durationFormula} ${game.i18n.localize("FADE.rounds")}`
+         text: (condition.durationFormula !== "-" && condition.durationFormula !== null) ?
+            `${condition.name} ${game.i18n.localize("FADE.Spell.duration")}: ${condition.durationFormula} ${game.i18n.localize("FADE.rounds")}`
             : ""
       };
-      if (durationFormula !== "-" && durationFormula !== null) {
-         const rollData = this.getRollData();
-         const rollEval = await new Roll(durationFormula, rollData).evaluate();
+      if (condition.durationFormula !== "-" && condition.durationFormula !== null) {
+         const rollData = condition.getRollData ? condition.getRollData() : item.getRollData();
+         const rollEval = await new Roll(condition.durationFormula, rollData).evaluate();
          result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
          const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
          result.durationSec = rollEval.total * roundSeconds;
