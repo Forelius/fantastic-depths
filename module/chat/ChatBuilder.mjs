@@ -237,7 +237,15 @@ export class ChatBuilder {
       const actions = [];
       if (actionItem) {
          if (skipAttacks === true && actionItem.system.savingThrow?.length > 0) {
-            actions.push({ type: "save", item: await fadeFinder.getSavingThrow(actionItem.system.savingThrow) });
+            const save = await fadeFinder.getSavingThrow(actionItem.system.savingThrow);
+            actions.push({
+               type: "save",
+               owneruuid: owner.uuid,
+               itemuuid: save.uuid,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               shortName: save?.system.shortName,
+               customSaveCode: save?.system.customSaveCode,
+            });
          }
          if (skipAttacks === false && actionItem.canMelee === true) {
             actions.push({

@@ -40,11 +40,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      //let save = null;
-      //if (weapon.system.savingThrow?.length > 0) {
-      //   save = await fadeFinder.getSavingThrow(weapon.system.savingThrow);
-      //}
-
       let actions = await this._getActionsForChat(weaponItem, context, true);
 
       const chatData = {
@@ -55,10 +50,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
          digest: digest,
          weapon: weaponItem,
          resp,
-         //save,
          ammoItem: options?.ammoItem,
          targetWeaponType: resp.targetWeaponType,
-         targetActor
+         targetActor,
+         actions
       };
       let content = await CodeMigrate.RenderTemplate(this.template, chatData);
       // Manipulated the dom to place digest info in roll's tooltip

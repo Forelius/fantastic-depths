@@ -48,13 +48,4 @@
    <div>{{ditem}}</div>
    {{/each}}
 </div>
-{{#if weapon.system.savingThrow}}
-<div style="margin-top:6px;">
-   <button class="saving-roll"           
-           data-type="{{weapon.system.savingThrow}}"
-           data-weaponuuid="{{weapon.uuid}}">
-      <i class="fa-solid fa-life-ring"></i>
-      <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{save.system.shortName}}</span>
-   </button>
-</div>
-{{/if}}
+{{> "rollSaveBtn"}}
