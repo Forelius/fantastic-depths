@@ -635,6 +635,7 @@
          "noTokenWarning2": "You must select a token to perform this action.",
          "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
          "missingItem2": "{actor} does not have a {type}.",
+         "noCharges": "{itemName} has no charges remaining and can't be used.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
          "advancedTime": "<div>Time advances {turns} turn(s), {rounds} round(s).</div>",

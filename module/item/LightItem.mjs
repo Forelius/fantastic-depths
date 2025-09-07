@@ -6,10 +6,6 @@ export class LightItem extends GearItem {
       super(data, context);
    }
 
-   get hasTargets() {
-      return false;
-   }
-
    /**
     * Does this light source require and external fuel such as lantern oil.
     */

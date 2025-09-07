@@ -6,6 +6,10 @@ export class fadeChatMessage extends ChatMessage {
       let html = await super.getHTML(options);
       // Foundry v12...
       if ((Number(game.version) < 13)) {
+         if (html instanceof Element === false) {
+            // In case jquery, due to v12/v13 inconsistency
+            html = html[0];
+         }
          html = await this.#getForRender(html);
       }
       return html;

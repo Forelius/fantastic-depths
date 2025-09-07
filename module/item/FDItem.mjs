@@ -19,10 +19,22 @@ export class FDItem extends Item {
    get containedItems() {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
-
+   /** Returns true if this item type shows selected targets on its chat card, otherwise false. */
+   get hasTargets() {
+      return false; // The item itself does not have targets.
+   }
    get canMelee() { return this.system.canMelee === true }
-   get canShoot() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0 }
-   get canThrow() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0 }
+   get canShoot() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0; }
+   get canThrow() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0; }
+   /** Returns true if the item uses charges and either there are charges remaining or there are infinite charges (chargesMax === null). */
+   get hasCharge() { return this.system.charges !== undefined && (this.system.charges > 0 || this.system.chargesMax === null); }
+   /** Returns true if the item uses quantity and either there are uses remaining or there are infinite uses (quantityMax === null). */
+   get hasUse() { return this.system.quantity !== undefined && (this.system.quantity > 0 || this.system.quantityMax === null); }
+   /** Returns true if this item either has available casts or has infinite casts, otherwise false. */
+   get hasCast() {
+      return this.system.cast !== undefined && (this.system.cast < this.system.memorized || this.system.memorized === null);
+   }
+
 
    /** @override
     * @protected */
@@ -32,7 +44,6 @@ export class FDItem extends Item {
          this.system.quantityMax = 0;
       }
    }
-
 
    // Define default icons for various item types using core data paths
    static get defaultIcons() {
@@ -239,18 +250,20 @@ export class FDItem extends Item {
 
    /**
     * Some items may have charges and quantity uses both. if the item has the charges property then
-    * charges are used, otherwise quantity is used.
+    * charge is used, otherwise quantity is used.
     * @param {any} getOnly If true, does not use, just gets.
     * @param {any} actionItem The item that owns this item, or null.
     */
    async _tryUseChargeThenUsage(getOnly = false, actionItem) {
       let result = false;
       let item = actionItem || this;
+
       if (item.system.charges !== undefined) {
          result = await this._tryUseCharge(getOnly, actionItem);
-      } else {
+      } else if (item.system.quantity !== undefined) {
          result = await this._tryUseUsage(getOnly, actionItem);
       }
+
       return result;
    }
 
@@ -262,24 +275,24 @@ export class FDItem extends Item {
     * @returns True if quantity is above zero.
     */
    async _tryUseCharge(getOnly = false, actionItem) {
-      let item = actionItem || this;
-      let hasCharge = item.system.charges > 0;
+      let item = actionItem || this; // The item could be this or a parent item.
+      let result = item.hasCharge;
 
       if (getOnly !== true) {
          // Deduct 1 if not infinite and not zero
-         if (hasCharge === true && item.system.chargesMax !== null) {
+         if (item.hasCharge === true && item.system.chargesMax !== null) {
             const newCharges = Math.max(0, item.system.charges - 1);
             await item.update({ "system.charges": newCharges });
          }
       }
       // If there are no charges remaining, show a UI notification
-      if (hasCharge === false) {
-         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name });
+      if (result === false) {
+         const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.name });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
       }
 
-      return hasCharge;
+      return result;
    }
 
    /**
@@ -290,23 +303,23 @@ export class FDItem extends Item {
     * @returns True if quantity is above zero.
     */
    async _tryUseUsage(getOnly = false, actionItem) {
-      let item = actionItem || this;
-      let hasUse = item.system.quantity > 0;
+      let item = actionItem || this; // The item could be this or a parent item.
+      let result = item.hasUse;
 
       if (getOnly === false) {
          // Deduct 1 if not infinite and not zero
-         if (hasUse === true && item.system.quantityMax !== null) {
+         if (item.hasUse === true && item.system.quantityMax !== null) {
             const newQuantity = Math.max(0, item.system.quantity - 1);
             await item.update({ "system.quantity": newQuantity });
          }
       }
       // If there are no usages remaining, show a UI notification
-      if (hasUse === false) {
+      if (result === false) {
          const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: item.actor.name } });
       }
 
-      return hasUse;
+      return result;
    }
 }

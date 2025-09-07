@@ -10,11 +10,6 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
    get isWeaponItem() { return true }
 
-   get hasTargets() {
-      return false; // The weapon item itself does not have targets.
-   }
-
-
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();

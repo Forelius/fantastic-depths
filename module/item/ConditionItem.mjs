@@ -5,10 +5,6 @@ export class ConditionItem extends FDItem {
       return 0;
    }
 
-   get hasTargets() {
-      return false;
-   }
-
    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();

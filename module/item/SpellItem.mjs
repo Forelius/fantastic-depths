@@ -11,10 +11,6 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
-   get hasTargets() {
-      return false; // The spell itself does not have targets.
-   }
-
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -48,7 +44,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          hasDamage = false;
       }
 
-      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : "magic", digest, hasDamage } : null;
+      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : "magic", digest } : null;
    }
 
    /**
@@ -80,32 +76,31 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       } else {
          ui.notifications.warn(game.i18n.localize('FADE.notification.spellSelectToken'));
       }
-
-      return null;
    }
 
    async doSpellcast(dataset = null) {
       const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const ownerIsItem = this.parent == null;
+      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
-      const systemData = this.system;
-      let result = null;
-      //let hasCharge = 
 
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.
-      if (ownerIsItem || systemData.cast < systemData.memorized || systemData.memorized === null) {
-         let rollAttackResult = null;
+      if (await this._tryCastThenCharge(true, actionItem)) {
 
+         // Determine if spell requires an attack roll, such as touch spells.
+         let rollAttackResult = null;
          if (this.system.attackType === 'melee') {
+            // Roll the attack.
             rollAttackResult = await this.rollAttack();
          }
+
+         // Get the spell duration data.
          const durationResult = await this.#getDurationResult(dataset);
 
+         // If there was no attack roll or the attack roll was not canceled...
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource
-            systemData.cast += 1;
-            await this.update({ "system.cast": systemData.cast });
+            await this._tryCastThenCharge(false, actionItem)
 
             const chatData = {
                caller: this, // the spell
@@ -126,15 +121,6 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             await builder.createChatMessage();
          }
       }
-      else {
-         const msg = game.i18n.format('FADE.notification.notMemorized', { actorName: instigator.name, spellName: this.name });
-         ui.notifications.warn(msg);
-
-         // Create the chat message
-         await ChatMessage.create({ content: msg });
-      }
-
-      return result;
    }
 
    /**
@@ -144,6 +130,45 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    getAttackTypes() {
       const result = [];
       result.push({ text: game.i18n.localize(`FADE.dialog.attackType.${this.system.attackType}`), value: this.system.attackType });
+      return result;
+   }
+
+   /**
+    * Some items may have charges and cast uses both. if the item has the cast property then
+    * cast is used, otherwise charge is used.
+    * @param {any} getOnly If true, does not use, just gets.
+    * @param {any} actionItem The item that owns this item, or null.
+    */
+   async _tryCastThenCharge(getOnly = false, actionItem) {
+      let result = false;
+      let item = actionItem || this;
+
+      if (item.system.cast !== undefined) {
+         result = await this._tryCastMemorized(getOnly, actionItem);
+      } else if (item.system.charges !== undefined) {
+         result = await this._tryUseCharge(getOnly, actionItem);
+      }
+
+      return result;
+   }
+
+   async _tryCastMemorized(getOnly = false, actionItem) {
+      let item = actionItem || this;
+      let result = item.hasCast;
+
+      if (getOnly !== true) {
+         // Add 1 if not infinite and above max casts
+         if (item.hasCast && item.system.Memorized !== null) {
+            await item.update({ "system.cast": item.system.cast + 1 });
+         }
+      }
+      // If there are no charges remaining, show a UI notification
+      if (result === false) {
+         const message = game.i18n.format('FADE.notification.notMemorized', { actorName: item.actor.name, spellName: this.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
+      }
+
       return result;
    }
 

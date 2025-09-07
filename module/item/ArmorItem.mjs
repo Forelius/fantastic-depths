@@ -6,11 +6,6 @@ export class ArmorItem extends GearItem {
       super(data, context);
    }
 
-   get hasTargets() {
-      return false;
-   }
-
-
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();

@@ -24,6 +24,7 @@ export class SpellData extends foundry.abstract.DataModel {
          range: new StringField({ required: false, initial: "" }),
          duration: new StringField({ required: false, initial: "Instant" }),
          effect: new StringField({ required: false, initial: "" }),
+         // Acts as castMax
          memorized: new NumberField({ required: false, nullable: true, initial: 0 }),
          // How many times the spell has been cast or used
          cast: new NumberField({ required: true, initial: 0 }),
