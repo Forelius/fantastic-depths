@@ -1,7 +1,7 @@
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { FDItem } from './FDItem.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
+import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
+import { FDItem } from '/systems/fantastic-depths/module/item/FDItem.mjs';
+import { TagManager } from '/systems/fantastic-depths/module/sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.

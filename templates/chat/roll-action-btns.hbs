@@ -43,6 +43,14 @@
         data-itemuuid="{{action.itemuuid}}">
    <span style="margin-left:4px;">{{action.itemName}}</span>
 </button>
+{{else if (eq action.type "toggleLight")}}
+<button class="action-roll"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{localize "FADE.dialog.lightManager.ignite"}}/{{localize "FADE.dialog.lightManager.extinguish"}}</span>
+</button>
 <!--
 {{else if (eq action.type "save")}}
 <button class="saving-roll"

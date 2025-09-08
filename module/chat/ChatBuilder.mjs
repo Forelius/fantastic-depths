@@ -248,6 +248,11 @@ export class ChatBuilder {
       options = { ...{ attacks: true, abilities: true, saves: true }, ...options };
       const actions = [];
       if (actionItem) {
+         const itemActions = actionItem.getActionsForChat(owner, options);
+         if (itemActions?.length > 0) {
+            actions.push(...itemActions);
+         }
+
          if (options.saves === true && actionItem.system.savingThrow?.length > 0) {
             const save = await fadeFinder.getSavingThrow(actionItem.system.savingThrow);
             actions.push({

@@ -1,4 +1,4 @@
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -105,6 +105,10 @@ export class FDItem extends Item {
          description = '--';
       }
       return description;
+   }
+
+   getActionsForChat(owner, options = {}) {
+      return [];
    }
 
    /**

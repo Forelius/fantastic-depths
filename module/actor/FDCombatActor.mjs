@@ -172,14 +172,19 @@ export class FDCombatActor extends FDActorBase {
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
          ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
-      } else if (dataset?.type === "melee" || dataset?.type === "shoot" || dataset?.type === "throw") {
-         const item = await fromUuid(dataset.itemuuid);
-         // Directly roll item and skip the rest
-         if (item) await item.rollAttack(dataset);
       } else {
-         const item = await fromUuid(dataset.itemuuid);
-         // Directly roll item and skip the rest
-         if (item) await item.roll(dataset, null, event);
+         if (dataset?.type === "melee" || dataset?.type === "shoot" || dataset?.type === "throw") {
+            const item = await fromUuid(dataset.itemuuid);
+            // Directly roll item and skip the rest
+            if (item) await item.rollAttack(dataset);
+         } else if (dataset?.type === "toggleLight") {
+            const item = await fromUuid(dataset.itemuuid);
+            if (item) await item.toggleLight(dataset);
+         } else {
+            const item = await fromUuid(dataset.itemuuid);
+            // Directly roll item and skip the rest
+            if (item) await item.roll(dataset, null, event);
+         }
       }
    }
 

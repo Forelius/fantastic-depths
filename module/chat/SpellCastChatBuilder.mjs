@@ -87,9 +87,9 @@ export class SpellCastChatBuilder extends ChatBuilder {
       if (dataset.name || dataset.uuid) {
          event.preventDefault(); // Prevent the default behavior
          event.stopPropagation(); // Stop other handlers from triggering the event
-         let sourceCondition = await fromUuid(dataset.uuid);
+         let sourceCondition = foundry.utils.deepClone(await fromUuid(dataset.uuid));
          if (!sourceCondition) {
-            sourceCondition = await game.fade.fadeFinder.getCondition(dataset.name);
+            sourceCondition = foundry.utils.deepClone(await game.fade.fadeFinder.getCondition(dataset.name));
          }
          if (sourceCondition) {
             // Get targets
@@ -132,6 +132,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
             // Ensure we have a target ID
             if (applyTo.length > 0) {
                const durationSec = Number.parseInt(dataset.duration);
+               let chatContent = game.i18n.format("FADE.Chat.appliedCondition", { condition: sourceCondition.name });
                for (let target of applyTo) {
                   if (target.actor.isOwner === true) {
                      const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
@@ -140,8 +141,15 @@ export class SpellCastChatBuilder extends ChatBuilder {
                            condition.setEffectsDuration(durationSec);
                         }
                      }
+                     chatContent += `<div>${target.name}</div>`;
                   }
                }
+
+               if (game.fade.toastManager) {
+                  game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+               }
+               const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker
+               ChatMessage.create({ speaker: speaker, content: chatContent });
             }
          }
       }
