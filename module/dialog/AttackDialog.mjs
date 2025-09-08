@@ -30,6 +30,9 @@ export class AttackDialog {
          return acc;
       }, {});
       dialogData.attackType = dialogData.attackTypes.melee ? "melee" : "missile";
+      if (dialogData.attackTypes.missile && ["shoot","throw"].includes(options?.dataset?.type)) {
+         dialogData.attackType = "missile";
+      }
       // Get a shallow copy of the ranges.
       let ranges = { ...weapon.system.range };
 
