@@ -706,6 +706,7 @@ table.compact-table input {
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
 .dark-mode .fantastic-depths .window-content .inline-roll {
+  background: rgba(0, 0, 0, 0.1);
   color: #ebeae4;
 }
 .dark-mode .fantastic-depths .summary li {
