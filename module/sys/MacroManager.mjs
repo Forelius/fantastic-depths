@@ -95,39 +95,6 @@ export class MacroManager {
          });
       }
       return game.user.assignHotbarMacro(macro, slot);
-      //let result = false; // Prevent further handling of the drop event
-
-      //if (data.type === "Macro") {
-      //   await game.user.assignHotbarMacro(await fromUuid(data.uuid), slot);
-      //} else if (data.type === "Item") {
-      //   if (!data.uuid.includes('Actor.') && !data.uuid.includes('Token.')) {
-      //      ui.notifications.warn("You can only create macro buttons for owned Items");
-      //   } else {
-      //      // Stop the default Foundry behavior
-      //      const item = await Item.fromDropData(data);
-      //      // Create the macro command using the item's UUID.
-      //      const command = `game.fade.MacroManager.rollItemMacro("${data.uuid}");`;
-      //      // Check if a macro with the same name and command already exists
-      //      let macro = game.macros.find((m) => m.name === item.name && m.command === command);
-      //      if (!macro) {
-      //         macro = await Macro.create({
-      //            name: item.name,
-      //            type: 'script',
-      //            img: item.img,
-      //            command: command,
-      //            flags: { 'fantastic-depths.itemMacro': true },
-      //         });
-      //      }
-
-      //      // Assign the created macro to the hotbar slot
-      //      await game.user.assignHotbarMacro(macro, slot);
-      //   }
-      //}
-      //else {
-      //   result = true;
-      //}
-
-      //return result;  
    }
 
    static rollTableMacro(tableUuId) {
@@ -165,25 +132,5 @@ export class MacroManager {
 
       // Trigger the item roll
       return item.roll();
-
-      //// Reconstruct the drop data so that we can load the item.
-      //const dropData = {
-      //   type: 'Item',
-      //   uuid: itemUuid,
-      //};
-
-      //// Load the item from the uuid.
-      //Item.fromDropData(dropData).then((item) => {
-      //   // Determine if the item loaded and if it's an owned item.
-      //   if (!item || !item.parent) {
-      //      const itemName = item?.name ?? itemUuid;
-      //      return ui.notifications.warn(
-      //         `Could not find item ${itemName}. You may need to delete and recreate this macro.`
-      //      );
-      //   }
-
-      //   // Trigger the item roll
-      //   item.roll();
-      //});
    }
 }
