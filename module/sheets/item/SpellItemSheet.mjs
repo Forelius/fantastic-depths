@@ -1,5 +1,4 @@
-import { EffectManager } from "../sys/EffectManager.mjs";
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
@@ -94,9 +93,6 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
          return { value: save.system.customSaveCode, text: save.system.shortName }
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-
-      // Prepare active effects for easier access
-      //context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       context.tabs = this.#getTabs();
 

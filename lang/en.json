@@ -564,7 +564,8 @@
          "categories": {
             "explore": "Exploration",
             "class": "Class Ability",
-            "save": "Saving Throw"
+            "save": "Saving Throw",
+            "spellcasting": "Spellcasting"
          }
       },
       "class": {
@@ -634,6 +635,7 @@
          "noTokenWarning2": "You must select a token to perform this action.",
          "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
          "missingItem2": "{actor} does not have a {type}.",
+         "noCharges": "{itemName} has no charges remaining and can't be used.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
          "advancedTime": "<div>Time advances {turns} turn(s), {rounds} round(s).</div>",
@@ -645,6 +647,9 @@
          "partyRests": "The party rests."
       },
       "Chat": {
+         "actions": {
+            "name": "Actions"
+         },
          "rollMods": {
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
@@ -708,7 +713,8 @@
          "healRoll": "Heal",
          "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery ({masteryName}) bonus. Attacked {attAgainst}/{maxAttAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
-         "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
+         "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>",
+         "appliedCondition": "<div><span style='color:#c58344' class='text-size16'>{condition}</span> applied to:</div>"
       },
       "apps": {
          "userTables": {

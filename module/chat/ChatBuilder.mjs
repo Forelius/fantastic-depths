@@ -1,3 +1,5 @@
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
@@ -229,5 +231,126 @@ export class ChatBuilder {
       // Convert the updated DOM back to a string and assign it to 'content'
       content = tempDiv.innerHTML;
       return content;
+   }
+
+   _getDamageHealRolls(dmgHealRoll) {
+      let damageRoll;
+      let healRoll;
+      if (dmgHealRoll?.damageFormula?.length > 0) {
+         damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+         healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
+      }
+      return { damageRoll, healRoll };
+   }
+
+   async _getActionsForChat(actionItem, owner, options = {}) {
+      // Merge default options with provided options
+      options = { ...{ attacks: true, abilities: true, saves: true }, ...options };
+      const actions = [];
+      if (actionItem) {
+         const itemActions = actionItem.getActionsForChat(owner, options);
+         if (itemActions?.length > 0) {
+            actions.push(...itemActions);
+         }
+
+         if (options.saves === true && actionItem.system.savingThrow?.length > 0) {
+            const save = await fadeFinder.getSavingThrow(actionItem.system.savingThrow);
+            actions.push({
+               type: "save",
+               owneruuid: owner.uuid,
+               itemuuid: save.uuid,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               shortName: save?.system.shortName,
+               customSaveCode: save?.system.customSaveCode,
+            });
+         }
+         if (options.attacks === true) {
+            if (actionItem.canMelee === true) {
+               actions.push({
+                  type: "melee",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: "Melee",
+               })
+            }
+            if (actionItem.canShoot === true) {
+               actions.push({
+                  type: "shoot",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: "Shoot",
+               })
+            }
+            if (actionItem.canThrow === true) {
+               actions.push({
+                  type: "throw",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: "Throw",
+               })
+            }
+         }
+         if (options.abilities === true) {
+            for (let ability of [...actionItem.system.specialAbilities || []]) {
+               let sourceItem = await fromUuid(ability.uuid);
+               if (sourceItem) {
+                  sourceItem = foundry.utils.deepClone(sourceItem);
+                  actions.push({
+                     type: sourceItem.system.category,
+                     owneruuid: owner.uuid,
+                     itemuuid: ability.uuid,
+                     actionuuid: actionItem.uuid, // this is the owning item's uuid
+                     itemName: ability.name,
+                     mod: ability.mod,
+                  });
+               }
+            }
+            for (let spell of [...actionItem.system.spells || []]) {
+               let sourceItem = await fromUuid(spell.uuid);
+               if (sourceItem) {
+                  sourceItem = foundry.utils.deepClone(sourceItem);
+                  actions.push({
+                     type: "spell",
+                     owneruuid: owner.uuid,
+                     itemuuid: spell.uuid,
+                     actionuuid: actionItem.uuid, // this is the owning item's uuid
+                     itemName: spell.name,
+                     castAs: spell.castAs,
+                  });
+               }
+            }
+         }
+      }
+      return actions;
+   }
+
+   async _getConditionsForChat(item) {
+      const conditions = foundry.utils.deepClone(item.system.conditions);
+      const durationMsgs = [];
+      for (let condition of conditions) {
+         const durationResult = await this._getConditionDurationResult(condition, item);
+         condition.duration = durationResult?.durationSec ?? condition.duration;
+         durationMsgs.push(durationResult.text);
+      }
+      return { conditions, durationMsgs };
+   }
+
+   async _getConditionDurationResult(condition, item) {
+      let result = {
+         text: (condition.durationFormula !== "-" && condition.durationFormula !== null) ?
+            `${condition.name} ${game.i18n.localize("FADE.Spell.duration")}: ${condition.durationFormula} ${game.i18n.localize("FADE.rounds")}`
+            : ""
+      };
+      if (condition.durationFormula !== "-" && condition.durationFormula !== null) {
+         const rollData = condition.getRollData ? condition.getRollData() : item.getRollData();
+         const rollEval = await new Roll(condition.durationFormula, rollData).evaluate();
+         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
+         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+         result.durationSec = rollEval.total * roundSeconds;
+      }
+      return result;
    }
 }

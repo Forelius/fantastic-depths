@@ -63,7 +63,8 @@ FADE.LightTypes = [
 FADE.SpecialAbilityCategories = [
    "explore",
    "class",
-   "save"
+   "save",
+   "spellcasting"
 ];
 FADE.Armor = {
    acNaked: 9

@@ -30,6 +30,9 @@ export class AttackDialog {
          return acc;
       }, {});
       dialogData.attackType = dialogData.attackTypes.melee ? "melee" : "missile";
+      if (dialogData.attackTypes.missile && ["shoot","throw"].includes(options?.dataset?.type)) {
+         dialogData.attackType = "missile";
+      }
       // Get a shallow copy of the ranges.
       let ranges = { ...weapon.system.range };
 
@@ -40,9 +43,11 @@ export class AttackDialog {
          dialogData.selectedWeaponType = masterySystem.getActorWeaponType(targetActor);
          ranges = masterySystem.getRanges(weapon);
       }
-      ranges.short *= (weapon.system.mod.rangeMultiplier ?? 1);
-      ranges.medium *= (weapon.system.mod.rangeMultiplier ?? 1);
-      ranges.long *= (weapon.system.mod.rangeMultiplier ?? 1);
+      if (ranges && weapon.system?.mod) {
+         ranges.short *= (weapon.system.mod.rangeMultiplier ?? 1);
+         ranges.medium *= (weapon.system.mod.rangeMultiplier ?? 1);
+         ranges.long *= (weapon.system.mod.rangeMultiplier ?? 1);
+      }
 
       const distance = toHitSystem.getDistance(attackerToken, targetToken);
       dialogData.attackDistance = distance;

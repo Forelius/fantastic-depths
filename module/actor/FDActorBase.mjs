@@ -139,7 +139,7 @@ export class FDActorBase extends Actor {
    }
 
    /**
-    * @returns
+    * @returns Roll data object contain actor system data and classes data.
     */
    getRollData() {
       const classSystem = game.fade.registry.getSystem("classSystem");

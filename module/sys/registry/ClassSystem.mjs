@@ -118,14 +118,13 @@ export class ClassSystemBase extends ClassSystemInterface {
    }
 
    /**
-    * Pass in a value like C2 and get back a class definition item and level.
+    * Pass in a value like C2 and get back an object with classItem and classLevel properties.
     * @public
     */
    async getClassItemForClassAs(classAs) {
       let result;
-      if (classAs && classAs.length > 0) {
-         const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
-         const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+      const parsed = this.parseClassAs(classAs);
+      if (parsed) {
          // Get the class item
          const classItem = await fadeFinder.getClass(null, parsed?.classId);
          if (!classItem) {
@@ -133,6 +132,21 @@ export class ClassSystemBase extends ClassSystemInterface {
          } else {
             result = { classItem, classLevel: parsed.classLevel };
          }
+      }
+      return result;
+   }
+
+   /**
+    * Parsed a classAs value into its component parts.
+    * @public
+    * @param {any} classAs A two-part designator of class and level. Example: M2.
+    * @returns An object contain classId and classLevel properties.
+    */
+   parseClassAs(classAs) {
+      let result;
+      if (classAs && classAs.length > 0) {
+         const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
+         result = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
       }
       return result;
    }
@@ -213,6 +227,11 @@ export class ClassSystemBase extends ClassSystemInterface {
       }
    }
 
+   /**
+    * Parsed hitdice into their component parts.
+    * @param {any} hd The hitdice string
+    * @returns An object with base, modifier, dieSides and sign properties.
+    */
    getParsedHD(hd) {
       // Regular expression to check for a dice specifier like d<number>
       const diceRegex = /d(\d+)/;
@@ -226,7 +245,7 @@ export class ClassSystemBase extends ClassSystemInterface {
          dieSides = 8;
       }
       // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      let base = hd.replace(modifierRegex, ''); // Extract base number
+      let base = hd.replace(modifierRegex, ""); // Extract base number
       let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
       base = parseFloat(base);
       modifier = parseInt(modifier, 10);
@@ -347,6 +366,9 @@ export class ClassSystemBase extends ClassSystemInterface {
 
    /**
     * Parses a "castAs" key string into its component parts: class key, optional symbol, and optional number.
+    * Note: The symbol portion of the castAsKey might contain the divide "/" symbol and this would be used to
+    *       specify that the caster level should be divided by an arbitrary value. 
+    *       Example: "C/2" would be a Cleric's level divided by 2.
     * @param {any} castAsKey - The input string to parse.
     * @returns {object|null} An object with `classKey`, `symbol`, and `number` fields, or `null` if the format is invalid.
     */
@@ -354,17 +376,25 @@ export class ClassSystemBase extends ClassSystemInterface {
       const match = castAsKey?.match(/^([A-Z]+)(\/)?(\d+)?$/i);
       if (!match) return null;
 
-      const hasSymbol = match[2] === '/';
+      const hasSymbol = match[2] === "/";
       const hasNumber = match[3] !== undefined;
 
       return {
          classKey: match[1],
-         symbol: hasSymbol ? '/' : null,
+         symbol: hasSymbol ? "/" : null,
          number: hasNumber ? parseInt(match[3], 10) : null
       };
    }
 
-   _getLevelAndCastAsLevel(classLevel, classKey, castAsKey) {
+   /**
+    * Used to populate castAs roll data for an actor.
+    * @param {any} classLevel The class level
+    * @param {any} classKey The class key
+    * @param {any} castAsKey The full castAs key.
+    * @returns An object with a property matching the class key and a castLevel property value equal to the class level.
+    *          Example: result.M.castLevel = 2
+    */
+   getLevelAndCastAsLevel(classLevel, classKey, castAsKey) {
       const result = {};
       let castLevel = classLevel;
       result[classKey] = {
@@ -481,6 +511,7 @@ export class SingleClassSystem extends ClassSystemBase {
       const maxSpellLevel = actor.system.config.maxSpellLevel;
       const result = {
          className: actor.system.details.class,
+         spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting")?.id,
          firstSpellLevel,
          maxSpellLevel,
          slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
@@ -501,14 +532,13 @@ export class SingleClassSystem extends ClassSystemBase {
       if (actor.type === "monster") {
          const classAs = actor.system.details.castAs;
          if ((classAs?.length ?? 0) >= 0) {
-            const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
-            const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+            const parsed = this.parseClassAs(classAs);
             if (parsed?.classId && typeof parsed?.classLevel === typeof 0) {
                result[parsed.classId] = { level: parsed.classLevel };
             }
          }
       } else if (actor.system.details?.classKey?.length > 0) {
-         result = this._getLevelAndCastAsLevel(actor.system.details.level, actor.system.details.classKey, actor.system.details.castAsKey);
+         result = this.getLevelAndCastAsLevel(actor.system.details.level, actor.system.details.classKey, actor.system.details.castAsKey);
       }
       return result;
    }
@@ -713,15 +743,14 @@ export class MultiClassSystem extends ClassSystemBase {
       if (actor.type === "monster") {
          const classAs = actor.system.details.castAs;
          if ((classAs?.length ?? 0) >= 0) {
-            const match = classAs?.match(/^([a-zA-Z]+)(\d+)$/);
-            const parsed = match ? { classId: match[1], classLevel: parseInt(match[2], 10) } : null;
+            const parsed = this.parseClassAs(classAs);
             if (parsed?.classId && typeof parsed?.classLevel === typeof 0) {
                result[parsed.classId] = { level: parsed.classLevel };
             }
          }
       } else {
          for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
-            result = { ...result, ...this._getLevelAndCastAsLevel(actorClass.system.level, actorClass.system.key, actorClass.system.castAsKey) };
+            result = { ...result, ...this.getLevelAndCastAsLevel(actorClass.system.level, actorClass.system.key, actorClass.system.castAsKey) };
          }
       }
 
@@ -745,6 +774,8 @@ export class MultiClassSystem extends ClassSystemBase {
                className: classAs?.classItem?.name,
                firstSpellLevel,
                maxSpellLevel,
+               spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting"
+                  && i.system.classKey === classAs?.classItem?.system.key)?.id,
                slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
             });
             // Determine used and max spells
@@ -761,6 +792,8 @@ export class MultiClassSystem extends ClassSystemBase {
                className: casterClass.name,
                firstSpellLevel,
                maxSpellLevel,
+               spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting"
+                  && i.system.classKey === casterClass.system.key)?.id,
                slots
             });
 
@@ -796,7 +829,7 @@ export class MultiClassSystem extends ClassSystemBase {
    }
 
    async awardXP(actor, amounts) {
-      let xps = (input => input.split('/').map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
+      let xps = (input => input.split("/").map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       if (xps?.length > 0 && xps?.length == actorClasses?.length) {
          const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);

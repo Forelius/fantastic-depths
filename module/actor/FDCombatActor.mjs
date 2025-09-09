@@ -23,7 +23,7 @@ export class FDCombatActor extends FDActorBase {
     * @returns Return false to cancel the creation operation entirely
     */
    async _preCreate(documents, operation, user) {
-      const allowed = await super._preCreate(documents, operation, user);      
+      const allowed = await super._preCreate(documents, operation, user);
       // Skip if the document is being created within a compendium
       if (this.pack || this._id) { return allowed; }
 
@@ -153,8 +153,37 @@ export class FDCombatActor extends FDActorBase {
          ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
       } else {
          for (let target of selected) {
-            // Apply damage to the token's actor
+            // Roll for each token's actor
             target.actor.rollSavingThrow(dataset.type, event);
+         }
+      }
+   }
+
+   /**
+    * Static event handler for click on an action button in chat.
+    * @public
+    * @param {any} event
+    */
+   static async handleActionRoll(event) {
+      event.preventDefault(); // Prevent the default behavior
+      event.stopPropagation(); // Stop other handlers from triggering the event
+      const dataset = event.currentTarget.dataset;
+      const selected = Array.from(canvas.tokens.controlled);
+      let hasSelected = selected.length > 0;
+      if (hasSelected === false) {
+         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
+      } else {
+         if (dataset?.type === "melee" || dataset?.type === "shoot" || dataset?.type === "throw") {
+            const item = await fromUuid(dataset.itemuuid);
+            // Directly roll item and skip the rest
+            if (item) await item.rollAttack(dataset);
+         } else if (dataset?.type === "toggleLight") {
+            const item = await fromUuid(dataset.itemuuid);
+            if (item) await item.toggleLight(dataset);
+         } else {
+            const item = await fromUuid(dataset.itemuuid);
+            // Directly roll item and skip the rest
+            if (item) await item.roll(dataset, null, event);
          }
       }
    }
@@ -236,7 +265,7 @@ export class FDCombatActor extends FDActorBase {
       }
       return result;
    }
-   
+
    /**
     * @public
     * Add and/or update the actor's class-given special abilities.

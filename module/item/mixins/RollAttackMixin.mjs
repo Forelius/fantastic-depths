@@ -8,10 +8,9 @@
 const RollAttackMixin = (superclass) => class extends superclass {
    /**
    * Handle clickable rolls.
-   * @override
-   * @param {Event} event The originating click event
+   * @param {object} dataset
    */
-   async rollAttack() {
+   async rollAttack(dataset) {
       const systemData = this.system;
       // The selected token, not the actor
       let attackType;
@@ -34,7 +33,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
          const targetTokens = Array.from(game.user.targets);
          const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, this.actor, { weapon: this, targetToken }));
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, this.actor, { dataset, weapon: this, targetToken }));
          attackType = result.dialogResp?.attackType;
          result.canAttack = result.dialogResp != null;
          if (result.canAttack) {

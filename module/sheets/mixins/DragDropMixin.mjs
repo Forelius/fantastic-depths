@@ -1,5 +1,6 @@
 /**
  * A mixin for adding drag and drop support to an ApplicationV2 class.
+ * Assumes drop target is an actor owned item. If not, overrides necessary.
  * @param {any} superclass
  * @returns
  */
@@ -172,9 +173,13 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @protected
     */
    async _onDropItem(event, item) {
-      if (!this.actor.isOwner) return;
+      // If dropped item's actor is not owned by this user...
+      if (!this.actor?.isOwner) return;
+      // Get the item
       const droppedItem = await Item.implementation.fromDropData(item);
+      // If this item's actor is the same as the dropped item's actor (owner), do sort action
       if (this.actor.uuid === droppedItem?.parent?.uuid) return this._onSortItem(event, droppedItem);
+      // Create new instance of item and if same id item already exists, don't keep id for this item.
       const keepId = !this.actor.items?.has(droppedItem.id);
       await Item.create(droppedItem.toObject(), { parent: this.actor, keepId });
    }

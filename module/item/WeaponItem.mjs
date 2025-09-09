@@ -8,6 +8,8 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       super(data, context);
    }
 
+   get isWeaponItem() { return true }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -37,7 +39,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       } else if (attackType === "missile") {
          modifier += dmgSys.getMissileDamageMod(this, digest, attackerData, targetActor, ammoItem);
       } else if (attackType === "breath") {
-
+         // nothing for now
       }
 
       if (resp?.mod && resp?.mod !== 0) {
@@ -65,20 +67,19 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          }
       }
 
-      return { formula, type: weaponData.damageType, digest, hasDamage };
-   }
-
-   /**
-   * Handle clickable rolls.
-   * @override
-   * @param {Event} event The originating click event
-   */
-   async roll() {
-      return await this.rollAttack();
+      return hasDamage ? {
+         damageFormula: formula,
+         damageType: weaponData.damageType,
+         digest,
+         hasDamage,
+         attackType,
+         targetActorUuid: targetActor?.uuid,
+         targetWeaponType,
+         ammouuid: ammoItem?.uuid
+      } : null;
    }
 
    async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {
-
       const chatData = {
          resp: dialogResp,
          caller: this,
@@ -150,11 +151,6 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
    }
 
    _prepareEffects() {
-      // Reset mod values.
-      //this.system.mod.dmg = 0;
-      //this.system.mod.toHit = 0;
-      //this.system.mod.dmgRanged = 0;
-      //this.system.mod.toHitRanged = 0;
       this._processNonTransferActiveEffects();
    }
 

@@ -1,5 +1,4 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class SpecialAbilityChat extends ChatBuilder {
@@ -9,7 +8,7 @@ export class SpecialAbilityChat extends ChatBuilder {
       const { context, caller, roll, options } = this.data;
       const targetTokens = Array.from(game.user.targets);
       const item = caller;
-      const damageRoll = item.getDamageRoll(null);
+      let dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "" };
       let description = '?';
@@ -36,10 +35,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
-      let save = null;
-      if (item.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
-      }
+      let actions = await this._getActionsForChat(item, context, { attacks: false });
 
       // Prepare data for the chat template
       const chatData = {
@@ -49,24 +45,23 @@ export class SpecialAbilityChat extends ChatBuilder {
          item,
          description,
          itemDescription: await item.getInlineDescription(),
-         isHeal: damageRoll.type === "heal",
-         damageRoll,
-         targets: targetTokens,
-         showTargets: !roll,
-         save,
-         attackType: 'specialAbility'
+         attackType: 'specialAbility',
+         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Add targets for DM chat message
       let toHitResult = { targetResults: [], message: '' };
-      for (let targetToken of targetTokens) {
-         toHitResult.targetResults.push({
-            targetid: targetToken.id,
-            targetname: targetToken.name
-         });
+      const noTargets = ["save", "explore"]; // some categories don't have targets.
+      if (noTargets.includes(item.system.category) === false) {
+         for (let targetToken of targetTokens) {
+            toHitResult.targetResults.push({ targetid: targetToken.id, targetname: targetToken.name });
+         }
       }
+
+      const { conditions, durationMsgs } = await this._getConditionsForChat(item);
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode
       const rolls = roll ? [roll] : null;
@@ -76,8 +71,13 @@ export class SpecialAbilityChat extends ChatBuilder {
          rollMode: item.system.rollMode, // Pass the determined rollMode
          flags: {
             [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: item?.uuid,
                targets: toHitResult.targetResults,
-               conditions: options.conditions
+               conditions,
+               damageRoll,
+               healRoll,
+               actions
             }
          }
       });

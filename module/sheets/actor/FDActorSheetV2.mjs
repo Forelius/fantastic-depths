@@ -1,9 +1,9 @@
 const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
-import { EffectManager } from "../sys/EffectManager.mjs";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
-import { FDItem } from "../item/FDItem.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
+import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
+import { FDItem } from "/systems/fantastic-depths/module/item/FDItem.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
@@ -426,7 +426,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    static async #toggleContent(actor, parent) {
       const collapsibleItems = parent.querySelectorAll(".collapsible-content");
-      if (!collapsibleItems) return;
+      if (!collapsibleItems || collapsibleItems.length == 0) return;
       const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
 
       if (isCollapsed === true) {
@@ -484,6 +484,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const savingThrows = [];
       const conditions = [];
       const actorClasses = [];
+      const spellcasting = {};
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -546,8 +547,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                lte: "&lt;="
             };
             if (item.system.category === "explore") {
-               exploration.push({ item, op: operators[item.system.operator] });
-            } else if (item.system.category === "class") {
+               exploration.push({ item, op: operators[item.system.operator] });               
+            } else if (item.system.category === "class" || item.system.category === "spellcasting") {
                classAbilities.push(item);
             } else if (item.system.category === "save") {
                savingThrows.push(item);
@@ -799,24 +800,36 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickExpandDesc(event) {
       // If not the create item column...
-      const descElem = $(event.target).parents(".item").find(".item-description");
+      //const itemElement = event.target.closest(".item");
+      let currentElement = event.target;
+      let descElem = null;
+      while (currentElement && !descElem) {
+         descElem = currentElement.querySelector(".item-description");
+         currentElement = currentElement.parentElement;
+      }
+
       if (descElem) {
-         const isCollapsed = $(descElem[0]).hasClass("desc-collapsed");
+         const isCollapsed = descElem.classList.contains("desc-collapsed");
          if (isCollapsed === true) {
-            descElem.removeClass("desc-collapsed");
-            const itemElement = $(event.target).parents(".item");
-            const item = this.actor.items.get(itemElement.data("itemId"));
-            if (item !== null) {
+            descElem.classList.remove("desc-collapsed");
+            const itemElement = event.target.closest('[data-item-id]');
+            const itemId = itemElement?.dataset.itemId;
+            const item = this.actor.items.get(itemId);
+            if (item != null) {
                const enrichedDesc = await item.getInlineDescription();
                if (enrichedDesc.startsWith("<") === false) {
-                  descElem.append(enrichedDesc);
+                  descElem.appendChild(document.createTextNode(enrichedDesc));
                } else {
-                  descElem.append($(enrichedDesc));
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = enrichedDesc;
+                  while (tempDiv.firstChild) {
+                     descElem.appendChild(tempDiv.firstChild);
+                  }
                }
             }
          } else {
-            descElem.addClass("desc-collapsed");
-            descElem.empty();
+            descElem.classList.add("desc-collapsed");
+            descElem.innerHTML = '';
          }
       }
    }

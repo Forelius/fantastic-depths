@@ -1,0 +1,65 @@
+{{#each actions as |action|}}
+{{#if (eq action.type "")}}
+<button class="action-roll"
+        data-type="{{action.type}}"
+        data-mod="{{action.mod}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <i class="fa-solid fa-play"></i>
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "spell")}}
+<button class="spell-cast"
+        data-type="{{action.type}}"
+        data-castas="{{action.castAs}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <i class="fa-solid fa-wand-sparkles"></i>
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "melee")}}
+<button class="attack-roll melee-attack"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "shoot")}}
+<button class="attack-roll shoot-attack"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "throw")}}
+<button class="attack-roll throw-attack"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{action.itemName}}</span>
+</button>
+{{else if (eq action.type "toggleLight")}}
+<button class="action-roll"
+        data-type="{{action.type}}"
+        data-actionuuid="{{action.actionuuid}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-itemuuid="{{action.itemuuid}}">
+   <span style="margin-left:4px;">{{localize "FADE.dialog.lightManager.ignite"}}/{{localize "FADE.dialog.lightManager.extinguish"}}</span>
+</button>
+<!--
+{{else if (eq action.type "save")}}
+<button class="saving-roll"
+        data-type="{{action.customSaveCode}}"
+        data-owneruuid="{{action.owneruuid}}"
+        data-weaponuuid="{{action.itemuuid}}">
+   <i class="fa-solid fa-life-ring"></i>
+   <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{action.shortName}}</span>
+</button>
+-->
+{{/if}}
+{{/each}}

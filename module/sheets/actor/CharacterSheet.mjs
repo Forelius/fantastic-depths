@@ -76,6 +76,7 @@ export class CharacterSheet extends CharacterSheetBase {
       const context = await super._prepareContext();
       // Prepare the tabs.
       context.tabs = this.#getTabs();
+
       return context;
    }
 

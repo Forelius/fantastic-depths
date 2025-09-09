@@ -1,9 +1,8 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
-export class GenericRollChatBuilder extends ChatBuilder {
-   static template = 'systems/fantastic-depths/templates/chat/generic-roll.hbs';
+export class ItemRollChat extends ChatBuilder {
+   static template = 'systems/fantastic-depths/templates/chat/item-roll.hbs';
 
    async getRollContent(roll, mdata) {
       if (mdata?.flavor) {
@@ -13,17 +12,18 @@ export class GenericRollChatBuilder extends ChatBuilder {
       }
    }
 
+   /**
+    * Called when an item is rolled from the actor sheet.
+    * Weapons also call this when clicked from sheet.
+    */
    async createChatMessage() {
       const { context, mdata, roll, caller, options } = this.data;
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
-      let item = caller.type === "character" || caller.type === "monster" ? null : caller;
-      let dmgHealRoll = null; // { hasDamage: false };
-      const isSave = item?.system?.category === "save";
-      //if (isSave == false && item?.getDamageRoll && options?.isUsing === true) {
-      //   dmgHealRoll = item?.getDamageRoll(null);
-      //}
+      const item = caller;
+      let dmgHealRoll = null;
+      const targetTokens = item.hasTargets ? Array.from(game.user.targets) : null;
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
@@ -43,7 +43,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, { saves: false });
+      let actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, abilities: true, saves: !item.isWeaponItem });
 
       // Prepare data for the chat template
       const chatData = {
@@ -54,15 +54,17 @@ export class GenericRollChatBuilder extends ChatBuilder {
          resultString,
          actorName,
          userName,
-         isGM: game.user.isGM,
-         actions
+         actions // only saving throws are used here.
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
-      let targetTokens;
-      if (item.hasTargets === true) {
-         targetTokens = isSave ? [] : Array.from(game.user.targets);
+      let condsForChat = null;
+      if (item?.isWeaponItem !== true) {
+         condsForChat = await this._getConditionsForChat(item);
+         //if (item?.getDamageRoll && options?.isUsing === true) {
+         //   dmgHealRoll = item?.getDamageRoll(null);
+         //}
       }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
@@ -74,11 +76,12 @@ export class GenericRollChatBuilder extends ChatBuilder {
          flags: {
             [game.system.id]: {
                owneruuid: context.uuid,
-               itemuuid: item?.uuid,
+               itemuuid: item.uuid,
                targets: targetTokens?.map(i => ({ targetid: i.id, targetname: i.name })),
                damageRoll,
                healRoll,
-               actions
+               actions,
+               conditions: condsForChat?.conditions
             }
          }
       });

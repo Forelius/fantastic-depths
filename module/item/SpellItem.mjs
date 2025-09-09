@@ -30,12 +30,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       const digest = [];
-      let formula = evaluatedRoll?.formula;
+      let damageFormula = evaluatedRoll?.formula;
       let modifier = 0;
       let hasDamage = true;
 
       if (resp?.mod && resp?.mod !== 0) {
-         formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
+         damageFormula = damageFormula ? `${damageFormula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
          digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
       }
@@ -44,12 +44,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          hasDamage = false;
       }
 
-      return {
-         formula,
-         type: isHeal ? "heal" : "magic",
-         digest,
-         hasDamage
-      };
+      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : "magic", digest } : null;
    }
 
    /**
@@ -58,10 +53,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    * @private
    */
    async roll(dataset) {
-      const caster = this.actor || canvas.tokens.controlled?.[0];
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor || canvas.tokens.controlled?.[0];
       if (dataset?.skipdlg === true) {
+         // I'm not sure this condition ever happens.
          super.roll(dataset);
-      } else if (caster) {
+      } else if (instigator) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.localize('FADE.dialog.spellcast.title'),
@@ -69,37 +66,41 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
             yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
             defaultChoice: "yes"
-         }, this.actor);
+         }, instigator);
 
          if (dialogResp?.resp?.result === false) {
-            super.roll(dataset);
+            super.roll(dataset, owner);
          } else if (dialogResp?.resp?.result === true) {
-            await this.doSpellcast();
+            await this.doSpellcast(dataset);
          }
       } else {
          ui.notifications.warn(game.i18n.localize('FADE.notification.spellSelectToken'));
       }
-
-      return null;
    }
 
-   async doSpellcast() {
-      const instigator = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
-      const systemData = this.system;
-      let result = null;
+   async doSpellcast(dataset = null) {
+      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
+      const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
 
-      if (systemData.cast < systemData.memorized || systemData.memorized === null) {
+      // If the item is not owned by an actor then assume it is owned by another item.
+      // If owned by another item then this step would not be reached if there were zero charges remaining.
+      if (await this._tryCastThenCharge(true, actionItem)) {
+
+         // Determine if spell requires an attack roll, such as touch spells.
          let rollAttackResult = null;
-
          if (this.system.attackType === 'melee') {
+            // Roll the attack.
             rollAttackResult = await this.rollAttack();
          }
-         const durationResult = await this.#getDurationResult();
 
+         // Get the spell duration data.
+         const durationResult = await this.#getDurationResult(dataset);
+
+         // If there was no attack roll or the attack roll was not canceled...
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource
-            systemData.cast += 1;
-            await this.update({ "system.cast": systemData.cast });
+            await this._tryCastThenCharge(false, actionItem)
 
             const chatData = {
                caller: this, // the spell
@@ -108,6 +109,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
                digest: rollAttackResult?.digest,
             };
 
+            // Set condition durations.
             const conditions = foundry.utils.deepClone(this.system.conditions);
             for (let condition of conditions) {
                condition.duration = durationResult.durationSec;
@@ -119,15 +121,6 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             await builder.createChatMessage();
          }
       }
-      else {
-         const msg = game.i18n.format('FADE.notification.notMemorized', { actorName: this.actor.name, spellName: this.name });
-         ui.notifications.warn(msg);
-
-         // Create the chat message
-         await ChatMessage.create({ content: msg });
-      }
-
-      return result;
    }
 
    /**
@@ -140,12 +133,57 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       return result;
    }
 
-   async #getDurationResult() {
+   /**
+    * Some items may have charges and cast uses both. if the item has the cast property then
+    * cast is used, otherwise charge is used.
+    * @param {any} getOnly If true, does not use, just gets.
+    * @param {any} actionItem The item that owns this item, or null.
+    */
+   async _tryCastThenCharge(getOnly = false, actionItem) {
+      let result = false;
+      let item = actionItem || this;
+
+      if (item.system.cast !== undefined) {
+         result = await this._tryCastMemorized(getOnly, actionItem);
+      } else if (item.system.charges !== undefined) {
+         result = await this._tryUseCharge(getOnly, actionItem);
+      }
+
+      return result;
+   }
+
+   async _tryCastMemorized(getOnly = false, actionItem) {
+      let item = actionItem || this;
+      let result = item.hasCast;
+
+      if (getOnly !== true) {
+         // Add 1 if not infinite and above max casts
+         if (item.hasCast && item.system.Memorized !== null) {
+            await item.update({ "system.cast": item.system.cast + 1 });
+         }
+      }
+      // If there are no charges remaining, show a UI notification
+      if (result === false) {
+         const message = game.i18n.format('FADE.notification.notMemorized', { actorName: item.actor.name, spellName: this.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
+      }
+
+      return result;
+   }
+
+   async #getDurationResult(dataset) {
       let result = {
          text: `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`
       };
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
          const rollData = this.getRollData();
+         // If a castAs override is specified, like from a magic item with spellcasting abilities...
+         if (dataset.castas) {
+            const classSystem = game.fade.registry.getSystem("classSystem");
+            const parsed = classSystem.parseClassAs(dataset.castas);
+            rollData.classes[parsed.classId] = { castLevel: parsed.classLevel };
+         }
          const rollEval = await new Roll(this.system.durationFormula, rollData).evaluate();
          result.text = `${result.text} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
          const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;

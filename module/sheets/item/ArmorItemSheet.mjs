@@ -1,15 +1,16 @@
-import { EffectManager } from '../sys/EffectManager.mjs';
+import { EffectManager } from '/systems/fantastic-depths/module/sys/EffectManager.mjs';
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
+
 /**
- * Sheet class for SkillItem.
+ * Sheet class for ArmorItem.
  */
-export class SkillItemSheet extends FDItemSheetV2 {
+export class ArmorItemSheet extends FDItemSheetV2 {
    /**
-   * Get the default options for the sheet.
-   */
+    * Get the default options for the sheet.
+    */
    static DEFAULT_OPTIONS = {
       position: {
-         width: 580,
+         width: 570,
          height: 400,
       },
       window: {
@@ -25,7 +26,7 @@ export class SkillItemSheet extends FDItemSheetV2 {
 
    static PARTS = {
       header: {
-         template: "systems/fantastic-depths/templates/item/skill/header.hbs",
+         template: "systems/fantastic-depths/templates/item/armor/header.hbs",
       },
       tabnav: {
          template: "templates/generic/tab-navigation.hbs",
@@ -34,10 +35,13 @@ export class SkillItemSheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/shared/description.hbs",
       },
       attributes: {
-         template: "systems/fantastic-depths/templates/item/skill/attributes.hbs",
+         template: "systems/fantastic-depths/templates/item/armor/attributes.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/armor/gmOnly.hbs",
       }
    }
 
@@ -52,10 +56,12 @@ export class SkillItemSheet extends FDItemSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description', 'attributes']
+      options.parts = ['header', 'tabnav', 'description']
 
       if (game.user.isGM) {
+         options.parts.push('attributes');
          options.parts.push('effects');
+         options.parts.push('gmOnly');
       }
    }
 
@@ -65,22 +71,14 @@ export class SkillItemSheet extends FDItemSheetV2 {
    async _prepareContext(options) {
       const context = await super._prepareContext(options);
 
-      // Prepare roll modes select options
-      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]) => {
-         acc[key] = game.i18n.localize(value.label ?? value);
-         return acc;
-      }, {});
-      // Abilities
-      const abilities = [];
-      abilities.push(...CONFIG.FADE.Abilities.map((key) => {
-         return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.long`) }
-      }));
-      context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-      // Prepare operators
-      context.operators = Object.entries(CONFIG.FADE.Operators).reduce((acc, [key, value]) => {
-         acc[key] = value;
-         return acc;
-      }, {});
+      context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
+      if (context.isBasicEnc === true) {
+         const encOptions = [];
+         encOptions.push({ text: game.i18n.localize('FADE.none'), value: "none" });
+         encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.light'), value: "light" });
+         encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });
+         context.encOptions = encOptions;
+      }
 
       // Prepare the tabs.
       context.tabs = this.#getTabs();
@@ -99,13 +97,17 @@ export class SkillItemSheet extends FDItemSheetV2 {
       const group = 'primary';
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+
       const tabs = {
          description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' },
-         attributes: { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' }
-      }
+      };
+
       if (game.user.isGM) {
+         tabs.attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' };
          tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly', cssClass: 'item' };
       }
+
       for (const v of Object.values(tabs)) {
          v.active = this.tabGroups[v.group] === v.id;
          v.cssClass = v.active ? "active" : "";
