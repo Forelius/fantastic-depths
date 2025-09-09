@@ -1,4 +1,6 @@
 export class MacroManager {
+   static validTypes = ["weapon", "item", "light", "specialAbility", "skill", "spell"];
+
    // Helper method to get or create a folder
    static async getOrCreateFolder(folderName, parentFolderId = null) {
       // Find the folder by name and type, ignoring parent
