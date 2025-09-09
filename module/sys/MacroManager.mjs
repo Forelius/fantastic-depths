@@ -1,4 +1,6 @@
 export class MacroManager {
+   static validTypes = ["weapon", "item", "light", "specialAbility", "skill", "spell"];
+
    // Helper method to get or create a folder
    static async getOrCreateFolder(folderName, parentFolderId = null) {
       // Find the folder by name and type, ignoring parent
@@ -58,62 +60,130 @@ export class MacroManager {
       if (data.type === "Macro") {
          return game.user.assignHotbarMacro(await fromUuid(data.uuid), slot);
       }
-
-      // Prevent Foundry's default behavior from creating an additional macro
-      if (data.type !== 'Item') return true;
-      if (!data.uuid.includes('Actor.') && !data.uuid.includes('Token.')) {
-         return ui.notifications.warn(
-            'You can only create macro buttons for owned Items'
-         );
+      if (data.type === "RollTable") {
+         const command = `game.fade.MacroManager.rollTableMacro("${data.uuid}");`;
+         const table = await fromUuid(data.uuid);
+         const macro = await Macro.create({
+            name: table.name,
+            type: "script",
+            img: table.img,
+            command,
+            flags: { "fantastic-depths.tableMacro": true },
+         });
+         return game.user.assignHotbarMacro(macro, slot);
+      }
+      if (data.type !== "Item" || data.uuid.indexOf("Item.") <= 0) {
+         return ui.notifications.warn(`You can only create macro buttons for owned Items.`);
       }
 
-      // Stop the default Foundry behavior
       const item = await Item.fromDropData(data);
 
-      // Create the macro command using the item's UUID.
-      const command = `game.fade.MacroManager.rollItemMacro("${data.uuid}");`;
-
-      // Check if a macro with the same name and command already exists
-      let macro = game.macros.find((m) => m.name === item.name && m.command === command);
-      if (!macro) {
-         macro = await Macro.create({
-            name: item.name,
-            type: 'script',
-            img: item.img,
-            command: command,
-            flags: { 'fantastic-depths.itemMacro': true },
-         });
+      if (MacroManager.validTypes.includes(item.type) === false) {
+         return ui.notifications.warn(`That type of item is not supported (${item.type}).`);
       }
 
-      // Assign the created macro to the hotbar slot
-      await game.user.assignHotbarMacro(macro, slot);
+      // Create the macro command
+      const command = `game.fade.MacroManager.rollItemMacro("${item.name}");`;
+      let macro = game.macros.contents.find((m) => m.name === item.name && m.command === command);
+      if (!macro || macro.ownership[game.userId] === undefined) {
+         macro = await Macro.create({
+            name: item.name,
+            type: "script",
+            img: item.img,
+            command,
+            flags: { "fantastic-depths.itemMacro": true },
+         });
+      }
+      return game.user.assignHotbarMacro(macro, slot);
+      //let result = false; // Prevent further handling of the drop event
 
-      return false;  // Prevent further handling of the drop event
+      //if (data.type === "Macro") {
+      //   await game.user.assignHotbarMacro(await fromUuid(data.uuid), slot);
+      //} else if (data.type === "Item") {
+      //   if (!data.uuid.includes('Actor.') && !data.uuid.includes('Token.')) {
+      //      ui.notifications.warn("You can only create macro buttons for owned Items");
+      //   } else {
+      //      // Stop the default Foundry behavior
+      //      const item = await Item.fromDropData(data);
+      //      // Create the macro command using the item's UUID.
+      //      const command = `game.fade.MacroManager.rollItemMacro("${data.uuid}");`;
+      //      // Check if a macro with the same name and command already exists
+      //      let macro = game.macros.find((m) => m.name === item.name && m.command === command);
+      //      if (!macro) {
+      //         macro = await Macro.create({
+      //            name: item.name,
+      //            type: 'script',
+      //            img: item.img,
+      //            command: command,
+      //            flags: { 'fantastic-depths.itemMacro': true },
+      //         });
+      //      }
+
+      //      // Assign the created macro to the hotbar slot
+      //      await game.user.assignHotbarMacro(macro, slot);
+      //   }
+      //}
+      //else {
+      //   result = true;
+      //}
+
+      //return result;  
+   }
+
+   static rollTableMacro(tableUuId) {
+      fromUuid(tableUuId).then((table) => {
+         if (table === null) {
+            ui.notifications.error(`Rollable table not found. ${tableUuid}`);
+         } else {
+            table.draw({ displayChat: true });
+         }
+      });
    }
 
    /**
     * Roll the Item macro.
-    * @param {string} itemUuid
+    * @param {string} iteName
     */
-   static rollItemMacro(itemUuid) {
-      // Reconstruct the drop data so that we can load the item.
-      const dropData = {
-         type: 'Item',
-         uuid: itemUuid,
-      };
+   static rollItemMacro(itemName) {
+      const speaker = ChatMessage.getSpeaker();
+      // Active actor, or inactive actor + token on scene allowed
+      if (!(speaker.actor && speaker.scene))
+         return ui.notifications.warn("No token owned in scene.");
 
-      // Load the item from the uuid.
-      Item.fromDropData(dropData).then((item) => {
-         // Determine if the item loaded and if it's an owned item.
-         if (!item || !item.parent) {
-            const itemName = item?.name ?? itemUuid;
-            return ui.notifications.warn(
-               `Could not find item ${itemName}. You may need to delete and recreate this macro.`
-            );
-         }
+      let actor;
+      if (speaker.token) actor = game.actors.tokens[speaker.token];
+      if (!actor) actor = game.actors.get(speaker.actor);
 
-         // Trigger the item roll
-         item.roll();
-      });
+      // Get matching items
+      const items = actor ? actor.items.filter((i) => MacroManager.validTypes.includes(i.type) && i.name === itemName) : [];
+      if (items.length > 1) {
+         ui.notifications.warn(`${actor.name} has more than one item named ${itemName}.`);
+      } else if (items.length === 0) {
+         return ui.notifications.error(`${actor.name} does not own a ${itemName}.`);
+      }
+      const item = items[0];
+
+      // Trigger the item roll
+      return item.roll();
+
+      //// Reconstruct the drop data so that we can load the item.
+      //const dropData = {
+      //   type: 'Item',
+      //   uuid: itemUuid,
+      //};
+
+      //// Load the item from the uuid.
+      //Item.fromDropData(dropData).then((item) => {
+      //   // Determine if the item loaded and if it's an owned item.
+      //   if (!item || !item.parent) {
+      //      const itemName = item?.name ?? itemUuid;
+      //      return ui.notifications.warn(
+      //         `Could not find item ${itemName}. You may need to delete and recreate this macro.`
+      //      );
+      //   }
+
+      //   // Trigger the item roll
+      //   item.roll();
+      //});
    }
 }

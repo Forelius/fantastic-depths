@@ -264,6 +264,8 @@ Hooks.once('ready', async function () {
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => {
       MacroManager.createItemMacro(data, slot);
+      // Returning false to stop the rest of hotbarDrop handling.
+      return false;
    });
 
    LightManager.initialize();
