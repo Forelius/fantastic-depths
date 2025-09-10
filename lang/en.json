@@ -616,7 +616,8 @@
             "mirrorImaged": "Mirror Imaged",
             "infravision": "Infravision",
             "possessed": "Possessed",
-            "confused": "Confused"
+            "confused": "Confused",
+            "ethereal": "Ethereal"
          }
       },
       "Tags": {
