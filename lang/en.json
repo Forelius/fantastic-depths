@@ -248,6 +248,7 @@
             "IHint": "Creatures 25 feet tall or larger, such as dragons, titans, and colossal creatures."
          },
          "actorGroups": {
+            "select": "Select Actor Group",
             "noGroupMod": "No group modifiers configured.",
             "addVsGroupButton": "Group Mod",
             "group": "Group",

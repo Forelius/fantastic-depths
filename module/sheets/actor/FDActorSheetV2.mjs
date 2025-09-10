@@ -847,7 +847,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          }));
 
       if (availableGroups.length === 0) {
-         ui.notifications.info("All actor groups have already been added.");
+         //ui.notifications.info("All actor groups have already been added.");
          return;
       }
 
@@ -862,7 +862,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          content: `
             <form>
                <div class="form-group">
-                  <label>Select Actor Group:</label>
+                  <label>${game.i18n.localize("FADE.Actor.actorGroups.group")}:</label>
                   <select name="actorGroup">
                      ${availableGroups.map(group => `<option value="${group.value}">${group.label}</option>`).join('')}
                   </select>
@@ -878,7 +878,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
             },
             {
-               action: "cancel",
                icon: "fas fa-times",
                label: game.i18n.localize("FADE.dialog.cancel"),
                callback: () => null
