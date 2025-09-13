@@ -617,7 +617,8 @@
             "infravision": "Infravision",
             "possessed": "Possessed",
             "confused": "Confused",
-            "ethereal": "Ethereal"
+            "ethereal": "Ethereal",
+            "fading": "Fading"
          }
       },
       "Tags": {

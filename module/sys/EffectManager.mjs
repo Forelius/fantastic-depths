@@ -38,7 +38,8 @@ export class EffectManager {
          { id: "mirrorImaged", name: "FADE.Effect.status.mirrorImaged", img: `${path}/ui/two-shadows.png` },
          { id: "possessed", name: "FADE.Effect.status.possessed", img: `${path}/ui/possessed.png` },
          { id: "slowed", name: "FADE.Effect.status.slowed", img: `${path}/ui/snail.png` },
-         { id: "ethereal", name: "FADE.Effect.status.ethereal", img: `./icons/magic/perception/silhouette-stealth-shadow.webp` }
+         { id: "ethereal", name: "FADE.Effect.status.ethereal", img: `./icons/magic/perception/silhouette-stealth-shadow.webp` },
+         { id: "fading", name: "FADE.Effect.status.fading", img: `./icons/magic/unholy/strike-body-life-soul-green.webp`}
       ];
       //let globalEffects = game.settings.get(game.system.id, 'globalEffects') || [];
 
