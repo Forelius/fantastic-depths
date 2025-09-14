@@ -80,7 +80,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
 
    async doSpellcast(dataset = null) {
       const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
+      const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
 
       // If the item is not owned by an actor then assume it is owned by another item.

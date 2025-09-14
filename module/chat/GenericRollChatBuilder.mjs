@@ -61,7 +61,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       let targetTokens;
-      if (item.hasTargets === true) {
+      if (item?.hasTargets === true) {
          targetTokens = isSave ? [] : Array.from(game.user.targets);
       }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
