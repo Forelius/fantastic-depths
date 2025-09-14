@@ -212,9 +212,9 @@ FADE.TreasureTypes = {
          { "min": 100, "max": 100, "value": 50000, "encumbrance": 50 }
       ],
       rollTables: [
-         { min: 100, max: 3999, table: "Common Jewelry (<4k)" },
-         { min: 4000, max: 14999, table: "Uncommon Jewelry (<15k)" },
-         { min: 15000, max: 50000, table: "Rare Jewelry (<50k)" }
+         { min: 100, max: 3999, table: "Common Jewelry (4k)" },
+         { min: 4000, max: 14999, table: "Uncommon Jewelry (15k)" },
+         { min: 15000, max: 50000, table: "Rare Jewelry (50k)" }
       ]
    }
 };

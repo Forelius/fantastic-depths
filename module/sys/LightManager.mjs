@@ -22,20 +22,22 @@ export class LightManager {
       if (dt !== 0) {
          // Iterate over all canvas tokens
          for (let placeable of canvas.tokens.placeables) {
-            const token = placeable.document;
-            // Get the token actor's active light.
-            const lightItem = token.actor.items.get(token.actor.system.activeLight);
-            if (lightItem && lightItem.system.light.duration !== null) {
-               // Get the current length of time that the item has been active.
-               const secondsRemain = Math.max(0, lightItem.system.light.secondsRemain - dt);
-               await lightItem.update({ "system.light.secondsRemain": secondsRemain });
-               // If all of the fuel has been used...
-               if (secondsRemain <= 0) {
-                  // Expired so turn off light.
-                  await token.actor.setActiveLight(null);
-                  // If this is a torch or other self-fueled light...
-                  if (lightItem.usesExternalFuel === false) {
-                     await lightItem.consumeFuel(); // Pass the token for extinguishing the light
+            const actor = placeable.actor ?? placeable.document.actor;
+            if (actor) {
+               // Get the token actor's active light.
+               const lightItem = actor.items.get(actor.system.activeLight);
+               if (lightItem && lightItem.system.light.duration !== null) {
+                  // Get the current length of time that the item has been active.
+                  const secondsRemain = Math.max(0, lightItem.system.light.secondsRemain - dt);
+                  await lightItem.update({ "system.light.secondsRemain": secondsRemain });
+                  // If all of the fuel has been used...
+                  if (secondsRemain <= 0) {
+                     // Expired so turn off light.
+                     await actor.setActiveLight(null);
+                     // If this is a torch or other self-fueled light...
+                     if (lightItem.usesExternalFuel === false) {
+                        await lightItem.consumeFuel(); // Pass the token for extinguishing the light
+                     }
                   }
                }
             }

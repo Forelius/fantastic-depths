@@ -167,7 +167,7 @@ export class fadeTreasure {
                const content = game.i18n.format('FADE.treasure.formatValue', { name: resultText, value: jewelryValue.value.toLocaleString() });
                this.group.jewelry.push({ content: `<div>${content}</div>`, value: jewelryValue.value });
             } else {
-               console.error(`RollTable named "${tableName}" not found.`);
+               console.error(`RollTable named "${rollTableConfig.table}" not found.`);
             }
          } else {
             console.warn(`No jewelry value found for ${random}`);
