@@ -47,11 +47,6 @@ export class CharacterDataModel extends FDCombatActorDM {
       this.encumbrance.max = this.encumbrance.max || game.fade.registry.getSystem("encumbranceSystem").CONFIG.maxLoad;
    }
 
-   /** @override */
-   prepareDerivedData() {
-      super.prepareDerivedData();
-   }
-
    getParsedHD() {
       const classSystem = game.fade.registry.getSystem("classSystem");
       return classSystem.getParsedHD(classSystem.getHighestHD(this.parent));
@@ -62,9 +57,8 @@ export class CharacterDataModel extends FDCombatActorDM {
       const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
       const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
       // Retainer
-      const charisma = this.abilities.cha.total;
-      const adjustment = adjustments.find(item => charisma <= item.max);
-      this.retainer.max = this.retainer.max > 0 ? this.retainer.max : adjustment.maxRetainers;
-      this.retainer.morale = this.retainer.morale > 0 ? this.retainer.morale : (adjustment.retainerMorale ?? 10);
+      const adjustment = adjustments.find(item => this.abilities.cha.total <= item.max);
+      this.retainer.max = adjustment.maxRetainers;
+      this.retainer.morale = (adjustment.retainerMorale ?? 10);
    }
 }

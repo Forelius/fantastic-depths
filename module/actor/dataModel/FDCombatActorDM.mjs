@@ -132,11 +132,12 @@ export class FDCombatActorDM extends FDActorBaseDM {
       for (let [key, ability] of Object.entries(this.abilities)) {
          ability.total = ability.value + ability.tempMod;
       }
-      this._prepareDerivedAbilities();
    }
 
    /** @override */
    prepareDerivedData() {
+      this._prepareDerivedAbilities();
+
       super.prepareDerivedData();
    }
 

@@ -66,12 +66,7 @@ export class FDCombatActor extends FDActorBase {
       return allowed;
    }
 
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-   }
-
-   /** @override */
+    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
