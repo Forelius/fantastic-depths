@@ -5,14 +5,9 @@ const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, O
  */
 export class WeaponItemDataModel extends GearItemDataModel {
    static defineSchema() {
-      const { fields } = foundry.data;
-
-      // Extend the schema from GearItemDataModel
-      const baseSchema = super.defineSchema();
-
       return {
-         ...baseSchema,
-
+         // Extend the schema from GearItemDataModel
+         ...super.defineSchema(),
          // Fields specific to the "weapon" template
          damageRoll: new StringField({ required: true, initial: "1d6" }),
          damageLabel: new StringField({ required: false, initial: "1d6" }),

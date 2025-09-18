@@ -1,6 +1,5 @@
 import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
 import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
 import { SpellMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpellMixin.mjs";
@@ -93,21 +92,12 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
          context.turnsRemaining = `${stTurnsRemaining}`;
       }
 
+      // Ability actions
+      context.actions = this._getActionOptions();
       // Damage types
-      const damageTypes = []
-      damageTypes.push({ value: "", text: game.i18n.localize("None") });
-      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
-         return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
-      }));
-      context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      context.damageTypes = this._getDamageTypeOptions();
       // Saving throws
-      const saves = [];
-      saves.push({ value: "", text: game.i18n.localize("None") });
-      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
-      saves.push(...saveItems.map((save) => {
-         return { value: save.system.customSaveCode, text: save.system.shortName }
-      }));
-      context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      context.savingThrows = await this._getSavingThrowOptions();
 
       context.hideLevel = true;
 
@@ -132,6 +122,15 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
       } else if (droppedItem?.type === "condition") {
          await this.onDropConditionItem(droppedItem);
       }
+   }
+
+   _getDamageTypeOptions() {
+      const damageTypes = []
+      damageTypes.push({ value: "", text: game.i18n.localize("None") });
+      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
+         return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
+      }));
+      return damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
    /**

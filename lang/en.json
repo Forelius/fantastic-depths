@@ -650,7 +650,15 @@
       },
       "Chat": {
          "actions": {
-            "name": "Actions"
+            "name": "Actions",
+            "singular": "Action",
+            "melee": "Melee",
+            "shoot": "Shoot",
+            "throw": "Throw",
+            "consume": "Consume",
+            "cast": "Cast",
+            "use": "Use",
+            "none": "No action"
          },
          "rollMods": {
             "ammoMod": "Ammunition mod: {mod}",

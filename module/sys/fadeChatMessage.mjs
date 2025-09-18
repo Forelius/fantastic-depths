@@ -69,7 +69,6 @@ export class fadeChatMessage extends ChatMessage {
       if (owner?.testUserPermission(game.user, "OWNER")) {
          const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/roll-action-btns.hbs', { actions: data });
          result = document.createElement("div");
-         //result.classList.add("actionTray");
          result.innerHTML = content;
       }
       return result?.outerHTML ?? "";

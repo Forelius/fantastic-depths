@@ -39,6 +39,7 @@ const SpecialAbilityMixin = (superclass) => {
 
          // Define the new data
          const newItem = {
+            action: "none",
             name: droppedItem?.name ?? "",
             uuid: droppedItem?.uuid ?? "",
             mod: 0,

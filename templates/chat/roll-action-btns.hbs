@@ -1,23 +1,35 @@
 {{#each actions as |action|}}
 {{#if (eq action.type "")}}
+{{! Item special abilities go here. Maybe other actions too. }}
 <button class="action-roll"
+        data-action="{{action.action}}"
         data-type="{{action.type}}"
         data-mod="{{action.mod}}"
         data-actionuuid="{{action.actionuuid}}"
         data-owneruuid="{{action.owneruuid}}"
         data-itemuuid="{{action.itemuuid}}">
+   {{! Conditional label on the button depending on action, if any. }}
+   {{#if (eq action.action "consume")}}
+   <span style="margin-left:4px;">{{localize (concat 'FADE.Chat.actions.' action.action)}}</span> <span class="small-text">({{action.itemName}})</span>
+   {{else}}
    <i class="fa-solid fa-play"></i>
    <span style="margin-left:4px;">{{action.itemName}}</span>
+   {{/if}}
 </button>
 {{else if (eq action.type "spell")}}
 <button class="spell-cast"
-        data-type="{{action.type}}"
+        data-action="{{action.action}}"
         data-castas="{{action.castAs}}"
         data-actionuuid="{{action.actionuuid}}"
         data-owneruuid="{{action.owneruuid}}"
         data-itemuuid="{{action.itemuuid}}">
+   {{! Conditional label on the button depending on action, if any. }}
+   {{#if (or (eq action.action "consume") (eq action.action "cast"))}}
+   <span style="margin-left:4px;">{{localize (concat 'FADE.Chat.actions.' action.action)}}</span> <span class="small-text">({{action.itemName}})</span>
+   {{else}}
    <i class="fa-solid fa-wand-sparkles"></i>
    <span style="margin-left:4px;">{{action.itemName}}</span>
+   {{/if}}
 </button>
 {{else if (eq action.type "melee")}}
 <button class="attack-roll melee-attack"

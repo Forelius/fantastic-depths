@@ -1,49 +1,48 @@
+import { IdentifiableData } from '/systems/fantastic-depths/module/item/fields/IdentifiableField.mjs';
+const { BooleanField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
+
 /**
  * Data model for an ammo item extending GearItemDataModel.
  */
 export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
-      const { fields } = foundry.data;
-
       return {
+         // Extend the schema from IdentifiableData
+         ...IdentifiableData.defineSchema(),
          // Some item types use short name, like the saving throw.
-         shortName: new fields.StringField({ required: false, initial: "" }),
-         description: new fields.StringField({ required: false, initial: "" }),
-         gm: new fields.SchemaField({
-            notes: new fields.StringField({ required: false, initial: "" })
+         shortName: new StringField({ required: false, initial: "" }),
+         description: new StringField({ required: false, initial: "" }),
+         gm: new SchemaField({
+            notes: new StringField({ required: false, initial: "" })
          }),
          // Some items can be used multiple times and it doesn't effect the total weight or cost
-         charges: new fields.NumberField({ required: true, initial: 0 }),
-         chargesMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
+         charges: new NumberField({ required: true, initial: 0 }),
+         chargesMax: new NumberField({ required: false, initial: 0, nullable: true }),
          // Fields from the "physical" template
-         quantity: new fields.NumberField({ required: true, initial: 1 }),
-         quantityMax: new fields.NumberField({ required: false, initial: 0, nullable: true }),
-         weight: new fields.NumberField({ required: false, initial: 1 }),
-         weightEquipped: new fields.NumberField({ required: false, initial: null }),
-         cost: new fields.NumberField({ required: false, initial: 0 }),
-         totalWeight: new fields.NumberField({ required: false, initial: 0 }),
-         totalCost: new fields.NumberField({ required: false, initial: 0 }),
-         containerId: new fields.StringField({ required: false, initial: "" }),
+         quantity: new NumberField({ required: true, initial: 1 }),
+         quantityMax: new NumberField({ required: false, initial: 0, nullable: true }),
+         weight: new NumberField({ required: false, initial: 1 }),
+         weightEquipped: new NumberField({ required: false, initial: null }),
+         cost: new NumberField({ required: false, initial: 0 }),
+         totalWeight: new NumberField({ required: false, initial: 0 }),
+         totalCost: new NumberField({ required: false, initial: 0 }),
+         containerId: new StringField({ required: false, initial: "" }),
          // Fields from the "equippable" template
-         equipped: new fields.BooleanField({ required: false, initial: false }),
+         equipped: new BooleanField({ required: false, initial: false }),
          // Additional properties specific to the "item" type
-         equippable: new fields.BooleanField({ required: false, initial: true }),
-         ammoType: new fields.StringField({ required: false, initial: "arrow" }),
-         unidentifiedName: new fields.StringField({ required: false, initial: "" }),
-         unidentifiedDesc: new fields.StringField({ required: false, initial: "" }),
-         isIdentified: new fields.BooleanField({ required: false, initial: true }),
-         isCursed: new fields.BooleanField({ required: false, initial: false }),
-         isDropped: new fields.BooleanField({ required: true, initial: false }),
+         equippable: new BooleanField({ required: false, initial: true }),
+         ammoType: new StringField({ required: false, initial: "arrow" }),
+         isDropped: new BooleanField({ required: true, initial: false }),
          // Items with associated actions
-         savingThrow: new fields.StringField({ nullable: true, initial: null }),
-         healFormula: new fields.StringField({ nullable: true, initial: null }),
-         damageType: new fields.StringField({ required: false, initial: "" }),
-         isAmmo: new fields.BooleanField({ required: false, initial: true }),
-         mod: new fields.SchemaField({
-            dmgRanged: new fields.NumberField({ initial: 0 }),
-            toHitRanged: new fields.NumberField({ initial: 0 }),
-            rangeMultiplier: new fields.NumberField({ initial: 1 }),
-            vsGroup: new fields.ObjectField({}),
+         savingThrow: new StringField({ nullable: true, initial: null }),
+         healFormula: new StringField({ nullable: true, initial: null }),
+         damageType: new StringField({ required: false, initial: "" }),
+         isAmmo: new BooleanField({ required: false, initial: true }),
+         mod: new SchemaField({
+            dmgRanged: new NumberField({ initial: 0 }),
+            toHitRanged: new NumberField({ initial: 0 }),
+            rangeMultiplier: new NumberField({ initial: 1 }),
+            vsGroup: new ObjectField({}),
          })
       };
    }

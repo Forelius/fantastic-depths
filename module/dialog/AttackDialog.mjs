@@ -23,7 +23,7 @@ export class AttackDialog {
       dialogData.attackRoll = game.settings.get(game.system.id, "attackRollFormula");
       dialogData.extraRollOptions = game.settings.get(game.system.id, "extraRollOptions");
       dialogData.weapon = weapon;
-      dialogData.label = game.user.isGM || weapon.system.isIdentified ? weapon.name : weapon.system.unidentifiedName;
+      dialogData.label = weapon.knownNameGM;
       // Attack type includes melee, missile and breath.
       dialogData.attackTypes = weapon.getAttackTypes().reduce((acc, item) => {
          acc[item.value] = item.text; // Use the "id" as the key and "name" as the value

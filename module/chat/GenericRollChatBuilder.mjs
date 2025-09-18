@@ -19,7 +19,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       const rolls = roll ? [roll] : [];
       let rollContent = null;
       let item = caller.type === "character" || caller.type === "monster" ? null : caller;
-      let dmgHealRoll = null; // { hasDamage: false };
+      let dmgHealRoll = null;
       const isSave = item?.system?.category === "save";
       //if (isSave == false && item?.getDamageRoll && options?.isUsing === true) {
       //   dmgHealRoll = item?.getDamageRoll(null);

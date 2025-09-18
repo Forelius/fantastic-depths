@@ -137,7 +137,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
    /** @override */
    prepareDerivedData() {
       this._prepareDerivedAbilities();
-
       super.prepareDerivedData();
    }
 

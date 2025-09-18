@@ -1,4 +1,3 @@
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
 import { VsGroupModMixin } from "/systems/fantastic-depths/module/sheets/mixins/VsGroupModMixin.mjs";
@@ -87,47 +86,20 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
    async _preparePartContext(partId, context) {
       if (partId === "header") {
          // Damage types
-         const damageTypes = [];
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.physical"), value: "physical" });
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.breath"), value: "breath" });
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.fire"), value: "fire" });
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.frost"), value: "frost" });
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.poison"), value: "poison" });
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.corrosive"), value: "corrosive" });
-         damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.piercing"), value: "piercing" });
-         context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.damageTypes = this._getDamageTypeOptions();
       } else if (partId === "attributes") {
-         // Weapon types
-         const weaponTypes = [];
-         weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.monster.long"), value: "monster" });
-         weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.handheld.long"), value: "handheld" });
-         weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.all.long"), value: "all" });
-         context.weaponTypes = weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
          context.isGM = game.user.isGM;
-         // TODO: Magic damage type  indicates that a different set of parameters is passed to getDamageRoll.
-         // This is not a good design, but not addressing it at the moment, so remove this option.
-         //context.damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.magic"), value: "magic" });
+
+         // Ability actions
+         context.actions = this._getActionOptions();
+         // Weapon types
+         context.weaponTypes = this._getWeaponTypeOptions();
          // Weapon sizes
-         const weaponSizes = [];
-         weaponSizes.push({ text: game.i18n.localize("FADE.none"), value: null });
-         weaponSizes.push({ text: game.i18n.localize("FADE.Actor.sizes.S"), value: "S" });
-         weaponSizes.push({ text: game.i18n.localize("FADE.Actor.sizes.M"), value: "M" });
-         weaponSizes.push({ text: game.i18n.localize("FADE.Actor.sizes.L"), value: "L" });
-         context.weaponSizes = weaponSizes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.weaponSizes = this._getWeaponSizeOptions();
          // Weapon grips/modes
-         const weaponGrips = [];
-         weaponGrips.push({ text: game.i18n.localize("FADE.none"), value: null });
-         weaponGrips.push({ text: game.i18n.localize("FADE.Weapon.grip.oneAbbr"), value: "1H" });
-         weaponGrips.push({ text: game.i18n.localize("FADE.Weapon.grip.twoAbbr"), value: "2H" });
-         context.weaponGrips = weaponGrips.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.weaponGrips = this._getWeaponGripOptions();
          // Saving throws
-         const saves = [];
-         saves.push({ value: "", text: game.i18n.localize("None") });
-         const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
-         saves.push(...saveItems.map((save) => {
-            return { value: save.system.customSaveCode, text: save.system.shortName }
-         }));
-         context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+         context.savingThrows = await this._getSavingThrowOptions();
       } else if (partId === "effects") {
          // Prepare active effects for easier access
          context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
@@ -147,6 +119,43 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
       } else if (droppedItem?.type === "condition") {
          await this.onDropConditionItem(droppedItem);
       }
+   }
+
+   _getDamageTypeOptions() {
+      const damageTypes = [];
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.physical"), value: "physical" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.breath"), value: "breath" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.fire"), value: "fire" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.frost"), value: "frost" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.poison"), value: "poison" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.corrosive"), value: "corrosive" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.piercing"), value: "piercing" });
+      return damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+   }
+
+   _getWeaponTypeOptions() {
+      const weaponTypes = [];
+      weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.monster.long"), value: "monster" });
+      weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.handheld.long"), value: "handheld" });
+      weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.all.long"), value: "all" });
+      return weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+   }
+
+   _getWeaponSizeOptions() {
+      const weaponSizes = [];
+      weaponSizes.push({ text: game.i18n.localize("FADE.none"), value: null });
+      weaponSizes.push({ text: game.i18n.localize("FADE.Actor.sizes.S"), value: "S" });
+      weaponSizes.push({ text: game.i18n.localize("FADE.Actor.sizes.M"), value: "M" });
+      weaponSizes.push({ text: game.i18n.localize("FADE.Actor.sizes.L"), value: "L" });
+      return weaponSizes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+   }
+
+   _getWeaponGripOptions() {
+      const weaponGrips = [];
+      weaponGrips.push({ text: game.i18n.localize("FADE.none"), value: null });
+      weaponGrips.push({ text: game.i18n.localize("FADE.Weapon.grip.oneAbbr"), value: "1H" });
+      weaponGrips.push({ text: game.i18n.localize("FADE.Weapon.grip.twoAbbr"), value: "2H" });
+      return weaponGrips.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
    /**

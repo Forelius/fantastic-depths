@@ -44,7 +44,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, true);
+      let actions = await this._getActionsForChat(item, context);
 
       // Prepare data for the chat template
       const chatData = {

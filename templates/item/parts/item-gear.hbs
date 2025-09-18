@@ -10,11 +10,7 @@
          <div class="category-caret" data-action="toggleContainer"><i class="fas {{#if item.system.isOpen}}fa-caret-down{{else}}fa-caret-right{{/if}}"></i></div>
          {{/if}}
          <a class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
-            {{#if (or @root.isGM item.system.isIdentified)}}
-            {{item.name}}
-            {{else}}
-            {{item.system.unidentifiedName}}
-            {{/if}}
+            {{item.knownNameGM}} 
             {{#if (and rootobj.showWeight item.containedEnc)}}
             <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
             {{/if}}

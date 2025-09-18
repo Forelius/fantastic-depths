@@ -115,7 +115,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
             const roll = new Roll(damageRoll.damageFormula);
             await roll.evaluate(); // Wait for the roll result
             const damage = Math.max(roll.total, 0);
-            const attackName = (damagerItem.system.isIdentified !== false) ? damagerItem.name : damagerItem.system.unidentifiedName;
+            const attackName = damagerItem.knownName;
             const descData = {
                attacker: instigator.name,
                weapon: attackName,

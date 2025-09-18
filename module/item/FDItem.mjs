@@ -34,7 +34,33 @@ export class FDItem extends Item {
    get hasCast() {
       return this.system.cast !== undefined && (this.system.cast < this.system.memorized || this.system.memorized === null);
    }
+   /** The name of the item as known by the players. */
+   get knownName() {
+      return this.system.isIdentified === undefined || this.system.isIdentified === true
+         ? this.name
+         : this.system.unidentifiedName;
+   }
+   /** The name of the item as known by the players or user is GM. */
+   get knownNameGM() {
+      return this.system.isIdentified === undefined || this.system.isIdentified === true || game.user.isGM === true
+         ? this.name
+         : this.system.unidentifiedName;
+   }
+   /** If object needs is identifiable then the unidentified name, otherwise the name. */
+   get unknownName() {
+      return this.system.unidentifiedName ?? this.name;
+   }
 
+   get knownDescription() {
+      return this.system.isIdentified === undefined || this.system.isIdentified === true
+         ? this.system.description ?? ""
+         : this.system.unidentifiedDesc;
+   }
+   get knownDescriptionGM() {
+      return this.system.isIdentified === undefined || this.system.isIdentified === true || game.user.isGM === true
+         ? this.system.description ?? ""
+         : this.system.unidentifiedDesc;
+   }
 
    /** @override
     * @protected */
@@ -91,7 +117,7 @@ export class FDItem extends Item {
       // TODO: Remove after v12 support.
       const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
 
-      let description = await textEditorImp.enrichHTML(this.system.description, {
+      let description = await textEditorImp.enrichHTML(this.knownDescriptionGM, {
          // Whether to show secret blocks in the finished html
          secrets: false,
          // Necessary in v11, can be removed in v12

@@ -1,3 +1,4 @@
+import { IdentifiableData } from '/systems/fantastic-depths/module/item/fields/IdentifiableField.mjs';
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField } = foundry.data.fields;
 /**
  * Data model for a generic item inheriting from multiple templates.
@@ -5,6 +6,8 @@ const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, S
 export class GearItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       return {
+         // Extend the schema from IdentifiableData
+         ...IdentifiableData.defineSchema(),
          // Some item types use short name, like the saving throw.
          shortName: new StringField({ required: false, initial: "" }),
          // Fields from the "base" template
@@ -35,10 +38,6 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          fuelType: new StringField({ required: false, initial: "" }),
          ammoType: new StringField({ required: false, initial: "" }),
          isAmmo: new BooleanField({ required: false, initial: false }),
-         unidentifiedName: new StringField({ required: false, initial: "" }),
-         unidentifiedDesc: new StringField({ required: false, initial: "" }),
-         isIdentified: new BooleanField({ required: false, initial: true }),
-         isCursed: new BooleanField({ required: false, initial: false }),
          isDropped: new BooleanField({ required: true, initial: false }),
          // Items with associated actions
          savingThrow: new StringField({ nullable: true, initial: null }),
@@ -51,6 +50,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          isTreasure: new BooleanField({ required: true, initial: false }),
          specialAbilities: new ArrayField(
             new SchemaField({
+               action: new StringField({ required: false, nullable: true }),
                uuid: new StringField({ required: true, initial: "" }),
                name: new StringField({ required: true, initial: "" }),
                // Roll mod
@@ -62,6 +62,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
             }),
          spells: new ArrayField(
             new SchemaField({
+               action: new StringField({ required: false, nullable: true }),
                // The class and level the spell is cast as.
                castAs: new StringField({ required: true, initial: "" }),
                uuid: new StringField({ required: true, initial: "" }),

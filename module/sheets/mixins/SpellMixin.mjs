@@ -38,6 +38,7 @@ const SpellMixin = (superclass) => {
 
          // Define the new data
          const newItem = {
+            action: "none",
             castAs: "",
             name: droppedItem?.name ?? "",
             uuid: droppedItem?.uuid ?? "",

@@ -85,7 +85,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
 
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.
-      if (await this._tryCastThenCharge(true, actionItem)) {
+      if (await this._tryCastThenChargeThenUse(true, actionItem, dataset.action)) {
 
          // Determine if spell requires an attack roll, such as touch spells.
          let rollAttackResult = null;
@@ -99,8 +99,8 @@ export class SpellItem extends RollAttackMixin(FDItem) {
 
          // If there was no attack roll or the attack roll was not canceled...
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
-            // Use spell resource
-            await this._tryCastThenCharge(false, actionItem)
+            // Use spell resource (charge, cast or use)
+            await this._tryCastThenChargeThenUse(false, actionItem, dataset.action);
 
             const chatData = {
                caller: this, // the spell
@@ -147,6 +147,31 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          result = await this._tryCastMemorized(getOnly, actionItem);
       } else if (item.system.charges !== undefined) {
          result = await this._tryUseCharge(getOnly, actionItem);
+      }
+
+      return result;
+   }
+
+   /**
+    * Some items may have uses, casts and charges. If the item has the cast property then cast is used.
+    * If there are charges then a charge is used. If the result of both of those are false then use/qty is used.
+    * @param {any} getOnly If true, does not use, just gets.
+    * @param {any} actionItem The item that owns this item, or null.
+    * @param {*} action The action property of the dataset (consume)
+    */
+   async _tryCastThenChargeThenUse(getOnly = false, actionItem, action) {
+      let result = false;
+      let item = actionItem || this;
+
+      if (item.system.cast !== undefined) {
+         result = await this._tryCastMemorized(getOnly, actionItem);
+      } else {
+         if (item.system.charges !== undefined) {
+            result = await this._tryUseCharge(getOnly, actionItem);
+         }
+         if (action?.length > 0 && action !== "none" && result === false) {
+            result = await this._tryUseUsage(getOnly, actionItem);
+         }
       }
 
       return result;

@@ -5,6 +5,7 @@
          <ol name="class-abilities" class="items-list">
             <!-- Header Row -->
             <li class="item flexrow items-header">
+               <div style="max-width:150px">{{localize 'FADE.Chat.actions.singular'}}</div>
                <div>{{localize "FADE.name"}}</div>
                <div style="max-width:50px">{{localize "FADE.Actor.Mod"}}</div>
                <div class="item-controls" style="max-width:30px;"></div>
@@ -13,6 +14,11 @@
             {{#each system.specialAbilities as |item index|}}
             <li class="item flexrow" data-item-id="{{item.uuid}}">
                <input type="text" name="system.specialAbilities.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
+               <div style="max-width:150px;">
+                  <select name="system.specialAbilities.{{index}}.action" class="form-control">
+                     {{selectOptions @root.actions selected=item.action}}
+                  </select>
+               </div>
                <div>
                   <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
                </div>
@@ -35,6 +41,7 @@
          <ol name="spells" class="items-list">
             <!-- Header Row -->
             <li class="item flexrow items-header">
+               <div style="max-width:150px">{{localize 'FADE.Chat.actions.singular'}}</div>
                <div style="max-width:60px">{{localize 'FADE.class.castAsKey.name'}}</div>
                <div>{{localize "FADE.name"}}</div>
                <div class="item-controls" style="max-width:30px;"></div>
@@ -43,6 +50,11 @@
             {{#each system.spells as |item index|}}
             <li class="item flexrow" data-item-id="{{item.uuid}}">
                <input type="text" name="system.spells.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
+               <div style="max-width:150px;">
+                  <select name="system.spells.{{index}}.action" class="form-control">
+                     {{selectOptions @root.actions selected=item.action}}
+                  </select>
+               </div>
                <div style="max-width:60px">
                   <input type="text" name="system.spells.{{index}}.castAs" value="{{item.castAs}}" data-dtype="String" />
                </div>

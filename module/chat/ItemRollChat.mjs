@@ -43,7 +43,7 @@ export class ItemRollChat extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, abilities: true, saves: !item.isWeaponItem });
+      let actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, saves: !item.isWeaponItem });
 
       // Prepare data for the chat template
       const chatData = {

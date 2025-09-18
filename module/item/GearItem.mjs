@@ -97,26 +97,6 @@ export class GearItem extends FDItem {
       return await builder.createChatMessage();
    }
 
-   async getInlineDescription() {
-      // TODO: Remove after v12 support.
-      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
-
-      let description = this.system.isIdentified === true ?
-         await super.getInlineDescription()
-         : await textEditorImp.enrichHTML(this.system.unidentifiedDesc, {
-            secrets: false,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            rollData: this.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.actor,
-         });
-      if (description?.length <= 0) {
-         description = '--';
-      }
-      return description;
-   }
-
    getDamageRoll(resp) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);

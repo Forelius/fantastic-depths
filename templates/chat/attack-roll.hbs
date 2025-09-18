@@ -7,36 +7,20 @@
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
       <img class="item-image" src='{{weapon.img}}' />
-      {{#if (ne weapon.system.isIdentified false)}}
-      <div class="item-name">{{weapon.name}}</div>
-      {{else}}
-      <div class="item-name">{{weapon.system.unidentifiedName}}</div>
-      {{/if}}
+      <div class="item-name">{{weapon.knownName}}</div>
    </div>
    <div class="collapsible-content collapsed">
-      {{#if (ne weapon.system.isIdentified false)}}
-      {{{weapon.system.description}}}
-      {{else}}
-      {{{weapon.system.unidentifiedDesc}}}
-      {{/if}}
+      {{{weapon.knownDescription}}}
    </div>
 </div>
 {{#if ammoItem}}
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
       <img class="item-image" src='{{ammoItem.img}}' />
-      {{#if ammoItem.system.isIdentified}}
-      <div class="item-name">{{ammoItem.name}}</div>
-      {{else}}
-      <div class="item-name">{{ammoItem.system.unidentifiedName}}</div>
-      {{/if}}
+      <div class="item-name">{{ammoItem.knownName}}</div>
    </div>
    <div class="collapsible-content collapsed">
-      {{#if ammoItem.system.isIdentified}}
-      {{{ammoItem.system.description}}}
-      {{else}}
-      {{{ammoItem.system.unidentifiedDesc}}}
-      {{/if}}
+      {{{ammoItem.system.knownDescription}}}
    </div>
 </div>
 {{/if}}

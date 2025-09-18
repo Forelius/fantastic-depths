@@ -1,13 +1,13 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
 */
 const RESULT_TYPE = {
-   NONE: Symbol('result_none'),
-   FAILED: Symbol('result_failed'),
-   PASSED: Symbol('result_passed')
+   NONE: Symbol("result_none"),
+   FAILED: Symbol("result_failed"),
+   PASSED: Symbol("result_passed")
 };
 
 /**
@@ -33,11 +33,11 @@ export class ChatBuilder {
     */
    constructor(dataset, options) {
       if (new.target === ChatBuilder) {
-         throw new Error('ChatBuilder cannot be instantiated directly.');
+         throw new Error("ChatBuilder cannot be instantiated directly.");
       }
       // TODO: not sure this is required anymore.
       if (!new.target.template) {
-         throw new Error('Subclasses must define a static template property.');
+         throw new Error("Subclasses must define a static template property.");
       }
 
       this.RESULT_TYPE = RESULT_TYPE;
@@ -72,8 +72,8 @@ export class ChatBuilder {
    static initializeResultCache() {
       this.resultCache = {
          [RESULT_TYPE.NONE]: undefined,
-         [RESULT_TYPE.FAILED]: `<div class='roll-fail'>${game.i18n.localize('FADE.Chat.fail')}</div>`,
-         [RESULT_TYPE.PASSED]: `<div class='roll-success'>${game.i18n.localize('FADE.Chat.pass')}</div>`,
+         [RESULT_TYPE.FAILED]: `<div class="roll-fail">${game.i18n.localize("FADE.Chat.fail")}</div>`,
+         [RESULT_TYPE.PASSED]: `<div class="roll-success">${game.i18n.localize("FADE.Chat.pass")}</div>`,
       };
       return this.resultCache;
    }
@@ -100,22 +100,22 @@ export class ChatBuilder {
       let result = false;
 
       switch (operator) {
-         case 'lt':
+         case "lt":
          case "<":
             result = (rollTotal < target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
-         case 'lte':
+         case "lte":
          case "<=":
             result = (rollTotal <= target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
-         case 'gt':
+         case "gt":
          case ">":
             result = (rollTotal > target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
-         case 'gte':
+         case "gte":
          case ">=":
             result = (rollTotal >= target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
@@ -149,7 +149,7 @@ export class ChatBuilder {
          Object.assign(chatMessageData, rollsData);
 
          // Decide roll mode (public, gm only,...)
-         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get('core', 'rollMode');
+         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get("core", "rollMode");
          ChatMessage.applyRollMode(chatMessageData, rollMode);
       }
 
@@ -218,12 +218,12 @@ export class ChatBuilder {
     */
    moveDigest(content) {
       // Create a temporary DOM element to manipulate the HTML content
-      const tempDiv = document.createElement('div');
+      const tempDiv = document.createElement("div");
       tempDiv.innerHTML = content;
       tempDiv.classList = "digest";
       // Find the 'digest' div and 'dice-tooltip' div
-      const digestDiv = tempDiv.querySelector('div[name="digest"]');
-      const tooltipDiv = tempDiv.querySelector('.tooltip-part');
+      const digestDiv = tempDiv.querySelector(`div[name="digest"]`);
+      const tooltipDiv = tempDiv.querySelector(".tooltip-part");
       // Move the 'digest' div inside the 'dice-tooltip' div
       if (digestDiv && tooltipDiv) {
          tooltipDiv.insertAdjacentElement("afterend", digestDiv);
@@ -271,7 +271,7 @@ export class ChatBuilder {
                   owneruuid: owner.uuid,
                   itemuuid: actionItem.uuid,
                   actionuuid: actionItem.uuid, // this is the owning item's uuid
-                  itemName: "Melee",
+                  itemName: game.i18n.localize("FADE.Chat.actions.melee"),
                })
             }
             if (actionItem.canShoot === true) {
@@ -280,7 +280,7 @@ export class ChatBuilder {
                   owneruuid: owner.uuid,
                   itemuuid: actionItem.uuid,
                   actionuuid: actionItem.uuid, // this is the owning item's uuid
-                  itemName: "Shoot",
+                  itemName: game.i18n.localize("FADE.Chat.actions.shoot"),
                })
             }
             if (actionItem.canThrow === true) {
@@ -289,10 +289,11 @@ export class ChatBuilder {
                   owneruuid: owner.uuid,
                   itemuuid: actionItem.uuid,
                   actionuuid: actionItem.uuid, // this is the owning item's uuid
-                  itemName: "Throw",
+                  itemName: game.i18n.localize("FADE.Chat.actions.throw"),
                })
             }
          }
+         // Special abilities
          if (options.abilities === true) {
             for (let ability of [...actionItem.system.specialAbilities || []]) {
                let sourceItem = await fromUuid(ability.uuid);
@@ -305,6 +306,7 @@ export class ChatBuilder {
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
                      itemName: ability.name,
                      mod: ability.mod,
+                     action: ability.action
                   });
                }
             }
@@ -319,6 +321,7 @@ export class ChatBuilder {
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
                      itemName: spell.name,
                      castAs: spell.castAs,
+                     action: spell.action
                   });
                }
             }
