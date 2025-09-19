@@ -86,6 +86,12 @@ export class GearItem extends FDItem {
     * @private
     */
    async roll(dataset) {
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         return null;
+      }
       // Initialize chat data.
       const rollMode = game.settings.get('core', 'rollMode');
       let isUsing = false;
@@ -115,7 +121,7 @@ export class GearItem extends FDItem {
 
       const chatData = {
          caller: this,
-         context: this.actor,
+         context: instigator,
          rollMode
       };
 
