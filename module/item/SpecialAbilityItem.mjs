@@ -59,7 +59,7 @@ export class SpecialAbilityItem extends FDItem {
       const systemData = this.system;
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
-      const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
+      const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
