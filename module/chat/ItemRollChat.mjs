@@ -23,6 +23,7 @@ export class ItemRollChat extends ChatBuilder {
       let rollContent = null;
       const item = caller;
       let dmgHealRoll = null;
+      // Note: Weapons don't have target until they are used to attack.
       const targetTokens = item.hasTargets ? Array.from(game.user.targets) : null;
 
       if (roll && options.showResult !== false) {
@@ -60,7 +61,7 @@ export class ItemRollChat extends ChatBuilder {
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       let condsForChat = null;
-      if (item?.isWeaponItem !== true) {
+      if (item?.isWeaponItem !== true && item.isIdentified === true) {
          condsForChat = await this._getConditionsForChat(item);
          //if (item?.getDamageRoll && options?.isUsing === true) {
          //   dmgHealRoll = item?.getDamageRoll(null);

@@ -26,6 +26,7 @@
 {{{rollContent}}}
 {{#if item}}
 {{#if (eq item.system.isIdentified true)}}
+{{! Actions are handled by the fadeChatMessage, because not all players see the buttons. }}
 {{> "rollSaveBtn"}}
 {{/if}}
 {{/if}}

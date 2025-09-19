@@ -49,6 +49,10 @@ export class WeaponItemDataModel extends GearItemDataModel {
    prepareBaseData() {
       this.equippable = true;
       super.prepareBaseData();
+      if (this.natural === true) {
+         this.weight = 0;
+         this.weightEquipped = 0;
+      }
    }
 
    prepareDerivedData() {

@@ -53,12 +53,16 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    * @private
    */
    async roll(dataset) {
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor || canvas.tokens.controlled?.[0];
+      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+         return null;
+      }
       if (dataset?.skipdlg === true) {
          // I'm not sure this condition ever happens.
          super.roll(dataset);
-      } else if (instigator) {
+      } else {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.localize('FADE.dialog.spellcast.title'),
@@ -73,15 +77,13 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          } else if (dialogResp?.resp?.result === true) {
             await this.doSpellcast(dataset);
          }
-      } else {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.spellSelectToken'));
       }
    }
 
    async doSpellcast(dataset = null) {
       const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
       const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
-      const instigator = owner || this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
 
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.
@@ -166,7 +168,8 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       if (item.system.cast !== undefined) {
          result = await this._tryCastMemorized(getOnly, actionItem);
       } else {
-         if (item.system.charges !== undefined) {
+         // If this item has charges property and the item does have a charge remaining...
+         if (item.system.charges !== undefined && item.hasCharge) {
             result = await this._tryUseCharge(getOnly, actionItem);
          }
          if (action?.length > 0 && action !== "none" && result === false) {

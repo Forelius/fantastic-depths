@@ -50,7 +50,6 @@ export class FDItem extends Item {
    get unknownName() {
       return this.system.unidentifiedName ?? this.name;
    }
-
    get knownDescription() {
       return this.system.isIdentified === undefined || this.system.isIdentified === true
          ? this.system.description ?? ""
@@ -60,6 +59,9 @@ export class FDItem extends Item {
       return this.system.isIdentified === undefined || this.system.isIdentified === true || game.user.isGM === true
          ? this.system.description ?? ""
          : this.system.unidentifiedDesc;
+   }
+   get isIdentified() {
+      return this.system.isIdentified === undefined || this.system.isIdentified === true;
    }
 
    /** @override
@@ -142,15 +144,21 @@ export class FDItem extends Item {
     * does not override this message the result is a chat message with the item description.
     * @public
     * @param {dataset} dataset The data- tag values from the clicked element
-    * @param {object} owner (Optional) Owner of the item. This could be a compendium item referenced as sub-item.
     */
-   async roll(dataset, owner) {
+   async roll(dataset) {
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+         return null;
+      }
+
       // Initialize chat data.
       //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = game.settings.get('core', 'rollMode');
       const chatData = {
          caller: this,
-         context: this.actor || owner,
+         context: instigator,
          rollMode
       };
       const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);

@@ -55,8 +55,13 @@ export class SkillItem extends FDItem {
    * @private
    */
    async roll(dataset, dialogResp = null, event = null) {
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+         return null;
+      }
       const systemData = this.system;
-      const roller = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       dataset = {
          rollType: 'item',
          label: this.name,
@@ -105,7 +110,7 @@ export class SkillItem extends FDItem {
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
             caller: this, // the skill item
-            context: roller, // the skill item owner
+            context: instigator, // the skill item owner
             mdata: dataset,
             roll: rolled,
          };

@@ -58,8 +58,12 @@ export class SpecialAbilityItem extends FDItem {
       let result = null;
       const systemData = this.system;
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+         return result;
+      }
+      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
       const rollData = this.getRollData();
@@ -67,10 +71,6 @@ export class SpecialAbilityItem extends FDItem {
       const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
 
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
-         return result;
-      }
 
       let roll = null;
       if (await this._tryUseChargeThenUsage(true, actionItem) === false) {

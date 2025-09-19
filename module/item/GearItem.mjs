@@ -1,4 +1,3 @@
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
 import { FDItem } from '/systems/fantastic-depths/module/item/FDItem.mjs';
 import { TagManager } from '/systems/fantastic-depths/module/sys/TagManager.mjs';
@@ -86,10 +85,10 @@ export class GearItem extends FDItem {
     * @private
     */
    async roll(dataset) {
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
+      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
       if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
          return null;
       }
       // Initialize chat data.

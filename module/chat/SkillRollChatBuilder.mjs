@@ -6,7 +6,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
 
    async createChatMessage() {
       const { context, mdata, roll, caller, options } = this.data;
-      const actor = context;
+      const token = context;
       const item = caller;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
@@ -20,21 +20,21 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
          resultString = this.getResultString(mdata, roll, targetNumber);
       }
 
-      // Get the actor and user names
-      const actorName = actor.token?.name ?? actor.name; // Actor name (e.g., character name)
+      // Get the token and user names
+      const tokenName = token?.name ;
       const userName = game.users.current.name; // User name (e.g., player name)
 
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
 
-      this.handleToast(actorName, mdata, roll, resultString, rollMode);
+      this.handleToast(tokenName, mdata, roll, resultString, rollMode);
 
       // Prepare data for the chat template
       const chatData = {
          rollContent,
          mdata,
          resultString,
-         actorName,
+         tokenName,
          userName,
          context, // the skill's owning actor
          item,

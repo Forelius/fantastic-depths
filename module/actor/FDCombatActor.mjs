@@ -163,10 +163,10 @@ export class FDCombatActor extends FDActorBase {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
-      const selected = Array.from(canvas.tokens.controlled);
-      let hasSelected = selected.length > 0;
-      if (hasSelected === false) {
-         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || canvas.tokens.controlled?.[0]?.document;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize("FADE.notification.noTokenAssoc"));
       } else {
          if (dataset?.type === "melee" || dataset?.type === "shoot" || dataset?.type === "throw") {
             const item = await fromUuid(dataset.itemuuid);

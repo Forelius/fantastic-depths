@@ -58,7 +58,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
 
-      const { conditions, durationMsgs } = await this._getConditionsForChat(weaponItem);
+      let conditionsResult = null;
+      if (weaponItem.isIdentified == true) {
+         conditionsResult = await this._getConditionsForChat(weaponItem);
+      }
 
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
@@ -72,7 +75,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                damageRoll,
                targets: toHitResult.targetResults,
                actions,
-               conditions,
+               conditions: conditionsResult?.conditions,
             }
          }
       });

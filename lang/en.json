@@ -629,8 +629,9 @@
       },
       "notification": {
          "missingSave": "The actor does not have the requested saving throw type ({type}).",
-         "selectTarget": "A targetted must first be selected.",
-         "selectToken1": "A token must first be selected.",
+         "selectTarget": "A target must be selected.",
+         "selectToken1": "A token must be selected.",
+         "noTokenAssoc": "Action requires a token in the scene.",
          "spellSelectToken": "You must have your token selected to cast a spell.",
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
          "noTokenWarning": "You must select a token or assign a default character to perform this action.",

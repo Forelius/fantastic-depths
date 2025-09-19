@@ -35,6 +35,10 @@ export class ArmorItemDataModel extends GearItemDataModel {
       this.modRanged = 0;
       this.equippable = true;
       super.prepareBaseData();
+      if (this.natural === true) {
+         this.weight = 0;
+         this.weightEquipped = 0;
+      }
    }
 
    /** @override */
