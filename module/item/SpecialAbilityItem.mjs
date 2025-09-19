@@ -67,7 +67,10 @@ export class SpecialAbilityItem extends FDItem {
       const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
 
-      if (!instigator) return result;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         return result;
+      }
 
       let roll = null;
       if (await this._tryUseChargeThenUsage(true, actionItem) === false) {

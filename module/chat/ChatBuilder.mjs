@@ -244,6 +244,7 @@ export class ChatBuilder {
    }
 
    async _getActionsForChat(actionItem, owner, options = {}) {
+      const isIdentified = actionItem?.system.isIdentified ?? false;
       // Merge default options with provided options
       options = { ...{ attacks: true, abilities: true, saves: true }, ...options };
       const actions = [];
@@ -293,18 +294,18 @@ export class ChatBuilder {
                })
             }
          }
-         // Special abilities
+         // Special abilities and spells
          if (options.abilities === true) {
             for (let ability of [...actionItem.system.specialAbilities || []]) {
                let sourceItem = await fromUuid(ability.uuid);
-               if (sourceItem) {
+               if (sourceItem && (isIdentified || ability.action === "consume")) {
                   sourceItem = foundry.utils.deepClone(sourceItem);
                   actions.push({
                      type: sourceItem.system.category,
                      owneruuid: owner.uuid,
                      itemuuid: ability.uuid,
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
-                     itemName: ability.name,
+                     itemName: ability.action === "consume" ? "???" : ability.name,
                      mod: ability.mod,
                      action: ability.action
                   });
@@ -312,14 +313,14 @@ export class ChatBuilder {
             }
             for (let spell of [...actionItem.system.spells || []]) {
                let sourceItem = await fromUuid(spell.uuid);
-               if (sourceItem) {
+               if (sourceItem && (isIdentified || spell.action === "consume")) {
                   sourceItem = foundry.utils.deepClone(sourceItem);
                   actions.push({
                      type: "spell",
                      owneruuid: owner.uuid,
                      itemuuid: spell.uuid,
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
-                     itemName: spell.name,
+                     itemName: spell.action === "consume" ? "???" : spell.name,
                      castAs: spell.castAs,
                      action: spell.action
                   });
@@ -343,11 +344,11 @@ export class ChatBuilder {
 
    async _getConditionDurationResult(condition, item) {
       let result = {
-         text: (condition.durationFormula !== "-" && condition.durationFormula !== null) ?
+         text: (condition.durationFormula !== "" && condition.durationFormula !== null) ?
             `${condition.name} ${game.i18n.localize("FADE.Spell.duration")}: ${condition.durationFormula} ${game.i18n.localize("FADE.rounds")}`
             : ""
       };
-      if (condition.durationFormula !== "-" && condition.durationFormula !== null) {
+      if (condition.durationFormula !== "" && condition.durationFormula !== null) {
          const rollData = condition.getRollData ? condition.getRollData() : item.getRollData();
          const rollEval = await new Roll(condition.durationFormula, rollData).evaluate();
          result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;

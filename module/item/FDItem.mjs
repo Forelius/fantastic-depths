@@ -317,7 +317,7 @@ export class FDItem extends Item {
       }
       // If there are no charges remaining, show a UI notification
       if (result === false) {
-         const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.name });
+         const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.knownName });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
       }
