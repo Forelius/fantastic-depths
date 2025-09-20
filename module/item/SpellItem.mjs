@@ -87,7 +87,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
 
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.
-      if (await this._tryCastThenChargeThenUse(true, actionItem, dataset.action)) {
+      if (await this._tryCastThenChargeThenUse(true, actionItem, dataset?.action)) {
 
          // Determine if spell requires an attack roll, such as touch spells.
          let rollAttackResult = null;
@@ -102,7 +102,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          // If there was no attack roll or the attack roll was not canceled...
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource (charge, cast or use)
-            await this._tryCastThenChargeThenUse(false, actionItem, dataset.action);
+            await this._tryCastThenChargeThenUse(false, actionItem, dataset?.action);
 
             const chatData = {
                caller: this, // the spell
