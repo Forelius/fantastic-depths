@@ -108,8 +108,9 @@ export class LightItem extends GearItem {
    }
 
    async toggleLight(dataset) {
-      const owner = await fromUuid(dataset.owneruuid);
-      const token = owner.getActiveTokens()[0]?.document ?? owner.getActiveTokens()[0];
+      //const owner = await fromUuid(dataset.owneruuid);
+      //const token = owner.getActiveTokens()[0]?.document ?? owner.getActiveTokens()[0];
+      const token = await fromUuid(dataset.owneruuid);
       if (token) {
          if (this.system.light.enabled) {
             await this.disableLight(token);

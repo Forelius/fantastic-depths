@@ -3,7 +3,6 @@ import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs"
 
 export class AbilityCheckDialog {
    static async getDialog(dataset, caller) {
-      const dialogData = {};
       let dialogResp = null;
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
       const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");

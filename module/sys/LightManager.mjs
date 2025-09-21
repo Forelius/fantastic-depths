@@ -3,12 +3,11 @@ export class LightManager {
    static initialize() { }
 
    static getToken() {
-      return canvas.tokens.controlled?.length > 0 ? canvas.tokens.controlled[0] : null;
+      return canvas.tokens?.controlled?.[0]?.document;
    }
 
    static hasSelectedToken() {
-      const token = LightManager.getToken();
-      return token !== null;
+      return LightManager.getToken() !== undefined;
    }
 
    /**
