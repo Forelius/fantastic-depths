@@ -213,7 +213,8 @@ export class FDCombatActor extends FDActorBase {
     * Get an array of strings indicating which combat maneuvers this actor is capable of.
     */
    getAvailableActions() {
-      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem"];
+      // These options are always available.
+      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility"];
       let hasEquippedWeapon = false;
       // Ready weapon
       if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {

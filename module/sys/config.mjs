@@ -169,7 +169,8 @@ FADE.CombatManeuvers = {
    disarm: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    guard: { phase: "melee", canMove: true },
    unarmed: { phase: "melee", canMove: true },
-   dodge: { phase: "melee", canMove: true }
+   dodge: { phase: "melee", canMove: true },
+   specialAbility: { phase: "melee", canMove: true },
 }
 FADE.ActorSizes = [
    { id: "T", isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet

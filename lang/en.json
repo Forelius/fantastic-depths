@@ -1009,7 +1009,7 @@
             },
             "guard": {
                "name": "Guard",
-               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
+               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range. Like the withdrawal option, the combatant may move at half the normal movement rate."
             },
             "unarmed": {
                "name": "Unarmed Combat",
@@ -1018,6 +1018,10 @@
             "dodge": {
                "name": "Dodge",
                "description": "When a fighter chooses this combat option, they do not attack at all and instead focus entirely on avoiding incoming attacks. Their AC increases by 5 against one specific attack they choose to evade. Against any other attack they are aware of, their AC increases by 3. Against any other attack they are not aware of, their AC increases by 1. This AC bonus lasts until the end of the round, and at the beginning of the next round, it is no longer in effect."
+            },
+            "specialAbility": {
+               "Special Ability",
+               "description": "This is a catch-all option that covers the usage of a special ability that requires a combat round to perform. Do not select this option if a more specific option is available."
             }
          }
       },
