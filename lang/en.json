@@ -1021,7 +1021,7 @@
             },
             "specialAbility": {
                "name": "Special Ability",
-               "description": "This is a catch-all option that covers the usage of a special ability that requires a combat round to perform. Do not select this option if a more specific option is available."
+               "description": "This is a catch-all option that covers the usage of a special ability that requires a combat round to perform. Do not select this option if using a weapon, spell or magic item."
             }
          }
       },
