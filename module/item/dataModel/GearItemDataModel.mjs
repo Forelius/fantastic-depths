@@ -40,11 +40,6 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          isAmmo: new BooleanField({ required: false, initial: false }),
          isDropped: new BooleanField({ required: true, initial: false }),
          // Items with associated actions
-         savingThrow: new StringField({ nullable: true, initial: null }),
-         dmgFormula: new StringField({ nullable: true, initial: null }),
-         healFormula: new StringField({ nullable: true, initial: null }),
-         damageType: new StringField({ required: false, initial: "" }),
-         isUsable: new BooleanField({ required: true, initial: false }),
          // Is the item considered to be treasure when calculating encumbrance.
          // Yes, even though not item.type='treasure'.
          isTreasure: new BooleanField({ required: true, initial: false }),
@@ -111,7 +106,6 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       if (this.weight === 0) {
          this.weightEquipped = 0;
       }
-      this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
       // If the quantity is zero or this item is contained in a container...
       if (this.quantity === 0 || (this.containerId?.length > 0 && this.isAmmo == false)) {
          // It can't be equipped.
@@ -130,9 +124,5 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       } else {
          this.charges = Math.min(this.charges, this.chargesMax);
       }
-
-      // This allows for items to be usable even if there is no saving throw, damage formula or healing formula specified.
-      // The purpose for making an item usable anyways, is that the usage would be tracked.
-      this.isUsable = this.isUsable || (this.savingThrow || this.dmgFormula || this.healFormula)?.length > 0 || this.chargesMax > 0 || this.chargesMax === null;
    }
 }

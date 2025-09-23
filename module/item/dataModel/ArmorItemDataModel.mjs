@@ -17,7 +17,7 @@ export class ArmorItemDataModel extends GearItemDataModel {
          ac: new fields.NumberField({ required: true, initial: 9 }),
          isShield: new fields.BooleanField({ required: false, initial: false }),
          av: new fields.StringField({ required: false, nullable: true, initial: null }),
-         dmgFormula: new fields.StringField({ nullable: true, initial: null }),
+         //dmgFormula: new fields.StringField({ nullable: true, initial: null }),
          armorWeight: new fields.StringField({ required: true, initial: "light" }),
          mod: new fields.NumberField({ required: true, initial: 0 }),
          modRanged: new fields.NumberField({ required: true, initial: 0 }),

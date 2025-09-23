@@ -94,10 +94,6 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
 
       // Ability actions
       context.actions = this._getActionOptions();
-      // Damage types
-      context.damageTypes = this._getDamageTypeOptions();
-      // Saving throws
-      context.savingThrows = await this._getSavingThrowOptions();
 
       context.hideLevel = true;
 

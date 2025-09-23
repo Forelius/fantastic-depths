@@ -58,6 +58,10 @@ export class GearItem extends FDItem {
       return result;
    }
 
+   get isUsable() {
+      return this.chargesMax > 0 || this.chargesMax === null;
+   }
+
    /** @override
     * @protected */
    prepareBaseData() {
@@ -100,27 +104,5 @@ export class GearItem extends FDItem {
       };
       const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData);
       return await builder.createChatMessage();
-   }
-
-   getDamageRoll(resp) {
-      const isHeal = this.system.healFormula?.length > 0;
-      const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
-      let damageFormula = evaluatedRoll?.formula;
-      const digest = [];
-      let modifier = 0;
-      let hasDamage = true;
-      const damageType = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);
-
-      if (resp?.mod && resp?.mod !== 0) {
-         damageFormula = damageFormula ? `${damageFormula}+${resp.mod}` : `${resp.mod}`;
-         modifier += resp.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
-      }
-
-      if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
-         hasDamage = false;
-      }
-
-      return hasDamage ? { damageFormula, damageType, digest, hasDamage } : null;
    }
 }

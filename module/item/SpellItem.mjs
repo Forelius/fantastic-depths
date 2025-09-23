@@ -19,7 +19,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       systemData.targetOther = systemData.targetOther === undefined ? true : systemData.targetOther
       systemData.dmgFormula = systemData.dmgFormula || null;
       systemData.healFormula = systemData.healFormula || null;
-      systemData.maxTargetFormula = systemData.maxTargetFormula || 1;
+      systemData.maxTargetFormula = systemData.maxTargetFormula || null;
       systemData.durationFormula = systemData.durationFormula || null;
       systemData.savingThrow = systemData.savingThrow || "";
       systemData.attackType = systemData.attackType || ""

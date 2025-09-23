@@ -2,7 +2,7 @@
    <div {{#if item.system.container}}{{#unless (or item.system.quantityMax (and item.system.chargesMax (or @root.isGM item.system.isIdentified)))}}class="bottom-border" {{/unless}} {{/if}}>
       <div class="flexrow">
          <div class='item-name contained'>
-            <div class='item-image {{#if item.system.isUsable}}rollable2{{else}}chatable2{{/if}}' 
+            <div class='item-image {{#if item.isUsable}}rollable2{{else}}chatable2{{/if}}' 
                  data-action="rollItem"
                  data-roll-type='item'>
                <a data-roll-type='item'><img src='{{item.img}}' width='24' height='24' /></a>

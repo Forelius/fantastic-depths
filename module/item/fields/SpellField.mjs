@@ -32,7 +32,7 @@ export class SpellData extends foundry.abstract.DataModel {
          targetOther: new BooleanField({ required: false, initial: true }),
          dmgFormula: new StringField({ nullable: true, initial: null }),
          healFormula: new StringField({ nullable: true, initial: null }),
-         maxTargetFormula: new StringField({ required: false, initial: "1" }),
+         maxTargetFormula: new StringField({ nullable: true, initial: null }),
          // Specified in rounds (10 seconds)
          durationFormula: new StringField({ nullable: true, initial: null }),
          savingThrow: new StringField({ nullable: true, initial: null }),
