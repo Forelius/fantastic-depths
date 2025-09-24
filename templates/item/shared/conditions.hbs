@@ -1,21 +1,25 @@
 <!-- Conditions with duration -->
 <section class="tab {{tabs.effects.cssClass}}" data-group="primary" data-tab="effects">
-   <div name="item-conditions" class='items-list'>
+   <div name="item-conditions" class="items-list">
       <!-- Header Row -->
-      <div class='item flexrow items-header' data-action="toggleHeader">
-         <div>{{localize 'TYPES.Item.condition'}}</div>
-         <div class='item-controls' style="max-width:30px;"></div>
+      <div class="item flexrow items-header" data-action="toggleHeader">
+         <div class="flex3">{{localize "TYPES.Item.condition"}}</div>
+         <div class="flex1" style="max-width:40px;">{{localize "FADE.condition.remove.name"}}</div>
+         <div class=" flex1 item-controls" style="max-width:30px;"></div>
       </div>
       <!-- Class Ability Entries -->
       {{#each system.conditions as |item index|}}
-      <div class='item flexrow' data-item-id='{{item._id}}'>
+      <div class="item flexrow" data-item-id="{{item._id}}">
          <input type="text" name="system.conditions.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
          <div>
-            <input type="text" style="text-align:left;" name="system.conditions.{{index}}.name" value="{{item.name}}" disabled data-dtype="String" />
+            <input type="text" style="text-align:left;" name="system.conditions.{{index}}.name" value="{{item.name}}" data-dtype="String" />
          </div>
-         <div class='item-controls' style="max-width:30px;">
-            <a class='item-control' data-action="deleteItem" data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.condition")}}' data-type='condition' data-index='{{index}}'>
-               <i class='fas fa-trash'></i>
+         <div style="max-width:40px;">
+            <input type="checkbox" name="system.conditions.{{index}}.remove" data-dtype="Boolean" {{#if item.remove}} checked{{/if}} data-tooltip="{{localize "FADE.condition.remove.hint"}}" />
+         </div>
+         <div class="item-controls" style="max-width:30px;">
+            <a class="item-control" data-action="deleteItem" data-tooltip="{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.condition")}}" data-type="condition" data-index="{{index}}">
+               <i class="fas fa-trash"></i>
             </a>
          </div>
       </div>

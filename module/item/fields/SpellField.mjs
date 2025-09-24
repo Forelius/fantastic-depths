@@ -43,6 +43,7 @@ export class SpellData extends foundry.abstract.DataModel {
             new SchemaField({
                name: new StringField({ required: true, initial: '' }),
                uuid: new StringField({ required: true, initial: '' }),
+               remove: new BooleanField({ initial: false })
             }),
             {
                required: false,

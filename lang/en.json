@@ -595,6 +595,10 @@
          "addStatusEffect": {
             "name": "Status Effect",
             "hint": "If checked, the condition will be added as a status effect."
+         },
+         "remove": {
+            "name": "Remove",
+            "hint": "If checked, this removes the condition rather than adding it."
          }
       },
       "ancestry": {

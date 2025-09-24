@@ -27,6 +27,7 @@ const ConditionMixin = (superclass) => {
          const newItem = {
             name: droppedItem.name,
             durationFormula: null,
+            remove: false,
             uuid: droppedItem.uuid
          };
          // Add the new item to the array
