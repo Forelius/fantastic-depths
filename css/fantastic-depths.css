@@ -958,13 +958,13 @@ table.compact-table input {
   border-top: 1px dotted #808060;
   align-self: center;
 }
-.chat-message .message-content .apply-condition {
+.chat-message .message-content .apply-condition, .chat-message .message-content .remove-condition {
   background: url("../assets/img/grungeyellow2.jpg");
   color: #ebeae4;
   box-shadow: none;
   border: 1px solid #605050;
 }
-.chat-message .message-content .apply-condition:hover {
+.chat-message .message-content .apply-condition:hover, .chat-message .message-content .remove-condition:hover {
   background: rgb(170, 86, 10);
 }
 .chat-message .message-content .heal-roll, .chat-message .message-content .apply-heal {

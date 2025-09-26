@@ -1,11 +1,21 @@
 {{#each conditions as |condition|}}
 <div>
+   {{#if (eq condition.remove true)}}
+   <button type="button" class="remove-condition"
+           data-uuid="{{condition.uuid}}"
+           data-name="{{condition.name}}"
+           data-duration="{{condition.duration}}">
+      <i class="fa-solid fa-eraser"></i>
+      <span>{{localize "FADE.condition.remove.name"}} {{condition.name}}</span>
+   </button>
+   {{else}}
    <button type="button" class="apply-condition"
-           data-uuid="{{condition.uuid}}" 
+           data-uuid="{{condition.uuid}}"
            data-name="{{condition.name}}"
            data-duration="{{condition.duration}}">
       <i class="fa-solid fa-share"></i>
       <span>{{localize "FADE.Chat.apply"}} {{condition.name}}</span>
    </button>
+   {{/if}}
 </div>
 {{/each}}
