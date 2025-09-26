@@ -56,7 +56,7 @@ import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
-import { SpellCastChatBuilder } from './chat/SpellCastChatBuilder.mjs';
+import { ConditionItem } from './item/ConditionItem.mjs';
 import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
@@ -273,7 +273,8 @@ Hooks.once('ready', async function () {
    // inline-roll handler
    $(document).on('click', '.damage-roll,.heal-roll', DamageRollChatBuilder.clickDamageRoll);
    $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
-   $(document).on('click', '.apply-condition', async (event) => await SpellCastChatBuilder.clickApplyCondition(event));
+   $(document).on('click', '.apply-condition', async (event) => await ConditionItem.clickApplyCondition(event));
+   $(document).on('click', '.remove-condition', async (event) => await ConditionItem.clickRemoveCondition(event));
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
    $(document).on('click', '.saving-roll', FDCombatActor.handleSavingThrowRequest);
    $(document).on('click', '.action-roll, .spell-cast, .attack-roll', FDCombatActor.handleActionRoll);

@@ -331,13 +331,17 @@ export class ChatBuilder {
       return actions;
    }
 
-   async _getConditionsForChat(item) {
+   async _getConditionsForChat(item, hideDuration = false) {
       const conditions = foundry.utils.deepClone(item.system.conditions);
       const durationMsgs = [];
       for (let condition of conditions) {
          const durationResult = await this._getConditionDurationResult(condition, item);
          condition.duration = durationResult?.durationSec ?? condition.duration;
-         durationMsgs.push(durationResult.text);
+         if (hideDuration === true) {
+            condition.durationText = durationResult.text;
+         } else {
+            durationMsgs.push(durationResult.text);
+         }
       }
       return { conditions, durationMsgs };
    }

@@ -116,10 +116,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             for (let condition of conditions) {
                condition.duration = durationResult.durationSec;
             }
-            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, {
-               durationMsg: durationResult.text,
-               conditions
-            });
+            const chatOptions = { conditions };
+            if (actionItem == null) {
+               // Only show duration if not being cast from an item.
+               chatOptions.durationMsg = durationResult.text;
+            }
+            const builder = new ChatFactory(CHAT_TYPE.SPELL_CAST, chatData, chatOptions);
             await builder.createChatMessage();
          }
       }
