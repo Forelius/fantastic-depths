@@ -109,6 +109,15 @@ export class DamageSystem extends DamageSystemInterface {
       }
    }
 
+   getMeleeDamageScale(weapon, digest, attackerData, targetActor) {
+      let result = 1;
+      if (attackerData.mod.combat.dmgScale != null && attackerData.mod.combat.dmgScale != 1) {
+         result = Number(attackerData.mod.combat.dmgScale);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectScale", { scale: attackerData.mod.combat.dmgScale }));
+      }
+      return result;
+   }
+
    getMeleeDamageMod(weapon, digest, attackerData, targetActor) {
       let modifier = 0;
       const weaponData = weapon.system;

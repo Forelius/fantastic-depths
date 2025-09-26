@@ -57,6 +57,8 @@ export class FDCombatActorDM extends FDActorBaseDM {
             combat: new fields.SchemaField({
                toHit: new fields.NumberField({ initial: 0 }),
                dmg: new fields.StringField({ nullable: true, initial: null }),
+               // Scale melee total damage by multiplying
+               dmgScale: new fields.NumberField({ initial: 1 }),
                toHitRanged: new fields.NumberField({ initial: 0 }),
                dmgRanged: new fields.StringField({ nullable: true, initial: null }),
                selfDmg: new fields.NumberField({ initial: 0 }),

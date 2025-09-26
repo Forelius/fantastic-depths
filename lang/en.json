@@ -669,6 +669,7 @@
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
+            "effectScale": "Attacker effect scale: x{scale}",
             "strengthMod": "Strength mod: {mod}",
             "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",

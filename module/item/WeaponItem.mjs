@@ -31,11 +31,13 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       let formula = evaluatedRoll?.formula;
       let digest = [];
       let modifier = 0;
+      let scale = 1;
       let hasDamage = true;
       const dmgSys = game.fade.registry.getSystem("damageSystem");
 
       if (attackType === "melee") {
          modifier += dmgSys.getMeleeDamageMod(this, digest, attackerData, targetActor);
+         scale = dmgSys.getMeleeDamageScale(this, digest, attackerData, targetActor);
       } else if (attackType === "missile") {
          modifier += dmgSys.getMissileDamageMod(this, digest, attackerData, targetActor, ammoItem);
       } else if (attackType === "breath") {
@@ -64,6 +66,9 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       if (hasDamage) {
          if (modifier !== 0) {
             formula = formula ? `${formula}+${modifier}` : `${modifier}`;
+         }
+         if (scale !== 1 && scale !== 0 && formula) {
+            formula = `(${formula})*${scale}`;
          }
       }
 

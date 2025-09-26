@@ -80,14 +80,12 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          options.parts.push("items");
          options.parts.push("skills");
-
          const classSystem = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
             options.parts.push("spells");
          }
-
-         options.parts.push("description");
          options.parts.push("effects");
+         options.parts.push("description");
       }
       if (game.user.isGM) {
          options.parts.push("gmOnly");
@@ -124,13 +122,11 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          tabs.items = { id: "items", group, label: "FADE.items" };
          tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
-      }
-
-      tabs.description = { id: "description", group, label: "FADE.tabs.description" };
-      tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
-
-      if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+         if (this.actor.system.config.maxSpellLevel > 0) {
+            tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+         }
+         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
+         tabs.description = { id: "description", group, label: "FADE.tabs.description" };
       }
 
       if (game.user.isGM) {
