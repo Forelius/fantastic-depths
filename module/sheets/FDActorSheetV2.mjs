@@ -865,7 +865,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
             },
             {
-               action: "cancel",
                icon: "fas fa-times",
                label: game.i18n.localize("FADE.dialog.cancel"),
                callback: () => null
