@@ -318,7 +318,7 @@ export class FDItem extends Item {
 
       if (getOnly !== true) {
          // Deduct 1 if not infinite and not zero
-         if (item.hasCharge === true && item.system.chargesMax !== null) {
+         if (item.hasCharge === true && item.system.chargesMax > 0) {
             const newCharges = Math.max(0, item.system.charges - 1);
             await item.update({ "system.charges": newCharges });
          }
@@ -346,7 +346,7 @@ export class FDItem extends Item {
 
       if (getOnly === false) {
          // Deduct 1 if not infinite and not zero
-         if (item.hasUse === true && item.system.quantityMax !== null) {
+         if (item.hasUse === true && item.system.quantityMax > 0) {
             const newQuantity = Math.max(0, item.system.quantity - 1);
             await item.update({ "system.quantity": newQuantity });
          }

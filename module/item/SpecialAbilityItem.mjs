@@ -63,6 +63,7 @@ export class SpecialAbilityItem extends FDItem {
          ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
          return result;
       }
+      const instigatorData = instigator.actor ? instigator.actor.system : instigator.document.actor.system;
       const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       let canProceed = true;
       const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
@@ -102,9 +103,9 @@ export class SpecialAbilityItem extends FDItem {
          if (dialogResp?.rolling === true) {
             dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
             if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
-               dialogResp.mod -= systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
+               dialogResp.mod -= systemData.abilityMod?.length > 0 ? instigatorData.abilities[systemData.abilityMod].mod : 0;
             } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
-               dialogResp.mod += systemData.abilityMod?.length > 0 ? instigator.system.abilities[systemData.abilityMod].mod : 0;
+               dialogResp.mod += systemData.abilityMod?.length > 0 ? instigatorData.abilities[systemData.abilityMod].mod : 0;
             }
          } else {
             canProceed = false;
