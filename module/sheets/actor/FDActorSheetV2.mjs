@@ -15,6 +15,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    constructor(options = {}) {
       super(options);
+      this.isRestoringCollapsedState = false;
    }
 
    static DEFAULT_OPTIONS = {
@@ -333,6 +334,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @protected
     */
    async _restoreCollapsedState() {
+      this.isRestoringCollapsedState = true;
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       // Retrieve all flags that start with "collapsed-"
       const flags = this.actor.flags[game.system.id] || {};
@@ -350,7 +352,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                      await FDActorSheetV2.#toggleContent(this.actor, target, true);
                   } else {
                      // Not found.
-                     //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
+                     console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
                      await this.actor.unsetFlag(game.system.id, key);
                   }
                }
@@ -361,12 +363,14 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             }
          });
       } else {
+         // This will clear the collapsed flags if the remember collapsed state setting is false.
          Object.keys(flags).forEach(async (key) => {
             if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
                await this.actor.unsetFlag(game.system.id, key);
             }
          });
       }
+      this.isRestoringCollapsedState = false;
    }
 
    /**
@@ -434,32 +438,24 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          collapsibleItems.forEach((content) => {
             const contentElement = content; // The current content element
             contentElement.classList.remove("collapsed");
-
             contentElement.style.height = contentElement.scrollHeight + "px";
-
-            // Reset the height after the transition duration
-            setTimeout(() => { contentElement.style.height = ""; }, 100); // Adjust to match CSS transition duration
          });
       } else {
          // Collapse the content
          collapsibleItems.forEach((content) => {
             const contentElement = content; // The current content element
-
-            contentElement.style.height = contentElement.clientHeight + "px";
             contentElement.classList.add("collapsed");
-
-            // Collapse the content by setting height to 0
-            setTimeout(() => { contentElement.style.height = "0"; }, 0);
+            contentElement.style.height = "0";// contentElement.clientHeight + "px";
          });
       }
-
       // If remember state is enabled, store the collapsed state
-      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
-      if (rememberCollapsedState === true) {
-         const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
-         //console.debug(`Remembering expanded state for ${sectionName}.`, target);
-         if (sectionName !== undefined) {
-            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+      if (this.isRestoringCollapsedState === false) {
+         const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+         if (rememberCollapsedState === true) {
+            const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
+            if (sectionName !== undefined) {
+               await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+            }
          }
       }
    }
