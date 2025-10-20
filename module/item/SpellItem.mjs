@@ -209,7 +209,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
          const rollData = this.getRollData();
          // If a castAs override is specified, like from a magic item with spellcasting abilities...
-         if (dataset.castas) {
+         if (dataset?.castas) {
             const classSystem = game.fade.registry.getSystem("classSystem");
             const parsed = classSystem.parseClassAs(dataset.castas);
             rollData.classes[parsed.classId] = { castLevel: parsed.classLevel };
