@@ -1,17 +1,17 @@
-import { EffectManager } from "../sys/EffectManager.mjs";
+import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
-import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
+import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
+import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
+import { SpellMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpellMixin.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
 
-//export class GearItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
-export class GearItemSheet extends FDItemSheetV2 {
+export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)))) {
    /**
    * Get the default options for the sheet.
    */
    static DEFAULT_OPTIONS = {
       position: {
-         width: 570,
+         width: 600,
          height: 400,
       },
       window: {
@@ -38,11 +38,11 @@ export class GearItemSheet extends FDItemSheetV2 {
       attributes: {
          template: "systems/fantastic-depths/templates/item/gear/attributes.hbs",
       },
-      //specialAbilities: {
-      //   template: "systems/fantastic-depths/templates/item/shared/specialAbilities.hbs",
-      //},
+      specialAbilities: {
+         template: "systems/fantastic-depths/templates/item/shared/specAbilitiesAndSpells.hbs",
+      },
       effects: {
-         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+         template: "systems/fantastic-depths/templates/item/shared/conditionswd.hbs",
       },
       gmOnly: {
          template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
@@ -64,7 +64,7 @@ export class GearItemSheet extends FDItemSheetV2 {
 
       if (game.user.isGM) {
          options.parts.push("attributes");
-         //options.parts.push("specialAbilities");
+         options.parts.push("specialAbilities");
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
@@ -92,21 +92,8 @@ export class GearItemSheet extends FDItemSheetV2 {
          context.turnsRemaining = `${stTurnsRemaining}`;
       }
 
-      // Damage types
-      const damageTypes = []
-      damageTypes.push({ value: "", text: game.i18n.localize("None") });
-      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
-         return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
-      }));
-      context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
-      // Saving throws
-      const saves = [];
-      saves.push({ value: "", text: game.i18n.localize("None") });
-      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
-      saves.push(...saveItems.map((save) => {
-         return { value: save.system.customSaveCode, text: save.system.shortName }
-      }));
-      context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      // Ability actions
+      context.actions = this._getActionOptions();
 
       context.hideLevel = true;
 
@@ -117,6 +104,29 @@ export class GearItemSheet extends FDItemSheetV2 {
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
+   }
+
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const data = TextEditor.getDragEventData(event);
+      let droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a spell item...
+      if (droppedItem?.type === "spell") {
+         await this.onDropSpellItem(droppedItem);
+      } else if (droppedItem?.type === "specialAbility") {
+         await this.onDropSpecialAbilityItem(droppedItem);
+      } else if (droppedItem?.type === "condition") {
+         await this.onDropConditionItem(droppedItem);
+      }
+   }
+
+   _getDamageTypeOptions() {
+      const damageTypes = []
+      damageTypes.push({ value: "", text: game.i18n.localize("None") });
+      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
+         return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
+      }));
+      return damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
    /**
@@ -132,7 +142,7 @@ export class GearItemSheet extends FDItemSheetV2 {
       };
       if (game.user.isGM) {
          tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" };
-         //tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
+         tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" };
          tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly", cssClass: "item" };
       }

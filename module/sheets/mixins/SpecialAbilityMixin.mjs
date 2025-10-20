@@ -1,38 +1,13 @@
 /**
- * A mixin for adding VS Group modifier support to an FDItemSheetV2 class.
- * The sheet's item class must define a createSpecialAbility async method.
+ * A mixin for aspecial abilities to an FDItemSheetV2 class.
  * @param {any} superclass
  * @returns
  */
 const SpecialAbilityMixin = (superclass) => {
    class SpecialAbilityMixinClass extends superclass {
-      async _onDrop(event) {
-         if (!this.item.isOwner) return false;
-         const data = TextEditor.getDragEventData(event);
-         const droppedItem = await Item.implementation.fromDropData(data);
-
-         // If the dropped item is a weapon mastery definition item...
-         if (droppedItem.type === "specialAbility") {
-            if (droppedItem.system.category === "save") {
-            } else {
-               await this.item.createSpecialAbility(droppedItem.name, droppedItem.system.classKey);
-            }
-         }
-      }
 
       /**
-       * Handle adding a new VS Group modifier
-       * @param {Event} event The originating click event
-       * @protected
-       */
-      static async _clickAddSpecialAbility(event) {
-         event.preventDefault();
-         await this.item.createSpecialAbility();
-         //this.render();
-      }
-
-      /**
-       * Handle deleting a VS Group modifier
+       * Handle deleting a special ability
        * @param {Event} event The originating click event
        * @protected
        */
@@ -44,20 +19,41 @@ const SpecialAbilityMixin = (superclass) => {
          } else if (event.target.parentElement.dataset.type) {
             index = parseInt(event.target.parentElement.dataset.index);
          } else {
-            console.error(`SpecialAbilityMixin._clickDeleteSpecialAbility Can't determine item type.`, item);
+            console.error(`SpecialAbilityMixin._clickDeleteSpecialAbility can't determine item type.`, item);
          }
          const specialAbilities = [...this.item.system.specialAbilities];
          if (specialAbilities.length > index) {
             specialAbilities.splice(index, 1);
             await this.item.update({ "system.specialAbilities": specialAbilities });
          }
-         this.render();
       }
+
+      /**
+       * Creates a special ability child item for this item.
+       * @param {any} name
+       * @param {any} classKey
+       */
+      async onDropSpecialAbilityItem(droppedItem) {
+         // Retrieve the array
+         const specialAbilities = [...this.item.system.specialAbilities || []];
+
+         // Define the new data
+         const newItem = {
+            action: "none",
+            name: droppedItem?.name ?? "",
+            uuid: droppedItem?.uuid ?? "",
+            mod: 0,
+         };
+
+         // Add the new item to the array
+         specialAbilities.push(newItem);
+         await this.item.update({ "system.specialAbilities": specialAbilities });
+      }
+
    }
 
    SpecialAbilityMixinClass.DEFAULT_OPTIONS = {
       actions: {
-         addSpecialAbility: SpecialAbilityMixinClass._clickAddSpecialAbility,
          deleteSpecialAbility: SpecialAbilityMixinClass._clickDeleteSpecialAbility
       }
    };

@@ -8,6 +8,10 @@ export class SkillItem extends FDItem {
       super(data, context);
    }
 
+   get hasTargets() {
+      return true;
+   }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
@@ -29,18 +33,19 @@ export class SkillItem extends FDItem {
 
    getDamageRoll() {
       const isHeal = this.system.healFormula?.length > 0;
-      let formula = null;
+      let damageFormula = null;
+      let modifier = 0;
+      let hasDamage = true; // Has heals or damage
 
       if (isHeal) {
-         formula = this.getEvaluatedRollSync(this.system.healFormula)?.formula;
+         damageFormula = this.getEvaluatedRollSync(this.system.healFormula)?.formula;
       }
 
-      return {
-         formula,
-         type: isHeal ? "heal" : null,
-         digest: [],
-         hasDamage: isHeal === true
-      };
+      if (modifier <= 0 && (damageFormula == null || damageFormula?.total <= 0)) {
+         hasDamage = false;
+      }
+
+      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : null, digest: [], hasDamage: isHeal === true } : null;
    }
 
    /**
@@ -50,8 +55,13 @@ export class SkillItem extends FDItem {
    * @private
    */
    async roll(dataset, dialogResp = null, event = null) {
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+         return null;
+      }
       const systemData = this.system;
-      const roller = this.actor?.token || this.actor || canvas.tokens.controlled?.[0];
       dataset = {
          rollType: 'item',
          label: this.name,
@@ -100,7 +110,7 @@ export class SkillItem extends FDItem {
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
             caller: this, // the skill item
-            context: roller, // the skill item owner
+            context: instigator, // the skill item owner
             mdata: dataset,
             roll: rolled,
          };

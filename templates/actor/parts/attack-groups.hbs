@@ -15,11 +15,7 @@
                  data-roll-type='item'>
                <img src='{{item.img}}' width='26' height='26' />
             </div>
-            {{#if (or ../isGM item.system.isIdentified)}}
-            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.name}}</a>
-            {{else}}
-            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.system.unidentifiedName}}</a>
-            {{/if}}
+            <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>{{item.knownNameGM}}</a>
          </div>
          <div class="item-100px item-prop">{{item.system.damageLabel}}</div>
          <div class="item-80px item-prop flexrow editable">

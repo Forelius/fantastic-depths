@@ -49,23 +49,23 @@ export class DamageRollChatBuilder extends ChatBuilder {
             damage: options.damage
          }
       });
-      const chatMsg = await ChatMessage.create(chatMessageData);
+      await ChatMessage.create(chatMessageData);
    }
 
    /**
    * Click event handler for damage/heal roll buttons.
-   * @param {any} ev
+   * @param {any} event
    */
-   static async clickDamageRoll(ev) {
-      const element = ev.currentTarget;
+   static async clickDamageRoll(event) {
+      const element = event.currentTarget;
       const dataset = element.dataset;
 
       // Custom behavior for damage rolls      
-      if (dataset.type === "damage" || dataset.type==="heal") {
-         ev.preventDefault(); // Prevent the default behavior
-         ev.stopPropagation(); // Stop other handlers from triggering the event
+      if (dataset.type === "damage" || dataset.type === "heal") {
+         event.preventDefault(); // Prevent the default behavior
+         event.stopPropagation(); // Stop other handlers from triggering the event
 
-         await DamageRollChatBuilder.handleDamageRoll(ev, dataset);
+         await DamageRollChatBuilder.handleDamageRoll(event, dataset);
       }
    }
 
@@ -75,66 +75,73 @@ export class DamageRollChatBuilder extends ChatBuilder {
     * @param {any} dataset
     */
    static async handleDamageRoll(ev, dataset) {
-      const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid } = dataset;
-      const weaponItem = await fromUuid(weaponuuid);
+      const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetactoruuid, owneruuid } = dataset;
       const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
       const targetActor = targetactoruuid ? await fromUuid(targetactoruuid) : undefined;
-      const instigator = weaponItem.actor.token ?? weaponItem.actor;
+      const damagerItem = await fromUuid(weaponuuid);
+      const owner = owneruuid ? await fromUuid(owneruuid) : undefined;
+      const instigator = owner || damagerItem.actor?.currentActiveToken;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+         return result;
+      }
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
-
       let damageRoll = null;
       const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
+
       // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
       if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);
+         damageRoll = damagerItem.getDamageRoll(attacktype, null, targetweapontype, targetActor, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(null);
+         damageRoll = damagerItem.getDamageRoll(null);
       }
 
-      dialogResp = await DialogFactory({
-         dialog: "generic",
-         label: isHeal ? "Heal" : "Damage",
-         formula: damageRoll.formula,
-         editFormula: game.user.isGM
-      }, weaponItem);
-      rolling = dialogResp != null;
+      if (damageRoll) {
+         dialogResp = await DialogFactory({
+            dialog: "generic",
+            label: isHeal ? "Heal" : "Damage",
+            formula: damageRoll.damageFormula,
+            editFormula: game.user.isGM
+         }, damagerItem);
+         rolling = dialogResp != null;
 
-      if (weaponDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
-      } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = weaponItem.getDamageRoll(dialogResp);
-      }
+         if (weaponDamageTypes.includes(dataset.damagetype)) {
+            damageRoll = damagerItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetActor, ammoItem);
+         } else if (otherDamageTypes.includes(dataset.damagetype)) {
+            damageRoll = damagerItem.getDamageRoll(dialogResp);
+         }
 
-      if (rolling === true) {
-         // Roll the damage and wait for the result
-         const roll = new Roll(damageRoll.formula);
-         await roll.evaluate(); // Wait for the roll result
-         const damage = Math.max(roll.total, 0);
-         const attackName = (weaponItem.system.isIdentified !== false) ? weaponItem.name : weaponItem.system.unidentifiedName;
-         const descData = {
-            attacker: instigator.name,
-            weapon: attackName,
-            damage
-         };
-         const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
-         dataset.desc = dataset.desc ? dataset.desc : resultString;
+         if (rolling === true) {
+            // Roll the damage and wait for the result
+            const roll = new Roll(damageRoll.damageFormula);
+            await roll.evaluate(); // Wait for the roll result
+            const damage = Math.max(roll.total, 0);
+            const attackName = damagerItem.knownName;
+            const descData = {
+               attacker: instigator.name,
+               weapon: attackName,
+               damage
+            };
+            const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
+            dataset.desc = dataset.desc ? dataset.desc : resultString;
 
-         const chatData = {
-            context: instigator,
-            mdata: dataset,
-            roll,
-            digest: damageRoll.digest
-         };
-         const options = {
-            damage,
-            resultString,
-            attackName,
-         };
-         const builder = new DamageRollChatBuilder(chatData, options);
-         builder.createChatMessage();
+            const chatData = {
+               context: instigator,
+               mdata: dataset,
+               roll,
+               digest: damageRoll.digest
+            };
+            const options = {
+               damage,
+               resultString,
+               attackName,
+            };
+            const builder = new DamageRollChatBuilder(chatData, options);
+            builder.createChatMessage();
+         }
       }
    }
 

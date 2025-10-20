@@ -1,51 +1,46 @@
 import { GearItemDataModel } from "./GearItemDataModel.mjs";
-
+const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
 /**
  * Data model for a weapon item extending GearItemDataModel.
  */
 export class WeaponItemDataModel extends GearItemDataModel {
    static defineSchema() {
-      const { fields } = foundry.data;
-
-      // Extend the schema from GearItemDataModel
-      const baseSchema = super.defineSchema();
-
       return {
-         ...baseSchema,
-
+         // Extend the schema from GearItemDataModel
+         ...super.defineSchema(),
          // Fields specific to the "weapon" template
-         damageRoll: new fields.StringField({ required: true, initial: "1d6" }),
-         damageLabel: new fields.StringField({ required: false, initial: "1d6" }),
-         damageType: new fields.StringField({ required: true, initial: "physical" }),
-         breath: new fields.StringField({ nullable: true, initial: null }),
-         canMelee: new fields.BooleanField({ required: false, initial: true }),
-         canRanged: new fields.BooleanField({ required: false, initial: false }),
-         canSet: new fields.BooleanField({ required: false, initial: false }),
-         isSlow: new fields.BooleanField({ required: false, initial: false }),
-         savingThrow: new fields.StringField({ nullable: true, initial: null }),
-         saveDmgFormula: new fields.StringField({ nullable: true, initial: null }),
-         mastery: new fields.StringField({ required: false, initial: "" }),
-         weaponType: new fields.StringField({ required: false, initial: "" }),
-         range: new fields.SchemaField({
-            short: new fields.NumberField({ nullable: true, initial: null }),
-            medium: new fields.NumberField({ nullable: true, initial: null }),
-            long: new fields.NumberField({ nullable: true, initial: null })
+         damageRoll: new StringField({ required: true, initial: "1d6" }),
+         damageLabel: new StringField({ required: false, initial: "1d6" }),
+         damageType: new StringField({ required: true, initial: "physical" }),
+         breath: new StringField({ nullable: true, initial: null }),
+         canMelee: new BooleanField({ required: false, initial: true }),
+         canRanged: new BooleanField({ required: false, initial: false }),
+         canSet: new BooleanField({ required: false, initial: false }),
+         isSlow: new BooleanField({ required: false, initial: false }),
+         savingThrow: new StringField({ nullable: true, initial: null }),
+         saveDmgFormula: new StringField({ nullable: true, initial: null }),
+         mastery: new StringField({ required: false, initial: "" }),
+         weaponType: new StringField({ required: false, initial: "" }),
+         range: new SchemaField({
+            short: new NumberField({ nullable: true, initial: null }),
+            medium: new NumberField({ nullable: true, initial: null }),
+            long: new NumberField({ nullable: true, initial: null })
          }),
-         size: new fields.StringField({ required: false, nullable:true, initial: null }),
-         grip: new fields.StringField({ required: false, nullable: true, initial: null }),
-         natural: new fields.BooleanField({ required: false, initial: false }),
-         mod: new fields.SchemaField({
-            dmg: new fields.NumberField({ initial: 0 }),
-            toHit: new fields.NumberField({ initial: 0 }),
-            dmgRanged: new fields.NumberField({ initial: 0 }),
-            toHitRanged: new fields.NumberField({ initial: 0 }),
-            rangeMultiplier: new fields.NumberField({ initial: 1 }),
-            vsGroup: new fields.ObjectField({}),
+         size: new StringField({ required: false, nullable:true, initial: null }),
+         grip: new StringField({ required: false, nullable: true, initial: null }),
+         natural: new BooleanField({ required: false, initial: false }),
+         mod: new SchemaField({
+            dmg: new NumberField({ initial: 0 }),
+            toHit: new NumberField({ initial: 0 }),
+            dmgRanged: new NumberField({ initial: 0 }),
+            toHitRanged: new NumberField({ initial: 0 }),
+            rangeMultiplier: new NumberField({ initial: 1 }),
+            vsGroup: new ObjectField({}),
          }),
-         attacks: new fields.SchemaField({
-            used: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ nullable: true, initial: null }),
-            group: new fields.NumberField({ initial: 0 }),
+         attacks: new SchemaField({
+            used: new NumberField({ initial: 0 }),
+            max: new NumberField({ nullable: true, initial: null }),
+            group: new NumberField({ initial: 0 }),
          }),
       };
    }
@@ -54,6 +49,10 @@ export class WeaponItemDataModel extends GearItemDataModel {
    prepareBaseData() {
       this.equippable = true;
       super.prepareBaseData();
+      if (this.natural === true) {
+         this.weight = 0;
+         this.weightEquipped = 0;
+      }
    }
 
    prepareDerivedData() {

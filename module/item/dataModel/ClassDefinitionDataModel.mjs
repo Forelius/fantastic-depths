@@ -1,4 +1,6 @@
- export class ClassLevelData {
+const { ArrayField, BooleanField, ObjectField, NumberField, SchemaField, StringField } = foundry.data.fields;
+
+export class ClassLevelData {
    constructor(options = {}) {
       this.level = options?.level ?? 1;
       this.xp = 0;
@@ -20,71 +22,69 @@ export class SavingThrowsData {
 
 export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
-      const { fields } = foundry.data;
-
       return {
          // Required Fields
          // The class key
-         key: new fields.StringField({ required: true }),
-         species: new fields.StringField({ required: true, initial: "Human" }),
-         firstLevel: new fields.NumberField({ required: true, initial: 1 }),
-         maxLevel: new fields.NumberField({ required: true, initial: 0 }),
-         firstSpellLevel: new fields.NumberField({ required: true, initial: 1 }),
-         maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
+         key: new StringField({ required: true }),
+         species: new StringField({ required: true, initial: "Human" }),
+         firstLevel: new NumberField({ required: true, initial: 1 }),
+         maxLevel: new NumberField({ required: true, initial: 0 }),
+         firstSpellLevel: new NumberField({ required: true, initial: 1 }),
+         maxSpellLevel: new NumberField({ required: true, initial: 0 }),
          // If true the character or class has basic proficiency with all weapons.
-         basicProficiency: new fields.BooleanField({ required: true, initial: false }),
-         unskilledToHitMod: new fields.NumberField({ required: true, initial: -2 }),
+         basicProficiency: new BooleanField({ required: true, initial: false }),
+         unskilledToHitMod: new NumberField({ required: true, initial: -2 }),
          // Optional Fields
-         alignment: new fields.StringField({ required: false, nullable: true, initial: "Any" }),
-         description: new fields.StringField({ required: false, initial: "" }),
+         alignment: new StringField({ required: false, nullable: true, initial: "Any" }),
+         description: new StringField({ required: false, initial: "" }),
          // Only the class key, not the level like monster does for castAs
-         castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
+         castAsKey: new StringField({ nullable: true, required: false, initial: null }),
          // Ability scores
-         abilities: new fields.SchemaField({
-            str: new fields.SchemaField({
-               min: new fields.NumberField({ nullable: true }),
+         abilities: new SchemaField({
+            str: new SchemaField({
+               min: new NumberField({ nullable: true }),
             }),
-            int: new fields.SchemaField({
-               min: new fields.NumberField({ nullable: true }),
+            int: new SchemaField({
+               min: new NumberField({ nullable: true }),
             }),
-            wis: new fields.SchemaField({
-               min: new fields.NumberField({ nullable: true }),
+            wis: new SchemaField({
+               min: new NumberField({ nullable: true }),
             }),
-            dex: new fields.SchemaField({
-               min: new fields.NumberField({ nullable: true }),
+            dex: new SchemaField({
+               min: new NumberField({ nullable: true }),
             }),
-            con: new fields.SchemaField({
-               min: new fields.NumberField({ nullable: true }),
+            con: new SchemaField({
+               min: new NumberField({ nullable: true }),
             }),
-            cha: new fields.SchemaField({
-               min: new fields.NumberField({ nullable: true }),
+            cha: new SchemaField({
+               min: new NumberField({ nullable: true }),
             })
          }),
-         primeReqs: new fields.ArrayField(
-            new fields.SchemaField({
-               concatLogic: new fields.StringField({ required: true }),
-               ability: new fields.StringField({ required: true }),
-               percentage: new fields.NumberField({ required: true, initial: 5 }),
-               minScore: new fields.NumberField({ required: true }),
-               xpBonus5: new fields.NumberField({ required: true }),
-               xpBonus10: new fields.NumberField({ required: true }),
+         primeReqs: new ArrayField(
+            new SchemaField({
+               concatLogic: new StringField({ required: true }),
+               ability: new StringField({ required: true }),
+               percentage: new NumberField({ required: true, initial: 5 }),
+               minScore: new NumberField({ required: true }),
+               xpBonus5: new NumberField({ required: true }),
+               xpBonus10: new NumberField({ required: true }),
             }),
             {
                required: true,
                initial: []
             }
          ),
-         levels: new fields.ArrayField(
-            new fields.SchemaField({
-               level: new fields.NumberField({ required: true, initial: 1}),
-               xp: new fields.NumberField({ required: true, initial: 0 }),
-               thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
-               thbonus: new fields.NumberField({ required: true, initial: 0 }),
-               hd: new fields.StringField({ required: true, initial: "" }),
-               hdcon: new fields.BooleanField({ required: true, initial: true }),
-               title: new fields.StringField({ required: false, nullable: true }),
-               femaleTitle: new fields.StringField({ required: false, nullable: true }),
-               attackRank: new fields.StringField({ required: false, nullable: true }),
+         levels: new ArrayField(
+            new SchemaField({
+               level: new NumberField({ required: true, initial: 1}),
+               xp: new NumberField({ required: true, initial: 0 }),
+               thac0: new NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
+               thbonus: new NumberField({ required: true, initial: 0 }),
+               hd: new StringField({ required: true, initial: "" }),
+               hdcon: new BooleanField({ required: true, initial: true }),
+               title: new StringField({ required: false, nullable: true }),
+               femaleTitle: new StringField({ required: false, nullable: true }),
+               attackRank: new StringField({ required: false, nullable: true }),
             }),
             {
                required: true,
@@ -93,17 +93,17 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                })
             }
          ),
-         saves: new fields.ArrayField(
-            new fields.ObjectField({}),
+         saves: new ArrayField(
+            new ObjectField({}),
             {
                required: true,
                initial: []
             }
          ),
          // Spells Field Adjusted to Be Optional
-         spells: new fields.ArrayField(
-            new fields.ArrayField(
-               new fields.NumberField({ required: true, initial: 0 })
+         spells: new ArrayField(
+            new ArrayField(
+               new NumberField({ required: true, initial: 0 })
             ),
             {
                required: false,
@@ -111,24 +111,24 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                initial: Array.from({ length: this.maxLevel }, () => Array.from({ length: (this.maxSpellLevel + 1) - this.firstSpellLevel }))
             }
          ),
-         specialAbilities: new fields.ArrayField(
-            new fields.SchemaField({
-               name: new fields.StringField({ required: true, initial: "" }),
-               level: new fields.NumberField({ required: true }),
-               target: new fields.NumberField({ required: true, nullable: true }),
-               classKey: new fields.StringField({ nullable: true, initial: null }),
-               changes: new fields.StringField({ required: true, initial: "" }),
+         specialAbilities: new ArrayField(
+            new SchemaField({
+               name: new StringField({ required: true, initial: "" }),
+               level: new NumberField({ required: true }),
+               target: new NumberField({ required: true, nullable: true }),
+               classKey: new StringField({ nullable: true, initial: null }),
+               changes: new StringField({ required: true, initial: "" }),
             }),
             {
                required: false,
                initial: []
             }),
-         classItems: new fields.ArrayField(
-            new fields.SchemaField({
-               level: new fields.NumberField({ required: true, nullable: false }),
-               name: new fields.StringField({ required: true, initial: "" }),
-               type: new fields.StringField({ required: true, initial: "" }),
-               changes: new fields.StringField({ required: true, initial: "" }),
+         classItems: new ArrayField(
+            new SchemaField({
+               level: new NumberField({ required: true, nullable: false }),
+               name: new StringField({ required: true, initial: "" }),
+               type: new StringField({ required: true, initial: "" }),
+               changes: new StringField({ required: true, initial: "" }),
             }),
             {
                required: false,

@@ -564,7 +564,8 @@
          "categories": {
             "explore": "Exploration",
             "class": "Class Ability",
-            "save": "Saving Throw"
+            "save": "Saving Throw",
+            "spellcasting": "Spellcasting"
          }
       },
       "class": {
@@ -594,6 +595,10 @@
          "addStatusEffect": {
             "name": "Status Effect",
             "hint": "If checked, the condition will be added as a status effect."
+         },
+         "remove": {
+            "name": "Remove",
+            "hint": "If checked, this removes the condition rather than adding it."
          }
       },
       "ancestry": {
@@ -615,7 +620,9 @@
             "mirrorImaged": "Mirror Imaged",
             "infravision": "Infravision",
             "possessed": "Possessed",
-            "confused": "Confused"
+            "confused": "Confused",
+            "ethereal": "Ethereal",
+            "fading": "Fading"
          }
       },
       "Tags": {
@@ -626,14 +633,16 @@
       },
       "notification": {
          "missingSave": "The actor does not have the requested saving throw type ({type}).",
-         "selectTarget": "A targetted must first be selected.",
-         "selectToken1": "A token must first be selected.",
+         "selectTarget": "A target must be selected.",
+         "selectToken1": "A token must be selected.",
+         "noTokenAssoc": "Action requires a token in the scene.",
          "spellSelectToken": "You must have your token selected to cast a spell.",
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
          "noTokenWarning": "You must select a token or assign a default character to perform this action.",
          "noTokenWarning2": "You must select a token to perform this action.",
          "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
          "missingItem2": "{actor} does not have a {type}.",
+         "noCharges": "{itemName} has no charges remaining and can't be used.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
          "advancedTime": "<div>Time advances {turns} turn(s), {rounds} round(s).</div>",
@@ -645,10 +654,22 @@
          "partyRests": "The party rests."
       },
       "Chat": {
+         "actions": {
+            "name": "Actions",
+            "singular": "Action",
+            "melee": "Melee",
+            "shoot": "Shoot",
+            "throw": "Throw",
+            "consume": "Consume",
+            "cast": "Cast",
+            "use": "Use",
+            "none": "No action"
+         },
          "rollMods": {
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
+            "effectScale": "Attacker effect scale: x{scale}",
             "strengthMod": "Strength mod: {mod}",
             "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",
@@ -708,7 +729,9 @@
          "healRoll": "Heal",
          "targetACDefMastery": "<span data-tooltip='Armor class for melee attacks.' {cssClass}>{acTotal}</span>/<span {cssClassMastery} data-tooltip='<p>Adjusted armor class with weapon mastery ({masteryName}) bonus. Attacked {attAgainst}/{maxAttAgainst} times.</p>'>{defenseMasteryTotal}</span>{targetRangedAc}",
          "targetAC": "<span data-tooltip='Armor class for both melee and ranged, if their values are the same; otherwise, it represents the melee armor class only.' {cssClass}>{acTotal}</span>{targetRangedAc}",
-         "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>"
+         "targetRangedAC": "/<span data-tooltip='Armor class for ranged attacks.' {cssClass}>{acTotal}</span>",
+         "appliedCondition": "<div><span style='color:#c58344' class='text-size16'>{condition}</span> applied to:</div>",
+         "removedCondition": "<div><span style='color:#c58344' class='text-size16'>{condition}</span> removed from:</div>"
       },
       "apps": {
          "userTables": {
@@ -835,6 +858,7 @@
          "no": "No, cancel",
          "confirmInitiativeRoll": "One or more combatants have <strong>Nothing</strong> as their declared action. Rolling the group's initiative will freeze the declared actions. Are you sure you want to proceed with rolling the group's initiative?",
          "applyToPrompt": "Apply to targeted or selected?",
+         "removeFromPrompt": "Remove from targeted or selected?",
          "targeted": "Targeted",
          "selected": "Selected",
          "noEquippedWeapons": "The selected actor does not have any weapons equipped.",
@@ -992,7 +1016,7 @@
             },
             "guard": {
                "name": "Guard",
-               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range."
+               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range. Like the withdrawal option, the combatant may move at half the normal movement rate."
             },
             "unarmed": {
                "name": "Unarmed Combat",
@@ -1001,6 +1025,10 @@
             "dodge": {
                "name": "Dodge",
                "description": "When a fighter chooses this combat option, they do not attack at all and instead focus entirely on avoiding incoming attacks. Their AC increases by 5 against one specific attack they choose to evade. Against any other attack they are aware of, their AC increases by 3. Against any other attack they are not aware of, their AC increases by 1. This AC bonus lasts until the end of the round, and at the beginning of the next round, it is no longer in effect."
+            },
+            "specialAbility": {
+               "name": "Special Ability",
+               "description": "This is a catch-all option that covers the usage of a special ability that requires a combat round to perform. Do not select this option if using a weapon, spell or magic item."
             }
          }
       },

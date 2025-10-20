@@ -45,7 +45,7 @@ export class fadeDialog {
             ui.notifications.warn(game.i18n.localize('FADE.dialog.noEquippedWeapons'));
          } else {
             dialogData.attackItems = attackItems.reduce((acc, item) => {
-               acc[item.id] = game.user.isGM || item.system.isIdentified ? item.name : item.system.unidentifiedName; // Use the "id" as the key and "name" as the value
+               acc[item.id] = item.knownNameGM; // Use the "id" as the key and "name" as the value
                return acc;
             }, {});
             dialogData.selectedid = attackItems.find((item) => item.system.equipped)?.id;
@@ -74,7 +74,7 @@ export class fadeDialog {
             if (result) {
                const item = attackerActor.items.get(result.selectedid);
                // Call item's roll method.
-               item.roll();
+               item.rollAttack();
             }
          }
       } else {

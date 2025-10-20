@@ -706,6 +706,7 @@ table.compact-table input {
   text-shadow: 0 0 10px #fe5645, 0 0 18px #fe5645, 0 0 26px #fe5645, 0 0 34px #fe5645;
 }
 .dark-mode .fantastic-depths .window-content .inline-roll {
+  background: rgba(0, 0, 0, 0.1);
   color: #ebeae4;
 }
 .dark-mode .fantastic-depths .summary li {
@@ -859,7 +860,7 @@ table.compact-table input {
 }
 .chat-message .message-content button {
   margin: 0.4rem 0.1rem;
-  width: 100%;
+  width: 98%;
 }
 .chat-message .message-content .content-link, .chat-message .message-content .inline-roll {
   color: #e9c68b;
@@ -957,11 +958,14 @@ table.compact-table input {
   border-top: 1px dotted #808060;
   align-self: center;
 }
-.chat-message .message-content .apply-condition {
-  background: url("../assets/img/grungeblue.jpg");
+.chat-message .message-content .apply-condition, .chat-message .message-content .remove-condition {
+  background: url("../assets/img/grungeyellow2.jpg");
   color: #ebeae4;
   box-shadow: none;
-  border: 1px solid #303050;
+  border: 1px solid #605050;
+}
+.chat-message .message-content .apply-condition:hover, .chat-message .message-content .remove-condition:hover {
+  background: rgb(170, 86, 10);
 }
 .chat-message .message-content .heal-roll, .chat-message .message-content .apply-heal {
   background: url("../assets/img/grungegreen.jpg");
@@ -969,17 +973,44 @@ table.compact-table input {
   box-shadow: none;
   border: 1px solid #447744;
 }
-.chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
+.chat-message .message-content .heal-roll:hover, .chat-message .message-content .apply-heal:hover {
+  background: rgb(26, 180, 20);
+}
+.chat-message .message-content .attack-roll, .chat-message .message-content .damage-roll, .chat-message .message-content .apply-damage {
   background: url("../assets/img/grungered.jpg");
   color: #ebeae4;
   box-shadow: none;
   border: 1px solid #774444;
+}
+.chat-message .message-content .attack-roll:hover, .chat-message .message-content .damage-roll:hover, .chat-message .message-content .apply-damage:hover {
+  background: rgb(180, 26, 20);
 }
 .chat-message .message-content .saving-roll {
   background: url("../assets/img/grungeblue.jpg");
   border: 1px solid #4b4a44;
   box-shadow: none;
   color: #ebeae4;
+}
+.chat-message .message-content .saving-roll:hover {
+  background: rgb(10, 86, 170);
+}
+.chat-message .message-content .spell-cast {
+  background: url("../assets/img/grungepurple.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
+}
+.chat-message .message-content .spell-cast:hover {
+  background: rgb(86, 10, 170);
+}
+.chat-message .message-content .action-roll {
+  background: url("../assets/img/grungeyellow2.jpg");
+  border: 1px solid #4b4a44;
+  box-shadow: none;
+  color: #ebeae4;
+}
+.chat-message .message-content .action-roll:hover {
+  background: rgb(170, 86, 10);
 }
 
 .combatant.disposition-friendly::before {
@@ -1725,3 +1756,5 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

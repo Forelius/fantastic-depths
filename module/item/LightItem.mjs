@@ -1,4 +1,5 @@
-import { GearItem } from './GearItem.mjs';
+import { LightManager } from '/systems/fantastic-depths/module/sys/LightManager.mjs';
+import { GearItem } from '/systems/fantastic-depths/module/item/GearItem.mjs';
 
 export class LightItem extends GearItem {
    constructor(data, context) {
@@ -50,11 +51,22 @@ export class LightItem extends GearItem {
 
    /** @override */
    prepareDerivedData() {
-      super.prepareDerivedData();    
+      super.prepareDerivedData();
    }
 
-   async enableLight() {
-      const token = this.ownerToken;
+   getActionsForChat(owner, options = {}) {
+      const actions = [
+         {
+            type: "toggleLight",
+            owneruuid: owner.uuid,
+            itemuuid: this.uuid,
+            actionuuid: this.uuid, // this is the owning item's uuid
+         }
+      ];
+      return actions;
+   }
+
+   async enableLight(token) {
       if (token === null || token === undefined) {
          const warnMsg = game.i18n.localize('FADE.notification.noTokenWarning2');
          this.notify(warnMsg, 'warn');
@@ -85,6 +97,25 @@ export class LightItem extends GearItem {
                await token.update({ light: lightSettings });
                this.notify(game.i18n.format('FADE.Item.light.enabled', { actor: token.name, item: this.name }), 'info');
             }
+         }
+      }
+   }
+
+   async disableLight(token) {
+      await token.actor.setActiveLight(null);
+      await this.update({ "system.light.enabled": false });
+      LightManager.notify(game.i18n.format('FADE.Item.light.disabled', { actor: token.name }), 'info');
+   }
+
+   async toggleLight(dataset) {
+      //const owner = await fromUuid(dataset.owneruuid);
+      //const token = owner.getActiveTokens()[0]?.document ?? owner.getActiveTokens()[0];
+      const token = await fromUuid(dataset.owneruuid);
+      if (token) {
+         if (this.system.light.enabled) {
+            await this.disableLight(token);
+         } else {
+            await this.enableLight(token);
          }
       }
    }

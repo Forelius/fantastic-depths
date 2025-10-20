@@ -1,0 +1,33 @@
+{{#if actorName}}
+<div class="text-size16">{{actorName}}</div>
+{{/if}}
+{{#if mdata.label}}
+<div>{{mdata.label}}{{#if mdata.target}} ({{mdata.target}}){{/if}}</div>
+{{/if}}
+{{#if item}}
+<div class="bordered" style="padding-bottom:2px;">
+   <div class="flexrow collapser">
+      <img class="item-image" src='{{item.img}}' />
+      <div class="item-name">
+         {{item.knownName}}
+      </div>
+   </div>
+   <div class="collapsible-content collapsed">
+      {{{item.knownDescription}}}
+   </div>
+</div>
+{{/if}}
+{{#if mdata.desc}}
+<i style="font-size:12px;">{{mdata.desc}}</i>
+{{/if}}
+{{#if resultString}}
+{{{resultString}}}
+{{/if}}
+{{{rollContent}}}
+{{#if item}}
+{{#if (eq item.system.isIdentified true)}}
+{{! Actions are handled by the fadeChatMessage, because not all players see the buttons. }}
+{{> "rollSaveBtn"}}
+{{/if}}
+{{/if}}
+

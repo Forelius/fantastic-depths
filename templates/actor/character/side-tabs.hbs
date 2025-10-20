@@ -22,6 +22,11 @@
       </a>
    </div>
    {{/if}}
+   <div class="nav-tab {{tabs.effects.cssClass}}" data-tab="effects" data-action="tab" data-group="primary">
+      <a class="item" data-tooltip="{{localize 'FADE.tabs.effects'}}">
+         <img src="/systems/fantastic-depths/assets/img/ui/internal-injury.svg" />
+      </a>
+   </div>
    <div class="nav-tab {{tabs.description.cssClass}}" data-tab="description" data-action="tab" data-group="primary">
       <a class="item" data-tooltip="{{localize 'FADE.tabs.description'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/quill-ink.svg" />
@@ -29,11 +34,6 @@
    </div>
    {{/if}}
    {{#if isGM}}
-   <div class="nav-tab {{tabs.effects.cssClass}}" data-tab="effects" data-action="tab" data-group="primary">
-      <a class="item" data-tooltip="{{localize 'FADE.tabs.effects'}}">
-         <img src="/systems/fantastic-depths/assets/img/ui/internal-injury.svg" />
-      </a>
-   </div>
    <div class="nav-tab {{tabs.gmOnly.cssClass}}" data-tab="gmOnly" data-action="tab" data-group="primary">
       <a class="item" data-tooltip="{{localize 'FADE.tabs.gmOnly'}}">
          <img src="/systems/fantastic-depths/assets/img/ui/lock-spy.svg" />

@@ -32,11 +32,15 @@ export class fadeCombat extends Combat {
    * @returns Combatant[]
    */
    setupTurns() {
-      return this.initiativeSystem.setupTurns(this);
+      const result = this.initiativeSystem.setupTurns(this);
+      return result;
    }
 
    async rollInitiative(ids, options) {
-      return await this.initiativeSystem.rollInitiative(this, ids, options);
+      const result = await this.initiativeSystem.rollInitiative(this, ids, options);
+      console.debug("afterRollInitiative");
+      Hooks.callAll("afterRollInitiative", this, result);
+      return result;
    }
 
    updateStateTracking(turns) {

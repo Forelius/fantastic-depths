@@ -18,12 +18,12 @@ export class GenericRollChatBuilder extends ChatBuilder {
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
-      const item = caller.type === "character" || caller.type === "monster" ? null : caller;
-      let damageRoll = { hasDamage: false };
-
-      if (item?.getDamageRoll && options?.isUsing === true) {
-         damageRoll = item?.getDamageRoll(null);
-      }
+      let item = caller.type === "character" || caller.type === "monster" ? null : caller;
+      let dmgHealRoll = null;
+      const isSave = item?.system?.category === "save";
+      //if (isSave == false && item?.getDamageRoll && options?.isUsing === true) {
+      //   dmgHealRoll = item?.getDamageRoll(null);
+      //}
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
@@ -43,10 +43,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let save = null;
-      if (item?.system.savingThrow?.length > 0 && options?.isUsing === true) {
-         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
-      }
+      let actions = await this._getActionsForChat(item, context, { saves: false });
 
       // Prepare data for the chat template
       const chatData = {
@@ -58,18 +55,32 @@ export class GenericRollChatBuilder extends ChatBuilder {
          actorName,
          userName,
          isGM: game.user.isGM,
-         isHeal: damageRoll.type === "heal",
-         damageRoll,
-         save
+         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
+
+      let targetTokens;
+      if (item?.hasTargets === true) {
+         targetTokens = isSave ? [] : Array.from(game.user.targets);
+      }
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
          content,
          rolls,
          rollMode, // Pass the determined rollMode
+         flags: {
+            [game.system.id]: {
+               owneruuid: context.uuid,
+               itemuuid: item?.uuid,
+               targets: targetTokens?.map(i => ({ targetid: i.id, targetname: i.name })),
+               damageRoll,
+               healRoll,
+               actions
+            }
+         }
       });
 
       // Create the chat message

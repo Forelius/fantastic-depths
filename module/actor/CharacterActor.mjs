@@ -140,7 +140,6 @@ export class CharacterActor extends FDCombatActor {
       // Ancestry special abilities
       const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
       const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
-      //const itemNames = actor.items.filter(item => AncestryDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
       const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
 
       if (abilitiesData || itemsData) {

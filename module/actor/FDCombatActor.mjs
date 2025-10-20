@@ -66,12 +66,7 @@ export class FDCombatActor extends FDActorBase {
       return allowed;
    }
 
-   /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-   }
-
-   /** @override */
+    /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
@@ -153,8 +148,37 @@ export class FDCombatActor extends FDActorBase {
          ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
       } else {
          for (let target of selected) {
-            // Apply damage to the token's actor
+            // Roll for each token's actor
             target.actor.rollSavingThrow(dataset.type, event);
+         }
+      }
+   }
+
+   /**
+    * Static event handler for click on an action button in chat.
+    * @public
+    * @param {any} event
+    */
+   static async handleActionRoll(event) {
+      event.preventDefault(); // Prevent the default behavior
+      event.stopPropagation(); // Stop other handlers from triggering the event
+      const dataset = event.currentTarget.dataset;
+      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || canvas.tokens.controlled?.[0]?.document;
+      if (!instigator) {
+         ui.notifications.warn(game.i18n.localize("FADE.notification.noTokenAssoc"));
+      } else {
+         if (dataset?.type === "melee" || dataset?.type === "shoot" || dataset?.type === "throw") {
+            const item = await fromUuid(dataset.itemuuid);
+            // Directly roll item and skip the rest
+            if (item) await item.rollAttack(dataset);
+         } else if (dataset?.type === "toggleLight") {
+            const item = await fromUuid(dataset.itemuuid);
+            if (item) await item.toggleLight(dataset);
+         } else {
+            const item = await fromUuid(dataset.itemuuid);
+            // Directly roll item and skip the rest
+            if (item) await item.roll(dataset, null, event);
          }
       }
    }
@@ -189,7 +213,8 @@ export class FDCombatActor extends FDActorBase {
     * Get an array of strings indicating which combat maneuvers this actor is capable of.
     */
    getAvailableActions() {
-      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem"];
+      // These options are always available.
+      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility"];
       let hasEquippedWeapon = false;
       // Ready weapon
       if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {
@@ -236,7 +261,7 @@ export class FDCombatActor extends FDActorBase {
       }
       return result;
    }
-   
+
    /**
     * @public
     * Add and/or update the actor's class-given special abilities.

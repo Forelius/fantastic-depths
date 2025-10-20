@@ -1,13 +1,14 @@
-import { EffectManager } from '../sys/EffectManager.mjs';
 import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
+import { VsGroupModMixin } from '/systems/fantastic-depths/module/sheets/mixins/VsGroupModMixin.mjs';
+import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 
 /**
- * Sheet class for ArmorItem.
+ * Sheet class for AmmoItem.
  */
-export class ArmorItemSheet extends FDItemSheetV2 {
+export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
    /**
-    * Get the default options for the sheet.
-    */
+   * Get the default options for the sheet.
+   */
    static DEFAULT_OPTIONS = {
       position: {
          width: 570,
@@ -26,7 +27,7 @@ export class ArmorItemSheet extends FDItemSheetV2 {
 
    static PARTS = {
       header: {
-         template: "systems/fantastic-depths/templates/item/armor/header.hbs",
+         template: "systems/fantastic-depths/templates/item/ammo/header.hbs",
       },
       tabnav: {
          template: "templates/generic/tab-navigation.hbs",
@@ -35,13 +36,10 @@ export class ArmorItemSheet extends FDItemSheetV2 {
          template: "systems/fantastic-depths/templates/item/shared/description.hbs",
       },
       attributes: {
-         template: "systems/fantastic-depths/templates/item/armor/attributes.hbs",
-      },
-      effects: {
-         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+         template: "systems/fantastic-depths/templates/item/ammo/attributes.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/armor/gmOnly.hbs",
+         template: "systems/fantastic-depths/templates/item/ammo/gmOnly.hbs",
       }
    }
 
@@ -60,31 +58,35 @@ export class ArmorItemSheet extends FDItemSheetV2 {
 
       if (game.user.isGM) {
          options.parts.push('attributes');
-         options.parts.push('effects');
+         //options.parts.push('effects');
          options.parts.push('gmOnly');
       }
    }
 
    /**
-    * Prepare data to be used in the Handlebars template.
-    */
+   * Prepare data to be used in the Handlebars template.
+   */
    async _prepareContext(options) {
       const context = await super._prepareContext(options);
 
-      context.isBasicEnc = game.settings.get(game.system.id, "encumbrance") === "basic";
-      if (context.isBasicEnc === true) {
-         const encOptions = [];
-         encOptions.push({ text: game.i18n.localize('FADE.none'), value: "none" });
-         encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.light'), value: "light" });
-         encOptions.push({ text: game.i18n.localize('FADE.Armor.armorWeight.choices.heavy'), value: "heavy" });
-         context.encOptions = encOptions;
-      }
+      // Damage types
+      const damageTypes = []
+      damageTypes.push({ value: "", text: game.i18n.localize('None') });
+      damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
+         return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
+      }));
+      context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+      // Saving throws
+      const saves = [];
+      saves.push({ value: "", text: game.i18n.localize('None') });
+      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
+      saves.push(...saveItems.map((save) => {
+         return { value: save.system.customSaveCode, text: save.system.shortName }
+      }));
+      context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
       // Prepare the tabs.
       context.tabs = this.#getTabs();
-
-      // Prepare active effects for easier access
-      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
    }
@@ -97,17 +99,13 @@ export class ArmorItemSheet extends FDItemSheetV2 {
       const group = 'primary';
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
-
       const tabs = {
-         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' },
+         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' }
       };
-
       if (game.user.isGM) {
          tabs.attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' };
-         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
          tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly', cssClass: 'item' };
       }
-
       for (const v of Object.values(tabs)) {
          v.active = this.tabGroups[v.group] === v.id;
          v.cssClass = v.active ? "active" : "";

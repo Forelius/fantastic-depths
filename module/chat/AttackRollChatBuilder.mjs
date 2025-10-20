@@ -1,4 +1,3 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
@@ -19,11 +18,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const targetTokens = Array.from(game.user.targets);
       const targetActor = targetTokens?.length > 0 ? targetTokens[0].actor : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
-      const weapon = caller;
+      const weaponItem = caller;
       const descData = {
          attacker: attackerName,
          attackType: game.i18n.localize(`FADE.dialog.attackType.${resp.attackType}`).toLowerCase(),
-         weapon: weapon.system.isIdentified === true ? weapon.name : weapon.system.unidentifiedName
+         weapon: weaponItem.knownName
       };
       const description = game.i18n.format('FADE.Chat.attackFlavor', descData);
 
@@ -32,36 +31,37 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollContent = await roll.render();
       }
 
-      const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weapon, targetTokens, roll, resp.attackType);
-      const damageRoll = weapon.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetActor);
+      const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weaponItem, targetTokens, roll, resp.attackType);
+      const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetActor);
 
       if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let save = null;
-      if (weapon.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(weapon.system.savingThrow);
-      }
+      let actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
 
       const chatData = {
-         damageRoll,
          rollContent,
          description,
          descData,
          toHitResult,
          digest: digest,
-         weapon,
+         weapon: weaponItem,
          resp,
-         save,
          ammoItem: options?.ammoItem,
          targetWeaponType: resp.targetWeaponType,
-         targetActor
+         targetActor,
+         actions
       };
       let content = await CodeMigrate.RenderTemplate(this.template, chatData);
       // Manipulated the dom to place digest info in roll's tooltip
       content = this.moveDigest(content);
+
+      let conditionsResult = null;
+      if (weaponItem.isIdentified == true) {
+         conditionsResult = await this._getConditionsForChat(weaponItem);
+      }
 
       const rolls = roll ? [roll] : null;
       const chatMessageData = this.getChatMessageData({
@@ -70,10 +70,15 @@ export class AttackRollChatBuilder extends ChatBuilder {
          rollMode,
          flags: {
             [game.system.id]: {
-               targets: toHitResult.targetResults
+               owneruuid: context.uuid,
+               itemuuid: weaponItem.uuid,
+               damageRoll,
+               targets: toHitResult.targetResults,
+               actions,
+               conditions: conditionsResult?.conditions,
             }
          }
       });
-      const chatMsg = await ChatMessage.create(chatMessageData);
+      await ChatMessage.create(chatMessageData);
    }
 }

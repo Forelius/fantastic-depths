@@ -76,6 +76,7 @@ export class CharacterSheet extends CharacterSheetBase {
       const context = await super._prepareContext();
       // Prepare the tabs.
       context.tabs = this.#getTabs();
+
       return context;
    }
 
@@ -96,13 +97,11 @@ export class CharacterSheet extends CharacterSheetBase {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          tabs.items = { id: 'items', group, label: 'FADE.items' };
          tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
-      }
-
-      tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
-      tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
-
-      if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+         if (this.actor.system.config.maxSpellLevel > 0) {
+            tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+         }
+         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
+         tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
       }
 
       if (game.user.isGM) {

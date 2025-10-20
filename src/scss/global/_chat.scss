@@ -15,12 +15,13 @@
 
       button {
          margin: 0.4rem 0.1rem;
-         width: 100%
+         width: 98%
       }
 
       .content-link, .inline-roll {
          color: $lightColor2
       }
+
       .digest {
          margin-bottom: 6px;
       }
@@ -136,11 +137,15 @@
          }
       }
 
-      .apply-condition {
-         background: url('../assets/img/grungeblue.jpg');
+      .apply-condition, .remove-condition {
+         background: url('../assets/img/grungeyellow2.jpg');
          color: $lighterColor;
          box-shadow: none;
-         border: 1px solid #303050;
+         border: 1px solid #605050;
+
+         &:hover {
+            background: rgb(170, 86, 10);
+         }
       }
 
       .heal-roll, .apply-heal {
@@ -148,13 +153,21 @@
          color: $lighterColor;
          box-shadow: none;
          border: 1px solid #447744;
+
+         &:hover {
+            background: rgb(26, 180, 20);
+         }
       }
 
-      .damage-roll, .apply-damage {
+      .attack-roll, .damage-roll, .apply-damage {
          background: url('../assets/img/grungered.jpg');
          color: $lighterColor;
          box-shadow: none;
          border: 1px solid #774444;
+
+         &:hover {
+            background: rgb(180, 26, 20);
+         }
       }
 
       .saving-roll {
@@ -162,6 +175,32 @@
          border: 1px solid $darkColor;
          box-shadow: none;
          color: $lighterColor;
+
+         &:hover {
+            background: rgb(10, 86, 170);
+         }
+      }
+
+      .spell-cast {
+         background: url('../assets/img/grungepurple.jpg');
+         border: 1px solid $darkColor;
+         box-shadow: none;
+         color: $lighterColor;
+
+         &:hover {
+            background: rgb(86, 10, 170);
+         }
+      }
+
+      .action-roll {
+         background: url('../assets/img/grungeyellow2.jpg');
+         border: 1px solid $darkColor;
+         box-shadow: none;
+         color: $lighterColor;
+
+         &:hover {
+            background: rgb(170, 86, 10);
+         }
       }
    }
 }

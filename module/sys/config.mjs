@@ -63,7 +63,8 @@ FADE.LightTypes = [
 FADE.SpecialAbilityCategories = [
    "explore",
    "class",
-   "save"
+   "save",
+   "spellcasting"
 ];
 FADE.Armor = {
    acNaked: 9
@@ -108,16 +109,36 @@ FADE.abilityScoreModSystem.darkdungeons = {
 };
 FADE.Actions = [
    {
-      id: "attack",
-      img: "icons/svg/sword.svg",
+      id: "melee",
+      img: "icons/skills/melee/sword-shield-stylized-white.webp"
+   },
+   {
+      id: "shoot",
+      img: "icons/skills/ranged/person-archery-bow-attack-gray.webp"
+   },
+   {
+      id: "throw",
+      img: "icons/skills/ranged/dagger-thrown-jeweled-purple.webp"
    },
    {
       id: "consume",
-      img: "icons/consumables/drinks/pitcher-dripping-white.webp",
+      img: "icons/consumables/drinks/pitcher-dripping-white.webp"
    },
    {
       id: "cast",
-      img: "icons/magic/fire/orb-fireball-puzzle.webp",
+      img: "icons/magic/fire/orb-fireball-puzzle.webp"
+   },
+   {
+      id: "use",
+      img: "icons/svg/lever.svg"
+   },
+   {
+      id: "read",
+      img: "icons/sundries/scrolls/scroll-runed-brown-black.webp"
+   },
+   {
+      id: null,
+      img: null,
    }
 ]
 FADE.CombatPhases = {
@@ -148,7 +169,8 @@ FADE.CombatManeuvers = {
    disarm: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
    guard: { phase: "melee", canMove: true },
    unarmed: { phase: "melee", canMove: true },
-   dodge: { phase: "melee", canMove: true }
+   dodge: { phase: "melee", canMove: true },
+   specialAbility: { phase: "melee", canMove: true },
 }
 FADE.ActorSizes = [
    { id: "T", isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet

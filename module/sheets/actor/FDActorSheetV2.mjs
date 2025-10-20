@@ -1,9 +1,9 @@
 const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
-import { EffectManager } from "../sys/EffectManager.mjs";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
-import { FDItem } from "../item/FDItem.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
+import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
+import { FDItem } from "/systems/fantastic-depths/module/item/FDItem.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
@@ -15,6 +15,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    constructor(options = {}) {
       super(options);
+      this.isRestoringCollapsedState = false;
    }
 
    static DEFAULT_OPTIONS = {
@@ -333,6 +334,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @protected
     */
    async _restoreCollapsedState() {
+      this.isRestoringCollapsedState = true;
       const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
       // Retrieve all flags that start with "collapsed-"
       const flags = this.actor.flags[game.system.id] || {};
@@ -350,7 +352,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                      await FDActorSheetV2.#toggleContent(this.actor, target, true);
                   } else {
                      // Not found.
-                     //console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
+                     console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
                      await this.actor.unsetFlag(game.system.id, key);
                   }
                }
@@ -361,12 +363,14 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             }
          });
       } else {
+         // This will clear the collapsed flags if the remember collapsed state setting is false.
          Object.keys(flags).forEach(async (key) => {
             if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
                await this.actor.unsetFlag(game.system.id, key);
             }
          });
       }
+      this.isRestoringCollapsedState = false;
    }
 
    /**
@@ -426,7 +430,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    static async #toggleContent(actor, parent) {
       const collapsibleItems = parent.querySelectorAll(".collapsible-content");
-      if (!collapsibleItems) return;
+      if (!collapsibleItems || collapsibleItems.length == 0) return;
       const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
 
       if (isCollapsed === true) {
@@ -434,32 +438,24 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          collapsibleItems.forEach((content) => {
             const contentElement = content; // The current content element
             contentElement.classList.remove("collapsed");
-
             contentElement.style.height = contentElement.scrollHeight + "px";
-
-            // Reset the height after the transition duration
-            setTimeout(() => { contentElement.style.height = ""; }, 100); // Adjust to match CSS transition duration
          });
       } else {
          // Collapse the content
          collapsibleItems.forEach((content) => {
             const contentElement = content; // The current content element
-
-            contentElement.style.height = contentElement.clientHeight + "px";
             contentElement.classList.add("collapsed");
-
-            // Collapse the content by setting height to 0
-            setTimeout(() => { contentElement.style.height = "0"; }, 0);
+            contentElement.style.height = "0";// contentElement.clientHeight + "px";
          });
       }
-
       // If remember state is enabled, store the collapsed state
-      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
-      if (rememberCollapsedState === true) {
-         const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
-         //console.debug(`Remembering expanded state for ${sectionName}.`, target);
-         if (sectionName !== undefined) {
-            await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+      if (this.isRestoringCollapsedState === false) {
+         const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+         if (rememberCollapsedState === true) {
+            const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
+            if (sectionName !== undefined) {
+               await actor.setFlag(game.system.id, `collapsed-${sectionName}`, !isCollapsed);
+            }
          }
       }
    }
@@ -484,6 +480,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const savingThrows = [];
       const conditions = [];
       const actorClasses = [];
+      const spellcasting = {};
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -546,8 +543,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                lte: "&lt;="
             };
             if (item.system.category === "explore") {
-               exploration.push({ item, op: operators[item.system.operator] });
-            } else if (item.system.category === "class") {
+               exploration.push({ item, op: operators[item.system.operator] });               
+            } else if (item.system.category === "class" || item.system.category === "spellcasting") {
                classAbilities.push(item);
             } else if (item.system.category === "save") {
                savingThrows.push(item);
@@ -799,24 +796,36 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    static async #clickExpandDesc(event) {
       // If not the create item column...
-      const descElem = $(event.target).parents(".item").find(".item-description");
+      //const itemElement = event.target.closest(".item");
+      let currentElement = event.target;
+      let descElem = null;
+      while (currentElement && !descElem) {
+         descElem = currentElement.querySelector(".item-description");
+         currentElement = currentElement.parentElement;
+      }
+
       if (descElem) {
-         const isCollapsed = $(descElem[0]).hasClass("desc-collapsed");
+         const isCollapsed = descElem.classList.contains("desc-collapsed");
          if (isCollapsed === true) {
-            descElem.removeClass("desc-collapsed");
-            const itemElement = $(event.target).parents(".item");
-            const item = this.actor.items.get(itemElement.data("itemId"));
-            if (item !== null) {
+            descElem.classList.remove("desc-collapsed");
+            const itemElement = event.target.closest('[data-item-id]');
+            const itemId = itemElement?.dataset.itemId;
+            const item = this.actor.items.get(itemId);
+            if (item != null) {
                const enrichedDesc = await item.getInlineDescription();
                if (enrichedDesc.startsWith("<") === false) {
-                  descElem.append(enrichedDesc);
+                  descElem.appendChild(document.createTextNode(enrichedDesc));
                } else {
-                  descElem.append($(enrichedDesc));
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = enrichedDesc;
+                  while (tempDiv.firstChild) {
+                     descElem.appendChild(tempDiv.firstChild);
+                  }
                }
             }
          } else {
-            descElem.addClass("desc-collapsed");
-            descElem.empty();
+            descElem.classList.add("desc-collapsed");
+            descElem.innerHTML = '';
          }
       }
    }
@@ -834,7 +843,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          }));
 
       if (availableGroups.length === 0) {
-         ui.notifications.info("All actor groups have already been added.");
+         //ui.notifications.info("All actor groups have already been added.");
          return;
       }
 
@@ -849,7 +858,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          content: `
             <form>
                <div class="form-group">
-                  <label>Select Actor Group:</label>
+                  <label>${game.i18n.localize("FADE.Actor.actorGroups.group")}:</label>
                   <select name="actorGroup">
                      ${availableGroups.map(group => `<option value="${group.value}">${group.label}</option>`).join('')}
                   </select>

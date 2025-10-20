@@ -1,7 +1,6 @@
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
-import { FDItem } from './FDItem.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
+import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
+import { FDItem } from '/systems/fantastic-depths/module/item/FDItem.mjs';
+import { TagManager } from '/systems/fantastic-depths/module/sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -59,6 +58,10 @@ export class GearItem extends FDItem {
       return result;
    }
 
+   get isUsable() {
+      return this.chargesMax > 0 || this.chargesMax === null;
+   }
+
    /** @override
     * @protected */
    prepareBaseData() {
@@ -86,172 +89,20 @@ export class GearItem extends FDItem {
     * @private
     */
    async roll(dataset) {
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
+      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
+      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
       if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
          return null;
       }
       // Initialize chat data.
       const rollMode = game.settings.get('core', 'rollMode');
-      let isUsing = false;
-
-      if (this.system.isUsable === true) {
-         // If this item has a quantity and either has charges or doesn't use charges...
-         if ((await this.#tryUseUsage(true)) === true
-            && (this.#usesCharge() === false || await this.#tryUseCharge(true))) {
-            const dialogResp = await DialogFactory({
-               dialog: "yesno",
-               title: game.i18n.localize('FADE.dialog.useItem.title'),
-               content: game.i18n.localize('FADE.dialog.useItem.content'),
-               yesLabel: game.i18n.localize('FADE.dialog.useItem.yesLabel'),
-               noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
-               defaultChoice: "yes"
-            }, this.actor);
-            if (dialogResp?.resp?.result === true) {
-               isUsing = true;
-               if (this.#usesCharge()) {
-                  await this.#tryUseCharge();
-               } else {
-                  await this.#tryUseUsage();
-               }
-            }
-         }
-      }
-
       const chatData = {
          caller: this,
          context: instigator,
          rollMode
       };
-
-      const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { isUsing });
+      const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData);
       return await builder.createChatMessage();
-   }
-
-   async getInlineDescription() {
-      // TODO: Remove after v12 support.
-      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
-
-      let description = this.system.isIdentified === true ?
-         await super.getInlineDescription()
-         : await textEditorImp.enrichHTML(this.system.unidentifiedDesc, {
-            secrets: false,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            rollData: this.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.actor,
-         });
-      if (description?.length <= 0) {
-         description = '--';
-      }
-      return description;
-   }
-
-   getDamageRoll(resp) {
-      const isHeal = this.system.healFormula?.length > 0;
-      const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
-      let formula = evaluatedRoll?.formula;
-      const digest = [];
-      let modifier = 0;
-      let hasDamage = true;
-      const type = isHeal ? "heal" : (this.system.damageType == '' ? 'physical' : this.system.damageType);
-
-      if (resp?.mod && resp?.mod !== 0) {
-         formula = formula ? `${formula}+${resp.mod}` : `${resp.mod}`;
-         modifier += resp.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
-      }
-
-      if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
-         hasDamage = false;
-      }
-
-      return {
-         formula,
-         type,
-         digest,
-         hasDamage
-      };
-   }
-
-   /**
- * Creates a special ability child item for this item.
- * @param {any} name
- * @param {any} classKey
- */
-   async createSpecialAbility(name = "", classKey = null) {
-      // Retrieve the array
-      const specialAbilities = this.system.specialAbilities || [];
-
-      // Define the new data
-      const newItem = {
-         name,
-         target: 0,
-         changes: "",
-         classKey: classKey
-      };
-
-      // Add the new item to the array
-      specialAbilities.push(newItem);
-      await this.update({ "system.specialAbilities": specialAbilities });
-   }
-
-   /**
-    * Determines if any uses are available and if so decrements quantity by one
-    * @private
-    * @param {any} getOnly If true, does not use, just gets.
-    * @returns True if quantity is above zero.
-    */
-   async #tryUseUsage(getOnly = false) {
-      let hasUse = this.system.quantity > 0;
-
-      if (getOnly !== true) {
-         // Deduct 1 if not infinite and not zero
-         if (hasUse === true && this.system.quantityMax !== null) {
-            const newQuantity = Math.max(0, this.system.quantity - 1);
-            await this.update({ "system.quantity": newQuantity });
-         }
-      }
-      // If there are no usages remaining, show a UI notification
-      if (hasUse === false) {
-         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name });
-         ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
-      }
-
-      return hasUse;
-   }
-
-   /**
-    * Determines if any charges are available and if so decrements charges by one
-    * @private
-    * @param {any} getOnly If true, does not use, just gets.
-    * @returns True if quantity is above zero.
-    */
-   async #tryUseCharge(getOnly = false) {
-      let hasCharge = this.system.charges > 0;
-
-      if (getOnly !== true) {
-         // Deduct 1 if not infinite and not zero
-         if (hasCharge === true && this.system.chargesMax !== null) {
-            const newCharges = Math.max(0, this.system.charges - 1);
-            await this.update({ "system.charges": newCharges });
-         }
-      }
-      // If there are no charges remaining, show a UI notification
-      if (hasCharge === false) {
-         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name });
-         ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
-      }
-
-      return hasCharge;
-   }
-
-   #usesCharge() {
-      // Item uses charges if there are any charges or if charges max is greater than zero or charges max is infinite.
-      return this.system.charges > 1 || this.system.chargesMax > 0 || this.system.chargesMax === null;
    }
 }

@@ -1,11 +1,13 @@
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
 */
 const RESULT_TYPE = {
-   NONE: Symbol('result_none'),
-   FAILED: Symbol('result_failed'),
-   PASSED: Symbol('result_passed')
+   NONE: Symbol("result_none"),
+   FAILED: Symbol("result_failed"),
+   PASSED: Symbol("result_passed")
 };
 
 /**
@@ -31,11 +33,11 @@ export class ChatBuilder {
     */
    constructor(dataset, options) {
       if (new.target === ChatBuilder) {
-         throw new Error('ChatBuilder cannot be instantiated directly.');
+         throw new Error("ChatBuilder cannot be instantiated directly.");
       }
       // TODO: not sure this is required anymore.
       if (!new.target.template) {
-         throw new Error('Subclasses must define a static template property.');
+         throw new Error("Subclasses must define a static template property.");
       }
 
       this.RESULT_TYPE = RESULT_TYPE;
@@ -70,8 +72,8 @@ export class ChatBuilder {
    static initializeResultCache() {
       this.resultCache = {
          [RESULT_TYPE.NONE]: undefined,
-         [RESULT_TYPE.FAILED]: `<div class='roll-fail'>${game.i18n.localize('FADE.Chat.fail')}</div>`,
-         [RESULT_TYPE.PASSED]: `<div class='roll-success'>${game.i18n.localize('FADE.Chat.pass')}</div>`,
+         [RESULT_TYPE.FAILED]: `<div class="roll-fail">${game.i18n.localize("FADE.Chat.fail")}</div>`,
+         [RESULT_TYPE.PASSED]: `<div class="roll-success">${game.i18n.localize("FADE.Chat.pass")}</div>`,
       };
       return this.resultCache;
    }
@@ -98,22 +100,22 @@ export class ChatBuilder {
       let result = false;
 
       switch (operator) {
-         case 'lt':
+         case "lt":
          case "<":
             result = (rollTotal < target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
-         case 'lte':
+         case "lte":
          case "<=":
             result = (rollTotal <= target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
-         case 'gt':
+         case "gt":
          case ">":
             result = (rollTotal > target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
             break;
-         case 'gte':
+         case "gte":
          case ">=":
             result = (rollTotal >= target || ((autosuccess !== null || autosuccess !== undefined) && naturalTotal === parseInt(autosuccess)))
                && ((autofail === null || autofail === undefined) || naturalTotal !== parseInt(autofail));
@@ -147,7 +149,7 @@ export class ChatBuilder {
          Object.assign(chatMessageData, rollsData);
 
          // Decide roll mode (public, gm only,...)
-         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get('core', 'rollMode');
+         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get("core", "rollMode");
          ChatMessage.applyRollMode(chatMessageData, rollMode);
       }
 
@@ -216,12 +218,12 @@ export class ChatBuilder {
     */
    moveDigest(content) {
       // Create a temporary DOM element to manipulate the HTML content
-      const tempDiv = document.createElement('div');
+      const tempDiv = document.createElement("div");
       tempDiv.innerHTML = content;
       tempDiv.classList = "digest";
       // Find the 'digest' div and 'dice-tooltip' div
-      const digestDiv = tempDiv.querySelector('div[name="digest"]');
-      const tooltipDiv = tempDiv.querySelector('.tooltip-part');
+      const digestDiv = tempDiv.querySelector(`div[name="digest"]`);
+      const tooltipDiv = tempDiv.querySelector(".tooltip-part");
       // Move the 'digest' div inside the 'dice-tooltip' div
       if (digestDiv && tooltipDiv) {
          tooltipDiv.insertAdjacentElement("afterend", digestDiv);
@@ -229,5 +231,134 @@ export class ChatBuilder {
       // Convert the updated DOM back to a string and assign it to 'content'
       content = tempDiv.innerHTML;
       return content;
+   }
+
+   _getDamageHealRolls(dmgHealRoll) {
+      let damageRoll;
+      let healRoll;
+      if (dmgHealRoll?.damageFormula?.length > 0) {
+         damageRoll = dmgHealRoll.damageType === "heal" ? undefined : dmgHealRoll;
+         healRoll = dmgHealRoll.damageType === "heal" ? dmgHealRoll : undefined;
+      }
+      return { damageRoll, healRoll };
+   }
+
+   async _getActionsForChat(actionItem, owner, options = {}) {
+      const isIdentified = actionItem?.system.isIdentified ?? false;
+      // Merge default options with provided options
+      options = { ...{ attacks: true, abilities: true, saves: true }, ...options };
+      const actions = [];
+      if (actionItem) {
+         const itemActions = actionItem.getActionsForChat(owner, options);
+         if (itemActions?.length > 0) {
+            actions.push(...itemActions);
+         }
+
+         if (options.saves === true && actionItem.system.savingThrow?.length > 0) {
+            const save = await fadeFinder.getSavingThrow(actionItem.system.savingThrow);
+            actions.push({
+               type: "save",
+               owneruuid: owner.uuid,
+               itemuuid: save.uuid,
+               actionuuid: actionItem.uuid, // this is the owning item's uuid
+               shortName: save?.system.shortName,
+               customSaveCode: save?.system.customSaveCode,
+            });
+         }
+         if (options.attacks === true) {
+            if (actionItem.canMelee === true) {
+               actions.push({
+                  type: "melee",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: game.i18n.localize("FADE.Chat.actions.melee"),
+               })
+            }
+            if (actionItem.canShoot === true) {
+               actions.push({
+                  type: "shoot",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: game.i18n.localize("FADE.Chat.actions.shoot"),
+               })
+            }
+            if (actionItem.canThrow === true) {
+               actions.push({
+                  type: "throw",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: game.i18n.localize("FADE.Chat.actions.throw"),
+               })
+            }
+         }
+         // Special abilities and spells
+         if (options.abilities === true) {
+            for (let ability of [...actionItem.system.specialAbilities || []]) {
+               let sourceItem = await fromUuid(ability.uuid);
+               if (sourceItem && (isIdentified || ability.action === "consume")) {
+                  sourceItem = foundry.utils.deepClone(sourceItem);
+                  actions.push({
+                     type: sourceItem.system.category,
+                     owneruuid: owner.uuid,
+                     itemuuid: ability.uuid,
+                     actionuuid: actionItem.uuid, // this is the owning item's uuid
+                     itemName: ability.action === "consume" ? "???" : ability.name,
+                     mod: ability.mod,
+                     action: ability.action
+                  });
+               }
+            }
+            for (let spell of [...actionItem.system.spells || []]) {
+               let sourceItem = await fromUuid(spell.uuid);
+               if (sourceItem && (isIdentified || spell.action === "consume")) {
+                  sourceItem = foundry.utils.deepClone(sourceItem);
+                  actions.push({
+                     type: "spell",
+                     owneruuid: owner.uuid,
+                     itemuuid: spell.uuid,
+                     actionuuid: actionItem.uuid, // this is the owning item's uuid
+                     itemName: spell.action === "consume" ? "???" : spell.name,
+                     castAs: spell.castAs,
+                     action: spell.action
+                  });
+               }
+            }
+         }
+      }
+      return actions;
+   }
+
+   async _getConditionsForChat(item, hideDuration = false) {
+      const conditions = foundry.utils.deepClone(item.system.conditions);
+      const durationMsgs = [];
+      for (let condition of conditions) {
+         const durationResult = await this._getConditionDurationResult(condition, item);
+         condition.duration = durationResult?.durationSec ?? condition.duration;
+         if (hideDuration === true) {
+            condition.durationText = durationResult.text;
+         } else {
+            durationMsgs.push(durationResult.text);
+         }
+      }
+      return { conditions, durationMsgs };
+   }
+
+   async _getConditionDurationResult(condition, item) {
+      let result = {
+         text: (condition.durationFormula !== "" && condition.durationFormula !== null) ?
+            `${condition.name} ${game.i18n.localize("FADE.Spell.duration")}: ${condition.durationFormula} ${game.i18n.localize("FADE.rounds")}`
+            : ""
+      };
+      if (condition.durationFormula !== "" && condition.durationFormula !== null) {
+         const rollData = condition.getRollData ? condition.getRollData() : item.getRollData();
+         const rollEval = await new Roll(condition.durationFormula, rollData).evaluate();
+         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
+         const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
+         result.durationSec = rollEval.total * roundSeconds;
+      }
+      return result;
    }
 }

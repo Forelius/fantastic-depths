@@ -15,12 +15,11 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { context, caller, roll, options } = this.data;
-      const damageRoll = caller.getDamageRoll(null);
-      const targetTokens = Array.from(game.user.targets);
+      const dmgHealRoll = caller.getDamageRoll(null);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
       const item = caller;
-
+      const targetTokens = Array.from(game.user.targets);
       const descData = { caster: caster.name, spell: item.name };
       const description = game.i18n.format('FADE.Chat.spellCast', descData);
 
@@ -45,10 +44,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let save = null;
-      if (item.system.savingThrow?.length > 0) {
-         save = await fadeFinder.getSavingThrow(item.system.savingThrow);
-      }
+      let actions = await this._getActionsForChat(item, context);
 
       // Prepare data for the chat template
       const chatData = {
@@ -58,93 +54,29 @@ export class SpellCastChatBuilder extends ChatBuilder {
          item, // spell item
          attackType: 'spell',
          caster,
-         damageRoll,
-         isHeal: damageRoll.type === "heal",
-         targets: targetTokens,
-         showTargets: !roll,
-         save,
-         durationMsg: options.durationMsg
+         durationMsg: options.durationMsg,
+         actions
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
+      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
       const rolls = roll ? [roll] : null;
+
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          flags: {
             [game.system.id]: {
-               targets: toHitResult.targetResults,
-               conditions: options.conditions
+               owneruuid: context.uuid,
+               itemuuid: item?.uuid,
+               targets: toHitResult?.targetResults,
+               conditions: options.conditions,
+               damageRoll,
+               healRoll,
+               actions
             }
          }
       });
       await ChatMessage.create(chatMessageData);
-   }
-
-   static async clickApplyCondition(event) {
-      const element = event.currentTarget;
-      const dataset = element.dataset;
-      // Custom behavior for damage rolls      
-      if (dataset.name || dataset.uuid) {
-         event.preventDefault(); // Prevent the default behavior
-         event.stopPropagation(); // Stop other handlers from triggering the event
-         let sourceCondition = await fromUuid(dataset.uuid);
-         if (!sourceCondition) {
-            sourceCondition = await game.fade.fadeFinder.getCondition(dataset.name);
-         }
-         if (sourceCondition) {                      
-            // Get targets
-            const selected = Array.from(canvas.tokens.controlled);
-            const targeted = Array.from(game.user.targets);
-            let applyTo = [];
-            let hasTarget = targeted.length > 0;
-            let hasSelected = selected.length > 0;
-            let isCanceled = false;
-
-            if (hasTarget && hasSelected) {
-               const dialogResp = await DialogFactory({
-                  dialog: "yesno",
-                  title: game.i18n.localize('FADE.dialog.applyToPrompt'),
-                  content: game.i18n.localize('FADE.dialog.applyToPrompt'),
-                  yesLabel: game.i18n.localize('FADE.dialog.targeted'),
-                  noLabel: game.i18n.localize('FADE.dialog.selected'),
-                  defaultChoice: "yes"
-               });
-
-               if (dialogResp?.resp?.result == undefined) {
-                  isCanceled = true;
-               } else if (dialogResp?.resp?.result === true) {
-                  hasSelected = false;
-               } else if (dialogResp?.resp?.result === false) {
-                  hasTarget = false;
-               }
-            }
-
-            if (isCanceled === true) {
-               // do nothing.
-            } else if (hasTarget) {
-               applyTo = targeted;
-            } else if (hasSelected) {
-               applyTo = selected;
-            } else {
-               ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
-            }
-
-            // Ensure we have a target ID
-            if (applyTo.length > 0) {
-               const durationSec = Number.parseInt(dataset.duration);
-               for (let target of applyTo) {
-                  if (target.actor.isOwner === true) {
-                     const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
-                     if (Number.isNaN(durationSec) === false) {
-                        for(let condition of conditions){
-                           condition.setEffectsDuration(durationSec);
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
    }
 }

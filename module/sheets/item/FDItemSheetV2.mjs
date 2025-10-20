@@ -1,17 +1,14 @@
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
-import { EffectManager } from '../sys/EffectManager.mjs';
+import { EffectManager } from '/systems/fantastic-depths/module/sys/EffectManager.mjs';
 
 /**
  * Base sheet class for FDItem.
  */
 export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    get title() {
-      let result = this.item.name;
-      if (this.item.system.unidentifiedName && game.user.isGM == false && this.item.system.isIdentified == false) {
-         result = this.item.system.unidentifiedName;
-      }
-      return result;
+      return this.item.knownNameGM;
    }
 
    static DEFAULT_OPTIONS = {
@@ -50,7 +47,7 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
             relativeTo: this.item,
          });
       }
-
+      // Need this due to condition on template for showing enriched description.
       context.showIdentifiedText = game.user.isGM || this.item.system.isIdentified === true || this.item.system.unidentifiedDesc === undefined;
       context.item = this.item;
       context.system = this.item.system;
@@ -76,6 +73,26 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
             }
          });
       }
+   }
+
+   _getActionOptions() {
+      // Ability actions
+      const abilityActions = []
+      abilityActions.push({ value: "none", text: game.i18n.localize("FADE.Chat.actions.none") });
+      abilityActions.push({ value: "consume", text: game.i18n.localize("FADE.Chat.actions.consume") });
+      abilityActions.push({ value: "cast", text: game.i18n.localize("FADE.Chat.actions.cast") });
+      abilityActions.push({ value: "use", text: game.i18n.localize("FADE.Chat.actions.use") });
+      return abilityActions.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+   }
+
+   async _getSavingThrowOptions() {
+      const saves = [];
+      saves.push({ value: "", text: game.i18n.localize("None") });
+      const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
+      saves.push(...saveItems.map((save) => {
+         return { value: save.system.customSaveCode, text: save.system.shortName }
+      }));
+      return saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
    static async #clickEffect(event) {

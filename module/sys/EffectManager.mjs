@@ -37,7 +37,9 @@ export class EffectManager {
          { id: "infravision", name: "FADE.Effect.status.infravision", img: `${path}/ui/night-vision.png` },
          { id: "mirrorImaged", name: "FADE.Effect.status.mirrorImaged", img: `${path}/ui/two-shadows.png` },
          { id: "possessed", name: "FADE.Effect.status.possessed", img: `${path}/ui/possessed.png` },
-         { id: "slowed", name: "FADE.Effect.status.slowed", img: `${path}/ui/snail.png` }
+         { id: "slowed", name: "FADE.Effect.status.slowed", img: `${path}/ui/snail.png` },
+         { id: "ethereal", name: "FADE.Effect.status.ethereal", img: `./icons/magic/perception/silhouette-stealth-shadow.webp` },
+         { id: "fading", name: "FADE.Effect.status.fading", img: `./icons/magic/unholy/strike-body-life-soul-green.webp` }
       ];
       //let globalEffects = game.settings.get(game.system.id, 'globalEffects') || [];
 
@@ -82,7 +84,6 @@ export class EffectManager {
          ],
          duration: { seconds: 600 }
       };
-
       await ActiveEffect.create(sicknessEffect, { parent: actor });
    }
 
@@ -148,17 +149,15 @@ export class EffectManager {
          const dataset = event.target.closest(".items-header").dataset;
          //let aeCls = getDocumentClass("ActiveEffect");
          //aeCls.createDialog({}, { parent: owner });
-         result = owner.createEmbeddedDocuments('ActiveEffect', [
-            {
-               name: game.i18n.format('DOCUMENT.New', {
-                  type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-               }),
-               img: 'icons/svg/aura.svg',
-               origin: owner.uuid,
-               'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
-               disabled: dataset.effectType === 'inactive',
-            }
-         ]);
+         result = owner.createEmbeddedDocuments('ActiveEffect', [{
+            name: game.i18n.format('DOCUMENT.New', {
+               type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+            }),
+            img: 'icons/svg/aura.svg',
+            origin: owner.uuid,
+            'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
+            disabled: dataset.effectType === 'inactive',
+         }]);
       } else {
          const dataset = event.target.closest('.item').dataset;
          let effect = null;

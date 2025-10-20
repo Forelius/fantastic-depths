@@ -8,7 +8,7 @@
             <label for="system.effect">{{localize 'FADE.Spell.effect'}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name='system.maxTargetFormula' value='{{system.maxTargetFormula}}' data-dtype='String' />
+            <input type='text' name='system.maxTargetFormula' value='{{system.maxTargetFormula}}' data-dtype='String' placeholder="{{#if (eq system.maxTargetFormula null)}}∞{{/if}}"/>
             <label for="system.maxTargetFormula">{{localize 'FADE.Spell.maxTargetFormula'}}</label>
          </li>
          <li class="flex1">

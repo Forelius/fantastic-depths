@@ -53,29 +53,6 @@ export class ClassDefinitionItem extends FDItem {
    }
 
    /**
-    * Creates a special ability child item for this item.
-    * @param {any} name
-    * @param {any} classKey
-    */
-   async createSpecialAbility(name = "", classKey = null) {
-      // Retrieve the array
-      const specialAbilities = this.system.specialAbilities || [];
-
-      // Define the new data
-      const newItem = {
-         level: 1,
-         name,
-         target: 0,
-         changes: "",
-         classKey: classKey
-      };
-
-      // Add the new item to the array
-      specialAbilities.push(newItem);
-      await this.update({ "system.specialAbilities": specialAbilities });
-   }
-
-   /**
     * Class items are things like gear items. It is not referring to actor classes.
     * @param {any} name
     * @param {any} type
@@ -144,7 +121,7 @@ export class ClassDefinitionItem extends FDItem {
       const newFirstLevel = Math.max(0, this.system.firstLevel);
       const newMaxLevel = Math.max(newFirstLevel, this.system.maxLevel);
       const currentFirstLevel = this.system.levels?.[0]?.level;
-      
+
 
       let levelSequence = currentFirstLevel ?? newFirstLevel;
       for (let level of levels) {
@@ -195,7 +172,7 @@ export class ClassDefinitionItem extends FDItem {
          for (let i = 0; i < levelsCount; i++) {
             // Pre-set spellLevels to be same size as levels.
             if (spells[i] === undefined) {
-               spells.push(Array.from({ length: this.system.maxSpellLevel + 1 - this.system.firstSpellLevel },(_, index) => 0));
+               spells.push(Array.from({ length: this.system.maxSpellLevel + 1 - this.system.firstSpellLevel }, (_, index) => 0));
             } else if (spells[i]?.length > spellLevelNo) {
                spells[i].splice(spellLevelNo - spells[i]?.length, spellLevelNo - spells[i]?.length);
             } else if (spells[i]?.length < spellLevelNo) {

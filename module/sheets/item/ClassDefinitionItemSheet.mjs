@@ -1,8 +1,8 @@
 import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs";
 import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
-import { SpecialAbilityMixin } from "./mixins/SpecialAbilityMixin.mjs";
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

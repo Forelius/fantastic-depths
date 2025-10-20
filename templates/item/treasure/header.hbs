@@ -4,7 +4,7 @@
       <ul class="summary flexrow">
          <li>
             {{#if (or isGM system.isIdentified)}}
-            <input type='text' name='name' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+            <input type='text' name='name' value='{{item.name}}' placeholder='Name' data-dtype='String' />
             {{else}}
             <input type='text' name='system.unidentifiedName' value='{{system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
             {{/if}}

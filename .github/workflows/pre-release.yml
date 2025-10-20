@@ -58,6 +58,7 @@ jobs:
         run: |
           echo "## Fantastic Depths Pre-Release" > release_notes.txt
           echo "" >> release_notes.txt
+          echo ${{ github.event.release.body }} >> release_notes.txt
           echo "This is a pre-release version of Fantastic Depths." >> release_notes.txt
           echo "To install manually, use this URL:" >> release_notes.txt
           echo "https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json" >> release_notes.txt

@@ -60,24 +60,4 @@ export class AmmoItem extends FDItem {
       // This can't be in data model, because name is a property of Item.
       this.system.unidentifiedName = this.system.unidentifiedName ?? this.name;
    }
-
-   async getInlineDescription() {
-      // TODO: Remove after v12 support.
-      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
-
-      let description = this.system.isIdentified === true ?
-         await super.getInlineDescription()
-         : await textEditorImp.enrichHTML(this.system.unidentifiedDesc, {
-            secrets: false,
-            // Necessary in v11, can be removed in v12
-            async: true,
-            rollData: this.getRollData(),
-            // Relative UUID resolution
-            relativeTo: this.actor,
-         });
-      if (description?.length <= 0) {
-         description = '--';
-      }
-      return description;
-   }
 }

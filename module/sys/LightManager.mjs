@@ -3,12 +3,11 @@ export class LightManager {
    static initialize() { }
 
    static getToken() {
-      return canvas.tokens.controlled?.length > 0 ? canvas.tokens.controlled[0] : null;
+      return canvas.tokens?.controlled?.[0]?.document;
    }
 
    static hasSelectedToken() {
-      const token = LightManager.getToken();
-      return token !== null;
+      return LightManager.getToken() !== undefined;
    }
 
    /**
@@ -76,14 +75,12 @@ export class LightManager {
                if (dialogResult.action === 'ignite') {
                   // If the light item exists.
                   if (selectedItem) {
-                     await selectedItem.enableLight();
+                     await selectedItem.enableLight(token);
                   } else {
                      LightManager.notify(game.i18n.format('FADE.notifcation.missingItem', { type: game.i18n.localize('FADE.dialog.lightSource') }), 'warn');
                   }
                } else if (dialogResult.action === 'extinguish') {
-                  await token.actor.setActiveLight(null);
-                  await selectedItem.update({ "system.light.enabled": false });
-                  LightManager.notify(game.i18n.format('FADE.Item.light.disabled', { actor: token.name }), 'info');
+                  await selectedItem.disableLight(token);
                }
             }
          }

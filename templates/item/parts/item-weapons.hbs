@@ -35,11 +35,7 @@
                <img src='{{item.img}}' width='26' height='26' />
             </div>
             <a class="item-control" data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
-               {{#if (or ../isGM item.system.isIdentified)}}
-               {{item.name}}
-               {{else}}
-               {{item.system.unidentifiedName}}
-               {{/if}}
+               {{item.knownNameGM}}
             </a>
          </div>
          <div class="item-40px item-prop">{{item.system.mod.toHitText}}</div>

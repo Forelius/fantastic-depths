@@ -10,9 +10,9 @@ import { fadeCompendium } from './sys/fadeCompendium.mjs'
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
 import { FDCombatActor } from './actor/FDCombatActor.mjs';
-import { CharacterSheet } from './sheets/CharacterSheet.mjs';
-import { CharacterSheetBase } from './sheets/CharacterSheetBase.mjs';
-import { MonsterSheet } from './sheets/MonsterSheet.mjs';
+import { CharacterSheet } from './sheets/actor/CharacterSheet.mjs';
+import { CharacterSheetBase } from './sheets/actor/CharacterSheetBase.mjs';
+import { MonsterSheet } from './sheets/actor/MonsterSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
 import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
@@ -28,20 +28,20 @@ import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
 import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
 import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
 import { AncestryDefinitionDM } from './item/dataModel/AncestryDefinitionDM.mjs';
-import { GearItemSheet } from './sheets/GearItemSheet.mjs';
-import { TreasureItemSheet } from './sheets/TreasureItemSheet.mjs';
-import { ActorClassSheet } from './sheets/ActorClassSheet.mjs';
-import { ActorMasterySheet } from './sheets/ActorMasterySheet.mjs';
-import { ArmorItemSheet } from './sheets/ArmorItemSheet.mjs';
-import { ClassDefinitionItemSheet } from './sheets/ClassDefinitionItemSheet.mjs';
-import { MasteryDefinitionSheet } from './sheets/MasteryDefinitionSheet.mjs';
-import { SkillItemSheet } from './sheets/SkillItemSheet.mjs';
-import { SpecialAbilitySheet } from './sheets/SpecialAbilitySheet.mjs';
-import { SpellItemSheet } from './sheets/SpellItemSheet.mjs';
-import { WeaponItemSheet } from './sheets/WeaponItemSheet.mjs';
-import { ConditionItemSheet } from './sheets/ConditionItemSheet.mjs';
-import { AmmoItemSheet } from './sheets/AmmoItemSheet.mjs';
-import { AncestryDefinitionSheet } from './sheets/AncestryDefinitionSheet.mjs';
+import { GearItemSheet } from './sheets/item/GearItemSheet.mjs';
+import { TreasureItemSheet } from './sheets/item/TreasureItemSheet.mjs';
+import { ActorClassSheet } from './sheets/item/ActorClassSheet.mjs';
+import { ActorMasterySheet } from './sheets/item/ActorMasterySheet.mjs';
+import { ArmorItemSheet } from './sheets/item/ArmorItemSheet.mjs';
+import { ClassDefinitionItemSheet } from './sheets/item/ClassDefinitionItemSheet.mjs';
+import { MasteryDefinitionSheet } from './sheets/item/MasteryDefinitionSheet.mjs';
+import { SkillItemSheet } from './sheets/item/SkillItemSheet.mjs';
+import { SpecialAbilitySheet } from './sheets/item/SpecialAbilitySheet.mjs';
+import { SpellItemSheet } from './sheets/item/SpellItemSheet.mjs';
+import { WeaponItemSheet } from './sheets/item/WeaponItemSheet.mjs';
+import { ConditionItemSheet } from './sheets/item/ConditionItemSheet.mjs';
+import { AmmoItemSheet } from './sheets/item/AmmoItemSheet.mjs';
+import { AncestryDefinitionSheet } from './sheets/item/AncestryDefinitionSheet.mjs';
 
 import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
 import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
@@ -56,7 +56,7 @@ import { fadeHandlebars } from './fadeHandlebars.mjs';
 import { fadeDialog } from './dialog/fadeDialog.mjs';
 import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
 import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
-import { SpellCastChatBuilder } from './chat/SpellCastChatBuilder.mjs';
+import { ConditionItem } from './item/ConditionItem.mjs';
 import { DataMigrator } from './sys/migration.mjs';
 import { EffectManager } from './sys/EffectManager.mjs';
 import { ToastManager } from './sys/ToastManager.mjs';
@@ -264,6 +264,7 @@ Hooks.once('ready', async function () {
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
    Hooks.on('hotbarDrop', (bar, data, slot) => {
       MacroManager.createItemMacro(data, slot);
+      // Returning false to stop the rest of hotbarDrop handling.
       return false;
    });
 
@@ -272,9 +273,11 @@ Hooks.once('ready', async function () {
    // inline-roll handler
    $(document).on('click', '.damage-roll,.heal-roll', DamageRollChatBuilder.clickDamageRoll);
    $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
-   $(document).on('click', '.apply-condition', async (event) => await SpellCastChatBuilder.clickApplyCondition(event));
+   $(document).on('click', '.apply-condition', async (event) => await ConditionItem.clickApplyCondition(event));
+   $(document).on('click', '.remove-condition', async (event) => await ConditionItem.clickRemoveCondition(event));
    $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
    $(document).on('click', '.saving-roll', FDCombatActor.handleSavingThrowRequest);
+   $(document).on('click', '.action-roll, .spell-cast, .attack-roll', FDCombatActor.handleActionRoll);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();

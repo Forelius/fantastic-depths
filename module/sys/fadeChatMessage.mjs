@@ -6,30 +6,104 @@ export class fadeChatMessage extends ChatMessage {
       let html = await super.getHTML(options);
       // Foundry v12...
       if ((Number(game.version) < 13)) {
-         this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
          if (html instanceof Element === false) {
             // In case jquery, due to v12/v13 inconsistency
             html = html[0];
          }
-         await this.#addApplyDamage(html);
-         await this.#addApplyCondition(html);
-         this.#addAttackTargets(html);
+         html = await this.#getForRender(html);
       }
       return html;
    }
 
    /** @inheritDoc */
    async renderHTML(options) {
-      this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       let html = await super.renderHTML(options);
       if (html instanceof Element === false) {
          // In case jquery, due to v12/v13 inconsistency
          html = html[0];
       }
+      return await this.#getForRender(html);
+   }
+
+   async #getForRender(html) {
+      // Damage and heal buttons
+      let dmgHeal = await this.#addDamageRollButton();
+      dmgHeal += await this.#addHealRollButton();
+      if (dmgHeal.length > 0) {
+         const tempDiv = document.createElement('div');
+         tempDiv.innerHTML = dmgHeal;
+         html.querySelector(".message-content")?.append(...Array.from(tempDiv.children));
+      }
+
+      // Other action buttons
+      const actions = await this.#getActionRollButtons();
+      if (actions?.length > 0) {
+         const actionsTray = document.createElement("div");
+         actionsTray.innerHTML = `<div id="actionTray" class="card-tray">
+   <label class="collapser">
+      <i class="fas fa-bolt-lightning" inert></i>
+      <span>${game.i18n.localize("FADE.Chat.actions.name")}</span>
+   </label>
+   <div id="actionList" class="collapsible-content">      
+   </div>
+</div>`;
+         actionsTray.classList.add("actionTray");
+         const actionList = actionsTray.querySelector("#actionList");
+         actionList.innerHTML = actions;
+         html.querySelector(".message-content")?.appendChild(actionsTray);
+      }
+
       await this.#addApplyDamage(html);
       await this.#addApplyCondition(html);
-      this.#addAttackTargets(html);
+      this.#addActionTargets(html);
       return html;
+   }
+
+   async #getActionRollButtons() {
+      let result = "";
+      const data = this.getFlag(game.system.id, "actions")?.filter(i => i.type !== "save");
+      const owneruuid = this.getFlag(game.system.id, "owneruuid");
+      if (!data || data?.length == 0 || !owneruuid) return result;
+      const owner = await fromUuid(owneruuid);
+      // Only those with permission make it past here.
+      if (owner?.testUserPermission(game.user, "OWNER")) {
+         const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/roll-action-btns.hbs', { actions: data });
+         result = document.createElement("div");
+         result.innerHTML = content;
+      }
+      return result?.outerHTML ?? "";
+   }
+
+   async #addDamageRollButton() {
+      let result = "";
+      const data = this.getFlag(game.system.id, "damageRoll");
+      const owneruuid = this.getFlag(game.system.id, "owneruuid");
+      const itemuuid = this.getFlag(game.system.id, "itemuuid");
+      if (!data || !owneruuid || !itemuuid) return result;
+      const owner = await fromUuid(owneruuid);
+      // Only those with permission make it past here.
+      if (owner?.testUserPermission(game.user, "OWNER")) {
+         const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/roll-dmg-btn.hbs', { ...data, owneruuid, itemuuid });
+         result = document.createElement("div");
+         result.innerHTML = content;
+      }
+      return result?.outerHTML ?? "";
+   }
+
+   async #addHealRollButton() {
+      let result = "";
+      const data = this.getFlag(game.system.id, "healRoll");
+      const owneruuid = this.getFlag(game.system.id, "owneruuid");
+      const itemuuid = this.getFlag(game.system.id, "itemuuid");
+      if (!data || !owneruuid || !itemuuid) return result;
+      const owner = await fromUuid(owneruuid);
+      // Only those with permission make it past here.
+      if (owner?.testUserPermission(game.user, "OWNER")) {
+         const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/roll-heal-btn.hbs', { ...data, owneruuid, itemuuid });
+         result = document.createElement("div");
+         result.innerHTML = content;
+      }
+      return result?.outerHTML ?? "";
    }
 
    /**
@@ -40,7 +114,7 @@ export class fadeChatMessage extends ChatMessage {
       const attackData = this.getFlag(game.system.id, "attackdata");
       if (!game.user.isGM || !attackData) return;
       const chatData = { attackData };
-      const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/damage-buttons.hbs', chatData);
+      const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/apply-dmg-btns.hbs', chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
       html.querySelector(".message-content")?.appendChild(tray);
@@ -49,7 +123,7 @@ export class fadeChatMessage extends ChatMessage {
    async #addApplyCondition(html) {
       const conditions = this.getFlag(game.system.id, "conditions");
       if (!game.user.isGM || !conditions) return;
-      const chatData = { conditions};
+      const chatData = { conditions };
       const content = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/chat/apply-conditions.hbs", chatData);
       const tray = document.createElement("div");
       tray.innerHTML = content;
@@ -61,9 +135,9 @@ export class fadeChatMessage extends ChatMessage {
    * @param {any} html The chat message HTMLElement
    * @protected
    */
-   #addAttackTargets(html) {
+   #addActionTargets(html) {
       const targets = this.getFlag(game.system.id, "targets");
-      if (!game.user.isGM || !targets?.length) return;
+      if (!targets?.length) return;
 
       const tray = document.createElement("div");
       tray.innerHTML = `<div id="targetsTray" class="card-tray">
@@ -77,13 +151,17 @@ export class fadeChatMessage extends ChatMessage {
       const targetsList = tray.querySelector("#targetsList");
       targetsList.innerHTML = targets.map((target) => {
          let targetInfo = `<div class="flexrow">`;
-         if (target.success !== undefined && target.success !== null) {
+         // Success
+         if (game.user.isGM && target.success !== undefined && target.success !== null) {
             targetInfo += `<i class="fas ${target.success ? "fa-check" : "fa-times"} flex0" style="color: ${target.success ? "green" : "red"};"></i>`;
          }
          targetInfo += `<div class="flex3" style="margin-left:5px;">${target.targetname}</div>`;
-         if (target.targetac !== undefined && target.targetac !== null) {
+         // AC
+         if (game.user.isGM && target.targetac !== undefined && target.targetac !== null) {
             targetInfo += `<div class="ac flex1"><i class="fas fa-shield-halved"></i> <span>${target.targetac}</span></div>`;
-         } else if (target.message) {
+         }
+         // Message
+         else if (game.user.isGM && target.message) {
             targetInfo += `<div class="flex2">${target.message}</div>`;
          }
          targetInfo += `</div>`;

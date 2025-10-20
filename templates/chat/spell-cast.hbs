@@ -13,9 +13,11 @@
       {{{item.system.description}}}
    </div>
 </div>
+{{#if durationMsg}}
 <div class="spell-duration" style="margin-bottom:2px;">
    {{durationMsg}}
 </div>
+{{/if}}
 {{#if rollContent}}
 {{{rollContent}}}
 {{/if}}
@@ -24,19 +26,4 @@
    <div>{{ditem}}</div>
    {{/each}}
 </div>
-{{> "chatSaveHealDamage"}}
-{{#if roll}}
-<div class="card-tray">
-   <label class="collapser">
-      <i class="fas fa-bullseye" inert></i>
-      <span>Targets</span>
-   </label>
-   <div class="collapsible-content">
-      {{#each targets as |target|}}
-      <div class="flexrow">
-         <div class="flex3" style="margin-left:5px;">{{target.name}}</div>
-      </div>
-      {{/each}}
-   </div>
-</div>
-{{/if}}
+{{> "rollSaveBtn"}}

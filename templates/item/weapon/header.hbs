@@ -5,7 +5,7 @@
          <li class="flex3">
             <div class='charname'>
                {{#if (or isGM item.system.isIdentified)}}
-               <input name='name' type='text' value='{{item.name}}' placeholder='Name' {{#unless isGM}} readonly{{/unless}} />
+               <input name='name' type='text' value='{{item.name}}' placeholder='Name' data-dtype='String' />
                {{else}}
                <input type='text' name='system.unidentifiedName' value='{{item.system.unidentifiedName}}' placeholder='Name' data-dtype='String' />
                {{/if}}

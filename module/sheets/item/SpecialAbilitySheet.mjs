@@ -1,12 +1,13 @@
-import { DragDropMixin } from "./mixins/DragDropMixin.mjs";
-import { FDItemSheetV2 } from './FDItemSheetV2.mjs';
-import { EffectManager } from '../sys/EffectManager.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
+import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
+import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
+import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
 
 /**
  * Sheet class for SpecialAbilityItem.
  */
-export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
+export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
    */
@@ -20,12 +21,9 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
          minimizable: false,
          contentClasses: ["scroll-body"]
       },
-      classes: ['fantastic-depths', 'sheet', 'item'],
+      classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      },
-      actions: {
-         deleteItem: SpecialAbilitySheet.#onDeleteChild,
       }
    }
 
@@ -58,10 +56,10 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description', 'attributes']
+      options.parts = ["header", "tabnav", "description", "attributes"]
 
       if (game.user.isGM) {
-         options.parts.push('effects');
+         options.parts.push("effects");
       }
    }
 
@@ -73,14 +71,14 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
 
       // Damage types
       const damageTypes = []
-      damageTypes.push({ value: "", text: game.i18n.localize('None') });
+      damageTypes.push({ value: "", text: game.i18n.localize("None") });
       damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
       }));
       context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Saving throws
       const saves = [];
-      saves.push({ value: "", text: game.i18n.localize('None') });
+      saves.push({ value: "", text: game.i18n.localize("None") });
       const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
       saves.push(...saveItems.map((save) => {
          return { value: save.system.customSaveCode, text: save.system.shortName }
@@ -98,21 +96,21 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       }, {});
       // Ability score types
       const abilities = [];
-      abilities.push({ value: "", text: game.i18n.localize('None') });
+      abilities.push({ value: "", text: game.i18n.localize("None") });
       abilities.push(...CONFIG.FADE.Abilities.map((key) => {
          return { value: key, text: game.i18n.localize(`FADE.Actor.Abilities.${key}.abbr`) }
       }).sort((a, b) => a.text.localeCompare(b.text)));
       context.abilities = abilities.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Categories
       const categories = []
-      categories.push({ value: "", text: game.i18n.localize('None') });
+      categories.push({ value: "", text: game.i18n.localize("None") });
       categories.push(...CONFIG.FADE.SpecialAbilityCategories.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.SpecialAbility.categories.${type}`) }
       }).sort((a, b) => a.text.localeCompare(b.text)));
       context.categories = categories.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});;
       // Combat Maneuvers
       const combatManeuvers = [];
-      combatManeuvers.push({ value: null, text: game.i18n.localize('None') });
+      combatManeuvers.push({ value: null, text: game.i18n.localize("None") });
       combatManeuvers.push(...Object.entries(CONFIG.FADE.CombatManeuvers)
          .filter(action => action[1].classes?.length > 0)
          .map((action) => {
@@ -136,7 +134,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === "condition") {
          // Retrieve the array
-         await this.#onDropConditionItem(droppedItem);
+         await this.onDropConditionItem(droppedItem);
       }
    }
 
@@ -145,48 +143,20 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
    * @returns {Record<string, Partial<ApplicationTab>>}
    */
    #getTabs() {
-      const group = 'primary';
-      // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
+      const group = "primary";
+      // Default tab for first time it"s rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = "description";
       const tabs = {
-         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' },
-         attributes: { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' }
+         description: { id: "description", group, label: "FADE.tabs.description", cssClass: "item" },
+         attributes: { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" }
       }
       if (game.user.isGM) {
-         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" };
       }
       for (const v of Object.values(tabs)) {
          v.active = this.tabGroups[v.group] === v.id;
          v.cssClass = v.active ? "active" : "";
       }
       return tabs;
-   }
-
-   static async #onDeleteChild(event) {
-      event.preventDefault();
-      const type = event.target.dataset.type ?? event.target.parentElement.dataset.type;
-      const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
-
-      if (type === "condition") {
-         const items = this.item.system.conditions;
-         if (items.length > index) {
-            items.splice(index, 1);
-            await this.item.update({ "system.conditions": items });
-         }
-      }
-      this.render();
-   }
-
-   async #onDropConditionItem(droppedItem) {
-      const items = this.item.system.conditions || [];
-      // Define the new data
-      const newItem = {
-         name: droppedItem.name,
-         durationFormula: null,
-         uuid: droppedItem.uuid
-      };
-      // Add the new item to the array
-      items.push(newItem);
-      await this.item.update({ "system.conditions": items });
    }
 }
