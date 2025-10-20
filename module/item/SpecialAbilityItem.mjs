@@ -56,12 +56,6 @@ export class SpecialAbilityItem extends FDItem {
    */
    async roll(dataset, dialogResp = null, event = null) {
       let result = null;
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
-         return null;
-      }
       const systemData = this.system;
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
@@ -119,7 +113,7 @@ export class SpecialAbilityItem extends FDItem {
 
          rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
          const rollContext = { ...rollData, ...dialogResp || {} };
-         roll = await new Roll(rollData.formula, rollContext);        
+         roll = await new Roll(rollData.formula, rollContext);
       }
 
       if (canProceed === true) {
