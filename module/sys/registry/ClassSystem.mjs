@@ -509,9 +509,19 @@ export class SingleClassSystem extends ClassSystemBase {
    async prepareSpellsContext(actor) {
       const firstSpellLevel = actor.system.config.firstSpellLevel;
       const maxSpellLevel = actor.system.config.maxSpellLevel;
+      const spellAbility = actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting");
+      // Enrich biography info for display
+      // Enrichment turns text like `[[/r 1d20]]` into buttons
+      // TODO: Remove after v12 support.
+      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+      const spellAbilityDesc = spellAbility ? await textEditorImp.enrichHTML(spellAbility.system.description, {
+         rollData: actor.getRollData(),
+         relativeTo: actor,
+      }) : null;
       const result = {
          className: actor.system.details.class,
-         spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting")?.id,
+         spellAbilityId: spellAbility?.id,
+         spellAbilityDesc,
          firstSpellLevel,
          maxSpellLevel,
          slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
@@ -765,17 +775,28 @@ export class MultiClassSystem extends ClassSystemBase {
     */
    async prepareSpellsContext(actor) {
       const spellClasses = [];
+      // TODO: Remove after v12 support.
+      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+
       if (actor.type === "monster") {
          const firstSpellLevel = actor.system.config.firstSpellLevel;
          const maxSpellLevel = actor.system.config.maxSpellLevel;
          const classAs = await this.getClassItemForClassAs(actor.system.details.castAs);
+         const spellAbility = actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting" && i.system.classKey === classAs?.classItem?.system.key);
+         // Enrich biography info for display
+         // Enrichment turns text like `[[/r 1d20]]` into buttons
+         const spellAbilityDesc = spellAbility ? await textEditorImp.enrichHTML(spellAbility.system.description, {
+            rollData: actor.getRollData(),
+            relativeTo: actor,
+         }) : null;
+
          if (classAs) {
             spellClasses.push({
                className: classAs?.classItem?.name,
                firstSpellLevel,
                maxSpellLevel,
-               spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting"
-                  && i.system.classKey === classAs?.classItem?.system.key)?.id,
+               spellAbilityId: spellAbility?.id,
+               spellAbilityDesc,
                slots: this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, [...actor.items.filter(item => item.type === "spell")], [])
             });
             // Determine used and max spells
@@ -783,22 +804,31 @@ export class MultiClassSystem extends ClassSystemBase {
          }
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
+
          for (let casterClass of casterClasses) {
             const classSpells = actor.items.filter(item => item.type === "spell" && item.system.classes?.some(cls => cls.name === casterClass.name));
             const firstSpellLevel = casterClass.system.firstSpellLevel;
             const maxSpellLevel = casterClass.system.maxSpellLevel;
+            const spellAbility = actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting" && i.system.classKey === casterClass.system.key);
+            // Enrich biography info for display
+            // Enrichment turns text like `[[/r 1d20]]` into buttons
+            const spellAbilityDesc = spellAbility ? await textEditorImp.enrichHTML(spellAbility.system.description, {
+               rollData: actor.getRollData(),
+               relativeTo: actor,
+            }) : null;
             const slots = this._prepareSpellLevels(firstSpellLevel, maxSpellLevel, classSpells, []);
             spellClasses.push({
                className: casterClass.name,
                firstSpellLevel,
                maxSpellLevel,
-               spellcastingid: actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting"
-                  && i.system.classKey === casterClass.system.key)?.id,
+               spellAbilityId: spellAbility?.id,
+               spellAbilityDesc,
                slots
             });
 
             const castAs = casterClass.system.castAsKey === "" || casterClass.system.castAsKey === null ? casterClass.system.key : casterClass.system.castAsKey;
             const castAsParsed = this._parseCastAsKey(castAs);
+
             if (castAsParsed?.classKey) {
                const classItem = await fadeFinder.getClass(null, castAsParsed?.classKey);
                const classLevelSpells = classItem.system.spells[casterClass.system.level - classItem.system.firstLevel];
