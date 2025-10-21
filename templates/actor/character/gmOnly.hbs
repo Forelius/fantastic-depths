@@ -1,77 +1,77 @@
-<section class="tab {{tabs.gmOnly.cssClass}}" data-group='primary' data-tab='gmOnly'>
+<section class="tab {{tabs.gmOnly.cssClass}}" data-group="primary" data-tab="gmOnly">
    {{> "itemFlags"}}
    <div class="bordered">
       <div class="summary flexrow">
          <div class="flex2">
-            <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.EncMax.Hint'}}" />
-            <label for="system.encumbrance.max" data-tooltip="{{localize 'SETTINGS.EncMax.Hint'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
+            <input type="text" name="system.encumbrance.max" value="{{system.encumbrance.max}}" data-dtype="Number" data-tooltip="{{localize "SETTINGS.EncMax.Hint"}}" />
+            <label for="system.encumbrance.max" data-tooltip="{{localize "SETTINGS.EncMax.Hint"}}">{{localize "SETTINGS.EncMax.Name"}}</label>
          </div>
          <div class="flex2">
-            <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
-            <label for="system.movement.max" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
+            <input type="text" name="system.movement.max" value="{{system.movement.max}}" data-dtype="Number" data-tooltip="{{localize "SETTINGS.move.max.hint"}}" />
+            <label for="system.movement.max" data-tooltip="{{localize "SETTINGS.move.max.hint"}}">{{localize "SETTINGS.move.max.name"}}</label>
          </div>
          <div class="flex2">
-            <input type='text' name="system.movement2.max" value='{{system.movement2.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}" />
-            <label for="system.movement2.max" data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}">{{localize 'SETTINGS.move.maxMove2.name'}}</label>
+            <input type="text" name="system.movement2.max" value="{{system.movement2.max}}" data-dtype="Number" data-tooltip="{{localize "SETTINGS.move.maxMove2.hint"}}" />
+            <label for="system.movement2.max" data-tooltip="{{localize "SETTINGS.move.maxMove2.hint"}}">{{localize "SETTINGS.move.maxMove2.name"}}</label>
          </div>
          {{#if (eq masterySetting "heroic")}}
          <div class="flex1">
-            <input type="checkbox" name="system.combat.basicProficiency" data-dtype="Boolean" {{#if system.combat.basicProficiency}} checked{{/if}} data-tooltip="{{localize 'FADE.Mastery.required.hint'}}" />
-            <label for="system.combat.basicProficiency" data-tooltip="{{localize 'FADE.Mastery.required.hint'}}">{{localize 'FADE.Mastery.required.name'}}</label>
+            <input type="checkbox" name="system.combat.basicProficiency" data-dtype="Boolean" {{#if system.combat.basicProficiency}} checked{{/if}} data-tooltip="{{localize "FADE.Mastery.required.hint"}}" />
+            <label for="system.combat.basicProficiency" data-tooltip="{{localize "FADE.Mastery.required.hint"}}">{{localize "FADE.Mastery.required.name"}}</label>
          </div>
          {{/if}}
          {{#if (eq masterySetting "classic")}}
          <div class="flex1" style="max-width:50px">
-            <input type='text' name='system.combat.unskilledToHitMod' value='{{system.combat.unskilledToHitMod}}' data-dtype='Number' />
-            <label for="system.combat.unskilledToHitMod" data-tooltip="{{localize 'FADE.class.unskilledToHitMod.hint'}}">{{localize 'FADE.class.unskilledToHitMod.name'}}</label>
+            <input type="text" name="system.combat.unskilledToHitMod" value="{{system.combat.unskilledToHitMod}}" data-dtype="Number" />
+            <label for="system.combat.unskilledToHitMod" data-tooltip="{{localize "FADE.class.unskilledToHitMod.hint"}}">{{localize "FADE.class.unskilledToHitMod.name"}}</label>
          </div>
          {{/if}}
          <div class="flex1">
-            <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}" />
-            <label for="system.isRetainer" data-tooltip="{{localize 'FADE.Actor.isRetainer.hint'}}">{{localize 'FADE.Actor.isRetainer.name'}}</label>
+            <input type="checkbox" name="system.isRetainer" data-dtype="Boolean" {{#if system.isRetainer}} checked{{/if}} data-tooltip="{{localize "FADE.Actor.isRetainer.hint"}}" />
+            <label for="system.isRetainer" data-tooltip="{{localize "FADE.Actor.isRetainer.hint"}}">{{localize "FADE.Actor.isRetainer.name"}}</label>
          </div>
       </div>
       <div class="summary flexrow">
          {{#if (eq hasMultiClass false)}}
          <div class="flex1">
-            <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
-            <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
+            <input type="text" name="system.config.maxSpellLevel" value="{{system.config.maxSpellLevel}}" data-dtype="Number" />
+            <label for="system.config.maxSpellLevel" data-tooltip="{{localize "FADE.Actor.maxSpellLevel.hint"}}">{{localize "FADE.Actor.maxSpellLevel.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name='system.details.classKey' value='{{system.details.classKey}}' data-dtype='String' readonly/>
-            <label for="system.details.classKey" data-tooltip={{localize 'FADE.class.key.hint'}}>{{localize 'FADE.class.key.name'}}</label>
+            <input type="text" name="system.details.classKey" value="{{system.details.classKey}}" data-dtype="String" readonly/>
+            <label for="system.details.classKey" data-tooltip="{{localize "FADE.class.key.hint"}}">{{localize "FADE.class.key.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name='system.details.castAsKey' value='{{system.details.castAsKey}}' data-dtype='String' readonly/>
-            <label for="system.details.castAsKey" data-tooltip={{localize 'FADE.class.castAsKey.hint'}}>{{localize 'FADE.class.castAsKey.name'}}</label>
+            <input type="text" name="system.details.castAsKey" value="{{system.details.castAsKey}}" data-dtype="String" readonly/>
+            <label for="system.details.castAsKey" data-tooltip="{{localize "FADE.class.castAsKey.hint"}}">{{localize "FADE.class.castAsKey.name"}}</label>
          </div>
          {{/if}}
          <div class="flex1">
-            <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
-            <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
+            <input type="text" name="system.combat.attacks" value="{{system.combat.attacks}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.AT#.desc"}}" />
+            <label for="system.combat.attacks" data-tooltip="{{localize "FADE.Actor.AT#.desc"}}">{{localize "FADE.Actor.AT#.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.combat.attAgainstH" value='{{system.combat.attAgainstH}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}" />
-            <label for="system.combat.attAgainstH" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}">{{localize 'FADE.Actor.AT#Recv.nameH'}}</label>
+            <input type="text" name="system.combat.attAgainstH" value="{{system.combat.attAgainstH}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.AT#Recv.descH"}}" />
+            <label for="system.combat.attAgainstH" data-tooltip="{{localize "FADE.Actor.AT#Recv.descH"}}">{{localize "FADE.Actor.AT#Recv.nameH"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.combat.attAgainstM" value='{{system.combat.attAgainstM}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}" />
-            <label for="system.combat.attAgainstM" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}">{{localize 'FADE.Actor.AT#Recv.nameM'}}</label>
+            <input type="text" name="system.combat.attAgainstM" value="{{system.combat.attAgainstM}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.AT#Recv.descM"}}" />
+            <label for="system.combat.attAgainstM" data-tooltip="{{localize "FADE.Actor.AT#Recv.descM"}}">{{localize "FADE.Actor.AT#Recv.nameM"}}</label>
          </div>
          <div class="flex1" style="max-width:50px;">
             <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
-            <label for="system.combat.isDead" data-tooltip="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
+            <label for="system.combat.isDead" data-tooltip="{{localize "FADE.Actor.Dead.desc"}}">{{localize "FADE.Actor.Dead.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}" />
-            <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
+            <input type="text" name="system.combat.deathCount" value="{{system.combat.deathCount}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.Deaths.desc"}}" />
+            <label for="system.combat.deathCount" data-tooltip="{{localize "FADE.Actor.Deaths.desc"}}">{{localize "FADE.Actor.Deaths.name"}}</label>
          </div>
       </div>
    </div>
    <div class="bordered">
       <div>
          <textarea name="system.gm.notes" rows="6">{{system.gm.notes}}</textarea>
-         <label for="system.gm.notes">{{localize 'FADE.GMNotes'}}:</label>
+         <label for="system.gm.notes">{{localize "FADE.GMNotes"}}:</label>
       </div>
    </div>
 </section>
