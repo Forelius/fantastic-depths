@@ -11,11 +11,7 @@ export class ToHitInterface {
 export class ToHitSystemBase extends ToHitInterface {
    constructor() {
       super();
-      this.rangeModifiers = {
-         short: 1,
-         medium: 0,
-         long: -1
-      };
+      this.rangeModifiers = CONFIG.FADE.RangeModifiers;
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
       this.masterySystem = game.fade.registry.getSystem('weaponMastery');

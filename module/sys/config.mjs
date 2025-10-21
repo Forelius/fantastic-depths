@@ -243,7 +243,7 @@ FADE.TreasureTypes = {
 FADE.ToHit = {
    /** Represents THAC0 for Normal Man */
    BaseTHAC0: 19
-}
+};
 FADE.ActorGroups = [
    { id: "bugs" },
    { id: "constructs" },
@@ -267,11 +267,16 @@ FADE.DifficultyLevel = {
    hard: 4,
    veryHard: 8,
    absurd: 12
-}
+};
 FADE.TieredResults = {
    criticalFail: 5,
    fail: 1,
    partialSuccess: 0,
    success: -4,
    criticalSuccess: -5
-}
+};
+FADE.RangeModifiers = {
+   short: 1,
+   medium: 0,
+   long: -1
+};
