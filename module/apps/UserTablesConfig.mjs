@@ -44,6 +44,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    static PARTS = {
       header: { template: `${UserTablesConfig.TEMPLATES_PATH}/main-header.hbs` },
       editBonus: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-bonus.hbs` },
+      editKeyValue: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-keyvalue.hbs` },
    }
 
    /** @override */
@@ -159,15 +160,19 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
 
    #loadTable(data) {
       const table = foundry.utils.deepClone(this.userTablesSys.getTable(this.system.selectedTable));
-      table.table = table.table.sort((a, b) => a.min - b.min);
+      if (table.type === "bonus") {
+         table.table = table.table.sort((a, b) => a.min - b.min);
+      }
       this.system.currentTable = table;
       console.log('#loadTable', data, this.system);
    }
 
    #saveTable(data) {
       //console.log('#saveTable', data);
-      const table = this.#fixTable(data.system.currentTable.table).sort((a, b) => a.min - b.min);
-      this.system.currentTable.table = table;
+      this.system.currentTable.table = this.#fixTable(data.system.currentTable.table);
+      if (data.system.currentTable.type === "bonus") {
+         this.system.currentTable.table = this.system.currentTable.table.sort((a, b) => a.min - b.min);
+      }
       this.userTablesSys.setTable(this.system.currentTable);
    }
 
@@ -193,6 +198,9 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       const table = this.#fixTable(this.system.currentTable.table);
       if (this.system.currentTable.type === "bonus") {
          table.push({ min: 0, bonus: 0 });
+         this.system.currentTable.table = table;
+      } else if (this.system.currentTable.type === "keyvalue") {
+         table.push({ key: "", value: 0 });
          this.system.currentTable.table = table;
       }
       await this.render();

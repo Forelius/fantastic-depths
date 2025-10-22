@@ -742,6 +742,8 @@
             "selectTable": "Select Table...",
             "minimum": "Minimum",
             "bonus": "Bonus",
+            "key": "Key",
+            "value": "Value",
             "removePrompt": "Remove Table?",
             "actions": {
                "new": "Add",
@@ -750,7 +752,8 @@
                "saveTable": "Save Changes"
             },
             "tableTypes": {
-               "bonus": "Bonus Table"
+               "bonus": "Bonus Table",
+               "keyvalue": "Key/Value Table"
             }
          },
          "playerCombat": {

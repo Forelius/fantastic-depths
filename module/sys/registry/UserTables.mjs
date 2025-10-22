@@ -1,7 +1,7 @@
 import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTablesConfig.mjs"
 
 export class UserTables {
-   static TABLE_TYPES = ["bonus"];
+   static TABLE_TYPES = ["bonus","keyvalue"];
 
    constructor() {
       this.userTables = {};
@@ -22,6 +22,13 @@ export class UserTables {
          for (let row of table) {
             if (row.min === null || row.min === undefined || row.bonus === null || row.bonus === undefined) {
                console.error(`addTable ${name} is not a valid bonus table. Requires properties: min, bonus`);
+               return;
+            }
+         }
+      } else if (type === "keyvalue") {
+         for (let row of table) {
+            if (row.key === null || row.key === undefined || row.value === null || row.value === undefined) {
+               console.error(`addTable ${name} is not a valid key/value table. Requires properties: key, value`);
                return;
             }
          }
