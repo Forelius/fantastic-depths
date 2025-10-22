@@ -11,7 +11,9 @@ export class ToHitInterface {
 export class ToHitSystemBase extends ToHitInterface {
    constructor() {
       super();
-      this.rangeModifiers = CONFIG.FADE.RangeModifiers;
+      const userTablesSystem = game.fade.registry.getSystem("userTables");
+      const rangedMods = userTablesSystem.getKeyValuesObject("ranged-modifiers");
+      this.rangeModifiers = rangedMods ?? CONFIG.FADE.RangeModifiers;
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';
       this.masterySystem = game.fade.registry.getSystem('weaponMastery');

@@ -19,6 +19,9 @@ export class fadeRegistry {
 
    // TODO: These if/else blocks shouldn't be necessary. Registry should know how to handle or move out of registry.
    async registerDefaultSystems() {
+      // UserTables first, because others may rely on a user table.
+      this.registerSystem('userTables', new UserTables(), UserTables);
+
       this.registerSystem('moraleCheck', new MoraleCheck(), MoraleCheck);
       const abilityCheckSetting = game.settings.get(game.system.id, "abilityCheck");
       if (abilityCheckSetting === "basic") {
@@ -28,6 +31,8 @@ export class fadeRegistry {
       }
       this.registerSystem('armorSystem', new ClassicArmorSystem(), ClassicArmorSystem);
       this.registerSystem('damageSystem', new DamageSystem(), DamageSystem);
+
+      // Load weaponMastery before toHitSystem.
       const masterySetting = game.settings.get(game.system.id, "weaponMastery");
       if (masterySetting === "classic") {
          this.registerSystem('weaponMastery', new WeaponMasteryBase(), WeaponMasteryBase);
@@ -66,7 +71,6 @@ export class fadeRegistry {
 
       this.registerSystem('wrestling', Wrestling, Wrestling);
       this.registerSystem('shove', Shove, Shove);
-      this.registerSystem('userTables', new UserTables(), UserTables);
       this.registerSystem('actorMovement', ActorMovement, ActorMovement);
 
       const classSystem = game.settings.get(game.system.id, "classSystem");
@@ -78,7 +82,7 @@ export class fadeRegistry {
    }
 
    registerSystem(id, instance, type) {
-      this.systemDictionary[id] = { id, type, instance };
+      this.systemDictionary[id] = { id, type, instance }; 
    }
 
    getSystem(id, getAsObject = false) {

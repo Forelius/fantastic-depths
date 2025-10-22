@@ -1,11 +1,12 @@
 import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTablesConfig.mjs"
 
 export class UserTables {
-   static TABLE_TYPES = ["bonus","keyvalue"];
+   static TABLE_TYPES = ["bonus", "keyvalue"];
 
    constructor() {
       this.userTables = {};
       this.#loadTables();
+      this.#tryAddDefaultTables();
    }
 
    getTables() {
@@ -51,18 +52,65 @@ export class UserTables {
    }
 
    getBonus(id, value) {
-      const table = this.getTable(id)?.table;
-      const bestRow = table?.filter(row => row.min <= value)
-         .reduce((prev, current) => prev.min > current.min ? prev : current, { min: 0, bonus: 0 });
-      return bestRow?.bonus ?? 0;
+      let result = null;
+      if (this.getTable(id)?.type === "bonus") {
+         const table = this.getTable(id)?.table;
+         result = table?.filter(row => row.min <= value)
+            .reduce((prev, current) => prev.min > current.min ? prev : current, { min: 0, bonus: 0 });
+      } else {
+         console.warn(`Bonus user table ${id} does not exist.`);
+      }
+      return result?.bonus ?? 0;
    }
 
-   #loadTables() {
-      this.userTables = game.settings.get(game.system.id, 'userTables') ?? {};
+   getKeyValue(id, key) {
+      let result = null;
+      if (this.getTable(id)?.type === "keyvalue") {
+         const table = this.getTable(id)?.table;
+         result = table?.find(row => row.key === key);
+      } else {
+         console.warn(`Key/Value user table ${id} does not exist.`);
+      }
+      return result?.value;
+   }
+
+   /**
+    * Returns a key/value type table as a json object.
+    * @param {any} id The id of the table.
+    * @returns A JSON object with a property for every key value.
+    */
+   getKeyValuesObject(id) {
+      let result = null;
+      if (this.getTable(id)?.type === "keyvalue") {
+         const table = this.getTable(id)?.table;
+         result = table?.reduce((acc, item) => { acc[item.key] = item.value; return acc; }, {});
+      } else {
+         console.warn(`Key/Value user table ${id} does not exist.`);
+      }
+      return result;
    }
 
    displayForm() {
       UserTablesConfig.displayForm();
+   }
+
+   #tryAddDefaultTables() {
+      if (this.userTables["ranged-modifiers"] === undefined) {
+         this.userTables["ranged-modifiers"] = {
+            id: "ranged-modifiers",
+            name: "Ranged Modifiers",
+            type: "keyvalue",
+            table: [
+               { key: "short", value: 1 },
+               { key: "medium", value: 0 },
+               { key: "long", value: -1 }
+            ]
+         };
+      }
+   }
+
+   #loadTables() {
+      this.userTables = game.settings.get(game.system.id, 'userTables') ?? {};
    }
 }
 /*
