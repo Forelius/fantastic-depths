@@ -40,7 +40,7 @@ export class MonsterDataModel extends FDCombatActorDM {
       this.combat.basicProficiency = true;
       this._prepareTHAC0ToHitBonus();
       // Maybe this is the wrong place to do this. We may need to wait until after init.
-      this.thbonus = CONFIG.FADE.ToHit.BaseTHAC0 - this.thac0.value;
+      this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
       this._prepareHitPoints();
       this._prepareXP();
    }

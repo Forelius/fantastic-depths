@@ -23,7 +23,7 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          }),
          basicProficiency: new fields.BooleanField({ required: true, initial: false }),
          unskilledToHitMod: new fields.NumberField({ required: true, initial: -2 }),
-         thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
+         thac0: new fields.NumberField({ required: true, initial: CONFIG.FADE.ToHit.baseTHAC0 }),
          thbonus: new fields.NumberField({ required: true, initial: 0 }),
          hd: new fields.StringField({ required: true, initial: "" }),
          hdcon: new fields.BooleanField({ required: true, initial: true }),

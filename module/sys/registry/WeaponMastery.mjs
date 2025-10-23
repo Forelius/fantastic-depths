@@ -427,7 +427,7 @@ export class WeaponMasteryHeroic extends WeaponMasteryBase {
                   // The total of the AC with the mastery AC bonus.
                   total: ac.total + (ownerMastery.system.acBonus || 0),
                   // The total of the AAC with the mastery AC bonus.
-                  totalAAC: CONFIG.FADE.ToHit.BaseTHAC0 - ac.total + (ownerMastery.system.acBonus || 0),
+                  totalAAC: CONFIG.FADE.ToHit.baseTHAC0 - ac.total + (ownerMastery.system.acBonus || 0),
                   // The number of attacks that this bonus applies to per round.
                   acBonusAT: ownerMastery.system.acBonusAT,
                   name: ownerMastery.name
@@ -537,7 +537,7 @@ export class WeaponMasteryHeroic extends WeaponMasteryBase {
             : "",
          attAgainst: attackType === 'handheld' ? targetToken.actor.system.combat.attAgainstH : targetToken.actor.system.combat.attAgainstM,
          maxAttAgainst: defenseMastery.acBonusAT,
-         defenseMasteryTotal: this.isAAC ? (CONFIG.FADE.ToHit.BaseTHAC0 - defenseMastery.total) : defenseMastery.total,
+         defenseMasteryTotal: this.isAAC ? (CONFIG.FADE.ToHit.baseTHAC0 - defenseMastery.total) : defenseMastery.total,
          masteryName: defenseMastery.name
       });
    }

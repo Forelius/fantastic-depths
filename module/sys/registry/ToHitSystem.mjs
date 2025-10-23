@@ -12,7 +12,7 @@ export class ToHitSystemBase extends ToHitInterface {
    constructor() {
       super();
       const userTablesSystem = game.fade.registry.getSystem("userTables");
-      const rangedMods = userTablesSystem.getKeyValuesObject("ranged-modifiers");
+      const rangedMods = userTablesSystem.getKeyValuesJson("ranged-modifiers");
       this.rangeModifiers = rangedMods ?? CONFIG.FADE.RangeModifiers;
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === 'aac';

@@ -1,0 +1,41 @@
+<section name="key-value-table">
+   {{#if (and (eq system.currentTable.type "jsonarray") (ne system.selectedTable "none"))}}
+   <div class="bordered" style="margin-top:10px;">
+      <div class="flexrow">
+         <div style="font-size:16px;">
+            {{system.currentTable.name}}
+         </div>
+         <div style="font-style:italic">
+            {{localize (concat "FADE.apps.userTables.tableTypes." system.currentTable.type)}}
+         </div>
+         <div style="max-width:30px; margin-left:auto;">
+            <button name="removeTable" type="submit" style="border:none;"><i class="fas fa-trash"></i></button>
+         </div>
+      </div>
+      <table class="compact-table" style="width:92%">
+         <thead>
+            <tr>
+               <th>{{localize "FADE.apps.userTables.json"}}</th>
+               <th style="max-width:50px;"><a data-action="addRow">+</a></th>
+            </tr>
+         </thead>
+         <tbody>
+            {{#each system.currentTable.table as |row|}}
+            <tr data-index="{{@index}}">
+               <td><input type="text" name="system.currentTable.table.{{@index}}.json" value="{{row.json}}" /></td>
+               <td><a data-action="removeRow" data-index="{{@index}}"><i class="fas fa-trash"></i></a></td>
+            </tr>
+            {{/each}}
+         </tbody>
+      </table>
+      <div class="flexrow" style="margin-top:10px;">
+         <div class="flex1">
+            <button name="closeTable" type="submit">Close</button>
+         </div>
+         <div class="flex1">
+            <button name="saveTable" type="submit">{{localize "FADE.apps.userTables.actions.saveTable"}}</button>
+         </div>
+      </div>
+   </div>
+   {{/if}}
+</section>

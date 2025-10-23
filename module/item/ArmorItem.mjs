@@ -32,8 +32,8 @@ export class ArmorItem extends GearItem {
          data.totalAC = data.ac - data.mod;
          // The ranged mod is cumulative with non-ranged for backwards compatibility.
          data.totalRangedAC = data.totalAC - data.modRanged;
-         data.totalAAC = CONFIG.FADE.ToHit.BaseTHAC0 - data.totalAC;
-         data.totalRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - data.totalRangedAC;
+         data.totalAAC = CONFIG.FADE.ToHit.baseTHAC0 - data.totalAC;
+         data.totalRangedAAC = CONFIG.FADE.ToHit.baseTHAC0 - data.totalRangedAC;
       }
    }
 }

@@ -4,7 +4,7 @@ export class ClassLevelData {
    constructor(options = {}) {
       this.level = options?.level ?? 1;
       this.xp = 0;
-      this.thac0 = CONFIG.FADE.ToHit.BaseTHAC0;
+      this.thac0 = CONFIG.FADE.ToHit.baseTHAC0;
       this.thbonus = 1;
       this.hd = "";
       this.hdcon = true;
@@ -78,7 +78,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
             new SchemaField({
                level: new NumberField({ required: true, initial: 1}),
                xp: new NumberField({ required: true, initial: 0 }),
-               thac0: new NumberField({ required: true, initial: CONFIG.FADE.ToHit.BaseTHAC0 }),
+               thac0: new NumberField({ required: true, initial: CONFIG.FADE.ToHit.baseTHAC0 }),
                thbonus: new NumberField({ required: true, initial: 0 }),
                hd: new StringField({ required: true, initial: "" }),
                hdcon: new BooleanField({ required: true, initial: true }),

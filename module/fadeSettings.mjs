@@ -96,17 +96,17 @@ export class fadeSettings {
          restricted: true // Only the GM can change this setting         
       });
       // Ability score modifier system
-      game.settings.register(game.system.id, "abilityScoreModSystem", {
-         name: "SETTINGS.abilityScoreModSystem.name",
-         hint: "SETTINGS.abilityScoreModSystem.hint",
+      game.settings.register(game.system.id, "abilityScoreMods", {
+         name: "SETTINGS.abilityScoreMods.name",
+         hint: "SETTINGS.abilityScoreMods.hint",
          scope: "world",
          config: true,
          type: String,
          choices: {
-            //"simple": "SETTINGS.abilityScoreModSystem.choices.simple",
-            "darkdungeons": "SETTINGS.abilityScoreModSystem.choices.darkdungeons",
+            "simple": "SETTINGS.abilityScoreMods.choices.simple",
+            "heroic": "SETTINGS.abilityScoreMods.choices.heroic",
          },
-         default: "darkdungeons",
+         default: "heroic",
          requiresReload: true,
          restricted: true // Only the GM can change this setting
       });

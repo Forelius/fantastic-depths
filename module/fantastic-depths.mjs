@@ -83,7 +83,7 @@ Hooks.once('init', async function () {
       PlayerCombatForm,
       fadeTreasure,
       fadeFinder,
-      registry: new fadeRegistry()
+      registry: new fadeRegistry(),
    };
 
    Hooks.call("beforeFadeInit", game.fadeRegistry);

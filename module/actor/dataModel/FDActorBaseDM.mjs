@@ -33,7 +33,7 @@ export class FDActorBaseDM extends foundry.abstract.TypeDataModel {
          }),
          encumbrance: new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: 2400 }),
+            max: new fields.NumberField({ initial: CONFIG.FADE.Encumbrance.Expert.maxLoad }),
             mv: new fields.NumberField({ initial: 0 }),
             mv2: new fields.NumberField({ initial: 0 }),
             label: new fields.StringField(),
@@ -41,19 +41,19 @@ export class FDActorBaseDM extends foundry.abstract.TypeDataModel {
          }),
          acDigest: new fields.ArrayField(new fields.StringField(), { required: false, initial: [] }),
          ac: new fields.SchemaField({
-            naked: new fields.NumberField({ initial: 9 }),
-            nakedRanged: new fields.NumberField({ initial: 9 }),
-            nakedAAC: new fields.NumberField({ initial: 10 }),
-            nakedRangedAAC: new fields.NumberField({ initial: 10 }),
+            naked: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNaked }),
+            nakedRanged: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNaked }),
+            nakedAAC: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNakedAAC }),
+            nakedRangedAAC: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNakedAAC }),
             // This is the raw AC based on armor and no modifiers applied. Used for wrestling.
-            value: new fields.NumberField({ initial: 9 }),
+            value: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNaked }),
             // For melee attacks
-            total: new fields.NumberField({ initial: 9 }),
+            total: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNaked }),
             // For ranged attacks
-            totalRanged: new fields.NumberField({ initial: 9 }),
+            totalRanged: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNaked }),
             // Same for ascending armor class
-            totalAAC: new fields.NumberField({ initial: 10 }),
-            totalRangedAAC: new fields.NumberField({ initial: 10 }),
+            totalAAC: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNakedAAC }),
+            totalRangedAAC: new fields.NumberField({ initial: CONFIG.FADE.Armor.acNakedAAC }),
             // AV is armor value and represents how many points of damage armor stops.
             // Assumes one AV for all body parts.
             av: new fields.StringField({ initial: "0" }),

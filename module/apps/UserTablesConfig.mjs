@@ -45,6 +45,8 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       header: { template: `${UserTablesConfig.TEMPLATES_PATH}/main-header.hbs` },
       editBonus: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-bonus.hbs` },
       editKeyValue: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-keyvalue.hbs` },
+      editKeyJson: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-keyjson.hbs` },
+      editJsonArray: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-jsonarray.hbs` },
    }
 
    /** @override */
@@ -168,7 +170,6 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    }
 
    #saveTable(data) {
-      //console.log('#saveTable', data);
       this.system.currentTable.table = this.#fixTable(data.system.currentTable.table);
       if (data.system.currentTable.type === "bonus") {
          this.system.currentTable.table = this.system.currentTable.table.sort((a, b) => a.min - b.min);
@@ -201,6 +202,12 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          this.system.currentTable.table = table;
       } else if (this.system.currentTable.type === "keyvalue") {
          table.push({ key: "", value: 0 });
+         this.system.currentTable.table = table;
+      } else if (this.system.currentTable.type === "keyjson") {
+         table.push({ key: "", json: "{}" });
+         this.system.currentTable.table = table;
+      } else if (this.system.currentTable.type === "jsonarray") {
+         table.push({ json: "{}" });
          this.system.currentTable.table = table;
       }
       await this.render();
