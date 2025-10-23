@@ -117,6 +117,22 @@ export class UserTables {
    }
 
    /**
+    * Get a numeric/string/json object from a keyjson type table.
+    * @param {any} id The id of the table.
+    * @returns A numeric, string or json object with a property for every key.
+    */
+   getKeyJson(id) {
+      let result = null;
+      if (this.getTable(id)?.type === "keyjson") {
+         let table = this.getTable(id)?.table;
+         result = table?.reduce((acc, item) => { acc[item.key] = this.convertJsonToObject(item); return acc; }, {});
+      } else {
+         console.warn(`User table ${id} does not exist or does not support getKeyJson.`);
+      }
+      return result;
+   }
+
+   /**
     * Get the array of json objects from a jsonarray type table.
     * @param {any} id
     */
@@ -124,17 +140,19 @@ export class UserTables {
       let result = null;
       if (this.getTable(id)?.type === "jsonarray") {
          let table = this.getTable(id)?.table;
-         result = table?.map(item => {
-            let value = Number(item.json);
-            if (isNaN(value)) {
-               try { value = JSON.parse(item.json) } catch (error) { }
-            }            
-            return value ?? item.json;
-         });
+         result = table?.map(this.convertJsonToObject);
       } else {
          console.warn(`User table ${id} does not exist or does not support getJsonArray.`);
       }
       return result;
+   }
+
+   convertJsonToObject(item) {
+      let value = Number(item.json);
+      if (isNaN(value)) {
+         try { value = JSON.parse(item.json); } catch (error) { }
+      }
+      return value ?? item.json;
    }
 
    displayForm() {
@@ -201,6 +219,34 @@ export class UserTables {
                { json: `{ "min": 97, "value": 18, "reaction": 9, "maxRetainers": 22, "retainerMorale": 25 }` },
                { json: `{ "min": 99, "value": 19, "reaction": 10, "maxRetainers": 23, "retainerMorale": 26 }` },
                { json: `{ "min": 100, "value": 20, "reaction": 10, "maxRetainers": 24, "retainerMorale": 27 }` }
+            ]
+         };
+      }
+      if (this.userTables["difficulty-levels"] === undefined) {
+         this.userTables["difficulty-levels"] = {
+            id: "difficulty-levels",
+            name: "Difficulty Levels",
+            type: "keyvalue",
+            table: [
+               { key: "easy", value: -4 },
+               { key: "medium", value: 0 },
+               { key: "hard", value: 4 },
+               { key: "veryHard", value: 8 },
+               { key: "absurd", value: 12 }
+            ]
+         };
+      }
+      if (this.userTables["tiered-results"] === undefined) {
+         this.userTables["tiered-results"] = {
+            id: "tiered-results",
+            name: "Tiered Results",
+            type: "keyvalue",
+            table: [
+               { key: "criticalFail", value: 5 },
+               { key: "fail", value: 1 },
+               { key: "partialSuccess", value: 0 },
+               { key: "success", value: -4 },
+               { key: "criticalSuccess", value: -5 }
             ]
          };
       }

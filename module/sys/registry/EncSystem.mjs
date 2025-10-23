@@ -1,6 +1,6 @@
 export class EncumbranceInterface {
-   async calcCategoryEnc(items) { throw new Error("Method not implemented."); }
-   async prepareDerivedData(actor) { throw new Error("Method not implemented."); }
+   calcCategoryEnc(items) { throw new Error("Method not implemented."); }
+   prepareDerivedData(actor) { throw new Error("Method not implemented."); }
 }
 
 /**

@@ -5,11 +5,12 @@ export class AbilityCheckDialog {
    static async getDialog(dataset, caller) {
       let dialogResp = null;
       const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${dataset.ability}.long`);
-      const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
+      const abilityCheckSys = game.fade.registry.getSystem("abilityCheck");
+      const difficultyLevels = game.fade.registry.getSystem("userTables").getKeyValuesJson("difficulty-levels");
       const template = abilityCheckSys.dialogTemplate;
       const templateContent = await CodeMigrate.RenderTemplate(template, {
          difficulty: "medium",
-         difficultyLevels: Object.entries(CONFIG.FADE.DifficultyLevel).reduce((acc, [key, value]) => {
+         difficultyLevels: Object.entries(difficultyLevels).reduce((acc, [key, value]) => {
             acc[key] = game.i18n.localize(`FADE.dialog.difficulty.levels.${key}`);
             return acc;
          }, {}),
