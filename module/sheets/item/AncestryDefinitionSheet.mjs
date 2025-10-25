@@ -145,6 +145,8 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
       // If the dropped item is a weapon mastery definition item...
       if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
+      } else if (droppedItem?.type === "specialAbility") {
+         await this.onDropSpecialAbilityItem(droppedItem);
       }
    }
 

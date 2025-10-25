@@ -114,6 +114,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          specialAbilities: new ArrayField(
             new SchemaField({
                name: new StringField({ required: true, initial: "" }),
+               uuid: new StringField({ required: true, initial: "" }),
                level: new NumberField({ required: true }),
                target: new NumberField({ required: true, nullable: true }),
                classKey: new StringField({ nullable: true, initial: null }),

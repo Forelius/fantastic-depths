@@ -45,6 +45,7 @@ export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
          specialAbilities: new ArrayField(
             new SchemaField({
                name: new StringField({ required: true, initial: '' }),
+               uuid: new StringField({ required: true, initial: "" }),
                classKey: new StringField({ nullable: true }),
                target: new StringField({ nullable: true, initial: null }),
                changes: new StringField({ required: true, initial: '' })
