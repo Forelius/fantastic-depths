@@ -1,6 +1,6 @@
 export class EncumbranceInterface {
-   async calcCategoryEnc(items) { throw new Error("Method not implemented."); }
-   async prepareDerivedData(actor) { throw new Error("Method not implemented."); }
+   calcCategoryEnc(items) { throw new Error("Method not implemented."); }
+   prepareDerivedData(actor) { throw new Error("Method not implemented."); }
 }
 
 /**
@@ -10,27 +10,7 @@ export class BasicEncumbrance extends EncumbranceInterface {
    constructor(options) {
       super(options);
       this.options = options;
-      this.CONFIG = {
-         armorChoices: {
-            none: "none",
-            light: "light",
-            heavy: "heavy"
-         },
-         maxMove: 120, // The default maximum movement rate per turn for an unencumbered character.
-         maxLoad: 1600, // The default maximum load (cn) that a character can carry.
-         tablePC: [
-            { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
-            { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
-            { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
-            { wtPortion: 1, mvFactor: 0.25, name: "encumbered" },
-            { wtPortion: 0, mvFactor: 0, name: "over" },
-         ],
-         tableMonster: [
-            { wtPortion: 2, mvFactor: 1.0, name: "unencumbered" },
-            { wtPortion: 1, mvFactor: 0.5, name: "moderately" },
-            { wtPortion: 0, mvFactor: 0, name: "over" },
-         ]
-      };
+      this.CONFIG = CONFIG.FADE.Encumbrance.Basic;
    }
 
    /**
@@ -123,7 +103,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
       const results = {};
 
       // Gear
-      results.gearEnc = 80 + items.filter(item => item.type === "treasure" || item.system.isTreasure === true).reduce((sum, item) => {
+      results.gearEnc = this.CONFIG.defaultGearEnc + items.filter(item => item.type === "treasure" || item.system.isTreasure === true).reduce((sum, item) => {
          return sum + this._getItemEncumbrance(item);
       }, 0);
       // Weapons
@@ -152,7 +132,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
       return actor.items.filter(item => ["weapon", "ammo", "armor", "treasure"].includes(item.type) || item.system.isTreasure === true)
          .reduce((sum, item) => {
             return sum + this._getItemEncumbrance(item);
-         }, 80);
+         }, this.CONFIG.defaultGearEnc);
    }
 
    _getItemEncumbrance(item) {
@@ -185,15 +165,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
 export class ExpertEncumbrance extends ClassicEncumbrance {
    constructor(options) {
       super(options);
-      this.CONFIG.maxLoad = 2400;
-      this.CONFIG.tablePC = [
-         { wtPortion: 6, mvFactor: 1.0, name: "unencumbered" },
-         { wtPortion: 3, mvFactor: 0.75, name: "lightly" },
-         { wtPortion: 2, mvFactor: 0.5, name: "moderately" },
-         { wtPortion: 1.5, mvFactor: 0.25, name: "encumbered" },
-         { wtPortion: 1, mvFactor: 0.125, name: "heavily" },
-         { wtPortion: 0, mvFactor: 0, name: "over" }
-      ];
+      this.CONFIG = CONFIG.FADE.Encumbrance.Expert;
    }
 
    /**
@@ -203,7 +175,7 @@ export class ExpertEncumbrance extends ClassicEncumbrance {
    calcCategoryEnc(items) {
       const results = super.calcCategoryEnc(items);
       // Gear
-      const itemTypes = ["item", "light", "treasure"]
+      const itemTypes = ["item", "light", "treasure", "ammo"]
       results.gearEnc = items.filter(item => itemTypes.includes(item.type))
          .reduce((sum, item) => {
             return sum + this._getItemEncumbrance(item);

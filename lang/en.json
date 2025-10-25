@@ -742,6 +742,9 @@
             "selectTable": "Select Table...",
             "minimum": "Minimum",
             "bonus": "Bonus",
+            "key": "Key",
+            "value": "Value",
+            "json": "Json",
             "removePrompt": "Remove Table?",
             "actions": {
                "new": "Add",
@@ -750,7 +753,10 @@
                "saveTable": "Save Changes"
             },
             "tableTypes": {
-               "bonus": "Bonus Table"
+               "bonus": "Bonus Table",
+               "keyvalue": "Key/Value Table",
+               "keyjson": "Key/Json Table",
+               "jsonarray": "Json Array Table"
             }
          },
          "playerCombat": {
@@ -1254,11 +1260,12 @@
             "aac": "AAC and Attack Bonus"
          }
       },
-      "abilityScoreModSystem": {
+      "abilityScoreMods": {
          "name": "Ability Score Modifier System",
-         "hint": "The Ability Score Modifier System determines how ability score modifiers are calculated. Dark Dungeons is going to be compatible with many 'Basic/Expert' game system and is the default. Simple provides a simple +1 bonus on scores 15 and above while applying a -1 penalty on scores at or below 6.",
+         "hint": "The Ability Score Modifier System determines how ability score modifiers are calculated. Heroic is going to be compatible with many 'Basic/Expert' game system and is the default. Simple provides a simple +1 bonus on scores 15 and above while applying a -1 penalty on scores at or below 6.",
          "choices": {
-            "darkdungeons": "Dark Dungeons"
+            "simple": "Simple",
+            "heroic": "Heroic"
          }
       },
       "attackRollFormula": {

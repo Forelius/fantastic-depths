@@ -156,6 +156,8 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       const droppedItem = await Item.implementation.fromDropData(data);
       if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
+      } else if (droppedItem?.type === "specialAbility") {
+         await this.onDropSpecialAbilityItem(droppedItem);
       }
    }
 

@@ -15,7 +15,7 @@ export class ArmorSystemBase extends ArmorSystemInterface {
       const dexMod = (actor.system.abilities?.dex.mod ?? 0);
       const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - actor.system.mod.baseAc;
       let ac = {};
-      ac.nakedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - baseAC;
+      ac.nakedAAC = CONFIG.FADE.ToHit.baseTHAC0 - baseAC;
       ac.naked = baseAC;
       ac.nakedRanged = ac.naked;
       // AC value is used for wrestling rating and should not include Dexterity bonus.
@@ -139,9 +139,9 @@ export class ClassicArmorSystem extends ArmorSystemBase {
    }
 
    prepareAAC(ac) {
-      ac.nakedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.naked;
-      ac.totalAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.total;
-      ac.totalRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.totalRanged;
-      ac.nakedRangedAAC = CONFIG.FADE.ToHit.BaseTHAC0 - ac.nakedRanged;
+      ac.nakedAAC = CONFIG.FADE.ToHit.baseTHAC0 - ac.naked;
+      ac.totalAAC = CONFIG.FADE.ToHit.baseTHAC0 - ac.total;
+      ac.totalRangedAAC = CONFIG.FADE.ToHit.baseTHAC0 - ac.totalRanged;
+      ac.nakedRangedAAC = CONFIG.FADE.ToHit.baseTHAC0 - ac.nakedRanged;
    }
 }

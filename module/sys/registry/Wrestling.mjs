@@ -188,7 +188,7 @@ export class Wrestling {
          if (hasArmor) {
             result += data.ac.value;
          } else {
-            result += 9;
+            result += CONFIG.FADE.Armor.acNaked;
          }
 
          // If has wrestling mastery

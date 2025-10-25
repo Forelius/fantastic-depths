@@ -1,5 +1,5 @@
-<section name="bonus-table">
-   {{#if (and (eq system.currentTable.type "bonus") (ne system.selectedTable "none"))}}
+<section name="key-value-table">
+   {{#if (and (eq system.currentTable.type "keyjson") (ne system.selectedTable "none"))}}
    <div class="bordered" style="margin-top:10px;">
       <div class="flexrow">
          <div style="font-size:16px;">
@@ -15,16 +15,16 @@
       <table class="compact-table" style="width:92%">
          <thead>
             <tr>
-               <th>{{localize "FADE.apps.userTables.minimum"}}</th>
-               <th>{{localize "FADE.apps.userTables.bonus"}}</th>
+               <th>{{localize "FADE.apps.userTables.key"}}</th>
+               <th>{{localize "FADE.apps.userTables.json"}}</th>
                <th style="max-width:50px;"><a data-action="addRow">+</a></th>
             </tr>
          </thead>
          <tbody>
             {{#each system.currentTable.table as |row|}}
             <tr data-index="{{@index}}">
-               <td><input type="number" name="system.currentTable.table.{{@index}}.min" value="{{row.min}}" /></td>
-               <td><input type="number" name="system.currentTable.table.{{@index}}.bonus" value="{{row.bonus}}" /></td>
+               <td><input type="text" name="system.currentTable.table.{{@index}}.key" value="{{row.key}}" /></td>
+               <td><input type="text" name="system.currentTable.table.{{@index}}.json" value="{{row.json}}" /></td>
                <td><a data-action="removeRow" data-index="{{@index}}"><i class="fas fa-trash"></i></a></td>
             </tr>
             {{/each}}

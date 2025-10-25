@@ -15,7 +15,7 @@ export class FDCombatActorDM extends FDActorBaseDM {
             maxSpellLevel: new fields.NumberField({ required: true, initial: 0 }),
          }),
          thac0: new fields.SchemaField({
-            value: new fields.NumberField({ initial: 19 }),
+            value: new fields.NumberField({ initial: CONFIG.FADE.ToHit.baseTHAC0 }),
             mod: new fields.SchemaField({
                missile: new fields.NumberField({ initial: 0 }),
                melee: new fields.NumberField({ initial: 0 }),
@@ -159,10 +159,10 @@ export class FDCombatActorDM extends FDActorBaseDM {
       // If this is a character or if monsters have ability score mods...
       if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
          // Initialize ability score modifiers
-         const abilityScoreModSystem = game.settings.get(game.system.id, "abilityScoreModSystem");
-         const adjustments = CONFIG.FADE.abilityScoreModSystem[abilityScoreModSystem]?.mods;
+         const abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
+         const adjustments = game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${abilityScoreMods}`);         
          for (let [key, ability] of Object.entries(this.abilities)) {
-            let adjustment = adjustments.find(item => ability.total <= item.max);
+            let adjustment = adjustments.sort((a, b) => b.min - a.min).find(item => ability.total >= item.min);
             ability.mod = adjustment ? adjustment.value : adjustments[0].value;
          }
       }

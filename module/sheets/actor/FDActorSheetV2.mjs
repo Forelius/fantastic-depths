@@ -764,12 +764,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    static async #clickRollAbility(event) {
-      const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
+      const abilityCheckSys = game.fade.registry.getSystem("abilityCheck");
       abilityCheckSys.execute({ actor: this.actor, event });
    }
 
    static async #clickRollMorale(event) {
-      const moraleCheckSys = await game.fade.registry.getSystem("moraleCheck");
+      const moraleCheckSys = game.fade.registry.getSystem("moraleCheck");
       moraleCheckSys.execute({ actor: this.actor, event });
    }
 

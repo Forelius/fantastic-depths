@@ -20,8 +20,9 @@ export class AbilityCheck {
          if (dialogResp) {
             dialogResp.formula = dialogResp.formula?.length > 0 ? dialogResp.formula : dataset.formula;
             let mod = Number(dialogResp.mod) != 0 ? "+@mod" : "";
-            let difficultyMod = dialogResp.difficulty?.length > 0 && CONFIG.FADE.DifficultyLevel[dialogResp.difficulty] != 0
-               ? `+${CONFIG.FADE.DifficultyLevel[dialogResp.difficulty]}` : "";
+            const difficultyLevels = game.fade.registry.getSystem("userTables").getKeyValuesJson("difficulty-levels");
+            let difficultyMod = dialogResp.difficulty?.length > 0 && difficultyLevels[dialogResp.difficulty] != 0
+               ? `+${difficultyLevels[dialogResp.difficulty]}` : "";
             dataset.formula = `${dialogResp.formula}${mod}${difficultyMod}`;
          } else {
             // This will stop the process below.
@@ -59,7 +60,8 @@ export class TieredAbilityCheck extends AbilityCheck {
     * @returns {string|null} The tier name, or null if no match.
     */
    getTieredResultName(diff, invert = false) {
-      const entries = Object.entries(CONFIG.FADE.TieredResults);
+      const tieredResults = game.fade.registry.getSystem("userTables").getKeyValuesJson("tiered-results");
+      const entries = Object.entries(tieredResults);
       const sorted = entries.sort((a, b) => invert ? a[1] - b[1] : b[1] - a[1]);
       let result = null;
       for (const [name, threshold] of sorted) {

@@ -43,6 +43,7 @@ const SpecialAbilityMixin = (superclass) => {
             name: droppedItem?.name ?? "",
             uuid: droppedItem?.uuid ?? "",
             mod: 0,
+            classKey: droppedItem?.system?.classKey
          };
 
          // Add the new item to the array

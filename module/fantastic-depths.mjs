@@ -83,7 +83,7 @@ Hooks.once('init', async function () {
       PlayerCombatForm,
       fadeTreasure,
       fadeFinder,
-      registry: new fadeRegistry()
+      registry: new fadeRegistry(),
    };
 
    Hooks.call("beforeFadeInit", game.fadeRegistry);
@@ -246,7 +246,7 @@ async function handleAsyncInit() {
    await game.fade.registry.registerDefaultSystems();
 }
 
-Hooks.once("setup", function () {
+Hooks.once("setup", () => {
    // Apply custom item compendium
    game.packs.filter(p => p.metadata.type === "Item")
       .forEach(p => p.applicationClass = fadeCompendium);
@@ -255,7 +255,7 @@ Hooks.once("setup", function () {
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
-Hooks.once('ready', async function () {
+Hooks.once('ready', async () => {
    Hooks.call("beforeFadeReady", game.fadeRegistry);
 
    const migrator = new DataMigrator();
