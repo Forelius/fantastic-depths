@@ -1,3 +1,4 @@
+import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
 import { FDItem } from './FDItem.mjs';
 
 export class ConditionItem extends FDItem {
