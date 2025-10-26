@@ -5,7 +5,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/skill-roll.hbs';
 
    async createChatMessage() {
-      const { context, mdata, roll, caller, options } = this.data;
+      const { context, mdata, roll, caller, options, digest } = this.data;
       const token = context;
       const item = caller;
       const rolls = [roll];
@@ -39,7 +39,8 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
          context, // the skill's owning actor
          item,
          itemDescription: await item.getInlineDescription(),
-         attackType: 'skill'
+         attackType: 'skill',
+         digest
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);

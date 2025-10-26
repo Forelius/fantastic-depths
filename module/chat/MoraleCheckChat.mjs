@@ -5,7 +5,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/ability-check.hbs';
 
    async createChatMessage() {
-      const { context, mdata, roll, options } = this.data;
+      const { context, mdata, roll, options, digest } = this.data;
 
       const rolls = [roll];
       const rollContent = await roll.render();
@@ -34,7 +34,8 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
          resultString,
          actorName,
          userName,
-         rollMode
+         rollMode,
+         digest
       };
 
       if (game.fade.toastManager) {

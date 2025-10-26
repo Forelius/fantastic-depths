@@ -141,6 +141,9 @@ export class ChatBuilder {
          type: obj.type ?? (CONST.CHAT_MESSAGE_STYLES?.OTHER ?? CONST.CHAT_MESSAGE_TYPES.OTHER),
       };
 
+      // Manipulated the dom to place digest info in roll's tooltip
+      chatMessageData.content = this.moveDigest(chatMessageData.content);
+
       const { roll } = this.data;
       // If there was a roll involved in the chat message...
       if (obj.rolls ?? roll) {
@@ -306,7 +309,9 @@ export class ChatBuilder {
                      itemuuid: ability.uuid,
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
                      itemName: ability.action === "consume" ? "???" : ability.name,
-                     mod: ability.mod,
+                     // This is the modifier entered for this special ability entry.
+                     // Remember: This is a contained special ability, not the special ability item itself.
+                     mod: ability.mod, 
                      action: ability.action
                   });
                }

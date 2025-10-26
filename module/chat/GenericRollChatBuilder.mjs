@@ -1,5 +1,4 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
 import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
 export class GenericRollChatBuilder extends ChatBuilder {
@@ -14,7 +13,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
    }
 
    async createChatMessage() {
-      const { context, mdata, roll, caller, options } = this.data;
+      const { context, mdata, roll, caller, options, digest } = this.data;
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
@@ -55,7 +54,8 @@ export class GenericRollChatBuilder extends ChatBuilder {
          actorName,
          userName,
          isGM: game.user.isGM,
-         actions
+         actions,
+         digest
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);

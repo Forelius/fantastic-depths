@@ -6,7 +6,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
 
    async createChatMessage() {
       console.debug(this.data);
-      const { caller, context, mdata, roll, options } = this.data;
+      const { caller, context, mdata, roll, options, digest } = this.data;
       const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
       const rolls = [roll];
       const rollContent = await roll.render();
@@ -36,7 +36,8 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
          resultString,
          actorName,
          userName,
-         rollMode
+         rollMode,
+         digest
       };
 
       if (game.fade.toastManager) {

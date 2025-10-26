@@ -10,4 +10,10 @@
    {{{resultString}}}
 </div>
 {{/if}}
+{{#if rollContent}}
 {{{rollContent}}}
+{{/if}}
+<div name="digest" class="digest">{{#each digest as |ditem|}}
+   <div>{{ditem}}</div>
+   {{/each}}
+</div>

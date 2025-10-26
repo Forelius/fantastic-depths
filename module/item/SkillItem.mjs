@@ -62,6 +62,7 @@ export class SkillItem extends FDItem {
          return null;
       }
       const systemData = this.system;
+      const digest = [];
       dataset = {
          rollType: 'item',
          label: this.name,
@@ -106,13 +107,14 @@ export class SkillItem extends FDItem {
          dataset.rollmode = systemData.rollMode;
          dataset.autofail = systemData.autoFail;
          dataset.autosuccess = systemData.autoSuccess;
-         const localizeAbility = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
+         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${systemData.ability}.long`);
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
             caller: this, // the skill item
             context: instigator, // the skill item owner
             mdata: dataset,
             roll: rolled,
+            digest
          };
          const showResult = this._getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData, { showResult });

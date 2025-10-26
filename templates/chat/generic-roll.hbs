@@ -23,7 +23,14 @@
 {{#if resultString}}
 {{{resultString}}}
 {{/if}}
+{{#if rollContent}}
 {{{rollContent}}}
+{{/if}}
+<div name="digest" class="digest">
+   {{#each digest as |ditem|}}
+   <div>{{ditem}}</div>
+   {{/each}}
+</div>
 {{#if item}}
 {{#if (eq item.system.isIdentified true)}}
 {{> "rollSaveBtn"}}

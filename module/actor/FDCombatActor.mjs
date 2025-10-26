@@ -90,6 +90,7 @@ export class FDCombatActor extends FDActorBase {
       const savingThrow = this.#getSavingThrow(type); // Saving throw item
       if (!savingThrow) return;
 
+      const digest = [];
       const ctrlKey = event?.ctrlKey ?? false;
       const rollData = this.getRollData();
       let dialogResp = null;
@@ -112,12 +113,23 @@ export class FDCombatActor extends FDActorBase {
       }
 
       if (dialogResp) {
-         let rollMod = Number(dialogResp.mod) || 0;
-         if (dialogResp.action === "magic") {
-            rollMod += this.system.abilities?.wis?.mod ?? 0;
+         let rollMod = 0;
+         const manualMod = Number(dialogResp.mod) || 0;
+         if (manualMod != 0) {
+            digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: dialogResp.mod }));
          }
-         rollMod += this.system.mod.save[type] || 0;
-         rollMod += this.system.mod.save.all || 0;
+         let wisdomMod = 0;
+         if (dialogResp.action === "magic") {
+            wisdomMod = this.system.abilities?.wis?.mod ?? 0;
+            const abilityName = game.i18n.localize(`FADE.Actor.Abilities.wis.long`);
+            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: wisdomMod }));
+         }
+         let effectMod = this.system.mod.save[type] || 0;
+         effectMod += this.system.mod.save.all || 0;
+         if (effectMod != 0) {            
+            digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
+         }
+         rollMod += manualMod + wisdomMod+ effectMod;
          rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
@@ -125,7 +137,8 @@ export class FDCombatActor extends FDActorBase {
             context: this,
             caller: savingThrow,
             mdata: dataset,
-            roll: rolled
+            roll: rolled,
+            digest
          };
          const showResult = savingThrow._getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });

@@ -56,7 +56,7 @@ export class SpecialAbilityItem extends FDItem {
    */
    async roll(dataset, dialogResp = null, event = null) {
       let result = null;
-      const systemData = this.system;
+      const itemSystem = this.system;
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
       const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
       if (!instigator) {
@@ -66,21 +66,21 @@ export class SpecialAbilityItem extends FDItem {
       const instigatorData = instigator.actor ? instigator.actor.system : instigator.document.actor.system;
       const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       let canProceed = true;
-      const hasRoll = systemData.rollFormula != null && systemData.rollFormula != "" && systemData.target != null && systemData.target != "";
+      const hasRoll = itemSystem.rollFormula != null && itemSystem.rollFormula != "" && itemSystem.target != null && itemSystem.target != "";
       const rollData = this.getRollData();
       rollData.level = dataset.level;
       const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
-
-
       let roll = null;
+      let digest = [];
+
       if (await this._tryUseChargeThenUsage(true, actionItem) === false) {
          canProceed = false;
       } else if (hasRoll === true) {
          // Retrieve roll data.
          dataset.dialog = "generic";
-         dataset.rollmode = systemData.rollMode;
-         dataset.formula = systemData.rollFormula;
+         dataset.rollmode = itemSystem.rollMode;
+         dataset.formula = itemSystem.rollFormula;
          dataset.label = this.name;
 
          if (dialogResp) {
@@ -88,32 +88,43 @@ export class SpecialAbilityItem extends FDItem {
          } else if (ctrlKey === true) {
             dialogResp = {
                rolling: true,
-               mod: (Number(dataset.mod) || 0),
-               formula: systemData.rollFormula,
+               mod: 0,
+               formula: itemSystem.rollFormula,
                editFormula: game.user.isGM
             };
          } else {
             dialogResp = await DialogFactory(dataset, instigator);
             if (dialogResp) {
                dialogResp.rolling = true;
-               dialogResp.mod = Number(dialogResp.mod) + (Number(dataset.mod) || 0);
             }
          }
 
          if (dialogResp?.rolling === true) {
-            dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : systemData.rollFormula;
-            if (systemData.operator == "lt" || systemData.operator == "lte" || systemData.operator == "<" || systemData.operator == "<=") {
-               dialogResp.mod -= systemData.abilityMod?.length > 0 ? instigatorData.abilities[systemData.abilityMod].mod : 0;
-            } else if (systemData.operator == "gt" || systemData.operator == "gte" || systemData.operator == ">" || systemData.operator == ">=") {
-               dialogResp.mod += systemData.abilityMod?.length > 0 ? instigatorData.abilities[systemData.abilityMod].mod : 0;
+            dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : itemSystem.rollFormula;
+            let abilityMod = itemSystem.abilityMod?.length > 0 ? instigatorData.abilities[itemSystem.abilityMod].mod : 0;
+            if (abilityMod != 0) {
+               const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${itemSystem.abilityMod}.long`);
+               digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: abilityMod }));
+               // If this is a roll under, then the ability score modifier should subtract from the roll.
+               if (itemSystem.operator == "lt" || itemSystem.operator == "lte" || itemSystem.operator == "<" || itemSystem.operator == "<=") {
+                  abilityMod = -abilityMod;
+               }
             }
+            const itemMod = (Number(dataset.mod) || 0);
+            if (itemMod != 0) {
+               digest.push(game.i18n.format("FADE.Chat.rollMods.itemMod", { mod: itemMod }));
+            }
+            const manualMod = (Number(dialogResp.mod) || 0);
+            if (manualMod != 0) {
+               digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: manualMod }));
+            }
+            dialogResp.mod = itemMod + manualMod + abilityMod;
+            rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
+            const rollContext = { ...rollData, ...dialogResp || {} };
+            roll = await new Roll(rollData.formula, rollContext);
          } else {
             canProceed = false;
          }
-
-         rollData.formula = Number(dialogResp?.mod) != 0 ? `${dialogResp?.formula}+@mod` : `${dialogResp?.formula}`;
-         const rollContext = { ...rollData, ...dialogResp || {} };
-         roll = await new Roll(rollData.formula, rollContext);        
       }
 
       if (canProceed === true) {
@@ -125,7 +136,8 @@ export class SpecialAbilityItem extends FDItem {
             caller: this,
             resp: dialogResp,
             context: instigator,
-            roll
+            roll,
+            digest
          };
          const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
          result = builder.createChatMessage();

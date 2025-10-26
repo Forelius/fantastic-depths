@@ -668,17 +668,19 @@
          "rollMods": {
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
+            "itemMod": "Item ability mod: {mod}",
+            "abilityScoreMod": "{ability} mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
+            "effectMod2": "Effect mod: {mod}",
             "effectScale": "Attacker effect scale: x{scale}",
-            "strengthMod": "Strength mod: {mod}",
-            "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",
             "vsGroupMod": "Vs. {group} mod: {mod}",
             "masteryMod": "Mastery {primsec} mod: {mod}",
             "unskilledUse": "Unskilled weapon use: {mod}",
             "masteryPrimDmg": "Weapon mastery primary damage.",
             "masterySecDmg": "Weapon mastery secondary damage.",
-            "manual": "Manual mod: {mod}"
+            "manual": "Manual mod: {mod}",
+            "difficulty": "Difficulty mod: {mod}"
          },
          "damageRoll": {
             "name": "Damage",
