@@ -1,8 +1,11 @@
 <section class="tab {{tabs.skills.cssClass}}" data-group="primary" data-tab="skills">
    <div class="flexrow align-vtop">
       <div style="padding:0 2px;">
-         {{> "actorClassAbilities"}}
+         {{> "actorSpecialAbilities"}}
       </div>
+      <!--<div style="padding:0 2px;">
+      {{> "actorClassAbilities"}}
+   </div>-->
       <div style="padding:0 2px;">
          {{> "actorSkills"}}
       </div>
@@ -12,11 +15,6 @@
          {{#if weaponMasteryEnabled}}
          {{> "actorMasteries"}}
          {{/if}}
-      </div>
-   </div>
-   <div class="flexrow">
-      <div style="padding:0 2px;">
-         {{> "actorSpecialAbilities"}}
       </div>
    </div>
 </section>

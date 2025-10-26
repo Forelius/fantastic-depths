@@ -480,7 +480,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const savingThrows = [];
       const conditions = [];
       const actorClasses = [];
-      const spellcasting = {};
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -544,10 +543,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             };
             if (item.system.category === "explore") {
                exploration.push({ item, op: operators[item.system.operator] });               
-            } else if (item.system.category === "class" || item.system.category === "spellcasting") {
-               classAbilities.push(item);
             } else if (item.system.category === "save") {
                savingThrows.push(item);
+            }
+            // Monsters don't differentiate between class ability and special ability.
+            else if (this.actor.type !== "monster" && (item.system.category === "class" || item.system.category === "spellcasting")) {
+               classAbilities.push(item);
             } else {
                specialAbilities.push(item);
             }
