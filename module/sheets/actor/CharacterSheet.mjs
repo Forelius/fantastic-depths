@@ -28,7 +28,7 @@ export class CharacterSheet extends CharacterSheetBase {
          scrollable: [".tab"]
       },
       skills: {
-         template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
