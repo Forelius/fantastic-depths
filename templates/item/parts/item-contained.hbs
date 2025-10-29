@@ -44,10 +44,12 @@
    </div>
    <div class='item-description desc-collapsed bordered'></div>
 </div>
-{{#if (and item.system.container item.system.isOpen)}}
+{{#if item.system.container}}
+<div class="contained-items{{#unless item.system.isOpen}} container-collapsed{{/unless}}">
 {{#each item.contained as |childItem|}}
 {{> "itemContained" parentItem=../item item=childItem rootobj=../rootobj}}
 {{/each}}
+</div>
 {{/if}}
 {{#unless item.system.container}}
 <div name="item-uses" class='item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>

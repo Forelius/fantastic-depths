@@ -96,9 +96,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Add search functionality
       const searchField = this.element.querySelector('input[name="search"]');
-      console.log('Search field found:', searchField);
       searchField?.addEventListener('input', (event) => {
-         console.log('Search input event:', event.target.value);
          this._filterItems(event.target.value);
       });
 
@@ -125,7 +123,18 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    _filterItems(query) {
       const searchQuery = query.toLowerCase().trim();
-      console.log('Filtering items with query:', searchQuery);
+      
+      // Show/hide collapsed containers based on search state
+      const collapsedContainers = this.element.querySelectorAll('.container-collapsed');
+      collapsedContainers.forEach(container => {
+         if (searchQuery !== '') {
+            // Show collapsed containers during search
+            container.style.display = 'block';
+         } else {
+            // Hide collapsed containers when search is cleared
+            container.style.display = 'none';
+         }
+      });
       
       const itemContainers = [
          { name: 'weaponItems', selector: '[name="weaponItems"]' },
