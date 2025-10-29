@@ -1510,6 +1510,21 @@ table.compact-table input {
     opacity: 1;
   }
 }
+.system-fantastic-depths input[name=search] {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+  color: #333;
+}
+.system-fantastic-depths input[name=search]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
 .system-fantastic-depths .items-list {
   margin: 0 !important;
   padding: 0 !important;
@@ -1738,6 +1753,9 @@ table.compact-table input {
   background: #808080;
   border: 1px inset #7a7971;
 }
+.system-fantastic-depths .container-collapsed {
+  display: none;
+}
 .system-fantastic-depths .item-formula {
   flex: 0 0 200px;
   padding: 0 8px;
@@ -1756,5 +1774,3 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

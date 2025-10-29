@@ -1,5 +1,6 @@
 {
    "FADE": {
+      "Search": "Search items...",
       "Actor": {
          "Health": "Hit Points",
          "HealthMax": "Max HP.",
