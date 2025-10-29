@@ -1,6 +1,25 @@
 // -----------------------------------------
 // Items Lists
 // -----------------------------------------
+
+// Search input for items
+input[name="search"] {
+   width: 100%;
+   margin-bottom: 8px;
+   padding: 6px 8px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-size: 14px;
+   background: #fff;
+   color: #333;
+
+   &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+   }
+}
+
 .items-list {
    margin: 0 !important;
    padding: 0 !important;

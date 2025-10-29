@@ -3,14 +3,14 @@
       <div class="flexrow">
          <div class='item-name contained'>
             <div class='item-image {{#if item.isUsable}}rollable2{{else}}chatable2{{/if}}'
-                 data-action="rollItem"
-                 data-roll-type='item'>
+               data-action="rollItem"
+               data-roll-type='item'>
                <a data-roll-type='item'><img src='{{item.img}}' width='24' height='24' /></a>
             </div>
             {{#if item.system.container}}
             <div class="category-caret" data-action="toggleContainer"><i class="fas {{#if item.system.isOpen}}fa-caret-down{{else}}fa-caret-right{{/if}}"></i></div>
             {{/if}}
-            <a class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
+            <a name="itemName" class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
                {{item.knownNameGM}}
                {{#if (and rootobj.showWeight item.containedEnc)}}
                <span class="category-info">({{item.containedEnc}} {{localize 'FADE.Item.weight.abbrPlural'}})</span>
@@ -50,7 +50,7 @@
 {{/each}}
 {{/if}}
 {{#unless item.system.container}}
-<div class='item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+<div name="item-uses" class='item collapsible-content contained-item bottom-border{{#if (eq item.system.quantity 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
    {{#if item.system.quantityMax}}
    <div class="flexrow consumable-counter contained">
       <label>{{localize 'FADE.Item.uses'}}</label>
@@ -66,7 +66,7 @@
    </div>
    {{/if}}
    {{#if (and item.system.chargesMax (or ../isGM item.system.isIdentified))}}
-   <div class='flexrow item collapsible-content contained-item{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
+   <div name="item-charges" class='flexrow item collapsible-content contained-item{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-parentid="{{parentItem._id}}" data-item-id='{{item._id}}'>
       <div class="charges-counter contained">
          <label>{{localize 'FADE.Item.charges.long'}}</label>
          {{#if (lte item.system.chargesMax 40)}}

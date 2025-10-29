@@ -94,6 +94,14 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          }
       });
 
+      // Add search functionality
+      const searchField = this.element.querySelector('input[name="search"]');
+      console.log('Search field found:', searchField);
+      searchField?.addEventListener('input', (event) => {
+         console.log('Search input event:', event.target.value);
+         this._filterItems(event.target.value);
+      });
+
       // Temporary fix for now.
       const html = $(this.element);
 
@@ -109,6 +117,59 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Editable
       html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
+   }
+
+   /**
+    * Filter items based on search query
+    * @param {string} query - The search query
+    */
+   _filterItems(query) {
+      const searchQuery = query.toLowerCase().trim();
+      console.log('Filtering items with query:', searchQuery);
+      
+      const itemContainers = [
+         { name: 'weaponItems', selector: '[name="weaponItems"]' },
+         { name: 'ammoItems', selector: '[name="ammoItems"]' },
+         { name: 'armorItems', selector: '[name="armorItems"]' },
+         { name: 'gearItems', selector: '[name="gearItems"]' },
+         { name: 'treasureItems', selector: '[name="treasureItems"]' }
+      ];
+      
+      itemContainers.forEach(containerInfo => {
+         const itemsTab = this.element.querySelector('[name="itemsTab"]');
+         if (!itemsTab) return;
+         const container = itemsTab.querySelector(containerInfo.selector);
+         if (!container) return;
+         
+         const itemNames = container.querySelectorAll('[name="itemName"]');
+         let visibleItems = 0;
+         
+         itemNames.forEach(itemNameElement => {
+            const itemName = itemNameElement.textContent?.toLowerCase() || '';
+            const isVisible = searchQuery === '' || itemName.includes(searchQuery);
+            const item = itemNameElement.closest('.item.collapsible-content');
+            item.style.display = isVisible ? '' : 'none';
+            
+            // Also hide related item-charges and item-uses elements with same data-item-id
+            const itemId = item.getAttribute('data-item-id');
+            if (itemId) {
+               const chargesElement = itemsTab.querySelector(`[name="item-charges"][data-item-id="${itemId}"]`);
+               const usesElement = itemsTab.querySelector(`[name="item-uses"][data-item-id="${itemId}"]`);
+               
+               if (chargesElement) chargesElement.style.display = isVisible ? '' : 'none';
+               if (usesElement) usesElement.style.display = isVisible ? '' : 'none';
+            }
+            
+            if (isVisible) visibleItems++;
+         });
+         
+         // Hide the entire container if no items are visible and there's a search query
+         if (searchQuery !== '' && visibleItems === 0) {
+            container.style.display = 'none';
+         } else {
+            container.style.display = '';
+         }
+      });
    }
 
    /** @override */
