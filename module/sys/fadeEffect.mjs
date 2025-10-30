@@ -1,3 +1,5 @@
+import { CodeMigrate } from "./migration.mjs";
+
 export class fadeEffect extends ActiveEffect {
    /**
     * Apply this ActiveEffect to a provided Actor.
@@ -41,12 +43,7 @@ export class fadeEffect extends ActiveEffect {
          if (parsedChange?.type === "userTableLookup") {
             const userTables = game.fade.registry.getSystem("userTables");
             const roll = new Roll(parsedChange.value, { actor: actor.getRollData() });
-            // TODO: Change when no longer supporting v12
-            if (Number(game.version) >= 12) {
-               roll.evaluateSync();
-            } else {
-               roll.evaluate({ async: true });
-            }
+            CodeMigrate.rollEvaluateSync(roll);
             change.value = userTables.getBonus(parsedChange.table, roll.total);
          }
       } catch (ex) {
@@ -56,12 +53,7 @@ export class fadeEffect extends ActiveEffect {
 
    #applyRollData(change, actor) {
       const roll = new Roll(change.value, { actor: actor.getRollData(), system: this.parent.system });
-      // TODO: Change when no longer supporting v12
-      if (Number(game.version) >= 12) {
-         roll.evaluateSync();
-      } else {
-         roll.evaluate({ async: true });
-      }
+      CodeMigrate.rollEvaluateSync(roll);
       change.value = roll.total;
    }
 }
