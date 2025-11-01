@@ -243,7 +243,8 @@ export class ToHitSystemBase extends ToHitInterface {
       // If the attacker has ability scores...
       if (systemData.abilities && systemData.abilities.str.mod !== 0) {
          result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: systemData.abilities.str.mod }));
       }
       if (targetMods && targetMods.selfToHit !== 0) {
          result += targetMods.selfToHit;
@@ -281,10 +282,12 @@ export class ToHitSystemBase extends ToHitInterface {
       // If thrown and attacker has ability scores...
       if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
          result += systemData.abilities.str.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.strengthMod', { mod: systemData.abilities.str.mod }));
+         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: systemData.abilities.str.mod }));
       } else if (systemData.abilities && systemData.abilities.dex.mod) {
          result += systemData.abilities.dex.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.dexterityMod', { mod: systemData.abilities.dex.mod }));
+         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.dex.long`);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: systemData.abilities.dex.mod }));
       }
       // Target modifiers
       if (targetMods && targetMods.selfToHitRanged !== 0) {

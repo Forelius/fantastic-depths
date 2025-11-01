@@ -10,6 +10,7 @@ import { Shove } from "./Shove.mjs";
 import { UserTables } from "./UserTables.mjs";
 import { SingleClassSystem, MultiClassSystem } from "./ClassSystem.mjs";
 import { AbilityCheck, TieredAbilityCheck } from "./AbilityCheck.mjs";
+import { RandomCharacter } from './random/RandomCharacter.mjs';
 
 export class fadeRegistry {
    constructor() {
@@ -79,6 +80,8 @@ export class fadeRegistry {
       } else if (classSystem === "advanced") {
          this.registerSystem('classSystem', new MultiClassSystem(), MultiClassSystem);
       }
+
+      this.registerSystem('randomCharacter', RandomCharacter, RandomCharacter);
    }
 
    registerSystem(id, instance, type) {

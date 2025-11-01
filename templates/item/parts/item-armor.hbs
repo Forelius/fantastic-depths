@@ -33,7 +33,7 @@
                  data-roll-type='item'>
                <img src='{{item.img}}' width='26' height='26' />
             </div>
-            <a class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
+            <a name="itemName" class='item-control' data-action="expandDesc" data-tooltip='{{localize "FADE.dialog.spellcast.noLabel"}}'>
                {{item.knownNameGM}}
             </a>
          </div>
@@ -77,7 +77,7 @@
       <div class='item-description desc-collapsed bordered'></div>
    </div>
    {{#if (and item.system.chargesMax (or ../isGM item.system.isIdentified))}}
-   <div class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
+   <div name="item-charges" class='flexrow item collapsible-content bottom-border{{#if (eq item.system.charges 0)}} warning-bkgd{{/if}}' data-item-id='{{item._id}}'>
       <div class="charges-counter">
          <label>{{localize 'FADE.Item.charges.long'}}</label>
          {{#times item.system.charges}}

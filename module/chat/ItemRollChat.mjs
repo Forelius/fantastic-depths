@@ -17,7 +17,7 @@ export class ItemRollChat extends ChatBuilder {
     * Weapons also call this when clicked from sheet.
     */
    async createChatMessage() {
-      const { context, mdata, roll, caller, options } = this.data;
+      const { context, mdata, roll, caller, options, digest } = this.data;
       let resultString = null;
       const rolls = roll ? [roll] : [];
       let rollContent = null;
@@ -55,7 +55,8 @@ export class ItemRollChat extends ChatBuilder {
          resultString,
          actorName,
          userName,
-         actions // only saving throws are used here.
+         actions, // only saving throws are used here.
+         digest
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);

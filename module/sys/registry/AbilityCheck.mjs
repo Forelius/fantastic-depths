@@ -12,18 +12,27 @@ export class AbilityCheck {
       const dataset = event.target.dataset;
       let dialogResp = null;
       let chatType = CHAT_TYPE.ABILITY_CHECK;
+      let digest = [];
+
       dataset.formula = game.settings.get(game.system.id, "abilityCheckFormula");
       dataset.dialog = dataset.test;
 
       if (ctrlKey === false) {
          dialogResp = await DialogFactory(dataset, actor);
          if (dialogResp) {
+            let mod = 0;
             dialogResp.formula = dialogResp.formula?.length > 0 ? dialogResp.formula : dataset.formula;
-            let mod = Number(dialogResp.mod) != 0 ? "+@mod" : "";
+            let manualMod = Number(dialogResp.mod) || 0;
+            if (manualMod != 0) {
+               digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: manualMod }));
+            }
             const difficultyLevels = game.fade.registry.getSystem("userTables").getKeyValuesJson("difficulty-levels");
-            let difficultyMod = dialogResp.difficulty?.length > 0 && difficultyLevels[dialogResp.difficulty] != 0
-               ? `+${difficultyLevels[dialogResp.difficulty]}` : "";
-            dataset.formula = `${dialogResp.formula}${mod}${difficultyMod}`;
+            let difficultyMod = dialogResp.difficulty?.length > 0 ? Number(difficultyLevels[dialogResp.difficulty]) || 0 : 0;
+            if (difficultyMod != 0) {
+               digest.push(game.i18n.format("FADE.Chat.rollMods.difficulty", { mod: difficultyMod }));
+            }
+            mod += manualMod + difficultyMod;
+            dataset.formula = `${dialogResp.formula}+${mod}`;
          } else {
             // This will stop the process below.
             chatType = null;
@@ -38,7 +47,13 @@ export class AbilityCheck {
       if (chatType !== null) {
          const rollContext = { ...actor.getRollData(), ...dialogResp || {} };
          const rolled = await new Roll(dataset.formula, rollContext).evaluate();
-         const chatData = { caller: actor, context: dialogResp, mdata: dataset, roll: rolled };
+         const chatData = {
+            caller: actor,
+            context: dialogResp,
+            mdata: dataset,
+            roll: rolled,
+            digest
+         };
          const showResult = actor._getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
          builder.createChatMessage();

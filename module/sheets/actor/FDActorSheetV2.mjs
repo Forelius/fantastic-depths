@@ -94,6 +94,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          }
       });
 
+      // Add search functionality
+      const searchField = this.element.querySelector('input[name="search"]');
+      searchField?.addEventListener('input', (event) => {
+         this._filterItems(event.target.value);
+      });
+
       // Temporary fix for now.
       const html = $(this.element);
 
@@ -109,6 +115,70 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       // Editable
       html.find(".editable input").click((event) => event.target.select()).change(this._onDataChange.bind(this));
+   }
+
+   /**
+    * Filter items based on search query
+    * @param {string} query - The search query
+    */
+   _filterItems(query) {
+      const searchQuery = query.toLowerCase().trim();
+      
+      // Show/hide collapsed containers based on search state
+      const collapsedContainers = this.element.querySelectorAll('.container-collapsed');
+      collapsedContainers.forEach(container => {
+         if (searchQuery !== '') {
+            // Show collapsed containers during search
+            container.style.display = 'block';
+         } else {
+            // Hide collapsed containers when search is cleared
+            container.style.display = 'none';
+         }
+      });
+      
+      const itemContainers = [
+         { name: 'weaponItems', selector: '[name="weaponItems"]' },
+         { name: 'ammoItems', selector: '[name="ammoItems"]' },
+         { name: 'armorItems', selector: '[name="armorItems"]' },
+         { name: 'gearItems', selector: '[name="gearItems"]' },
+         { name: 'treasureItems', selector: '[name="treasureItems"]' }
+      ];
+      
+      itemContainers.forEach(containerInfo => {
+         const itemsTab = this.element.querySelector('[name="itemsTab"]');
+         if (!itemsTab) return;
+         const container = itemsTab.querySelector(containerInfo.selector);
+         if (!container) return;
+         
+         const itemNames = container.querySelectorAll('[name="itemName"]');
+         let visibleItems = 0;
+         
+         itemNames.forEach(itemNameElement => {
+            const itemName = itemNameElement.textContent?.toLowerCase() || '';
+            const isVisible = searchQuery === '' || itemName.includes(searchQuery);
+            const item = itemNameElement.closest('.item.collapsible-content');
+            item.style.display = isVisible ? '' : 'none';
+            
+            // Also hide related item-charges and item-uses elements with same data-item-id
+            const itemId = item.getAttribute('data-item-id');
+            if (itemId) {
+               const chargesElement = itemsTab.querySelector(`[name="item-charges"][data-item-id="${itemId}"]`);
+               const usesElement = itemsTab.querySelector(`[name="item-uses"][data-item-id="${itemId}"]`);
+               
+               if (chargesElement) chargesElement.style.display = isVisible ? '' : 'none';
+               if (usesElement) usesElement.style.display = isVisible ? '' : 'none';
+            }
+            
+            if (isVisible) visibleItems++;
+         });
+         
+         // Hide the entire container if no items are visible and there's a search query
+         if (searchQuery !== '' && visibleItems === 0) {
+            container.style.display = 'none';
+         } else {
+            container.style.display = '';
+         }
+      });
    }
 
    /** @override */
@@ -480,7 +550,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const savingThrows = [];
       const conditions = [];
       const actorClasses = [];
-      const spellcasting = {};
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -544,10 +613,12 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             };
             if (item.system.category === "explore") {
                exploration.push({ item, op: operators[item.system.operator] });               
-            } else if (item.system.category === "class" || item.system.category === "spellcasting") {
-               classAbilities.push(item);
             } else if (item.system.category === "save") {
                savingThrows.push(item);
+            }
+            // Monsters don't differentiate between class ability and special ability.
+            else if (this.actor.type !== "monster" && (item.system.category === "class" || item.system.category === "spellcasting")) {
+               classAbilities.push(item);
             } else {
                specialAbilities.push(item);
             }

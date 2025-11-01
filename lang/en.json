@@ -1,5 +1,6 @@
 {
    "FADE": {
+      "Search": "Search items...",
       "Actor": {
          "Health": "Hit Points",
          "HealthMax": "Max HP.",
@@ -668,17 +669,20 @@
          "rollMods": {
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
+            "itemMod": "Item ability mod: {mod}",
+            "abilityScoreMod": "{ability} mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
+            "effectMod2": "Effect mod: {mod}",
             "effectScale": "Attacker effect scale: x{scale}",
-            "strengthMod": "Strength mod: {mod}",
-            "dexterityMod": "Dexterity mod: {mod}",
             "targetMod": "Target effect mod: {mod}",
             "vsGroupMod": "Vs. {group} mod: {mod}",
             "masteryMod": "Mastery {primsec} mod: {mod}",
-            "unskilledUse": "Unskilled weapon use: {mod}",
+            "skilledUse": "Skilled use: {mod}",
+            "unskilledUse": "Unskilled use: {mod}",
             "masteryPrimDmg": "Weapon mastery primary damage.",
             "masterySecDmg": "Weapon mastery secondary damage.",
-            "manual": "Manual mod: {mod}"
+            "manual": "Manual mod: {mod}",
+            "difficulty": "Difficulty mod: {mod}"
          },
          "damageRoll": {
             "name": "Damage",
@@ -1022,7 +1026,7 @@
             },
             "guard": {
                "name": "Guard",
-               "description": "The Guard maneuver allows a combatant to hold their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range. Like the withdrawal option, the combatant may move at half the normal movement rate."
+               "description": "Combatant who wins inititiative holds their melee attack until the end of an opponent's movement phase, striking if the opponent moves within range. Like the withdrawal option, the combatant may move at half the normal movement rate. Combatant may opt to attack anyone melee range during their hand-to-hand combat phase."
             },
             "unarmed": {
                "name": "Unarmed Combat",
@@ -1035,6 +1039,18 @@
             "specialAbility": {
                "name": "Special Ability",
                "description": "This is a catch-all option that covers the usage of a special ability that requires a combat round to perform. Do not select this option if using a weapon, spell or magic item."
+            },
+            "charge": {
+               "name": "Charge",
+               "description": "The monster runs towards the opponent from 20 yards (20 feet indoors) away in one round and inflicts double damage, if it hits."
+            },
+            "swoop": {
+               "name": "Swoop",
+               "description": "The flying combatant swoops on an opponent at a lower altitude. Similar to a charge but applies to flying creatures rushing toward their prey from 10 yards (10 feet indoors) away. This attack, if successful, inflicts double damage upon its target, but only if the attacking creature surprises its target."
+            },
+            "crush": {
+               "name": "Crush",
+               "description": "When crushing, the dragon actually lands on its victims. Each may make a saving throw vs. death ray; success indicates complete evasion of the crush, and no damage is inflicted. A victim may choose to remain in the area, taking the full damage of the crush; if he holds a weapon in hand, he may make an attack roll with a +4 bonus. If he hits, he inflicts double damage. The crush may be used against nonhuman victims, or possibly against any opponents if the dragon is seriously wounded."
             }
          }
       },

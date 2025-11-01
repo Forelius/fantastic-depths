@@ -137,6 +137,9 @@ FADE.CombatManeuvers = {
    unarmed: { phase: "melee", canMove: true },
    dodge: { phase: "melee", canMove: true },
    specialAbility: { phase: "melee", canMove: true },
+   charge: { phase: "melee", canMove: true, special: true, classes: ["monster"], needAbility: true },
+   swoop: { phase: "melee", canMove: true, special: true, classes: ["monster"], needAbility: true },
+   crush: { phase: "melee", canMove: true, special: true, classes: ["monster"], needAbility: true }
 }
 FADE.ActorSizes = [
    { id: "T", isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet

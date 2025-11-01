@@ -1,32 +1,12 @@
 import { FDCombatActorDM } from "./FDCombatActorDM.mjs";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
 import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
+import { MonsterData } from '/systems/fantastic-depths/module/actor/fields/MonsterField.mjs';
 
 export class MonsterDataModel extends FDCombatActorDM {
    static defineSchema() {
-      const { fields } = foundry.data;
       const baseSchema = super.defineSchema();
-      let monsterSchema = {
-         details: new fields.SchemaField({
-            morale: new fields.NumberField({ initial: 9 }),
-            alignment: new fields.StringField({ initial: "Chaotic" }),
-            xpAward: new fields.NumberField({ initial: 5 }),
-            abilityCount: new fields.NumberField({ initial: 0 }),
-            monsterType: new fields.StringField({ initial: "Monster" }),
-            rarity: new fields.StringField({ initial: "Common" }),
-            saveAs: new fields.StringField({ initial: "F1" }),
-            // Some monsters have spells of a specific class level.
-            castAs: new fields.StringField({ initial: null, nullable: true }),
-            // Some monsters have the class abilities of a specific class level.
-            classAbilityAs: new fields.StringField({ initial: null, nullable: true }),
-            level: new fields.NumberField({ initial: 1 })
-         }),
-         na: new fields.SchemaField({
-            wandering: new fields.StringField({ initial: "1d6" }),
-            lair: new fields.StringField({ initial: "" }),
-         }),
-         treasure: new fields.StringField({ initial: "" })         
-      };
+      const monsterSchema = MonsterData.defineSchema();
       foundry.utils.mergeObject(monsterSchema, baseSchema);
       return monsterSchema;
    }

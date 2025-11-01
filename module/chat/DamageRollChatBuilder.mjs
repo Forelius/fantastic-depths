@@ -39,9 +39,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
       // Render the content using the template, now with messageId
       let content = await CodeMigrate.RenderTemplate(this.template, renderData);
-      // Manipulated the dom to place digest info in roll's tooltip
-      content = this.moveDigest(content);
-
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          [`flags.${game.system.id}.attackdata`]: {

@@ -14,7 +14,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    * Called by the various Actor and Item derived classes to create a chat message.
    */
    async createChatMessage() {
-      const { context, caller, roll, options } = this.data;
+      const { context, caller, roll, options, digest } = this.data;
       const dmgHealRoll = caller.getDamageRoll(null);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
@@ -55,7 +55,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
          attackType: 'spell',
          caster,
          durationMsg: options.durationMsg,
-         actions
+         actions,
+         digest
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);

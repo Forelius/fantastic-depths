@@ -55,9 +55,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
          actions
       };
       let content = await CodeMigrate.RenderTemplate(this.template, chatData);
-      // Manipulated the dom to place digest info in roll's tooltip
-      content = this.moveDigest(content);
-
       let conditionsResult = null;
       if (weaponItem.isIdentified == true) {
          conditionsResult = await this._getConditionsForChat(weaponItem);

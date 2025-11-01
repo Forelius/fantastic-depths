@@ -5,7 +5,7 @@ export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
 
    async createChatMessage() {
-      const { context, caller, roll, options } = this.data;
+      const { context, caller, roll, options, digest } = this.data;
       const targetTokens = Array.from(game.user.targets);
       const item = caller;
       let dmgHealRoll = item.getDamageRoll(null);
@@ -46,7 +46,8 @@ export class SpecialAbilityChat extends ChatBuilder {
          description,
          itemDescription: await item.getInlineDescription(),
          attackType: 'specialAbility',
-         actions
+         actions,
+         digest
       };
       // Render the content using the template
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);

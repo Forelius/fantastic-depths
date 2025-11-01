@@ -307,7 +307,26 @@ export class DataMigrator {
    }
 }
 
+/**
+ * A polyfill helper for Foundry version incompatibilities.
+ */
 export class CodeMigrate {
    static FormDataExtended = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
    static RenderTemplate = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+   
+   static rollEvaluateSync(roll) {
+      if (Number(game.version) >= 12) {
+         roll.evaluateSync();
+      } else {
+         roll.evaluate({ async: false });
+      }
+   }
+
+    static async rollEvaluate(roll) {
+      if (Number(game.version) >= 12) {
+         await roll.evaluate();
+      } else {
+         await roll.evaluate({ async: true });
+      }
+   }
 }

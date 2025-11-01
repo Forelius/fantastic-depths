@@ -129,7 +129,8 @@ export class DamageSystem extends DamageSystemInterface {
       // If the attacker has ability scores...
       if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
          modifier += Number(attackerData.abilities.str.mod);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.strengthMod", { mod: attackerData.abilities.str.mod }));
+         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: attackerData.abilities.str.mod }));
       }
       if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
          modifier += Number(attackerData.mod.combat.dmg);
@@ -156,7 +157,8 @@ export class DamageSystem extends DamageSystemInterface {
       // If the attacker has ability scores...
       if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
          modifier += Number(attackerData.abilities.str.mod);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.strengthMod", { mod: attackerData.abilities.str.mod }));
+         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: attackerData.abilities.str.mod }));
       }
       if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
          modifier += Number(attackerData.mod.combat.dmgRanged);

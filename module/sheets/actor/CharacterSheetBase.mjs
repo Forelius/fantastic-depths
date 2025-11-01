@@ -48,7 +48,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
       },
       skills: {
-         template: "systems/fantastic-depths/templates/actor/shared/skills.hbs",
+         template: "systems/fantastic-depths/templates/actor/character/skills.hbs",
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
