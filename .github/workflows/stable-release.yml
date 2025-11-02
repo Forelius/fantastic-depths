@@ -95,7 +95,7 @@ jobs:
           makeLatest: true
 
       - name: Publish Module to FoundryVTT Website
-        if: env.is_valid == 'true' && !github.event.release.unpublished && !github.event.release.prerelease && secrets.FOUNDRY_PACKAGE_TOKEN != ''
+        if: env.is_valid == 'true' && !github.event.release.unpublished && !github.event.release.prerelease
         uses: cs96and/FoundryVTT-release-package@v1
         with:
           package-token: ${{ secrets.FOUNDRY_PACKAGE_TOKEN }}
