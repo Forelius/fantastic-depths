@@ -6,30 +6,38 @@
 name: Build and Release Fantastic Depths (Stable Release)
 
 on:
-  push:
-    tags:
-      - '[0-9]+\.[0-9]+\.[0-9]+'  # Stable release tags
+  release:
+    types: [published]
 
 permissions:
   contents: write
   
 jobs:
   build:
+    if: ${{ github.event.release.target_commitish == 'stable' }}
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.event.release.tag_name }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Fetch full history
+        uses: actions/checkout@v4
 
       - name: Fetch all branches and tags
         run: git fetch --all --tags
 
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      # Substitute Manifest, Download and related tokens in system.json
+      - name: Substitute Manifest and Download Links For Versioned Ones
+        id: sub_manifest_link_version
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: 'system.json'
+        env:
+          VERSION: ${{ env.VERSION }}
+          URL: https://github.com/${{ github.repository }}
+          MANIFEST: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.json
+          DOWNLOAD: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.zip
+          CHANGELOG: https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }}
 
       - name: Check if the tag commit is in the stable branch
         id: check_stable
@@ -58,13 +66,18 @@ jobs:
       - name: Prepare release notes
         if: env.is_valid == 'true'
         id: prepare_notes
+        env:
+          RELEASE_BODY: ${{ github.event.release.body }}
         run: |
-          echo "## Fantastic Depths  Stable Release" > release_notes.txt
-          echo "" >> release_notes.txt
-          echo ${{ github.event.release.body }} >> release_notes.txt
-          echo "This is a stable version of Fantastic Depths." >> release_notes.txt
-          echo "To install manually, use this URL:" >> release_notes.txt
-          echo "https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json" >> release_notes.txt
+          {
+            echo "## Fantastic Depths Stable Release"
+            echo
+            printf "%s\n" "$RELEASE_BODY"
+            echo
+            echo "This is a stable version of Fantastic Depths."
+            echo "To install manually, use this URL:"
+            echo "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.json"
+          } > release_notes.txt
 
       - name: Create GitHub release
         if: env.is_valid == 'true'
@@ -73,9 +86,10 @@ jobs:
           tag: ${{ env.VERSION }}
           name: "Release ${{ env.VERSION }} (STABLE)"
           prerelease: false  # Mark as a stable release
-          artifacts: system.zip
+          artifacts: './system.json, ./system.zip'
           bodyfile: release_notes.txt
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           replacesArtifacts: true
           updateOnlyUnreleased: false
+          makeLatest: true
