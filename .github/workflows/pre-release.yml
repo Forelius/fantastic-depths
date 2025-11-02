@@ -27,7 +27,7 @@ jobs:
         env:
           VERSION: ${{ env.VERSION }}
           URL: https://github.com/${{ github.repository }}          
-          MANIFEST: https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/main/system.json
+          MANIFEST: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.json
           DOWNLOAD: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.zip
           CHANGELOG: https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }}
 
