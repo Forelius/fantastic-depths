@@ -93,3 +93,10 @@ jobs:
           replacesArtifacts: true
           updateOnlyUnreleased: false
           makeLatest: true
+
+      - name: Publish Module to FoundryVTT Website
+        if: env.is_valid == 'true' && !github.event.release.unpublished && !github.event.release.prerelease && secrets.FOUNDRY_PACKAGE_TOKEN != ''
+        uses: cs96and/FoundryVTT-release-package@v1
+        with:
+          package-token: ${{ secrets.FOUNDRY_PACKAGE_TOKEN }}
+          manifest-url: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.json
