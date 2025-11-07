@@ -266,7 +266,9 @@
         "spellcasters": "Spellcasters",
         "undead": "Undead",
         "water-breathing": "Water-breathing",
-        "weapon-using": "Weapon-using"
+        "weapon-using": "Weapon-using",
+        "plants": "Plants",
+        "flaming-weak": "Flaming-weak"
       }
     },
     "SheetLabel": {
