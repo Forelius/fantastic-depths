@@ -177,7 +177,8 @@ export class fadeSettings {
             "individual": "SETTINGS.initiative.mode.choices.individual",
             "simpleIndividual": "SETTINGS.initiative.mode.choices.simpleIndividual",
             "individualChecklist": "SETTINGS.initiative.mode.choices.individualChecklist",
-            "group": "SETTINGS.initiative.mode.choices.group"
+             "group": "SETTINGS.initiative.mode.choices.group",
+             "advancedGroup": "SETTINGS.initiative.mode.choices.advancedGroup"
          },
          requiresReload: true
       });

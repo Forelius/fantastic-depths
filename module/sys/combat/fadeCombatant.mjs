@@ -14,7 +14,13 @@ export class fadeCombatant extends Combatant {
    }
    set declaredAction(value) {
       //console.debug(`set declaredAction called for ${this.actor.name}:`, value);
-   }
+    }
+    /** The phase that their declared action occurs in, or null. */
+    get declaredActionPhase() {
+        return this.actor.system.combat?.declaredAction
+            ? CONFIG.FADE.CombatManeuvers[this.actor.system.combat.declaredAction].phase
+            : null;
+    }
    get attacks() {
       return this.actor?.system.combat.attacks;
    }

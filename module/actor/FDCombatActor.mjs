@@ -227,7 +227,7 @@ export class FDCombatActor extends FDActorBase {
     */
    getAvailableActions() {
       // These options are always available.
-      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility"];
+      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility", "concentrate"];
       let hasEquippedWeapon = false;
       // Ready weapon
       if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {

@@ -1,3 +1,6 @@
-<label class="declared-action" data-tooltip="{{localize (concat 'FADE.combat.maneuvers.' combatant.declaredAction '.description')}}">
-   {{localize (concat 'FADE.combat.maneuvers.' combatant.declaredAction '.name')}}
-</label>
+<div class="declared-action" style="line-height:1.1em; margin-bottom:4px;">
+    <label class="declared-action" data-tooltip="{{localize (concat 'FADE.combat.maneuvers.' combatant.declaredAction '.description')}}">
+        {{localize (concat 'FADE.combat.maneuvers.' combatant.declaredAction '.name')}}
+    </label>
+    (<span style="font-style:italic" data-tooltip="{{{localize (concat 'FADE.combat.phases.' combatant.declaredActionPhase '.description')}}}">{{{localize (concat 'FADE.combat.phases.' combatant.declaredActionPhase '.name')}}} {{localize 'FADE.combat.phases.name'}}</span>)
+</div>
