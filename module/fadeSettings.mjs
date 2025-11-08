@@ -1,459 +1,468 @@
 import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTablesConfig.mjs"
 
 export class fadeSettings {
-   /**
-    * Register all of the system's settings.
-    */
-   RegisterSystemSettings() {
-      this.#registerConfigSettings();      
-      this.#registerNonConfigSettings();
-   }
+    /**
+     * Register all of the system's settings.
+     */
+    RegisterSystemSettings() {
+        this.#registerConfigSettings();
+        this.#registerNonConfigSettings();
+    }
 
-   #registerConfigSettings() {
-      // User Tables Menu
-      game.settings.registerMenu(game.system.id, "userTablesConfig", {
-         name: "FADE.apps.userTables.title",
-         label: "FADE.apps.userTables.title",
-         icon: "fas fa-table",
-         type: UserTablesConfig,
-         restricted: true
-      });
-      // Theme
-      game.settings.register(game.system.id, "theme", {
-         name: "SETTINGS.Theme.Name",
-         hint: "SETTINGS.Theme.Hint",
-         scope: "client",
-         config: true,
-         type: String,
-         requiresReload: false,
-         choices: {
-            "light": "SETTINGS.Theme.Light",
-            "dark": "SETTINGS.Theme.Dark"
-         },
-         default: "dark",
-         onChange: value => this.applyTheme(value)
-      });
-      // Actor pack
-      game.settings.register(game.system.id, "actorPack", {
-         name: "SETTINGS.packs.actorPack",
-         scope: "world",   // This means the setting is stored globally for the world
-         config: true,     // This makes it appear in the Settings menu
-         default: "fade-compendiums.actor-compendium",  
-         type: String,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      // Item pack
-      game.settings.register(game.system.id, "itemPack", {
-         name: "SETTINGS.packs.itemPack",
-         scope: "world",   // This means the setting is stored globally for the world
-         config: true,     // This makes it appear in the Settings menu
-         default: "fade-compendiums.item-compendium",
-         type: String,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      // Rolltable pack
-      game.settings.register(game.system.id, "rollTablePack", {
-         name: "SETTINGS.packs.rollTablePack",
-         scope: "world",   // This means the setting is stored globally for the world
-         config: true,     // This makes it appear in the Settings menu
-         default: "fade-compendiums.roll-table-compendium",
-         type: String,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      // Encumbrance tracking
-      game.settings.register(game.system.id, "encumbrance", {
-         name: "SETTINGS.Encumbrance.Name",
-         hint: "SETTINGS.Encumbrance.Hint",
-         scope: "world",
-         config: true,
-         default: "expert",
-         type: String,
-         requiresReload: true,
-         choices: {
-            none: "SETTINGS.Encumbrance.None",
-            basic: "SETTINGS.Encumbrance.Basic",
-            classic: "SETTINGS.Encumbrance.Classic",
-            expert: "SETTINGS.Encumbrance.Expert",
-         },
-         restricted: true // Only the GM can change this setting         
-      });
-      // Ability check system
-      game.settings.register(game.system.id, "abilityCheck", {
-         name: "SETTINGS.abilityCheckSystem.name",
-         hint: "SETTINGS.abilityCheckSystem.hint",
-         scope: "world",
-         config: true,
-         default: "basic",
-         type: String,
-         requiresReload: true,
-         choices: {
-            basic: "SETTINGS.abilityCheckSystem.choices.basic",
-            tiered: "SETTINGS.abilityCheckSystem.choices.tiered"
-         },
-         restricted: true // Only the GM can change this setting         
-      });
-      // Ability score modifier system
-      game.settings.register(game.system.id, "abilityScoreMods", {
-         name: "SETTINGS.abilityScoreMods.name",
-         hint: "SETTINGS.abilityScoreMods.hint",
-         scope: "world",
-         config: true,
-         type: String,
-         choices: {
-            "simple": "SETTINGS.abilityScoreMods.choices.simple",
-            "heroic": "SETTINGS.abilityScoreMods.choices.heroic",
-         },
-         default: "heroic",
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      // Ability score modifier system
-      game.settings.register(game.system.id, "monsterAbilityScores", {
-         name: "SETTINGS.monsterAbilityScores.name",
-         hint: "SETTINGS.monsterAbilityScores.hint",
-         scope: "world",
-         config: true,
-         type: String,
-         choices: {
-            none: "SETTINGS.Encumbrance.None",
-            withoutmod: "SETTINGS.monsterAbilityScores.choices.withoutmod",
-            withmod: "SETTINGS.monsterAbilityScores.choices.withmod",
-         },
-         default: "none",
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "abilityCheckFormula", {
-         name: "SETTINGS.abilityCheckFormula.name",
-         scope: "world",   // This means the setting is stored globally for the world
-         config: true,     // This makes it appear in the Settings menu
-         default: "1d20",  // Default formula, using DEX modifier
-         type: String,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "abilityAbbr", {
-         name: "SETTINGS.display.abilities.name",
-         hint: "SETTINGS.display.abilities.hint",
-         scope: "client",
-         config: true,
-         type: Boolean,         
-         default: "true"
-      });
-      game.settings.register(game.system.id, "saveAbbr", {
-         name: "SETTINGS.display.saves.name",
-         hint: "SETTINGS.display.saves.hint",
-         scope: "client",
-         config: true,
-         type: Boolean,
-         default: "false"
-      });
-      // Apply the current theme when the game is initialized
-      const currentTheme = game.settings.get(game.system.id, "theme");
-      this.applyTheme(currentTheme);
-
-      game.settings.register(game.system.id, "initiativeFormula", {
-         name: "SETTINGS.initiative.formula.name",
-         hint: "SETTINGS.initiative.formula.hint",
-         scope: "world",     // This means the setting is stored globally for the world
-         config: true,       // This makes it appear in the Settings menu
-         default: "1d6",  // Default formula, using DEX modifier
-         type: String,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-
-      game.settings.register(game.system.id, "initiativeMode", {
-         name: "SETTINGS.initiative.mode.name",
-         hint: "SETTINGS.initiative.mode.hint",
-         scope: "world",
-         config: true,
-         default: "group",  // Default is individual-based initiative
-         type: String,
-         choices: {
-            "individual": "SETTINGS.initiative.mode.choices.individual",
-            "simpleIndividual": "SETTINGS.initiative.mode.choices.simpleIndividual",
-            "individualChecklist": "SETTINGS.initiative.mode.choices.individualChecklist",
-             "group": "SETTINGS.initiative.mode.choices.group",
-             "advancedGroup": "SETTINGS.initiative.mode.choices.advancedGroup"
-         },
-         requiresReload: true
-      });
-
-      game.settings.register(game.system.id, "nextRound", {
-         name: "SETTINGS.initiative.nextRound.name",
-         hint: "SETTINGS.initiative.nextRound.hint",
-         scope: "world",
-         config: true,
-         default: "reset",
-         type: String,
-         choices: {
-            "hold": "SETTINGS.initiative.nextRound.choices.hold",
-            "reset": "SETTINGS.initiative.nextRound.choices.reset",
-            "reroll": "SETTINGS.initiative.nextRound.choices.reroll"
-         },
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting         
-      });
-
-      game.settings.register(game.system.id, "declaredActions", {
-         name: "SETTINGS.declaredActions.name",
-         hint: "SETTINGS.declaredActions.hint",
-         scope: "world",
-         config: true,
-         type: Boolean,
-         default: true,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-
-      // Register duration of a round in seconds.
-      game.settings.register(game.system.id, "roundDurationSec", {
-         name: "SETTINGS.roundDurationSec.name",
-         hint: "SETTINGS.roundDurationSec.hint",
-         scope: "world",
-         config: true,
-         default: 10,
-         type: Number,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-
-      // Register duration of a turn in seconds.
-      game.settings.register(game.system.id, "turnDurationSec", {
-         name: "SETTINGS.turnDurationSec.name",
-         hint: "SETTINGS.turnDurationSec.hint",
-         scope: "world",
-         config: true,
-         default: 600,
-         type: Number,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-
-      game.settings.register(game.system.id, "rememberCollapsedState", {
-         name: "SETTINGS.collapseState.name",
-         hint: "SETTINGS.collapseState.hint",
-         scope: "client", // This setting is player-specific
-         config: true,
-         type: Boolean,
-         default: true // Enable by default
-      });
-
-      game.settings.register(game.system.id, "logCharacterChanges", {
-         name: "SETTINGS.logChanges.name",
-         hint: "SETTINGS.logChanges.hint",
-         scope: "world",
-         config: true,
-         type: Boolean,
-         default: false,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "toasts", {
-         name: "SETTINGS.toasts.name",
-         hint: "SETTINGS.toasts.hint",
-         scope: "world",
-         config: true,
-         type: Boolean,
-         default: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "weaponMastery", {
-         name: "SETTINGS.weaponMastery.name",
-         hint: "SETTINGS.weaponMastery.hint",
-         scope: "world",
-         config: true,
-         type: String,
-         default: "heroic",
-         requiresReload: true,
-         restricted: true, // Only the GM can change this setting
-         choices: {
-            "none": "SETTINGS.weaponMastery.choices.none",
-            "classic": "SETTINGS.weaponMastery.choices.classic",
-            "heroic": "SETTINGS.weaponMastery.choices.heroic"
-         },
-      });
-      game.settings.register(game.system.id, "attackRollFormula", {
-         name: "SETTINGS.attackRollFormula.name",
-         scope: "world",   // This means the setting is stored globally for the world
-         config: true,     // This makes it appear in the Settings menu
-         default: "1d20",  // Default formula, using DEX modifier
-         type: String,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "toHitSystem", {
-         name: "SETTINGS.toHitSystem.name",
-         hint: "SETTINGS.toHitSystem.hint",
-         scope: "world",
-         config: true,
-         type: String,
-         choices: {
-            "thac0": "SETTINGS.toHitSystem.choices.thac0",
-            "classic": "SETTINGS.toHitSystem.choices.classic",
-            "heroic": "SETTINGS.toHitSystem.choices.heroic",
-            "darkdungeons": "SETTINGS.toHitSystem.choices.darkdungeons",
-            "aac": "SETTINGS.toHitSystem.choices.aac"
-         },
-         default: "heroic",
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "showExplorationTarget", {
-         name: "SETTINGS.showExplorationTarget.name",
-         hint: "SETTINGS.showExplorationTarget.hint",
-         scope: "world",
-         config: true,
-         type: Boolean,
-         default: true,
-         restricted: false
-      });
-      game.settings.register(game.system.id, "extraRollOptions", {
-         name: "SETTINGS.extraRollOptions.name",
-         hint: "SETTINGS.extraRollOptions.hint",
-         scope: "world",
-         config: true,
-         type: Boolean,
-         default: false,
-         restricted: true
-      });
-      // Register movement rate per round divisor (base/divisor)
-      game.settings.register(game.system.id, "mvRoundDivisor", {
-         name: "SETTINGS.mvRoundDivisor.name",
-         hint: "SETTINGS.mvRoundDivisor.hint",
-         scope: "world",
-         config: true,
-         default: 3,
-         type: Number,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      // Register 
-      game.settings.register(game.system.id, "runRoundDivisor", {
-         name: "SETTINGS.runRoundDivisor.name",
-         hint: "SETTINGS.runRoundDivisor.hint",
-         scope: "world",
-         config: true,
-         default: 1,
-         type: Number,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "useArmorValue", {
-         name: "SETTINGS.useArmorValue.name",
-         hint: "SETTINGS.useArmorValue.hint",
-         scope: "world",
-         config: true,
-         type: Boolean,
-         default: false,
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-      game.settings.register(game.system.id, "classSystem", {
-         name: "SETTINGS.classSystem.name",
-         hint: "SETTINGS.classSystem.hint",
-         scope: "world",
-         config: true,
-         type: String,
-         choices: {
-            "single": "SETTINGS.classSystem.choices.single",
-            "advanced": "SETTINGS.classSystem.choices.advanced",
-         },
-         default: "single",
-         requiresReload: true,
-         restricted: true // Only the GM can change this setting
-      });
-   }
-
-   #registerNonConfigSettings() {
-      game.settings.register(game.system.id, 'partyTrackerData', {
-         name: "Party Tracker Data",
-         scope: "world",      // This means it's stored for the whole world
-         config: false,       // No need to show it in the UI
-         type: Object,        // The data type is an object
-         default: []          // Default value is an empty array
-      });
-
-      game.settings.register(game.system.id, 'globalEffects', {
-         name: 'Global Active Effects',
-         scope: 'world',
-         config: false,
-         type: Array,
-         default: [],
-      });
-
-      game.settings.register(game.system.id, 'turnData', {
-         name: 'Turn Data',  // Name shown in the settings menu
-         hint: 'Tracks the turns information.',
-         scope: 'world',      // 'world' means it's shared across all users
-         config: false,       // Don't show it in the settings menu
-         type: Object,        // Data type
-         default: {
-            dungeon: {
-               rest: 0,
-               restWarnCount: 0,
-               session: 0,
-               total: 0
+    #registerConfigSettings() {
+        // User Tables Menu
+        game.settings.registerMenu(game.system.id, "userTablesConfig", {
+            name: "FADE.apps.userTables.title",
+            label: "FADE.apps.userTables.title",
+            icon: "fas fa-table",
+            type: UserTablesConfig,
+            restricted: true
+        });
+        // Theme
+        game.settings.register(game.system.id, "theme", {
+            name: "SETTINGS.Theme.Name",
+            hint: "SETTINGS.Theme.Hint",
+            scope: "client",
+            config: true,
+            type: String,
+            requiresReload: false,
+            choices: {
+                "light": "SETTINGS.Theme.Light",
+                "dark": "SETTINGS.Theme.Dark"
             },
-            worldTime: 0
-         },
-         restricted: true // Only the GM can change this setting
-      });
+            default: "dark",
+            onChange: value => this.applyTheme(value)
+        });
+        // Actor pack
+        game.settings.register(game.system.id, "actorPack", {
+            name: "SETTINGS.packs.actorPack",
+            scope: "world",   // This means the setting is stored globally for the world
+            config: true,     // This makes it appear in the Settings menu
+            default: "fade-compendiums.actor-compendium",
+            type: String,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        // Item pack
+        game.settings.register(game.system.id, "itemPack", {
+            name: "SETTINGS.packs.itemPack",
+            scope: "world",   // This means the setting is stored globally for the world
+            config: true,     // This makes it appear in the Settings menu
+            default: "fade-compendiums.item-compendium",
+            type: String,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        // Rolltable pack
+        game.settings.register(game.system.id, "rollTablePack", {
+            name: "SETTINGS.packs.rollTablePack",
+            scope: "world",   // This means the setting is stored globally for the world
+            config: true,     // This makes it appear in the Settings menu
+            default: "fade-compendiums.roll-table-compendium",
+            type: String,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        // Encumbrance tracking
+        game.settings.register(game.system.id, "encumbrance", {
+            name: "SETTINGS.Encumbrance.Name",
+            hint: "SETTINGS.Encumbrance.Hint",
+            scope: "world",
+            config: true,
+            default: "expert",
+            type: String,
+            requiresReload: true,
+            choices: {
+                none: "SETTINGS.Encumbrance.None",
+                basic: "SETTINGS.Encumbrance.Basic",
+                classic: "SETTINGS.Encumbrance.Classic",
+                expert: "SETTINGS.Encumbrance.Expert",
+            },
+            restricted: true // Only the GM can change this setting         
+        });
+        // Ability check system
+        game.settings.register(game.system.id, "abilityCheck", {
+            name: "SETTINGS.abilityCheckSystem.name",
+            hint: "SETTINGS.abilityCheckSystem.hint",
+            scope: "world",
+            config: true,
+            default: "basic",
+            type: String,
+            requiresReload: true,
+            choices: {
+                basic: "SETTINGS.abilityCheckSystem.choices.basic",
+                tiered: "SETTINGS.abilityCheckSystem.choices.tiered"
+            },
+            restricted: true // Only the GM can change this setting         
+        });
+        // Ability score modifier system
+        game.settings.register(game.system.id, "abilityScoreMods", {
+            name: "SETTINGS.abilityScoreMods.name",
+            hint: "SETTINGS.abilityScoreMods.hint",
+            scope: "world",
+            config: true,
+            type: String,
+            choices: {
+                "simple": "SETTINGS.abilityScoreMods.choices.simple",
+                "heroic": "SETTINGS.abilityScoreMods.choices.heroic",
+            },
+            default: "heroic",
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        // Ability score modifier system
+        game.settings.register(game.system.id, "monsterAbilityScores", {
+            name: "SETTINGS.monsterAbilityScores.name",
+            hint: "SETTINGS.monsterAbilityScores.hint",
+            scope: "world",
+            config: true,
+            type: String,
+            choices: {
+                none: "SETTINGS.Encumbrance.None",
+                withoutmod: "SETTINGS.monsterAbilityScores.choices.withoutmod",
+                withmod: "SETTINGS.monsterAbilityScores.choices.withmod",
+            },
+            default: "none",
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "abilityCheckFormula", {
+            name: "SETTINGS.abilityCheckFormula.name",
+            scope: "world",   // This means the setting is stored globally for the world
+            config: true,     // This makes it appear in the Settings menu
+            default: "1d20",  // Default formula, using DEX modifier
+            type: String,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "abilityAbbr", {
+            name: "SETTINGS.display.abilities.name",
+            hint: "SETTINGS.display.abilities.hint",
+            scope: "client",
+            config: true,
+            type: Boolean,
+            default: "true"
+        });
+        game.settings.register(game.system.id, "saveAbbr", {
+            name: "SETTINGS.display.saves.name",
+            hint: "SETTINGS.display.saves.hint",
+            scope: "client",
+            config: true,
+            type: Boolean,
+            default: "false"
+        });
+        // Apply the current theme when the game is initialized
+        const currentTheme = game.settings.get(game.system.id, "theme");
+        this.applyTheme(currentTheme);
 
-      // Register the systemMigrationVersion setting
-      game.settings.register(game.system.id, "gameVer", {
-         name: "System Migration Version",
-         hint: "Stores the current version of the system to manage data migrations.",
-         scope: "world",  // "world" scope means it's stored at the world level, shared by all users
-         config: false,   // Set to false to hide it from the settings UI
-         type: String,    // The type of the setting (String, Number, Boolean, etc.)
-         default: "0.0.0" // Set a default version, e.g., "0.0.0"
-      });
+        game.settings.register(game.system.id, "initiativeFormula", {
+            name: "SETTINGS.initiative.formula.name",
+            hint: "SETTINGS.initiative.formula.hint",
+            scope: "world",     // This means the setting is stored globally for the world
+            config: true,       // This makes it appear in the Settings menu
+            default: "1d6",  // Default formula, using DEX modifier
+            type: String,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
 
-      game.settings.register(game.system.id, 'userTables', {
-         name: 'User Tables',
-         scope: 'world',
-         config: false,
-         type: Object,
-         default: {}
-      });
-   }
+        game.settings.register(game.system.id, "initiativeMode", {
+            name: "SETTINGS.initiative.mode.name",
+            hint: "SETTINGS.initiative.mode.hint",
+            scope: "world",
+            config: true,
+            default: "group",  // Default is individual-based initiative
+            type: String,
+            choices: {
+                "individual": "SETTINGS.initiative.mode.choices.individual",
+                "simpleIndividual": "SETTINGS.initiative.mode.choices.simpleIndividual",
+                "individualChecklist": "SETTINGS.initiative.mode.choices.individualChecklist",
+                "group": "SETTINGS.initiative.mode.choices.group",
+                "advancedGroup": "SETTINGS.initiative.mode.choices.advancedGroup"
+            },
+            requiresReload: true
+        });
 
-   // This function applies the selected theme by adding/removing relevant classes
-   applyTheme(theme) {
-      let root = document.documentElement;
-      if (theme === "dark") {
-         root.classList.add("dark-mode");
-         root.classList.remove("light-mode");
-      } else {
-         root.classList.add("light-mode");
-         root.classList.remove("dark-mode");
-      }
-   }
+        game.settings.register(game.system.id, "nextRound", {
+            name: "SETTINGS.initiative.nextRound.name",
+            hint: "SETTINGS.initiative.nextRound.hint",
+            scope: "world",
+            config: true,
+            default: "reset",
+            type: String,
+            choices: {
+                "hold": "SETTINGS.initiative.nextRound.choices.hold",
+                "reset": "SETTINGS.initiative.nextRound.choices.reset",
+                "reroll": "SETTINGS.initiative.nextRound.choices.reroll"
+            },
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting         
+        });
 
-   renderSettingsConfig(app, html, data) {
-      html = $(html);
-      // Select the Initiative Mode dropdown by its name attribute
-      const initiativeModeSetting = html.find(`select[name="${game.system.id}.initiativeMode"]`);
-      // Select the Initiative Formula input by its name attribute
-      const initiativeFormulaInput = html.find(`input[name="${game.system.id}.initiativeFormula"]`);
+        game.settings.register(game.system.id, "declaredActions", {
+            name: "SETTINGS.declaredActions.name",
+            hint: "SETTINGS.declaredActions.hint",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: true,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
 
-      // Attach a change event listener to the Initiative Mode dropdown
-      initiativeModeSetting.change(event => {
-         const selectedValue = event.target.value;
+        // Register duration of a round in seconds.
+        game.settings.register(game.system.id, "roundDurationSec", {
+            name: "SETTINGS.roundDurationSec.name",
+            hint: "SETTINGS.roundDurationSec.hint",
+            scope: "world",
+            config: true,
+            default: 10,
+            type: Number,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
 
-         // Set the initiative formula based on the selected initiative mode
-         if (selectedValue === "group") {
-            initiativeFormulaInput.val("1d6");  // Set for group mode
-         } else {
-            initiativeFormulaInput.val("1d20 + @mod");  // Set for individual mode
-         }
-      });
+        // Register duration of a turn in seconds.
+        game.settings.register(game.system.id, "turnDurationSec", {
+            name: "SETTINGS.turnDurationSec.name",
+            hint: "SETTINGS.turnDurationSec.hint",
+            scope: "world",
+            config: true,
+            default: 600,
+            type: Number,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
 
-      // Set the initial state when the settings form is rendered
-      const currentValue = game.settings.get(game.system.id, "initiativeMode");
-   }
+        game.settings.register(game.system.id, "rememberCollapsedState", {
+            name: "SETTINGS.collapseState.name",
+            hint: "SETTINGS.collapseState.hint",
+            scope: "client", // This setting is player-specific
+            config: true,
+            type: Boolean,
+            default: true // Enable by default
+        });
+
+        game.settings.register(game.system.id, "logCharacterChanges", {
+            name: "SETTINGS.logChanges.name",
+            hint: "SETTINGS.logChanges.hint",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: false,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "toasts", {
+            name: "SETTINGS.toasts.name",
+            hint: "SETTINGS.toasts.hint",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "weaponMastery", {
+            name: "SETTINGS.weaponMastery.name",
+            hint: "SETTINGS.weaponMastery.hint",
+            scope: "world",
+            config: true,
+            type: String,
+            default: "heroic",
+            requiresReload: true,
+            restricted: true, // Only the GM can change this setting
+            choices: {
+                "none": "SETTINGS.weaponMastery.choices.none",
+                "classic": "SETTINGS.weaponMastery.choices.classic",
+                "heroic": "SETTINGS.weaponMastery.choices.heroic"
+            },
+        });
+        game.settings.register(game.system.id, "attackRollFormula", {
+            name: "SETTINGS.attackRollFormula.name",
+            scope: "world",   // This means the setting is stored globally for the world
+            config: true,     // This makes it appear in the Settings menu
+            default: "1d20",  // Default formula, using DEX modifier
+            type: String,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "toHitSystem", {
+            name: "SETTINGS.toHitSystem.name",
+            hint: "SETTINGS.toHitSystem.hint",
+            scope: "world",
+            config: true,
+            type: String,
+            choices: {
+                "thac0": "SETTINGS.toHitSystem.choices.thac0",
+                "classic": "SETTINGS.toHitSystem.choices.classic",
+                "heroic": "SETTINGS.toHitSystem.choices.heroic",
+                "darkdungeons": "SETTINGS.toHitSystem.choices.darkdungeons",
+                "aac": "SETTINGS.toHitSystem.choices.aac"
+            },
+            default: "heroic",
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "showExplorationTarget", {
+            name: "SETTINGS.showExplorationTarget.name",
+            hint: "SETTINGS.showExplorationTarget.hint",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: true,
+            restricted: false
+        });
+        game.settings.register(game.system.id, "extraRollOptions", {
+            name: "SETTINGS.extraRollOptions.name",
+            hint: "SETTINGS.extraRollOptions.hint",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: false,
+            restricted: true
+        });
+        // Register movement rate per round divisor (base/divisor)
+        game.settings.register(game.system.id, "mvRoundDivisor", {
+            name: "SETTINGS.mvRoundDivisor.name",
+            hint: "SETTINGS.mvRoundDivisor.hint",
+            scope: "world",
+            config: true,
+            default: 3,
+            type: Number,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        // Register 
+        game.settings.register(game.system.id, "runRoundDivisor", {
+            name: "SETTINGS.runRoundDivisor.name",
+            hint: "SETTINGS.runRoundDivisor.hint",
+            scope: "world",
+            config: true,
+            default: 1,
+            type: Number,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "useArmorValue", {
+            name: "SETTINGS.useArmorValue.name",
+            hint: "SETTINGS.useArmorValue.hint",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: false,
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+        game.settings.register(game.system.id, "classSystem", {
+            name: "SETTINGS.classSystem.name",
+            hint: "SETTINGS.classSystem.hint",
+            scope: "world",
+            config: true,
+            type: String,
+            choices: {
+                "single": "SETTINGS.classSystem.choices.single",
+                "advanced": "SETTINGS.classSystem.choices.advanced",
+            },
+            default: "single",
+            requiresReload: true,
+            restricted: true // Only the GM can change this setting
+        });
+    }
+
+    #registerNonConfigSettings() {
+        game.settings.register(game.system.id, 'partyTrackerData', {
+            name: "Party Tracker Data",
+            scope: "world",      // This means it's stored for the whole world
+            config: false,       // No need to show it in the UI
+            type: Object,        // The data type is an object
+            default: []          // Default value is an empty array
+        });
+
+        game.settings.register(game.system.id, 'globalEffects', {
+            name: 'Global Active Effects',
+            scope: 'world',
+            config: false,
+            type: Array,
+            default: [],
+        });
+
+        game.settings.register(game.system.id, 'turnData', {
+            name: 'Turn Data',  // Name shown in the settings menu
+            hint: 'Tracks the turns information.',
+            scope: 'world',      // 'world' means it's shared across all users
+            config: false,       // Don't show it in the settings menu
+            type: Object,        // Data type
+            default: {
+                dungeon: {
+                    rest: 0,
+                    restWarnCount: 0,
+                    session: 0,
+                    total: 0
+                },
+                worldTime: 0
+            },
+            restricted: true // Only the GM can change this setting
+        });
+
+        // Register the systemMigrationVersion setting
+        game.settings.register(game.system.id, "gameVer", {
+            name: "System Migration Version",
+            hint: "Stores the current version of the system to manage data migrations.",
+            scope: "world",  // "world" scope means it's stored at the world level, shared by all users
+            config: false,   // Set to false to hide it from the settings UI
+            type: String,    // The type of the setting (String, Number, Boolean, etc.)
+            default: "0.0.0" // Set a default version, e.g., "0.0.0"
+        });
+
+        game.settings.register(game.system.id, 'userTables', {
+            name: 'User Tables',
+            scope: 'world',
+            config: false,
+            type: Object,
+            default: {}
+        });
+    }
+
+    // This function applies the selected theme by adding/removing relevant classes
+    applyTheme(theme) {
+        let root = document.documentElement;
+        if (theme === "dark") {
+            root.classList.add("dark-mode");
+            root.classList.remove("light-mode");
+        } else {
+            root.classList.add("light-mode");
+            root.classList.remove("dark-mode");
+        }
+    }
+
+    renderSettingsConfig(app, html, data) {
+        html = $(html);
+        // Select the Initiative Mode dropdown by its name attribute
+        const initiativeModeSetting = html.find(`select[name="${game.system.id}.initiativeMode"]`);
+        // Select the Initiative Formula input by its name attribute
+        const initiativeFormulaInput = html.find(`input[name="${game.system.id}.initiativeFormula"]`);
+        // advancedGroup initiative mode forces declared actions to be true.
+        const declaredActionsInput = html.find(`input[name="${game.system.id}.declaredActions"]`);
+        declaredActionsInput?.prop('disabled', initiativeModeSetting.val() === "advancedGroup");
+
+        // Attach a change event listener to the Initiative Mode dropdown
+        initiativeModeSetting.change(event => {
+            const selectedValue = event.target.value;
+
+            // Set the initiative formula based on the selected initiative mode
+            if (selectedValue === "group") {
+                initiativeFormulaInput.val("1d6");  // Set for group mode
+            } else {
+                initiativeFormulaInput.val("1d20 + @mod");  // Set for individual mode
+            }
+            if (selectedValue === "advancedGroup") {
+                declaredActionsInput?.prop('checked', true).prop('disabled', true);
+                game.settings.set(game.system.id, "declaredActions", true);
+            } else {
+                declaredActionsInput?.prop('disabled', false);
+            }
+        });
+
+        // Set the initial state when the settings form is rendered
+        const currentValue = game.settings.get(game.system.id, "initiativeMode");
+    }
 }

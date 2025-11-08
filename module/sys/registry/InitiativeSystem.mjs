@@ -1,21 +1,11 @@
 import { DialogFactory } from '../../dialog/DialogFactory.mjs';
 import { SocketManager } from '../SocketManager.mjs'
+import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
 
-export class InitiativeInterface {
+class BaseInitiative {
     async rollInitiative(combat, ids, options = {}) { throw new Error("Method not implemented."); }
-    async setupTurns(combat) { throw new Error("Method not implemented."); }
-}
-
-export class IndivInit extends InitiativeInterface {
-    constructor() {
-        super();
-        this.declaredActions = game.settings.get(game.system.id, "declaredActions");
-        this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases.normal);
-        this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
-    }
 
     /**
-     * @override
      * @returns Combatant[]
      */
     setupTurns(combat) {
@@ -25,6 +15,64 @@ export class IndivInit extends InitiativeInterface {
         }
 
         return combat.updateStateTracking(turns);
+    }
+
+    /**
+     * Add custom elements to the combat tracker UI.
+     * @param {any} html
+     * @param {any} data
+     */
+    async renderCombatTracker(html, data) {
+        // Iterate over each combatant and apply a CSS class based on disposition
+        for (let combatant of data.combat.combatants) {
+            /* console.debug(combatant);*/
+            const disposition = combatant.token.disposition;
+            const combatantElement = html.querySelector(`.combatant[data-combatant-id="${combatant.id}"]`);
+            // Set disposition indicator
+            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+                combatantElement.classList.add("disposition-friendly");
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+                combatantElement.classList.add("disposition-neutral");
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+                combatantElement.classList.add("disposition-hostile");
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+                combatantElement.classList.add("disposition-secret");
+            }
+            if (data.combat.declaredActions === true) {
+                await this.setupElem(combatantElement, combatant);
+            }
+        }
+    }
+
+    /**
+     * Adds the combat manuever declaration control to the combat tracker.
+     * @param {any} combat
+     * @param {any} combatantElement
+     * @param {any} combatant
+     */
+    async setupElem(combatantElement, combatant) {
+        const combatantControls = combatantElement.querySelector(".combatant-controls");
+        const templateData = {
+            combatant,
+            showMove: combatant.canMove,
+            showAction: true
+        };
+        if (combatant.isSlowed) {
+            const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
+            combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+        }
+
+        const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
+        combatantControls.insertAdjacentHTML("afterend", controlsContent);
+    }
+}
+
+export class IndivInit extends BaseInitiative {
+    constructor() {
+        super();
+        this.declaredActions = game.settings.get(game.system.id, "declaredActions");
+        this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases.normal);
+        this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
     }
 
     /**
@@ -150,25 +198,12 @@ export class IndivInit extends InitiativeInterface {
     }
 }
 
-export class GroupInit extends InitiativeInterface {
+export class GroupInit extends BaseInitiative {
     constructor() {
         super();
         this.declaredActions = game.settings.get(game.system.id, "declaredActions");
         this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases.normal);
         this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
-    }
-
-    /**
-     * @override
-     * @returns Combatant[]
-     */
-    setupTurns(combat) {
-        const turns = combat.combatants.contents.filter((combatant) => combatant.actor && combatant.token);
-        if (turns.length > 0) {
-            turns.sort((a, b) => this.sortCombatant(a, b));
-        }
-
-        return combat.updateStateTracking(turns);
     }
 
     /**
@@ -392,10 +427,32 @@ export class GroupInit extends InitiativeInterface {
 export class AltGroupInit extends GroupInit {
     constructor() {
         super();
+        this.phaseOrders = CONFIG.FADE.CombatPhases.immortal;
     }
 
     /**
-     * Sort two combatants
+     * @override
+     * @returns Combatant[]
+     */
+    setupTurns(combat) {
+        const swiftTurns = combat.combatants.contents.filter((combatant) => combatant.actor && combatant.token
+            && (combatant.canMove || combatant.isSwifterAction || combatant.initiative == null));
+        if (swiftTurns.length > 0) {
+            this.phaseOrder = Object.keys(this.phaseOrders.swifter);
+            swiftTurns.sort((a, b) => this.sortCombatant(a, b));
+            swiftTurns.forEach(i => i.isSwifterPhase = i.initiative != null);
+        }
+        const turns = combat.combatants.contents.filter((combatant) => combatant.initiative && combatant.actor && combatant.token && !combatant.isSwifterAction);
+        if (turns.length > 0) {
+            this.phaseOrder = Object.keys(this.phaseOrders.slower);
+            turns.sort((a, b) => this.sortCombatant(a, b));
+        }
+
+        return combat.updateStateTracking([...swiftTurns, ...turns]);
+    }
+
+    /**
+     * Sort two combatants for the non-swift actions phase
      * @param {any} a Combatant 1, or a
      * @param {any} b Combatant 2, or b
      * @returns A negative value indicates a comes before b, a positive value indicates a comes after b 
@@ -409,7 +466,7 @@ export class AltGroupInit extends GroupInit {
         const bPhase = b.declaredActionPhase;
 
         // Use combat phases order
-        if (this.declaredActions === true && result === 0 && a.initiative !== null && b.initiative !== null) {
+        if (this.declaredActions === true && a.initiative !== null && b.initiative !== null) {
             // Only compare if both combatants have a valid phase
             if (aPhase && bPhase && aPhase !== bPhase) {
                 const aPhaseIndex = this.phaseOrder.indexOf(aPhase);
@@ -436,5 +493,90 @@ export class AltGroupInit extends GroupInit {
         }
 
         return result;
+    }
+
+    /**
+     * @override
+     * Add custom elements to the combat tracker UI.
+     * @param {any} html
+     * @param {any} data
+     */
+    async renderCombatTracker(html, data) {
+        // Iterate over each combatant and apply a CSS class based on disposition
+        const swifter = {};
+        for (let combatant of data.combat.turns) {
+            let isSwifterPhase = false;
+            if ((combatant.canMove || combatant.isSwifterAction) && swifter[combatant.id] === undefined) {
+                swifter[combatant.id] = true;
+                isSwifterPhase = true;
+            }
+
+            const disposition = combatant.token.disposition;
+            const combatantElems = document.querySelectorAll(`.combatant[data-combatant-id="${combatant.id}"]`);
+
+            // Set disposition indicator
+            if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+                combatantElems.forEach(el => el.classList.add("disposition-friendly"));
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+                combatantElems.forEach(el => el.classList.add("disposition-neutral"));
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+                combatantElems.forEach(el => el.classList.add("disposition-hostile"));
+            } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+                combatantElems.forEach(el => el.classList.add("disposition-secret"));
+            }
+
+            if (isSwifterPhase === true) {
+                console.debug(`${combatant.name} swifter`);
+                const swifterElem = combatantElems[0];
+                await this.setupSwifterElem(swifterElem, combatant);
+            } else {
+                console.debug(`${combatant.name} slower`);
+                const slowerElem = (!combatant.isSwifterAction && combatant.canMove) ? combatantElems[1] : combatantElems[0];
+                await this.setupSlowerElem(slowerElem, combatant);
+            }
+        }
+    }
+
+    /**
+     * Adds the combat manuever declaration control to the combat tracker.
+     * @param {any} combat
+     * @param {any} combatantElement
+     * @param {any} combatant
+     */
+    async setupSwifterElem(combatantElement, combatant) {
+        const combatantControls = combatantElement.querySelector(".combatant-controls");
+        const templateData = {
+            combatant,
+            isSwifter: true,
+            showMove: combatant.canMove,
+            showAction: combatant.isSwifterAction
+        };
+        if (combatant.isSlowed) {
+            const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
+            combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+        }
+        const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
+        combatantControls.insertAdjacentHTML("afterend", controlsContent);
+    }
+
+    /**
+     * Adds the combat manuever declaration control to the combat tracker.
+     * @param {any} combat
+     * @param {any} combatantElement
+     * @param {any} combatant
+     */
+    async setupSlowerElem(combatantElement, combatant) {
+        const combatantControls = combatantElement.querySelector(".combatant-controls");
+        const templateData = {
+            combatant,
+            isSlower: true,
+            showAction: !combatant.isSwifterAction
+        };
+        if (combatant.isSlowed) {
+            const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
+            combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+        }
+        const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
+        combatantControls.insertAdjacentHTML("afterend", controlsContent);
     }
 }

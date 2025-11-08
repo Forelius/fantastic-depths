@@ -118,18 +118,21 @@ FADE.CombatPhases = {
         melee: { declared: true },
         specialEnd: { declared: true }
     },
-    immortal: [{
-        specialBegin: { declared: true },
-        morale: { declared: false },
-        movement: { declared: false },
-        missile: { declared: true },
-        magicItem: { declared: true },
-    },
-    {
-        magic: { declared: true },
-        melee: { declared: true },
-        specialEnd: { declared: true }
-    }]
+    immortal: {
+        swifter: {
+            specialBegin: { declared: true },
+            morale: { declared: false },
+            movement: { declared: false },
+            missile: { declared: true },
+            magicItem: { declared: true },
+        },
+        slower: {
+            magic: { declared: true },
+            melee: { declared: true },
+            specialEnd: { declared: true }
+        }
+    }
+
 };
 FADE.CombatManeuvers = {
     nothing: { phase: "specialEnd" },
