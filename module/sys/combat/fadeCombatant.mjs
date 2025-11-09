@@ -48,9 +48,9 @@ export class fadeCombatant extends Combatant {
             const actions = this.actor.getAvailableActions();
 
             // If the current action isn't available, change it.
-            if (actions.find(action => action == this.actor?.system.combat.declaredAction) === undefined) {
-                this.actor.update({ 'system.combat.declaredAction': "nothing" });
-            }
+            //if (actions.find(action => action == this.actor?.system.combat.declaredAction) === undefined) {
+            //    this.actor.update({ 'system.combat.declaredAction': "nothing" });
+            //}
 
             this._availableActions = Object.entries(CONFIG.FADE.CombatManeuvers)
                 .filter(action => actions.includes(action[0]))
@@ -101,6 +101,9 @@ export class fadeCombatant extends Combatant {
     async roundReset(isExit = false) {
         const promises = [];
 
+        // Reset ctIndices
+        //promises.push(this.update({ "flags.ctIndices": [] }));
+
         // Reset weapon attacks to zero
         const weapons = this.actor.items.filter(item => item.type === "weapon");
         for (let weapon of weapons) {
@@ -116,6 +119,7 @@ export class fadeCombatant extends Combatant {
         }
         // Reset initiative to null
         promises.push(this.actor.update({
+            //"system.combat.ctIndices": [],
             "system.combat.attacks": 0,
             "system.combat.attAgainstH": 0,
             "system.combat.attAgainstM": 0,

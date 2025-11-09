@@ -428,6 +428,7 @@ export class AltGroupInit extends GroupInit {
     constructor() {
         super();
         this.phaseOrders = CONFIG.FADE.CombatPhases.immortal;
+        this.phaseIndex = 0;
     }
 
     /**
@@ -435,18 +436,24 @@ export class AltGroupInit extends GroupInit {
      * @returns Combatant[]
      */
     setupTurns(combat) {
+        this.phaseIndex = 0;
         const swiftTurns = combat.combatants.contents.filter((combatant) => combatant.actor && combatant.token
             && (combatant.canMove || combatant.isSwifterAction || combatant.initiative == null));
+
         if (swiftTurns.length > 0) {
             this.phaseOrder = Object.keys(this.phaseOrders.swifter);
             swiftTurns.sort((a, b) => this.sortCombatant(a, b));
             swiftTurns.forEach(i => i.isSwifterPhase = i.initiative != null);
         }
+        //swiftTurns.forEach((c, i) => { if (c.flags.ctIndices !== undefined && !c.flags.ctIndices[0]) c.flags.ctIndices[0] = i });
+
+        this.phaseIndex = 1;
         const turns = combat.combatants.contents.filter((combatant) => combatant.initiative && combatant.actor && combatant.token && !combatant.isSwifterAction);
         if (turns.length > 0) {
             this.phaseOrder = Object.keys(this.phaseOrders.slower);
             turns.sort((a, b) => this.sortCombatant(a, b));
         }
+        //turns.forEach((c, i) => { if (c.flags.ctIndices !== undefined && !c.flags.ctIndices[1]) c.flags.ctIndices[1] = i + swiftTurns.length });
 
         return combat.updateStateTracking([...swiftTurns, ...turns]);
     }
@@ -465,8 +472,14 @@ export class AltGroupInit extends GroupInit {
         const aPhase = a.declaredActionPhase;
         const bPhase = b.declaredActionPhase;
 
+        //if (a.flags.ctIndices?.[this.phaseIndex] != null && b.flags.ctIndices?.[this.phaseIndex] != null
+        //    && a.flags.ctIndices[this.phaseIndex] !== b.flags.ctIndices[this.phaseIndex]) {
+        //    result = a.flags.ctIndices[this.phaseIndex] - b.flags.ctIndices[this.phaseIndex];
+        //    console.debug(`${a.token.name}: ${a.flags.ctIndices[this.phaseIndex]}`);
+        //}
+
         // Use combat phases order
-        if (this.declaredActions === true && a.initiative !== null && b.initiative !== null) {
+        if (a.initiative !== null && b.initiative !== null) {
             // Only compare if both combatants have a valid phase
             if (aPhase && bPhase && aPhase !== bPhase) {
                 const aPhaseIndex = this.phaseOrder.indexOf(aPhase);
@@ -526,11 +539,9 @@ export class AltGroupInit extends GroupInit {
             }
 
             if (isSwifterPhase === true) {
-                console.debug(`${combatant.name} swifter`);
                 const swifterElem = combatantElems[0];
                 await this.setupSwifterElem(swifterElem, combatant);
             } else {
-                console.debug(`${combatant.name} slower`);
                 const slowerElem = (!combatant.isSwifterAction && combatant.canMove) ? combatantElems[1] : combatantElems[0];
                 await this.setupSlowerElem(slowerElem, combatant);
             }

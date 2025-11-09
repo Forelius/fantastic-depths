@@ -128,6 +128,18 @@ export class fadeCombat extends Combat {
     }
 
     /**
+     * Reset all combatant initiative scores, setting the turn back to zero
+     * @returns {Promise<Combat>}
+     */
+    async resetAll() {
+        await super.resetAll();
+        //for (let c of this.combatants) {
+        //    c.updateSource({ initiative: null, "flags.ctIndices": [] });
+        //}
+        //return this.update({ turn: this.started ? 0 : null, combatants: this.combatants.toObject() }, { diff: false });
+    }
+
+    /**
      * @override
      * Activate a combatant by turn index.
      * @param {number} turn Turn index to activate
@@ -217,6 +229,7 @@ export class fadeCombat extends Combat {
         if (game.user.isGM && combatant.actor) {
             this.tryClosePlayerCombatForm([userId]);
             await combatant.actor.update({ "system.combat.declaredAction": null });
+            await combatant.roundReset();
         }
     }
 
