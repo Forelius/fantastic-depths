@@ -322,7 +322,7 @@ export class ToHitSystemBase extends ToHitInterface {
 
             // Check if group applies: start with group membership, then check special rule if needed
             const isMember = actorGroups.includes(groupId);
-            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
+            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule, modData));
 
             if (groupApplies) {
                result += modData.toHit || 0;

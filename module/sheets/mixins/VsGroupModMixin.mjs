@@ -6,7 +6,6 @@ import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs"
  * @returns
  */
 const VsGroupModMixin = (superclass) => class extends superclass {
-
    /**
     * Default options for the mixin
     */
@@ -42,7 +41,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
          const group = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
          if (group) {
             const groupName = game.i18n.localize(`FADE.Actor.actorGroups.${groupId}`);
-            vsGroupData.push({ id: groupId, name: groupName, dmg: groupData.dmg || 0, toHit: groupData.toHit || 0 });
+            vsGroupData.push({ id: groupId, name: groupName, dmg: groupData.dmg || 0, toHit: groupData.toHit || 0, special: groupData.special });
          }
       }
       context.vsGroupData = vsGroupData;
@@ -55,7 +54,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
     */
    static async _clickAddVsGroup(event) {
       event.preventDefault();
-      
+
       // Get available actor groups that aren't already in the vsGroup
       const currentVsGroups = Object.keys(this.item.system.mod.vsGroup || {});
       const availableGroups = CONFIG.FADE.ActorGroups
@@ -64,57 +63,54 @@ const VsGroupModMixin = (superclass) => class extends superclass {
             value: group.id,
             label: game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`)
          }));
-      
+
       if (availableGroups.length === 0) {
          ui.notifications.warn("All actor groups are already configured.");
          return;
       }
-      
+
       // Create dialog to select actor group
-      const content = `
-         <form>
+      const content = `<form>
             <div class="form-group">
                <label>Select Actor Group:</label>
                <select name="actorGroup">
-                  ${availableGroups.map(group => 
-                     `<option value="${group.value}">${group.label}</option>`
-                  ).join('')}
+                  ${availableGroups.map(group =>
+         `<option value="${group.value}">${group.label}</option>`
+      ).join('')}
                </select>
             </div>
-         </form>
-      `;
-      
+         </form>`;
+
       const result = await foundry.applications.api.DialogV2.wait({
          window: { title: "Add VS Group Modifier" },
          content,
+         rejectClose: false,
          buttons: [
             {
                action: "add",
                label: "Add",
                default: true,
                callback: (event, button, dialog) => {
-                   const formData = new CodeMigrate.FormDataExtended(button.form).object;
-                   return formData.actorGroup;
-                }
+                  const formData = new CodeMigrate.FormDataExtended(button.form).object;
+                  return CONFIG.FADE.ActorGroups.find(i => i.id == formData.actorGroup);
+               }
             },
             {
                action: "cancel",
                label: "Cancel",
-               callback: () => null
+               callback: () => { }
             }
          ],
-         close: () => null,
+         close: () => { },
          classes: ["fantastic-depths"]
       });
-      
+
       if (result) {
-         const updateData = {
-            [`system.mod.vsGroup.${result}`]: { dmg: 0, toHit: 0 }
-         };
+         let updateData = { [`system.mod.vsGroup.${result.id}`]: { dmg: 0, toHit: 0, special: result.special ? "" : null } };
          await this.item.update(updateData);
       }
    }
-   
+
    /**
     * Handle deleting a VS Group modifier
     * @param {Event} event The originating click event
@@ -122,7 +118,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
     */
    static async _clickDeleteVsGroup(event) {
       event.preventDefault();
-      
+
       const groupId = event.target.closest('[data-group-id]').dataset.groupId;
       const updateData = {
          [`system.mod.vsGroup.-=${groupId}`]: null

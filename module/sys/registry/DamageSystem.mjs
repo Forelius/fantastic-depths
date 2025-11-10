@@ -71,7 +71,7 @@ export class DamageSystem extends DamageSystemInterface {
 
          // Check if group applies: start with group membership, then check special rule if needed
          const isMember = actorGroups.includes(groupId);
-         const groupApplies = isMember || (groupDef?.rule && this.checkSpecialRule(targetActor, groupDef.rule));
+         const groupApplies = isMember || (groupDef?.rule && this.checkSpecialRule(targetActor, groupDef.rule, modData));
 
          if (groupApplies) {
             totalMod += modData.dmg || 0;
@@ -89,24 +89,34 @@ export class DamageSystem extends DamageSystemInterface {
     * @returns {boolean} - Whether the token meets the rule criteria
     * @private
     */
-   checkSpecialRule(actor, rule) {
+   checkSpecialRule(actor, rule, modData) {
+      let result = false;
       switch (rule) {
          case "enchanted":
             // Check if actor is enchanted
-            return actor.system.isEnchanted === true;
-
+            result = actor.system.isEnchanted === true;
+            break;
          case "spellcaster":
             // Check if actor can cast spells (has spell levels > 0)
-            return actor.system.config?.maxSpellLevel > 0;
-
+            result = actor.system.config?.maxSpellLevel > 0;
+            break;
          case "equippedWeapon":
             // Check if actor has any equipped weapons
-            return actor.items.some(item => item.type === "weapon" && item.system.equipped === true && item.system.natural === false);
-
+            result = actor.items.some(item => item.type === "weapon" && item.system.equipped === true && item.system.natural === false);
+            break;
+         case "alignment":
+            // Check if actor alignment matches
+            result = actor.system.details.alignment == modData.special;
+            break;
+         case "name":
+            // Check if actor name starts with...
+            result = actor.name.startsWith(modData.special);
+            break;
          default:
             console.warn(`Unknown special rule: ${rule}`);
-            return false;
+            break;
       }
+      return result;
    }
 
    getMeleeDamageScale(weapon, digest, attackerData, targetActor) {
