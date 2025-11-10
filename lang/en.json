@@ -268,7 +268,9 @@
         "water-breathing": "Water-breathing",
         "weapon-using": "Weapon-using",
         "plants": "Plants",
-        "flaming-weak": "Flaming-weak"
+        "flaming-weak": "Flaming-weak",
+        "alignment": "Alignment",
+        "name": "Name"
       }
     },
     "SheetLabel": {
