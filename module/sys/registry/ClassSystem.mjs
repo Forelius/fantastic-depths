@@ -488,8 +488,8 @@ export class SingleClassSystem extends ClassSystemBase {
     async onCharacterActorUpdate(actor, updateData, skipItems = false) {
         if ((actor.system.details?.class && actor.system.details?.level != null)
             && (updateData.system?.details?.class !== undefined
-                || updateData.system?.details?.level !== undefined
-                || updateData.system?.abilities !== undefined)) {
+            || updateData.system?.details?.level !== undefined
+            || updateData.system?.abilities !== undefined)) {
             await this.#prepareClassInfo(actor);
             await this.#updateLevelClass(actor, skipItems);
         }
