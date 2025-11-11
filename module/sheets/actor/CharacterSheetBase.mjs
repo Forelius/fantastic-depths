@@ -122,7 +122,8 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          tabs.items = { id: "items", group, label: "FADE.items" };
          tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
-         if (this.actor.system.config.maxSpellLevel > 0) {
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         if (classSystem.canCastSpells(this.actor)) {
             tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
          }
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
