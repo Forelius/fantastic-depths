@@ -1,5 +1,5 @@
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { CodeMigrate } from "./sys/migration.mjs";
+import { fadeFinder } from './utils/finder.mjs';
 import { fadeSettings } from "./fadeSettings.mjs";
 import { ActorFactory } from './actor/ActorFactory.mjs';
 import { ItemFactory } from './item/ItemFactory.mjs';

@@ -1,7 +1,9 @@
-const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+import { fadeFinder } from '../utils/finder.mjs';
 class TurnData {
    constructor(data) {
+      this.dungeon = {};
+      
       Object.assign(this, data);
 
       this.timeSteps = {
@@ -116,7 +118,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       }
    }
 
-   /** @override 
+   /**
     * Fetch data for the form, such as turn count and game time 
     */
    async _prepareContext(_options) {
@@ -145,7 +147,6 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    /**
     * Increment the turn count, advance the in-game time, and re-render the form
     * @param {any} seconds 
-    * @param {any} advanceWorldTime
     */
    async advanceTime(seconds) {
       await game.time.advance(seconds);
@@ -154,8 +155,8 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    /**
    * Actions performed after any render of the Application.
    * Post-render steps are not awaited by the render process.
-   * @param {ApplicationRenderContext} context      Prepared context data
-   * @param {RenderOptions} options                 Provided render options
+   * @param {any} context      Prepared context data
+   * @param {any} options                 Provided render options
    * @protected
    */
    _onRender(context, options) {
@@ -208,10 +209,10 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
    /**
      * Process form submission for the sheet
-     * @this {MyApplication}                 The handler is called with the application as its bound scope
+     * @this {ApplicationV2}                 The handler is called with the application as its bound scope
      * @param {SubmitEvent} event            The originating form submission event
      * @param {HTMLFormElement} form         The form element that was submitted
-     * @param {FormDataExtended} formData    Processed data for the submitted form
+     * @param {any} formData    Processed data for the submitted form
      * @returns {Promise<void>}
      */
    static async #onSubmit(event, form, formData) {
