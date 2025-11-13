@@ -23,8 +23,9 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       this._prepareDamageLabel();
    }
 
-   getDamageRoll(attackType, resp, targetWeaponType, targetActor, ammoItem) {
+   getDamageRoll(attackType, resp, targetWeaponType, targetToken, ammoItem) {
       const weaponData = this.system;
+      const targetActor = targetToken?.actor;
       const attackerData = this.parent.system;
       const masterySystem = game.fade.registry.getSystem("weaponMastery");
       let evaluatedRoll = this.getEvaluatedRollSync(weaponData.damageRoll);
@@ -78,7 +79,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          digest,
          hasDamage,
          attackType,
-         targetActorUuid: targetActor?.uuid,
+         targetUuid: targetToken?.uuid,
          targetWeaponType,
          ammouuid: ammoItem?.uuid
       } : null;

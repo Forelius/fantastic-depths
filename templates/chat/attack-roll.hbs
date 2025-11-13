@@ -1,17 +1,17 @@
+<div class="bordered" style="padding-bottom:2px;">
+   <div class="flexrow collapser">
+      <img class="item-image" src='{{weaponItem.img}}' />
+      <div class="item-name">{{weaponItem.knownName}}</div>
+   </div>
+   <div class="collapsible-content collapsed">
+      {{{weaponItem.knownDescription}}}
+   </div>
+</div>
 <div>
    <div class="attack-desc">{{description}}</div>
    {{#if toHitResult.message}}
    <div class="attack-result">{{{toHitResult.message}}}</div>
    {{/if}}
-</div>
-<div class="bordered" style="padding-bottom:2px;">
-   <div class="flexrow collapser">
-      <img class="item-image" src='{{weapon.img}}' />
-      <div class="item-name">{{weapon.knownName}}</div>
-   </div>
-   <div class="collapsible-content collapsed">
-      {{{weapon.knownDescription}}}
-   </div>
 </div>
 {{#if ammoItem}}
 <div class="bordered" style="padding-bottom:2px;">

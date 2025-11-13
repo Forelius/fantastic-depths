@@ -11,7 +11,6 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       this.tagManager = new TagManager(this); // Initialize TagManager
    }
 
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
       const systemData = this.system;
@@ -26,7 +25,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       systemData.damageType = systemData.damageType || ""
    }
 
-   getDamageRoll(resp) {
+   getDamageRoll(resp, targetToken) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       const digest = [];
@@ -44,7 +43,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          hasDamage = false;
       }
 
-      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : "magic", digest } : null;
+      return hasDamage ? { 
+         damageFormula, 
+         targetUuid: targetToken?.uuid,
+         damageType: isHeal ? "heal" : "magic", 
+         digest 
+      } : null;
    }
 
    /**

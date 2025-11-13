@@ -1,9 +1,3 @@
-{{#if actorName}}
-<div class="text-size16">{{actorName}}</div>
-{{/if}}
-{{#if mdata.label}}
-<div>{{mdata.label}}{{#if mdata.target}} ({{mdata.target}}){{/if}}</div>
-{{/if}}
 {{#if item}}
 <div class="bordered" style="padding-bottom:2px;">
    <div class="flexrow collapser">
@@ -16,6 +10,12 @@
       {{{item.knownDescription}}}
    </div>
 </div>
+{{/if}}
+{{#if actorName}}
+<div class="text-size16">{{actorName}}</div>
+{{/if}}
+{{#if mdata.label}}
+<div>{{mdata.label}}{{#if mdata.target}} ({{mdata.target}}){{/if}}</div>
 {{/if}}
 {{#if mdata.desc}}
 <i style="font-size:12px;">{{mdata.desc}}</i>

@@ -62,7 +62,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
 
       let targetTokens;
       if (item?.hasTargets === true) {
-         targetTokens = isSave ? [] : Array.from(game.user.targets);
+         targetTokens = isSave ? [] : Array.from(game.user.targets).map(i => i.document ?? i);
       }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
@@ -75,7 +75,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
             [game.system.id]: {
                owneruuid: context.uuid,
                itemuuid: item?.uuid,
-               targets: targetTokens?.map(i => ({ targetid: i.id, targetname: i.name })),
+               targets: targetTokens?.map(i => ({ targetuuid: i.uuid, targetname: i.name })),
                damageRoll,
                healRoll,
                actions

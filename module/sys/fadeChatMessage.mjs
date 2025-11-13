@@ -1,4 +1,4 @@
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "./migration.mjs";
 
 export class fadeChatMessage extends ChatMessage {
    /** @inheritDoc */
