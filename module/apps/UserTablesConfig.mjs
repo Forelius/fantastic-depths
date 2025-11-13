@@ -1,5 +1,5 @@
 const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) {
    constructor() {
@@ -49,12 +49,8 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       editJsonArray: { template: `${UserTablesConfig.TEMPLATES_PATH}/edit-jsonarray.hbs` },
    }
 
-   /** @override */
    async _prepareContext(_options) {
-      const context = {};
-      //console.log(`_prepareContext:`, _options);
-      context.system = foundry.utils.deepClone(this.system);
-      return context;
+      return { system: foundry.utils.deepClone(this.system) };
    }
 
    /**
@@ -65,8 +61,8 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
     * rather than mutating the shared context at the expense of this transparency.
     *
     * @param {string} partId                         The part being rendered
-    * @param {ApplicationRenderContext} context      Shared context provided by _prepareContext
-    * @returns {Promise<ApplicationRenderContext>}   Context data for a specific part
+    * @param {any} context      Shared context provided by _prepareContext
+    * @returns {Promise<any>}   Context data for a specific part
     * @protected
     */
    async _preparePartContext(partId, context) {
@@ -74,18 +70,32 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       if (partId === 'header') {
          const userTables = this.userTablesSys.getTables();
          const tableNames = { none: game.i18n.localize('FADE.apps.userTables.selectTable') };
-         Object.assign(tableNames, Object.entries(userTables).reduce((acc, item) => { acc[item[0]] = item[1].name; return acc; }, {}));
+         Object.assign(tableNames, Object.entries(userTables).reduce((acc, item) => { 
+            acc[item[0]] = item[1].name; 
+            return acc; 
+         }, {}));
          context.tableNames = foundry.utils.deepClone(tableNames);
       }
       return context;
    }
 
+   static displayForm() {
+      if (!game.fade.UserTablesConfig) {
+         game.fade.UserTablesConfig = new UserTablesConfig();
+      }
+      game.fade.UserTablesConfig.render(true);
+   }
+
+   fixTable(table) {
+      return Object.entries(table).map(row => row[1]);
+   }
+
    /**
      * Process form submission for the sheet
-     * @this {MyApplication}                      The handler is called with the application as its bound scope
-     * @param {SubmitEvent} event                   The originating form submission event
+     * @this {any}                      The handler is called with the application as its bound scope
+     * @param {any} event                   The originating form submission event
      * @param {HTMLFormElement} form                The form element that was submitted
-     * @param {FormDataExtended} formData           Processed data for the submitted form
+     * @param {any} formData           Processed data for the submitted form
      * @returns {Promise<void>}
      */
    static async #onSubmit(event, form, formData) {
@@ -95,13 +105,13 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       foundry.utils.mergeObject(this.system, data.system);
 
       if (event.submitter?.name == 'loadTable') {
-         this.#loadTable(data);
+         this.loadTable(data);
       } else if (event.submitter?.name == 'addTable') {
-         await this.#addTable(data);
+         await this.addTable(data);
       } else if (event.submitter?.name == 'saveTable') {
-         this.#saveTable(data);
+         this.saveTable(data);
       } else if (event.submitter?.name == 'removeTable') {
-         await this.#removeTable(data);
+         await this.removeTable(data);
       } else if (event.submitter?.name == 'closeTable') {
          this.system.currentTable = null;
          this.system.selectedTable = "none";
@@ -112,7 +122,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       }
    }
 
-   async #addTable(data) {
+   async addTable(data) {
       const tableTypes = game.fade.registry.getSystem("userTables", true).type.TABLE_TYPES
          .map(type => { return { id: type, name: game.i18n.localize(`FADE.apps.userTables.tableTypes.${type}`) } });
 
@@ -160,7 +170,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       }
    }
 
-   #loadTable(data) {
+   loadTable(data) {
       const table = foundry.utils.deepClone(this.userTablesSys.getTable(this.system.selectedTable));
       if (table.type === "bonus") {
          table.table = table.table.sort((a, b) => a.min - b.min);
@@ -169,15 +179,15 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       console.log('#loadTable', data, this.system);
    }
 
-   #saveTable(data) {
-      this.system.currentTable.table = this.#fixTable(data.system.currentTable.table);
+   saveTable(data) {
+      this.system.currentTable.table = this.fixTable(data.system.currentTable.table);
       if (data.system.currentTable.type === "bonus") {
          this.system.currentTable.table = this.system.currentTable.table.sort((a, b) => a.min - b.min);
       }
       this.userTablesSys.setTable(this.system.currentTable);
    }
 
-   async #removeTable(data) {
+   async removeTable(data) {
       const prompt = game.i18n.localize('FADE.apps.userTables.removePrompt');
       const proceed = await foundry.applications.api.DialogV2.confirm({
          window: prompt,
@@ -196,7 +206,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
      * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
      */
    static async #addRow(event, target) {
-      const table = this.#fixTable(this.system.currentTable.table);
+      const table = this.fixTable(this.system.currentTable.table);
       if (this.system.currentTable.type === "bonus") {
          table.push({ min: 0, bonus: 0 });
          this.system.currentTable.table = table;
@@ -216,20 +226,9 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
    static async #removeRow(event, target) {
       const index = target.getAttribute('data-index');
       //console.log(`#removeRow ${index}`, this.system.currentTable);
-      const table = this.#fixTable(this.system.currentTable.table);
+      const table = this.fixTable(this.system.currentTable.table);
       table.splice(index, 1);
       this.system.currentTable.table = table;
       await this.render();
-   }
-
-   #fixTable(table) {
-      return Object.entries(table).map(row => row[1]);
-   }
-
-   static displayForm() {
-      if (!game.fade.UserTablesConfig) {
-         game.fade.UserTablesConfig = new UserTablesConfig();
-      }
-      game.fade.UserTablesConfig.render(true);
    }
 }

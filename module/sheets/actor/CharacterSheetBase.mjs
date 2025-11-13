@@ -2,7 +2,7 @@ import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
- * @extends {ActorSheet}
+ * @extends {FDActorSheetV2}
  */
 export class CharacterSheetBase extends FDActorSheetV2 {
    constructor(object, options = {}) {

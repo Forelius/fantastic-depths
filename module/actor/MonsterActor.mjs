@@ -1,6 +1,6 @@
 // actor-character.mjs
 import { FDCombatActor } from './FDCombatActor.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { fadeFinder } from '../utils/finder.mjs';
 
 export class MonsterActor extends FDCombatActor {
    constructor(data, context) {
@@ -19,7 +19,7 @@ export class MonsterActor extends FDCombatActor {
     * @override
     * @param {any} updateData
     * @param {any} options
-    * @param {any} userId
+    * @param {String} userId
     */
    async onUpdateActor(updateData, options, userId) {
       await super.onUpdateActor(updateData, options, userId);

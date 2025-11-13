@@ -1,12 +1,12 @@
-import { FDCombatActorDM } from "/systems/fantastic-depths/module/actor/dataModel/FDCombatActorDM.mjs";
-import { CharacterData } from '/systems/fantastic-depths/module/actor/fields/CharacterField.mjs';
+import { FDCombatActorDM } from "../dataModel/FDCombatActorDM.mjs";
+import { CharacterData } from '../fields/CharacterField.mjs';
 
 export class CharacterDataModel extends FDCombatActorDM {
    static defineSchema() {
       const baseSchema = super.defineSchema();
       const characterSchema = CharacterData.defineSchema();
-      foundry.utils.mergeObject(characterSchema, baseSchema);
-      return characterSchema;
+      foundry.utils.mergeObject(baseSchema, characterSchema);
+      return baseSchema;
    }
 
    /** @override */

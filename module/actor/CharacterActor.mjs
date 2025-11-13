@@ -1,7 +1,7 @@
 ﻿import { FDCombatActor } from './FDCombatActor.mjs';
 import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem.mjs";
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { fadeFinder } from '../utils/finder.mjs';
 
 export class CharacterActor extends FDCombatActor {
    constructor(data, context) {
@@ -25,7 +25,7 @@ export class CharacterActor extends FDCombatActor {
     * @override
     * @param {any} updateData
     * @param {any} options
-    * @param {any} userId
+    * @param {String} userId
     */
    async onUpdateActor(updateData, options, userId) {
       super.onUpdateActor(updateData, options, userId)

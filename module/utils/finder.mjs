@@ -45,8 +45,8 @@ export class fadeFinder {
    /**
     * Get the item source from world items.
     * @private
-    * @param {any} type
-    * @returns
+    * @param {String} type
+    * @returns {Array} The requested resource or an empty array.
     */
    static _getWorldSource(type) {
       let result = null;
@@ -387,7 +387,13 @@ export class fadeFinder {
       return result;
    }
 
-   static async getClass(name, key) {
+   /**
+    * Retrieve the specified class by name or key.
+    * @param {String|null} name The name of the class item.
+    * @param {String|null} [key=null] The class key.
+    * @returns {ClassDefinitionItem|undefined} A requested class item if found, otherwise undefined.
+    */
+   static async getClass(name, key=null) {
       const type = 'class';
       function doFind(source, name, key) {
          if (name) return source?.filter(item => item.name.toLowerCase() == name.toLowerCase())?.[0];

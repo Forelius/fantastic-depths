@@ -1,14 +1,14 @@
 import { FDCombatActorDM } from "./FDCombatActorDM.mjs";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
 import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
-import { MonsterData } from '/systems/fantastic-depths/module/actor/fields/MonsterField.mjs';
+import { MonsterData } from '../fields/MonsterField.mjs';
 
 export class MonsterDataModel extends FDCombatActorDM {
    static defineSchema() {
       const baseSchema = super.defineSchema();
       const monsterSchema = MonsterData.defineSchema();
-      foundry.utils.mergeObject(monsterSchema, baseSchema);
-      return monsterSchema;
+      foundry.utils.mergeObject(baseSchema, monsterSchema);
+      return baseSchema;
    }
 
    /** @override */
@@ -25,7 +25,6 @@ export class MonsterDataModel extends FDCombatActorDM {
       this._prepareXP();
    }
 
-   /** @override */
    prepareDerivedData() {
       // Extract class identifier and level from the input
       super.prepareDerivedData();
@@ -49,7 +48,6 @@ export class MonsterDataModel extends FDCombatActorDM {
    }
 
    /**
-    * @override
     * Calculate average hitpoints based on hitdice.
     */
    _prepareHitPoints() {

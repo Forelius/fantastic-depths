@@ -1,4 +1,4 @@
-import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -64,8 +64,7 @@ export class FDItem extends Item {
       return this.system.isIdentified === undefined || this.system.isIdentified === true;
    }
 
-   /** @override
-    * @protected */
+   /** @protected */
    prepareBaseData() {
       super.prepareBaseData();
       if (this.type === 'treasure') {
@@ -102,7 +101,6 @@ export class FDItem extends Item {
 
    /**
     * Prepare a data object which defines the data schema used by dice roll commands against this Item
-    * @override
     */
    getRollData() {
       // Starts off by populating the roll data with a shallow copy of `this.system`
@@ -143,7 +141,7 @@ export class FDItem extends Item {
     * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
     * does not override this message the result is a chat message with the item description.
     * @public
-    * @param {dataset} dataset The data- tag values from the clicked element
+    * @param {any} dataset The data- tag values from the clicked element
     */
    async roll(dataset) {
       const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
@@ -169,7 +167,7 @@ export class FDItem extends Item {
     * Evaluates a roll formula asynchronously into a numerical value.
     * @param {any} formula The roll formula
     * @param {any} options The Roll.evaluate options. Default minimize=true will generate lowest possible value.
-    * @returns If the formula and options are valid, an evaluated roll object.
+    * @returns {Promise<any>} If the formula and options are valid, an evaluated roll object.
     */
    async getEvaluatedRoll(formula, options = { minimize: true }) {
       let result = null;
@@ -214,7 +212,7 @@ export class FDItem extends Item {
    }
 
    async getEvaluatedRollFormula(formula) {
-      return await this.getEvaluatedRoll(formula)?.formula;
+      return (await this.getEvaluatedRoll(formula))?.formula;
    }
 
    getEvaluatedRollFormulaSync(formula) {
@@ -309,7 +307,7 @@ export class FDItem extends Item {
     * Determines if any charges are available and if so decrements charges by one
     * @private
     * @param {any} getOnly If true, does not use, just gets.
-    * @param {object} actionItem The item that owns this item, or null.
+    * @param {any} actionItem The item that owns this item, or null.
     * @returns True if quantity is above zero.
     */
    async _tryUseCharge(getOnly = false, actionItem) {
@@ -337,7 +335,7 @@ export class FDItem extends Item {
     * Determines if any uses are available and if so decrements quantity by one
     * @private
     * @param {any} getOnly If true, does not use, just gets.
-    * @param {object} actionItem The item that owns this item, or null.
+    * @param {any} actionItem The item that owns this item, or null.
     * @returns True if quantity is above zero.
     */
    async _tryUseUsage(getOnly = false, actionItem) {

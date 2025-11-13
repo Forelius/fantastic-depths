@@ -32,7 +32,7 @@ export class PlayerCombatForm extends FormApplication {
    }
 
    /**
-    * @override
+    * override
     * @param {any} html
     */
    activateListeners(html) {
@@ -75,7 +75,8 @@ export class PlayerCombatForm extends FormApplication {
             }
             if (combat?.declaredAction !== undefined) {
                // Update select control value
-               rowElement.querySelector('[name="declaredAction"]').value = combat.declaredAction;
+               const declaredActionEl = /** @type {HTMLInputElement | HTMLSelectElement | null} */ (rowElement.querySelector('[name="declaredAction"]'));
+               if (declaredActionEl) declaredActionEl.value = combat.declaredAction;
                // Update the declared action description
                const localizedDescription = game.i18n.localize(`FADE.combat.maneuvers.${combat.declaredAction}.description`);
                rowElement.querySelector('[name="actionDesc"]').textContent = localizedDescription;
@@ -96,7 +97,7 @@ export class PlayerCombatForm extends FormApplication {
 
    /**
     * Event handler for when the player changes one of their character's declared action.
-    * @private
+    * private
     * @param {any} event
     */
    async #onPlayerChangedAction(event) {
@@ -112,7 +113,6 @@ export class PlayerCombatForm extends FormApplication {
    * @param {Event} event - The initial triggering submission event
    * @param {object} formData - The object of validated form data with which to update the object
    */
-   // eslint-disable-next-line no-underscore-dangle
    async _updateObject(event, formData) {
       event.preventDefault();
    }

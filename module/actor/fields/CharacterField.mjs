@@ -46,4 +46,4 @@ export class CharacterData extends foundry.abstract.DataModel {
          }),
       };
    }
-}
+} 

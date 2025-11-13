@@ -2,7 +2,6 @@ import { FDItem } from './FDItem.mjs';
 
 export class ActorClassItem extends FDItem {
    /**
-    * @override
     * @param {any} updateData
     * @param {any} options
     * @param {any} userId
