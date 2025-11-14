@@ -1,4 +1,4 @@
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { fadeFinder } from "../utils/finder.mjs";
 
 /**
 * Enumeration for chat result codes.

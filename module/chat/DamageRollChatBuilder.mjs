@@ -1,6 +1,6 @@
 import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';

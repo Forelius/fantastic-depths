@@ -60,7 +60,7 @@ export class fadeChatMessage extends ChatMessage {
    }
 
    async #getActionRollButtons() {
-      let result = "";
+      let result = null;
       const data = this.getFlag(game.system.id, "actions")?.filter(i => i.type !== "save");
       const owneruuid = this.getFlag(game.system.id, "owneruuid");
       if (!data || data?.length == 0 || !owneruuid) return result;
@@ -75,7 +75,7 @@ export class fadeChatMessage extends ChatMessage {
    }
 
    async #addDamageRollButton() {
-      let result = "";
+      let result = null;
       const data = this.getFlag(game.system.id, "damageRoll");
       const owneruuid = this.getFlag(game.system.id, "owneruuid");
       const itemuuid = this.getFlag(game.system.id, "itemuuid");
@@ -91,7 +91,7 @@ export class fadeChatMessage extends ChatMessage {
    }
 
    async #addHealRollButton() {
-      let result = "";
+      let result = null;
       const data = this.getFlag(game.system.id, "healRoll");
       const owneruuid = this.getFlag(game.system.id, "owneruuid");
       const itemuuid = this.getFlag(game.system.id, "itemuuid");

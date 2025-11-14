@@ -1,6 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-import { rollTableDialog } from '/systems/fantastic-depths/module/dialog/rollTableDialog.mjs';
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { rollTableDialog } from '../dialog/rollTableDialog.mjs';
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class fadeDialog {
    static async getGenericDialog(dataset, caller) {
