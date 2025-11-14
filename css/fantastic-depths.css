@@ -850,7 +850,7 @@ table.compact-table input {
 }
 .chat-message h1, .chat-message h2, .chat-message h3, .chat-message h4, .chat-message h5, .chat-message h6 {
   /*font-weight: bold;*/
-  margin: 1rem 0 0.5rem;
+  margin: 0.5rem 0 0.5rem;
 }
 .chat-message .message-content {
   padding: 1px 5px 4px 5px;
@@ -1774,3 +1774,5 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=fantastic-depths.css.map */

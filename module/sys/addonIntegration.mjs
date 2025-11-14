@@ -149,4 +149,4 @@ export class AddonIntegration {
          });
       });
    }
-}
+} 

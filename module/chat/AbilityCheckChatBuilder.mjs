@@ -1,5 +1,5 @@
 import { ChatBuilder } from "./ChatBuilder.mjs";
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = "dummy";

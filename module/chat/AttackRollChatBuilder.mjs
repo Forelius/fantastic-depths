@@ -1,5 +1,5 @@
-import { ChatBuilder } from './ChatBuilder.mjs';
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { ChatBuilder } from "./ChatBuilder.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -13,10 +13,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest, options } = this.data;
-      const attacker = context;
+      const attacker = context.document ?? context;
       const attackerName = attacker.token?.name ?? attacker.name;
-      const targetTokens = Array.from(game.user.targets);
-      const targetActor = targetTokens?.length > 0 ? targetTokens[0].actor : null;
+      const targetTokens = Array.from(game.user.targets).map(i => i.document ?? i);
+      const targetToken = targetTokens?.length > 0 ? targetTokens[0] : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       const weaponItem = caller;
       const descData = {
@@ -32,7 +32,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       }
 
       const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weaponItem, targetTokens, roll, resp.attackType);
-      const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetActor);
+      const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetToken);
 
       if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
@@ -46,12 +46,10 @@ export class AttackRollChatBuilder extends ChatBuilder {
          description,
          descData,
          toHitResult,
-         digest: digest,
-         weapon: weaponItem,
+         digest,
+         weaponItem,
          resp,
          ammoItem: options?.ammoItem,
-         targetWeaponType: resp.targetWeaponType,
-         targetActor,
          actions
       };
       let content = await CodeMigrate.RenderTemplate(this.template, chatData);
@@ -77,5 +75,11 @@ export class AttackRollChatBuilder extends ChatBuilder {
          }
       });
       await ChatMessage.create(chatMessageData);
+      Hooks.call("fadeAttackRoll", { 
+         tokenUuid: context.uuid, 
+         actorUuid: context.actor.uuid, 
+         itemUuid: weaponItem.uuid, 
+         targets: targetTokens.map(i => i.uuid)
+      });
    }
-}
+} 

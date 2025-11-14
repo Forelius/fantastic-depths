@@ -5,9 +5,9 @@ export class fadeEffect extends ActiveEffect {
     * Apply this ActiveEffect to a provided Actor.
     * TODO: This method is poorly conceived. Its functionality is static, applying a provided change to an Actor
     * TODO: When we revisit this in Active Effects V2 this should become an Actor method, or a static method
-    * @param {Actor} actor                   The Actor to whom this effect should be applied
-    * @param {EffectChangeData} change       The change data being applied
-    * @returns {*}                           The resulting applied value
+    * @param {any} actor  The Actor to whom this effect should be applied
+    * @param {any} change The change data being applied
+    * @returns {*}        The resulting applied value
     */
    apply(actor, change) {
       if (change.value.startsWith("{")) {
@@ -19,7 +19,6 @@ export class fadeEffect extends ActiveEffect {
       return super.apply(actor, change);
    }
 
-   /** @override */
    updateDuration() {
       super.updateDuration();
       // Custom logic for second-based durations

@@ -1,12 +1,12 @@
 import { ChatBuilder } from './ChatBuilder.mjs';
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
 
    async createChatMessage() {
       const { context, caller, roll, options, digest } = this.data;
-      const targetTokens = Array.from(game.user.targets);
+      const targetTokens = Array.from(game.user.targets).map(i => i.document ?? i);
       const item = caller;
       let dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
@@ -57,7 +57,7 @@ export class SpecialAbilityChat extends ChatBuilder {
       const noTargets = ["save", "explore"]; // some categories don't have targets.
       if (noTargets.includes(item.system.category) === false) {
          for (let targetToken of targetTokens) {
-            toHitResult.targetResults.push({ targetid: targetToken.id, targetname: targetToken.name });
+            toHitResult.targetResults.push({ targetuuid: targetToken.uuid, targetname: targetToken.name });
          }
       }
 
