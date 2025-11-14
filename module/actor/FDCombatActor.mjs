@@ -1,12 +1,12 @@
-import { FDActorBase } from "/systems/fantastic-depths/module/actor/FDActorBase.mjs";
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+import { FDActorBase } from "./FDActorBase.mjs";
+import { fadeFinder } from '../utils/finder.mjs';
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
 import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
- * @extends {Actor}
+ * @extends {FDActorBase}
  */
 export class FDCombatActor extends FDActorBase {
    constructor(data, context) {
@@ -16,7 +16,7 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Pre-create method. Being used to set some defaults on the prototype token.
-    * @override
+    * override
     * @param {any} documents Pending document instances to be created
     * @param {any} operation Parameters of the database creation operation
     * @param {any} user The User requesting the creation operation
@@ -155,6 +155,7 @@ export class FDCombatActor extends FDActorBase {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
+      /** @type {Array<any>} */ // or /** @type {Token[]} */
       const selected = Array.from(canvas.tokens.controlled);
       let hasSelected = selected.length > 0;
       if (hasSelected === false) {
@@ -227,7 +228,7 @@ export class FDCombatActor extends FDActorBase {
     */
    getAvailableActions() {
       // These options are always available.
-      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility"];
+      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility", "concentrate"];
       let hasEquippedWeapon = false;
       // Ready weapon
       if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {

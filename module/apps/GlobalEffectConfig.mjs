@@ -14,7 +14,7 @@ class GlobalEffectConfig extends ActiveEffectConfig {
     const effectIndex = globalEffects.findIndex(e => e.id === effectId);
 
     if (effectIndex !== -1) {
-      globalEffects[effectIndex] = mergeObject(globalEffects[effectIndex], formData);
+      globalEffects[effectIndex] = foundry.utils.mergeObject(globalEffects[effectIndex], formData);
       game.settings.set(game.system.id, 'globalEffects', globalEffects);
       ui.notifications.info('Global effect updated.');
     }

@@ -1,10 +1,10 @@
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { ChatBuilder } from './ChatBuilder.mjs';
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { DialogFactory } from "../dialog/DialogFactory.mjs";
+import { fadeFinder } from "../utils/finder.mjs";
+import { ChatBuilder } from "./ChatBuilder.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class SpellCastChatBuilder extends ChatBuilder {
-   static template = 'systems/fantastic-depths/templates/chat/spell-cast.hbs';
+   static template = "systems/fantastic-depths/templates/chat/spell-cast.hbs";
 
    constructor(dataset, options) {
       super(dataset, options);  // Call the parent class constructor
@@ -15,27 +15,24 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { context, caller, roll, options, digest } = this.data;
-      const dmgHealRoll = caller.getDamageRoll(null);
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context;
       const item = caller;
-      const targetTokens = Array.from(game.user.targets);
+      const targetTokens = Array.from(game.user.targets).map(i => i.document ?? i);
+      const dmgHealRoll = caller.getDamageRoll(null, targetTokens?.[0]);
       const descData = { caster: caster.name, spell: item.name };
-      const description = game.i18n.format('FADE.Chat.spellCast', descData);
+      const description = game.i18n.format("FADE.Chat.spellCast", descData);
 
       let rollContent = null;
       let toHitResult = { message: "" };
       if (roll) {
          rollContent = await roll.render();
-         toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(caster, item, targetTokens, roll);
+         toHitResult = await game.fade.registry.getSystem("toHitSystem").getToHitResults(caster, item, targetTokens, roll);
       } else {
          // Add targets for DM chat message
-         toHitResult = { targetResults: [], message: '' };
+         toHitResult = { targetResults: [], message: "" };
          for (let targetToken of targetTokens) {
-            toHitResult.targetResults.push({
-               targetid: targetToken.id,
-               targetname: targetToken.name
-            });
+            toHitResult.targetResults.push({ targetuuid: targetToken.uuid, targetname: targetToken.name });
          }
       }
 
@@ -52,7 +49,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          rollContent,
          toHitResult,
          item, // spell item
-         attackType: 'spell',
+         attackType: "spell",
          caster,
          durationMsg: options.durationMsg,
          actions,
@@ -79,5 +76,11 @@ export class SpellCastChatBuilder extends ChatBuilder {
          }
       });
       await ChatMessage.create(chatMessageData);
+      Hooks.call("fadeCastSpell", { 
+         tokenUuid: context.uuid, 
+         actorUuid: context.actor.uuid, 
+         itemUuid: item.uuid, 
+         targets: targetTokens.map(i => i.uuid)
+      });
    }
 }

@@ -64,8 +64,8 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
    /**
    * Actions performed after any render of the Application.
    * Post-render steps are not awaited by the render process.
-   * @param {ApplicationRenderContext} context      Prepared context data
-   * @param {RenderOptions} options                 Provided render options
+   * @param {any} context      Prepared context data
+   * @param {any} options                 Provided render options
    * @protected
    */
    _onRender(context, options) {
@@ -185,7 +185,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @this {PartyTrackerForm}             The handler is called with the application as its bound scope
     * @param {SubmitEvent} event            The originating form submission event
     * @param {HTMLFormElement} form         The form element that was submitted
-    * @param {FormDataExtended} formData    Processed data for the submitted form
+    * @param {any} formData    Processed data for the submitted form
     * @returns {Promise<void>}
     */
    static async #onSubmit(event, form, formData) {
@@ -195,7 +195,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
    /**
     * Handle delete actor action
-    * @param {Event} event - The click event
+    * @param {any} event - The click event
     */
    static async #deleteActor(event) {
       event.preventDefault();
@@ -214,8 +214,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
    /**
     * Create drag-and-drop workflow handlers for this Application
-    * @returns {DragDrop[]}     An array of DragDrop handlers
-    * @private
+    * @returns {any[]}     An array of DragDrop handlers
     */
    #createDragDropHandlers() {
       return this.options.dragDrop.map((d) => {

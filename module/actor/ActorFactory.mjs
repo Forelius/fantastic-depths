@@ -3,15 +3,19 @@ import { CharacterActor } from '../actor/CharacterActor.mjs';
 import { MonsterActor } from '../actor/MonsterActor.mjs';
 
 const handler = {
+   /**
+    * @param {any[]} args 
+    */
    construct(_actor, args) {
       let result;
-      if (args[0]?.type === "monster") {
-         result = new MonsterActor(...args);
-      } else if (args[0]?.type === "character") {
-         result = new CharacterActor(...args);
+      const a =  (args);
+      if (a[0]?.type === "monster") {
+         result = Reflect.construct(MonsterActor, a);
+      } else if (a[0]?.type === "character") {
+         result = Reflect.construct(CharacterActor, a);
       }
       return result;
    }
 };
 
-export const ActorFactory = new Proxy(FDCombatActor, handler);
+export const ActorFactory = new Proxy(FDCombatActor, handler); 

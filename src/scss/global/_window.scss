@@ -1,296 +1,298 @@
 .system-fantastic-depths {
-   font-family: $font-primary;
+    font-family: $font-primary;
 }
 
 .window-app {
-   font-family: $font-primary;
-   --minimized-width: 300px;
+    font-family: $font-primary;
+    --minimized-width: 300px;
 
-   .minimized {
-      min-width: 300px;
-      width: 300px;
-   }
+    .minimized {
+        min-width: 300px;
+        width: 300px;
+    }
 }
 
 .fantastic-depths {
-   .window-content {
-      nav.tabs{
-         line-height:1;
-      }
-      input, select {
-         max-height: 26px;
-         padding: 0 4px;
-      }
-      .sheet-tabs{
-         gap:0;
-      }
-   }
+    .window-content {
+        nav.tabs {
+            line-height: 1;
+        }
+
+        input, select {
+            max-height: 26px;
+            padding: 0 4px;
+        }
+
+        .sheet-tabs {
+            gap: 0;
+        }
+    }
 }
 
 .application {
-   .window-content, .chat-message {
-      h1 {
-         margin: 6px 0 4px 0;
-         font-size: 28px;
-         font-family: $font-primary;
-      }
+    .window-content, .chat-message {
+        h1 {
+            margin: 6px 0 4px 0;
+            font-size: 28px;
+            font-family: $font-primary;
+        }
 
-      h2 {
-         margin: 6px 0 4px 0;
-         font-size: 24px;
-         font-family: $font-primary;
-      }
+        h2 {
+            margin: 6px 0 4px 0;
+            font-size: 24px;
+            font-family: $font-primary;
+        }
 
-      h3 {
-         margin: 6px 0 4px 0;
-         font-size: 20px;
-         font-family: $font-primary;
-      }
+        h3 {
+            margin: 6px 0 4px 0;
+            font-size: 20px;
+            font-family: $font-primary;
+        }
 
-      h4 {
-         margin: 6px 0 4px 0;
-         font-size: 16px;
-         font-family: $font-primary;
-      }
-   }
+        h4 {
+            margin: 6px 0 4px 0;
+            font-size: 16px;
+            font-family: $font-primary;
+        }
+    }
 
-   ul, ul {
-      margin: 8px 0;
-   }
+    ul, ul {
+        margin: 8px 0;
+    }
 
-   table {
-      margin: 1px 1px;
-      border-radius: 0;
+    table {
+        margin: 1px 1px;
+        border-radius: 0;
 
-      tr:nth-child(even) {
-         background-color: rgba(100, 100, 100, 0.15);
-      }
+        tr:nth-child(even) {
+            background-color: rgba(100, 100, 100, 0.15);
+        }
 
-      th {
-         line-height: 1;
-         padding: 3px 8px;
-      }
+        th {
+            line-height: 1;
+            padding: 3px 8px;
+        }
 
-      td {
-         line-height: 1;
-         padding: 2px 4px;
-      }
+        td {
+            line-height: 1;
+            padding: 2px 4px;
+        }
 
-      input {
-         height: 26px;
-      }
-   }
+        input {
+            height: 26px;
+        }
+    }
 }
 
 table.compact-table {
-   th {
-      line-height: 1;
-      padding: 2px 8px;
-   }
+    th {
+        line-height: 1;
+        padding: 2px 8px;
+    }
 
-   td {
-      line-height: 1;
-      padding: 2px 4px;
-   }
+    td {
+        line-height: 1;
+        padding: 2px 4px;
+    }
 
-   input {
-      height: 26px;
-   }
+    input {
+        height: 26px;
+    }
 }
 
 .rollable, .chatable {
-   &:hover,
-   &:focus {
-      cursor: pointer;
-   }
+    &:hover,
+    &:focus {
+        cursor: pointer;
+    }
 }
 
 .rollable2, .chatable2 {
-   &:hover,
-   &:focus {
-      cursor: pointer;
-   }
+    &:hover,
+    &:focus {
+        cursor: pointer;
+    }
 }
 
 .bordered {
-   margin: 2px 2px 4px 2px;
-   border-width: 2px;
-   border-style: solid;
-   border-radius: 4px;
-   padding: 6px;
+    margin: 2px 2px 4px 2px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 4px;
+    padding: 6px;
 }
 
 .text-center {
-   text-align: center;
+    text-align: center;
 }
 
 .text-left {
-   text-align: left;
+    text-align: left;
 }
 
 .float-left {
-   float: left;
+    float: left;
 }
 
 .clear-fix {
-   clear: both;
+    clear: both;
 }
 
 .sheet nav.sheet-tabs > [data-tab] {
-   padding: 4px 8px;
-   font-weight: 600;
+    padding: 4px 8px;
+    font-weight: 600;
 }
 /* Apply these styles only when the "minimized" class is not present */
 .window-app.fantastic-depths.sheet.actor:not(.minimized) {
-   min-width: 600px !important;
-   min-height: 400px !important;
+    min-width: 600px !important;
+    min-height: 400px !important;
 }
 
 .window-app.fantastic-depths.sheet.actor.minimized {
-   min-width: 400px !important;
+    min-width: 400px !important;
 }
 
 .window-app.fantastic-depths.sheet.item:not(.minimized) {
-   min-width: 460px !important;
-   min-height: 230px !important;
+    min-width: 460px !important;
+    min-height: 230px !important;
 }
 
 .player-combat-form, .party-tracker-list {
-   .is-dead {
-      background: url('../assets/img/grungered.jpg');
-   }
+    .is-dead {
+        background: url('../assets/img/grungered.jpg');
+    }
 }
 
 .party-tracker {
-   flex: 1 1 auto;
+    flex: 1 1 auto;
 
-   .party-tracker-list {
-      max-height: 100%; /* Ensure the list is scrollable */
-      overflow-y: auto;
-      padding: 4px;
+    .party-tracker-list {
+        max-height: 100%; /* Ensure the list is scrollable */
+        overflow-y: auto;
+        padding: 4px;
 
-      .party-member {
-         position: relative; /* Relative positioning allows the delete button to be positioned inside */
-         margin-bottom: 4px;
-         /* Delete button styles */
-         .delete-actor {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            width: 24px; /* Control size of the button */
-            height: 24px; /* Equal height */
-            display: flex; /* Use flex to center icon */
-            align-items: center;
-            justify-content: center;
-            font-size: 14px; /* Ensure icon is small */
-         }
-         /* Ensure icon inherits size */
-         .delete-actor i {
-            font-size: inherit;
-            color: #555555; /* Darken color on hover */
-         }
-         /* Hover effect for better feedback */
-         .delete-actor:hover {
-            color: #888888; /* Darken color on hover */
-         }
-      }
-   }
+        .party-member {
+            position: relative; /* Relative positioning allows the delete button to be positioned inside */
+            margin-bottom: 4px;
+            /* Delete button styles */
+            .delete-actor {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                width: 24px; /* Control size of the button */
+                height: 24px; /* Equal height */
+                display: flex; /* Use flex to center icon */
+                align-items: center;
+                justify-content: center;
+                font-size: 14px; /* Ensure icon is small */
+            }
+                /* Ensure icon inherits size */
+                .delete-actor i {
+                    font-size: inherit;
+                    color: #555555; /* Darken color on hover */
+                }
+                /* Hover effect for better feedback */
+                .delete-actor:hover {
+                    color: #888888; /* Darken color on hover */
+                }
+        }
+    }
 }
 
 .party-table {
-   th {
-      text-align: left;
-   }
+    th {
+        text-align: left;
+    }
 }
 
 .collapsible-content {
-   overflow: hidden;
-   height: auto;
-   transition: height 0.1s ease-in;
+    overflow: hidden;
+    height: auto;
+    transition: height 0.1s ease-in;
 }
 
-.collapsible-content.collapsed {
-   height: 0;
-   padding-top: 0;
-   padding-bottom: 0;
-   transition: height 0.1s ease-in, padding 0.1s ease-in;
-}
+    .collapsible-content.collapsed {
+        height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        transition: height 0.1s ease-in, padding 0.1s ease-in;
+    }
 
 .combatant-declarations {
-   margin: -3px 0 0 0;
+    margin: -3px 0 0 0;
 
-   .sidebar-select {
-      flex: auto;
-      font-size: 10px;
-      background-color: lightgray;
-      height: 16px;
-   }
+    .sidebar-select {
+        flex: auto;
+        font-size: 10px;
+        background-color: lightgray;
+        height: 16px;
+    }
 }
 
 .declared-action {
-   font-size: 12px;
-   color: #888888;
+    font-size: 11px;
+    color: #888888;
 }
 
 .editor {
-   /*height:100%;*/
-   /*min-height: 50px;*/
+    /*height:100%;*/
+    /*min-height: 50px;*/
 }
 
 .fantastic-depths .prosemirror .editor-container .editor-content, .fantastic-depths prose-mirror .editor-content {
-   position: relative;
+    position: relative;
 }
 
 /* Dialog footer buttons */
 .standard-form .form-footer > button {
-   line-height: 1;
-   min-width: auto;
+    line-height: 1;
+    min-width: auto;
 }
 /* Fixes spacing when using labels on top. */
 .top-label label {
-   margin: 0 4px;
+    margin: 0 4px;
 }
 
 .top-label select, .top-label input {
-   margin-top: 4px;
+    margin-top: 4px;
 }
 
 .fade-dialog {
 
-   .form-group label {
-      max-width: 110px;
-      line-height: normal !important;
-   }
+    .form-group label {
+        max-width: 110px;
+        line-height: normal !important;
+    }
 
-   .application label.checkbox {
-      display: block;
-   }
+    .application label.checkbox {
+        display: block;
+    }
 
-   .top-label div {
-      padding: 0 4px;
-   }
+    .top-label div {
+        padding: 0 4px;
+    }
 }
 
 .system-fantastic-depths {
-   #tooltip.text-center {
-      text-align: left !important;
-   }
+    #tooltip.text-center {
+        text-align: left !important;
+    }
 
-   color-picker {
-      gap: 0;
-   }
+    color-picker {
+        gap: 0;
+    }
 
-   color-picker > input:nth-child(2) {
-      height: 32px;
-      max-width: 32px;
-   }
+        color-picker > input:nth-child(2) {
+            height: 32px;
+            max-width: 32px;
+        }
 
-   .width-120 {
-      width: 120px;
-      max-width: 120px;
-   }
+    .width-120 {
+        width: 120px;
+        max-width: 120px;
+    }
 }

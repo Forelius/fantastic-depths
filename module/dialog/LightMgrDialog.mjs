@@ -1,5 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "../sys/migration.mjs";
 
 export class LightMgrDialog {
    static async getDialog(dataset, caller, opt) {

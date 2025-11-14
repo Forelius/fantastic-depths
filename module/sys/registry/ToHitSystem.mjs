@@ -1,11 +1,17 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { SocketManager } from '/systems/fantastic-depths/module/sys/SocketManager.mjs'
+import { fadeFinder } from '../../utils/finder.mjs';
+import { SocketManager } from '../SocketManager.mjs'
 
 export class ToHitInterface {
    getAttackRoll(actor, weapon, attackType, options = {}) { throw new Error("Method not implemented."); }
    async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') { throw new Error("Method not implemented."); }
    getDiceSum(roll) { throw new Error("Method not implemented."); }
-   getLowestACHit(roll, rollTotal, thac0) { throw new Error("Method not implemented."); }
+   /**
+   * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} rollTotal The attack roll total
+   * @param {any} thac0 The attacker's effective THAC0
+   * @returns {Number} The lowest AC that this roll can hit.
+   */
+   getLowestACHit(roll, rollTotal, thac0) { throw new Error("Method not implemented."); return 20; }
 }
 
 export class ToHitSystemBase extends ToHitInterface {
@@ -81,10 +87,11 @@ export class ToHitSystemBase extends ToHitInterface {
     * @param {any} weapon the weapon item used for the attack
     * @param {any} targetTokens an array of target tokens, if any.
     * @param {any} roll
-    * @param {any} attackerWeaponType
+    * @param {any} attackType
     * @returns
     */
    async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') {
+      // It should always be a token, but need to double-check that all code has been changed.
       const attackingActor = attacker.actor ?? attacker;
       let result = null;
       this.acAbbr = this.isAAC ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
@@ -115,7 +122,7 @@ export class ToHitSystemBase extends ToHitInterface {
          for (let targetToken of targetTokens) {
             let targetActor = targetToken.actor;
             let targetResult = {
-               targetid: targetToken.id,
+               targetuuid: targetToken.uuid,
                targetname: targetToken.name,
                targetac: this.#getNormalTargetAC(targetToken, attackType),
                success: null,
@@ -169,7 +176,7 @@ export class ToHitSystemBase extends ToHitInterface {
          for (let targetToken of targetTokens) {
             const saveLocalized = (await fadeFinder.getSavingThrow(weapon.system.savingThrow))?.name;
             let targetResult = {
-               targetid: targetToken.id,
+               targetuuid: targetToken.uuid,
                targetname: targetToken.name,
                message: `save vs. ${saveLocalized}`
             };
@@ -183,7 +190,7 @@ export class ToHitSystemBase extends ToHitInterface {
    /**
     * Extracts the sum of the dice rolled from a Roll object,
     * ignoring any constants or other terms.
-    * @param {Roll} roll - The Roll object containing the dice and other terms.
+    * @param {any} roll - The Roll object containing the dice and other terms.
     * @returns {number} The sum of the dice rolled.
     */
    getDiceSum(roll) {
@@ -322,7 +329,7 @@ export class ToHitSystemBase extends ToHitInterface {
 
             // Check if group applies: start with group membership, then check special rule if needed
             const isMember = actorGroups.includes(groupId);
-            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule));
+            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule, modData));
 
             if (groupApplies) {
                result += modData.toHit || 0;
@@ -359,7 +366,7 @@ export class ToHitTHAC0 extends ToHitSystemBase {
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
-   * @returns The lowest AC that this roll can hit.
+   * @returns {Number} The lowest AC that this roll can hit.
    */
    getLowestACHit(roll, rollTotal, thac0) {
       return thac0 - rollTotal;
@@ -371,7 +378,7 @@ export class ToHitAAC extends ToHitSystemBase {
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
-   * @returns The lowest AC that this roll can hit.
+   * @returns {Number} The lowest AC that this roll can hit.
    */
    getLowestACHit(roll, rollTotal, thac0) {
       return rollTotal;
@@ -379,6 +386,12 @@ export class ToHitAAC extends ToHitSystemBase {
 }
 
 export class ToHitClassic extends ToHitSystemBase {
+   /**
+   * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} rollTotal The attack roll total
+   * @param {any} thac0 The attacker's effective THAC0
+   * @returns {Number} The lowest AC that this roll can hit.
+   */
    getLowestACHit(roll, rollTotal, thac0) {
       let result;
       const toHitTable = this.#getToHitTable(thac0);
@@ -415,7 +428,7 @@ export class ToHitDarkDungeons extends ToHitSystemBase {
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
-   * @returns The lowest AC that this roll can hit.
+   * @returns {Number} The lowest AC that this roll can hit.
    */
    getLowestACHit(roll, rollTotal, thac0) {
       let result;
@@ -486,7 +499,7 @@ export class ToHitHeroic extends ToHitSystemBase {
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
-   * @returns The lowest AC that this roll can hit.
+   * @returns {Number} The lowest AC that this roll can hit.
    */
    getLowestACHit(roll, rollTotal, thac0) {
       let result;

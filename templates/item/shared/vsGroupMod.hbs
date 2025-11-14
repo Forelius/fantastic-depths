@@ -15,6 +15,7 @@
                   <th style="min-width: 160px;">{{localize 'FADE.Actor.actorGroups.group'}}</th>
                   <th style="max-width: 100px;">{{localize 'FADE.Weapon.mod.dmg.short'}}</th>
                   <th style="max-width: 100px;">{{localize 'FADE.Weapon.mod.toHit.short'}}</th>
+                  <th style="min-width: 160px;">{{localize 'FADE.Actor.Other'}}</th>
                   <th style="min-width: 80px;"></th>
                </tr>
             </thead>
@@ -27,6 +28,13 @@
                   </td>
                   <td>
                      <input type="number" name="system.mod.vsGroup.{{group.id}}.toHit" value="{{group.toHit}}" data-dtype="Number" />
+                  </td>
+                  <td>
+                     {{#if (isnull group.special)}}
+                     <span>--</span>
+                     {{else}}
+                     <input type="text" name="system.mod.vsGroup.{{group.id}}.special" value="{{group.special}}" data-dtype="String" />
+                     {{/if}}
                   </td>
                   <td>
                      <a class="item-control" data-action="deleteVsGroup" data-group-id="{{group.id}}">

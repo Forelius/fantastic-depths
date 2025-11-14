@@ -1,24 +1,24 @@
-import { FDActorBaseDM } from "/systems/fantastic-depths/module/actor/dataModel/FDActorBaseDM.mjs";
-import { FDCombatActorData } from '/systems/fantastic-depths/module/actor/fields/FDCombatActorField.mjs';
+import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.mjs";
+import { FDCombatActorData } from '../fields/FDCombatActorField.mjs';
 
 export class FDCombatActorDM extends FDActorBaseDM {
    static defineSchema() {
       const baseSchema = super.defineSchema();
       const combatSchema = FDCombatActorData.defineSchema();
-      foundry.utils.mergeObject(combatSchema, baseSchema);
-      return combatSchema;
+      foundry.utils.mergeObject(baseSchema, combatSchema);
+      return baseSchema;
    }
 
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
-      for (let [key, ability] of Object.entries(this.abilities)) {
-         ability.total = ability.value + ability.tempMod;
+      for (let [key] of Object.entries(this.abilities)) {
+         const value = Number(foundry.utils.getProperty(this.abilities, `${key}.value`)) || 0;
+         const tempMod = Number(foundry.utils.getProperty(this.abilities, `${key}.tempMod`)) || 0;
+         foundry.utils.setProperty(this.abilities, `${key}.total`, value + tempMod);
       }
    }
 
-   /** @override */
    prepareDerivedData() {
       this._prepareDerivedAbilities();
       super.prepareDerivedData();
@@ -42,10 +42,13 @@ export class FDCombatActorDM extends FDActorBaseDM {
       if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
          // Initialize ability score modifiers
          const abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
-         const adjustments = game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${abilityScoreMods}`);         
-         for (let [key, ability] of Object.entries(this.abilities)) {
-            let adjustment = adjustments.sort((a, b) => b.min - a.min).find(item => ability.total >= item.min);
-            ability.mod = adjustment ? adjustment.value : adjustments[0].value;
+         const adjustments = game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${abilityScoreMods}`);
+         for (let [key] of Object.entries(this.abilities)) {
+            const total = Number(foundry.utils.getProperty(this.abilities, `${key}.total`)) || 0;
+            const sorted = (adjustments ?? []).sort((a, b) => b.min - a.min);
+            const adjustment = sorted.find(item => total >= item.min) ?? sorted[0];
+            const modValue = adjustment ? Number(adjustment.value) || 0 : 0;
+            foundry.utils.setProperty(this.abilities, `${key}.mod`, modValue);
          }
       }
    }

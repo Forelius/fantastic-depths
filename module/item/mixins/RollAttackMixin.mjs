@@ -1,4 +1,4 @@
- import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+ import { DialogFactory } from '../../dialog/DialogFactory.mjs';
 
 /**
 * Requires class implements getAttackTypes()
@@ -8,15 +8,17 @@
 const RollAttackMixin = (superclass) => class extends superclass {
    /**
    * Handle clickable rolls.
-   * @param {object} dataset
+   * @param {any} dataset
    */
    async rollAttack(dataset) {
       const systemData = this.system;
-      // The selected token, not the actor
       let attackType;
       let rollData;
+      const attacker = this.actor?.token || canvas.tokens.controlled?.[0]?.document;
       let result = {
-         attacker: this.actor?.token || this.actor || canvas.tokens.controlled?.[0],
+         // The selected token, not the actor
+         //attacker: this.actor?.token || this.actor || canvas.tokens.controlled?.[0],
+         attacker,
          ammoItem: null,
          dialogResp: null,
          digest: [],

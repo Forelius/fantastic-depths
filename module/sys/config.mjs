@@ -108,38 +108,58 @@ FADE.Actions = [
    }
 ]
 FADE.CombatPhases = {
-   morale: { declared: false },
-   movement: { declared: false },
-   missile: { declared: true },
-   magic: { declared: true },
-   melee: { declared: true },
-   special: { declared: true },
+   normal: {
+      specialBegin: { declared: true },
+      morale: { declared: false },
+      movement: { declared: false },
+      missile: { declared: true },
+      magicItem: { declared: true },
+      magic: { declared: true },
+      melee: { declared: true },
+      specialEnd: { declared: true }
+   },
+   immortal: {
+      swifter: {
+         specialBegin: { declared: true },
+         morale: { declared: false },
+         movement: { declared: false },
+         missile: { declared: true },
+         magicItem: { declared: true },
+      },
+      slower: {
+         magic: { declared: true },
+         melee: { declared: true },
+         specialEnd: { declared: true }
+      }
+   }
+
 };
 FADE.CombatManeuvers = {
-   nothing: { phase: "special", canMove: false },
-   readyWeapon: { phase: "special", canMove: true },
+   nothing: { phase: "specialEnd" },
+   readyWeapon: { phase: "specialBegin", canMove: true },
    moveOnly: { phase: "movement", canMove: true },
    shove: { phase: "movement", canMove: true },
    throw: { phase: "missile", canMove: true },
    fire: { phase: "missile", canMove: true },
-   spell: { phase: "magic", canMove: false },
-   magicItem: { phase: "magic", canMove: false },
-   attack: { phase: "melee", canMove: true, needWeapon: true },
-   withdrawal: { phase: "melee", canMove: true },
-   retreat: { phase: "melee", canMove: true },
-   lance: { phase: "melee", canMove: true, needWeapon: true, needAbility: true, classes: ["fighter", "dwarf", "elf"] },
-   multiAttack: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling"] },
-   setSpear: { phase: "melee", canMove: false, needWeapon: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"] },
-   smash: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
-   parry: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
-   disarm: { phase: "melee", canMove: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true },
-   guard: { phase: "melee", canMove: true },
+   spell: { phase: "magic" },
+   concentrate: { phase: "specialEnd" },
+   magicItem: { phase: "magicItem", canMove: true },
+   attack: { phase: "melee", needWeapon: true, canMove: true },
+   withdrawal: { phase: "movement", attackAfter: true, canMove: true },
+   retreat: { phase: "movement", canMove: true },
+   lance: { phase: "movement", needWeapon: true, needAbility: true, classes: ["fighter", "dwarf", "elf"], canMove: true },
+   multiAttack: { phase: "melee", needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling"], canMove: true },
+   setSpear: { phase: "movement", attackBefore: true, needWeapon: true, needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], canMove: true },
+   smash: { phase: "specialEnd", needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true, canMove: true },
+   parry: { phase: "movement", needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true, canMove: true },
+   disarm: { phase: "melee", needAbility: true, classes: ["fighter", "dwarf", "elf", "halfling", "mystic"], special: true, canMove: true },
+   guard: { phase: "melee", attackBefore: true, canMove: true },
    unarmed: { phase: "melee", canMove: true },
    dodge: { phase: "melee", canMove: true },
    specialAbility: { phase: "melee", canMove: true },
-   charge: { phase: "melee", canMove: true, special: true, classes: ["monster"], needAbility: true },
-   swoop: { phase: "melee", canMove: true, special: true, classes: ["monster"], needAbility: true },
-   crush: { phase: "melee", canMove: true, special: true, classes: ["monster"], needAbility: true }
+   charge: { phase: "melee", special: true, classes: ["monster"], needAbility: true, canMove: true },
+   swoop: { phase: "melee", special: true, classes: ["monster"], needAbility: true, canMove: true },
+   crush: { phase: "melee", special: true, classes: ["monster"], needAbility: true, canMove: true }
 }
 FADE.ActorSizes = [
    { id: "T", isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet
@@ -210,21 +230,25 @@ FADE.TreasureTypes = {
    }
 };
 FADE.ActorGroups = [
+   { id: "alignment", rule: "alignment", special: true },
    { id: "bugs" },
    { id: "constructs" },
    { id: "dragonkind" },
    { id: "enchanted", rule: "enchanted" },
    { id: "fey" },
+   { id: "flaming-weak" },
    { id: "giantkind" },
    { id: "lycanthropes" },
+   { id: "name", rule: "name", special: true },
    { id: "planar" },
+   { id: "plants" },
    { id: "regenerating" },
    { id: "reptiles-dinosaurs" },
    { id: "spell-immune" },
    { id: "spellcasters", rule: "spellcaster" },
    { id: "undead" },
    { id: "water-breathing" },
-   { id: "weapon-using", rule: "equippedWeapon" },
+   { id: "weapon-using", rule: "equippedWeapon" }
 ];
 FADE.Armor = {
    acNaked: 9,

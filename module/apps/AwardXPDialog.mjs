@@ -1,7 +1,4 @@
 export class AwardXPDialog extends FormApplication {
-   /**
-    * @param {string[]} actorIds - The IDs of the tracked party members
-    */
    constructor(object = {}, options = {}) {
       super(object, options);
       // Keep the IDs

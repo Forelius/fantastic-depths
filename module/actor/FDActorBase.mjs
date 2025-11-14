@@ -1,4 +1,4 @@
-import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+import { DialogFactory } from '../dialog/DialogFactory.mjs';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -33,7 +33,7 @@ export class FDActorBase extends Actor {
       return game.fade.registry.getSystem("classSystem")?.getHighestLevel(this);
    }
 
-   /** @override */
+   /** override */
    prepareBaseData() {
       super.prepareBaseData();
       if (this.id) {
@@ -41,7 +41,7 @@ export class FDActorBase extends Actor {
       }
    }
 
-   /** @override */
+   /** override */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
@@ -55,7 +55,7 @@ export class FDActorBase extends Actor {
     * Handler for the updateActor hook.
     * @param {any} updateData
     * @param {any} options
-    * @param {any} userId
+    * @param {String} userId
     */
    async onUpdateActor(updateData, options, userId) {
       // Hit points updated.
@@ -150,12 +150,12 @@ export class FDActorBase extends Actor {
    /**
       * Handle how changes to a Token attribute bar are applied to the Actor.
       * This allows for game systems to override this behavior and deploy special logic.
-      * @override
+      * override
       * @param {string} attribute    The attribute path
       * @param {number} value        The target attribute value
       * @param {boolean} isDelta     Whether the number represents a relative change (true) or an absolute change (false)
       * @param {boolean} isBar       Whether the new value is part of an attribute bar, or just a direct value
-      * @returns {Promise<documents.Actor>}  The updated Actor document
+      * @returns {Promise<typeof Actor>}  The updated Actor document
       */
    async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
       if (this.isOwner === false) return this;
