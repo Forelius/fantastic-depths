@@ -81,9 +81,9 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Performs the requested saving throw roll on the actor.
-    *     @public
-                            * @param {any} type A string key of the saving throw type.
-                                                    */
+    * @public
+    * @param {any} type A string key of the saving throw type.
+    *                                                     */
    async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
@@ -407,12 +407,22 @@ export class FDCombatActor extends FDActorBase {
       }
    }
 
-   #getSavingThrow(type) {
+   setupMinAbilityScores(abilities) {
+      const updated = { };
+      for (let [key] of Object.entries(abilities)) {
+         if (this.system.abilities[key]?.min < abilities[key].min) {
+            updated[key] = { min: abilities[key].min };
+         }
+      }
+      return updated;
+   }
+
+   #getSavingThrow(saveType) {
       const result = this.items.find(item => item.type === "specialAbility"
          && item.system.category === "save"
-         && item.system.customSaveCode === type);
+         && item.system.customSaveCode === saveType);
       if (!result) {
-         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { type }));
+         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { saveType }));
       }
       return result;
    }

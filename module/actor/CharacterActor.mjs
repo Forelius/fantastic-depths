@@ -58,7 +58,7 @@ export class CharacterActor extends FDCombatActor {
                       * @param {any} parentKey
                             * @returns
                             */
-   logActorChanges(updateData, oldData, user, type , parentKey = '', recursionLevel = 1) {
+   logActorChanges(updateData, oldData, user, type, parentKey = '', recursionLevel = 1) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
       let changes = [];
       const ignore = ["_stats", "_id", "flags"];
@@ -92,7 +92,7 @@ export class CharacterActor extends FDCombatActor {
           * @param {any} user
                 * @param {any} type
                       */
-   _sendChangeMessageToGM(changes, user, type ) {
+   _sendChangeMessageToGM(changes, user, type) {
       let changeDescs = null;
       if (type === "property") {
          changeDescs = changes.map(change => {
@@ -138,6 +138,10 @@ export class CharacterActor extends FDCombatActor {
          const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
          const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
          const languages = ancestryDefItem.system.languages;
+         let hasMinAbilityScore = false;
+         for (let [key] of Object.entries(ancestryDefItem.system.abilities)) {
+            if (ancestryDefItem.system.abilities[key].min > 3) hasMinAbilityScore = true;
+         }
 
          if (abilitiesData || itemsData || languages) {
             const dialogResp = await DialogFactory({
@@ -156,6 +160,10 @@ export class CharacterActor extends FDCombatActor {
                await this.setupSpecialAbilities(abilitiesData);
                await this.setupItems(itemsData, AncestryDefinitionItem.ValidItemTypes);
                await this.setupLanguages(languages);
+            }
+
+            if (hasMinAbilityScore) {
+               await this.setupMinAbilityScores(ancestryDefItem.system.abilities);
             }
          }
       }

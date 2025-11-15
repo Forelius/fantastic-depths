@@ -7,6 +7,11 @@
 }
 
 .actor {
+   .warn {
+      color: #ff7040;
+      animation: 1s ease-in 2s infinite alternate notify;
+   }
+
    img {
       border: none;
    }
@@ -62,9 +67,9 @@
       }
    }
 
-   .ability-horz:last-child {
-      border-right: none;
-   }
+      .ability-horz:last-child {
+         border-right: none;
+      }
 
    .xsmall-col {
       min-height: 32px;

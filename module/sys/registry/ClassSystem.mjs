@@ -4,7 +4,7 @@ import { FDItem } from "../../item/FDItem.mjs";
 import { Formatter } from "../../utils/Formatter.mjs";
 import { fadeFinder } from "../../utils/finder.mjs";
 
-export class ClassSystemBase  {
+export class ClassSystemBase {
    get isMultiClassSystem() {
       return false;
    }
@@ -12,6 +12,19 @@ export class ClassSystemBase  {
    canCastSpells(actor) {
       return actor.system.config.maxSpellLevel > 0;
    }
+
+   /**
+    * Prepares a context array of spell slots for the actor sheet.
+    *
+    * This public method constructs an object containing the actor's class name, 
+    * the first and maximum spell levels, and an array of spell slots populated 
+    * with the actor's spell items. It utilizes the `_prepareSpellLevels` method 
+    * to organize the spell items into the appropriate slots based on their levels. 
+    * The resulting object is returned as an array.
+    * @param {any} actor - The actor object for which the spell slots context is being prepared.
+    * @returns {Promise<any[]>} - An array containing the context object with spell slot information.
+    */
+   async prepareSpellsContext(actor) { return []; }
 
    /**
     * Resets the cast count for all spells associated with a given actor.
@@ -253,7 +266,7 @@ export class ClassSystemBase  {
    /**
     * For single class only. Monster is always single class.
     * @protected
-    * @param {FDCombatActor} actor
+    * @param {any} actor
     * @param {any} result
     */
    async _getUsedAndMaxSpells(actor, result) {
@@ -475,6 +488,29 @@ export class SingleClassSystem extends ClassSystemBase {
             || updateData.system?.abilities !== undefined)) {
          await this.#prepareClassInfo(actor);
          await this.#updateLevelClass(actor, skipItems);
+      } else if (actor.system.details?.class === "") {
+         let update = {
+            details: {
+               classKey: null,
+               castAsKey: null,
+               xp: {
+                  bonus: "0",
+                  next: "0"
+               }              
+            },
+            config: {
+               maxSpellLevel: 0
+            },
+            abilities: {
+               str: { min: 1 },
+               int: { min: 1 },
+               dex: { min: 1 },
+               wis: { min: 1 },
+               con: { min: 1 },
+               cha: { min: 1 }
+            }
+         };
+         await actor.update({ system: update });
       }
    }
 
@@ -487,8 +523,8 @@ export class SingleClassSystem extends ClassSystemBase {
     * to organize the spell items into the appropriate slots based on their levels. 
     * The resulting object is returned as an array.
     * @override
-    * @param {Object} actor - The actor object for which the spell slots context is being prepared.
-    * @returns {Array} - An array containing the context object with spell slot information.
+    * @param {any} actor - The actor object for which the spell slots context is being prepared.
+    * @returns {Promise<any[]>} - An array containing the context object with spell slot information.
     */
    async prepareSpellsContext(actor) {
       const firstSpellLevel = actor.system.config.firstSpellLevel;
@@ -561,8 +597,8 @@ export class SingleClassSystem extends ClassSystemBase {
     * Ensures the actor has the necessary permissions and retrieves 
     * relevant class data based on the actor's current class and level.
     * Does not prepare saving throws or class special abilities which are done separately in onUpdateActor.
-    * @private
-    * @param {Object} actor - The actor whose class information is to be prepared.
+    * @param {any} actor - The actor whose class information is to be prepared.
+    * @returns {Promise<void>}
     */
    async #prepareClassInfo(actor) {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
@@ -598,6 +634,7 @@ export class SingleClassSystem extends ClassSystemBase {
                const ordinalized = Formatter.formatOrdinal(currentLevel);
                update.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
             }
+            update.abilities = await actor.setupMinAbilityScores(classItem.system.abilities);
          }
 
          if (nextLevelData) {
@@ -615,8 +652,7 @@ export class SingleClassSystem extends ClassSystemBase {
    /**
     * Updates the class and level data for the given actor, including saving throws and special abilities.
     * This method is called by the update Character event handler when class or level data changes.
-    * @private
-    * @param {Object} actor - The actor whose class and level data is to be updated.
+    * @param {any} actor - The actor whose class and level data is to be updated.
     * @param {boolean} [skipItems=false] - Flag to skip updating items associated with the class.
     */
    async #updateLevelClass(actor, skipItems = false) {
@@ -755,7 +791,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * Used to create context array of spells slots for actor sheet.
     * @public
     * @param {any} actor
-    * @returns {Array}
+    * @returns {Promise<Array>}
     */
    async prepareSpellsContext(actor) {
       const spellClasses = [];
@@ -880,7 +916,7 @@ export class MultiClassSystem extends ClassSystemBase {
                hd = actorClass.system.hd;
             }
          } else {
-            console.warning(`Actor class ${actorClass?.name} for ${actor.name} has no hit dice.`);
+            console.warn(`Actor class ${actorClass?.name} for ${actor.name} has no hit dice.`);
          }
       }
       return hd ?? actor.system.hp.hd;
@@ -898,7 +934,7 @@ export class MultiClassSystem extends ClassSystemBase {
                   result = actorClass.system.level;
                }
             } else {
-               console.warning(`Actor class ${actorClass?.name} for ${actor.name} has no level.`);
+               console.warn(`Actor class ${actorClass?.name} for ${actor.name} has no level.`);
             }
          }
       }
@@ -907,7 +943,6 @@ export class MultiClassSystem extends ClassSystemBase {
 
    /**
     * The ActorClass item has been updated.
-    * @private
     * @param {any} actor The owner of the updated actorClass.
     * @param {any} item The ActorClass item instance.
     * @param {any} updateData The updateData from the update event handler.
@@ -958,7 +993,6 @@ export class MultiClassSystem extends ClassSystemBase {
     * and `bestSavesData`, which holds the best saving throw values recorded so far.
     * It iterates through each saving throw in `savesData`, compares it with the corresponding
     * value in `bestSavesData`, and updates `bestSavesData` with the minimum value.
-    * @private
     * @param {Object} savesData - An object containing the current saving throw values.
     * @param {Object} bestSavesData - An object containing the best saving throw values to be updated.
     * @returns {Object} - The updated `bestSavesData` object with the best saving throw values.
@@ -979,7 +1013,6 @@ export class MultiClassSystem extends ClassSystemBase {
     * experience points (XP), and XP bonuses. It also calculates the best saving 
     * throws for the actor based on their class data. The method then updates the 
     * actor's system details with the compiled information.
-    * @private
     * @param {any} actor - The actor object whose data is to be updated.
     * @returns {Promise<void>} - A promise that resolves when the actor's data has been updated.
     */

@@ -1048,6 +1048,10 @@ table.compact-table input {
 .system-fantastic-depths .application.actor .window-content {
   overflow: auto;
 }
+.system-fantastic-depths .actor .warn {
+  color: #ff7040;
+  animation: 1s ease-in 2s infinite alternate notify;
+}
 .system-fantastic-depths .actor img {
   border: none;
 }
