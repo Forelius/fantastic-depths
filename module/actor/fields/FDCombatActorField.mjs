@@ -94,30 +94,36 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
                mod: new NumberField({ initial: 0 }),
                // A temporary modifier applied to total.
                tempMod: new NumberField({ initial: 0 }),
+               // The minimum value required for this ability score.
+               min: new NumberField({initial: 1})
             }),
             int: new SchemaField({
                value: new NumberField({ initial: 10 }),
                total: new NumberField({ initial: 10 }),
                mod: new NumberField({ initial: 0 }),
                tempMod: new NumberField({ initial: 0 }),
+               min: new NumberField({ initial: 1 })
             }),
             wis: new SchemaField({
                value: new NumberField({ initial: 10 }),
                total: new NumberField({ initial: 10 }),
                mod: new NumberField({ initial: 0 }),
                tempMod: new NumberField({ initial: 0 }),
+               min: new NumberField({ initial: 1 })
             }),
             dex: new SchemaField({
                value: new NumberField({ initial: 10 }),
                total: new NumberField({ initial: 10 }),
                mod: new NumberField({ initial: 0 }),
                tempMod: new NumberField({ initial: 0 }),
+               min: new NumberField({ initial: 1 })
             }),
             con: new SchemaField({
                value: new NumberField({ initial: 10 }),
                total: new NumberField({ initial: 10 }),
                mod: new NumberField({ initial: 0 }),
                tempMod: new NumberField({ initial: 0 }),
+               min: new NumberField({ initial: 1 })
             }),
             cha: new SchemaField({
                value: new NumberField({ initial: 10 }),
@@ -125,6 +131,7 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
                mod: new NumberField({ initial: 0 }),
                loyaltyMod: new NumberField({ initial: 0 }),
                tempMod: new NumberField({ initial: 0 }),
+               min: new NumberField({ initial: 1 })
             }),
          }),
          // If enchanted, can only hit with magic weapons or spells.
