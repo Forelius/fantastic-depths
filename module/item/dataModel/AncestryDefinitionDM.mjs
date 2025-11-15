@@ -66,7 +66,6 @@ export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
       };
    }
 
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
    }

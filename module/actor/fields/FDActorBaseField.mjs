@@ -10,7 +10,6 @@ export class FDActorBaseField extends EmbeddedDataField {
 }
 
 export class FDActorBaseData extends foundry.abstract.DataModel {
-   /** @override */
    static defineSchema() {
       return {        
          tags: new ArrayField(new StringField({ required: false }), { initial: [] }),
