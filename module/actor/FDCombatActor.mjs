@@ -18,10 +18,10 @@ export class FDCombatActor extends FDActorBase {
     * Pre-create method. Being used to set some defaults on the prototype token.
     * override
     * @param {any} documents Pending document instances to be created
-    * @param {any} operation Parameters of the database creation operation
-    * @param {any} user The User requesting the creation operation
-    * @returns Return false to cancel the creation operation entirely
-    */
+                            * @param {any} operation Parameters of the database creation operation
+                                                    * @param {any} user The User requesting the creation operation
+                                                                            * @returns Return false to cancel the creation operation entirely
+                                                                            */
    async _preCreate(documents, operation, user) {
       const allowed = await super._preCreate(documents, operation, user);
       // Skip if the document is being created within a compendium
@@ -66,7 +66,7 @@ export class FDCombatActor extends FDActorBase {
       return allowed;
    }
 
-    /** @override */
+   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
@@ -81,9 +81,9 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Performs the requested saving throw roll on the actor.
-    * @public
-    * @param {any} type A string key of the saving throw type.
-    */
+    *     @public
+                            * @param {any} type A string key of the saving throw type.
+                                                    */
    async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
@@ -126,10 +126,10 @@ export class FDCombatActor extends FDActorBase {
          }
          let effectMod = this.system.mod.save[type] || 0;
          effectMod += this.system.mod.save.all || 0;
-         if (effectMod != 0) {            
+         if (effectMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
          }
-         rollMod += manualMod + wisdomMod+ effectMod;
+         rollMod += manualMod + wisdomMod + effectMod;
          rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
@@ -148,9 +148,9 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Static event handler for click on the saving throw button in chat.
-    * @public
-    * @param {any} event
-    */
+    *     @public
+                            * @param {any} event
+                                                    */
    static async handleSavingThrowRequest(event) {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
@@ -170,9 +170,9 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Static event handler for click on an action button in chat.
-    * @public
-    * @param {any} event
-    */
+    *     @public
+                            * @param {any} event
+                                                    */
    static async handleActionRoll(event) {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
@@ -200,10 +200,10 @@ export class FDCombatActor extends FDActorBase {
    /**
     * Finds and returns the appropriate ammo for the specified weapon.
     * The ammo item must be equipped for it to be recognized.
-    * @public
-    * @param {any} weapon
-    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
-    */
+    *     @public
+      * @param {any} weapon
+            * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
+            */
    getAmmoItem(weapon) {
       let ammoItem = null;
       const ammoType = weapon.system.ammoType;
@@ -277,11 +277,11 @@ export class FDCombatActor extends FDActorBase {
    }
 
    /**
-    * @public
-    * Add and/or update the actor's class-given special abilities.
-    * @param {any} abilitiesData The class ability array for the desired level.
-    * @returns void
-    */
+    *     @public
+                            * Add and/or update the actor's class-given special abilities.
+                            * @param {any} abilitiesData The class ability array for the desired level.
+                                                    * @returns void
+                                                    */
    async setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
       let promises = [];
@@ -393,6 +393,20 @@ export class FDCombatActor extends FDActorBase {
       }
    }
 
+   /**
+    * @public
+    * Add languages to actor, but only the ones that don't already exist.
+    * @param {String[]} languages An array of language names.
+    */
+   async setupLanguages(languages) {
+      const existing = this.system.languages.split(",").map(item => item.trim()).filter(Boolean);
+      const adding = languages.filter(language => existing.includes(language) === false);
+      if (adding?.length > 0) {
+         console.debug(`Adding ${adding.length} languages to ${this.name}`);
+         await this.update({ "system.languages": [...existing, ...adding].join(", ") });
+      }
+   }
+
    #getSavingThrow(type) {
       const result = this.items.find(item => item.type === "specialAbility"
          && item.system.category === "save"
@@ -402,4 +416,4 @@ export class FDCombatActor extends FDActorBase {
       }
       return result;
    }
-}
+} 

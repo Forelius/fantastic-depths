@@ -10,7 +10,6 @@ export class FDCombatActorField extends EmbeddedDataField {
 }
 
 export class FDCombatActorData extends foundry.abstract.DataModel {
-   /** @override */
    static defineSchema() {
       return {
          details: new SchemaField({
