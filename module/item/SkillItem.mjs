@@ -22,7 +22,6 @@ export class SkillItem extends FDItem {
       systemData.healFormula = systemData.healFormula || null;
    }
 
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       const systemData = this.system;
@@ -51,16 +50,10 @@ export class SkillItem extends FDItem {
    /**
    * Handle clickable rolls.
    * @override
-   * @param {Event} event The originating click event
-   * @private
+   * @param {any} event The originating click event
    */
    async roll(dataset, dialogResp = null, event = null) {
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-         return null;
-      }
+      const { instigator } = await this.getInstigator(dataset);
       const systemData = this.system;
       const digest = [];
       dataset = {
@@ -123,7 +116,7 @@ export class SkillItem extends FDItem {
          dataset.desc = `${localizeAbility} (${CONFIG.FADE.Operators[systemData.operator]}${dataset.target})`;
          const chatData = {
             caller: this, // the skill item
-            context: instigator, // the skill item owner
+            context: instigator, // the skill item owner (actor or token)
             mdata: dataset,
             roll: rolled,
             digest

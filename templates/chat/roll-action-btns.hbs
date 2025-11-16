@@ -63,15 +63,5 @@
         data-itemuuid="{{action.itemuuid}}">
    <span style="margin-left:4px;">{{localize "FADE.dialog.lightManager.ignite"}}/{{localize "FADE.dialog.lightManager.extinguish"}}</span>
 </button>
-<!--
-{{else if (eq action.type "save")}}
-<button class="saving-roll"
-        data-type="{{action.customSaveCode}}"
-        data-owneruuid="{{action.owneruuid}}"
-        data-weaponuuid="{{action.itemuuid}}">
-   <i class="fa-solid fa-life-ring"></i>
-   <span style="margin-left:4px;">{{localize 'FADE.Actor.Saves.singular'}}</span>: <span class="small-text">{{action.shortName}}</span>
-</button>
--->
 {{/if}}
 {{/each}}

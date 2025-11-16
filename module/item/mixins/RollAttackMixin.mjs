@@ -14,11 +14,10 @@ const RollAttackMixin = (superclass) => class extends superclass {
       const systemData = this.system;
       let attackType;
       let rollData;
-      const attacker = this.actor?.token || canvas.tokens.controlled?.[0]?.document;
+      const attackerActor = this.actor;
+      const attackerToken = this.actor?.token;
       let result = {
-         // The selected token, not the actor
-         //attacker: this.actor?.token || this.actor || canvas.tokens.controlled?.[0],
-         attacker,
+         attacker: attackerToken ?? attackerActor,
          ammoItem: null,
          dialogResp: null,
          digest: [],
@@ -30,12 +29,12 @@ const RollAttackMixin = (superclass) => class extends superclass {
          ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
          result.canAttack = false;
       }
-      else if (result.attacker) {
-         result.ammoItem = this.actor?.getAmmoItem(this);
+      else if (attackerActor) {
+         result.ammoItem = attackerActor?.getAmmoItem(this);
          const targetTokens = Array.from(game.user.targets);
          const targetToken = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, this.actor, { dataset, weapon: this, targetToken }));
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: this, targetToken }));
          attackType = result.dialogResp?.attackType;
          result.canAttack = result.dialogResp != null;
          if (result.canAttack) {
@@ -86,6 +85,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
          }
       } else {
          ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         result.canAttack = false;
       }
 
       return result;

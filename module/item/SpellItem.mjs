@@ -53,16 +53,9 @@ export class SpellItem extends RollAttackMixin(FDItem) {
 
    /**
    * Handle clickable rolls.
-   * @override
-   * @private
    */
    async roll(dataset) {
-      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-         return null;
-      }
+      const { instigator } = await this.getInstigator(dataset);
       if (dataset?.skipdlg === true) {
          // I'm not sure this condition ever happens.
          super.roll(dataset);
@@ -74,10 +67,10 @@ export class SpellItem extends RollAttackMixin(FDItem) {
             noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
             yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
             defaultChoice: "yes"
-         }, instigator);
+         });
 
          if (dialogResp?.resp?.result === false) {
-            super.roll(dataset, owner);
+            super.roll(dataset, instigator);
          } else if (dialogResp?.resp?.result === true) {
             await this.doSpellcast(dataset);
          }
@@ -85,14 +78,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    }
 
    async doSpellcast(dataset = null) {
-      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
+      const { instigator } = await this.getInstigator(dataset);
       const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
 
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.
       if (await this._tryCastThenChargeThenUse(true, actionItem, dataset?.action)) {
-
          // Determine if spell requires an attack roll, such as touch spells.
          let rollAttackResult = null;
          if (this.system.attackType === 'melee') {
@@ -180,6 +171,11 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          }
          if (action?.length > 0 && action !== "none" && result === false) {
             result = await this._tryUseUsage(getOnly, actionItem);
+         }
+         if (result === false) {
+            const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.knownName });
+            ui.notifications.warn(message);
+            ChatMessage.create({ content: message, speaker: { alias: item.actor?.name, } });
          }
       }
 

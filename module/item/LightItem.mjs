@@ -1,5 +1,5 @@
-import { LightManager } from '/systems/fantastic-depths/module/sys/LightManager.mjs';
-import { GearItem } from '/systems/fantastic-depths/module/item/GearItem.mjs';
+import { LightManager } from "../sys/LightManager.mjs";
+import { GearItem } from "./GearItem.mjs";
 
 export class LightItem extends GearItem {
    constructor(data, context) {
@@ -108,15 +108,17 @@ export class LightItem extends GearItem {
    }
 
    async toggleLight(dataset) {
-      //const owner = await fromUuid(dataset.owneruuid);
-      //const token = owner.getActiveTokens()[0]?.document ?? owner.getActiveTokens()[0];
-      const token = await fromUuid(dataset.owneruuid);
+      const owner = await fromUuid(dataset.owneruuid);
+      //const token = owner.getActiveTokens().?[0]?.document ?? owner.getActiveTokens()?.[0];
+      const token = owner.actor ? owner : owner.getActiveTokens()?.[0]?.document ?? owner.getActiveTokens()?.[0];
       if (token) {
          if (this.system.light.enabled) {
             await this.disableLight(token);
          } else {
             await this.enableLight(token);
          }
+      } else {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
       }
    }
 
