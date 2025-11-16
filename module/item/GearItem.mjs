@@ -1,10 +1,10 @@
-import { ChatFactory, CHAT_TYPE } from '/systems/fantastic-depths/module/chat/ChatFactory.mjs';
-import { FDItem } from '/systems/fantastic-depths/module/item/FDItem.mjs';
-import { TagManager } from '/systems/fantastic-depths/module/sys/TagManager.mjs';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.mjs';
+import { FDItem } from './FDItem.mjs';
+import { TagManager } from '../sys/TagManager.mjs';
 
 /**
  * Extend the basic Item with some very simple modifications.
- * @extends {Item}
+ * @extends {FDItem}
  */
 export class GearItem extends FDItem {
    constructor(data, context) {
@@ -62,20 +62,17 @@ export class GearItem extends FDItem {
       return this.chargesMax > 0 || this.chargesMax === null;
    }
 
-   /** @override
-    * @protected */
+   /** @protected */
    prepareBaseData() {
       super.prepareBaseData();
    }
 
-   /** @override
-    * @protected */
+   /** @protected */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.system.quantity !== undefined) {
          const qty = this.system.quantity > 0 ? this.system.quantity : 0;
          this.system.totalWeight = Math.round((this.system.weight * qty) * 100) / 100;
-         //console.debug(`${this.actor?.name}: ${this.name} total weight: ${this.system.totalWeight} (${qty}x${this.system.weight})`);
          this.system.totalCost = Math.round((this.system.cost * qty) * 100) / 100;
       }
       // This can't be in data model, because name is a property of Item.
@@ -85,12 +82,11 @@ export class GearItem extends FDItem {
    /**
     * Handle clickable rolls. This is the default handler and subclasses override. If a subclass 
     * does not override this message the result is a chat message with the item description.
-    * @param {dataset} event The data- tag values from the clicked element
-    * @private
+    * @param {any} dataset The data- tag values from the clicked element
     */
    async roll(dataset) {
       const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
+      const instigator = owner || this.actor?.currentActiveToken || this.actor || canvas.tokens.controlled?.[0]?.document;
       if (!instigator) {
          ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
          return null;
@@ -99,7 +95,7 @@ export class GearItem extends FDItem {
       const rollMode = game.settings.get('core', 'rollMode');
       const chatData = {
          caller: this,
-         context: instigator,
+         context: instigator, // actor or token
          rollMode
       };
       const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData);

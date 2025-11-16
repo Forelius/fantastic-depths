@@ -130,9 +130,9 @@ export class ChatBuilder {
 
    /**
     * Returns a chatMessageData object for creating a chat message.
-    * @param {Object} obj - An object containing data for the ChatMessage.
-    * @param {string[]} obj.rolls - An array of roll.render(). Supercedes data.roll if present.
-    * @param {string} obj.flavor - Chat flavor text. Supercedes this.data.caller.name if present.
+    * @param {any} obj - An object containing data for the ChatMessage.
+    * obj.rolls - An array of roll.render(). Supercedes data.roll if present.
+    * obj.flavor - Chat flavor text. Supercedes this.data.caller.name if present.
     */
    getChatMessageData(obj) {
       const chatMessageData = {

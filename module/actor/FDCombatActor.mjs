@@ -18,10 +18,10 @@ export class FDCombatActor extends FDActorBase {
     * Pre-create method. Being used to set some defaults on the prototype token.
     * override
     * @param {any} documents Pending document instances to be created
-                            * @param {any} operation Parameters of the database creation operation
-                                                    * @param {any} user The User requesting the creation operation
-                                                                            * @returns Return false to cancel the creation operation entirely
-                                                                            */
+    * @param {any} operation Parameters of the database creation operation
+    * @param {any} user The User requesting the creation operation
+    * @returns Return false to cancel the creation operation entirely
+    */
    async _preCreate(documents, operation, user) {
       const allowed = await super._preCreate(documents, operation, user);
       // Skip if the document is being created within a compendium
@@ -148,9 +148,9 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Static event handler for click on the saving throw button in chat.
-    *     @public
-                            * @param {any} event
-                                                    */
+    * @public
+    * @param {any} event
+    */
    static async handleSavingThrowRequest(event) {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
@@ -170,9 +170,9 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Static event handler for click on an action button in chat.
-    *     @public
-                            * @param {any} event
-                                                    */
+    * @public
+    * @param {any} event
+    */
    static async handleActionRoll(event) {
       event.preventDefault(); // Prevent the default behavior
       event.stopPropagation(); // Stop other handlers from triggering the event
@@ -200,10 +200,10 @@ export class FDCombatActor extends FDActorBase {
    /**
     * Finds and returns the appropriate ammo for the specified weapon.
     * The ammo item must be equipped for it to be recognized.
-    *     @public
-      * @param {any} weapon
-            * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
-            */
+    * @public
+    * @param {any} weapon
+    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
+    */
    getAmmoItem(weapon) {
       let ammoItem = null;
       const ammoType = weapon.system.ammoType;
@@ -277,11 +277,11 @@ export class FDCombatActor extends FDActorBase {
    }
 
    /**
-    *     @public
-                            * Add and/or update the actor's class-given special abilities.
-                            * @param {any} abilitiesData The class ability array for the desired level.
-                                                    * @returns void
-                                                    */
+    * @public
+    * Add and/or update the actor's class-given special abilities.
+    * @param {any} abilitiesData The class ability array for the desired level.
+    * @returns void
+    */
    async setupSpecialAbilities(abilitiesData) {
       if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
       let promises = [];
