@@ -115,6 +115,10 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       } else if (event.submitter?.name == 'closeTable') {
          this.system.currentTable = null;
          this.system.selectedTable = "none";
+      } else if (event.submitter?.name == "importTables") {
+         this.importTables();
+      } else if (event.submitter?.name == "exportTables") {
+         this.exportTables();
       }
 
       if (event.submitter) {
@@ -199,6 +203,17 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          this.system.selectedTable = "none";
          this.system.currentTable = null;
       }
+   }
+
+   async exportTables() {
+      const filename = `fvtt-${game.system.id}-usertables.json`;
+      const userTables = this.userTablesSys.getTables();
+      saveDataToFile(JSON.stringify(userTables, null, 2), 'text/json', filename);
+      ui.notifications.info("Tables exported successfully.");
+   }
+
+   async importTables() {
+      alert("Not implemented yet.")
    }
 
    /**

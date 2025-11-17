@@ -759,7 +759,9 @@
                "new": "Add",
                "load": "Load",
                "createTable": "Create Table",
-               "saveTable": "Save Changes"
+               "saveTable": "Save Changes",
+               "import": "Import",
+               "export": "Export"
             },
             "tableTypes": {
                "bonus": "Bonus Table",
