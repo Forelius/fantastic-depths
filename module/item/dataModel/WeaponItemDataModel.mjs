@@ -21,6 +21,7 @@ export class WeaponItemDataModel extends GearItemDataModel {
          saveDmgFormula: new StringField({ nullable: true, initial: null }),
          mastery: new StringField({ required: false, initial: "" }),
          weaponType: new StringField({ required: false, initial: "" }),
+         ammoType: new StringField({ required: false, initial: "" }),
          range: new SchemaField({
             short: new NumberField({ nullable: true, initial: null }),
             medium: new NumberField({ nullable: true, initial: null }),
