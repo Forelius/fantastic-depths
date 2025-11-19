@@ -179,19 +179,62 @@ export class UserTables {
             ]
          };
       }
+
       // Ability Score Modifiers - Simple
-      if (this.#userTables["ability-mods-simple"] === undefined) {
-         this.#userTables["ability-mods-simple"] = {
-            id: "ability-mods-simple",
-            name: "Ability Modifiers - Simple",
-            type: "jsonarray",
-            table: [
-               { json: `{ "min": 0, "value": -1, "maxRetainers": 3, "retainerMorale": 6 }` },
-               { json: `{ "min": 7, "value": 0, "reaction": 0, "maxRetainers": 4, "retainerMorale": 7 }` },
-               { json: `{ "min": 15, "value": 1, "reaction": 1, "maxRetainers": 5, "retainerMorale": 8 }` },
-            ]
+      if (this.#userTables["ability-mods-original"] === undefined) {
+         this.#userTables["ability-mods-original"] = {
+           id: "ability-mods-original",
+           name: "Ability Modifiers - Original",
+           type: "jsonarray",
+           table: [
+             {
+               json: `{
+                 "str": [
+                   { "min": 3,  "value": 0 }
+                 ],
+                 "int": [
+                   { "min": 3,  "value": 0 }
+                 ],
+                 "wis": [
+                   { "min": 3, "value": 0, "survival": 0 },
+                   { "min": 5, "value" 0, "survival": 0 },
+                   { "min": 7, "value" 0, "survival": 40 },
+                   { "min": 8, "value" 0, "survival": 50 },
+                   { "min": 9, "value" 0, "survival": 60 },
+                   { "min": 10, "value" 0, "survival": 70 },
+                   { "min": 11, "value" 0, "survival": 80 },
+                   { "min": 12, "value" 0, "survival": 90 }
+                 ],
+                 "dex": [
+                   { "min": 3,  "value": -1 },
+                   { "min": 9,  "value": 0 },
+                   { "min": 13, "value": 1 }
+                 ],
+                 "con": [
+                   { "min": 3,  "value": -1 },
+                   { "min": 7, "value" : 0 },
+                   { "min": 15, "value": 1 }
+                 ],
+                 "cha": [
+                   { "min": 3,  "maxRetainers": 1, "value": -2 },
+                   { "min": 5,  "maxRetainers": 2, "value": -1 },
+                   { "min": 7,  "maxRetainers": 3, "value": 0 },
+                   { "min": 8,  "maxRetainers": 3, "value": 0 },
+                   { "min": 9,  "maxRetainers": 3, "value": 0 },
+                   { "min": 10, "maxRetainers": 4, "value": 0 },
+                   { "min": 11, "maxRetainers": 4, "value": 0 },
+                   { "min": 12, "maxRetainers": 4, "value": 0 },
+                   { "min": 13, "maxRetainers": 5, "value": 1 },
+                   { "min": 15, "maxRetainers": 5, "value": 1 },
+                   { "min": 16, "maxRetainers": 6, "value": 2 },
+                   { "min": 18, "maxRetainers": 12, "value": 4 }
+                 ]
+               }`
+             }
+           ]
          };
-      }
+       }
+
       // Ability Score Modifiers - Heroic
       if (this.#userTables["ability-mods-heroic"] === undefined) {
          this.#userTables["ability-mods-heroic"] = {
