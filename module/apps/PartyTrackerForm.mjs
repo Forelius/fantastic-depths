@@ -180,6 +180,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       return super.close(options);
    }
 
+
    /**
     * Process form submission for the sheet
     * @this {PartyTrackerForm}             The handler is called with the application as its bound scope

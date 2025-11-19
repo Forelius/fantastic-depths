@@ -725,7 +725,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                 if (otherSameTypeArmor) {
                     await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
                 }
-            } else if (item.system.isAmmo === false && (item.type === "item" || item.type === "light")) {
+            } else if (item.type === "item" || item.type === "light") {
                 updateObj["system.containerId"] = null;
             }
 

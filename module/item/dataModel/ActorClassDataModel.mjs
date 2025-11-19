@@ -17,6 +17,8 @@ export class ActorClassDataModel extends foundry.abstract.TypeDataModel {
          // Only the class key, not the level like monster does for castAs
          castAsKey: new fields.StringField({ nullable: true, required: false, initial: null }),
          xp: new fields.SchemaField({
+            // Current is the xp needed to have achieved the current level.
+            current: new fields.NumberField({ initial: 0 }),
             value: new fields.NumberField({ initial: 0 }),
             bonus: new fields.NumberField({ initial: 0 }),
             next: new fields.NumberField({ initial: 0 }),

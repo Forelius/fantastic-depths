@@ -151,7 +151,6 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
       return super.migrateData(source);
    }
 
-   /** @override */
    prepareBaseData() {
       this.firstLevel = Math.max(0, (this.firstLevel ?? 1));
       this.maxLevel = Math.max(this.firstLevel, (this.maxLevel ?? this.firstLevel));
