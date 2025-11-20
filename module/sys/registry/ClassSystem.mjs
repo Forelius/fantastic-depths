@@ -415,6 +415,91 @@ export class ClassSystemBase {
       return result;
    }
 
+   async getXpNeeded(actorIds = null) {
+      // Get all tracked actors
+      actorIds = actorIds || game.settings.get(game.system.id, 'partyTrackerData') || [];
+      const trackedActors = actorIds.map(id => game.actors.get(id)).filter(actor => actor);
+      let output = "<h2>XP Needed</h2><ul>";
+
+      for (const actor of trackedActors) {
+         if (actor.type !== "character") continue;
+
+         const actorClass = await this.getActorClassData(actor);
+         const className = actorClass?.name;
+         if (!className) continue;
+         const level = actorClass.system.level ?? 1;
+
+         // Determine prevXP (0 if level=1, else XP of (level-1))
+         let prevXP = 0;
+         if (level > 1) {
+            prevXP = actorClass.system.xp.current;
+         }
+
+         // Determine nextXP (if it exists)
+         if (actorClass.system.level >= actorClass.system.maxLevel) {
+            output += `
+        <li><strong>${actor.name}</strong> (Level ${level}):
+          No higher level data (max level?)
+        </li>`;
+            continue;
+         }
+
+         const nextXP = actorClass.system.xp.next;
+         const difference = nextXP - prevXP;
+
+         // Use toLocaleString() to add commas
+         const currentXPStr = actor.system.details.xp.value.toLocaleString();
+         const nextXPStr = nextXP.toLocaleString();
+         const differenceStr = difference.toLocaleString();
+         const oneTenthStr = Math.floor(difference / 10).toLocaleString();
+         const oneTwentiethStr = Math.floor(difference / 20).toLocaleString();
+
+         // Format a single line of info
+         output += `
+      <li>
+        <strong>${actor.name}</strong> (Level ${level}/XP ${currentXPStr})<br/>
+        Next XP: ${nextXPStr} |
+        Needed: ${differenceStr}<br/>
+        1/10: <strong>${oneTenthStr}</strong>, 
+        1/20: <strong>${oneTwentiethStr}</strong>
+      </li>`;
+      }
+
+      output += "</ul>";
+
+      // Whisper to GM(s)
+      ChatMessage.create({
+         content: output,
+         whisper: ChatMessage.getWhisperRecipients("GM")
+      });
+   }
+
+   async getActorClassData(actor) {
+      if (actor.system.details?.class && actor.system.details?.level != null) {
+         const classDefinition = await fadeFinder.getClass(actor.system.details.class);
+         const classLevel = classDefinition.system.levels.find(i => i.level == actor.system.details.level);
+         const nextClassLevel = classDefinition.system.levels.find(i => Number(i.level) == Number(actor.system.details.level) + 1);
+         if (classLevel !== undefined && nextClassLevel !== undefined) {
+            return {
+               name: actor.system.details.class,
+               system: {
+                  key: classDefinition.system.key,
+                  castAsKey: classDefinition.system.castAsKey,
+                  level: Number(actor.system.details?.level) ?? 0,
+                  firstLevel: Number(classDefinition.system.firstLevel) ?? 0,
+                  maxLevel: Number(classDefinition.system.maxLevel) ?? 0,
+                  xp: {
+                     current: Number(classLevel?.xp) ?? 0,
+                     value: Number(actor.system.details?.xp.value) ?? 0,
+                     next: Number(nextClassLevel?.xp) ?? 0,
+                     bonus: Number(actor.system.details?.xp.bonus) ?? 0
+                  }
+               }
+            }
+         }
+      }
+   }
+
    async _promptAddAbilityItems(actor, className, currentLevel) {
       const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
       const itemNames = actor.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
@@ -496,7 +581,7 @@ export class SingleClassSystem extends ClassSystemBase {
                xp: {
                   bonus: "0",
                   next: "0"
-               }              
+               }
             },
             config: {
                maxSpellLevel: 0
@@ -602,7 +687,6 @@ export class SingleClassSystem extends ClassSystemBase {
     */
    async #prepareClassInfo(actor) {
       if (actor.testUserPermission(game.user, "OWNER") === false) return;
-      if (game.user.isGM === false) return; // needed?
 
       const classDataObj = await this._getClassData(actor.system.details.class, actor.system.details.level);
       if (classDataObj) {
@@ -679,6 +763,10 @@ export class SingleClassSystem extends ClassSystemBase {
 
 export class MultiClassSystem extends ClassSystemBase {
 
+   async getActorClassData(actor) {
+      return actor.items.find(i => i.type === "actorClass" && i.system.isPrimary === true);
+   }
+
    canCastSpells(actor) {
       let result = false;
       if (actor.type === "monster") {
@@ -743,6 +831,7 @@ export class MultiClassSystem extends ClassSystemBase {
             firstSpellLevel: item.system.firstSpellLevel,
             maxSpellLevel: item.system.maxSpellLevel,
             xp: {
+               current: classLevel?.xp,
                value: classLevel?.xp,
                next: nextClassLevel?.xp,
                bonus: 0
@@ -757,7 +846,9 @@ export class MultiClassSystem extends ClassSystemBase {
             unskilledToHitMod: item.system.unskilledToHitMod,
          },
       }, { parent: actor });
+
       await this.#updateActorData(actor);
+
       return newItem;
    }
 
@@ -975,6 +1066,7 @@ export class MultiClassSystem extends ClassSystemBase {
             update.thbonus = levelData.thbonus;
             const ordinalized = Formatter.formatOrdinal(currentLevel);
             update.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
+            update.xp.current = levelData.xp;
          }
 
          if (nextLevelData) {

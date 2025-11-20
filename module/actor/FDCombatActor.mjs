@@ -214,7 +214,7 @@ export class FDCombatActor extends FDActorBase {
       } else if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
          ammoItem = weapon;
       } else {
-         const ammoItems = ["item", "ammo"];
+         const ammoItems = ["ammo"];
          // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
          ammoItem = this.items.find(item => ammoItems.includes(item.type) && item.system.equipped === true
             && item.system.ammoType == ammoType && item.system.quantity !== 0);
