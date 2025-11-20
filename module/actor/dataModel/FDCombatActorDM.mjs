@@ -38,19 +38,68 @@ export class FDCombatActorDM extends FDActorBaseDM {
       const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
       const hasAbilityScoreMods = abilityScoreSetting === "withmod";
 
-      // If this is a character or if monsters have ability score mods...
-      if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
-         // Initialize ability score modifiers
-         const abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
-         const adjustments = game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${abilityScoreMods}`);
-         for (let [key] of Object.entries(this.abilities)) {
-            const total = Number(foundry.utils.getProperty(this.abilities, `${key}.total`)) || 0;
-            const sorted = (adjustments ?? []).sort((a, b) => b.min - a.min);
-            const adjustment = sorted.find(item => total >= item.min) ?? sorted[0];
-            const modValue = adjustment ? Number(adjustment.value) || 0 : 0;
-            foundry.utils.setProperty(this.abilities, `${key}.mod`, modValue);
+      
+      if (this.parent.type === "character" || hasAbilityScoreMods === true) {
+
+         const settingKey = game.settings.get(game.system.id, "abilityScoreMods");
+         const rawTable = game.fade.registry
+           .getSystem("userTables")
+           ?.getJsonArray(`ability-mods-${settingKey}`);
+       
+         // The table may be EITHER:
+         // 1) simple mode: [ {min, value, ...}, {min, value, ...} ]
+         // 2) ability-specific mode: [ { str: [...], dex: [...], ... } ]
+         //
+         // Convert into a consistent structure:
+         // simple → { str: simpleArray, dex: simpleArray, ... }
+         // original → use as-is
+         let adjustments = {};
+       
+         if (Array.isArray(rawTable) && rawTable.length > 0) {
+           const data = rawTable[0];
+       
+           if (Array.isArray(data)) {
+             // SIMPLE MODE: wrap each ability with the same table
+             adjustments = {
+               str: data,
+               int: data,
+               wis: data,
+               dex: data,
+               con: data,
+               cha: data
+             };
+           } else if (typeof data === "object") {
+             adjustments = data;
+           }
          }
-      }
+       
+         // Apply modifiers to each ability
+         for (let [ability, abilityData] of Object.entries(this.abilities)) {
+           const total = Number(abilityData.total) || 0;
+       
+           // Get table for this ability (simple mode uses same table)
+           const table = adjustments[ability] ?? [];
+       
+           // Sort by min descending and find first matching row
+           const sorted = [...table].sort((a, b) => b.min - a.min);
+           const row = sorted.find(r => total >= r.min) ?? sorted[sorted.length - 1];
+       
+           // `value` remains the "primary modifier" for compatibility
+           const modValue = Number(row?.value ?? 0);
+           foundry.utils.setProperty(this.abilities, `${ability}.mod`, modValue);
+
+           console.log(`Ability: ${ability.toUpperCase()}, Total: ${total}, Mod: ${modValue}`);
+       
+           // Copy any other modifier fields (hp, missile, loyalty, reaction, etc.)
+           for (let [key, value] of Object.entries(row)) {
+             if (key === "min" || key === "value") continue;
+
+             console.log(` - Additional Mod: ${key} = ${value}`);
+
+             foundry.utils.setProperty(this.abilities, `${ability}.${key}`, value);
+           }
+         }
+       }
    }
 
    /**
