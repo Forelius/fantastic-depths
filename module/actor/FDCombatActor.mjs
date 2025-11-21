@@ -114,21 +114,27 @@ export class FDCombatActor extends FDActorBase {
 
       if (dialogResp) {
          let rollMod = 0;
+
+         // Modifier from dialog         
          const manualMod = Number(dialogResp.mod) || 0;
          if (manualMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: dialogResp.mod }));
          }
-         let wisdomMod = 0;
-         if (dialogResp.action === "magic") {
-            wisdomMod = this.system.abilities?.wis?.mod ?? 0;
-            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: wisdomMod }));
+
+         // Ability score mod
+         const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+         let abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action);
+         if (abilityScoreMod !== 0) {
+            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
          }
+
+         // Mods from active effects
          let effectMod = this.system.mod.save[type] || 0;
          effectMod += this.system.mod.save.all || 0;
          if (effectMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
          }
-         rollMod += manualMod + wisdomMod + effectMod;
+         rollMod += manualMod + abilityScoreMod + effectMod;
          rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
@@ -139,6 +145,7 @@ export class FDCombatActor extends FDActorBase {
             roll: rolled,
             digest
          };
+
          const showResult = savingThrow._getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();

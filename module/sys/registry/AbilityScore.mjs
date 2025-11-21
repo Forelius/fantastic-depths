@@ -1,3 +1,5 @@
+const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField, ObjectField } = foundry.data.fields;
+
 export class AbilityScoreBase {
    constructor() {
       this.abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
@@ -25,7 +27,76 @@ export class AbilityScoreBase {
             const modValue = adjustment ? Number(adjustment.value) || 0 : 0;
             foundry.utils.setProperty(dataModel.abilities, `${key}.mod`, modValue);
          }
+      }
+   }
 
+   getAdjustments(abilityScoreKey) {
+      return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
+   }
+}
+
+export class AbilityScoreRetro extends AbilityScoreBase {
+   constructor() {
+      super();
+   }
+
+   defineSchema() {
+      return new SchemaField({
+         str: new SchemaField({
+            // The base ability score value.
+            value: new NumberField({ initial: 10 }),
+            // The ability score total, after active effects and tempMod applied.
+            total: new NumberField({ initial: 10 }),
+            // The ability score derived modifier. Sometimes called adjustment.
+            mod: new NumberField({ initial: 0 }),
+            // A temporary modifier applied to total.
+            tempMod: new NumberField({ initial: 0 }),
+            // The minimum value required for this ability score.
+            min: new NumberField({ initial: 1 })
+         }),
+         int: new SchemaField({
+            value: new NumberField({ initial: 10 }),
+            total: new NumberField({ initial: 10 }),
+            mod: new NumberField({ initial: 0 }),
+            tempMod: new NumberField({ initial: 0 }),
+            min: new NumberField({ initial: 1 })
+         }),
+         wis: new SchemaField({
+            value: new NumberField({ initial: 10 }),
+            total: new NumberField({ initial: 10 }),
+            mod: new NumberField({ initial: 0 }),
+            tempMod: new NumberField({ initial: 0 }),
+            min: new NumberField({ initial: 1 })
+         }),
+         dex: new SchemaField({
+            value: new NumberField({ initial: 10 }),
+            total: new NumberField({ initial: 10 }),
+            mod: new NumberField({ initial: 0 }),
+            tempMod: new NumberField({ initial: 0 }),
+            min: new NumberField({ initial: 1 })
+         }),
+         con: new SchemaField({
+            value: new NumberField({ initial: 10 }),
+            total: new NumberField({ initial: 10 }),
+            mod: new NumberField({ initial: 0 }),
+            tempMod: new NumberField({ initial: 0 }),
+            min: new NumberField({ initial: 1 })
+         }),
+         cha: new SchemaField({
+            value: new NumberField({ initial: 10 }),
+            total: new NumberField({ initial: 10 }),
+            mod: new NumberField({ initial: 0 }),
+            loyaltyMod: new NumberField({ initial: 0 }),
+            tempMod: new NumberField({ initial: 0 }),
+            min: new NumberField({ initial: 1 })
+         }),
+      });
+   }
+
+   prepareDerivedData(dataModel) {
+      super.prepareDerivedData(dataModel);
+      // If this is a character or if monsters have ability score mods...
+      if (dataModel.parent.type === "character" || this.hasAbilityScoreMods === true) {
          // Only character
          if (dataModel.parent.type === "character") {
             // Retainers stuff only on characters
@@ -39,10 +110,6 @@ export class AbilityScoreBase {
 
    getBaseACMod(actor) {
       return actor.system.abilities?.dex.mod ?? 0;
-   }
-
-   getAdjustments(abilityScoreKey) {
-      return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
    }
 
    hasMeleeDamageMod(actorData) {
@@ -67,6 +134,14 @@ export class AbilityScoreBase {
 
    getMissileToHitMod(actor) {
       return actor.system.abilities.dex.mod;
+   }
+
+   getSavingThrowMod(actor, action) {
+      let result = 0;
+      if (action === "magic") {
+         result = actor.system.abilities?.wis?.mod ?? 0;
+      }
+      return result;
    }
 
    sortForInitiative(aActor, bActor) {
