@@ -10,11 +10,6 @@ export class CharacterActor extends FDCombatActor {
    }
 
    /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-   }
-
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
@@ -23,10 +18,10 @@ export class CharacterActor extends FDCombatActor {
    /**
     * Intercept updateActor method call to log changes.
     * @override
-          * @param {any} updateData
-                * @param {any} options
-                      * @param {String} userId
-                            */
+    * @param {any} updateData
+    * @param {any} options
+    * @param {String} userId
+    */
    async onUpdateActor(updateData, options, userId) {
       super.onUpdateActor(updateData, options, userId)
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
@@ -53,11 +48,11 @@ export class CharacterActor extends FDCombatActor {
    /**
     * get changes and send to GM
     * @param {any} updateData
-          * @param {any} oldData -The old state of the actor before the update
-                * @param {any} user
-                      * @param {any} parentKey
-                            * @returns
-                            */
+    * @param {any} oldData -The old state of the actor before the update
+    * @param {any} user
+    * @param {any} parentKey
+    * @returns
+    */
    logActorChanges(updateData, oldData, user, type, parentKey = '', recursionLevel = 1) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
       let changes = [];
@@ -89,9 +84,9 @@ export class CharacterActor extends FDCombatActor {
    /**
     * Helper function to send a change message to the GM
     * @param {any} changes
-          * @param {any} user
-                * @param {any} type
-                      */
+    * @param {any} user
+    * @param {any} type
+    */
    _sendChangeMessageToGM(changes, user, type) {
       let changeDescs = null;
       if (type === "property") {

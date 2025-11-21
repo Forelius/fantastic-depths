@@ -12,15 +12,13 @@ export class FDCombatActorDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
-      for (let [key] of Object.entries(this.abilities)) {
-         const value = Number(foundry.utils.getProperty(this.abilities, `${key}.value`)) || 0;
-         const tempMod = Number(foundry.utils.getProperty(this.abilities, `${key}.tempMod`)) || 0;
-         foundry.utils.setProperty(this.abilities, `${key}.total`, value + tempMod);
-      }
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      abilityScoreSys.prepareBaseData(this);
    }
 
    prepareDerivedData() {
-      this._prepareDerivedAbilities();
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      abilityScoreSys.prepareDerivedData(this);
       super.prepareDerivedData();
    }
 
@@ -31,11 +29,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
     */
    static migrateData(source) {
       return super.migrateData(source);
-   }
-
-   _prepareDerivedAbilities() {
-      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
-      abilityScoreSys.prepareDerivedAbilities(this);
    }
 
    /**
