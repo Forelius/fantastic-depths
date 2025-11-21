@@ -37,8 +37,36 @@ export class AbilityScoreBase {
       }
    }
 
+   getBaseACMod(actor) {
+      return actor.system.abilities?.dex.mod ?? 0;
+   }
+
    getAdjustments(abilityScoreKey) {
       return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
+   }
+
+   hasMeleeDamageMod(actorData) {
+      return actorData.abilities && actorData.abilities.str.mod != 0
+   }
+
+   getMeleeDamageMod(actorData) {
+      return Number(actorData.abilities.str.mod);
+   }
+
+   hasMeleeToHitMod(actor) {
+      return actor.system.abilities && actor.system.abilities.str.mod !== 0;
+   }
+
+   getMeleeToHitMod(actor) {
+      return actor.system.abilities.str.mod;
+   }
+
+   hasMissileToHitMod(actor) {
+      return actor.system.abilities && actor.system.abilities.dex.mod !== 0;
+   }
+
+   getMissileToHitMod(actor) {
+      return actor.system.abilities.dex.mod;
    }
 
    sortForInitiative(aActor, bActor) {

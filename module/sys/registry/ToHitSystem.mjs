@@ -88,7 +88,7 @@ export class ToHitSystemBase extends ToHitInterface {
     * @param {any} targetTokens an array of target tokens, if any.
     * @param {any} roll
     * @param {any} attackType
-    * @returns
+    * @returns {Promise<any>}
     */
    async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') {
       // It should always be a token, but need to double-check that all code has been changed.
@@ -238,6 +238,7 @@ export class ToHitSystemBase extends ToHitInterface {
       const systemData = actor.system;
       const targetMods = targetData?.mod.combat;
       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
 
       if (hasWeaponMod && weaponData.mod.toHit !== 0) {
          result += weaponData.mod.toHit;
@@ -248,10 +249,10 @@ export class ToHitSystemBase extends ToHitInterface {
          digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
       }
       // If the attacker has ability scores...
-      if (systemData.abilities && systemData.abilities.str.mod !== 0) {
-         result += systemData.abilities.str.mod;
-         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: systemData.abilities.str.mod }));
+      if (abilityScoreSys.hasMeleeToHitMod(actor)) {
+         const abilityScoreMod = abilityScoreSys.getMeleeToHitMod(actor);
+         result += abilityScoreMod;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
       }
       if (targetMods && targetMods.selfToHit !== 0) {
          result += targetMods.selfToHit;
@@ -273,6 +274,7 @@ export class ToHitSystemBase extends ToHitInterface {
       const targetMods = targetData?.mod.combat;
       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
       const ammoIsNotWeapon = ammoItem && ammoItem.id != weapon.id;
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
 
       if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
          result += weaponData.mod.toHitRanged;
@@ -282,19 +284,22 @@ export class ToHitSystemBase extends ToHitInterface {
          result += systemData.mod.combat.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
       }
+      // Ammo mod
       if (ammoIsNotWeapon && Math.abs(ammoItem?.system.mod?.toHitRanged) > 0) {
          result += ammoItem.system.mod.toHitRanged;
          digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
       }
-      // If thrown and attacker has ability scores...
-      if (systemData.abilities && weaponData.tags.includes("thrown") && systemData.abilities.str.mod != 0) {
-         result += systemData.abilities.str.mod;
-         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: systemData.abilities.str.mod }));
-      } else if (systemData.abilities && systemData.abilities.dex.mod) {
-         result += systemData.abilities.dex.mod;
-         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.dex.long`);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: systemData.abilities.dex.mod }));
+      // If thrown and attacker has ability score mod...
+      if (weaponData.tags.includes("thrown") && abilityScoreSys.hasMeleeToHitMod(actor)) {
+         const abilityScoreMod = abilityScoreSys.getMeleeToHitMod(actor);
+         result += abilityScoreMod;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
+      }
+      // IF not thrown and attacker has ability score mod...
+      else if (abilityScoreSys.hasMissileToHitMod(actor)) {
+         const abilityScoreMod = abilityScoreSys.getMissileToHitMod(actor);
+         result += abilityScoreMod;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
       }
       // Target modifiers
       if (targetMods && targetMods.selfToHitRanged !== 0) {
@@ -303,10 +308,10 @@ export class ToHitSystemBase extends ToHitInterface {
       }
 
       if (target) {
-         // Thrown weapons
+         // Thrown and missile device weapons
          result += this.#getVsGroupMod(weaponData, target, digest);
          if (ammoIsNotWeapon) {
-            // Ammunition
+            // Ammunition mod
             result += this.#getVsGroupMod(ammoItem.system, target, digest);
          }
       }

@@ -96,8 +96,7 @@ export class SpecialAbilityItem extends FDItem {
             dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : itemSystem.rollFormula;
             let abilityMod = itemSystem.abilityMod?.length > 0 ? instigatorActor.system.abilities[itemSystem.abilityMod].mod : 0;
             if (abilityMod != 0) {
-               const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${itemSystem.abilityMod}.long`);
-               digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: abilityMod }));
+               digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityMod }));
                // If this is a roll under, then the ability score modifier should subtract from the roll.
                if (itemSystem.operator == "lt" || itemSystem.operator == "lte" || itemSystem.operator == "<" || itemSystem.operator == "<=") {
                   abilityMod = -abilityMod;

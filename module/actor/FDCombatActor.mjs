@@ -121,8 +121,7 @@ export class FDCombatActor extends FDActorBase {
          let wisdomMod = 0;
          if (dialogResp.action === "magic") {
             wisdomMod = this.system.abilities?.wis?.mod ?? 0;
-            const abilityName = game.i18n.localize(`FADE.Actor.Abilities.wis.long`);
-            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: wisdomMod }));
+            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: wisdomMod }));
          }
          let effectMod = this.system.mod.save[type] || 0;
          effectMod += this.system.mod.save.all || 0;
