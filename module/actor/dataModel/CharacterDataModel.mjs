@@ -19,15 +19,4 @@ export class CharacterDataModel extends FDCombatActorDM {
       const classSystem = game.fade.registry.getSystem("classSystem");
       return classSystem.getParsedHD(classSystem.getHighestHD(this.parent));
    }
-
-   _prepareDerivedAbilities() {
-      super._prepareDerivedAbilities();
-
-      // Retainers stuff only on characters
-      const abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
-      const adjustments = game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${abilityScoreMods}`);
-      const adjustment = adjustments.sort((a, b) => b.min - a.min).find(item => this.abilities.cha.total >= item.min);
-      this.retainer.max = adjustment.maxRetainers;
-      this.retainer.morale = (adjustment.retainerMorale ?? 10);
-   }
 }

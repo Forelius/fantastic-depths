@@ -1,3 +1,4 @@
+import { AbilityScoreBase, AbilityScoreOriginal } from './AbilityScore.mjs';
 import { ToHitTHAC0, ToHitAAC, ToHitClassic, ToHitDarkDungeons, ToHitHeroic } from './ToHitSystem.mjs';
 import { MoraleCheck, ActorMovement } from './DefaultSystem.mjs'
 import { ClassicArmorSystem } from './ArmorSystem.mjs';
@@ -23,8 +24,16 @@ export class fadeRegistry {
         // UserTables first, because others may rely on a user table.
         this.registerSystem('userTables', new UserTables(), UserTables);
 
-        this.registerSystem('moraleCheck', new MoraleCheck(), MoraleCheck);
-        const abilityCheckSetting = game.settings.get(game.system.id, "abilityCheck");
+       this.registerSystem('moraleCheck', new MoraleCheck(), MoraleCheck);
+
+       const abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
+       if (abilityScoreMods === "original") {
+          this.registerSystem("abilityScore", new AbilityScoreOriginal());
+       } else {
+          this.registerSystem("abilityScore", new AbilityScoreBase());
+       }
+
+       const abilityCheckSetting = game.settings.get(game.system.id, "abilityCheck");
         if (abilityCheckSetting === "basic") {
             this.registerSystem('abilityCheck', new AbilityCheck(), AbilityCheck);
         } else if (abilityCheckSetting === "tiered") {

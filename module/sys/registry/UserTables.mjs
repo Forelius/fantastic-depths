@@ -140,7 +140,7 @@ export class UserTables {
 
    /**
     * Get the array of json objects from a jsonarray type table.
-    * @param {any} id
+    * @param {any} id The id of the table.
     */
    getJsonArray(id) {
       let result = null;
@@ -253,6 +253,67 @@ export class UserTables {
                { key: "partialSuccess", value: 0 },
                { key: "success", value: -4 },
                { key: "criticalSuccess", value: -5 }
+            ]
+         };
+      }
+      if (this.#userTables["ability-mods-original"] === undefined) {
+         this.#userTables["ability-mods-original"] = {
+            id: "ability-mods-original",
+            name: "Ability Modifiers - Original",
+            type: "keyjson",
+            table: [{
+               key: "str",
+               json: JSON.stringify([
+                  { "min": 3, "value": 0 }
+               ])
+            }, {
+               key: "int",
+               json: JSON.stringify([
+                  { "min": 3, "value": 0 }
+               ])
+            }, {
+               key: "wis",
+               json: JSON.stringify([
+                  { "min": 3, "value": 0, "survival": 0 },
+                  { "min": 5, "value": 0, "survival": 0 },
+                  { "min": 7, "value": 0, "survival": 40 },
+                  { "min": 8, "value": 0, "survival": 50 },
+                  { "min": 9, "value": 0, "survival": 60 },
+                  { "min": 10, "value": 0, "survival": 70 },
+                  { "min": 11, "value": 0, "survival": 80 },
+                  { "min": 12, "value": 0, "survival": 90 }
+               ])
+            }, {
+               key: "dex",
+               json: JSON.stringify([
+                  { "min": 3, "value": -1 },
+                  { "min": 9, "value": 0 },
+                  { "min": 13, "value": 1 }
+               ])
+            }, {
+               key: "con",
+               json: JSON.stringify([
+                  { "min": 3, "value": -1 },
+                  { "min": 7, "value": 0 },
+                  { "min": 15, "value": 1 }
+               ])
+            }, {
+               key: "cha",
+               json: JSON.stringify([
+                  { "min": 3, "maxRetainers": 1, "value": -2 },
+                  { "min": 5, "maxRetainers": 2, "value": -1 },
+                  { "min": 7, "maxRetainers": 3, "value": 0 },
+                  { "min": 8, "maxRetainers": 3, "value": 0 },
+                  { "min": 9, "maxRetainers": 3, "value": 0 },
+                  { "min": 10, "maxRetainers": 4, "value": 0 },
+                  { "min": 11, "maxRetainers": 4, "value": 0 },
+                  { "min": 12, "maxRetainers": 4, "value": 0 },
+                  { "min": 13, "maxRetainers": 5, "value": 1 },
+                  { "min": 15, "maxRetainers": 5, "value": 1 },
+                  { "min": 16, "maxRetainers": 6, "value": 2 },
+                  { "min": 18, "maxRetainers": 12, "value": 4 }
+               ])
+            }
             ]
          };
       }

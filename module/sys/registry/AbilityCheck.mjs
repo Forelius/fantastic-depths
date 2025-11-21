@@ -1,6 +1,7 @@
-import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
-import { ChatBuilder } from "/systems/fantastic-depths/module/chat/ChatBuilder.mjs";
-import { DialogFactory } from "/systems/fantastic-depths/module/dialog/DialogFactory.mjs";
+import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.mjs";
+import { ChatBuilder } from "../../chat/ChatBuilder.mjs";
+import { DialogFactory } from "../../dialog/DialogFactory.mjs";
+
 /** Ability checks are often implemented differently for different systems. */
 export class AbilityCheck {
    get dialogTemplate() { return "systems/fantastic-depths/templates/dialog/tiered-difficulty.hbs"; }

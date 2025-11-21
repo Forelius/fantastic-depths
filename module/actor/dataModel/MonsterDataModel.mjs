@@ -25,11 +25,6 @@ export class MonsterDataModel extends FDCombatActorDM {
       this._prepareXP();
    }
 
-   prepareDerivedData() {
-      // Extract class identifier and level from the input
-      super.prepareDerivedData();
-   }
-
    /**
     * Migrate source data from some prior format into a new specification.
     * The source parameter is either original data retrieved from disk or provided by an update operation.
