@@ -20,7 +20,7 @@ export class fadeRegistry {
    }
 
    // TODO: These if/else blocks shouldn't be necessary. Registry should know how to handle or move out of registry.
-   async registerDefaultSystems() {
+   registerDefaultSystems() {
       // UserTables first, because others may rely on a user table.
       this.registerSystem('userTables', new UserTables(), UserTables);
 

@@ -126,6 +126,13 @@ Hooks.once('init', async function () {
 
    registerSheets();
 
+   // Register System Settings
+   const settings = new fadeSettings();
+   settings.RegisterSystemSettings();
+   // Hook into the rendering of the settings form
+   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
+   game.fade.registry.registerDefaultSystems();
+
    await handleAsyncInit();
 
    Hooks.call("afterFadeInit", game.fade.registry);
@@ -232,18 +239,10 @@ function registerSheets() {
 }
 
 async function handleAsyncInit() {
-   // Register System Settings
-   const settings = new fadeSettings();
-   settings.RegisterSystemSettings();
-   // Hook into the rendering of the settings form
-   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
-   const fxMgr = new EffectManager();
-   await fxMgr.OnGameInit();
-
+   //const fxMgr = new EffectManager();
+   //await fxMgr.OnGameInit();
    // Preload Handlebars templates.
    await preloadHandlebarsTemplates();
-
-   await game.fade.registry.registerDefaultSystems();
 }
 
 Hooks.once("setup", () => {
@@ -310,15 +309,15 @@ Hooks.once('ready', async () => {
       /* Hook for time advancement. */
       Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
          if (game.user.isGM === true) {
-         await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
-         //console.debug("updateWorldTime", worldTime, dt, options, userId);
-         const placeables = canvas?.tokens.placeables;
-         for (let placeable of placeables) {
-            const token = placeable.document;
-            if (token.actor) {  // Only process tokens with an actor
-               token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+            await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
+            //console.debug("updateWorldTime", worldTime, dt, options, userId);
+            const placeables = canvas?.tokens.placeables;
+            for (let placeable of placeables) {
+               const token = placeable.document;
+               if (token.actor) {  // Only process tokens with an actor
+                  token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+               }
             }
-         }
          }
       });
       /* -------------------------------------------- */

@@ -83,12 +83,13 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
             }),
             masteryLevelOverride: new StringField({ nullable: true, initial: null }),
          }),
-         wrestling: new NumberField({ initial: 0 }),         
+         wrestling: new NumberField({ initial: 0 }),
          // If enchanted, can only hit with magic weapons or spells.
          isEnchanted: new BooleanField({ initial: false }),
       };
 
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      console.debug(`Ability score system`, abilityScoreSys);
       schema.abilities = abilityScoreSys.defineSchema();
 
       return schema;
