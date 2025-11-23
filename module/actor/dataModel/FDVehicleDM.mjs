@@ -1,13 +1,18 @@
 import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.mjs";
+import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
+import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField, ObjectField } = foundry.data.fields;
 
 export class FDVehicleDM extends FDActorBaseDM {
    static defineSchema() {
       const baseSchema = super.defineSchema();
       const combatSchema = {
+         cost: new NumberField({ required: false, initial: 0 }),
          details: new SchemaField({
             // This is how many attacks the actor gets per round.
             attacks: new StringField({ initial: "1" }),
+            int: new NumberField({ initial: 2 }),
+            morale: new NumberField({ initial: 8 }),
          }),
          config: new SchemaField({
             // Ignored by multi-class character
@@ -28,8 +33,7 @@ export class FDVehicleDM extends FDActorBaseDM {
          languages: new StringField({ initial: "" }),
          combat: new SchemaField({
             // If true the character or class has basic proficiency with all weapons.
-            basicProficiency: new BooleanField({ required: true, initial: false }),
-            unskilledToHitMod: new NumberField({ required: true, initial: -2 }),
+            basicProficiency: new BooleanField({ required: true, initial: true }),
             // This is how many attacks the character has made for the current round
             attacks: new NumberField({ initial: 0 }),
             // This is how many times the character has been attack for the current round
@@ -37,7 +41,7 @@ export class FDVehicleDM extends FDActorBaseDM {
             attAgainstM: new NumberField({ initial: 0 }),
             deathCount: new NumberField({ initial: 0 }),
             isDead: new BooleanField({ initial: false }),
-            declaredAction: new StringField({ initial: "attack" }),
+            declaredAction: new StringField({ initial: "moveOnly" }),
          }),
          mod: new SchemaField({
             // For items that modify AC (add/subtract only) but are not armor items.
@@ -51,8 +55,6 @@ export class FDVehicleDM extends FDActorBaseDM {
             upgradeAc: new NumberField({ nullable: true, initial: null }),
             // Upgrades the ranged AC if better, otherwise does nothing.
             upgradeRangedAc: new NumberField({ nullable: true, initial: null }),
-            // Wrestling Rating modifier
-            wrestling: new NumberField({ nullable: true, initial: null }),
             initiative: new NumberField({ initial: 0 }),
             combat: new SchemaField({
                toHit: new NumberField({ initial: 0 }),
@@ -83,6 +85,13 @@ export class FDVehicleDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
+      this.encumbrance.max = this.encumbrance.max || 0;
+      // Default all monsters with basic proficiency.
+      this.combat.basicProficiency = true;
+      this._prepareTHAC0ToHitBonus();
+      // Maybe this is the wrong place to do this. We may need to wait until after init.
+      this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
+      this._prepareHitPoints();
    }
 
    /**
@@ -93,7 +102,6 @@ export class FDVehicleDM extends FDActorBaseDM {
       this.mod.baseAc = 0;
       this.mod.upgradeAc = null;
       this.mod.upgradeRangedAc = null;
-      this.mod.acVsLarge = 0;
       this.mod.initiative = 0;
       this.mod.combat.toHit = 0;
       this.mod.combat.dmg = 0;
@@ -111,5 +119,28 @@ export class FDVehicleDM extends FDActorBaseDM {
       // Saving throw mods
       this.mod.save = {};
       this.mod.save.all = 0;
+   }
+
+   getParsedHD() {
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      return classSystem.getParsedHD(this.hp.hd);
+   }
+
+   /**
+    * Calculate average hitpoints based on hitdice.
+    */
+   _prepareHitPoints() {
+      if (this.hp.max == null) {
+         const { base, modifier, dieSides } = this.getParsedHD();
+         this.hp.value = Math.ceil(((dieSides + 1) / 2) * base) + modifier;
+         this.hp.max = this.hp.value;
+      }
+   }
+
+   _prepareTHAC0ToHitBonus() {
+      if (this.thac0?.value == null) {
+         const thac0Calc = new MonsterTHAC0Calculator();
+         this.thac0.value = thac0Calc.getTHAC0(this.hp.hd);
+      }
    }
 }

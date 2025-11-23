@@ -2,9 +2,14 @@ import { CharacterSheetBase } from './CharacterSheetBase.mjs';
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
- * @extends {FDActorSheetV2}
+ * @extends {CharacterSheetBase}
  */
+// @ts-ignore
 export class CharacterSheet extends CharacterSheetBase {
+   constructor(options = {}) {
+      super(options);
+   }
+
    static DEFAULT_OPTIONS = {
       position: {
          width: 650,
@@ -82,7 +87,7 @@ export class CharacterSheet extends CharacterSheetBase {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, Partial<any>>}
    */
    #getTabs() {
       const group = 'primary';
@@ -121,7 +126,7 @@ export class CharacterSheet extends CharacterSheetBase {
    * An Application subclass should implement this method in order for the Application to be renderable.
    * @param {any} result            The result returned by the application rendering backend
    * @param {HTMLElement} content   The content element into which the rendered result must be inserted
-   * @param {RenderOptions} options Options which configure application rendering behavior
+   * @param {any} options Options which configure application rendering behavior
    * @protected
    */
    _replaceHTML(result, content, options) {
@@ -133,7 +138,7 @@ export class CharacterSheet extends CharacterSheetBase {
 
    /**
     * Handle click events on a tab within the Application.
-    * @param {PointerEvent} event
+    * @param {any} event
     * @protected
     */
    _onClickTab(event) {

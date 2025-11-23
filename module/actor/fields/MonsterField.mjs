@@ -10,7 +10,6 @@ export class MonsterField extends EmbeddedDataField {
 }
 
 export class MonsterData extends foundry.abstract.DataModel {
-   /** @override */
    static defineSchema() {
       return {
          details: new SchemaField({

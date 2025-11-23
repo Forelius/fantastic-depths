@@ -5,53 +5,49 @@ import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
  * @extends {FDActorSheetV2}
  */
 // @ts-ignore
-export class MonsterSheet extends FDActorSheetV2 {
+export class FDVehicleSheet extends FDActorSheetV2 {
    constructor(options = {}) {
       super(options);
-      this.editScores = false;
    }
 
    static DEFAULT_OPTIONS = {
       position: {
          width: 650,
-         height: 600,
+         height: 510,
       },
       form: {
          submitOnChange: true
       },
       classes: ['monster'],
-      actions: {
-         cycleAttackGroup: MonsterSheet.#clickAttackGroup
-      }
    }
 
    static PARTS = {
       header: {
-         template: "systems/fantastic-depths/templates/actor/monster/header.hbs",
+         template: "systems/fantastic-depths/templates/actor/vehicle/header.hbs",
       },
       tabnav: {
          template: "templates/generic/tab-navigation.hbs",
       },
       abilities: {
-         template: "systems/fantastic-depths/templates/actor/monster/abilities.hbs",
+         template: "systems/fantastic-depths/templates/actor/vehicle/abilities.hbs",
       },
       items: {
          template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
       },
       skills: {
-         template: "systems/fantastic-depths/templates/actor/monster/skills.hbs",
+         template: "systems/fantastic-depths/templates/actor/vehicle/skills.hbs",
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
       },      
       description: {
-         template: "systems/fantastic-depths/templates/actor/monster/description.hbs",
+         template: "systems/fantastic-depths/templates/actor/vehicle/description.hbs",
       },
       effects: {
          template: "systems/fantastic-depths/templates/actor/shared/effects.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/actor/monster/gmOnly.hbs",
+         template: "systems/fantastic-depths/templates/actor/vehicle/gmOnly.hbs",
       }
    }
 
@@ -83,10 +79,8 @@ export class MonsterSheet extends FDActorSheetV2 {
    async _prepareContext(options) {
       const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
-      const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
-      context.hasAbilityScores = abilityScoreSetting !== "none";
-      context.hasAbilityScoreMods = abilityScoreSetting === "withmod";
-      context.editScores = this.editScores;
+      context.hasAbilityScores = false;
+      context.hasAbilityScoreMods = false;;
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;
@@ -104,8 +98,6 @@ export class MonsterSheet extends FDActorSheetV2 {
 
       const tabs = {
          abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
-         description: { id: 'description', group, label: 'FADE.tabs.description' },
-         effects: { id: 'effects', group, label: 'FADE.tabs.effects' },
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
@@ -117,6 +109,9 @@ export class MonsterSheet extends FDActorSheetV2 {
          tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
       }
 
+      tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
+      tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
+
       if (game.user.isGM) {
          tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
       }
@@ -127,12 +122,5 @@ export class MonsterSheet extends FDActorSheetV2 {
       }
 
       return tabs;
-   }
-
-   static async #clickAttackGroup(event) {
-      const dataset = event.target.dataset;
-      // @ts-ignore
-      const item = this._getItemFromActor(event);
-      await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }

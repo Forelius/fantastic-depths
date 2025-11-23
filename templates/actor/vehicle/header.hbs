@@ -1,0 +1,61 @@
+<header class="sheet-header">
+   <img class="profile-img" style="height:100px; width:100px;" src="{{actor.img}}" data-edit="img" data-action="editImage" data-tooltip="{{actor.name}}"/>
+   <div class="header-fields">
+      <ul class="summary flexrow">
+         <li>
+            <div class="charname">
+               <input name="name" class="charname" type="text" value="{{actor.name}}" placeholder="Name" data-tooltip="{{actor.name}}" />
+               <label>{{localize 'Name'}}</label>
+            </div>
+         </li>
+         <li style="max-width:94px;">
+            <select style="max-width:90px;" name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
+               {{selectOptions sizes selected=system.details.size}}
+            </select>
+            <label for="system.details.size">{{localize 'FADE.Size'}}</label>
+         </li>
+      </ul>
+      <ul class="summary flexrow">
+         <li class="flex1">
+            <input class="hitdie" name="system.hp.hd" type="text" value="{{system.hp.hd}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.HitDice'}}" />
+            <label class="hitdie rollable2"
+                   data-action="rollGeneric"
+                   data-formula="{{formatHitDice system.hp.hd}}"
+                   data-rollmode="blindroll"
+                   data-label="{{localize 'FADE.Actor.Health'}}">
+               {{localize 'FADE.Actor.HitDiceShort'}}
+            </label>
+         </li>
+         <li class="flex1">
+            <input type="number" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
+            <label class="rollable2"
+                   data-action="rollMorale"
+                   data-target="{{system.details.morale}}"
+                   data-label="{{localize 'FADE.Actor.morale'}}"
+                   data-tooltip="{{localize 'FADE.Actor.moraleHint'}}">
+               {{localize 'FADE.Actor.morale'}}
+            </label>
+         </li>
+         <li>
+            <input type='text' name="system.cost" value='{{system.cost}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.cost">{{localize 'FADE.Item.cost.long'}}</label>
+         </li>
+         <li class="flex1">
+            <input type="text" name="system.details.attacks" value="{{system.details.attacks}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Attacks.long'}}" />
+            <label data-tooltip="{{localize 'FADE.Actor.Attacks.long'}}">{{localize 'FADE.Actor.Attacks.abbr'}}</label>
+         </li>
+         <li class="flex1">
+            <label>{{localize "FADE.Actor.THAC0"}}</label>
+            <input type="text" name="system.thac0.value" value="{{@root.system.thac0.value}}" data-dtype="Number" />
+         </li>
+         <li class="flex1">
+            <label>{{localize "FADE.Actor.THBonus"}}</label>
+            <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly />
+         </li>
+         <li class="flex1">
+            <input type="text" name="system.details.int" value="{{system.details.int}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Abilities.int.long'}}" />
+            <label data-tooltip="{{localize 'FADE.Actor.Abilities.int.long'}}">Int.</label>
+         </li>
+      </ul>
+   </div>
+</header>

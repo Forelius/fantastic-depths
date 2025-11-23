@@ -1167,7 +1167,8 @@
    "TYPES": {
       "Actor": {
          "character": "Character",
-         "monster": "Monster"
+         "monster": "Monster",
+         "vehicle": "Vehicle/Mount"
       },
       "Item": {
          "item": "Item",

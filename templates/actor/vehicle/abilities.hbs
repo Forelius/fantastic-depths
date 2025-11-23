@@ -1,0 +1,35 @@
+<section class="tab abilities {{tabs.abilities.cssClass}}" data-group="primary" data-tab="abilities">
+   <div class="flexrow align-vtop">
+      <div class="flex1" style="max-width: 180px;">
+         {{> "actorHpAc"}}
+         <div class="flexrow">
+            <!-- SAVING THROWS -->
+            {{> "actorSaves"}}
+         </div>
+      </div>
+      <div class="flex2">
+         <div class="bordered">
+            {{!-- Equipped Weapons --}}
+            {{> "attackGroups"}}
+            {{!-- Special Abilities --}}
+            {{> "actorSpecialAbilities"}}
+         </div>
+         {{#if system.encumbrance.max}}
+         <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
+            <span class="flex3">
+               Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
+            </span>
+            <span class="flex2">
+               Base movement: {{system.encumbrance.mv}}
+            </span>
+         </div>
+         {{/if}}
+         <div class="flexrow">
+            <div class="bordered text-center">
+               {{> "actorMovement"}}
+            </div>
+            {{> "actorMovement2"}}
+         </div>
+      </div>
+   </div>
+</section>

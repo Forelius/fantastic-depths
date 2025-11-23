@@ -8,10 +8,9 @@ const ConditionMixin = (superclass) => {
 
       /**
        * Handle deleting a condition
-       * @param {Event} event The originating click event
-       * @protected
+       * @param {any} event The originating click event
        */
-      static async _clickDeleteCondition(event) {
+      static async clickDeleteCondition(event) {
          event.preventDefault();
          const index = parseInt((event.target.dataset.index ?? event.target.parentElement.dataset.index));
          const items = this.item.system.conditions;
@@ -38,7 +37,7 @@ const ConditionMixin = (superclass) => {
 
    ConditionMixinClass.DEFAULT_OPTIONS = {
       actions: {
-         deleteCondition: ConditionMixinClass._clickDeleteCondition
+         deleteCondition: ConditionMixinClass.clickDeleteCondition
       }
    };
 
