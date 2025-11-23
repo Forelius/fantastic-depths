@@ -1,11 +1,5 @@
-export class DamageSystemInterface {
-   async applyDamage(actor, delta, damageType, attackType, damageSource = null) { throw new Error("Method not implemented."); }
-   GetVsGroupMod(token, weaponItem) { throw new Error("Method not implemented."); }
-}
-
-export class DamageSystem extends DamageSystemInterface {
+export class DamageSystem  {
    constructor(options) {
-      super(options);
       this.options = options;
    }
 
@@ -50,9 +44,9 @@ export class DamageSystem extends DamageSystemInterface {
 
    /**
     * Calculate damage modifier based on token's actor groups and weapon's VS Group modifiers
-    * @param {Token} token - The target token
+    * @param {any} targetActor - The target actor
     * @param {Item} modierItem - The weapon/ammo item with VS Group modifiers
-    * @returns {number} - Total damage modifier
+    * @returns {any} - An object with mod (total damage modifier) and digest properties.
     */
    GetVsGroupMod(targetActor, modierItem) {
       if (!targetActor || !modierItem?.system?.mod?.vsGroup) {
@@ -84,7 +78,7 @@ export class DamageSystem extends DamageSystemInterface {
 
    /**
     * Check if a token meets the criteria for a special rule
-    * @param {Token} token - The target token
+    * @param {any} actor - The target actor
     * @param {string} rule - The rule to check
     * @returns {boolean} - Whether the token meets the rule criteria
     * @private
@@ -130,17 +124,18 @@ export class DamageSystem extends DamageSystemInterface {
 
    getMeleeDamageMod(weapon, digest, attackerData, targetActor) {
       let modifier = 0;
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
       const weaponData = weapon.system;
 
       if (weaponData.mod.dmg != null && weaponData.mod.dmg != 0) {
          modifier += weaponData.mod.dmg;
          digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.dmg }));
       }
-      // If the attacker has ability scores...
-      if (attackerData.abilities && attackerData.abilities.str.mod != 0) {
-         modifier += Number(attackerData.abilities.str.mod);
-         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: attackerData.abilities.str.mod }));
+      // If the attacker has ability scores mods...
+      if (abilityScoreSys.hasMeleeDamageMod(attackerData)) {
+         const abilityScoreMod = abilityScoreSys.getMeleeDamageMod(attackerData);
+         modifier += abilityScoreMod;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
       }
       if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
          modifier += Number(attackerData.mod.combat.dmg);
@@ -158,6 +153,7 @@ export class DamageSystem extends DamageSystemInterface {
 
    getMissileDamageMod(weapon, digest, attackerData, targetActor, ammoItem) {
       let modifier = 0;
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
       const weaponData = weapon.system;
 
       if (weaponData.mod.dmgRanged != null && weaponData.mod.dmgRanged != 0) {
@@ -165,10 +161,10 @@ export class DamageSystem extends DamageSystemInterface {
          digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.dmgRanged }));
       }
       // If the attacker has ability scores...
-      if (attackerData.abilities && attackerData.abilities.str.mod != 0 && weaponData.tags.includes("thrown")) {
-         modifier += Number(attackerData.abilities.str.mod);
-         const abilityName = game.i18n.localize(`FADE.Actor.Abilities.str.long`);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: attackerData.abilities.str.mod }));
+      if (abilityScoreSys.hasMeleeDamageMod(attackerData) && weaponData.tags.includes("thrown")) {
+         const abilityScoreMod = abilityScoreSys.getMeleeDamageMod(attackerData);
+         modifier += abilityScoreMod;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
       }
       if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
          modifier += Number(attackerData.mod.combat.dmgRanged);

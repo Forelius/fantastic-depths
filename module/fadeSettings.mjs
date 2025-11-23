@@ -1,4 +1,4 @@
-import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTablesConfig.mjs";
+import { UserTablesConfig } from "./apps/UserTablesConfig.mjs";
 
 export class fadeSettings {
    /**

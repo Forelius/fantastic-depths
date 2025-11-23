@@ -489,7 +489,7 @@
          "mod": "AC Mod",
          "modRanged": "Ranged AC Mod",
          "modBase": "Base AC Mod",
-         "dexterityBonus": "Dexterity bonus: {bonus}",
+         "abilityScoreBonus": "Ability score bonus: {bonus}",
          "armorWeight": {
             "short": "Weight",
             "choices": {
@@ -675,7 +675,7 @@
             "ammoMod": "Ammunition mod: {mod}",
             "weaponMod": "Weapon mod: {mod}",
             "itemMod": "Item ability mod: {mod}",
-            "abilityScoreMod": "{ability} mod: {mod}",
+            "abilityScoreMod": "Ability score mod: {mod}",
             "effectMod": "Attacker effect mod: {mod}",
             "effectMod2": "Effect mod: {mod}",
             "effectScale": "Attacker effect scale: x{scale}",

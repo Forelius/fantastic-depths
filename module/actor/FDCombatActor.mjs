@@ -114,22 +114,27 @@ export class FDCombatActor extends FDActorBase {
 
       if (dialogResp) {
          let rollMod = 0;
+
+         // Modifier from dialog         
          const manualMod = Number(dialogResp.mod) || 0;
          if (manualMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: dialogResp.mod }));
          }
-         let wisdomMod = 0;
-         if (dialogResp.action === "magic") {
-            wisdomMod = this.system.abilities?.wis?.mod ?? 0;
-            const abilityName = game.i18n.localize(`FADE.Actor.Abilities.wis.long`);
-            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: wisdomMod }));
+
+         // Ability score mod
+         const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+         let abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action);
+         if (abilityScoreMod !== 0) {
+            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
          }
+
+         // Mods from active effects
          let effectMod = this.system.mod.save[type] || 0;
          effectMod += this.system.mod.save.all || 0;
          if (effectMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
          }
-         rollMod += manualMod + wisdomMod + effectMod;
+         rollMod += manualMod + abilityScoreMod + effectMod;
          rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
@@ -140,6 +145,7 @@ export class FDCombatActor extends FDActorBase {
             roll: rolled,
             digest
          };
+
          const showResult = savingThrow._getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();
@@ -228,52 +234,47 @@ export class FDCombatActor extends FDActorBase {
     */
    getAvailableActions() {
       // These options are always available.
-      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility", "concentrate"];
-      let hasEquippedWeapon = false;
-      // Ready weapon
-      if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {
-         result.push("readyWeapon");
-      }
+      const result = [
+         "nothing",
+         "attack",
+         "guard",
+         "withdrawal",
+         "retreat",
+         "moveOnly",
+         "unarmed",
+         "wrestle",
+         "shove",
+         "magicItem",
+         "specialAbility",
+         "concentrate"
+      ];
+
       // Ranged weapon actions
       let rangedWeapons = this.items.filter(item => item.type === "weapon"
          && item.system.canRanged === true && item.system.equipped === true
          && (item.system.quantity === null || item.system.quantity > 0));
-      if (rangedWeapons?.length > 0) {
-         if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
-            || (item.system.damageType === "breath" || item.system.natural === true))) {
-            result.push("fire");
-         } else {
-            result.push("throw");
-         }
-         hasEquippedWeapon = true;
+      if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
+         || (item.system.damageType === "breath" || item.system.natural === true))) {
+         result.push("fire");
+      } else {
+         result.push("throw");
       }
-      // Melee weapon actions
-      if (this.items.filter(item => item.type === "weapon"
-         && item.system.canMelee === true && item.system.equipped === true
-         && (item.system.quantity === null || item.system.quantity > 0))?.length > 0) {
-         result.push("attack");
-         result.push("withdrawal");
-         hasEquippedWeapon = true;
-      }
-      // Unarmed actions
-      if (hasEquippedWeapon === false) {
-         result.push("unarmed");
-         result.push("wrestle");
-      }
+
       // Spells
       if (this.items.filter(item => item.type === "spell"
          && (item.system.memorized === null || item.system.memorized > 0))?.length > 0) {
          result.push("spell");
       }
+
+      // Combat manuever special abilitites
       const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null && item.system.combatManeuver !== "null")
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
          const config = CONFIG.FADE.CombatManeuvers[ability];
-         if (config === undefined || (config.needWeapon ?? false) === false || (config.needWeapon === true && hasEquippedWeapon === true)) {
-            result.push(ability);
-         }
+         result.push(ability);
       }
-      return result;
+
+      return result.sort((a, b) => a.localeCompare(b));
    }
 
    /**
@@ -408,7 +409,7 @@ export class FDCombatActor extends FDActorBase {
    }
 
    setupMinAbilityScores(abilities) {
-      const updated = { };
+      const updated = {};
       for (let [key] of Object.entries(abilities)) {
          if (this.system.abilities[key]?.min < abilities[key].min) {
             updated[key] = { min: abilities[key].min };
