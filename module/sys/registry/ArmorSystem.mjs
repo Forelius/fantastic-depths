@@ -1,19 +1,10 @@
-export class ArmorSystemInterface {
-   async getArmorPieces(actor) { throw new Error("Method not implemented."); }
-   async prepareAAC(ac) { throw new Error("Method not implemented."); }
-   async prepareACMod(actor, acDigest, ac) { throw new Error("Method not implemented."); }
-   async prepareDerivedData(actor) { throw new Error("Method not implemented."); }
-   async prepareEquippedArmor(equippedArmor, ac, dexMod, acDigest) { throw new Error("Method not implemented."); }
-   async prepareNaturalArmor(naturalArmor, ac, dexMod, acDigest) { throw new Error("Method not implemented."); }
-   async prepareShield(equippedShield, ac, acDigest) { throw new Error("Method not implemented."); }
-   async reset(actor) { throw new Error("Method not implemented."); }
-}
-
-export class ArmorSystemBase extends ArmorSystemInterface {
+export class ArmorSystemBase {
+   constructor() { }
 
    reset(actor) {
-      const dexMod = (actor.system.abilities?.dex.mod ?? 0);
-      const baseAC = CONFIG.FADE.Armor.acNaked - dexMod - actor.system.mod.baseAc;
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      const abilityScoreACMod = abilityScoreSys.getBaseACMod(actor);
+      const baseAC = CONFIG.FADE.Armor.acNaked - abilityScoreACMod - actor.system.mod.baseAc;
       let ac = {};
       ac.nakedAAC = CONFIG.FADE.ToHit.baseTHAC0 - baseAC;
       ac.naked = baseAC;
@@ -37,21 +28,26 @@ export class ArmorSystemBase extends ArmorSystemInterface {
 }
 
 export class ClassicArmorSystem extends ArmorSystemBase {
+   constructor() {
+      super();
+   }
+
    /**
     * Prepare derived armor class values.
     */
    prepareDerivedData(actor) {
       const acDigest = [];
-      const dexMod = (actor.system.abilities?.dex.mod ?? 0);
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      const abilityScoreACMod = abilityScoreSys.getBaseACMod(actor);
       let ac = this.reset(actor);
       const { naturalArmor, equippedArmor, equippedShield } = this.getArmorPieces(actor);
 
-      if (dexMod !== 0) {
-         acDigest.push(game.i18n.localize('FADE.Armor.dexterityBonus', { bonus: dexMod }));
+      if (abilityScoreACMod !== 0) {
+         acDigest.push(game.i18n.localize('FADE.Armor.abilityScoreBonus', { bonus: abilityScoreACMod }));
       }
 
-      this.prepareNaturalArmor(naturalArmor, ac, dexMod, acDigest);
-      this.prepareEquippedArmor(equippedArmor, ac, dexMod, acDigest);
+      this.prepareNaturalArmor(naturalArmor, ac, abilityScoreACMod, acDigest);
+      this.prepareEquippedArmor(equippedArmor, ac, abilityScoreACMod, acDigest);
       this.prepareShield(equippedShield, ac, acDigest);
       this.prepareACMod(actor, acDigest, ac);
       this.prepareAAC(ac);
@@ -63,21 +59,21 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       actor.system.acDigest = acDigest;
    }
 
-   prepareNaturalArmor(naturalArmor, ac, dexMod, acDigest) {
+   prepareNaturalArmor(naturalArmor, ac, abilityScoreACMod, acDigest) {
       // If natural armor
       if (naturalArmor?.system.totalAC !== null && naturalArmor?.system.totalAC !== undefined) {
-         ac.naked = naturalArmor.system.totalAC - dexMod;
-         ac.nakedRanged = naturalArmor.system.totalRangedAC - dexMod;
+         ac.naked = naturalArmor.system.totalAC - abilityScoreACMod;
+         ac.nakedRanged = naturalArmor.system.totalRangedAC - abilityScoreACMod;
          ac.value = ac.naked;
          ac.total = ac.naked;
-         ac.totalRanged = naturalArmor.system.totalRangedAC - dexMod;
+         ac.totalRanged = naturalArmor.system.totalRangedAC - abilityScoreACMod;
          ac.av = naturalArmor.system.av;
          naturalArmor.system.equipped = true;
          acDigest.push(`${naturalArmor.name}: ${naturalArmor.system.totalAC}/${naturalArmor.system.totalRangedAC}`);
       }
    }
 
-   prepareEquippedArmor(equippedArmor, ac, dexMod, acDigest) {
+   prepareEquippedArmor(equippedArmor, ac, abilityScoreACMod, acDigest) {
       // If an equipped armor is found...
       if (equippedArmor) {
          if (equippedArmor.system.av?.length > 0) {
@@ -87,10 +83,10 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.value = equippedArmor.system.ac;
          // What was ac.mod for??
          ac.mod += equippedArmor.system.mod ?? 0;
-         ac.modRanged += (ac.mod + equippedArmor.system.modRanged ?? 0) ?? 0;
+         ac.modRanged += ac.mod + equippedArmor.system.modRanged;
          // Reapply dexterity mod, since overwriting ac.total here.
-         ac.total = equippedArmor.system.totalAC - dexMod;
-         ac.totalRanged = equippedArmor.system.totalRangedAC - dexMod;
+         ac.total = equippedArmor.system.totalAC - abilityScoreACMod;
+         ac.totalRanged = equippedArmor.system.totalRangedAC - abilityScoreACMod;
          acDigest.push(`${equippedArmor.name}: ${equippedArmor.system.totalAC}/${equippedArmor.system.totalRangedAC}`);
       }
    }
@@ -121,8 +117,6 @@ export class ClassicArmorSystem extends ArmorSystemBase {
          ac.totalRanged -= actor.system.mod.rangedAc;
          acDigest.push(`${game.i18n.localize('FADE.Armor.modRanged')}: ${actor.system.mod.rangedAc}`);
       }
-      //ac.nakedRanged = ac.total;
-      //ac.totalRanged = ac.total;
 
       // Handle the upgradeAc modifier
       if (actor.system.mod.upgradeAc !== null && actor.system.mod.upgradeAc < ac.total) {

@@ -11,7 +11,7 @@ export class FDCombatActorField extends EmbeddedDataField {
 
 export class FDCombatActorData extends foundry.abstract.DataModel {
    static defineSchema() {
-      return {
+      const schema = {
          details: new SchemaField({
             // This is how many attacks the actor gets per round.
             attacks: new StringField({ initial: "1" }),
@@ -84,58 +84,14 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
             masteryLevelOverride: new StringField({ nullable: true, initial: null }),
          }),
          wrestling: new NumberField({ initial: 0 }),
-         abilities: new SchemaField({
-            str: new SchemaField({
-               // The base ability score value.
-               value: new NumberField({ initial: 10 }),
-               // The ability score total, after active effects and tempMod applied.
-               total: new NumberField({ initial: 10 }),
-               // The ability score derived modifier. Sometimes called adjustment.
-               mod: new NumberField({ initial: 0 }),
-               // A temporary modifier applied to total.
-               tempMod: new NumberField({ initial: 0 }),
-               // The minimum value required for this ability score.
-               min: new NumberField({initial: 1})
-            }),
-            int: new SchemaField({
-               value: new NumberField({ initial: 10 }),
-               total: new NumberField({ initial: 10 }),
-               mod: new NumberField({ initial: 0 }),
-               tempMod: new NumberField({ initial: 0 }),
-               min: new NumberField({ initial: 1 })
-            }),
-            wis: new SchemaField({
-               value: new NumberField({ initial: 10 }),
-               total: new NumberField({ initial: 10 }),
-               mod: new NumberField({ initial: 0 }),
-               tempMod: new NumberField({ initial: 0 }),
-               min: new NumberField({ initial: 1 })
-            }),
-            dex: new SchemaField({
-               value: new NumberField({ initial: 10 }),
-               total: new NumberField({ initial: 10 }),
-               mod: new NumberField({ initial: 0 }),
-               tempMod: new NumberField({ initial: 0 }),
-               min: new NumberField({ initial: 1 })
-            }),
-            con: new SchemaField({
-               value: new NumberField({ initial: 10 }),
-               total: new NumberField({ initial: 10 }),
-               mod: new NumberField({ initial: 0 }),
-               tempMod: new NumberField({ initial: 0 }),
-               min: new NumberField({ initial: 1 })
-            }),
-            cha: new SchemaField({
-               value: new NumberField({ initial: 10 }),
-               total: new NumberField({ initial: 10 }),
-               mod: new NumberField({ initial: 0 }),
-               loyaltyMod: new NumberField({ initial: 0 }),
-               tempMod: new NumberField({ initial: 0 }),
-               min: new NumberField({ initial: 1 })
-            }),
-         }),
          // If enchanted, can only hit with magic weapons or spells.
          isEnchanted: new BooleanField({ initial: false }),
       };
+
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      console.debug(`Ability score system`, abilityScoreSys);
+      schema.abilities = abilityScoreSys.defineSchema();
+
+      return schema;
    }
 }

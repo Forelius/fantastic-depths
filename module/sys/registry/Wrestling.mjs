@@ -168,9 +168,9 @@ export class Wrestling {
       }
 
       if (actor.type === 'character') {
-         const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
+         const { base } = actor.system.getParsedHD();
          result = Math.ceil(base / 2) + actor.system.ac.value;
-         result += actor.system.abilities.str.mod + actor.system.abilities.dex.mod;
+         result += actor.system.abilities?.str?.mod + actor.system.abilities?.dex?.mod;
          // If has wrestling mastery
          if (wrestlingMastery) {
             result += wrestlingMastery.system.acBonus;
@@ -178,8 +178,7 @@ export class Wrestling {
       } else {
          // Wrestling skill
          const data = actor.system;
-         const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
-         //const hitDice = data.hp.hd?.match(/^\d+/)[0];
+         const { base } = actor.system.getParsedHD();
          if (base) {
             result = Math.ceil(base * 2);
          }
@@ -196,6 +195,6 @@ export class Wrestling {
             result += wrestlingMastery.system.acBonus;
          }
       }
-      return result + actor.system.mod?.wrestling ?? 0;
+      return result + (actor.system.mod?.wrestling ?? 0);
    }
 }
