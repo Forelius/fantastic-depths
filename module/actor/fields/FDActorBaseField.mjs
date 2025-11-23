@@ -15,6 +15,7 @@ export class FDActorBaseData extends foundry.abstract.DataModel {
          tags: new ArrayField(new StringField({ required: false }), { initial: [] }),
          biography: new StringField({ initial: "" }),         
          details: new SchemaField({
+            cost: new NumberField({ required: false, initial: 0 }),
             weight: new StringField({ initial: "" }),
             size: new StringField({ initial: "M" }),
          }),         
