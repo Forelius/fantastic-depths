@@ -1,13 +1,15 @@
-import { ClassDefinitionItem } from "/systems/fantastic-depths/module/item/ClassDefinitionItem.mjs";
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.mjs";
+import { FDItem } from "../../item/FDItem.mjs";
+import { fadeFinder } from "../..//utils/finder.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
-import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
+import { DragDropMixin } from "../mixins/DragDropMixin.mjs";
+import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.mjs";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
- * @extends {ItemSheet}
+ * @extends {FDItemSheetV2}
  */
+// @ts-ignore
 export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
@@ -62,7 +64,6 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       },
    }
 
-   /** @override */
    tabGroups = {
       primary: "description"
    }
@@ -75,7 +76,6 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       return result;
    }
 
-   /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
       // So we need to call `super` first
@@ -88,7 +88,6 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       }
    }
 
-   /** @override */
    async _prepareContext() {
       // Retrieve base data structure
       const context = await super._prepareContext();
@@ -120,9 +119,9 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
    }
 
    /**
-   * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
-   */
+    * Prepare an array of form header tabs.
+    * @returns {Record<string, Partial<any>>}
+    */
    #getTabs() {
       const group = "primary";
       // Default tab for first time it's rendered this session
@@ -163,8 +162,8 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
 
    /**
    * Handle creating a new child object using initial data defined in the HTML dataset
-   * @param {Event} event The originating click event
-   * @private
+   * @this {any}
+   * @param {any} event The originating click event
    */
    static async #onCreateChild(event) {
       event.preventDefault();
@@ -179,6 +178,10 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       }
    }
 
+   /**
+    * @this {any}
+    * @param {any} event
+    */
    static async #onDeleteChild(event) {
       event.preventDefault();
       let type;
@@ -190,7 +193,7 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
          type = event.target.parentElement.dataset.type;
          index = parseInt(event.target.parentElement.dataset.index);
       } else {
-         console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can"t determine item type.`, item);
+         console.error(`ClassDefinitionItemSheet.#onDeleteChild: Can"t determine item type.`, this.item);
       }
 
       if (type === "classSave") {

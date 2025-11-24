@@ -66,8 +66,6 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                ability: new StringField({ required: true }),
                percentage: new NumberField({ required: true, initial: 5 }),
                minScore: new NumberField({ required: true }),
-               xpBonus5: new NumberField({ required: true }),
-               xpBonus10: new NumberField({ required: true }),
             }),
             {
                required: true,
@@ -155,52 +153,11 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
       this.firstLevel = Math.max(0, (this.firstLevel ?? 1));
       this.maxLevel = Math.max(this.firstLevel, (this.maxLevel ?? this.firstLevel));
       super.prepareBaseData();
-   }
-
-   #prepareLevels() {
-      const totalLevelCount = this.maxLevel - (this.firstLevel - 1);
-      if (totalLevelCount !== this.levels.length) {
-         const newLevels = Array.from({ length: totalLevelCount }, (_, index) => {
-            return new ClassLevelData({ level: index + this.firstLevel });
-         });
-
-         // Try to preserve existing levels
-         if (this.levels && this.levels.length > 0) {
-            for (let i = 0; i < this.levels.length && i < newLevels.length; i++) {
-               if (newLevels[i].level === this.levels[i].level) {
-                  newLevels[i] = this.levels[i];
-               }
-            }
-         }
-         this.levels = [...newLevels];
-      } else {
-         // Make sure level numbers are correct.
-         for (let i = 0; i < totalLevelCount; i++) {
-            if (this.levels[i].level === null) {
-               this.levels[i].level = i + this.firstLevel;
-            }
-         }
-      }
-   }
-
-   #prepareSpellLevels() {
-      const totalLevelCount = this.maxLevel;
-      const currentMaxSpellLevel = this.spells.length > 0 ? this.spells[0].length : 0;
-      if ((this.maxSpellLevel > 0) === false) {
-         this.spells = [];
-      } else if (totalLevelCount !== this.spells.length || currentMaxSpellLevel !== this.maxSpellLevel) {
-         const newLevels = Array.from({ length: totalLevelCount }, () => Array.from({ length: this.maxSpellLevel }, () => 0));
-         // Try to preserve existing spells
-         if (this.spells && this.spells.length > 0) {
-            for (let i = 0; i < this.spells.length && i < newLevels.length; i++) {
-               let oldLevel = this.spells[i];
-               let newLevel = newLevels[i];
-               for (let j = 0; j < oldLevel.length && j < newLevel.length; j++) {
-                  newLevels[i][j] = oldLevel[j];
-               }
-            }
-         }
-         this.spells = [...newLevels];
-      }
+      this.primeRegs = this.primeReqs.sort((a, b) => {
+         let result = a.percentage - b.percentage
+         if (result === 0) result = a.minScore - b.minScore;
+         if (result === 0) result = a.ability.localeCompare(b.ability);
+         return result;
+      });
    }
 }
