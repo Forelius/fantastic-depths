@@ -1,11 +1,11 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
+import { fadeFinder } from '../utils/finder.mjs';
 import { SavingThrowsData } from './dataModel/ClassDefinitionDataModel.mjs';
 import { FDItem } from './FDItem.mjs';
 
 export class ClassDefinitionItem extends FDItem {
    static ValidItemTypes = ['item', 'weapon', 'armor'];
 
-   /** @override
+   /** 
     * @protected 
     */
    prepareDerivedData() {
@@ -42,9 +42,10 @@ export class ClassDefinitionItem extends FDItem {
 
       // Define the new primeReq data
       const newPrimeReqData = {
+         concatLogic: "",
+         percentage: 5,
+         minScore: 13,
          ability: "",    // Default ability, empty string
-         xpBonus5: 0,    // Default XP bonus of 0%
-         xpBonus10: 0    // Default XP bonus of 0%
       };
 
       // Add the new primeReq to the array
@@ -74,30 +75,73 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.classItems": items });
    }
 
+   /**
+    * 
+    * @param {any} abilities The character's ability scores.
+    * @returns {number} The total xp bonus for this class.
+    */
    getXPBonus(abilities) {
-      const groups = this.system.primeReqs.reduce((acc, curr) => {
-         if (!acc[curr.percentage]) acc[curr.percentage] = []; //If this type wasn't previously stored
-         acc[curr.percentage].push(curr);
+      let i = 0;
+      const primeReqs = [...this.system.primeReqs]; // work with copy
+
+      // primeReqs are already sorted by percentage in ascending order.
+      const tiers = primeReqs.reduce((acc, curr) => {
+         if (!acc[curr.percentage]) {
+            acc[curr.percentage] = {};
+            i = 0;
+         }
+         if (curr.concatLogic?.length > 0 && curr.concatLogic !== "none") {
+            if (!acc[curr.percentage]) acc[curr.percentage][i] = [curr];
+            else acc[curr.percentage][i].push(curr);
+         } else {
+            // This type wasn't previously stored
+            i++;
+            acc[curr.percentage][i] = [curr];
+         }
          return acc;
       }, {});
-      let highest = 0;
 
-      for (const group of Object.entries(groups)) {
-         const tier = groups[group[0]];
-         let isQualified = false;
-         for (const requirement of tier) {
-            isQualified = (requirement.concatLogic === 'none' || requirement.concatLogic === 'or')
-               ? abilities[requirement.ability].value >= requirement.minScore
-               : isQualified && abilities[requirement.ability].value >= requirement.minScore;
+      // Get qualifying primreqs
+      // @ts-ignore
+      const tierEntries = Object.entries(tiers).sort((a, b) => a[0] - b[0]);
+      let qualified = {};
+      for (const [tierKey, tierVal] of tierEntries) {
+         const currentPerc = parseInt(tierKey);
+         for (const [groupKey, groupVal] of Object.entries(tierVal)) {
+            let isQualified = false;
+            const reqId = `${groupVal.reduce((acc, curr) => acc = `${acc}${curr.concatLogic === "none" ? "" : `-${curr.concatLogic}-`}${curr.ability}`, "")}`;
+            //const id = `${reqId}:${tierKey}`;
+            for (const requirement of groupVal) {
+               if (requirement.concatLogic === "none" || requirement.concatLogic === "or") {
+                  isQualified = abilities[requirement.ability].value >= requirement.minScore;
+               } else {
+                  isQualified = isQualified && abilities[requirement.ability].value >= requirement.minScore;
+               }
+            }
+            if (isQualified) {
+               //if (qualified[reqId]) {
+               if (qualified[reqId]) {
+                  if (qualified[reqId][tierKey]) {
+                     qualified[reqId][tierKey] += currentPerc;
+                  } else {
+                     qualified[reqId] = {};
+                     qualified[reqId][tierKey] = currentPerc;
+                  }
+               }
+               else {
+                  qualified[reqId] = {};
+                  qualified[reqId][tierKey] = currentPerc;
+               }
+            }
          }
-         const currentPerc = parseInt(group);
-         highest = isQualified && currentPerc > highest ? currentPerc : highest;
       }
-      return highest;
+
+      // Only keep highest of same ability score matches.
+      // My brain hurts. 
+      return Object.entries(qualified).reduce((acc, curr) =>  acc + Object.entries(curr[1])[0][1], 0);
    }
 
    /**
-    * @override
     * @param {any} updateData
     * @param {any} options
     * @param {any} userId
