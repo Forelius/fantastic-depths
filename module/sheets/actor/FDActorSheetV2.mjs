@@ -225,7 +225,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.actorGroups = actorGroupsOptions;
 
       // Prepare shared actor data and items.
-      await this.#prepareItems(context);
+      await this._prepareItems(context);
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -533,10 +533,9 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    /**
     * Organize and classify Items for Actor sheets.
-    *
     * @param {object} context The context object to mutate
     */
-   async #prepareItems(context) {
+   async _prepareItems(context) {
       // Initialize arrays.
       let gear = [];
       const weapons = [];
@@ -627,7 +626,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
 
       // Add derived data to each item
-      gear = gear.map((item) => this.#mapContainer(item));
+      gear = gear.map((item) => this._mapContainer(item));
 
       // Assign and return
       context.gear = gear;
@@ -643,19 +642,19 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
       context.exploration = exploration;
-      context.savingThrows = savingThrows;
+      context.savingThrows = savingThrows.sort((a, b) => a.name.localeCompare(b.name));
       context.conditions = conditions;
       context.actorClasses = actorClasses;
 
       Object.assign(context, game.fade.registry.getSystem("encumbranceSystem").calcCategoryEnc(this.actor.items));
    }
 
-   #mapContainer(item) {
+   _mapContainer(item) {
       // Attach derived data manually            
       if (item.system.container === true) {
          const docItem = this.actor.items.get(item._id);
          for (let innerItem of docItem?.containedItems) {
-            this.#mapContainer(innerItem);
+            this._mapContainer(innerItem);
          }
          item.contained = docItem?.containedItems || [];
          // For displaying the containers total weight, including contained items.

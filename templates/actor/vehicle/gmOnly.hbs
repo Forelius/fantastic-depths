@@ -15,27 +15,12 @@
             <label for="system.movement2.max" data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}">{{localize 'SETTINGS.move.maxMove2.name'}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.details.castAs" value='{{system.details.castAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}" />
-            <label for="system.details.castAs" data-tooltip="{{localize 'FADE.Actor.castAs.hint'}}">{{localize 'FADE.Actor.castAs.name'}}</label>
-         </div>
-         <div class="flex1">
-            <input type='text' name="system.details.classAbilityAs" value='{{system.details.classAbilityAs}}' data-dtype='String' data-tooltip="{{localize 'FADE.Actor.classAbilityAs.hint'}}" />
-            <label for="system.details.classAbilityAs" data-tooltip="{{localize 'FADE.Actor.classAbilityAs.hint'}}">{{localize 'FADE.Actor.classAbilityAs.name'}}</label>
-         </div>
-         <div class="flex1" style="max-width:60px;">
-            <input type="checkbox" name="system.isEnchanted" data-dtype="Boolean" {{#if system.isEnchanted}} checked{{/if}} data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}" />
-            <label for="system.isEnchanted" data-tooltip="{{localize 'FADE.Actor.enchanted.hint'}}">{{localize 'FADE.Actor.enchanted.name'}}</label>
+            <input type="checkbox" name="system.config.hasCombat" data-dtype="Boolean" {{#if system.config.hasCombat}} checked{{/if}} />
+            <label for="system.config.hasCombat">{{localize 'FADE.Actor.combat'}}</label>
          </div>
       </div>
+      {{#if system.config.hasCombat}}
       <div class="summary flexrow">
-         <div class="flex1">
-            <input type='text' name='system.config.firstSpellLevel' value='{{system.config.firstSpellLevel}}' data-dtype='Number' />
-            <label for="system.config.firstSpellLevel" data-tooltip="{{localize 'FADE.Actor.firstSpellLevel.hint'}}">{{localize 'FADE.Actor.firstSpellLevel.name'}}</label>
-         </div>
-         <div class="flex1">
-            <input type='text' name='system.config.maxSpellLevel' value='{{system.config.maxSpellLevel}}' data-dtype='Number' />
-            <label for="system.config.maxSpellLevel" data-tooltip="{{localize 'FADE.Actor.maxSpellLevel.hint'}}">{{localize 'FADE.Actor.maxSpellLevel.name'}}</label>
-         </div>
          <div class="flex1">
             <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
             <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
@@ -57,6 +42,7 @@
             <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
          </div>
       </div>
+      {{/if}}
    </div>
    <div class="bordered">
       <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>

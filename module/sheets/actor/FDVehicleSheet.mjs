@@ -1,4 +1,4 @@
-import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
+import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -18,7 +18,10 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       form: {
          submitOnChange: true
       },
-      classes: ['monster'],
+      classes: ["monster"],
+      actions: {
+         cycleAttackGroup: FDVehicleSheet.#clickAttackGroup
+      }
    }
 
    static PARTS = {
@@ -32,14 +35,14 @@ export class FDVehicleSheet extends FDActorSheetV2 {
          template: "systems/fantastic-depths/templates/actor/vehicle/abilities.hbs",
       },
       items: {
-         template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
+         template: "systems/fantastic-depths/templates/actor/vehicle/items.hbs",
       },
       skills: {
          template: "systems/fantastic-depths/templates/actor/vehicle/skills.hbs",
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
-      },      
+      },
       description: {
          template: "systems/fantastic-depths/templates/actor/vehicle/description.hbs",
       },
@@ -59,20 +62,25 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       // This fills in `options.parts` with an array of ALL part keys by default
       // So we need to call `super` first
       super._configureRenderOptions(options);
+
+      const actorData = this.actor.system;
+
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'abilities'];
+      options.parts = ["header", "tabnav", "description", "abilities"];
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         options.parts.push('items');
-         options.parts.push('skills');
-         if (this.actor.system.config.maxSpellLevel > 0) {
-            options.parts.push('spells');
+         options.parts.push("items");
+         if (actorData.config.hasCombat === true) {
+            options.parts.push("skills");
+            if (this.actor.system.config.maxSpellLevel > 0) {
+               options.parts.push("spells");
+            }
          }
-         options.parts.push('description');
       }
       if (game.user.isGM) {
-         options.parts.push('effects');
-         options.parts.push('gmOnly');
+         if (actorData.config.hasCombat === true)
+            options.parts.push("effects");
+         options.parts.push("gmOnly");
       }
    }
 
@@ -87,33 +95,84 @@ export class FDVehicleSheet extends FDActorSheetV2 {
    }
 
    /**
-   * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<any>>}
-   */
-   #getTabs() {
-      const group = 'primary';
+    * Organize and classify Items for Actor sheets.
+    * @param {object} context The context object to mutate
+    */
+   async _prepareItems(context) {
+      if (this.actor.system.config.hasCombat === true) {
+         await super._prepareItems(context);
+      } else {
+         // Initialize arrays.
+         let gear = [];
+         const treasure = [];
+         const items = [...this.actor.items];
+         // Iterate through items, allocating to arrays
+         for (let item of items) {
+            item.img = item.img || Item.DEFAULT_ICON;
+            // If a contained item...
+            if (item.system.containerId?.length > 0) {
+               // Check to see if container still exists.
+               if (this.actor.items.get(item.system.containerId) === undefined) {
+                  // The container does not exist, set containerId to null and add to gear items array
+                  item.system.containerId = null;
+                  gear.push(item);
+               }
+            } else {
+               gear.push(item);
+            }
+            // If this is a treasure item...
+            if (item.type === "treasure") {
+               // Also add to the treasure array
+               treasure.push(item);
+            }
+         }
 
-      // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+         // Add derived data to each item
+         gear = gear.map((item) => this._mapContainer(item));
 
-      const tabs = {
-         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         // Assign and return
+         context.gear = gear;
+         context.treasure = treasure;
+         Object.assign(context, game.fade.registry.getSystem("encumbranceSystem").calcCategoryEnc(this.actor.items));
       }
+   }
+
+   /**
+    * Prepare an array of form header tabs.
+    * @this {any}
+    * @returns {any}
+    */
+   #getTabs() {
+      const group = "primary";
+      const actorData = this.actor.system;
+
+      const tabs = {};
+      if (actorData.config.hasCombat === true) {
+         // Default tab for first time it"s rendered this session
+         if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
+         tabs.abilities = { id: "abilities", group, label: "FADE.tabs.abilities" };
+      } else {
+         // Default tab for first time it"s rendered this session
+         if (!this.tabGroups[group] || this.tabGroups[group] === "abilities") this.tabGroups[group] = "items";
+      }
+
+      tabs.description = { id: "description", group, label: "FADE.tabs.description" };
+
+      if (actorData.config.hasCombat === true)
+         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: 'items', group, label: 'FADE.items' };
-         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+         tabs.items = { id: "items", group, label: "FADE.items" };
+         if (actorData.config.hasCombat === true)
+            tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
       }
 
-      if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+      if (actorData.config.maxSpellLevel > 0) {
+         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
       }
-
-      tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
-      tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
       }
 
       for (const tab of Object.values(tabs)) {
@@ -122,5 +181,12 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       }
 
       return tabs;
+   }
+
+   static async #clickAttackGroup(event) {
+      const dataset = event.target.dataset;
+      // @ts-ignore
+      const item = this._getItemFromActor(event);
+      await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }

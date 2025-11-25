@@ -1,14 +1,8 @@
-export class EncumbranceInterface {
-   calcCategoryEnc(items) { throw new Error("Method not implemented."); }
-   prepareDerivedData(actor) { throw new Error("Method not implemented."); }
-}
-
 /**
  * None or armor-only if used by itself.
  */
-export class BasicEncumbrance extends EncumbranceInterface {
+export class BasicEncumbrance {
    constructor(options) {
-      super(options);
       this.options = options;
       this.CONFIG = CONFIG.FADE.Encumbrance.Basic;
    }
@@ -59,7 +53,7 @@ export class BasicEncumbrance extends EncumbranceInterface {
    _getEncTier(actor, totalEnc) {
       let table;
 
-      if (actor.type === "monster") {
+      if (actor.type === "monster" || actor.type === "vehicle") {
          table = this.CONFIG.tableMonster;
       } else {
          table = this.CONFIG.tablePC;
@@ -82,7 +76,7 @@ export class BasicEncumbrance extends EncumbranceInterface {
     * Calculate movement rate based on encumbrance tier.
     * @protected
     * @param {any} actor The actor
-    * @param {number} encTier
+    * @param {any} encTier
     */
    _calculateEncMovement(actor, encTier) {
       return {
@@ -152,7 +146,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
 
    _getEncTier(actor, totalEnc) {
       let table;
-      if (actor.type === "monster") {
+      if (actor.type === "monster" || actor.type === "vehicle") {
          table = this.CONFIG.tableMonster;
       } else {
          table = this.CONFIG.tablePC;

@@ -1,6 +1,5 @@
 import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.mjs";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.mjs';
-import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.mjs';
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField, ObjectField } = foundry.data.fields;
 
 export class FDVehicleDM extends FDActorBaseDM {
@@ -8,6 +7,7 @@ export class FDVehicleDM extends FDActorBaseDM {
       const baseSchema = super.defineSchema();
       const combatSchema = {
          cost: new NumberField({ required: false, initial: 0 }),
+         capacity: new StringField({ required: false, initial: "" }),
          details: new SchemaField({
             // This is how many attacks the actor gets per round.
             attacks: new StringField({ initial: "1" }),
@@ -18,9 +18,10 @@ export class FDVehicleDM extends FDActorBaseDM {
             // Ignored by multi-class character
             firstSpellLevel: new NumberField({ required: false, initial: 1 }),
             maxSpellLevel: new NumberField({ required: true, initial: 0 }),
+            hasCombat: new BooleanField({required: true, initial: true })
          }),
          thac0: new SchemaField({
-            value: new NumberField({ initial: CONFIG.FADE.ToHit.baseTHAC0 }),
+            value: new NumberField({ required: false, initial: CONFIG.FADE.ToHit.baseTHAC0 }),
             mod: new SchemaField({
                missile: new NumberField({ initial: 0 }),
                melee: new NumberField({ initial: 0 }),
@@ -84,19 +85,21 @@ export class FDVehicleDM extends FDActorBaseDM {
 
    prepareBaseData() {
       super.prepareBaseData();
-      this._prepareMods();
       this.encumbrance.max = this.encumbrance.max || 0;
-      // Default all monsters with basic proficiency.
-      this.combat.basicProficiency = true;
-      this._prepareTHAC0ToHitBonus();
-      // Maybe this is the wrong place to do this. We may need to wait until after init.
-      this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
-      this._prepareHitPoints();
+      if (this.hasCombat === true) {
+         this._prepareMods();
+         // Default all monsters with basic proficiency.
+         this.combat.basicProficiency = true;
+         this._prepareTHAC0ToHitBonus();
+         // Maybe this is the wrong place to do this. We may need to wait until after init.
+         this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
+         this._prepareHitPoints();
+      }
    }
 
    /**
- * @protected
- */
+    * @protected
+    */
    async _prepareMods() {
       this.mod.ac = 0;
       this.mod.baseAc = 0;
