@@ -89,8 +89,7 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
       };
 
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
-      console.debug(`Ability score system`, abilityScoreSys);
-      schema.abilities = abilityScoreSys.defineSchema();
+      schema.abilities = abilityScoreSys.defineSchemaForActor();
 
       return schema;
    }
