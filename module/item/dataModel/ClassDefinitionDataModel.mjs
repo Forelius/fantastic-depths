@@ -22,7 +22,7 @@ export class SavingThrowsData {
 
 export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
-      return {
+      const schema = {
          // Required Fields
          // The class key
          key: new StringField({ required: true }),
@@ -39,27 +39,6 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          description: new StringField({ required: false, initial: "" }),
          // Only the class key, not the level like monster does for castAs
          castAsKey: new StringField({ nullable: true, required: false, initial: null }),
-         // Ability scores
-         abilities: new SchemaField({
-            str: new SchemaField({
-               min: new NumberField({ nullable: true }),
-            }),
-            int: new SchemaField({
-               min: new NumberField({ nullable: true }),
-            }),
-            wis: new SchemaField({
-               min: new NumberField({ nullable: true }),
-            }),
-            dex: new SchemaField({
-               min: new NumberField({ nullable: true }),
-            }),
-            con: new SchemaField({
-               min: new NumberField({ nullable: true }),
-            }),
-            cha: new SchemaField({
-               min: new NumberField({ nullable: true }),
-            })
-         }),
          primeReqs: new ArrayField(
             new SchemaField({
                concatLogic: new StringField({ required: true }),
@@ -74,7 +53,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          ),
          levels: new ArrayField(
             new SchemaField({
-               level: new NumberField({ required: true, initial: 1}),
+               level: new NumberField({ required: true, initial: 1 }),
                xp: new NumberField({ required: true, initial: 0 }),
                thac0: new NumberField({ required: true, initial: CONFIG.FADE.ToHit.baseTHAC0 }),
                thbonus: new NumberField({ required: true, initial: 0 }),
@@ -134,6 +113,11 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
                initial: []
             }),
       };
+
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      schema.abilities = abilityScoreSys.defineSchemaForClass();
+
+      return schema;
    }
 
    /**

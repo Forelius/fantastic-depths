@@ -110,7 +110,6 @@ export class ClassDefinitionItem extends FDItem {
          for (const [groupKey, groupVal] of Object.entries(tierVal)) {
             let isQualified = false;
             const reqId = `${groupVal.reduce((acc, curr) => acc = `${acc}${curr.concatLogic === "none" ? "" : `-${curr.concatLogic}-`}${curr.ability}`, "")}`;
-            //const id = `${reqId}:${tierKey}`;
             for (const requirement of groupVal) {
                if (requirement.concatLogic === "none" || requirement.concatLogic === "or") {
                   isQualified = abilities[requirement.ability].value >= requirement.minScore;
@@ -119,7 +118,6 @@ export class ClassDefinitionItem extends FDItem {
                }
             }
             if (isQualified) {
-               //if (qualified[reqId]) {
                if (qualified[reqId]) {
                   if (qualified[reqId][tierKey]) {
                      qualified[reqId][tierKey] += currentPerc;

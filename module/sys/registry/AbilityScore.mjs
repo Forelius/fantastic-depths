@@ -40,7 +40,11 @@ export class AbilityScoreRetro extends AbilityScoreBase {
       super();
    }
 
-   defineSchema() {
+   /**
+    * For the character and monster data models
+    * @returns {SchemaField} A new SchemaField containing all of the ability scores.
+    */
+   defineSchemaForActor() {
       return new SchemaField({
          str: new SchemaField({
             // The base ability score value.
@@ -90,6 +94,29 @@ export class AbilityScoreRetro extends AbilityScoreBase {
             tempMod: new NumberField({ initial: 0 }),
             min: new NumberField({ initial: 1 })
          }),
+      });
+   }
+
+   defineSchemaForClass() {
+      return new SchemaField({
+         str: new SchemaField({
+            min: new NumberField({ nullable: true }),
+         }),
+         int: new SchemaField({
+            min: new NumberField({ nullable: true }),
+         }),
+         wis: new SchemaField({
+            min: new NumberField({ nullable: true }),
+         }),
+         dex: new SchemaField({
+            min: new NumberField({ nullable: true }),
+         }),
+         con: new SchemaField({
+            min: new NumberField({ nullable: true }),
+         }),
+         cha: new SchemaField({
+            min: new NumberField({ nullable: true }),
+         })
       });
    }
 
