@@ -583,18 +583,15 @@ export class SingleClassSystem extends ClassSystemBase {
                   next: "0"
                }
             },
+            abilities: {},
             config: {
                maxSpellLevel: 0
-            },
-            abilities: {
-               str: { min: 1 },
-               int: { min: 1 },
-               dex: { min: 1 },
-               wis: { min: 1 },
-               con: { min: 1 },
-               cha: { min: 1 }
             }
          };
+         // Get ability scores from actor
+         for (let [akey, aval] of Object.entries(actor.system.abilities)) {
+            update.abilities[akey] = { min: 1 };
+         }
          await actor.update({ system: update });
       }
    }

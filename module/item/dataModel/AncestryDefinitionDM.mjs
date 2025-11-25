@@ -1,7 +1,7 @@
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField } = foundry.data.fields;
 export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
    static defineSchema() {
-      return {
+      const schema = {
          // Required Fields
          key: new StringField({ required: true }),
          description: new StringField({ required: false, initial: "" }),
@@ -20,26 +20,6 @@ export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
                maxLevel: new NumberField({ required: true })               
             }), {
             required: false,
-         }),
-         abilities: new SchemaField({
-            str: new SchemaField({
-               min: new NumberField({ initial: 3 }),
-            }),
-            int: new SchemaField({
-               min: new NumberField({ initial: 3 }),
-            }),
-            wis: new SchemaField({
-               min: new NumberField({ initial: 3 }),
-            }),
-            dex: new SchemaField({
-               min: new NumberField({ initial: 3 }),
-            }),
-            con: new SchemaField({
-               min: new NumberField({ initial: 3 }),
-            }),
-            cha: new SchemaField({
-               min: new NumberField({ initial: 3 }),
-            })
          }),
          // Special abilities
          specialAbilities: new ArrayField(
@@ -64,6 +44,11 @@ export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
                initial: []
             }),
       };
+
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      schema.abilities = abilityScoreSys.defineSchemaForClass();
+
+      return schema;
    }
 
    prepareBaseData() {
