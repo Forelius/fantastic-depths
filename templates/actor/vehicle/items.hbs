@@ -1,0 +1,25 @@
+<section name="itemsTab" class="tab {{tabs.items.cssClass}}" data-group="primary" data-tab="items">
+   <input type="text" name="search" placeholder="{{localize 'FADE.Search'}}" autocomplete="off" />
+   {{#if system.config.hasCombat}}
+   {{> "actorWeapons"}}
+   {{> "actorAmmo"}}
+   {{> "actorArmor"}}
+   {{/if}}
+   {{> "actorGearList"}}
+   {{#if system.config.hasCombat}}
+   {{> "actorTreasure"}}
+   {{/if}}
+   <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
+      <span class="flex3">
+         {{#if showWeight}}
+         {{localize 'FADE.Actor.Movement.total'}}: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
+         {{/if}}
+         {{#if isBasicEnc}}
+         <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
+         {{/if}}
+      </span>
+      <span class="flex2">
+         {{localize 'FADE.Actor.Movement.moveTurn'}}: {{system.encumbrance.mv}}{{#if (gt system.encumbrance.mv2 0)}} / {{system.encumbrance.mv2}}{{/if}}
+      </span>
+   </div>
+</section>

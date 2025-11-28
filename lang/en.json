@@ -14,6 +14,7 @@
          "Title": "Title",
          "Alignment": "Alignment",
          "Class": "Class",
+         "combat": "Combat",
          "ClassHint": "<p>Class can be selected by manually typing the class name or drag/droppping the class item onto the character sheet. It is possible to type any value, but class data will only be synched if the class name matches exactly.</p><p><i>Click label to view class sheet.</i></p>",
          "Ancestry": "Race",
          "Sex": "Sex",
@@ -278,6 +279,7 @@
          "Character": "Character Sheet (tabbed)",
          "CharacterSheetBase": "Character Sheet",
          "Monster": "Monster Sheet",
+         "Vehicle": "Vehicle/Mount",
          "ActorClassItem": "Actor Class Item Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
@@ -318,6 +320,7 @@
       "Item": {
          "plural": "Gear",
          "uses": "Uses",
+         "capacity": "Capacity",
          "equip": "Equip",
          "equipped": "Equipped",
          "unequip": "Unequip",
@@ -1167,7 +1170,8 @@
    "TYPES": {
       "Actor": {
          "character": "Character",
-         "monster": "Monster"
+         "monster": "Monster",
+         "vehicle": "Vehicle/Mount"
       },
       "Item": {
          "item": "Item",

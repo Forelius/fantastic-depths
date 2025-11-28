@@ -9,10 +9,12 @@ import { fadeCompendium } from './sys/fadeCompendium.mjs'
 
 import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
 import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
+import { FDVehicleDM } from './actor/dataModel/FDVehicleDM.mjs';
 import { FDCombatActor } from './actor/FDCombatActor.mjs';
 import { CharacterSheet } from './sheets/actor/CharacterSheet.mjs';
 import { CharacterSheetBase } from './sheets/actor/CharacterSheetBase.mjs';
 import { MonsterSheet } from './sheets/actor/MonsterSheet.mjs';
+import { FDVehicleSheet } from './sheets/actor/FDVehicleSheet.mjs';
 
 import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
 import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
@@ -99,6 +101,7 @@ Hooks.once('init', async function () {
    CONFIG.Actor.dataModels = {
       character: CharacterDataModel,
       monster: MonsterDataModel,
+      vehicle: FDVehicleDM
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
@@ -161,6 +164,11 @@ function registerSheets() {
    gActors.registerSheet('fantastic-depths', MonsterSheet, {
       label: 'FADE.SheetLabel.Monster',
       types: ['monster'],
+      makeDefault: true
+   });
+   gActors.registerSheet('fantastic-depths', FDVehicleSheet, {
+      label: 'FADE.SheetLabel.Vehicle',
+      types: ['vehicle'],
       makeDefault: true
    });
    // TODO: Remove after v12 support.

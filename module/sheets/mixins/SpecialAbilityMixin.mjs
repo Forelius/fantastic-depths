@@ -8,10 +8,9 @@ const SpecialAbilityMixin = (superclass) => {
 
       /**
        * Handle deleting a special ability
-       * @param {Event} event The originating click event
-       * @protected
+       * @param {any} event The originating click event
        */
-      static async _clickDeleteSpecialAbility(event) {
+      static async clickDeleteSpecialAbility(event) {
          event.preventDefault();
          let index;
          if (event.target.dataset.type) {
@@ -19,7 +18,7 @@ const SpecialAbilityMixin = (superclass) => {
          } else if (event.target.parentElement.dataset.type) {
             index = parseInt(event.target.parentElement.dataset.index);
          } else {
-            console.error(`SpecialAbilityMixin._clickDeleteSpecialAbility can't determine item type.`, item);
+            console.error(`SpecialAbilityMixin.clickDeleteSpecialAbility can't determine item type.`, event);
          }
          const specialAbilities = [...this.item.system.specialAbilities];
          if (specialAbilities.length > index) {
@@ -30,8 +29,7 @@ const SpecialAbilityMixin = (superclass) => {
 
       /**
        * Creates a special ability child item for this item.
-       * @param {any} name
-       * @param {any} classKey
+       * @param {any} droppedItem
        */
       async onDropSpecialAbilityItem(droppedItem) {
          // Retrieve the array
@@ -55,7 +53,7 @@ const SpecialAbilityMixin = (superclass) => {
 
    SpecialAbilityMixinClass.DEFAULT_OPTIONS = {
       actions: {
-         deleteSpecialAbility: SpecialAbilityMixinClass._clickDeleteSpecialAbility
+         deleteSpecialAbility: SpecialAbilityMixinClass.clickDeleteSpecialAbility
       }
    };
 

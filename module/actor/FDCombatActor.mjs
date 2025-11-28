@@ -25,7 +25,11 @@ export class FDCombatActor extends FDActorBase {
    async _preCreate(documents, operation, user) {
       const allowed = await super._preCreate(documents, operation, user);
       // Skip if the document is being created within a compendium
-      if (this.pack || this._id) { return allowed; }
+      if (this.pack || this._id) return allowed;
+
+      // Skip types handled elsewhere.
+      const allowedTypes = ["character", "monster"];
+      if (allowedTypes.includes(this.type) === false) return allowed;
 
       const fdPath = `systems/fantastic-depths/assets/img/actor`;
       const changeData = {};

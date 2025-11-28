@@ -1,6 +1,6 @@
 {
    "Actor": {
-      "types": [ "character", "monster" ]
+      "types": [ "character", "monster", "vehicle" ]
    },
    "Item": {
       "types": [
