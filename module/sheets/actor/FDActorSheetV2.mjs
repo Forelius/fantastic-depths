@@ -635,7 +635,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.armor = armor;
       context.skills = skills;
       context.masteries = masteries;
-      context.treasure = treasure;
+      context.treasure = treasure.sort((a, b) => a.system.cost - b.system.cost);
       context.treasureValue = this.getTreasureValue(context);
       const classSystem = game.fade.registry.getSystem("classSystem");
       context.spellClasses = await classSystem.prepareSpellsContext(this.actor);
