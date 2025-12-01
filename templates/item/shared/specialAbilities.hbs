@@ -17,6 +17,7 @@
             <!-- Class Ability Entries -->
             {{#each system.specialAbilities as |item index|}}
             <li class="item flexrow" data-item-id="{{item.level}}">
+               <input type="text" name="system.specialAbilities.{{index}}.uuid" value="{{item.uuid}}" data-dtype="String" style="display:none" />
                {{#unless @root.hideLevel}}
                <div style="max-width:50px">
                   <input type="number" name="system.specialAbilities.{{index}}.level" value="{{item.level}}" data-dtype="Number" />
