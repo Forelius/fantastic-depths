@@ -4,6 +4,7 @@
  * @type {any}
     */
 const canvas = undefined;
+/** @global @readonly @type {any} */ const ActiveEffect = undefined;
 /** @global @readonly @type {any} */ const Handlebars = undefined;
 /** @global @readonly @type {any} */ const game = undefined;
 /** @global @readonly @type {any} */ const foundry = undefined;
