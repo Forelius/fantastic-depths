@@ -1,12 +1,13 @@
-import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
-import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
+import { DragDropMixin } from "../mixins/DragDropMixin.mjs";
+import { ConditionMixin } from "../mixins/ConditionMixin.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
-import { fadeFinder } from "/systems/fantastic-depths/module/utils/finder.mjs";
+import { EffectManager } from "../../sys/EffectManager.mjs";
+import { fadeFinder } from "../../utils/finder.mjs";
 
 /**
  * Sheet class for SpecialAbilityItem.
  */
+// @ts-ignore
 export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
@@ -45,12 +46,10 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
       }
    }
 
-   /** @override */
    tabGroups = {
       primary: "description"
    }
 
-   /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
       // So we need to call `super` first
@@ -140,7 +139,7 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, Partial<any>>}
    */
    #getTabs() {
       const group = "primary";
