@@ -23,8 +23,8 @@ export class BasicEncumbrance {
       encumbrance.value = this._getTotalEnc(actor);
 
       //-- Calculate movement and label --//
-      // If max encumbrace is set to zero...
-      if (encumbrance.max !== 0) {
+      // If max encumbrace is greater than zero...
+      if (encumbrance.max > 0) {
          const encTier = this._getEncTier(actor, encumbrance.value);
          Object.assign(encumbrance, this._calculateEncMovement(actor, encTier));
       }
@@ -82,8 +82,8 @@ export class BasicEncumbrance {
       return {
          label: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`),
          desc: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`),
-         mv: Math.floor(actor.system.movement.max * encTier.mvFactor),
-         mv2: Math.floor(actor.system.movement2.max * encTier.mvFactor)
+         mv: actor.system.movement.max > 0 ? Math.floor(actor.system.movement.max * encTier.mvFactor) : actor.system.movement.max,
+         mv2: actor.system.movement2.max > 0 ? Math.floor(actor.system.movement2.max * encTier.mvFactor) : actor.system.movement2.max
       };
    }
 }

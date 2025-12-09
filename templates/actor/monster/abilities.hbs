@@ -22,20 +22,28 @@
          </div>
       </div>
       <div class="flex2">
+         {{#if (fadeor attackGroups specialAbilities)}}
          <div class="bordered">
+            {{#if attackGroups}}
             {{!-- Equipped Weapons --}}
             {{> "attackGroups"}}
+            {{/if}}
+            {{#if specialAbilities}}
             {{!-- Special Abilities --}}
             {{> "actorSpecialAbilities"}}
+            {{/if}}
          </div>
-         {{#if system.encumbrance.max}}
+         {{/if}}
+         {{#if (or system.encumbrance.max system.encumbrance.mv)}}
          <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
             <span class="flex3">
                Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
             </span>
+            {{#if system.encumbrance.mv}}
             <span class="flex2">
                Base movement: {{system.encumbrance.mv}}
             </span>
+            {{/if}}
          </div>
          {{/if}}
          <div class="flexrow">

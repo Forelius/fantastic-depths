@@ -616,8 +616,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             } else if (item.system.category === "save") {
                savingThrows.push(item);
             }
-            // Monsters don't differentiate between class ability and special ability.
-            else if (this.actor.type !== "monster" && (item.system.category === "class" || item.system.category === "spellcasting")) {
+               // Characters differentiate between class ability and special ability.
+            else if (this.actor.type == "character" && (item.system.category === "class" || item.system.category === "spellcasting")) {
                classAbilities.push(item);
             } else {
                specialAbilities.push(item);
