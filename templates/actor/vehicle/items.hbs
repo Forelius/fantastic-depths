@@ -18,8 +18,10 @@
          <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
          {{/if}}
       </span>
+      {{#if system.encumbrance.mv}}
       <span class="flex2">
          {{localize 'FADE.Actor.Movement.moveTurn'}}: {{system.encumbrance.mv}}{{#if (gt system.encumbrance.mv2 0)}} / {{system.encumbrance.mv2}}{{/if}}
       </span>
+      {{/if}}
    </div>
 </section>
