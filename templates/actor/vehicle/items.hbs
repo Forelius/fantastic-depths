@@ -1,12 +1,12 @@
 <section name="itemsTab" class="tab {{tabs.items.cssClass}}" data-group="primary" data-tab="items">
    <input type="text" name="search" placeholder="{{localize 'FADE.Search'}}" autocomplete="off" />
-   {{#if system.config.hasCombat}}
+   {{#if hasCombat}}
    {{> "actorWeapons"}}
    {{> "actorAmmo"}}
    {{> "actorArmor"}}
    {{/if}}
    {{> "actorGearList"}}
-   {{#if system.config.hasCombat}}
+   {{#if hasCombat}}
    {{> "actorTreasure"}}
    {{/if}}
    <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
