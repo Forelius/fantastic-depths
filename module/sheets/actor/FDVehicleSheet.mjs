@@ -88,7 +88,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       context.hasAbilityScores = false;
-      context.hasAbilityScoreMods = false;;
+      context.hasAbilityScoreMods = false;
+      context.hasCombat = this.actor.system.config.hasCombat;
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;

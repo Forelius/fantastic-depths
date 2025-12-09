@@ -22,7 +22,7 @@ export class fadeHandlebars {
          for (let i = 0; i < n; ++i) accum += block.fn(i);
          return accum;
       });
-      Handlebars.registerHelper("formatHitDice", function (hitDice) {
+      Handlebars.registerHelper("formatHitDice", (hitDice) => {
          const xpCalc = new MonsterXPCalculator();
          const parsed = xpCalc.parseDiceSpecification(hitDice);
          let result = `${parsed.numberOfDice}d${parsed.numberOfSides}${parsed.modifierSign}${parsed.modifier != 0 ? parsed.modifier : ""}`;
