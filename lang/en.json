@@ -530,12 +530,16 @@
                "abbr": "H"
             },
             "all": {
-               "long": "All",
+               "long": "All (M/H)",
                "abbr": "A"
             },
             "wr": {
                "long": "Wrestling",
                "abbr": "WR"
+            },
+            "siege": {
+               "long": "Siege",
+               "abbr": "SG"
             }
          },
          "levels": {
@@ -1127,6 +1131,28 @@
          "jacinth": "Jacinth",
          "starstone": "Starstone",
          "tristal": "Tristal"
+      },
+      "siege": {
+         "fullCrew": {
+            "hint": "The optimum size of crew to operate this peice of equipment.",
+            "label": "Full Crew"
+         },
+         "fireRate": {
+            "hint": "How many turns it takes to fire if unready",
+            "label": "Fire Rate"
+         },
+         "ammoCostWk": {
+            "hint": "Cost of ammo per week",
+            "label": "Ammo Cost/Wk."
+         },
+         "acplus": {
+            "hint": "Armor class bonus the equipment provides for thos protected by it.",
+            "label": "AC+"
+         },
+         "artillerist": {
+            "hint": "Does the equipment require an artillerist?",
+            "label": "Artillerist"
+         }
       },
       "folder": "Folder",
       "Size": "Size",

@@ -44,6 +44,7 @@ FADE.WeaponTypes = [
    "monster",
    "handheld",
    "all"
+   //"wr", "siege"
 ];
 FADE.MasteryLevels = [
    "basic",
