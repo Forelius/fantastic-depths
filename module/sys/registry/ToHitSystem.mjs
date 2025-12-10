@@ -1,9 +1,9 @@
-import { fadeFinder } from '../../utils/finder.mjs';
-import { SocketManager } from '../SocketManager.mjs'
+import { fadeFinder } from "../../utils/finder.mjs";
+import { SocketManager } from "../SocketManager.mjs"
 
 export class ToHitInterface {
    getAttackRoll(actor, weapon, attackType, options = {}) { throw new Error("Method not implemented."); }
-   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') { throw new Error("Method not implemented."); }
+   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = "melee") { throw new Error("Method not implemented."); }
    getDiceSum(roll) { throw new Error("Method not implemented."); }
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
@@ -21,8 +21,8 @@ export class ToHitSystemBase extends ToHitInterface {
       const rangedMods = userTablesSystem.getKeyValuesJson("ranged-modifiers");
       this.rangeModifiers = rangedMods;
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
-      this.isAAC = this.toHitSystem === 'aac';
-      this.masterySystem = game.fade.registry.getSystem('weaponMastery');
+      this.isAAC = this.toHitSystem === "aac";
+      this.masterySystem = game.fade.registry.getSystem("weaponMastery");
    }
 
    /**
@@ -47,12 +47,12 @@ export class ToHitSystemBase extends ToHitInterface {
       if (options.mod && options.mod !== 0) {
          modifier += options.mod;
          //formula = `${formula}+@mod`; 
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: options.mod }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: options.mod }));
       }
 
-      if (toHitSystem === 'aac' && actor.system.thbonus !== 0) {
+      if (toHitSystem === "aac" && actor.system.thbonus !== 0) {
          modifier += actor.system.thbonus;
-         digest.push(`${game.i18n.localize('FADE.Actor.THBonus')}: ${actor.system.thbonus}`);
+         digest.push(`${game.i18n.localize("FADE.Actor.THBonus")}: ${actor.system.thbonus}`);
       }
 
       if (attackType === "melee") {
@@ -90,11 +90,11 @@ export class ToHitSystemBase extends ToHitInterface {
     * @param {any} attackType
     * @returns {Promise<any>}
     */
-   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = 'melee') {
+   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = "melee") {
       // It should always be a token, but need to double-check that all code has been changed.
       const attackingActor = attacker.actor ?? attacker;
       let result = null;
-      this.acAbbr = this.isAAC ? game.i18n.localize('FADE.Armor.abbrAAC') : game.i18n.localize('FADE.Armor.abbr');
+      this.acAbbr = this.isAAC ? game.i18n.localize("FADE.Armor.abbrAAC") : game.i18n.localize("FADE.Armor.abbr");
 
       if (roll) {
          await attackingActor.update({ "system.combat.attacks": attackingActor.system.combat.attacks + 1 });
@@ -102,14 +102,14 @@ export class ToHitSystemBase extends ToHitInterface {
             await weapon.update({ "system.attacks.used": weapon.system.attacks.used + 1 });
          }
 
-         const attackerWeaponType = weapon.type === 'weapon' && weapon.system.weaponType ? weapon.system.weaponType : 'monster';
+         const attackerWeaponType = weapon.type === "weapon" && weapon.system.weaponType ? weapon.system.weaponType : "monster";
          const thac0 = attackingActor.system.thac0.value;
          const hitAC = this.getLowestACHit(this.getDiceSum(roll), roll.total, thac0);
-         let hitACMessage = game.i18n.localize('FADE.Chat.attackACNone');
+         let hitACMessage = game.i18n.localize("FADE.Chat.attackACNone");
          if (hitAC === -999) {
-            hitACMessage = game.i18n.localize('FADE.Chat.attackACAny');
+            hitACMessage = game.i18n.localize("FADE.Chat.attackACAny");
          } else if (hitAC !== null && hitAC !== Infinity) {
-            hitACMessage = game.i18n.format('FADE.Chat.attackAC', { acAbbr: this.acAbbr, hitAC });
+            hitACMessage = game.i18n.format("FADE.Chat.attackAC", { acAbbr: this.acAbbr, hitAC });
          }
          result = {
             hitAC,
@@ -144,19 +144,19 @@ export class ToHitSystemBase extends ToHitInterface {
             if (hitAC !== null) { // null if rolled a natural 1
                if (ac !== null && ac !== undefined) {
                   if (this.isAAC === true ? aac <= hitAC : ac >= hitAC) {
-                     targetResult.message = game.i18n.localize('FADE.Chat.attackSuccess');
+                     targetResult.message = game.i18n.localize("FADE.Chat.attackSuccess");
                      targetResult.success = true;
                   } else {
                      targetResult.success = false;
-                     targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
+                     targetResult.message = game.i18n.localize("FADE.Chat.attackFail");
                   }
                } else {
-                  targetResult.message = game.i18n.format('FADE.Chat.attackAC', { acAbbr: this.acAbbr, hitAC });
+                  targetResult.message = game.i18n.format("FADE.Chat.attackAC", { acAbbr: this.acAbbr, hitAC });
                   targetResult.success = true;
                }
             } else {
                targetResult.success = false;
-               targetResult.message = game.i18n.localize('FADE.Chat.attackFail');
+               targetResult.message = game.i18n.localize("FADE.Chat.attackFail");
             }
 
             // Track number of attacks against target. Do it after getting the tohit result. 
@@ -166,11 +166,11 @@ export class ToHitSystemBase extends ToHitInterface {
             result.targetResults.push(targetResult);
          }
       }
-      else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === 'breath') {
+      else if (weapon.system.breath?.length > 0 && weapon.system.savingThrow === "breath") {
          // Always hits, but saving throw
          result = {
             savingThrow: weapon.system.savingThrow,
-            //message: 'Saving throw required.',
+            //message: "Saving throw required.",
             targetResults: []
          };
          for (let targetToken of targetTokens) {
@@ -242,11 +242,11 @@ export class ToHitSystemBase extends ToHitInterface {
 
       if (hasWeaponMod && weaponData.mod.toHit !== 0) {
          result += weaponData.mod.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHit }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.toHit }));
       }
       if (systemData.mod?.combat.toHit !== 0) {
          result += systemData.mod.combat.toHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHit }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: systemData.mod.combat.toHit }));
       }
       // If the attacker has ability scores...
       if (abilityScoreSys.hasMeleeToHitMod(actor)) {
@@ -256,7 +256,7 @@ export class ToHitSystemBase extends ToHitInterface {
       }
       if (targetMods && targetMods.selfToHit !== 0) {
          result += targetMods.selfToHit;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHit }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.targetMod", { mod: targetMods.selfToHit }));
       }
 
       if (target) {
@@ -278,16 +278,16 @@ export class ToHitSystemBase extends ToHitInterface {
 
       if (hasWeaponMod && weaponData.mod.toHitRanged !== 0) {
          result += weaponData.mod.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.weaponMod', { mod: weaponData.mod.toHitRanged }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.toHitRanged }));
       }
       if (systemData.mod.combat?.toHitRanged !== 0) {
          result += systemData.mod.combat.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.effectMod', { mod: systemData.mod.combat.toHitRanged }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: systemData.mod.combat.toHitRanged }));
       }
       // Ammo mod
       if (ammoIsNotWeapon && Math.abs(ammoItem?.system.mod?.toHitRanged) > 0) {
          result += ammoItem.system.mod.toHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.ammoMod', { mod: ammoItem.system.mod.toHitRanged }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.ammoMod", { mod: ammoItem.system.mod.toHitRanged }));
       }
       // If thrown and attacker has ability score mod...
       if (weaponData.tags.includes("thrown") && abilityScoreSys.hasMeleeToHitMod(actor)) {
@@ -304,7 +304,7 @@ export class ToHitSystemBase extends ToHitInterface {
       // Target modifiers
       if (targetMods && targetMods.selfToHitRanged !== 0) {
          result += targetMods.selfToHitRanged;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.targetMod', { mod: targetMods.selfToHitRanged }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.targetMod", { mod: targetMods.selfToHitRanged }));
       }
 
       if (target) {
@@ -338,7 +338,7 @@ export class ToHitSystemBase extends ToHitInterface {
 
             if (groupApplies) {
                result += modData.toHit || 0;
-               digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.toHit }));
+               digest.push(game.i18n.format("FADE.Chat.rollMods.vsGroupMod", { group: groupId, mod: modData.toHit }));
             }
          }
       }
@@ -353,13 +353,13 @@ export class ToHitSystemBase extends ToHitInterface {
     * @returns
     */
    #getNormalTargetAC(targetToken, attackType) {
-      return game.i18n.format('FADE.Chat.targetAC', {
-         cssClass: attackType === 'melee' ? "style='color:green'" : "",
+      return game.i18n.format("FADE.Chat.targetAC", {
+         cssClass: attackType === "melee" ? `style="color:green"` : "",
          acTotal: this.isAAC ? targetToken.actor.system.ac?.totalAAC : targetToken.actor.system.ac?.total,
          targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
-            ? game.i18n.format('FADE.Chat.targetRangedAC', {
+            ? game.i18n.format("FADE.Chat.targetRangedAC", {
                acTotal: this.isAAC ? targetToken.actor.system.ac?.totalRangedAAC : targetToken.actor.system.ac?.totalRanged,
-               cssClass: attackType === 'missile' ? "style='color:green'" : ""
+               cssClass: attackType === "missile" ? `style="color:green"` : ""
             })
             : ""
       });
@@ -370,7 +370,7 @@ export class ToHitTHAC0 extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} rollTotal The attack roll total
-   * @param {any} thac0 The attacker's effective THAC0
+   * @param {any} thac0 The attacker"s effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
    */
    getLowestACHit(roll, rollTotal, thac0) {

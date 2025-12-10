@@ -1,4 +1,4 @@
-import { FDActorSheetV2 } from './FDActorSheetV2.mjs';
+import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -19,7 +19,7 @@ export class MonsterSheet extends FDActorSheetV2 {
       form: {
          submitOnChange: true
       },
-      classes: ['monster'],
+      classes: ["monster"],
       actions: {
          cycleAttackGroup: MonsterSheet.#clickAttackGroup
       }
@@ -64,19 +64,19 @@ export class MonsterSheet extends FDActorSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'abilities'];
+      options.parts = ["header", "tabnav", "abilities"];
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         options.parts.push('items');
-         options.parts.push('skills');
+         options.parts.push("items");
+         options.parts.push("skills");
          if (this.actor.system.config.maxSpellLevel > 0) {
-            options.parts.push('spells');
+            options.parts.push("spells");
          }
-         options.parts.push('description');
+         options.parts.push("description");
       }
       if (game.user.isGM) {
-         options.parts.push('effects');
-         options.parts.push('gmOnly');
+         options.parts.push("effects");
+         options.parts.push("gmOnly");
       }
    }
 
@@ -97,28 +97,28 @@ export class MonsterSheet extends FDActorSheetV2 {
    * @returns {Record<string, Partial<any>>}
    */
    #getTabs() {
-      const group = 'primary';
+      const group = "primary";
 
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+      if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
       const tabs = {
-         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
-         description: { id: 'description', group, label: 'FADE.tabs.description' },
-         effects: { id: 'effects', group, label: 'FADE.tabs.effects' },
+         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
+         description: { id: "description", group, label: "FADE.tabs.description" },
+         effects: { id: "effects", group, label: "FADE.tabs.effects" },
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: 'items', group, label: 'FADE.items' };
-         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+         tabs.items = { id: "items", group, label: "FADE.items" };
+         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
       }
 
       if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
       }
 
       for (const tab of Object.values(tabs)) {

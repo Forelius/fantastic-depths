@@ -191,7 +191,7 @@ export class AbilityScoreRetro extends AbilityScoreBase {
    getInitiativeMod(actor) {
       let result = 0;
       result += actor.system?.mod.initiative || 0;
-      if (actor.type !== 'monster') {
+      if (actor.type === "character") {
          result += actor.system?.abilities?.dex?.mod || 0;
       }
       return result;
