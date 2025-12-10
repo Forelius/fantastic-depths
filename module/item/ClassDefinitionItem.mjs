@@ -1,9 +1,9 @@
-import { fadeFinder } from '../utils/finder.mjs';
-import { SavingThrowsData } from './dataModel/ClassDefinitionDataModel.mjs';
-import { FDItem } from './FDItem.mjs';
+import { fadeFinder } from "../utils/finder.mjs";
+import { SavingThrowsData } from "./dataModel/ClassDefinitionDataModel.mjs";
+import { FDItem } from "./FDItem.mjs";
 
 export class ClassDefinitionItem extends FDItem {
-   static ValidItemTypes = ['item', 'weapon', 'armor'];
+   static ValidItemTypes = ["item", "weapon", "armor"];
 
    /** 
     * @protected 

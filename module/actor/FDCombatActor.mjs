@@ -212,7 +212,7 @@ export class FDCombatActor extends FDActorBase {
     * The ammo item must be equipped for it to be recognized.
     * @public
     * @param {any} weapon
-    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
+    * @returns {any} The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
     */
    getAmmoItem(weapon) {
       let ammoItem = null;
@@ -235,6 +235,7 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Get an array of strings indicating which combat maneuvers this actor is capable of.
+    * @returns {string[]}
     */
    getAvailableActions() {
       // These options are always available.

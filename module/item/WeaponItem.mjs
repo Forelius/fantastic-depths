@@ -3,6 +3,10 @@ import { RollAttackMixin } from "./mixins/RollAttackMixin.mjs";
 import { GearItem } from "./GearItem.mjs";
 
 export class WeaponItem extends RollAttackMixin(GearItem) {
+   constructor(data, context) {
+      super(data, context);
+   }
+
    get isWeaponItem() { return true }
 
    prepareBaseData() {
@@ -78,7 +82,8 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       } : null;
    }
 
-   async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {
+   async showAttackChatMessage(result = {}) {
+      let { attacker, ammoItem, dialogResp, digest, rollEval } = result;
       const chatData = {
          resp: dialogResp,
          caller: this,

@@ -6,6 +6,10 @@
 * @returns
 */
 const RollAttackMixin = (superclass) => class extends superclass {
+   constructor(data, context) {
+      super(data, context);
+   }
+
    /**
    * Handle clickable rolls.
    * @param {any} dataset
