@@ -23,7 +23,9 @@ export class FDItem extends Item {
    get hasTargets() {
       return false; // The item itself does not have targets.
    }
-   get canMelee() { return this.system.canMelee === true }
+   /** A different way to say melee attack for items that aren't ranged, but also not melee (siege weapons). */
+   get canAttack() { return this.system.canMelee === true && this.system.weaponType === "siege" }
+   get canMelee() { return this.system.canMelee === true && this.system.weaponType !== "siege" }
    get canShoot() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0; }
    get canThrow() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0; }
    /** Returns true if the item uses charges and either there are charges remaining or there are infinite charges (chargesMax === null). */

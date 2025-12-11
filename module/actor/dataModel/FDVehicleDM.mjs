@@ -86,21 +86,13 @@ export class FDVehicleDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this.encumbrance.max = this.encumbrance.max || 0;
-      //const combatVehicleTypes = ["mount", "siege"];
-      //if (combatVehicleTypes.includes(this.vehicleType)) {
-      if (this.vehicleType == "siege") {
-         this.combat.basicProficiency = true;
-         this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
-      }
-      else if (this.vehicleType == "mount") {
-         this._prepareMods();
-         // Default all monsters with basic proficiency.
-         this.combat.basicProficiency = true;
-         this._prepareTHAC0ToHitBonus();
-         // Maybe this is the wrong place to do this. We may need to wait until after init.
-         this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
-         this._prepareHitPoints();
-      }
+      this._prepareMods();
+      // Default all monsters with basic proficiency.
+      this.combat.basicProficiency = true;
+      this._prepareTHAC0ToHitBonus();
+      // Maybe this is the wrong place to do this. We may need to wait until after init.
+      this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
+      this._prepareHitPoints();
    }
 
    /**

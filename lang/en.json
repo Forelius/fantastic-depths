@@ -278,7 +278,8 @@
          "vehicleTypes": {
             "mount": "Mount",
             "simple": "Simple",
-            "siege": "Siege"
+            "siege": "Siege",
+            "vessel": "Vessel"
          }
       },
       "SheetLabel": {
@@ -677,6 +678,7 @@
             "name": "Actions",
             "singular": "Action",
             "melee": "Melee",
+            "attack": "Attack",
             "shoot": "Shoot",
             "throw": "Throw",
             "consume": "Consume",
@@ -1138,13 +1140,24 @@
          "starstone": "Starstone",
          "tristal": "Tristal"
       },
-      "siege": {         
+      "siege": {
+         "plural": "Siege Weapons",
+         "thac0": {
+            "hint": "The THAC0 for this piece of equipment based on specialists and crew."
+         },
+         "thbonus": {
+            "hint": "The to-hit bonus for this piece of equipment based on specialists and crew."
+         },
+         "crew": {
+            "hint": "The current crew size.",
+            "label": "Crew"
+         },
          "fullCrew": {
-            "hint": "The optimum size of crew to operate this peice of equipment.",
+            "hint": "The optimum size of crew to operate this piece of equipment.",
             "label": "Full Crew"
          },
          "fireRate": {
-            "hint": "How many turns it takes to fire if unready",
+            "hint": "How many turns it takes to fire if unready.",
             "label": "Fire Rate"
          },
          "ammoCostWk": {

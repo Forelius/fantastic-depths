@@ -9,8 +9,8 @@ import { CodeMigrate } from "../../sys/migration.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
- * @extends {ActorSheetV2}
  */
+// @ts-ignore
 export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
    constructor(options = {}) {
@@ -246,7 +246,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const attackGroups = [];
       for (let item of this.actor.items) {
          item.img = item.img || Item.DEFAULT_ICON;
-         if (item.type === "weapon" && item.system.equipped === true) {
+         // If an equipped non-siege weapon
+         if (item.type === "weapon" && item.system.equipped === true && item.system.weaponType !== "siege") {
             const group = item.system.attacks.group;
             if (!attackGroups[group]) {
                attackGroups[group] = [];
@@ -420,7 +421,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                   // Find the collapsible section by the "name" attribute
                   const target = this.element.querySelector(`[name="${sectionName}"]`);
                   if (target) {
-                     await FDActorSheetV2.#toggleContent(this.actor, target);
+                     await FDActorSheetV2.#toggleContent(this, target);
                   } else {
                      // Not found.
                      console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
@@ -499,7 +500,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * This method is separate from the event handler because it is also called to restore expanded state when opening the sheet.
     * @param {any} parent The clicked element as a jquery object.
     */
-   static async #toggleContent(actor, parent) {
+   static async #toggleContent(sheet, parent) {
+      const actor = sheet.actor;
       const collapsibleItems = parent.querySelectorAll(".collapsible-content");
       if (!collapsibleItems || collapsibleItems.length == 0) return;
       const isCollapsed = collapsibleItems[0].classList.contains("collapsed");
@@ -520,7 +522,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          });
       }
       // If remember state is enabled, store the collapsed state
-      if (this.isRestoringCollapsedState === false) {
+      if (sheet.isRestoringCollapsedState === false) {
          const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
          if (rememberCollapsedState === true) {
             const sectionName = parent.getAttribute("name"); // Access the `name` attribute from the DOM element
@@ -616,7 +618,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             } else if (item.system.category === "save") {
                savingThrows.push(item);
             }
-               // Characters differentiate between class ability and special ability.
+            // Characters differentiate between class ability and special ability.
             else if (this.actor.type == "character" && (item.system.category === "class" || item.system.category === "spellcasting")) {
                classAbilities.push(item);
             } else {
@@ -663,15 +665,27 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return item;
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickEffect(event) {
       await EffectManager.onManageActiveEffect(event, this.actor)
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickResetSpells(event) {
       const classSystem = game.fade.registry.getSystem("classSystem");
       await classSystem.resetSpells(this.actor, event);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static #clickDeleteTag(event) {
       const tag = event.target.closest(".tag-delete").dataset.tag;
       this.actor.tagManager.popTag(tag);
@@ -706,6 +720,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       await fp.browse();
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickToggleEquipped(event) {
       let updateObj = {};
       const item = this._getItemFromActor(event);
@@ -734,19 +752,28 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickToggleHeader(event) {
       // If not the create item column...
       const parent = event.target.closest(".items-list");
       if (parent) {
-         await FDActorSheetV2.#toggleContent(this.actor, parent);
+         await FDActorSheetV2.#toggleContent(this, parent);
       }
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickToggleContainer(event) {
       await this._toggleContainedItems(event)
    }
 
    /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
     * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
     * @param {any} event The originating click event
     */
@@ -783,6 +810,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return await FDItem.create(itemData, { parent: this.actor });
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickDeleteItem(event) {
       const item = this._getItemFromActor(event);
       if (item.type === "condition" && game.user.isGM === false) return;
@@ -791,21 +822,37 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       parent.slideUp(200, () => this.render(false));
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickEditItem(event) {
       this._getItemFromActor(event)?.sheet?.render(true);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickEditClass(event) {
       const dataset = event.target.dataset;
       const classItem = await fadeFinder.getClass(dataset.classname);
       classItem?.sheet?.render(true)
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickEditAncestry(event) {
       const ancestryItem = await fadeFinder.getAncestry(this.actor.system.details.species);
       ancestryItem?.sheet?.render(true)
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickRollGeneric(event) {
       const dataset = event.target.dataset;
       let formula = dataset.formula;
@@ -823,6 +870,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       return builder.createChatMessage();
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickRollItem(event) {
       const dataset = event.target.dataset;
       const item = this._getItemFromActor(event);
@@ -830,33 +881,61 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       if (item) await item.roll(dataset, null, event);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickRollSave(event) {
       const item = this._getItemFromActor(event);
       this.actor.rollSavingThrow(item.system.customSaveCode, event);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickRollAbility(event) {
       const abilityCheckSys = game.fade.registry.getSystem("abilityCheck");
       abilityCheckSys.execute({ actor: this.actor, event });
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickRollMorale(event) {
       const moraleCheckSys = game.fade.registry.getSystem("moraleCheck");
       moraleCheckSys.execute({ actor: this.actor, event });
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickUseConsumable(event) {
       await this._useConsumable(event, true);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickAddConsumable(event) {
       await this._useConsumable(event, false);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickUseCharge(event) {
       await this._useCharge(event, true);
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickAddCharge(event) {
       await this._useCharge(event, false);
    }
@@ -866,6 +945,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       $(event.currentTarget).find(".ability-score-input, .ability-score, .ability-mod").toggle();
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickExpandDesc(event) {
       // If not the create item column...
       //const itemElement = event.target.closest(".item");
@@ -902,6 +985,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickAddActorGroup(event) {
       const actor = this.actor;
       const currentGroups = actor.system.actorGroups || [];
@@ -957,6 +1044,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
    }
 
+   /**
+    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
    static async #clickDeleteActorGroup(event) {
       const groupToDelete = event.target.closest("[data-tag]").dataset.tag;
       if (groupToDelete) {

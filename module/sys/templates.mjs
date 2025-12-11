@@ -15,6 +15,7 @@ export const preloadHandlebarsTemplates = async function () {
       actorMovement: 'systems/fantastic-depths/templates/actor/parts/movement.hbs',
       actorMovement2: 'systems/fantastic-depths/templates/actor/parts/movement2.hbs',
       actorEquippedWeapons: "systems/fantastic-depths/templates/actor/shared/equipped-weapons.hbs",
+      siegeWeapons: "systems/fantastic-depths/templates/actor/shared/siege-weapons.hbs",
       attackGroups: "systems/fantastic-depths/templates/actor/parts/attack-groups.hbs",
       actorGroups: 'systems/fantastic-depths/templates/actor/shared/actorGroups.hbs',
       actorSpecialAbilities: 'systems/fantastic-depths/templates/actor/shared/specialAbilities.hbs',

@@ -52,7 +52,7 @@ export class WeaponItemDataModel extends GearItemDataModel {
             thbonus: new NumberField({ nullable: true, initial: null }),
             crew: new NumberField({ nullable: true, initial: null }),
             fullCrew: new NumberField({ nullable: true, initial: null }),
-            // How many turns it takes to fire if unready
+            // How many turns it takes to fire if unready/unloaded
             fireRate: new NumberField({ nullable: true, initial: null }),
             // Cost of ammo per week
             ammoCostWk: new NumberField({ nullable: true, initial: null }),

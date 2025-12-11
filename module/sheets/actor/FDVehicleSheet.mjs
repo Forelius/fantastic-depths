@@ -8,7 +8,7 @@ import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 export class FDVehicleSheet extends FDActorSheetV2 {
    constructor(options = {}) {
       super(options);
-      this.combatVehicleTypes = ["mount", "siege"];
+      this.combatVehicleTypes = ["mount", "siege", "vessel"];
       this.isCombatVehicle = this.combatVehicleTypes.includes(this.actor.system.vehicleType);
    }
 
@@ -94,6 +94,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       context.hasAbilityScoreMods = false;
       context.vehicleTypes = this._getVehicleTypeOptions();
       context.hasCombat = this.isCombatVehicle;
+      // Prepare siege weapons
+      context.siegeWeapons = context.weapons?.filter(i => i.system.weaponType === "siege");
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;
@@ -104,9 +106,10 @@ export class FDVehicleSheet extends FDActorSheetV2 {
     * @param {object} context The context object to mutate
     */
    async _prepareItems(context) {
-      
       if (this.isCombatVehicle) {
          await super._prepareItems(context);
+         // Separate siege weapons from regular weapons
+
       } else {
          // Initialize arrays.
          let gear = [];
@@ -145,9 +148,9 @@ export class FDVehicleSheet extends FDActorSheetV2 {
 
    _getVehicleTypeOptions() {
       const types = [];
-      types.push({ text: game.i18n.localize("FADE.Actor.vehicleTypes.mount"), value: "mount" });
-      types.push({ text: game.i18n.localize("FADE.Actor.vehicleTypes.simple"), value: "simple" });
-      types.push({ text: game.i18n.localize("FADE.Actor.vehicleTypes.siege"), value: "siege" });
+      for (const type of CONFIG.FADE.VehicleTypes) {
+         types.push({ text: game.i18n.localize(`FADE.Actor.vehicleTypes.${type}`), value: type });
+      }
       return types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 

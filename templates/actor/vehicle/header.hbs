@@ -8,6 +8,7 @@
                <label>{{localize 'Name'}}</label>
             </div>
          </li>
+         {{! Only mounts have a size }}
          {{#if (eq system.vehicleType "mount")}}
          <li style="max-width:94px;">
             <select style="max-width:90px;" name="system.details.size" data-tooltip="{{localize (concat 'FADE.Actor.sizes.' system.details.size 'Hint')}}">
@@ -29,6 +30,7 @@
                {{localize 'FADE.Actor.HitDiceShort'}}
             </label>
          </li>
+         {{! Only mounts have morale. }}
          {{#if (eq system.vehicleType "mount")}}
          <li class="flex1">
             <input type="number" name="system.details.morale" value="{{system.details.morale}}" data-dtype="String" />
@@ -57,6 +59,7 @@
             <label>{{localize "FADE.Actor.THBonus"}}</label>
             <input type="text" name="system.thbonus" value="{{@root.system.thbonus}}" data-dtype="Number" readonly />
          </li>
+         {{! Only mounts have an intelligence score }}
          {{#if (eq system.vehicleType "mount")}}
          <li class="flex1">
             <input type="text" name="system.details.int" value="{{system.details.int}}" data-dtype="String" data-tooltip="{{localize 'FADE.Actor.Abilities.int.long'}}" />

@@ -46,10 +46,11 @@ FADE.WeaponTypes = [
    "all"
    //"wr", "siege"
 ];
-FADE.VehcileTypes = [
+FADE.VehicleTypes = [
    "mount",
    "simple",
    "siege",
+   "vessel"
 ]
 FADE.MasteryLevels = [
    "basic",
