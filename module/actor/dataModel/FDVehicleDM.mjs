@@ -8,6 +8,7 @@ export class FDVehicleDM extends FDActorBaseDM {
       const combatSchema = {
          cost: new NumberField({ required: false, initial: 0 }),
          capacity: new StringField({ required: false, initial: "" }),
+         vehicleType: new StringField({ required: false, initial: "mount" }),
          details: new SchemaField({
             // This is how many attacks the actor gets per round.
             attacks: new StringField({ initial: "1" }),
@@ -17,8 +18,7 @@ export class FDVehicleDM extends FDActorBaseDM {
          config: new SchemaField({
             // Ignored by multi-class character
             firstSpellLevel: new NumberField({ required: false, initial: 1 }),
-            maxSpellLevel: new NumberField({ required: true, initial: 0 }),
-            hasCombat: new BooleanField({required: true, initial: true })
+            maxSpellLevel: new NumberField({ required: true, initial: 0 })
          }),
          thac0: new SchemaField({
             value: new NumberField({ required: false, initial: CONFIG.FADE.ToHit.baseTHAC0 }),
@@ -86,7 +86,13 @@ export class FDVehicleDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this.encumbrance.max = this.encumbrance.max || 0;
-      if (this.hasCombat === true) {
+      //const combatVehicleTypes = ["mount", "siege"];
+      //if (combatVehicleTypes.includes(this.vehicleType)) {
+      if (this.vehicleType == "siege") {
+         this.combat.basicProficiency = true;
+         this.thbonus = CONFIG.FADE.ToHit.baseTHAC0 - this.thac0.value;
+      }
+      else if (this.vehicleType == "mount") {
          this._prepareMods();
          // Default all monsters with basic proficiency.
          this.combat.basicProficiency = true;

@@ -273,6 +273,12 @@
             "flaming-weak": "Flaming-weak",
             "alignment": "Alignment",
             "name": "Name"
+         },
+         "vehicleTypeTitle": "Vehicle Type",
+         "vehicleTypes": {
+            "mount": "Mount",
+            "simple": "Simple",
+            "siege": "Siege"
          }
       },
       "SheetLabel": {
@@ -1132,7 +1138,7 @@
          "starstone": "Starstone",
          "tristal": "Tristal"
       },
-      "siege": {
+      "siege": {         
          "fullCrew": {
             "hint": "The optimum size of crew to operate this peice of equipment.",
             "label": "Full Crew"

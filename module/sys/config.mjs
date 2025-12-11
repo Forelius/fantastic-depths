@@ -46,6 +46,11 @@ FADE.WeaponTypes = [
    "all"
    //"wr", "siege"
 ];
+FADE.VehcileTypes = [
+   "mount",
+   "simple",
+   "siege",
+]
 FADE.MasteryLevels = [
    "basic",
    "skilled",

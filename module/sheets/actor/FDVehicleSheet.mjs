@@ -8,6 +8,8 @@ import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
 export class FDVehicleSheet extends FDActorSheetV2 {
    constructor(options = {}) {
       super(options);
+      this.combatVehicleTypes = ["mount", "siege"];
+      this.isCombatVehicle = this.combatVehicleTypes.includes(this.actor.system.vehicleType);
    }
 
    static DEFAULT_OPTIONS = {
@@ -70,7 +72,7 @@ export class FDVehicleSheet extends FDActorSheetV2 {
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          options.parts.push("items");
-         if (actorData.config.hasCombat === true) {
+         if (actorData.vehicleType == "mount") {
             options.parts.push("skills");
             if (this.actor.system.config.maxSpellLevel > 0) {
                options.parts.push("spells");
@@ -78,8 +80,9 @@ export class FDVehicleSheet extends FDActorSheetV2 {
          }
       }
       if (game.user.isGM) {
-         if (actorData.config.hasCombat === true)
+         if (this.isCombatVehicle) {
             options.parts.push("effects");
+         }
          options.parts.push("gmOnly");
       }
    }
@@ -89,7 +92,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       context.hasAbilityScores = false;
       context.hasAbilityScoreMods = false;
-      context.hasCombat = this.actor.system.config.hasCombat;
+      context.vehicleTypes = this._getVehicleTypeOptions();
+      context.hasCombat = this.isCombatVehicle;
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;
@@ -100,7 +104,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
     * @param {object} context The context object to mutate
     */
    async _prepareItems(context) {
-      if (this.actor.system.config.hasCombat === true) {
+      
+      if (this.isCombatVehicle) {
          await super._prepareItems(context);
       } else {
          // Initialize arrays.
@@ -138,6 +143,14 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       }
    }
 
+   _getVehicleTypeOptions() {
+      const types = [];
+      types.push({ text: game.i18n.localize("FADE.Actor.vehicleTypes.mount"), value: "mount" });
+      types.push({ text: game.i18n.localize("FADE.Actor.vehicleTypes.simple"), value: "simple" });
+      types.push({ text: game.i18n.localize("FADE.Actor.vehicleTypes.siege"), value: "siege" });
+      return types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+   }
+
    /**
     * Prepare an array of form header tabs.
     * @this {any}
@@ -146,9 +159,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
    #getTabs() {
       const group = "primary";
       const actorData = this.actor.system;
-
       const tabs = {};
-      if (actorData.config.hasCombat === true) {
+      if (this.isCombatVehicle) {
          // Default tab for first time it"s rendered this session
          if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
          tabs.abilities = { id: "abilities", group, label: "FADE.tabs.abilities" };
@@ -159,13 +171,14 @@ export class FDVehicleSheet extends FDActorSheetV2 {
 
       tabs.description = { id: "description", group, label: "FADE.tabs.description" };
 
-      if (actorData.config.hasCombat === true)
+      if (this.isCombatVehicle)
          tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          tabs.items = { id: "items", group, label: "FADE.items" };
-         if (actorData.config.hasCombat === true)
+         if (actorData.vehicleType == "mount") {
             tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
+         }
       }
 
       if (actorData.config.maxSpellLevel > 0) {
