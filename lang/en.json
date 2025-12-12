@@ -450,7 +450,8 @@
             "section": "Ranges",
             "long": "Long",
             "medium": "Medium",
-            "short": "Short"
+            "short": "Short",
+            "min": "Minimum"
          },
          "damage": {
             "abbr": "Dmg",

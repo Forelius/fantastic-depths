@@ -89,24 +89,28 @@
          </div>
       </div>
       {{/if}}
-      <div class="summary flexrow">
-         <div class="flex1" style="margin-left:3px;max-width:90px;">
-            <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
-            <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
-         </div>
-         <div class="flex1" style="max-width: 90px;">
-            <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
-            <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
-         </div>
-         <div class="flex1" style="max-width: 90px;">
-            <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
-            <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
-         </div>
-         <div class="flex2" style="margin-left:3px;">
-            <input type='text' name="system.ammoType" value='{{system.ammoType}}' data-dtype='String' />
-            <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
-         </div>
+   <div class="summary flexrow">
+      <div class="flex1" style="max-width:90px;">
+         <input type='text' name="system.range.min" value='{{system.range.min}}' data-dtype='Number' />
+         <label for="system.range.min">{{localize 'FADE.Weapon.range.min'}}</label>
       </div>
+      <div class="flex1" style="margin-left:3px;max-width:90px;">
+         <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' />
+         <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
+      </div>
+      <div class="flex1" style="max-width: 90px;">
+         <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' />
+         <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
+      </div>
+      <div class="flex1" style="max-width: 90px;">
+         <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' />
+         <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
+      </div>
+      <div class="flex2" style="margin-left:3px;">
+         <input type='text' name="system.ammoType" value='{{system.ammoType}}' data-dtype='String' />
+         <label for="system.ammoType" data-tooltip="{{localize "FADE.Weapon.ammo.typeHint"}}">{{localize "FADE.Weapon.ammo.type"}}</label>
+      </div>
+   </div>
    </div>
    {{> "vsGroupMod"}}
 </section>
