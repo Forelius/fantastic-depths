@@ -7,6 +7,7 @@ export class ToHitInterface {
    getDiceSum(roll) { throw new Error("Method not implemented."); }
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} roll The sum of the dice rolled.
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
@@ -103,7 +104,9 @@ export class ToHitSystemBase extends ToHitInterface {
          }
 
          const attackerWeaponType = weapon.type === "weapon" && weapon.system.weaponType ? weapon.system.weaponType : "monster";
-         const thac0 = attackingActor.system.thac0.value;
+         // Some weapons, like siege weapons with a crew, have their own thac0.
+         const thac0 = weapon.system.siege.thac0 > 0 ? weapon.system.siege.thac0 : attackingActor.system.thac0.value;
+         // Determine what the lowest AC hit is
          const hitAC = this.getLowestACHit(this.getDiceSum(roll), roll.total, thac0);
          let hitACMessage = game.i18n.localize("FADE.Chat.attackACNone");
          if (hitAC === -999) {
@@ -369,6 +372,7 @@ export class ToHitSystemBase extends ToHitInterface {
 export class ToHitTHAC0 extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} roll The sum of the dice rolled.
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker"s effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
@@ -381,6 +385,7 @@ export class ToHitTHAC0 extends ToHitSystemBase {
 export class ToHitAAC extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} roll The sum of the dice rolled.
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
@@ -393,6 +398,7 @@ export class ToHitAAC extends ToHitSystemBase {
 export class ToHitClassic extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} roll The sum of the dice rolled.
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
@@ -431,6 +437,7 @@ export class ToHitClassic extends ToHitSystemBase {
 export class ToHitDarkDungeons extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} roll The sum of the dice rolled.
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
@@ -502,6 +509,7 @@ export class ToHitDarkDungeons extends ToHitSystemBase {
 export class ToHitHeroic extends ToHitSystemBase {
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
+   * @param {any} roll The sum of the dice rolled.
    * @param {any} rollTotal The attack roll total
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
