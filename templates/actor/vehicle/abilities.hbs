@@ -1,4 +1,15 @@
+<!--Vehicle Abilities Tab-->
 <section class="tab abilities {{tabs.abilities.cssClass}}" data-group="primary" data-tab="abilities">
+   <div class="align-vtop">
+      {{#if siegeWeapons}}
+      <div class="bordered">
+         {{#if siegeWeapons}}
+         {{!-- Siege Weapons --}}
+         {{> "siegeWeapons"}}
+         {{/if}}
+      </div>
+      {{/if}}
+   </div>
    <div class="flexrow align-vtop">
       <div class="flex1" style="max-width: 180px;">
          {{> "actorHpAc"}}
@@ -12,6 +23,10 @@
       <div class="flex2">
          {{#if (fadeor attackGroups specialAbilities)}}
          <div class="bordered">
+            {{#if siegeWeapons}}
+            {{!-- Siege Weapons --}}
+            {{> "siegeWeapons"}}
+            {{/if}}
             {{#if attackGroups}}
             {{!-- Equipped Weapons --}}
             {{> "attackGroups"}}
@@ -23,7 +38,7 @@
          </div>
          {{/if}}
          {{#if (or system.encumbrance.max system.encumbrance.mv)}}
-         <div class="flexrow flex-group-center bordered" style="margin-top:10px;">
+         <div class="flexrow flex-group-center bordered">
             <span class="flex3">
                Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
             </span>

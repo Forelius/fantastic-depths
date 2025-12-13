@@ -207,7 +207,7 @@ const DragDropMixin = (superclass) => class extends superclass {
     * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
     * @param {object[]|object} itemData      The item data requested for creation
     * @returns {Promise<Item[]>}
-    * @private
+    * @protected
     */
    async _onDropItemCreate(itemData) {
       itemData = itemData instanceof Array ? itemData : [itemData];

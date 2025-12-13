@@ -3,49 +3,51 @@
    <div class="bordered">
       <div class="summary flexrow">
          <div class="flex1">
-            <input type='text' name="system.encumbrance.max" value='{{system.encumbrance.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.EncMax.Hint'}}" />
-            <label for="system.encumbrance.max" data-tooltip="{{localize 'SETTINGS.EncMax.Hint'}}">{{localize 'SETTINGS.EncMax.Name'}}</label>
+            <input type="text" name="system.encumbrance.max" value="{{system.encumbrance.max}}" data-dtype="Number" data-tooltip="{{localize "SETTINGS.EncMax.Hint"}}" />
+            <label for="system.encumbrance.max" data-tooltip="{{localize "SETTINGS.EncMax.Hint"}}">{{localize "SETTINGS.EncMax.Name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.movement.max" value='{{system.movement.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
-            <label for="system.movement.max" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">{{localize 'SETTINGS.move.max.name'}}</label>
+            <input type="text" name="system.movement.max" value="{{system.movement.max}}" data-dtype="Number" data-tooltip="{{localize "SETTINGS.move.max.hint"}}" />
+            <label for="system.movement.max" data-tooltip="{{localize "SETTINGS.move.max.hint"}}">{{localize "SETTINGS.move.max.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.movement2.max" value='{{system.movement2.max}}' data-dtype='Number' data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}" />
-            <label for="system.movement2.max" data-tooltip="{{localize 'SETTINGS.move.maxMove2.hint'}}">{{localize 'SETTINGS.move.maxMove2.name'}}</label>
+            <input type="text" name="system.movement2.max" value="{{system.movement2.max}}" data-dtype="Number" data-tooltip="{{localize "SETTINGS.move.maxMove2.hint"}}" />
+            <label for="system.movement2.max" data-tooltip="{{localize "SETTINGS.move.maxMove2.hint"}}">{{localize "SETTINGS.move.maxMove2.name"}}</label>
          </div>
-         <div class="flex1">
-            <input type="checkbox" name="system.config.hasCombat" data-dtype="Boolean" {{#if system.config.hasCombat}} checked{{/if}} />
-            <label for="system.config.hasCombat">{{localize 'FADE.Actor.combat'}}</label>
+         <div class="flex2">
+            <select name="system.vehicleType">
+               {{selectOptions vehicleTypes selected=system.vehicleType}}
+            </select>
+            <label for="system.weaponType">{{localize "FADE.Actor.vehicleTypeTitle"}}</label>
          </div>
       </div>
-      {{#if system.config.hasCombat}}
+      {{#if hasCombat}}
       <div class="summary flexrow">
          <div class="flex1">
-            <input type='text' name="system.combat.attacks" value='{{system.combat.attacks}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}" />
-            <label for="system.combat.attacks" data-tooltip="{{localize 'FADE.Actor.AT#.desc'}}">{{localize 'FADE.Actor.AT#.name'}}</label>
+            <input type="text" name="system.combat.attacks" value="{{system.combat.attacks}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.AT#.desc"}}" />
+            <label for="system.combat.attacks" data-tooltip="{{localize "FADE.Actor.AT#.desc"}}">{{localize "FADE.Actor.AT#.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.combat.attAgainstH" value='{{system.combat.attAgainstH}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}" />
-            <label for="system.combat.attAgainstH" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descH'}}">{{localize 'FADE.Actor.AT#Recv.nameH'}}</label>
+            <input type="text" name="system.combat.attAgainstH" value="{{system.combat.attAgainstH}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.AT#Recv.descH"}}" />
+            <label for="system.combat.attAgainstH" data-tooltip="{{localize "FADE.Actor.AT#Recv.descH"}}">{{localize "FADE.Actor.AT#Recv.nameH"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.combat.attAgainstM" value='{{system.combat.attAgainstM}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}" />
-            <label for="system.combat.attAgainstM" data-tooltip="{{localize 'FADE.Actor.AT#Recv.descM'}}">{{localize 'FADE.Actor.AT#Recv.nameM'}}</label>
+            <input type="text" name="system.combat.attAgainstM" value="{{system.combat.attAgainstM}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.AT#Recv.descM"}}" />
+            <label for="system.combat.attAgainstM" data-tooltip="{{localize "FADE.Actor.AT#Recv.descM"}}">{{localize "FADE.Actor.AT#Recv.nameM"}}</label>
          </div>
          <div class="flex1">
             <input type="checkbox" name="system.combat.isDead" data-dtype="Boolean" {{#if system.combat.isDead}} checked{{/if}} />
-            <label for="system.combat.isDead" data-tooltip="{{localize 'FADE.Actor.Dead.desc'}}">{{localize 'FADE.Actor.Dead.name'}}</label>
+            <label for="system.combat.isDead" data-tooltip="{{localize "FADE.Actor.Dead.desc"}}">{{localize "FADE.Actor.Dead.name"}}</label>
          </div>
          <div class="flex1">
-            <input type='text' name="system.combat.deathCount" value='{{system.combat.deathCount}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}" />
-            <label for="system.combat.deathCount" data-tooltip="{{localize 'FADE.Actor.Deaths.desc'}}">{{localize 'FADE.Actor.Deaths.name'}}</label>
+            <input type="text" name="system.combat.deathCount" value="{{system.combat.deathCount}}" data-dtype="Number" data-tooltip="{{localize "FADE.Actor.Deaths.desc"}}" />
+            <label for="system.combat.deathCount" data-tooltip="{{localize "FADE.Actor.Deaths.desc"}}">{{localize "FADE.Actor.Deaths.name"}}</label>
          </div>
       </div>
       {{/if}}
    </div>
    <div class="bordered">
-      <label for="gm-notes">{{localize 'FADE.GMNotes'}}:</label>
+      <label for="gm-notes">{{localize "FADE.GMNotes"}}:</label>
       <textarea id="gm-notes" name="system.gm.notes" rows="6">{{system.gm.notes}}</textarea>
    </div>
 </section>

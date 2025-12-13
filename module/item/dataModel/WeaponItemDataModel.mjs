@@ -25,9 +25,12 @@ export class WeaponItemDataModel extends GearItemDataModel {
          range: new SchemaField({
             short: new NumberField({ nullable: true, initial: null }),
             medium: new NumberField({ nullable: true, initial: null }),
-            long: new NumberField({ nullable: true, initial: null })
+            long: new NumberField({ nullable: true, initial: null }),
+            // The minimum range for this weapon.
+            min: new NumberField({ nullable: false, initial: 0 }),
          }),
-         size: new StringField({ required: false, nullable:true, initial: null }),
+         size: new StringField({ required: false, nullable: true, initial: null }),
+         // grip is currently unused and hidden on sheet. remove?
          grip: new StringField({ required: false, nullable: true, initial: null }),
          natural: new BooleanField({ required: false, initial: false }),
          mod: new SchemaField({
@@ -43,6 +46,21 @@ export class WeaponItemDataModel extends GearItemDataModel {
             max: new NumberField({ nullable: true, initial: null }),
             group: new NumberField({ initial: 0 }),
          }),
+         // for siege weapons
+         siege: new SchemaField({
+            thac0: new NumberField({ nullable: true, initial: null }),
+            thbonus: new NumberField({ nullable: true, initial: null }),
+            crew: new NumberField({ nullable: true, initial: null }),
+            fullCrew: new NumberField({ nullable: true, initial: null }),
+            // How many turns it takes to fire if unready/unloaded
+            fireRate: new NumberField({ nullable: true, initial: null }),
+            // Cost of ammo per week
+            ammoCostWk: new NumberField({ nullable: true, initial: null }),
+            weightTowed: new NumberField({ nullable: true, initial: null }),
+            // Armor class bonus the equipment provides for thos protected by it.
+            acplus: new NumberField({ nullable: true, initial: null }),
+            artillerist: new BooleanField({ required: false, initial: false }),
+         })
       };
    }
 

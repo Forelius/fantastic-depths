@@ -47,10 +47,12 @@
             <input type="checkbox" name="system.natural" data-dtype="Boolean" {{#if system.natural}} checked{{/if}} data-tooltip="{{localize "FADE.Armor.natural.desc"}}" {{#unless isGM}} readonly{{/unless}} />
             <label for="system.natural" data-tooltip="{{localize "FADE.Armor.natural.desc"}}">{{localize "FADE.Armor.natural.short"}}</label>
          </li>
+         {{#unless (eq system.weaponType "siege")}}
          <li style="max-width:40px;">
             <input type="checkbox" name="system.canSet" data-dtype="Boolean" {{#if system.canSet}} checked{{/if}} data-tooltip="{{localize "FADE.Weapon.setVsCharge.desc"}}" {{#unless isGM}} readonly{{/unless}} />
             <label for="system.canSet" data-tooltip="{{localize "FADE.Weapon.setVsCharge.desc"}}">{{localize "FADE.Weapon.setVsCharge.label"}}</label>
          </li>
+         {{/unless}}
       </ul>
    </div>
 </header>

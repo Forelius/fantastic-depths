@@ -137,6 +137,7 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
       weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.monster.long"), value: "monster" });
       weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.handheld.long"), value: "handheld" });
       weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.all.long"), value: "all" });
+      weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.siege.long"), value: "siege" });
       return weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 

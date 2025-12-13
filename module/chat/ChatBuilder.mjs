@@ -269,6 +269,15 @@ export class ChatBuilder {
             });
          }
          if (options.attacks === true) {
+            if (actionItem.canAttack === true) {
+               actions.push({
+                  type: "melee",
+                  owneruuid: owner.uuid,
+                  itemuuid: actionItem.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  itemName: game.i18n.localize("FADE.Chat.actions.attack"),
+               })
+            }
             if (actionItem.canMelee === true) {
                actions.push({
                   type: "melee",

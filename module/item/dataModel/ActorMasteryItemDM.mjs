@@ -1,4 +1,3 @@
-
 /**
  * Data model for an actor mastery item.
  */
@@ -39,12 +38,10 @@ export class ActorMasteryItemDM extends foundry.abstract.TypeDataModel {
       };
    }
 
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
    }
 
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       this.acBonusType = this.acBonusType !== 'null' ? this.acBonusType : null

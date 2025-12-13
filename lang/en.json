@@ -273,6 +273,13 @@
             "flaming-weak": "Flaming-weak",
             "alignment": "Alignment",
             "name": "Name"
+         },
+         "vehicleTypeTitle": "Vehicle Type",
+         "vehicleTypes": {
+            "mount": "Mount",
+            "simple": "Simple",
+            "siege": "Siege",
+            "vessel": "Vessel"
          }
       },
       "SheetLabel": {
@@ -443,7 +450,8 @@
             "section": "Ranges",
             "long": "Long",
             "medium": "Medium",
-            "short": "Short"
+            "short": "Short",
+            "min": "Minimum"
          },
          "damage": {
             "abbr": "Dmg",
@@ -530,12 +538,16 @@
                "abbr": "H"
             },
             "all": {
-               "long": "All",
+               "long": "All (M/H)",
                "abbr": "A"
             },
             "wr": {
                "long": "Wrestling",
                "abbr": "WR"
+            },
+            "siege": {
+               "long": "Siege",
+               "abbr": "SG"
             }
          },
          "levels": {
@@ -667,6 +679,7 @@
             "name": "Actions",
             "singular": "Action",
             "melee": "Melee",
+            "attack": "Attack",
             "shoot": "Shoot",
             "throw": "Throw",
             "consume": "Consume",
@@ -1127,6 +1140,39 @@
          "jacinth": "Jacinth",
          "starstone": "Starstone",
          "tristal": "Tristal"
+      },
+      "siege": {
+         "plural": "Siege Weapons",
+         "thac0": {
+            "hint": "The THAC0 for this piece of equipment based on specialists and crew."
+         },
+         "thbonus": {
+            "hint": "The to-hit bonus for this piece of equipment based on specialists and crew."
+         },
+         "crew": {
+            "hint": "The current crew size.",
+            "label": "Crew"
+         },
+         "fullCrew": {
+            "hint": "The optimum size of crew to operate this piece of equipment.",
+            "label": "Full Crew"
+         },
+         "fireRate": {
+            "hint": "How many turns it takes to fire if unready.",
+            "label": "Fire Rate"
+         },
+         "ammoCostWk": {
+            "hint": "Cost of ammo per week",
+            "label": "Ammo Cost/Wk."
+         },
+         "acplus": {
+            "hint": "Armor class bonus the equipment provides for thos protected by it.",
+            "label": "AC+"
+         },
+         "artillerist": {
+            "hint": "Does the equipment require an artillerist?",
+            "label": "Artillerist"
+         }
       },
       "folder": "Folder",
       "Size": "Size",

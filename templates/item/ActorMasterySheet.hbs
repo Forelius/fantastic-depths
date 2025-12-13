@@ -1,53 +1,53 @@
 <div>
-   <header class='sheet-header'>
-      <img class='profile-img-xsm' src='{{item.img}}' data-edit="img" data-action="editImage" data-tooltip='{{item.name}}' />
-      <div class='header-fields'>
+   <header class="sheet-header">
+      <img class="profile-img-xsm" src="{{item.img}}" data-edit="img" data-action="editImage" data-tooltip="{{item.name}}" />
+      <div class="header-fields">
          <ul class="summary flexrow">
             <li class="flex3">
-               <div class='charname'>
-                  <input name='name' type='text' value='{{item.name}}' placeholder='Name' />
+               <div class="charname">
+                  <input name="name" type="text" value="{{item.name}}" placeholder="Name" />
                </div>
-               <label for="name">{{localize 'Name'}}</label>
+               <label for="name">{{localize "Name"}}</label>
             </li>
             <li class="flex1">
-               <select name="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">
+               <select name="system.weaponType" data-tooltip="{{localize "FADE.Mastery.weaponTypeTitle"}}">
                   {{selectOptions weaponTypes selected=system.weaponType}}
                </select>
-               <label for="system.weaponType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}">{{localize 'FADE.Mastery.weaponType'}}</label>
+               <label for="system.weaponType" data-tooltip="{{localize "FADE.Mastery.weaponTypeTitle"}}">{{localize "FADE.Mastery.weaponType"}}</label>
             </li>
             <li class="flex1">
                <select name="system.level">
                   {{selectOptions masteryLevels selected=system.level}}
                </select>
-               <label for="system.level">{{localize 'FADE.Actor.Level'}}</label>
+               <label for="system.level">{{localize "FADE.Actor.Level"}}</label>
             </li>
          </ul>
          <ul class="summary flexrow">
             <li class="flex2">
-               <select name="system.primaryType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               <select name="system.primaryType" data-tooltip="{{localize "FADE.Mastery.weaponTypeTitle"}}" {{#unless isGM}} disabled="disabled" {{/unless}}>
                   {{selectOptions weaponTypes selected=system.primaryType}}
                </select>
-               <label for="system.primaryType">{{localize 'FADE.Mastery.primary'}}</label>
+               <label for="system.primaryType">{{localize "FADE.Mastery.primary"}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.acBonus" value='{{system.acBonus}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
+               <input type="text" name="system.acBonus" value="{{system.acBonus}}" data-dtype="Number" {{#unless isGM}} readonly{{/unless}} />
                <label for="system.acBonus">
-                  {{#if (eq system.weaponType 'wr')}}
-                  {{localize 'FADE.Mastery.wrBonus'}}
+                  {{#if (eq system.weaponType "wr")}}
+                  {{localize "FADE.Mastery.wrBonus"}}
                   {{else}}
-                  {{localize 'FADE.Mastery.acBonus'}}
+                  {{localize "FADE.Mastery.acBonus"}}
                   {{/if}}
                </label>
             </li>
             <li class="flex2">
-               <select name="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.weaponTypeTitle'}}" {{#unless isGM}} disabled='disabled' {{/unless}}>
+               <select name="system.acBonusType" data-tooltip="{{localize "FADE.Mastery.weaponTypeTitle"}}" {{#unless isGM}} disabled="disabled" {{/unless}}>
                   {{selectOptions weaponTypes selected=system.acBonusType}}
                </select>
-               <label for="system.acBonusType" data-tooltip="{{localize 'FADE.Mastery.acBonusTypeHint'}}">{{localize 'FADE.Mastery.bonusType'}}</label>
+               <label for="system.acBonusType" data-tooltip="{{localize "FADE.Mastery.acBonusTypeHint"}}">{{localize "FADE.Mastery.bonusType"}}</label>
             </li>
             <li class="flex1">
-               <input type='text' name="system.acBonusAT" value='{{system.acBonusAT}}' data-dtype='Number' data-tooltip="{{localize 'FADE.Mastery.acBonusATTitle'}}" {{#unless isGM}} readonly{{/unless}} />
-               <label for="system.acBonusAT">{{localize 'FADE.Mastery.acBonusAT'}}</label>
+               <input type="text" name="system.acBonusAT" value="{{system.acBonusAT}}" data-dtype="Number" data-tooltip="{{localize "FADE.Mastery.acBonusATTitle"}}" {{#unless isGM}} readonly{{/unless}} />
+               <label for="system.acBonusAT">{{localize "FADE.Mastery.acBonusAT"}}</label>
             </li>
          </ul>
       </div>
@@ -55,48 +55,48 @@
    <div>
       <ul class="summary flexrow">
          <li class="flex3">
-            <input type='text' name="system.pDmgFormula" value='{{system.pDmgFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.pDmgFormula">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+            <input type="text" name="system.pDmgFormula" value="{{system.pDmgFormula}}" data-dtype="String" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.pDmgFormula">{{localize "FADE.Mastery.primary"}} {{localize "FADE.Weapon.damage.short"}}</label>
          </li>
          <li class="flex2">
-            <input type='text' name="system.pToHit" value='{{system.pToHit}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.pToHit">{{localize 'FADE.Mastery.primary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</label>
+            <input type="text" name="system.pToHit" value="{{system.pToHit}}" data-dtype="Number" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.pToHit">{{localize "FADE.Mastery.primary"}} {{localize "FADE.Weapon.mod.toHit.short"}}</label>
          </li>
          <li class="flex3">
-            <input type='text' name="system.sDmgFormula" value='{{system.sDmgFormula}}' data-dtype='String' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.sDmgFormula">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.damage.short'}}</label>
+            <input type="text" name="system.sDmgFormula" value="{{system.sDmgFormula}}" data-dtype="String" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.sDmgFormula">{{localize "FADE.Mastery.secondary"}} {{localize "FADE.Weapon.damage.short"}}</label>
          </li>
          <li class="flex2">
-            <input type='text' name="system.sToHit" value='{{system.sToHit}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.sToHit">{{localize 'FADE.Mastery.secondary'}} {{localize 'FADE.Weapon.mod.toHit.short'}}</label>
+            <input type="text" name="system.sToHit" value="{{system.sToHit}}" data-dtype="Number" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.sToHit">{{localize "FADE.Mastery.secondary"}} {{localize "FADE.Weapon.mod.toHit.short"}}</label>
          </li>
       </ul>
       <ul class="summary flexrow">
          <li class="flex3">
-            <input type='text' name="system.special" value='{{system.special}}' data-dtype='String' data-tooltip="{{level.special}}" {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.special">{{localize 'FADE.Mastery.specialEffects'}}</label>
+            <input type="text" name="system.special" value="{{system.special}}" data-dtype="String" data-tooltip="{{level.special}}" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.special">{{localize "FADE.Mastery.specialEffects"}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.range.short" value='{{system.range.short}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.range.short">{{localize 'FADE.Weapon.range.short'}}</label>
+            <input type="text" name="system.range.short" value="{{system.range.short}}" data-dtype="Number" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.range.short">{{localize "FADE.Weapon.range.short"}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.range.medium" value='{{system.range.medium}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.range.medium">{{localize 'FADE.Weapon.range.medium'}}</label>
+            <input type="text" name="system.range.medium" value="{{system.range.medium}}" data-dtype="Number" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.range.medium">{{localize "FADE.Weapon.range.medium"}}</label>
          </li>
          <li class="flex1">
-            <input type='text' name="system.range.long" value='{{system.range.long}}' data-dtype='Number' {{#unless isGM}} readonly{{/unless}} />
-            <label for="system.range.long">{{localize 'FADE.Weapon.range.long'}}</label>
+            <input type="text" name="system.range.long" value="{{system.range.long}}" data-dtype="Number" {{#unless isGM}} readonly{{/unless}} />
+            <label for="system.range.long">{{localize "FADE.Weapon.range.long"}}</label>
          </li>
       </ul>
       <ul class="summary flexrow">
          <li class="flex1">
-            <input type='text' name="system.trainingFails" value='{{system.trainingFails}}' data-dtype='Number' />
-            <label for="system.trainingFails" data-tooltip="{{localize 'FADE.Mastery.trainingFails.hint'}}">{{localize 'FADE.Mastery.trainingFails.name'}}</label>
+            <input type="text" name="system.trainingFails" value="{{system.trainingFails}}" data-dtype="Number" />
+            <label for="system.trainingFails" data-tooltip="{{localize "FADE.Mastery.trainingFails.hint"}}">{{localize "FADE.Mastery.trainingFails.name"}}</label>
          </li>
          <li class="flex1">
-            <input type='text' value='{{localize (concat "FADE.Mastery.levels." item.system.effectiveLevel)}}' data-dtype='String' readonly />
-            <label for="system.level">{{localize 'FADE.Actor.effectiveLevel'}}</label>
+            <input type="text" value="{{localize (concat "FADE.Mastery.levels." item.system.effectiveLevel)}}" data-dtype="String" readonly />
+            <label for="system.level">{{localize "FADE.Actor.effectiveLevel"}}</label>
          </li>
       </ul>
    </div>

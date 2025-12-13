@@ -1,5 +1,5 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { FDItem } from './FDItem.mjs';
+import { fadeFinder } from "../utils/finder.mjs";
+import { FDItem } from "./FDItem.mjs";
 
 export class ActorMasteryItem extends FDItem {
    /** @override */
@@ -8,13 +8,11 @@ export class ActorMasteryItem extends FDItem {
       this.system.effectiveLevel = this.system.level;
    }
 
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();      
    }
 
    /**
-    * @override
     * @param {any} changed
     * @param {any} options
     * @param {any} userId
@@ -62,17 +60,17 @@ export class ActorMasteryItem extends FDItem {
    }
 
    async getInlineDescription() {
-      let description = game.i18n.format('FADE.Mastery.summary', {
-         weaponType: this.system.weaponType ? game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.weaponType}.long`) : '--',
+      let description = game.i18n.format("FADE.Mastery.summary", {
+         weaponType: this.system.weaponType ? game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.weaponType}.long`) : "--",
          primaryType: game.i18n.localize(`FADE.Mastery.weaponTypes.${this.system.primaryType}.long`),
-         special: this.system.special ?? '--',
-         short: this.system.range.short ?? '--',
-         medium: this.system.range.medium ?? '--',
-         long: this.system.range.long ?? '--',
-         defense: this.system.acBonusType ? `Defense vs. ${this.system.acBonusType}: ${this.system.acBonus ?? '--'}/${this.system.acBonusAT ?? '--'}` : 'No defense bonus'
+         special: this.system.special ?? "--",
+         short: this.system.range.short ?? "--",
+         medium: this.system.range.medium ?? "--",
+         long: this.system.range.long ?? "--",
+         defense: this.system.acBonusType ? `Defense vs. ${this.system.acBonusType}: ${this.system.acBonus ?? "--"}/${this.system.acBonusAT ?? "--"}` : "No defense bonus"
       });
       if (description?.length <= 0) {
-         description = '--';
+         description = "--";
       }
       return description;
    }
