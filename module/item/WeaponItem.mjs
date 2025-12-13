@@ -1,22 +1,19 @@
-import { ChatFactory, CHAT_TYPE } from "/systems/fantastic-depths/module/chat/ChatFactory.mjs";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.mjs";
 import { RollAttackMixin } from "./mixins/RollAttackMixin.mjs";
 import { GearItem } from "./GearItem.mjs";
 
 export class WeaponItem extends RollAttackMixin(GearItem) {
    constructor(data, context) {
-      /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
    }
 
    get isWeaponItem() { return true }
 
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareEffects();
    }
 
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       this._prepareModText();
@@ -85,7 +82,8 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       } : null;
    }
 
-   async showAttackChatMessage({ attacker, ammoItem, dialogResp, digest, rollEval } = result) {
+   async showAttackChatMessage(result = {}) {
+      let { attacker, ammoItem, dialogResp, digest, rollEval } = result;
       const chatData = {
          resp: dialogResp,
          caller: this,

@@ -27,8 +27,8 @@ const DragDropMixin = (superclass) => class extends superclass {
    /**
     * Actions performed after any render of the Application.
     * Post-render steps are not awaited by the render process.
-    * @param {ApplicationRenderContext} context      Prepared context data
-    * @param {RenderOptions} options                 Provided render options
+    * @param {any} context      Prepared context data
+    * @param {any} options                 Provided render options
     * @protected
     */
    _onRender(context, options) {
@@ -60,7 +60,7 @@ const DragDropMixin = (superclass) => class extends superclass {
 
    /**
     * Callback actions which occur at the beginning of a drag start workflow.
-    * @param {DragEvent} event       The originating DragEvent
+    * @param {any} event       The originating DragEvent
     * @protected
     */
    _onDragStart(event) {
@@ -120,7 +120,6 @@ const DragDropMixin = (superclass) => class extends superclass {
    /**
     * Create drag-and-drop workflow handlers for this Application
     * @returns {DragDrop[]}     An array of DragDrop handlers
-    * @private
     */
    #createDragDropHandlers() {
       return this.options.dragDrop.map((d) => {
@@ -143,7 +142,7 @@ const DragDropMixin = (superclass) => class extends superclass {
     * Handle a dropped Active Effect on the Actor Sheet.
     * The default implementation creates an Active Effect embedded document on the Actor.
     * @param {DragEvent} event      The initiating drop event
-    * @param {ActiveEffect} effect  The dropped ActiveEffect document
+    * @param {any} effect  The dropped ActiveEffect document
     * @returns {Promise<void>}
     * @protected
     */
@@ -208,7 +207,7 @@ const DragDropMixin = (superclass) => class extends superclass {
     * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
     * @param {object[]|object} itemData      The item data requested for creation
     * @returns {Promise<Item[]>}
-    * @private
+    * @protected
     */
    async _onDropItemCreate(itemData) {
       itemData = itemData instanceof Array ? itemData : [itemData];
@@ -217,7 +216,7 @@ const DragDropMixin = (superclass) => class extends superclass {
 
    /**
     * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings.
-    * @param {DragEvent} event     The initiating drop event
+    * @param {any} event     The initiating drop event
     * @param {Item} item           The dropped Item document
     * @protected
     */

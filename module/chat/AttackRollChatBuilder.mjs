@@ -13,7 +13,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
    */
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest, options } = this.data;
-      const attacker = context.document ?? context;
+      const attacker = context.document ?? context; // This could be a token or actor
       const attackerName = attacker.token?.name ?? attacker.name;
       const targetTokens = Array.from(game.user.targets).map(i => i.document ?? i);
       const targetToken = targetTokens?.length > 0 ? targetTokens[0] : null;
@@ -76,8 +76,8 @@ export class AttackRollChatBuilder extends ChatBuilder {
       });
       await ChatMessage.create(chatMessageData);
       Hooks.call("fadeAttackRoll", { 
-         tokenUuid: context.uuid, 
-         actorUuid: context.actor.uuid, 
+         tokenUuid: attacker.actor ? attacker.uuid : null,
+         actorUuid: attacker.actor? attacker.actor.uuid : attacker.uuid, 
          itemUuid: weaponItem.uuid, 
          targets: targetTokens.map(i => i.uuid)
       });

@@ -25,7 +25,11 @@ export class FDCombatActor extends FDActorBase {
    async _preCreate(documents, operation, user) {
       const allowed = await super._preCreate(documents, operation, user);
       // Skip if the document is being created within a compendium
-      if (this.pack || this._id) { return allowed; }
+      if (this.pack || this._id) return allowed;
+
+      // Skip types handled elsewhere.
+      const allowedTypes = ["character", "monster"];
+      if (allowedTypes.includes(this.type) === false) return allowed;
 
       const fdPath = `systems/fantastic-depths/assets/img/actor`;
       const changeData = {};
@@ -66,7 +70,7 @@ export class FDCombatActor extends FDActorBase {
       return allowed;
    }
 
-    /** @override */
+   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
@@ -83,7 +87,7 @@ export class FDCombatActor extends FDActorBase {
     * Performs the requested saving throw roll on the actor.
     * @public
     * @param {any} type A string key of the saving throw type.
-    */
+    *                                                     */
    async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
@@ -114,22 +118,27 @@ export class FDCombatActor extends FDActorBase {
 
       if (dialogResp) {
          let rollMod = 0;
+
+         // Modifier from dialog         
          const manualMod = Number(dialogResp.mod) || 0;
          if (manualMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: dialogResp.mod }));
          }
-         let wisdomMod = 0;
-         if (dialogResp.action === "magic") {
-            wisdomMod = this.system.abilities?.wis?.mod ?? 0;
-            const abilityName = game.i18n.localize(`FADE.Actor.Abilities.wis.long`);
-            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: wisdomMod }));
+
+         // Ability score mod
+         const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+         let abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action);
+         if (abilityScoreMod !== 0) {
+            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
          }
+
+         // Mods from active effects
          let effectMod = this.system.mod.save[type] || 0;
          effectMod += this.system.mod.save.all || 0;
-         if (effectMod != 0) {            
+         if (effectMod != 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
          }
-         rollMod += manualMod + wisdomMod+ effectMod;
+         rollMod += manualMod + abilityScoreMod + effectMod;
          rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
          let rolled = await new Roll(rollData.formula, rollContext).evaluate();
@@ -140,6 +149,7 @@ export class FDCombatActor extends FDActorBase {
             roll: rolled,
             digest
          };
+
          const showResult = savingThrow._getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();
@@ -202,7 +212,7 @@ export class FDCombatActor extends FDActorBase {
     * The ammo item must be equipped for it to be recognized.
     * @public
     * @param {any} weapon
-    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
+    * @returns {any} The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
     */
    getAmmoItem(weapon) {
       let ammoItem = null;
@@ -214,7 +224,7 @@ export class FDCombatActor extends FDActorBase {
       } else if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
          ammoItem = weapon;
       } else {
-         const ammoItems = ["item", "ammo"];
+         const ammoItems = ["ammo"];
          // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
          ammoItem = this.items.find(item => ammoItems.includes(item.type) && item.system.equipped === true
             && item.system.ammoType == ammoType && item.system.quantity !== 0);
@@ -225,55 +235,51 @@ export class FDCombatActor extends FDActorBase {
 
    /**
     * Get an array of strings indicating which combat maneuvers this actor is capable of.
+    * @returns {string[]}
     */
    getAvailableActions() {
       // These options are always available.
-      const result = ["nothing", "moveOnly", "retreat", "shove", "guard", "magicItem", "specialAbility", "concentrate"];
-      let hasEquippedWeapon = false;
-      // Ready weapon
-      if (this.items.filter(item => item.type === "weapon" && item.system.equipped === false && item.system.quantity > 0)?.length > 0) {
-         result.push("readyWeapon");
-      }
+      const result = [
+         "nothing",
+         "attack",
+         "guard",
+         "withdrawal",
+         "retreat",
+         "moveOnly",
+         "unarmed",
+         "wrestle",
+         "shove",
+         "magicItem",
+         "specialAbility",
+         "concentrate"
+      ];
+
       // Ranged weapon actions
       let rangedWeapons = this.items.filter(item => item.type === "weapon"
          && item.system.canRanged === true && item.system.equipped === true
          && (item.system.quantity === null || item.system.quantity > 0));
-      if (rangedWeapons?.length > 0) {
-         if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
-            || (item.system.damageType === "breath" || item.system.natural === true))) {
-            result.push("fire");
-         } else {
-            result.push("throw");
-         }
-         hasEquippedWeapon = true;
+      if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
+         || (item.system.damageType === "breath" || item.system.natural === true))) {
+         result.push("fire");
+      } else {
+         result.push("throw");
       }
-      // Melee weapon actions
-      if (this.items.filter(item => item.type === "weapon"
-         && item.system.canMelee === true && item.system.equipped === true
-         && (item.system.quantity === null || item.system.quantity > 0))?.length > 0) {
-         result.push("attack");
-         result.push("withdrawal");
-         hasEquippedWeapon = true;
-      }
-      // Unarmed actions
-      if (hasEquippedWeapon === false) {
-         result.push("unarmed");
-         result.push("wrestle");
-      }
+
       // Spells
       if (this.items.filter(item => item.type === "spell"
          && (item.system.memorized === null || item.system.memorized > 0))?.length > 0) {
          result.push("spell");
       }
+
+      // Combat manuever special abilitites
       const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null && item.system.combatManeuver !== "null")
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
          const config = CONFIG.FADE.CombatManeuvers[ability];
-         if (config === undefined || (config.needWeapon ?? false) === false || (config.needWeapon === true && hasEquippedWeapon === true)) {
-            result.push(ability);
-         }
+         result.push(ability);
       }
-      return result;
+
+      return result.sort((a, b) => a.localeCompare(b));
    }
 
    /**
@@ -393,13 +399,37 @@ export class FDCombatActor extends FDActorBase {
       }
    }
 
-   #getSavingThrow(type) {
+   /**
+    * @public
+    * Add languages to actor, but only the ones that don't already exist.
+    * @param {String[]} languages An array of language names.
+    */
+   async setupLanguages(languages) {
+      const existing = this.system.languages.split(",").map(item => item.trim()).filter(Boolean);
+      const adding = languages.filter(language => existing.includes(language) === false);
+      if (adding?.length > 0) {
+         console.debug(`Adding ${adding.length} languages to ${this.name}`);
+         await this.update({ "system.languages": [...existing, ...adding].join(", ") });
+      }
+   }
+
+   setupMinAbilityScores(abilities) {
+      const updated = {};
+      for (let [key] of Object.entries(abilities)) {
+         if (this.system.abilities[key]?.min < abilities[key].min) {
+            updated[key] = { min: abilities[key].min };
+         }
+      }
+      return updated;
+   }
+
+   #getSavingThrow(saveType) {
       const result = this.items.find(item => item.type === "specialAbility"
          && item.system.category === "save"
-         && item.system.customSaveCode === type);
+         && item.system.customSaveCode === saveType);
       if (!result) {
-         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { type }));
+         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { saveType }));
       }
       return result;
    }
-}
+} 

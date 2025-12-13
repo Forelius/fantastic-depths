@@ -158,7 +158,7 @@
   font-family: "Barlow", sans-serif;
 }
 .application .window-content h4, .application .chat-message h4 {
-  margin: 6px 0 4px 0;
+  margin: 4px 0 4px 0;
   font-size: 16px;
   font-family: "Barlow", sans-serif;
 }
@@ -209,7 +209,7 @@ table.compact-table input {
   border-width: 2px;
   border-style: solid;
   border-radius: 4px;
-  padding: 6px;
+  padding: 3px;
 }
 
 .text-center {
@@ -1048,6 +1048,10 @@ table.compact-table input {
 .system-fantastic-depths .application.actor .window-content {
   overflow: auto;
 }
+.system-fantastic-depths .actor .warn {
+  color: #ff7040;
+  animation: 1s ease-in 2s infinite alternate notify;
+}
 .system-fantastic-depths .actor img {
   border: none;
 }
@@ -1774,5 +1778,3 @@ table.compact-table input {
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
 }
-
-/*# sourceMappingURL=fantastic-depths.css.map */

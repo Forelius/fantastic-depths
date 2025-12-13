@@ -1,75 +1,77 @@
 import { CodeMigrate } from "./sys/migration.mjs";
-import { fadeFinder } from './utils/finder.mjs';
+import { fadeFinder } from "./utils/finder.mjs";
 import { fadeSettings } from "./fadeSettings.mjs";
-import { ActorFactory } from './actor/ActorFactory.mjs';
-import { ItemFactory } from './item/ItemFactory.mjs';
-import { AddonIntegration } from './sys/addonIntegration.mjs'
-import { fadeRegistry } from './sys/registry/fadeRegistry.mjs'
-import { fadeCompendium } from './sys/fadeCompendium.mjs'
+import { ActorFactory } from "./actor/ActorFactory.mjs";
+import { ItemFactory } from "./item/ItemFactory.mjs";
+import { AddonIntegration } from "./sys/addonIntegration.mjs"
+import { fadeRegistry } from "./sys/registry/fadeRegistry.mjs"
+import { fadeCompendium } from "./sys/fadeCompendium.mjs"
 
-import { CharacterDataModel } from './actor/dataModel/CharacterDataModel.mjs';
-import { MonsterDataModel } from './actor/dataModel/MonsterDataModel.mjs';
-import { FDCombatActor } from './actor/FDCombatActor.mjs';
-import { CharacterSheet } from './sheets/actor/CharacterSheet.mjs';
-import { CharacterSheetBase } from './sheets/actor/CharacterSheetBase.mjs';
-import { MonsterSheet } from './sheets/actor/MonsterSheet.mjs';
+import { CharacterDataModel } from "./actor/dataModel/CharacterDataModel.mjs";
+import { MonsterDataModel } from "./actor/dataModel/MonsterDataModel.mjs";
+import { FDVehicleDM } from "./actor/dataModel/FDVehicleDM.mjs";
+import { FDCombatActor } from "./actor/FDCombatActor.mjs";
+import { CharacterSheet } from "./sheets/actor/CharacterSheet.mjs";
+import { CharacterSheetBase } from "./sheets/actor/CharacterSheetBase.mjs";
+import { MonsterSheet } from "./sheets/actor/MonsterSheet.mjs";
+import { FDVehicleSheet } from "./sheets/actor/FDVehicleSheet.mjs";
 
-import { ClassDefinitionDataModel } from './item/dataModel/ClassDefinitionDataModel.mjs';
+import { ClassDefinitionDataModel } from "./item/dataModel/ClassDefinitionDataModel.mjs";
 import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.mjs";
-import { ActorMasteryItemDM } from './item/dataModel/ActorMasteryItemDM.mjs';
-import { ActorClassDataModel } from './item/dataModel/ActorClassDataModel.mjs';
-import { GearItemDataModel } from './item/dataModel/GearItemDataModel.mjs';
-import { ConditionItemDataModel } from './item/dataModel/ConditionItemDataModel.mjs';
-import { ArmorItemDataModel } from './item/dataModel/ArmorItemDataModel.mjs';
-import { SkillItemDataModel } from './item/dataModel/SkillItemDataModel.mjs';
-import { LightItemDataModel } from './item/dataModel/LightItemDataModel.mjs';
-import { AmmoItemDataModel } from './item/dataModel/AmmoItemDataModel.mjs';
-import { SpellItemDataModel } from './item/dataModel/SpellItemDataModel.mjs';
-import { WeaponItemDataModel } from './item/dataModel/WeaponItemDataModel.mjs';
-import { SpecialAbilityDataModel } from './item/dataModel/SpecialAbilityDataModel.mjs';
-import { AncestryDefinitionDM } from './item/dataModel/AncestryDefinitionDM.mjs';
-import { GearItemSheet } from './sheets/item/GearItemSheet.mjs';
-import { TreasureItemSheet } from './sheets/item/TreasureItemSheet.mjs';
-import { ActorClassSheet } from './sheets/item/ActorClassSheet.mjs';
-import { ActorMasterySheet } from './sheets/item/ActorMasterySheet.mjs';
-import { ArmorItemSheet } from './sheets/item/ArmorItemSheet.mjs';
-import { ClassDefinitionItemSheet } from './sheets/item/ClassDefinitionItemSheet.mjs';
-import { MasteryDefinitionSheet } from './sheets/item/MasteryDefinitionSheet.mjs';
-import { SkillItemSheet } from './sheets/item/SkillItemSheet.mjs';
-import { SpecialAbilitySheet } from './sheets/item/SpecialAbilitySheet.mjs';
-import { SpellItemSheet } from './sheets/item/SpellItemSheet.mjs';
-import { WeaponItemSheet } from './sheets/item/WeaponItemSheet.mjs';
-import { ConditionItemSheet } from './sheets/item/ConditionItemSheet.mjs';
-import { AmmoItemSheet } from './sheets/item/AmmoItemSheet.mjs';
-import { AncestryDefinitionSheet } from './sheets/item/AncestryDefinitionSheet.mjs';
+import { ActorMasteryItemDM } from "./item/dataModel/ActorMasteryItemDM.mjs";
+import { ActorClassDataModel } from "./item/dataModel/ActorClassDataModel.mjs";
+import { GearItemDataModel } from "./item/dataModel/GearItemDataModel.mjs";
+import { ConditionItemDataModel } from "./item/dataModel/ConditionItemDataModel.mjs";
+import { ArmorItemDataModel } from "./item/dataModel/ArmorItemDataModel.mjs";
+import { SkillItemDataModel } from "./item/dataModel/SkillItemDataModel.mjs";
+import { LightItemDataModel } from "./item/dataModel/LightItemDataModel.mjs";
+import { AmmoItemDataModel } from "./item/dataModel/AmmoItemDataModel.mjs";
+import { SpellItemDataModel } from "./item/dataModel/SpellItemDataModel.mjs";
+import { WeaponItemDataModel } from "./item/dataModel/WeaponItemDataModel.mjs";
+import { SpecialAbilityDataModel } from "./item/dataModel/SpecialAbilityDataModel.mjs";
+import { AncestryDefinitionDM } from "./item/dataModel/AncestryDefinitionDM.mjs";
+import { GearItemSheet } from "./sheets/item/GearItemSheet.mjs";
+import { TreasureItemSheet } from "./sheets/item/TreasureItemSheet.mjs";
+import { ActorClassSheet } from "./sheets/item/ActorClassSheet.mjs";
+import { ActorMasterySheet } from "./sheets/item/ActorMasterySheet.mjs";
+import { ArmorItemSheet } from "./sheets/item/ArmorItemSheet.mjs";
+import { ClassDefinitionItemSheet } from "./sheets/item/ClassDefinitionItemSheet.mjs";
+import { MasteryDefinitionSheet } from "./sheets/item/MasteryDefinitionSheet.mjs";
+import { SkillItemSheet } from "./sheets/item/SkillItemSheet.mjs";
+import { SpecialAbilitySheet } from "./sheets/item/SpecialAbilitySheet.mjs";
+import { SpellItemSheet } from "./sheets/item/SpellItemSheet.mjs";
+import { WeaponItemSheet } from "./sheets/item/WeaponItemSheet.mjs";
+import { ConditionItemSheet } from "./sheets/item/ConditionItemSheet.mjs";
+import { AmmoItemSheet } from "./sheets/item/AmmoItemSheet.mjs";
+import { AncestryDefinitionSheet } from "./sheets/item/AncestryDefinitionSheet.mjs";
 
-import { TurnTrackerForm } from './apps/TurnTrackerForm.mjs';
-import { PartyTrackerForm } from './apps/PartyTrackerForm.mjs';
-import { PlayerCombatForm } from './apps/PlayerCombatForm.mjs';
-import { preloadHandlebarsTemplates } from './sys/templates.mjs';
-import { FADE } from './sys/config.mjs';
-import { fadeCombat } from './sys/combat/fadeCombat.mjs'
-import { fadeCombatant } from './sys/combat/fadeCombatant.mjs'
-import { MacroManager } from './sys/MacroManager.mjs';
-import { LightManager } from './sys/LightManager.mjs';
-import { fadeHandlebars } from './fadeHandlebars.mjs';
-import { fadeDialog } from './dialog/fadeDialog.mjs';
-import { DamageRollChatBuilder } from './chat/DamageRollChatBuilder.mjs';
-import { AttackRollChatBuilder } from './chat/AttackRollChatBuilder.mjs';
-import { ConditionItem } from './item/ConditionItem.mjs';
-import { DataMigrator } from './sys/migration.mjs';
-import { EffectManager } from './sys/EffectManager.mjs';
-import { ToastManager } from './sys/ToastManager.mjs';
-import { Collapser } from './utils/collapser.mjs';
-import { fadeChatMessage } from './sys/fadeChatMessage.mjs'
-import { SocketManager } from './sys/SocketManager.mjs'
-import { fadeEffect } from './sys/fadeEffect.mjs'
-import { fadeTreasure } from './utils/fadeTreasure.mjs'
+import { TurnTrackerForm } from "./apps/TurnTrackerForm.mjs";
+import { PartyTrackerForm } from "./apps/PartyTrackerForm.mjs";
+import { PlayerCombatForm } from "./apps/PlayerCombatForm.mjs";
+import { preloadHandlebarsTemplates } from "./sys/templates.mjs";
+import { FADE } from "./sys/config.mjs";
+import { fadeCombat } from "./sys/combat/fadeCombat.mjs"
+import { fadeCombatant } from "./sys/combat/fadeCombatant.mjs"
+import { MacroManager } from "./sys/MacroManager.mjs";
+import { LightManager } from "./sys/LightManager.mjs";
+import { fadeHandlebars } from "./fadeHandlebars.mjs";
+import { fadeDialog } from "./dialog/fadeDialog.mjs";
+import { DamageRollChatBuilder } from "./chat/DamageRollChatBuilder.mjs";
+import { AttackRollChatBuilder } from "./chat/AttackRollChatBuilder.mjs";
+import { ConditionItem } from "./item/ConditionItem.mjs";
+import { DataMigrator } from "./sys/migration.mjs";
+import { EffectManager } from "./sys/EffectManager.mjs";
+import { ToastManager } from "./sys/ToastManager.mjs";
+import { Collapser } from "./utils/collapser.mjs";
+import { fadeChatMessage } from "./sys/fadeChatMessage.mjs"
+import { SocketManager } from "./sys/SocketManager.mjs"
+import { fadeEffect } from "./sys/fadeEffect.mjs"
+import { fadeTreasure } from "./utils/fadeTreasure.mjs"
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
-Hooks.once('init', async function () {
+Hooks.once("init", async function () {
    // Add utility classes to the global game object so that they're more easily
    // accessible in global contexts.
    game.fade = {
@@ -99,6 +101,7 @@ Hooks.once('init', async function () {
    CONFIG.Actor.dataModels = {
       character: CharacterDataModel,
       monster: MonsterDataModel,
+      vehicle: FDVehicleDM
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
@@ -126,6 +129,13 @@ Hooks.once('init', async function () {
 
    registerSheets();
 
+   // Register System Settings
+   const settings = new fadeSettings();
+   settings.RegisterSystemSettings();
+   // Hook into the rendering of the settings form
+   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
+   game.fade.registry.registerDefaultSystems();
+
    await handleAsyncInit();
 
    Hooks.call("afterFadeInit", game.fade.registry);
@@ -140,110 +150,107 @@ function registerSheets() {
 
    // TODO: Remove after v12 support.
    const gActorSheet = foundry?.appv1?.sheets?.ActorSheet ? foundry.appv1.sheets.ActorSheet : ActorSheet;
-   gActors.unregisterSheet('core', gActorSheet);
-   gActors.registerSheet('fantastic-depths', CharacterSheet, {
-      label: 'FADE.SheetLabel.Character',
-      types: ['character'],
+   gActors.unregisterSheet("core", gActorSheet);
+   gActors.registerSheet("fantastic-depths", CharacterSheet, {
+      label: "FADE.SheetLabel.Character",
+      types: ["character"],
       makeDefault: true
    });
-   gActors.registerSheet('fantastic-depths', CharacterSheetBase, {
-      label: 'FADE.SheetLabel.CharacterSheetBase',
-      types: ['character'],
+   gActors.registerSheet("fantastic-depths", CharacterSheetBase, {
+      label: "FADE.SheetLabel.CharacterSheetBase",
+      types: ["character"],
       makeDefault: false
    });
-   gActors.registerSheet('fantastic-depths', MonsterSheet, {
-      label: 'FADE.SheetLabel.Monster',
-      types: ['monster'],
+   gActors.registerSheet("fantastic-depths", MonsterSheet, {
+      label: "FADE.SheetLabel.Monster",
+      types: ["monster"],
+      makeDefault: true
+   });
+   gActors.registerSheet("fantastic-depths", FDVehicleSheet, {
+      label: "FADE.SheetLabel.Vehicle",
+      types: ["vehicle"],
       makeDefault: true
    });
    // TODO: Remove after v12 support.
    const gItemSheet = foundry?.appv1?.sheets?.ItemSheet ? foundry.appv1.sheets.ItemSheet : ItemSheet;
-   gItems.unregisterSheet('core', gItemSheet);
-   gItems.registerSheet('fantastic-depths', GearItemSheet, {
-      label: 'FADE.SheetLabel.Item',
+   gItems.unregisterSheet("core", gItemSheet);
+   gItems.registerSheet("fantastic-depths", GearItemSheet, {
+      label: "FADE.SheetLabel.Item",
       makeDefault: true,
-      types: ['item', 'light']
+      types: ["item", "light"]
    });
-   gItems.registerSheet('fantastic-depths', TreasureItemSheet, {
-      label: 'FADE.SheetLabel.TreasureItem',
+   gItems.registerSheet("fantastic-depths", TreasureItemSheet, {
+      label: "FADE.SheetLabel.TreasureItem",
       makeDefault: true,
-      types: ['treasure']
+      types: ["treasure"]
    });
-   gItems.registerSheet('fantastic-depths', ActorClassSheet, {
-      label: 'FADE.SheetLabel.ActorClassItem',
-      types: ['actorClass'],
+   gItems.registerSheet("fantastic-depths", ActorClassSheet, {
+      label: "FADE.SheetLabel.ActorClassItem",
+      types: ["actorClass"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', ActorMasterySheet, {
-      label: 'FADE.SheetLabel.ActorMasteryItem',
-      types: ['mastery'],
+   gItems.registerSheet("fantastic-depths", ActorMasterySheet, {
+      label: "FADE.SheetLabel.ActorMasteryItem",
+      types: ["mastery"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', ArmorItemSheet, {
-      label: 'FADE.SheetLabel.ArmorItem',
-      types: ['armor'],
+   gItems.registerSheet("fantastic-depths", ArmorItemSheet, {
+      label: "FADE.SheetLabel.ArmorItem",
+      types: ["armor"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', ClassDefinitionItemSheet, {
-      label: 'FADE.SheetLabel.ClassDefinitionItem',
-      types: ['class'],
+   gItems.registerSheet("fantastic-depths", ClassDefinitionItemSheet, {
+      label: "FADE.SheetLabel.ClassDefinitionItem",
+      types: ["class"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', MasteryDefinitionSheet, {
-      label: 'FADE.SheetLabel.MasteryDefinitionItem',
-      types: ['weaponMastery'],
+   gItems.registerSheet("fantastic-depths", MasteryDefinitionSheet, {
+      label: "FADE.SheetLabel.MasteryDefinitionItem",
+      types: ["weaponMastery"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', SkillItemSheet, {
-      label: 'FADE.SheetLabel.SkillItem',
-      types: ['skill'],
+   gItems.registerSheet("fantastic-depths", SkillItemSheet, {
+      label: "FADE.SheetLabel.SkillItem",
+      types: ["skill"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', SpecialAbilitySheet, {
-      label: 'FADE.SheetLabel.SpecialAbilityItem',
-      types: ['specialAbility'],
+   gItems.registerSheet("fantastic-depths", SpecialAbilitySheet, {
+      label: "FADE.SheetLabel.SpecialAbilityItem",
+      types: ["specialAbility"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', SpellItemSheet, {
-      label: 'FADE.SheetLabel.SpellItem',
-      types: ['spell'],
+   gItems.registerSheet("fantastic-depths", SpellItemSheet, {
+      label: "FADE.SheetLabel.SpellItem",
+      types: ["spell"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', WeaponItemSheet, {
-      label: 'FADE.SheetLabel.WeaponItem',
-      types: ['weapon'],
+   gItems.registerSheet("fantastic-depths", WeaponItemSheet, {
+      label: "FADE.SheetLabel.WeaponItem",
+      types: ["weapon"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', ConditionItemSheet, {
-      label: 'FADE.SheetLabel.ConditionItem',
-      types: ['condition'],
+   gItems.registerSheet("fantastic-depths", ConditionItemSheet, {
+      label: "FADE.SheetLabel.ConditionItem",
+      types: ["condition"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', AmmoItemSheet, {
-      label: 'FADE.SheetLabel.AmmoItem',
-      types: ['ammo'],
+   gItems.registerSheet("fantastic-depths", AmmoItemSheet, {
+      label: "FADE.SheetLabel.AmmoItem",
+      types: ["ammo"],
       makeDefault: true
    });
-   gItems.registerSheet('fantastic-depths', AncestryDefinitionSheet, {
-      label: 'FADE.SheetLabel.AncestryDefinitionItem',
-      types: ['species'],
+   gItems.registerSheet("fantastic-depths", AncestryDefinitionSheet, {
+      label: "FADE.SheetLabel.AncestryDefinitionItem",
+      types: ["species"],
       makeDefault: true
    });
 }
 
 async function handleAsyncInit() {
-   // Register System Settings
-   const settings = new fadeSettings();
-   settings.RegisterSystemSettings();
-   // Hook into the rendering of the settings form
-   Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
-   const fxMgr = new EffectManager();
-   await fxMgr.OnGameInit();
-
+   //const fxMgr = new EffectManager();
+   //await fxMgr.OnGameInit();
    // Preload Handlebars templates.
    await preloadHandlebarsTemplates();
-
-   await game.fade.registry.registerDefaultSystems();
 }
 
 Hooks.once("setup", () => {
@@ -255,14 +262,14 @@ Hooks.once("setup", () => {
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
-Hooks.once('ready', async () => {
+Hooks.once("ready", async () => {
    Hooks.call("beforeFadeReady", game.fadeRegistry);
 
    const migrator = new DataMigrator();
    await migrator.migrate();
 
    // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-   Hooks.on('hotbarDrop', (bar, data, slot) => {
+   Hooks.on("hotbarDrop", (bar, data, slot) => {
       MacroManager.createItemMacro(data, slot);
       // Returning false to stop the rest of hotbarDrop handling.
       return false;
@@ -271,13 +278,13 @@ Hooks.once('ready', async () => {
    LightManager.initialize();
 
    // inline-roll handler
-   $(document).on('click', '.damage-roll,.heal-roll', DamageRollChatBuilder.clickDamageRoll);
-   $(document).on('click', '.apply-damage, .apply-heal', DamageRollChatBuilder.clickApplyDamage);
-   $(document).on('click', '.apply-condition', async (event) => await ConditionItem.clickApplyCondition(event));
-   $(document).on('click', '.remove-condition', async (event) => await ConditionItem.clickRemoveCondition(event));
-   $(document).on('click', '.collapser', Collapser.toggleCollapsibleContent);
-   $(document).on('click', '.saving-roll', FDCombatActor.handleSavingThrowRequest);
-   $(document).on('click', '.action-roll, .spell-cast, .attack-roll', FDCombatActor.handleActionRoll);
+   $(document).on("click", ".damage-roll,.heal-roll", DamageRollChatBuilder.clickDamageRoll);
+   $(document).on("click", ".apply-damage, .apply-heal", DamageRollChatBuilder.clickApplyDamage);
+   $(document).on("click", ".apply-condition", async (event) => await ConditionItem.clickApplyCondition(event));
+   $(document).on("click", ".remove-condition", async (event) => await ConditionItem.clickRemoveCondition(event));
+   $(document).on("click", ".collapser", Collapser.toggleCollapsibleContent);
+   $(document).on("click", ".saving-roll", FDCombatActor.handleSavingThrowRequest);
+   $(document).on("click", ".action-roll, .spell-cast, .attack-roll", FDCombatActor.handleActionRoll);
 
    const fxMgr = new EffectManager();
    await fxMgr.OnGameReady();
@@ -290,7 +297,7 @@ Hooks.once('ready', async () => {
          game.fade.toastManager = new ToastManager();
          game.socket.on(`system.${game.system.id}`, (data) => {
             //console.debug("onSocketReceived", data);
-            if (data.action === 'showToast') {
+            if (data.action === "showToast") {
                // Call the public method to create the toast
                game.fade.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
             } else {
@@ -308,17 +315,17 @@ Hooks.once('ready', async () => {
 
    if (game.user.isGM === true) {
       /* Hook for time advancement. */
-      Hooks.on('updateWorldTime', async (worldTime, dt, options, userId) => {
+      Hooks.on("updateWorldTime", async (worldTime, dt, options, userId) => {
          if (game.user.isGM === true) {
-         await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
-         //console.debug("updateWorldTime", worldTime, dt, options, userId);
-         const placeables = canvas?.tokens.placeables;
-         for (let placeable of placeables) {
-            const token = placeable.document;
-            if (token.actor) {  // Only process tokens with an actor
-               token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+            await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
+            //console.debug("updateWorldTime", worldTime, dt, options, userId);
+            const placeables = canvas?.tokens.placeables;
+            for (let placeable of placeables) {
+               const token = placeable.document;
+               if (token.actor) {  // Only process tokens with an actor
+                  token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
+               }
             }
-         }
          }
       });
       /* -------------------------------------------- */

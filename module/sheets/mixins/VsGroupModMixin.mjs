@@ -1,4 +1,4 @@
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { CodeMigrate } from "../../sys/migration.mjs";
 
 /**
  * A mixin for adding VS Group modifier support to an ApplicationV2 class.
@@ -113,7 +113,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
 
    /**
     * Handle deleting a VS Group modifier
-    * @param {Event} event The originating click event
+    * @param {any} event The originating click event
     * @protected
     */
    static async _clickDeleteVsGroup(event) {

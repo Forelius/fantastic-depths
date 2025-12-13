@@ -88,7 +88,6 @@ export class SpecialAbilityChat extends ChatBuilder {
 
    /**
     * Gets the results of the roll.
-    * @private
     * @param {any} specAbility A reference to the special ability's system data.
     * @param {any} roll The rendered roll.
     * @returns A result object. Object contains one members: message, target.

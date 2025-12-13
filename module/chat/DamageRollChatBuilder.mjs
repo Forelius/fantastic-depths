@@ -15,7 +15,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const rollContent = await this.getRollContent(roll, mdata);
 
       // Get the actor and user names
-      const instigatorName = context.name; // Actor name (e.g., character name)
+      const damagerName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
@@ -24,7 +24,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const renderData = {
          rollContent,
          mdata,
-         instigatorName,
+         damagerName,
          userName,
          resultString: options.resultString,
          damage: options.damage,
@@ -76,12 +76,13 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
       const targetToken = targetuuid ? await fromUuid(targetuuid) : undefined;
       const damagerItem = await fromUuid(weaponuuid);
-      const owner = owneruuid ? await fromUuid(owneruuid) : undefined;
-      const instigator = owner || damagerItem.actor?.currentActiveToken;
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-         return result;
-      }
+      const damager = owneruuid ? await fromUuid(owneruuid) : undefined;
+      const damagerName = damager?.name;
+      const damagerToken = damager.actor ? damager : damagerItem.actor?.currentActiveToken;
+      //if (!damagerToken) {
+      //   ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
+      //   return result;
+      //}
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
@@ -118,7 +119,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
             const damage = Math.max(roll.total, 0);
             const attackName = damagerItem.knownName;
             const descData = {
-               attacker: instigator.name,
+               attacker: damagerName,
                weapon: attackName,
                damage
             };
@@ -126,7 +127,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
             dataset.desc = dataset.desc ? dataset.desc : resultString;
 
             const chatData = {
-               context: instigator,
+               context: damager,
                mdata: dataset,
                roll,
                digest: damageRoll.digest
@@ -140,8 +141,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
             builder.createChatMessage();
 
             Hooks.call("fadeDamageRoll", { 
-               tokenUuid: instigator.uuid, 
-               actorUuid: instigator.actor.uuid, 
+               tokenUuid: damagerToken?.uuid, 
+               actorUuid: damager.actor?.uuid ?? damager.uuid, 
                itemUuid: weaponuuid, 
                target: targetToken?.uuid
             });

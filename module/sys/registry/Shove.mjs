@@ -76,7 +76,7 @@ export class Shove {
          attbonus: 0,
          defsize: defender.actor.system.details.size,
          defhd: parseInt(defender.actor.system.hp.hd.match(/^\d+/)?.[0] || 0),
-         defbonus: defender.actor.system.abilities?.str.mod || 0,
+         defbonus: defender.actor.system.abilities?.str?.mod || 0,
          sizes: CONFIG.FADE.ActorSizes
             .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`) + ` (< ${size.maxFeet}')`, value: size.id } })
             .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {})

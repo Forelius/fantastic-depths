@@ -1,6 +1,6 @@
-import { DialogFactory } from '../../dialog/DialogFactory.mjs';
-import { SocketManager } from '../SocketManager.mjs'
-import { CodeMigrate } from "/systems/fantastic-depths/module/sys/migration.mjs";
+import { DialogFactory } from "../../dialog/DialogFactory.mjs";
+import { SocketManager } from "../SocketManager.mjs"
+import { CodeMigrate } from "../migration.mjs";
 
 class BaseInitiative {
    constructor() {
@@ -20,6 +20,8 @@ class BaseInitiative {
 
       return combat.updateStateTracking(turns);
    }
+
+   sortCombatant(a, b) { throw new Error("Method not implemented."); }
 
    /**
     * Add custom elements to the combat tracker UI.
@@ -50,7 +52,6 @@ class BaseInitiative {
 
    /**
     * Adds the combat manuever declaration control to the combat tracker.
-    * @param {any} combat
     * @param {any} combatantElement
     * @param {any} combatant
     */
@@ -88,7 +89,7 @@ export class IndivInit extends BaseInitiative {
    * @param {string|null} [options.formula] A non-default initiative formula to roll. Otherwise, the system default is used.
    * @param {boolean} [options.updateTurn=true] Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
    * @param {object} [options.messageOptions={}] Additional options with which to customize created Chat Messages
-   * @returns {Promise<Combat>} A promise which resolves to the updated Combat document once updates are complete.
+   * @returns {Promise<any>} A promise which resolves to the updated Combat document once updates are complete.
    */
    async rollInitiative(combat, ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
       const combatants = combat.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
@@ -116,8 +117,8 @@ export class IndivInit extends BaseInitiative {
          }
 
          if (result === 0 && this.initiativeMode !== "simpleIndividual") {
-            const aWeapon = aActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
-            const bWeapon = bActor.items?.find(item => item.type === 'weapon' && item.system.equipped);
+            const aWeapon = aActor.items?.find(item => item.type === "weapon" && item.system.equipped);
+            const bWeapon = bActor.items?.find(item => item.type === "weapon" && item.system.equipped);
             const aSlowEquipped = aWeapon?.system.isSlow === true;
             const bSlowEquipped = bWeapon?.system.isSlow === true;
             // Compare slowEquipped, true comes after false
@@ -131,19 +132,10 @@ export class IndivInit extends BaseInitiative {
             result = b.initiative - a.initiative;
          }
 
-         // Compare dexterity, descending order; treat null/undefined as last
-         const aDex = aActor.system.abilities?.dex.total;
-         const bDex = bActor.system.abilities?.dex.total;
          if (result === 0) {
-            if (!aDex) {
-               if (bDex) {
-                  result = 1;
-               }
-            } else if (!bDex) {
-               result = -1;
-            } else if (aDex !== bDex) {
-               result = bDex - aDex;
-            }
+            // Get ability score initiative tie-breaker. Example: Highest dexterity goes first.
+            const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+            result = abilityScoreSys.sortForInitiative(aActor, bActor);
          }
       }
 
@@ -157,11 +149,12 @@ export class IndivInit extends BaseInitiative {
    async #doInitiativeRoll(combat, combatants) {
       // Array to accumulate roll results for the digest message
       let rollResults = [];
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
 
       for (let combatant of combatants) {
          const updates = [];
          const rollData = combatant.actor.getRollData();
-         const mod = this.#getInitiativeMod(combatant.actor); // Get the initiative modifier
+         const mod = abilityScoreSys.getInitiativeMod(combatant.actor); // Get the initiative modifier
          rollData.mod = mod;
 
          // Perform the roll using the initiative formula
@@ -172,7 +165,7 @@ export class IndivInit extends BaseInitiative {
          updates.push({ _id: combatant.id, initiative: rolled.total });
 
          // Accumulate the roll result for the digest message, showing mod only if it's not 0
-         const modText = mod !== 0 ? `(mod ${mod > 0 ? '+' : ''}${mod})` : '';
+         const modText = mod !== 0 ? `(mod ${mod > 0 ? "+" : ""}${mod})` : "";
          rollResults.push({
             message: game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: combatant.name, roll: rolled.total, mod: modText }),
             updates
@@ -191,15 +184,6 @@ export class IndivInit extends BaseInitiative {
          combat._activateCombatant(0);
       }
    }
-
-   #getInitiativeMod(actor) {
-      let result = 0;
-      result += actor.system?.mod.initiative || 0;
-      if (actor.type !== 'monster') {
-         result += actor.system?.abilities?.dex?.mod || 0;
-      }
-      return result;
-   }
 }
 
 export class GroupInit extends BaseInitiative {
@@ -213,16 +197,15 @@ export class GroupInit extends BaseInitiative {
    /**
    * Roll initiative for one or multiple Combatants within the Combat document
    * @override
-   * @param {string|string[]} ids     A Combatant id or Array of ids for which to roll
-   * @param {object} [options={}]     Additional options which modify how initiative rolls are created or presented.
-   * @param {string|null} [options.formula]         A non-default initiative formula to roll. Otherwise, the system
-   *                                                default is used.
-   * @param {boolean} [options.updateTurn=true]     Update the Combat turn after adding new initiative scores to
-   *                                                keep the turn on the same Combatant.
-   * @param {object} [options.messageOptions={}]    Additional options with which to customize created Chat Messages
-   * @returns {Promise<Combat>}       A promise which resolves to the updated Combat document once updates are complete.
+   * @param {string|string[]} ids A Combatant id or Array of ids for which to roll
+   * @param {any} options Additional options which modify how initiative rolls are created or presented.
+   * options.formula: A non-default initiative formula to roll. Otherwise, the system default is used.
+   * options.updateTurn: Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
+   * options.messageOptions: Additional options with which to customize created Chat Messages.
+   * @returns {Promise<any>} A promise which resolves to the updated Combat document once updates are complete.
     */
-   async rollInitiative(combat, ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+   async rollInitiative(combat, ids, options = {}) {
+      const { formula = null, updateTurn = true, messageOptions = {} } = options;
       // Get all combatants and group them by disposition
       let groups = messageOptions?.group ? [messageOptions?.group] : [];
       if (groups.length === 0 && ids.length > 0) {
@@ -236,10 +219,10 @@ export class GroupInit extends BaseInitiative {
       } else {
          let bRolling = true;
          // If friendly rolling, declared actions enabled...
-         if (groups.includes('friendly') && this.declaredActions === true) {
+         if (groups.includes("friendly") && this.declaredActions === true) {
             // combatant declared action is 'nothing'...
             const friendly = this.getCombatantsForDisposition(combat, CONST.TOKEN_DISPOSITIONS.FRIENDLY);
-            if (this.hasDeclaredAction(friendly, 'nothing') === true) {
+            if (this.hasDeclaredAction(friendly, "nothing") === true) {
                bRolling = await this.promptUserRoll();
             }
          }
@@ -288,11 +271,10 @@ export class GroupInit extends BaseInitiative {
          result = b.initiative - a.initiative;
       }
 
-      // Compare dexterity, descending order; treat null/undefined as last
-      const aDex = aActor.system.abilities?.dex.total ?? 0;
-      const bDex = bActor.system.abilities?.dex.total ?? 0;
       if (result === 0) {
-         result = bDex - aDex;
+         // Get ability score initiative tie-breaker. Example: Highest dexterity goes first.
+         const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+         result = abilityScoreSys.sortForInitiative(aActor, bActor);
       }
 
       return result;
@@ -310,19 +292,19 @@ export class GroupInit extends BaseInitiative {
       this.groups = this.groupCombatants(combatants);
 
       // Friendly group (uses modifiers)
-      if ((group === null || group === 'friendly') && this.groups.friendly.length > 0) {
+      if ((group === null || group === "friendly") && this.groups.friendly.length > 0) {
          const rollResult = await this.rollForGroup(this.groups.friendly, "Friendlies");
          if (rollResult) rollResults.push(rollResult);
       }
 
       // Neutral group (uses modifiers)
-      if ((group === null || group === 'neutral') && this.groups.neutral.length > 0) {
+      if ((group === null || group === "neutral") && this.groups.neutral.length > 0) {
          const rollResult = await this.rollForGroup(this.groups.neutral, "Neutrals");
          if (rollResult) rollResults.push(rollResult);
       }
 
       // Hostile group (monsters may not use modifiers)
-      if ((group === null || group === 'hostile') && this.groups.hostile.length > 0) {
+      if ((group === null || group === "hostile") && this.groups.hostile.length > 0) {
          const rollResult = await this.rollForGroup(this.groups.hostile, "Hostiles");
          if (rollResult) rollResults.push(rollResult);
       }
@@ -401,7 +383,7 @@ export class GroupInit extends BaseInitiative {
 
       // Return the roll result for the digest message, including the used modifier
       if (group.length > 0) {
-         const modText = usedMod !== 0 ? `(${usedMod > 0 ? '+' : ''}${usedMod})` : '';
+         const modText = usedMod !== 0 ? `(${usedMod > 0 ? "+" : ""}${usedMod})` : "";
          result = {
             message: game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: groupName, roll: rolled.total, mod: modText }),
             updates
@@ -419,7 +401,7 @@ export class GroupInit extends BaseInitiative {
       let result = false;
       const dialogResp = await DialogFactory({
          dialog: "yesno",
-         content: game.i18n.localize('FADE.dialog.confirmInitiativeRoll'),
+         content: game.i18n.localize("FADE.dialog.confirmInitiativeRoll"),
       });
       if (dialogResp?.resp?.rolling === true && dialogResp?.resp?.result === true) {
          result = true;
@@ -449,7 +431,6 @@ export class AltGroupInit extends GroupInit {
          swiftTurns.sort((a, b) => this.sortCombatant(a, b));
          swiftTurns.forEach(i => i.isSwifterPhase = i.initiative != null);
       }
-      //swiftTurns.forEach((c, i) => { if (c.flags.ctIndices !== undefined && !c.flags.ctIndices[0]) c.flags.ctIndices[0] = i });
 
       this.phaseIndex = 1;
       const turns = combat.combatants.contents.filter((combatant) => combatant.initiative && combatant.actor && combatant.token && !combatant.isSwifterAction);
@@ -457,7 +438,6 @@ export class AltGroupInit extends GroupInit {
          this.phaseOrder = Object.keys(this.phaseOrders.slower);
          turns.sort((a, b) => this.sortCombatant(a, b));
       }
-      //turns.forEach((c, i) => { if (c.flags.ctIndices !== undefined && !c.flags.ctIndices[1]) c.flags.ctIndices[1] = i + swiftTurns.length });
 
       return combat.updateStateTracking([...swiftTurns, ...turns]);
    }
@@ -475,12 +455,6 @@ export class AltGroupInit extends GroupInit {
       const bActor = b.actor;
       const aPhase = a.declaredActionPhase;
       const bPhase = b.declaredActionPhase;
-
-      //if (a.flags.ctIndices?.[this.phaseIndex] != null && b.flags.ctIndices?.[this.phaseIndex] != null
-      //    && a.flags.ctIndices[this.phaseIndex] !== b.flags.ctIndices[this.phaseIndex]) {
-      //    result = a.flags.ctIndices[this.phaseIndex] - b.flags.ctIndices[this.phaseIndex];
-      //    console.debug(`${a.token.name}: ${a.flags.ctIndices[this.phaseIndex]}`);
-      //}
 
       // Use combat phases order
       if (a.initiative !== null && b.initiative !== null) {
@@ -502,11 +476,10 @@ export class AltGroupInit extends GroupInit {
          result = b.initiative - a.initiative;
       }
 
-      // Compare dexterity, descending order; treat null/undefined as last
-      const aDex = aActor.system.abilities?.dex.total ?? 0;
-      const bDex = bActor.system.abilities?.dex.total ?? 0;
       if (result === 0) {
-         result = bDex - aDex;
+         // Get ability score initiative tie-breaker. Example: Highest dexterity goes first.
+         const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+         result = abilityScoreSys.sortForInitiative(aActor, bActor);
       }
 
       return result;
@@ -554,7 +527,6 @@ export class AltGroupInit extends GroupInit {
 
    /**
     * Adds the combat manuever declaration control to the combat tracker.
-    * @param {any} combat
     * @param {any} combatantElement
     * @param {any} combatant
     */
@@ -576,7 +548,6 @@ export class AltGroupInit extends GroupInit {
 
    /**
     * Adds the combat manuever declaration control to the combat tracker.
-    * @param {any} combat
     * @param {any} combatantElement
     * @param {any} combatant
     */

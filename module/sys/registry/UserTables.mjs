@@ -2,18 +2,24 @@ import { UserTablesConfig } from "/systems/fantastic-depths/module/apps/UserTabl
 
 export class UserTables {
    static TABLE_TYPES = ["bonus", "keyvalue", "keyjson", "jsonarray"];
+   #userTables;
 
    constructor() {
-      this.userTables = {};
+      this.#userTables = {};
       this.#loadTables();
       this.#tryAddDefaultTables();
    }
 
    getTables() {
-      return foundry.utils.deepClone(this.userTables);
+      return foundry.utils.deepClone(this.#userTables);
    }
 
-   setTable({ id, name, type, table } = data) {
+   setTables(tables) {
+      this.#userTables = tables;
+      game.settings.set(game.system.id, 'userTables', this.#userTables);
+   }
+
+   setTable({ id, name, type, table }) {
       if (Array.isArray(table) === false) {
          console.error(`addTable ${name} table is not an array.`);
          return;
@@ -49,20 +55,20 @@ export class UserTables {
          }
       }
 
-      this.userTables[id] = { id, name, type, table };
-      game.settings.set(game.system.id, 'userTables', this.userTables);
+      this.#userTables[id] = { id, name, type, table };
+      game.settings.set(game.system.id, 'userTables', this.#userTables);
    }
 
    removeTable(id) {
-      if (this.userTables[id]) {
-         delete this.userTables[id];
-         game.settings.set(game.system.id, 'userTables', this.userTables);
+      if (this.#userTables[id]) {
+         delete this.#userTables[id];
+         game.settings.set(game.system.id, 'userTables', this.#userTables);
          console.log(`Deleted user table ${id}.`);
       }
    }
 
    getTable(id) {
-      return this.userTables[id];
+      return this.#userTables[id];
    }
 
    /**
@@ -134,7 +140,7 @@ export class UserTables {
 
    /**
     * Get the array of json objects from a jsonarray type table.
-    * @param {any} id
+    * @param {any} id The id of the table.
     */
    getJsonArray(id) {
       let result = null;
@@ -161,8 +167,8 @@ export class UserTables {
 
    #tryAddDefaultTables() {
       // Ranged Modifiers
-      if (this.userTables["ranged-modifiers"] === undefined) {
-         this.userTables["ranged-modifiers"] = {
+      if (this.#userTables["ranged-modifiers"] === undefined) {
+         this.#userTables["ranged-modifiers"] = {
             id: "ranged-modifiers",
             name: "Ranged Modifiers",
             type: "keyvalue",
@@ -174,8 +180,8 @@ export class UserTables {
          };
       }
       // Ability Score Modifiers - Simple
-      if (this.userTables["ability-mods-simple"] === undefined) {
-         this.userTables["ability-mods-simple"] = {
+      if (this.#userTables["ability-mods-simple"] === undefined) {
+         this.#userTables["ability-mods-simple"] = {
             id: "ability-mods-simple",
             name: "Ability Modifiers - Simple",
             type: "jsonarray",
@@ -187,8 +193,8 @@ export class UserTables {
          };
       }
       // Ability Score Modifiers - Heroic
-      if (this.userTables["ability-mods-heroic"] === undefined) {
-         this.userTables["ability-mods-heroic"] = {
+      if (this.#userTables["ability-mods-heroic"] === undefined) {
+         this.#userTables["ability-mods-heroic"] = {
             id: "ability-mods-heroic",
             name: "Ability Modifiers - Heroic",
             type: "jsonarray",
@@ -222,8 +228,8 @@ export class UserTables {
             ]
          };
       }
-      if (this.userTables["difficulty-levels"] === undefined) {
-         this.userTables["difficulty-levels"] = {
+      if (this.#userTables["difficulty-levels"] === undefined) {
+         this.#userTables["difficulty-levels"] = {
             id: "difficulty-levels",
             name: "Difficulty Levels",
             type: "keyvalue",
@@ -236,8 +242,8 @@ export class UserTables {
             ]
          };
       }
-      if (this.userTables["tiered-results"] === undefined) {
-         this.userTables["tiered-results"] = {
+      if (this.#userTables["tiered-results"] === undefined) {
+         this.#userTables["tiered-results"] = {
             id: "tiered-results",
             name: "Tiered Results",
             type: "keyvalue",
@@ -250,10 +256,71 @@ export class UserTables {
             ]
          };
       }
+      if (this.#userTables["ability-mods-original"] === undefined) {
+         this.#userTables["ability-mods-original"] = {
+            id: "ability-mods-original",
+            name: "Ability Modifiers - Original",
+            type: "keyjson",
+            table: [{
+               key: "str",
+               json: JSON.stringify([
+                  { "min": 3, "value": 0 }
+               ])
+            }, {
+               key: "int",
+               json: JSON.stringify([
+                  { "min": 3, "value": 0 }
+               ])
+            }, {
+               key: "wis",
+               json: JSON.stringify([
+                  { "min": 3, "value": 0, "survival": 0 },
+                  { "min": 5, "value": 0, "survival": 0 },
+                  { "min": 7, "value": 0, "survival": 40 },
+                  { "min": 8, "value": 0, "survival": 50 },
+                  { "min": 9, "value": 0, "survival": 60 },
+                  { "min": 10, "value": 0, "survival": 70 },
+                  { "min": 11, "value": 0, "survival": 80 },
+                  { "min": 12, "value": 0, "survival": 90 }
+               ])
+            }, {
+               key: "dex",
+               json: JSON.stringify([
+                  { "min": 3, "value": -1 },
+                  { "min": 9, "value": 0 },
+                  { "min": 13, "value": 1 }
+               ])
+            }, {
+               key: "con",
+               json: JSON.stringify([
+                  { "min": 3, "value": -1 },
+                  { "min": 7, "value": 0 },
+                  { "min": 15, "value": 1 }
+               ])
+            }, {
+               key: "cha",
+               json: JSON.stringify([
+                  { "min": 3, "maxRetainers": 1, "value": -2 },
+                  { "min": 5, "maxRetainers": 2, "value": -1 },
+                  { "min": 7, "maxRetainers": 3, "value": 0 },
+                  { "min": 8, "maxRetainers": 3, "value": 0 },
+                  { "min": 9, "maxRetainers": 3, "value": 0 },
+                  { "min": 10, "maxRetainers": 4, "value": 0 },
+                  { "min": 11, "maxRetainers": 4, "value": 0 },
+                  { "min": 12, "maxRetainers": 4, "value": 0 },
+                  { "min": 13, "maxRetainers": 5, "value": 1 },
+                  { "min": 15, "maxRetainers": 5, "value": 1 },
+                  { "min": 16, "maxRetainers": 6, "value": 2 },
+                  { "min": 18, "maxRetainers": 12, "value": 4 }
+               ])
+            }
+            ]
+         };
+      }
    }
 
    #loadTables() {
-      this.userTables = game.settings.get(game.system.id, 'userTables') ?? {};
+      this.#userTables = game.settings.get(game.system.id, 'userTables') ?? {};
    }
 }
 /*

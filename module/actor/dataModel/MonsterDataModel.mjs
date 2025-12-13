@@ -25,23 +25,6 @@ export class MonsterDataModel extends FDCombatActorDM {
       this._prepareXP();
    }
 
-   prepareDerivedData() {
-      // Extract class identifier and level from the input
-      super.prepareDerivedData();
-   }
-
-   /**
-    * Migrate source data from some prior format into a new specification.
-    * The source parameter is either original data retrieved from disk or provided by an update operation.
-    * @inheritDoc
-    */
-   static migrateData(source) {
-      //source.abilities = {
-      //   int: { value: source.details.intelligence }
-      //};
-      return super.migrateData(source);
-   }
-
    getParsedHD() {
       const classSystem = game.fade.registry.getSystem("classSystem");
       return classSystem.getParsedHD(this.hp.hd);

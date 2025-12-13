@@ -4,6 +4,10 @@
  * @type {any}
     */
 const canvas = undefined;
+/** @global @readonly @type {any} */ const Folder = undefined;
+/** @global @readonly @type {any} */ const SortingHelpers = undefined;
+/** @global @readonly @type {any} */ const Combatant = undefined;
+/** @global @readonly @type {any} */ const ActiveEffect = undefined;
 /** @global @readonly @type {any} */ const Handlebars = undefined;
 /** @global @readonly @type {any} */ const game = undefined;
 /** @global @readonly @type {any} */ const foundry = undefined;

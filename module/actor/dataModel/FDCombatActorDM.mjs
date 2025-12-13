@@ -12,15 +12,13 @@ export class FDCombatActorDM extends FDActorBaseDM {
    prepareBaseData() {
       super.prepareBaseData();
       this._prepareMods();
-      for (let [key] of Object.entries(this.abilities)) {
-         const value = Number(foundry.utils.getProperty(this.abilities, `${key}.value`)) || 0;
-         const tempMod = Number(foundry.utils.getProperty(this.abilities, `${key}.tempMod`)) || 0;
-         foundry.utils.setProperty(this.abilities, `${key}.total`, value + tempMod);
-      }
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      abilityScoreSys.prepareBaseData(this);
    }
 
    prepareDerivedData() {
-      this._prepareDerivedAbilities();
+      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+      abilityScoreSys.prepareDerivedData(this);
       super.prepareDerivedData();
    }
 
@@ -31,26 +29,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
     */
    static migrateData(source) {
       return super.migrateData(source);
-   }
-
-   _prepareDerivedAbilities() {
-      // For monsters
-      const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
-      const hasAbilityScoreMods = abilityScoreSetting === "withmod";
-
-      // If this is a character or if monsters have ability score mods...
-      if (this.parent.type === 'character' || hasAbilityScoreMods === true) {
-         // Initialize ability score modifiers
-         const abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
-         const adjustments = game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${abilityScoreMods}`);
-         for (let [key] of Object.entries(this.abilities)) {
-            const total = Number(foundry.utils.getProperty(this.abilities, `${key}.total`)) || 0;
-            const sorted = (adjustments ?? []).sort((a, b) => b.min - a.min);
-            const adjustment = sorted.find(item => total >= item.min) ?? sorted[0];
-            const modValue = adjustment ? Number(adjustment.value) || 0 : 0;
-            foundry.utils.setProperty(this.abilities, `${key}.mod`, modValue);
-         }
-      }
    }
 
    /**

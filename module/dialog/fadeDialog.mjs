@@ -88,6 +88,10 @@ export class fadeDialog {
    static async getSelectSpellDialog(memorizedOnly = false) {
       const actor = canvas.tokens.controlled?.[0]?.actor;
       if (actor) {
+         if (actor.testUserPermission(game.user, "OWNER") == false) {
+            console.warn("getSelectSpellDialog called from non-owner.");
+            return;
+         }
          const dialogData = { label: game.i18n.localize('FADE.dialog.selectSpell') };
          const template = 'systems/fantastic-depths/templates/dialog/select-spell.hbs';
          const spellItems = actor.items.filter((item) => item.type === "spell")

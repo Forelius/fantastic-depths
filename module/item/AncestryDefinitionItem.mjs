@@ -1,13 +1,13 @@
-import { fadeFinder } from '/systems/fantastic-depths/module/utils/finder.mjs';
-import { FDItem } from './FDItem.mjs';
-import { TagManager } from '../sys/TagManager.mjs';
+import { fadeFinder } from "../utils/finder.mjs";
+import { FDItem } from "./FDItem.mjs";
+import { TagManager } from "../sys/TagManager.mjs";
 
 export class AncestryDefinitionItem extends FDItem {
-   static ValidItemTypes = ['item', 'weapon', 'armor'];
+   static ValidItemTypes = ["item", "weapon", "armor"];
 
    constructor(data, context) {
       super(data, context);
-      this.languageManager = new TagManager(this, 'languages'); // Initialize TagManager
+      this.languageManager = new TagManager(this, "languages"); // Initialize TagManager
    }
 
    async createClass() {

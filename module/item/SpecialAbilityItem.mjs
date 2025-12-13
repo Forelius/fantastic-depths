@@ -51,19 +51,12 @@ export class SpecialAbilityItem extends FDItem {
 
    /**
    * Handle clickable rolls.
-   * @param {Event} event The originating click event
-   * @private
+   * @param {any} event The originating click event
    */
    async roll(dataset, dialogResp = null, event = null) {
       let result = null;
+      const { instigator, instigatorActor } = await this.getInstigator(dataset);
       const itemSystem = this.system;
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.token || canvas.tokens.controlled?.[0];
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-         return result;
-      }
-      const instigatorData = instigator.actor ? instigator.actor.system : instigator.document.actor.system;
       const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
       let canProceed = true;
       const hasRoll = itemSystem.rollFormula != null && itemSystem.rollFormula != "" && itemSystem.target != null && itemSystem.target != "";
@@ -101,10 +94,9 @@ export class SpecialAbilityItem extends FDItem {
 
          if (dialogResp?.rolling === true) {
             dialogResp.formula = dialogResp?.formula?.length > 0 ? dialogResp.formula : itemSystem.rollFormula;
-            let abilityMod = itemSystem.abilityMod?.length > 0 ? instigatorData.abilities[itemSystem.abilityMod].mod : 0;
+            let abilityMod = itemSystem.abilityMod?.length > 0 ? instigatorActor.system.abilities[itemSystem.abilityMod].mod : 0;
             if (abilityMod != 0) {
-               const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${itemSystem.abilityMod}.long`);
-               digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { ability: abilityName, mod: abilityMod }));
+               digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityMod }));
                // If this is a roll under, then the ability score modifier should subtract from the roll.
                if (itemSystem.operator == "lt" || itemSystem.operator == "lte" || itemSystem.operator == "<" || itemSystem.operator == "<=") {
                   abilityMod = -abilityMod;

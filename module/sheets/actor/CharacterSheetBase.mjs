@@ -4,9 +4,10 @@ import { FDActorSheetV2 } from "./FDActorSheetV2.mjs";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {FDActorSheetV2}
  */
+// @ts-ignore
 export class CharacterSheetBase extends FDActorSheetV2 {
-   constructor(object, options = {}) {
-      super(object, options);
+   constructor(options = {}) {
+      super(options);
       this.editScores = false;
    }
 
@@ -64,12 +65,10 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       }
    }
 
-   /** @override */
    tabGroups = {
       primary: "abilities"
    }
 
-   /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
       // So we need to call `super` first
@@ -107,7 +106,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, Partial<any>>}
    */
    #getTabs() {
       const group = "primary";

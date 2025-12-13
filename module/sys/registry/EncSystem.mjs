@@ -1,14 +1,8 @@
-export class EncumbranceInterface {
-   calcCategoryEnc(items) { throw new Error("Method not implemented."); }
-   prepareDerivedData(actor) { throw new Error("Method not implemented."); }
-}
-
 /**
  * None or armor-only if used by itself.
  */
-export class BasicEncumbrance extends EncumbranceInterface {
+export class BasicEncumbrance {
    constructor(options) {
-      super(options);
       this.options = options;
       this.CONFIG = CONFIG.FADE.Encumbrance.Basic;
    }
@@ -29,8 +23,8 @@ export class BasicEncumbrance extends EncumbranceInterface {
       encumbrance.value = this._getTotalEnc(actor);
 
       //-- Calculate movement and label --//
-      // If max encumbrace is set to zero...
-      if (encumbrance.max !== 0) {
+      // If max encumbrace is greater than zero...
+      if (encumbrance.max > 0) {
          const encTier = this._getEncTier(actor, encumbrance.value);
          Object.assign(encumbrance, this._calculateEncMovement(actor, encTier));
       }
@@ -59,7 +53,7 @@ export class BasicEncumbrance extends EncumbranceInterface {
    _getEncTier(actor, totalEnc) {
       let table;
 
-      if (actor.type === "monster") {
+      if (actor.type === "monster" || actor.type === "vehicle") {
          table = this.CONFIG.tableMonster;
       } else {
          table = this.CONFIG.tablePC;
@@ -82,14 +76,14 @@ export class BasicEncumbrance extends EncumbranceInterface {
     * Calculate movement rate based on encumbrance tier.
     * @protected
     * @param {any} actor The actor
-    * @param {number} encTier
+    * @param {any} encTier
     */
    _calculateEncMovement(actor, encTier) {
       return {
          label: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`),
          desc: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`),
-         mv: Math.floor(actor.system.movement.max * encTier.mvFactor),
-         mv2: Math.floor(actor.system.movement2.max * encTier.mvFactor)
+         mv: actor.system.movement.max > 0 ? Math.floor(actor.system.movement.max * encTier.mvFactor) : actor.system.movement.max,
+         mv2: actor.system.movement2.max > 0 ? Math.floor(actor.system.movement2.max * encTier.mvFactor) : actor.system.movement2.max
       };
    }
 }
@@ -152,7 +146,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
 
    _getEncTier(actor, totalEnc) {
       let table;
-      if (actor.type === "monster") {
+      if (actor.type === "monster" || actor.type === "vehicle") {
          table = this.CONFIG.tableMonster;
       } else {
          table = this.CONFIG.tablePC;

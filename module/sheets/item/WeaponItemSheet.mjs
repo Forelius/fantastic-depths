@@ -1,14 +1,15 @@
-import { EffectManager } from "/systems/fantastic-depths/module/sys/EffectManager.mjs";
+import { EffectManager } from "../../sys/EffectManager.mjs";
 import { FDItemSheetV2 } from "./FDItemSheetV2.mjs";
-import { VsGroupModMixin } from "/systems/fantastic-depths/module/sheets/mixins/VsGroupModMixin.mjs";
-import { ConditionMixin } from "/systems/fantastic-depths/module/sheets/mixins/ConditionMixin.mjs";
-import { SpecialAbilityMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpecialAbilityMixin.mjs";
-import { SpellMixin } from "/systems/fantastic-depths/module/sheets/mixins/SpellMixin.mjs";
-import { DragDropMixin } from "/systems/fantastic-depths/module/sheets/mixins/DragDropMixin.mjs";
+import { VsGroupModMixin } from "../mixins/VsGroupModMixin.mjs";
+import { ConditionMixin } from "../mixins/ConditionMixin.mjs";
+import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.mjs";
+import { SpellMixin } from "../mixins/SpellMixin.mjs";
+import { DragDropMixin } from "../mixins/DragDropMixin.mjs";
 
 /**
  * Sheet class for WeaponItem.
  */
+// @ts-ignore
 export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(VsGroupModMixin(FDItemSheetV2))))) {
    /**
    * Get the default options for the sheet.
@@ -53,12 +54,10 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
       }
    }
 
-   /** @override */
    tabGroups = {
       primary: "description"
    }
 
-   /** @override */
    _configureRenderOptions(options) {
       // This fills in `options.parts` with an array of ALL part keys by default
       // So we need to call `super` first
@@ -138,6 +137,7 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
       weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.monster.long"), value: "monster" });
       weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.handheld.long"), value: "handheld" });
       weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.all.long"), value: "all" });
+      weaponTypes.push({ text: game.i18n.localize("FADE.Mastery.weaponTypes.siege.long"), value: "siege" });
       return weaponTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
@@ -160,7 +160,7 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, Partial<any>>}
    */
    #getTabs() {
       const group = "primary";

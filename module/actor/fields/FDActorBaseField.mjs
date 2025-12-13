@@ -10,7 +10,6 @@ export class FDActorBaseField extends EmbeddedDataField {
 }
 
 export class FDActorBaseData extends foundry.abstract.DataModel {
-   /** @override */
    static defineSchema() {
       return {        
          tags: new ArrayField(new StringField({ required: false }), { initial: [] }),
@@ -29,24 +28,24 @@ export class FDActorBaseData extends foundry.abstract.DataModel {
             max: new NumberField({ initial: 5 }),
          }),
          movement: new SchemaField({
-            turn: new NumberField({ initial: 120 }),
-            max: new NumberField({ initial: 120 }),
-            round: new NumberField({ initial: 0 }),
-            day: new NumberField({ initial: 0 }),
-            run: new NumberField({ initial: 0 }),
+            turn: new NumberField({ nullable: true, initial: 120 }),
+            max: new NumberField({ nullable: true, initial: 120 }),
+            round: new NumberField({ nullable: true, initial: null }),
+            day: new NumberField({ nullable: true, initial: null }),
+            run: new NumberField({ nullable: true, initial: null }),
          }),
          movement2: new SchemaField({
             turn: new NumberField({ initial: 0 }),
             max: new NumberField({ initial: 0 }),
-            round: new NumberField({ initial: 0 }),
-            day: new NumberField({ initial: 0 }),
-            run: new NumberField({ initial: 0 }),
+            round: new NumberField({ nullable: true, initial: null }),
+            day: new NumberField({ nullable: true, initial: null }),
+            run: new NumberField({ nullable: true, initial: null }),
          }),
          encumbrance: new SchemaField({
             value: new NumberField({ initial: 0 }),
             max: new NumberField({ initial: CONFIG.FADE.Encumbrance.Expert.maxLoad }),
-            mv: new NumberField({ initial: 0 }),
-            mv2: new NumberField({ initial: 0 }),
+            mv: new NumberField({ nullable: true, initial: null }),
+            mv2: new NumberField({ nullable: true, initial: null }),
             label: new StringField(),
             desc: new StringField(),
          }),

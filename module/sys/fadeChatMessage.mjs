@@ -17,12 +17,15 @@ export class fadeChatMessage extends ChatMessage {
 
    /** @inheritDoc */
    async renderHTML(options) {
-      let html = await super.renderHTML(options);
-      if (html instanceof Element === false) {
-         // In case jquery, due to v12/v13 inconsistency
-         html = html[0];
-      }
-      return await this.#getForRender(html);
+      // Remove after v12/v13 compatibility
+      //if (super.getHTML === undefined) {
+         let html = await super.renderHTML(options);
+         if (html instanceof Element === false) {
+            // In case jquery, due to v12/v13 inconsistency
+            html = html[0];
+         }
+         return await this.#getForRender(html);
+      //}
    }
 
    async #getForRender(html) {

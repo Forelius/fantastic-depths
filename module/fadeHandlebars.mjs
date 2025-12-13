@@ -7,6 +7,19 @@ export class fadeHandlebars {
    }
 
    static registerHelpers() {
+      Handlebars.registerHelper("fadeor", (...args) => {
+         // The last argument Handlebars passes is the options hash – ignore it.
+         const values = args.slice(0, -1);
+         // Return true if **any** preceding value is truthy, treating empty arrays as falsy.
+         return values.some(v => {
+            // Empty arrays count as falsy
+            if (Array.isArray(v)) {
+               return v.length > 0;          // true only when the array has elements
+            }
+            // All other values use normal JavaScript truthiness
+            return Boolean(v);
+         });
+      });
       Handlebars.registerHelper("isnull", value => { return value === null || value === undefined; });
       Handlebars.registerHelper("camelize", str => Formatter.camelize(str));
       Handlebars.registerHelper("infinity", (value) => value ?? "∞");
@@ -22,7 +35,7 @@ export class fadeHandlebars {
          for (let i = 0; i < n; ++i) accum += block.fn(i);
          return accum;
       });
-      Handlebars.registerHelper("formatHitDice", function (hitDice) {
+      Handlebars.registerHelper("formatHitDice", (hitDice) => {
          const xpCalc = new MonsterXPCalculator();
          const parsed = xpCalc.parseDiceSpecification(hitDice);
          let result = `${parsed.numberOfDice}d${parsed.numberOfSides}${parsed.modifierSign}${parsed.modifier != 0 ? parsed.modifier : ""}`;

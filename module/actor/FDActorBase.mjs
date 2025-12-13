@@ -1,4 +1,4 @@
-import { DialogFactory } from '../dialog/DialogFactory.mjs';
+import { DialogFactory } from "../dialog/DialogFactory.mjs";
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -45,9 +45,9 @@ export class FDActorBase extends Actor {
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.id) {
-         game.fade.registry.getSystem('encumbranceSystem').prepareDerivedData(this);
-         game.fade.registry.getSystem('actorMovement').prepareMovementRates(this);
-         game.fade.registry.getSystem('armorSystem').prepareDerivedData(this);
+         game.fade.registry.getSystem("encumbranceSystem").prepareDerivedData(this);
+         game.fade.registry.getSystem("actorMovement").prepareMovementRates(this);
+         game.fade.registry.getSystem("armorSystem").prepareDerivedData(this);
       }
    }
 
@@ -72,7 +72,7 @@ export class FDActorBase extends Actor {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === "character")) {
          // Log the item update and notify the GM
          console.log(`Item updated: ${this.name} ${item.name} by ${user.name}`, updateData?.system);
       }
@@ -80,12 +80,12 @@ export class FDActorBase extends Actor {
 
    async onCreateActorItem(item, options, userId) {
       const user = game.users.get(userId);
-      if (item.type === 'mastery') {
+      if (item.type === "mastery") {
          await item.updatePropertiesFromMastery();
       }
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === "character")) {
          this.logActorChanges(item, null, user, "addItem");
       }
    }
@@ -94,7 +94,7 @@ export class FDActorBase extends Actor {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
-      if (isLoggingEnabled && game.user.isGM && (this.type === 'character')) {
+      if (isLoggingEnabled && game.user.isGM && (this.type === "character")) {
          // Log the item removal and notify the GM
          console.log(`Item removed: ${item.name} by ${game.users.get(userId).name}`);
          this.logActorChanges(item, null, user, "deleteItem");
@@ -126,7 +126,7 @@ export class FDActorBase extends Actor {
 
                // Notify chat.
                const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-               let chatContent = game.i18n.format('FADE.Chat.effectEnds', { effectName: effect.name, actorName: this.name });
+               let chatContent = game.i18n.format("FADE.Chat.effectEnds", { effectName: effect.name, actorName: this.name });
                ChatMessage.create({ speaker: speaker, content: chatContent });
             }
          }
@@ -161,7 +161,7 @@ export class FDActorBase extends Actor {
       if (this.isOwner === false) return this;
       let result = this;
       // If delta damage...
-      if (isDelta === true && attribute === 'hp') {
+      if (isDelta === true && attribute === "hp") {
          // Try debouncing to prevent ENTER key from propogating
          setTimeout(() => this.#handleHPChange(value), 100);
       } else {
@@ -177,7 +177,7 @@ export class FDActorBase extends Actor {
     */
    async setActiveLight(lightItemId) {
       if (this.currentActiveToken) {
-         if (lightItemId === null || lightItemId === '' || lightItemId === undefined) {
+         if (lightItemId === null || lightItemId === "" || lightItemId === undefined) {
             await this.currentActiveToken.update({ light: { dim: 0, bright: 0 } }); // Extinguish light
          }
          await this.update({ "system.activeLight": lightItemId });
@@ -201,7 +201,7 @@ export class FDActorBase extends Actor {
          }
          catch (error) {
             if (game.user.isGM === true) {
-               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+               console.error(`Invalid roll formula for ${this.name}. Formula="${formula}". Owner=${this.parent?.name}`, error);
             }
          }
       }
@@ -220,7 +220,7 @@ export class FDActorBase extends Actor {
          //this.effects.forEach((effect) => {
          const parentItem = effect.parent;
          // If the effect has a parent and the parent is an equippable item...
-         const equippableFx = ['item', 'armor', 'weapon', 'light'];
+         const equippableFx = ["item", "armor", "weapon", "light"];
          if (parentItem && equippableFx.includes(parentItem.type) && parentItem.system.equippable === true) {
             // Set disabled state of effect based on item equipped state
             effect.disabled = !parentItem.system.equipped;

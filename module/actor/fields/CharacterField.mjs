@@ -10,7 +10,6 @@ export class CharacterField extends EmbeddedDataField {
 }
 
 export class CharacterData extends foundry.abstract.DataModel {
-   /** @override */
    static defineSchema() {
       return {
          isRetainer: new BooleanField({ initial: false }),

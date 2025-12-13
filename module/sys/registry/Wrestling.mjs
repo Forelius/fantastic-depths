@@ -1,4 +1,4 @@
-﻿import { DialogFactory } from '/systems/fantastic-depths/module/dialog/DialogFactory.mjs';
+﻿import { DialogFactory } from "../../dialog/DialogFactory.mjs";
 
 export class Wrestling {
    static States = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
@@ -35,7 +35,7 @@ export class Wrestling {
          return;
       }
 
-      const dialogResp = await DialogFactory({ dialog: 'wrestling' }, null, dlgOptions);
+      const dialogResp = await DialogFactory({ dialog: "wrestling" }, null, dlgOptions);
       let wrestlingData = null;
 
       if (dialogResp?.action === "roll") {
@@ -148,12 +148,12 @@ export class Wrestling {
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.groupWR")}: ${groupWR}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}:</div>`;
       message += `<div>${defender.name} → ${defender.bonus}</div>`;
-      message += `<div class='attack-result attack-info'>${game.i18n.format("FADE.dialog.wrestling.winsRound", { winner })}</div>`;
+      message += `<div class="attack-result attack-info">${game.i18n.format("FADE.dialog.wrestling.winsRound", { winner })}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.attacker")}: ${attackerRoll.total} (${attackerRoll.formula})</div>`;
       message += `<div>${await attackerRoll.render()}</div>`;
       message += `<div>${game.i18n.localize("FADE.dialog.wrestling.defender")}: ${defenderRoll.total} (${defenderRoll.formula})</div>`;
       message += `<div>${await defenderRoll.render()}</div>`;
-      message += `<div style='margin-top:4px;' class='attack-result attack-info'>${game.i18n.localize("FADE.dialog.wrestling.stateLabel")}: ${localizedState}</div>`;
+      message += `<div style="margin-top:4px;" class="attack-result attack-info">${game.i18n.localize("FADE.dialog.wrestling.stateLabel")}: ${localizedState}</div>`;
 
       return message;
    }
@@ -164,27 +164,26 @@ export class Wrestling {
       const masteryEnabled = game.settings.get(game.system.id, "weaponMastery");
       let wrestlingMastery = null;
       if (masteryEnabled) {
-         wrestlingMastery = actor.items.find(item => item.type === 'mastery' && item.system.weaponType === 'wr');
+         wrestlingMastery = actor.items.find(item => item.type === "mastery" && item.system.weaponType === "wr");
       }
 
-      if (actor.type === 'character') {
-         const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
+      if (actor.type === "character") {
+         const { base } = actor.system.getParsedHD();
          result = Math.ceil(base / 2) + actor.system.ac.value;
-         result += actor.system.abilities.str.mod + actor.system.abilities.dex.mod;
+         result += actor.system.abilities?.str?.mod + actor.system.abilities?.dex?.mod;
          // If has wrestling mastery
          if (wrestlingMastery) {
             result += wrestlingMastery.system.acBonus;
          }
-      } else {
+      } else if (actor.type === "monster") {
          // Wrestling skill
          const data = actor.system;
-         const { base, modifier, dieSides, sign } = actor.system.getParsedHD();
-         //const hitDice = data.hp.hd?.match(/^\d+/)[0];
+         const { base } = actor.system.getParsedHD();
          if (base) {
             result = Math.ceil(base * 2);
          }
          // Determine if the monster is wearing any non-natural armor.
-         const hasArmor = actor.items.some(item => item.type === 'armor' && item.system.equipped === true && item.system.natural === false);
+         const hasArmor = actor.items.some(item => item.type === "armor" && item.system.equipped === true && item.system.natural === false);
          if (hasArmor) {
             result += data.ac.value;
          } else {
@@ -196,6 +195,6 @@ export class Wrestling {
             result += wrestlingMastery.system.acBonus;
          }
       }
-      return result + actor.system.mod?.wrestling ?? 0;
+      return result + (actor.system.mod?.wrestling ?? 0);
    }
 }

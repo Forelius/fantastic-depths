@@ -10,11 +10,6 @@ export class CharacterActor extends FDCombatActor {
    }
 
    /** @override */
-   prepareBaseData() {
-      super.prepareBaseData();
-   }
-
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
@@ -53,7 +48,7 @@ export class CharacterActor extends FDCombatActor {
    /**
     * get changes and send to GM
     * @param {any} updateData
-    * @param {any} oldData - The old state of the actor before the update
+    * @param {any} oldData -The old state of the actor before the update
     * @param {any} user
     * @param {any} parentKey
     * @returns
@@ -129,35 +124,42 @@ export class CharacterActor extends FDCombatActor {
          for (let actorItem of actorItems) actorItem.delete();
       }
 
-      if (!ancestryDefItem) {
-         //console.warn(`Ancestry definition not found ${nameInput}.`);
-         return;
-      }
+      if (ancestryDefItem) {
+         const itemData = [ancestryDefItem.toObject()];
+         await this.createEmbeddedDocuments("Item", itemData);
 
-      const itemData = [ancestryDefItem.toObject()];
-      await this.createEmbeddedDocuments("Item", itemData);
+         // Ancestry special abilities
+         const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
+         const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
+         const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
+         const languages = ancestryDefItem.system.languages;
+         let hasMinAbilityScore = false;
+         for (let [key] of Object.entries(ancestryDefItem.system.abilities)) {
+            if (ancestryDefItem.system.abilities[key].min > 3) hasMinAbilityScore = true;
+         }
 
-      // Ancestry special abilities
-      const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
-      const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
-      const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
+         if (abilitiesData || itemsData || languages) {
+            const dialogResp = await DialogFactory({
+               dialog: "yesno",
+               title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: this.system.details.species }),
+               content: game.i18n.format('FADE.dialog.specialAbilities.content', {
+                  name: this.system.details.species,
+                  type: game.i18n.localize('FADE.Actor.Ancestry')
+               }),
+               yesLabel: game.i18n.localize('FADE.dialog.yes'),
+               noLabel: game.i18n.localize('FADE.dialog.no'),
+               defaultChoice: "yes"
+            }, this.actor);
 
-      if (abilitiesData || itemsData) {
-         const dialogResp = await DialogFactory({
-            dialog: "yesno",
-            title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: this.system.details.species }),
-            content: game.i18n.format('FADE.dialog.specialAbilities.content', {
-               name: this.system.details.species,
-               type: game.i18n.localize('FADE.Actor.Ancestry')
-            }),
-            yesLabel: game.i18n.localize('FADE.dialog.yes'),
-            noLabel: game.i18n.localize('FADE.dialog.no'),
-            defaultChoice: "yes"
-         }, this.actor);
+            if (dialogResp?.resp?.result === true) {
+               await this.setupSpecialAbilities(abilitiesData);
+               await this.setupItems(itemsData, AncestryDefinitionItem.ValidItemTypes);
+               await this.setupLanguages(languages);
+            }
 
-         if (dialogResp?.resp?.result === true) {
-            await this.setupSpecialAbilities(abilitiesData);
-            await this.setupItems(itemsData, AncestryDefinitionItem.ValidItemTypes);
+            if (hasMinAbilityScore) {
+               await this.setupMinAbilityScores(ancestryDefItem.system.abilities);
+            }
          }
       }
    }

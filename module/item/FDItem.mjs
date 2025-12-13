@@ -23,7 +23,9 @@ export class FDItem extends Item {
    get hasTargets() {
       return false; // The item itself does not have targets.
    }
-   get canMelee() { return this.system.canMelee === true }
+   /** A different way to say melee attack for items that aren't ranged, but also not melee (siege weapons). */
+   get canAttack() { return this.system.canMelee === true && this.system.weaponType === "siege" }
+   get canMelee() { return this.system.canMelee === true && this.system.weaponType !== "siege" }
    get canShoot() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0; }
    get canThrow() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0; }
    /** Returns true if the item uses charges and either there are charges remaining or there are infinite charges (chargesMax === null). */
@@ -325,7 +327,7 @@ export class FDItem extends Item {
       if (result === false) {
          const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.knownName });
          ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
+         ChatMessage.create({ content: message, speaker: { alias: item.actor?.name, } });
       }
 
       return result;
@@ -353,9 +355,19 @@ export class FDItem extends Item {
       if (result === false) {
          const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name });
          ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: item.actor.name } });
+         ChatMessage.create({ content: message, speaker: { alias: item.actor?.name } });
       }
 
       return result;
+   }
+
+   async getInstigator(dataset) {
+      const owner = dataset?.owneruuid ? await fromUuid(dataset.owneruuid) : null;
+      const ownerActor = owner?.actor ? owner.actor : owner;
+      const ownerToken = owner?.actor ? owner : owner?.currentActiveToken;
+      const instigatorActor = owner ? ownerActor : this.actor;
+      const instigatorToken = owner ? ownerToken : this.actor?.currentActiveToken;
+      const instigator = instigatorToken ?? instigatorActor;
+      return { instigator, owner, ownerActor, ownerToken, instigatorActor, instigatorToken };
    }
 }

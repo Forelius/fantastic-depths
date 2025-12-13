@@ -53,14 +53,17 @@ export class MonsterXPCalculator {
    }
 
    parseDiceSpecification(spec, defaultSides = 8) {
-      const regex = /(\d*\.?\d+)(?:d(\d+))?([+-]\d+)?/; // Allow for decimal numbers in the number of dice and optional sides
+      const regex = /(\d*\.?\d+)(?:d(\d+))?([+\-*])?(\d+)?/; // Allow for decimal numbers in the number of dice and optional sides
       const match = spec.match(regex);
 
       if (match) {
          let numberOfDice = parseFloat(match[1]); // Use parseFloat to handle decimal values
          let numberOfSides = match[2] ? parseInt(match[2], 10) : defaultSides; // Use defaultSides if sides are missing
-         const modifier = match[3] ? parseInt(match[3], 10) : 0; // Default modifier to 0 if not present
-         const modifierSign = modifier !== 0 ? (modifier > 0 ? '+' : '-') : '';
+         const modifierSign = match[3] || '';
+         const modifierNumber = match[4] ? parseInt(match[4], 10) : 0;
+         const modifier = modifierSign === '-' ? -modifierNumber :
+            modifierSign === '+' ? modifierNumber :
+               modifierSign === '*' ? modifierNumber : 0;
          // If numberOfDice is less than 1, adjust numberOfSides accordingly
          if (numberOfDice < 1) {
             numberOfSides = Math.ceil(numberOfSides * numberOfDice); // Calculate sides based on the fraction

@@ -7,10 +7,9 @@ const SpellMixin = (superclass) => {
    class SpellMixinClass extends superclass {
       /**
        * Handle deleting a spell
-       * @param {Event} event The originating click event
-       * @protected
+       * @param {any} event The originating click event
        */
-      static async _clickDeleteSpell(event) {
+      static async clickDeleteSpell(event) {
          event.preventDefault();
          let index;
          if (event.target.dataset.type) {
@@ -18,7 +17,7 @@ const SpellMixin = (superclass) => {
          } else if (event.target.parentElement.dataset.type) {
             index = parseInt(event.target.parentElement.dataset.index);
          } else {
-            console.error(`SpellMixin._clickDeleteSpell can't determine item type.`, item);
+            console.error(`SpellMixin.clickDeleteSpell can't determine item type.`, event);
          }
          const spells = [...this.item.system.spells];
          if (spells.length > index) {
@@ -29,8 +28,7 @@ const SpellMixin = (superclass) => {
 
       /**
        * Creates a spell child item for this item.
-       * @param {any} name
-       * @param {any} classKey
+       * @param {any} droppedItem
        */
       async onDropSpellItem(droppedItem) {
          // Retrieve the array
@@ -52,7 +50,7 @@ const SpellMixin = (superclass) => {
 
    SpellMixinClass.DEFAULT_OPTIONS = {
       actions: {
-         deleteSpell: SpellMixinClass._clickDeleteSpell
+         deleteSpell: SpellMixinClass.clickDeleteSpell
       }
    };
 

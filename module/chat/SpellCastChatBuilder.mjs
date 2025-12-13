@@ -16,11 +16,13 @@ export class SpellCastChatBuilder extends ChatBuilder {
    async createChatMessage() {
       const { context, caller, roll, options, digest } = this.data;
       const rollMode = game.settings.get("core", "rollMode");
-      const caster = context;
+      const caster = context; // Can be actor or token
+      const casterActor = caster?.actor || caster; // context could be actor or token.
+      const casterName = caster?.name; // context could be actor or token.
       const item = caller;
       const targetTokens = Array.from(game.user.targets).map(i => i.document ?? i);
       const dmgHealRoll = caller.getDamageRoll(null, targetTokens?.[0]);
-      const descData = { caster: caster.name, spell: item.name };
+      const descData = { caster: casterName, spell: item.name };
       const description = game.i18n.format("FADE.Chat.spellCast", descData);
 
       let rollContent = null;
@@ -41,16 +43,15 @@ export class SpellCastChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context);
+      let actions = await this._getActionsForChat(item, caster);
 
       // Prepare data for the chat template
       const chatData = {
-         context, // the caster/instigator
          rollContent,
+         description,
          toHitResult,
          item, // spell item
          attackType: "spell",
-         caster,
          durationMsg: options.durationMsg,
          actions,
          digest
@@ -65,7 +66,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
          content, rolls, rollMode,
          flags: {
             [game.system.id]: {
-               owneruuid: context.uuid,
+               owneruuid: caster.uuid, // Can be actor or token
                itemuuid: item?.uuid,
                targets: toHitResult?.targetResults,
                conditions: options.conditions,
@@ -77,8 +78,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
       });
       await ChatMessage.create(chatMessageData);
       Hooks.call("fadeCastSpell", { 
-         tokenUuid: context.uuid, 
-         actorUuid: context.actor.uuid, 
+         tokenUuid: caster?.actor ? caster.uuid : null, 
+         actorUuid: casterActor.uuid, 
          itemUuid: item.uuid, 
          targets: targetTokens.map(i => i.uuid)
       });

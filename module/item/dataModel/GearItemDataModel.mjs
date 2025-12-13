@@ -1,4 +1,4 @@
-import { IdentifiableData } from '/systems/fantastic-depths/module/item/fields/IdentifiableField.mjs';
+import { IdentifiableData } from '../fields/IdentifiableField.mjs';
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField } = foundry.data.fields;
 /**
  * Data model for a generic item inheriting from multiple templates.
@@ -36,8 +36,6 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
          equippable: new BooleanField({ required: false, initial: false }),
          // Indicates why type of fuel this item is, if any.
          fuelType: new StringField({ required: false, initial: "" }),
-         ammoType: new StringField({ required: false, initial: "" }),
-         isAmmo: new BooleanField({ required: false, initial: false }),
          isDropped: new BooleanField({ required: true, initial: false }),
          // Items with associated actions
          // Is the item considered to be treasure when calculating encumbrance.
@@ -94,13 +92,10 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
       return super.migrateData(source);
    }
 
-   /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      this.isAmmo = this.ammoType?.length > 0;
    }
 
-   /** @override */
    prepareDerivedData() {
       super.prepareDerivedData();
       if (this.weight === 0) {

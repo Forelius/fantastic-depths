@@ -1,10 +1,15 @@
-import { CharacterSheetBase } from './CharacterSheetBase.mjs';
+import { CharacterSheetBase } from "./CharacterSheetBase.mjs";
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
- * @extends {FDActorSheetV2}
+ * @extends {CharacterSheetBase}
  */
+// @ts-ignore
 export class CharacterSheet extends CharacterSheetBase {
+   constructor(options = {}) {
+      super(options);
+   }
+
    static DEFAULT_OPTIONS = {
       position: {
          width: 650,
@@ -13,7 +18,7 @@ export class CharacterSheet extends CharacterSheetBase {
       form: {
          submitOnChange: true
       },
-      classes: ['character'],
+      classes: ["character"],
    }
 
    static PARTS = {
@@ -55,20 +60,20 @@ export class CharacterSheet extends CharacterSheetBase {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['tabnav', 'abilities'];
+      options.parts = ["tabnav", "abilities"];
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         options.parts.push('items');
-         options.parts.push('skills');
+         options.parts.push("items");
+         options.parts.push("skills");
          const classSystem = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
-            options.parts.push('spells');
+            options.parts.push("spells");
          }
-         options.parts.push('description');
-         options.parts.push('effects');
+         options.parts.push("description");
+         options.parts.push("effects");
       }
       if (game.user.isGM) {
-         options.parts.push('gmOnly');
+         options.parts.push("gmOnly");
       }
    }
 
@@ -82,30 +87,30 @@ export class CharacterSheet extends CharacterSheetBase {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, Partial<any>>}
    */
    #getTabs() {
-      const group = 'primary';
+      const group = "primary";
 
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'abilities';
+      if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
       const tabs = {
-         abilities: { id: 'abilities', group, label: 'FADE.tabs.abilities' },
+         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: 'items', group, label: 'FADE.items' };
-         tabs.skills = { id: 'skills', group, label: 'FADE.tabs.skills' };
+         tabs.items = { id: "items", group, label: "FADE.items" };
+         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
          if (this.actor.system.config.maxSpellLevel > 0) {
-            tabs.spells = { id: 'spells', group, label: 'FADE.tabs.spells' };
+            tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
          }
-         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects' };
-         tabs.description = { id: 'description', group, label: 'FADE.tabs.description' };
+         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
+         tabs.description = { id: "description", group, label: "FADE.tabs.description" };
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly' };
+         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
       }
 
       for (const tab of Object.values(tabs)) {
@@ -121,19 +126,19 @@ export class CharacterSheet extends CharacterSheetBase {
    * An Application subclass should implement this method in order for the Application to be renderable.
    * @param {any} result            The result returned by the application rendering backend
    * @param {HTMLElement} content   The content element into which the rendered result must be inserted
-   * @param {RenderOptions} options Options which configure application rendering behavior
+   * @param {any} options Options which configure application rendering behavior
    * @protected
    */
    _replaceHTML(result, content, options) {
       super._replaceHTML(result, content, options);
       // Move the tabs
-      const navTabs = content.querySelector('.nav-tabs-right');
+      const navTabs = content.querySelector(".nav-tabs-right");
       this._frame.appendChild(navTabs);
    }
 
    /**
     * Handle click events on a tab within the Application.
-    * @param {PointerEvent} event
+    * @param {any} event
     * @protected
     */
    _onClickTab(event) {

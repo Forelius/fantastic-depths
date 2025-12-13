@@ -115,6 +115,10 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       } else if (event.submitter?.name == 'closeTable') {
          this.system.currentTable = null;
          this.system.selectedTable = "none";
+      } else if (event.submitter?.name == "importTables") {
+         await this.importTables();
+      } else if (event.submitter?.name == "exportTables") {
+         this.exportTables();
       }
 
       if (event.submitter) {
@@ -176,7 +180,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          table.table = table.table.sort((a, b) => a.min - b.min);
       }
       this.system.currentTable = table;
-      console.log('#loadTable', data, this.system);
+      //console.log('#loadTable', data, this.system);
    }
 
    saveTable(data) {
@@ -200,6 +204,47 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
          this.system.currentTable = null;
       }
    }
+
+   exportTables() {
+      const filename = `fvtt-${game.system.id}-usertables.json`;
+      const userTables = this.userTablesSys.getTables();
+      saveDataToFile(JSON.stringify(userTables, null, 2), 'text/json', filename);
+      ui.notifications.info("Tables exported successfully.");
+   }
+
+   async importTables() {
+      return new Promise((resolve, reject) => {
+         const fileRead = document.createElement('input');
+         fileRead.type = 'file';
+         fileRead.accept = 'application/json';
+         fileRead.enctype = 'multipart/form-data';
+
+         fileRead.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+
+            if (!file) {
+               alert("No file selected. Please choose a file.");
+               reject(new Error("No file selected"));
+               return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+               const jsonData = JSON.parse(reader.result.toString());
+               this.userTablesSys.setTables(jsonData);
+               resolve(jsonData);
+            };
+            reader.onerror = () => {
+               console.error("Error reading the file. Please try again.");
+               reject(new Error("Error reading the file"));
+            };
+            reader.readAsText(file);
+         }, { passive: true, once: true });
+
+         fileRead.click();
+      });
+   }
+
 
    /**
      * @param {PointerEvent} event - The originating click event
