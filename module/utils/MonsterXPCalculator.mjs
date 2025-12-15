@@ -1,6 +1,5 @@
 export class MonsterXPCalculator {
    MonsterXPCalculator() {
-
    }
 
    get xpTable() {
@@ -52,32 +51,32 @@ export class MonsterXPCalculator {
       return result;
    }
 
-   parseDiceSpecification(spec, defaultSides = 8) {
-      const regex = /(\d*\.?\d+)(?:d(\d+))?([+\-*])?(\d+)?/; // Allow for decimal numbers in the number of dice and optional sides
-      const match = spec.match(regex);
+//   parseDiceSpecification(spec, defaultSides = 8) {
+//      const regex = /(\d*\.?\d+)(?:d(\d+))?([+\-*])?(\d+)?/; // Allow for decimal numbers in the number of dice and optional sides
+//      const match = spec.match(regex);
 
-      if (match) {
-         let numberOfDice = parseFloat(match[1]); // Use parseFloat to handle decimal values
-         let numberOfSides = match[2] ? parseInt(match[2], 10) : defaultSides; // Use defaultSides if sides are missing
-         const modifierSign = match[3] || '';
-         const modifierNumber = match[4] ? parseInt(match[4], 10) : 0;
-         const modifier = modifierSign === '-' ? -modifierNumber :
-            modifierSign === '+' ? modifierNumber :
-               modifierSign === '*' ? modifierNumber : 0;
-         // If numberOfDice is less than 1, adjust numberOfSides accordingly
-         if (numberOfDice < 1) {
-            numberOfSides = Math.ceil(numberOfSides * numberOfDice); // Calculate sides based on the fraction
-            numberOfDice = 1; // Set numberOfDice to 1 since we are effectively rolling one die
-         }
+//      if (match) {
+//         let numberOfDice = parseFloat(match[1]); // Use parseFloat to handle decimal values
+//         let numberOfSides = match[2] ? parseInt(match[2], 10) : defaultSides; // Use defaultSides if sides are missing
+//         const modifierSign = match[3] || '';
+//         const modifierNumber = match[4] ? parseInt(match[4], 10) : 0;
+//         const modifier = modifierSign === '-' ? -modifierNumber :
+//            modifierSign === '+' ? modifierNumber :
+//               modifierSign === '*' ? modifierNumber : 0;
+//         // If numberOfDice is less than 1, adjust numberOfSides accordingly
+//         if (numberOfDice < 1) {
+//            numberOfSides = Math.ceil(numberOfSides * numberOfDice); // Calculate sides based on the fraction
+//            numberOfDice = 1; // Set numberOfDice to 1 since we are effectively rolling one die
+//         }
 
-         return {
-            numberOfDice,
-            numberOfSides,
-            modifier,
-            modifierSign
-         };
-      } else {
-         return { error: 'Invalid dice specification. Please use the format [number of dice]d[number of sides][modifier].' };
-      }
-   }
+//         return {
+//            numberOfDice,
+//            numberOfSides,
+//            modifier,
+//            modifierSign
+//         };
+//      } else {
+//         return { error: 'Invalid dice specification. Please use the format [number of dice]d[number of sides][modifier].' };
+//      }
+//   }
 }

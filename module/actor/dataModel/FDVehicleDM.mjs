@@ -122,24 +122,22 @@ export class FDVehicleDM extends FDActorBaseDM {
       this.mod.save.all = 0;
    }
 
-   getParsedHD() {
-      const classSystem = game.fade.registry.getSystem("classSystem");
-      return classSystem.getParsedHD(this.hp.hd);
-   }
-
    /**
     * Calculate average hitpoints based on hitdice.
     */
    _prepareHitPoints() {
+      const classSystem = game.fade.registry.getSystem("classSystem");
       if (this.hp.max == null) {
-         const { base, modifier, dieSides } = this.getParsedHD();
-         this.hp.value = Math.ceil(((dieSides + 1) / 2) * base) + modifier;
+         // Not valid for formulas with * modifier sign
+         const { numberOfDice, numberOfSides, modifier } = classSystem.getParsedHD(this.hp.hd);
+         this.hp.value = Math.ceil(((numberOfSides + 1) / 2) * numberOfDice) + modifier;
          this.hp.max = this.hp.value;
       }
    }
 
    _prepareTHAC0ToHitBonus() {
       if (this.thac0?.value == null) {
+         // Not valid for formulas with * modifier sign
          const thac0Calc = new MonsterTHAC0Calculator();
          this.thac0.value = thac0Calc.getTHAC0(this.hp.hd);
       }

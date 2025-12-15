@@ -167,9 +167,11 @@ export class Wrestling {
          wrestlingMastery = actor.items.find(item => item.type === "mastery" && item.system.weaponType === "wr");
       }
 
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      const { numberOfDice } = classSystem.getParsedHD(actor.system.hp?.hd);
+
       if (actor.type === "character") {
-         const { base } = actor.system.getParsedHD();
-         result = Math.ceil(base / 2) + actor.system.ac.value;
+         result = Math.ceil(numberOfDice / 2) + actor.system.ac.value;
          result += actor.system.abilities?.str?.mod + actor.system.abilities?.dex?.mod;
          // If has wrestling mastery
          if (wrestlingMastery) {
@@ -177,15 +179,13 @@ export class Wrestling {
          }
       } else if (actor.type === "monster") {
          // Wrestling skill
-         const data = actor.system;
-         const { base } = actor.system.getParsedHD();
-         if (base) {
-            result = Math.ceil(base * 2);
+         if (numberOfDice) {
+            result = Math.ceil(numberOfDice * 2);
          }
          // Determine if the monster is wearing any non-natural armor.
          const hasArmor = actor.items.some(item => item.type === "armor" && item.system.equipped === true && item.system.natural === false);
          if (hasArmor) {
-            result += data.ac.value;
+            result += actor.system.ac.value;
          } else {
             result += CONFIG.FADE.Armor.acNaked;
          }

@@ -58,7 +58,26 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       const context = {};
       // Fetch actor data dynamically based on stored IDs
       context.trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
+
+      // get total party level
+      context.tpl = this.getTotalPartyLevel();
+
       return context;
+   }
+
+   /**
+    * Returns the total party level (TPL), which is the sum of all experience levels of all the characters
+    * in the party, when at max hp.
+    * @returns
+    */
+   getTotalPartyLevel() {
+      const trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
+      const classSystem = game.fade.registry.getSystem("classSystem");
+      const result = trackedActors.reduce((acc, actor) => {
+         const highestLevel = classSystem.getHighestLevel(actor) ?? 1;
+         return highestLevel + acc;
+      }, 0);
+      return result;
    }
 
    /**

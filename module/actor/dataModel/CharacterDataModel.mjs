@@ -14,9 +14,4 @@ export class CharacterDataModel extends FDCombatActorDM {
       super.prepareBaseData();
       this.encumbrance.max = this.encumbrance.max || game.fade.registry.getSystem("encumbranceSystem").CONFIG.maxLoad;
    }
-
-   getParsedHD() {
-      const classSystem = game.fade.registry.getSystem("classSystem");
-      return classSystem.getParsedHD(classSystem.getHighestHD(this.parent));
-   }
 }
