@@ -3,10 +3,13 @@
    "version": "2.0.0",
    "description": "CSS compiler for the fade system",
    "scripts": {
-      "lint": "eslint .",
-      "build": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --no-source-map",
-      "watch": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --source-map --watch",
-      "publish": "--echo git tag <version> && git push origin main && git push origin <version>"
+      "clean": "rimraf ./module",
+      "build": "npm run clean && tsc",
+      "watch": "tsc -w",
+      "buildcss": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --no-source-map",
+      "watchcss": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --source-map --watch",
+      "publish": "--echo git tag <version> && git push origin main && git push origin <version>",
+      "lint": "eslint ."
    },
    "browserslist": [
       "last 3 versions"
@@ -20,6 +23,8 @@
       "eslint": "^9.39.1",
       "globals": "^16.5.0",
       "prettier": "^3.6.2",
-      "sass": "^1.53.0"
+      "rimraf": "^6.1.2",
+      "sass": "^1.53.0",
+      "typescript": "^5.9.3"
    }
 }
