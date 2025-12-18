@@ -1,4 +1,4 @@
-import { CodeMigrate } from "../../sys/migration";
+import { CodeMigrate } from "../../sys/migration.js";
 
 /**
  * A mixin for adding VS Group modifier support to an ApplicationV2 class.

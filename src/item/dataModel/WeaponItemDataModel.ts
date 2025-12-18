@@ -1,4 +1,4 @@
-import { GearItemDataModel } from "./GearItemDataModel";
+import { GearItemDataModel } from "./GearItemDataModel.js";
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
 /**
  * Data model for a weapon item extending GearItemDataModel.
@@ -79,3 +79,4 @@ export class WeaponItemDataModel extends GearItemDataModel {
       this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
    }
 }
+

@@ -1,4 +1,4 @@
-import { DialogFactory } from '../../dialog/DialogFactory';
+import { DialogFactory } from '../../dialog/DialogFactory.js';
 /**
 * Requires class implements getAttackTypes()
 * @param {any} superclass Assumes superclass is derived from FDItem.

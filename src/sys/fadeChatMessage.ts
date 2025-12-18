@@ -1,4 +1,4 @@
-import { CodeMigrate } from "./migration";
+import { CodeMigrate } from "./migration.js";
 
 export class fadeChatMessage extends ChatMessage {
    /** @inheritDoc */
@@ -173,3 +173,4 @@ export class fadeChatMessage extends ChatMessage {
       html.querySelector(".message-content")?.appendChild(tray);
    }
 }
+

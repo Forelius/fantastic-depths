@@ -1,4 +1,4 @@
-import { UserTablesConfig } from "./apps/UserTablesConfig";
+import { UserTablesConfig } from "./apps/UserTablesConfig.js";
 
 export class fadeSettings {
    /**
@@ -467,3 +467,4 @@ export class fadeSettings {
       const currentValue = game.settings.get(game.system.id, "initiativeMode");
    }
 }
+

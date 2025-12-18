@@ -1,4 +1,4 @@
-import { DialogFactory } from '../../dialog/DialogFactory';
+import { DialogFactory } from '../../dialog/DialogFactory.js';
 
 /**
 * Requires class implements getAttackTypes()
@@ -127,3 +127,4 @@ const RollAttackMixin = (superclass) => class extends superclass {
 }
 
 export { RollAttackMixin }
+

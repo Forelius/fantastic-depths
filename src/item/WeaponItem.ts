@@ -1,6 +1,6 @@
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory";
-import { RollAttackMixin } from "./mixins/RollAttackMixin";
-import { GearItem } from "./GearItem";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
+import { RollAttackMixin } from "./mixins/RollAttackMixin.js";
+import { GearItem } from "./GearItem.js";
 
 export class WeaponItem extends RollAttackMixin(GearItem) {
    get isWeaponItem() { return true }
@@ -163,3 +163,4 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       }
    }
 }
+

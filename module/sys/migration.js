@@ -1,4 +1,4 @@
-import { SYSTEM_ID } from './config';
+import { SYSTEM_ID } from './config.js';
 /**
  * Sets the current game version in the system settings.
  * Intended for future use to handle data schema migrations between different game versions.

@@ -1,5 +1,5 @@
-import { SYSTEM_ID } from "./config";
-import { PlayerCombatForm } from "../apps/PlayerCombatForm";
+import { SYSTEM_ID } from "./config.js";
+import { PlayerCombatForm } from "../apps/PlayerCombatForm.js";
 
 // Define a unique socket namespace for your module
 const FADE_SOCKET = `system.${SYSTEM_ID}`;
@@ -144,3 +144,4 @@ export class SocketManager {
       }
    }
 }
+

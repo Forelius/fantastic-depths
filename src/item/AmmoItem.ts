@@ -1,4 +1,4 @@
-import { FDItem } from './FDItem';
+import { FDItem } from './FDItem.js';
 
 export class AmmoItem extends FDItem {
    get ownerToken() {
@@ -51,3 +51,4 @@ export class AmmoItem extends FDItem {
       this.system.unidentifiedName = this.system.unidentifiedName ?? this.name;
    }
 }
+

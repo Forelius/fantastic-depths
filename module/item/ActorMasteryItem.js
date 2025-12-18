@@ -1,5 +1,5 @@
-import { fadeFinder } from "../utils/finder";
-import { FDItem } from "./FDItem";
+import { fadeFinder } from "../utils/finder.js";
+import { FDItem } from "./FDItem.js";
 export class ActorMasteryItem extends FDItem {
     /** @override */
     prepareBaseData() {

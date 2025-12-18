@@ -1,5 +1,5 @@
-import { DialogFactory } from '../dialog/DialogFactory';
-import { FDItem } from './FDItem';
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { FDItem } from './FDItem.js';
 export class ConditionItem extends FDItem {
     get duration() {
         return 0;

@@ -1,4 +1,4 @@
-import { FDItem } from "./FDItem";
+import { FDItem } from "./FDItem.js";
 /**
  * MasteryDefinitionItem class that extends the base FDItem class.
  */

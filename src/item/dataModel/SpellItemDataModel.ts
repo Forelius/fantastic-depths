@@ -1,4 +1,4 @@
-import { SpellData } from '../fields/SpellField';
+import { SpellData } from '../fields/SpellField.js';
 
 /**
  * Data model for a spell item.
@@ -20,3 +20,4 @@ export class SpellItemDataModel extends foundry.abstract.TypeDataModel {
       this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
    }
 }
+

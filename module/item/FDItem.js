@@ -1,4 +1,4 @@
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}

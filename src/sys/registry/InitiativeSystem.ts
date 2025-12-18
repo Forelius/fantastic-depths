@@ -1,6 +1,6 @@
-import { DialogFactory } from "../../dialog/DialogFactory";
-import { SocketManager } from "../SocketManager"
-import { CodeMigrate } from "../migration";
+import { DialogFactory } from "../../dialog/DialogFactory.js";
+import { SocketManager } from "../SocketManager.js"
+import { CodeMigrate } from "../migration.js";
 
 class BaseInitiative {
    initiativeMode: any;
@@ -576,3 +576,4 @@ export class AltGroupInit extends GroupInit {
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
    }
 }
+

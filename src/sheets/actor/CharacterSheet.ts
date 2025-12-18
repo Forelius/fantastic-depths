@@ -1,4 +1,4 @@
-import { CharacterSheetBase } from "./CharacterSheetBase";
+import { CharacterSheetBase } from "./CharacterSheetBase.js";
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
@@ -184,3 +184,4 @@ export class CharacterSheet extends CharacterSheetBase {
       if (!foundry.utils.isEmpty(positionUpdate)) this.setPosition(positionUpdate);
    }
 }
+

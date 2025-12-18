@@ -1,5 +1,5 @@
-import { CodeMigrate } from '../../migration';
-import { CharacterDataModel } from '../../../actor/dataModel/CharacterDataModel';
+import { CodeMigrate } from '../../migration.js';
+import { CharacterDataModel } from '../../../actor/dataModel/CharacterDataModel.js';
 
 export class RandomCharacter {
   static async create(config) {
@@ -23,3 +23,4 @@ export class RandomCharacter {
     }
   }
 }
+

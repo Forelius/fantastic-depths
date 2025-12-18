@@ -1,4 +1,4 @@
-import { FDItem } from './FDItem';
+import { FDItem } from './FDItem.js';
 
 export class ActorClassItem extends FDItem {
    /**
@@ -23,3 +23,4 @@ export class ActorClassItem extends FDItem {
       return '--';
    }
 }
+

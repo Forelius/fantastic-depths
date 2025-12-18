@@ -1,6 +1,6 @@
-import { DragDropMixin } from "../mixins/DragDropMixin";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
-import { fadeFinder } from "../../utils/finder";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { fadeFinder } from "../../utils/finder.js";
 /**
  * Sheet class for SpellItem.
  */

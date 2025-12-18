@@ -1,6 +1,6 @@
-import { fadeFinder } from "../utils/finder";
-import { SavingThrowsData } from "./dataModel/ClassDefinitionDataModel";
-import { FDItem } from "./FDItem";
+import { fadeFinder } from "../utils/finder.js";
+import { SavingThrowsData } from "./dataModel/ClassDefinitionDataModel.js";
+import { FDItem } from "./FDItem.js";
 
 export class ClassDefinitionItem extends FDItem {
    static ValidItemTypes = ["item", "weapon", "armor"];
@@ -232,3 +232,4 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.spells": spells });
    }
 }
+

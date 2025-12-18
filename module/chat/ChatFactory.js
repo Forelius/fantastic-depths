@@ -1,12 +1,12 @@
-import { ChatBuilder } from './ChatBuilder';
-import { AbilityCheckChatBuilder } from './AbilityCheckChatBuilder';
-import { GenericRollChatBuilder } from './GenericRollChatBuilder';
-import { AttackRollChatBuilder } from './AttackRollChatBuilder';
-import { SkillRollChatBuilder } from './SkillRollChatBuilder';
-import { DamageRollChatBuilder } from './DamageRollChatBuilder';
-import { SpellCastChatBuilder } from './SpellCastChatBuilder';
-import { SpecialAbilityChat } from './SpecialAbilityChat';
-import { ItemRollChat } from './ItemRollChat';
+import { ChatBuilder } from './ChatBuilder.js';
+import { AbilityCheckChatBuilder } from './AbilityCheckChatBuilder.js';
+import { GenericRollChatBuilder } from './GenericRollChatBuilder.js';
+import { AttackRollChatBuilder } from './AttackRollChatBuilder.js';
+import { SkillRollChatBuilder } from './SkillRollChatBuilder.js';
+import { DamageRollChatBuilder } from './DamageRollChatBuilder.js';
+import { SpellCastChatBuilder } from './SpellCastChatBuilder.js';
+import { SpecialAbilityChat } from './SpecialAbilityChat.js';
+import { ItemRollChat } from './ItemRollChat.js';
 /**
  * Enumeration for chat factory types.
  * @enum {Symbol}
@@ -31,8 +31,7 @@ export const CHAT_TYPE = {
 const handler = {
     construct(_target, args) {
         const [type, ...bArgs] = args;
-        // Cast to any[] so the spread is accepted
-        const argsArray = bArgs;
+        //const bArgs = [...argsArray];
         let result = null;
         if (type === CHAT_TYPE.ABILITY_CHECK) {
             result = new AbilityCheckChatBuilder(...bArgs);

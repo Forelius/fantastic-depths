@@ -1,5 +1,5 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-import { fadeFinder } from '../utils/finder';
+import { fadeFinder } from '../utils/finder.js';
 class TurnData {
     dungeon;
     timeSteps;

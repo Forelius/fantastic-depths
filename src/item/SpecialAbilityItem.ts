@@ -1,7 +1,7 @@
-import { FDItem } from "./FDItem";
-import { DialogFactory } from "../dialog/DialogFactory";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory";
-import { TagManager } from "../sys/TagManager";
+import { FDItem } from "./FDItem.js";
+import { DialogFactory } from "../dialog/DialogFactory.js";
+import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
+import { TagManager } from "../sys/TagManager.js";
 
 export class SpecialAbilityItem extends FDItem {
    constructor(data, context) {
@@ -144,3 +144,4 @@ export class SpecialAbilityItem extends FDItem {
       return `${summary}${description}`;
    }
 }
+

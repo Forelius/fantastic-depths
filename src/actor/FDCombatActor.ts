@@ -1,8 +1,8 @@
-import { FDActorBase } from "./FDActorBase";
-import { fadeFinder } from '../utils/finder';
-import { DialogFactory } from '../dialog/DialogFactory';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory';
-import { TagManager } from '../sys/TagManager';
+import { FDActorBase } from "./FDActorBase.js";
+import { fadeFinder } from '../utils/finder.js';
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
+import { TagManager } from '../sys/TagManager.js';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -435,3 +435,4 @@ export class FDCombatActor extends FDActorBase {
       return result;
    }
 } 
+

@@ -1,4 +1,4 @@
-import { fadeFinder } from "../utils/finder";
+import { fadeFinder } from "../utils/finder.js";
 /**
 * Enumeration for chat result codes.
 * @enum {Symbol}
@@ -34,7 +34,7 @@ export class ChatBuilder {
      * @prop {string} template - Path to hbs template. Must be defined by subclasses.
      */
     constructor(...args) {
-        const { dataset, ...options } = args;
+        const [dataset, options] = args;
         // `new.target` is the concrete subclass constructor at runtime.
         const ctor = new.target;
         // Now we can safely read the static `template` property.

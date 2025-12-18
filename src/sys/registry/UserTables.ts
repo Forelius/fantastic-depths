@@ -1,4 +1,4 @@
-import { UserTablesConfig } from "../../apps/UserTablesConfig"
+import { UserTablesConfig } from "../../apps/UserTablesConfig.js"
 
 export class UserTables {
    static TABLE_TYPES = ["bonus", "keyvalue", "keyjson", "jsonarray"];
@@ -334,3 +334,4 @@ game.fade.registry.getSystem("userTables").addTable('dwarf-resiliance', 'Dwarf R
 game.fade.registry.getSystem("userTables").getBonus("dwarf-resiliance", 7);
 eval('game.fade.registry.getSystem("userTables").getBonus("dwarf-resiliance", 7)');
 */
+

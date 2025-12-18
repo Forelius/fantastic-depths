@@ -1,6 +1,6 @@
-import { FDItem } from './FDItem';
-import { DialogFactory } from '../dialog/DialogFactory';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory';
+import { FDItem } from './FDItem.js';
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 export class SkillItem extends FDItem {
     get hasTargets() {
         return true;

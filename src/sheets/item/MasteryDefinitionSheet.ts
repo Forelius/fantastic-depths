@@ -1,4 +1,4 @@
-import { FDItemSheetV2 } from './FDItemSheetV2';
+import { FDItemSheetV2 } from './FDItemSheetV2.js';
 
 /**
  * Sheet class for MasteryDefinitionItem.
@@ -52,3 +52,4 @@ export class MasteryDefinitionSheet extends FDItemSheetV2 {
       return context;
    }
 }
+

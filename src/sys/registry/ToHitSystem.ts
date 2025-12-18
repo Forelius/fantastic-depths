@@ -1,5 +1,5 @@
-import { fadeFinder } from "../../utils/finder";
-import { SocketManager } from "../SocketManager"
+import { fadeFinder } from "../../utils/finder.js";
+import { SocketManager } from "../SocketManager.js"
 
 export class ToHitInterface {
    getAttackRoll(actor, weapon, attackType, options = {}) { throw new Error("Method not implemented."); }
@@ -581,3 +581,4 @@ export class ToHitHeroic extends ToHitSystemBase {
       return toHitTable;
    }
 }
+

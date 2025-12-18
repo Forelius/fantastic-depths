@@ -1,11 +1,11 @@
 const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-import { DragDropMixin } from "../mixins/DragDropMixin";
-import { EffectManager } from "../../sys/EffectManager";
-import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory";
-import { FDItem } from "../../item/FDItem";
-import { fadeFinder } from "../../utils/finder";
-import { CodeMigrate } from "../../sys/migration";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { EffectManager } from "../../sys/EffectManager.js";
+import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
+import { FDItem } from "../../item/FDItem.js";
+import { fadeFinder } from "../../utils/finder.js";
+import { CodeMigrate } from "../../sys/migration.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications

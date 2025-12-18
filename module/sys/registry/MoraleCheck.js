@@ -1,5 +1,5 @@
-import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory";
-import { DialogFactory } from "../../dialog/DialogFactory";
+import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
+import { DialogFactory } from "../../dialog/DialogFactory.js";
 export class MoraleCheck {
     async execute(data) {
         const { actor, event } = data;

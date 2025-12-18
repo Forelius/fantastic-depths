@@ -1,6 +1,6 @@
 // actor-character
-import { FDCombatActor } from './FDCombatActor';
-import { fadeFinder } from '../utils/finder';
+import { FDCombatActor } from './FDCombatActor.js';
+import { fadeFinder } from '../utils/finder.js';
 
 export class MonsterActor extends FDCombatActor {
    constructor(data, context) {
@@ -53,3 +53,4 @@ export class MonsterActor extends FDCombatActor {
       }
    }   
 }
+

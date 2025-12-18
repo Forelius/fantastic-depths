@@ -1,5 +1,5 @@
-import { EffectManager } from '../../sys/EffectManager';
-import { FDItemSheetV2 } from './FDItemSheetV2';
+import { EffectManager } from '../../sys/EffectManager.js';
+import { FDItemSheetV2 } from './FDItemSheetV2.js';
 /**
  * Sheet class for SkillItem.
  */
@@ -113,3 +113,4 @@ export class SkillItemSheet extends FDItemSheetV2 {
       return tabs;
    }
 }
+

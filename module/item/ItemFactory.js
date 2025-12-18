@@ -1,53 +1,56 @@
-import { FDItem } from "../item/FDItem";
-import { GearItem } from "../item/GearItem";
-import { ArmorItem } from "../item/ArmorItem";
-import { WeaponItem } from "../item/WeaponItem";
-import { SpecialAbilityItem } from "../item/SpecialAbilityItem";
-import { SkillItem } from "../item/SkillItem";
-import { LightItem } from "../item/LightItem";
-import { SpellItem } from "../item/SpellItem";
-import { ActorMasteryItem } from "../item/ActorMasteryItem";
-import { ClassDefinitionItem } from "../item/ClassDefinitionItem";
-import { MasteryDefinitionItem } from "../item/MasteryDefinitionItem";
-import { ConditionItem } from "../item/ConditionItem";
-import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem";
-import { ActorClassItem } from "../item/ActorClassItem";
-import { AmmoItem } from "../item/AmmoItem";
+import { FDItem } from "../item/FDItem.js";
+import { GearItem } from "../item/GearItem.js";
+import { ArmorItem } from "../item/ArmorItem.js";
+import { WeaponItem } from "../item/WeaponItem.js";
+import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js";
+import { SkillItem } from "../item/SkillItem.js";
+import { LightItem } from "../item/LightItem.js";
+import { SpellItem } from "../item/SpellItem.js";
+import { ActorMasteryItem } from "../item/ActorMasteryItem.js";
+import { ClassDefinitionItem } from "../item/ClassDefinitionItem.js";
+import { MasteryDefinitionItem } from "../item/MasteryDefinitionItem.js";
+import { ConditionItem } from "../item/ConditionItem.js";
+import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem.js";
+import { ActorClassItem } from "../item/ActorClassItem.js";
+import { AmmoItem } from "../item/AmmoItem.js";
 const handler = {
-    construct(_item, { type, data, context } = {}) {
+    construct(_item, ...args) {
+        const context = args[0][1];
+        const data = args[0][0];
+        const itemType = data.type;
         let result = null;
-        if (type === "armor")
+        if (itemType === "armor")
             result = new ArmorItem(data, context);
-        else if (type === "weapon")
+        else if (itemType === "weapon")
             result = new WeaponItem(data, context);
-        else if (type === "item")
+        else if (itemType === "item")
             result = new GearItem(data, context);
-        else if (type === "treasure")
+        else if (itemType === "treasure")
             result = new GearItem(data, context);
-        else if (type === "specialAbility")
+        else if (itemType === "specialAbility")
             result = new SpecialAbilityItem(data, context);
-        else if (type === "mastery")
+        else if (itemType === "mastery")
             result = new ActorMasteryItem(data, context);
-        else if (type === "skill")
+        else if (itemType === "skill")
             result = new SkillItem(data, context);
-        else if (type === "light")
+        else if (itemType === "light")
             result = new LightItem(data, context);
-        else if (type === "spell")
+        else if (itemType === "spell")
             result = new SpellItem(data, context);
-        else if (type === "class")
+        else if (itemType === "class")
             result = new ClassDefinitionItem(data, context);
-        else if (type === "weaponMastery")
+        else if (itemType === "weaponMastery")
             result = new MasteryDefinitionItem(data, context);
-        else if (type === "condition")
+        else if (itemType === "condition")
             result = new ConditionItem(data, context);
-        else if (type === "species")
+        else if (itemType === "species")
             result = new AncestryDefinitionItem(data, context);
-        else if (type === "actorClass")
+        else if (itemType === "actorClass")
             result = new ActorClassItem(data, context);
-        else if (type === "ammo")
+        else if (itemType === "ammo")
             result = new AmmoItem(data, context);
         else
-            throw new Error(`Item constructor error: Type=${type} not defined by ItemFactory.`);
+            throw new Error(`Item constructor error: Type=${itemType} not defined by ItemFactory.`);
         return result;
     }
 };

@@ -1,7 +1,7 @@
-import { FDCombatActor } from '../actor/FDCombatActor';
-import { CharacterActor } from '../actor/CharacterActor';
-import { MonsterActor } from '../actor/MonsterActor';
-import { FDVehicleActor } from './FDVehicleActor';
+import { FDCombatActor } from '../actor/FDCombatActor.js';
+import { CharacterActor } from '../actor/CharacterActor.js';
+import { MonsterActor } from '../actor/MonsterActor.js';
+import { FDVehicleActor } from './FDVehicleActor.js';
 
 const handler = {
    /**
@@ -22,3 +22,4 @@ const handler = {
 };
 
 export const ActorFactory = new Proxy(FDCombatActor, handler); 
+

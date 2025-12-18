@@ -1,4 +1,4 @@
-import { CodeMigrate } from "../migration";
+import { CodeMigrate } from "../migration.js";
 export class Shove {
     static ActorSizes = [
         { id: "T", shoveResist: 1 }, // Tiny: Up to 2 feet

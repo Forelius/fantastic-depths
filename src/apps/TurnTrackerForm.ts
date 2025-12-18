@@ -1,5 +1,5 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-import { fadeFinder } from '../utils/finder';
+import { fadeFinder } from '../utils/finder.js';
 
 type DungeonStats = {
    session: number;
@@ -319,3 +319,4 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       return chatContent;
    }
 }
+

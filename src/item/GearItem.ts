@@ -1,6 +1,6 @@
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory';
-import { FDItem } from './FDItem';
-import { TagManager } from '../sys/TagManager';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
+import { FDItem } from './FDItem.js';
+import { TagManager } from '../sys/TagManager.js';
 
 /**
  * Extend the basic Item with some very simple modifications.

@@ -1,4 +1,4 @@
-import { SpecialAbilityData } from '../fields/SpecialAbilityField';
+import { SpecialAbilityData } from '../fields/SpecialAbilityField.js';
 /**
  * Data model for a special ability item.
  */

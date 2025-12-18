@@ -1,4 +1,4 @@
-import { SpecialAbilityData } from '../fields/SpecialAbilityField';
+import { SpecialAbilityData } from '../fields/SpecialAbilityField.js';
 
 /**
  * Data model for a special ability item.
@@ -19,3 +19,4 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
       this.savingThrow = this.savingThrow === '' ? null : this.savingThrow;
    }
 }
+

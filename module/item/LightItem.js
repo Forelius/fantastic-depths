@@ -1,5 +1,5 @@
-import { LightManager } from "../sys/LightManager";
-import { GearItem } from "./GearItem";
+import { LightManager } from "../sys/LightManager.js";
+import { GearItem } from "./GearItem.js";
 export class LightItem extends GearItem {
     /**
      * Does this light source require and external fuel such as lantern oil.

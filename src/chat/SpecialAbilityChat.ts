@@ -1,5 +1,5 @@
-import { ChatBuilder } from './ChatBuilder';
-import { CodeMigrate } from "../sys/migration";
+import { ChatBuilder } from './ChatBuilder.js';
+import { CodeMigrate } from "../sys/migration.js";
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
@@ -116,3 +116,4 @@ export class SpecialAbilityChat extends ChatBuilder {
       return result;
    }
 }
+

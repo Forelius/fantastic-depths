@@ -1,4 +1,4 @@
-import { UserTablesConfig } from "../../apps/UserTablesConfig";
+import { UserTablesConfig } from "../../apps/UserTablesConfig.js";
 export class UserTables {
     static TABLE_TYPES = ["bonus", "keyvalue", "keyjson", "jsonarray"];
     #userTables;

@@ -1,5 +1,5 @@
-import { FDCombatActorDM } from "../dataModel/FDCombatActorDM";
-import { CharacterData } from '../fields/CharacterField';
+import { FDCombatActorDM } from "../dataModel/FDCombatActorDM.js";
+import { CharacterData } from '../fields/CharacterField.js';
 export class CharacterDataModel extends FDCombatActorDM {
     static defineSchema() {
         const baseSchema = super.defineSchema();

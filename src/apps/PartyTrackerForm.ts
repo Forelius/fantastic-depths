@@ -1,5 +1,5 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-import { AwardXPDialog } from "./AwardXPDialog"
+import { AwardXPDialog } from "./AwardXPDialog.js"
 
 export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    #dragDrop;
@@ -271,3 +271,4 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       // Default behavior is fine
    }
 }
+

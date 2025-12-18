@@ -1,6 +1,6 @@
-import { FDItemSheetV2 } from './FDItemSheetV2';
-import { VsGroupModMixin } from '../mixins/VsGroupModMixin';
-import { fadeFinder } from '../../utils/finder';
+import { FDItemSheetV2 } from './FDItemSheetV2.js';
+import { VsGroupModMixin } from '../mixins/VsGroupModMixin.js';
+import { fadeFinder } from '../../utils/finder.js';
 
 /**
  * Sheet class for AmmoItem.
@@ -113,3 +113,4 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       return tabs;
    }
 }
+

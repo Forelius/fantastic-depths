@@ -1,5 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
-import { CodeMigrate } from "../sys/migration";
+import { CodeMigrate } from "../sys/migration.js";
 export class DamageTypeDialog {
     static async getDialog(dataset, caller, options) {
         const dialogData = { damageTypes: null };

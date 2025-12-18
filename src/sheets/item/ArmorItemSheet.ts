@@ -1,5 +1,5 @@
-import { EffectManager } from '../../sys/EffectManager';
-import { FDItemSheetV2 } from './FDItemSheetV2';
+import { EffectManager } from '../../sys/EffectManager.js';
+import { FDItemSheetV2 } from './FDItemSheetV2.js';
 
 /**
  * Sheet class for ArmorItem.
@@ -115,3 +115,4 @@ export class ArmorItemSheet extends FDItemSheetV2 {
       return tabs;
    }
 }
+

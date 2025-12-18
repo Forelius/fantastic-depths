@@ -1,4 +1,4 @@
-import { FDItemSheetV2 } from './FDItemSheetV2';
+import { FDItemSheetV2 } from './FDItemSheetV2.js';
 /**
  * Sheet class for MasteryDefinitionItem.
  */

@@ -1,5 +1,5 @@
-import { FDActorBaseDM } from "../dataModel/FDActorBaseDM";
-import { FDCombatActorData } from '../fields/FDCombatActorField';
+import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
+import { FDCombatActorData } from '../fields/FDCombatActorField.js';
 
 export class FDCombatActorDM extends FDActorBaseDM {
    static defineSchema() {
@@ -59,3 +59,4 @@ export class FDCombatActorDM extends FDActorBaseDM {
       this.mod.save.all = 0;
    }
 }
+

@@ -1,4 +1,4 @@
-import { DialogFactory } from "../../dialog/DialogFactory";
+import { DialogFactory } from "../../dialog/DialogFactory.js";
 export class Wrestling {
     static States = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
     /**

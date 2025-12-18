@@ -1,4 +1,4 @@
-import { CodeMigrate } from "./migration";
+import { CodeMigrate } from "./migration.js";
 
 export class fadeEffect extends ActiveEffect {
    /**
@@ -56,3 +56,4 @@ export class fadeEffect extends ActiveEffect {
       change.value = roll.total;
    }
 }
+

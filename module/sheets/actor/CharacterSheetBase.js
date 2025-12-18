@@ -1,4 +1,4 @@
-import { FDActorSheetV2 } from "./FDActorSheetV2";
+import { FDActorSheetV2 } from "./FDActorSheetV2.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {FDActorSheetV2}

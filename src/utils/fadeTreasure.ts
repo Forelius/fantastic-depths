@@ -1,4 +1,4 @@
-import { fadeFinder } from '../utils/finder';
+import { fadeFinder } from '../utils/finder.js';
 
 /**
  * Utility class for treasure table rolls.
@@ -208,3 +208,4 @@ export class fadeTreasure {
       return output;
    }
 }
+

@@ -1,10 +1,10 @@
-import { EffectManager } from "../../sys/EffectManager";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
-import { VsGroupModMixin } from "../mixins/VsGroupModMixin";
-import { ConditionMixin } from "../mixins/ConditionMixin";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin";
-import { SpellMixin } from "../mixins/SpellMixin";
-import { DragDropMixin } from "../mixins/DragDropMixin";
+import { EffectManager } from "../../sys/EffectManager.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
+import { ConditionMixin } from "../mixins/ConditionMixin.js";
+import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
+import { SpellMixin } from "../mixins/SpellMixin.js";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
 
 /**
  * Sheet class for WeaponItem.

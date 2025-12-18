@@ -1,5 +1,5 @@
-import { EffectManager } from "../../sys/EffectManager";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
+import { EffectManager } from "../../sys/EffectManager.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 
 export class TreasureItemSheet extends FDItemSheetV2 {
    /**

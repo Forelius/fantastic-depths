@@ -1,4 +1,4 @@
-import { FDItem } from './FDItem';
+import { FDItem } from './FDItem.js';
 export class AmmoItem extends FDItem {
     get ownerToken() {
         //console.debug(`Get ownerToken ${this.name} (${this.actor?.name}/${this.parent.name})`);

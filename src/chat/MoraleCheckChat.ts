@@ -1,5 +1,5 @@
-import { ChatBuilder } from './ChatBuilder';
-import { CodeMigrate } from "../sys/migration";
+import { ChatBuilder } from './ChatBuilder.js';
+import { CodeMigrate } from "../sys/migration.js";
 
 export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/ability-check.hbs';
@@ -49,3 +49,4 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       await ChatMessage.create(chatMessageData);
    }
 }
+

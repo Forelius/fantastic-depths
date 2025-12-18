@@ -1,4 +1,4 @@
-import { IdentifiableData } from '../fields/IdentifiableField';
+import { IdentifiableData } from '../fields/IdentifiableField.js';
 const { BooleanField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
 
 /**
@@ -54,3 +54,4 @@ export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
       super.prepareBaseData();
    }
 }
+

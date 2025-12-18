@@ -1,8 +1,8 @@
-import { RollAttackMixin } from './mixins/RollAttackMixin';
-import { FDItem } from './FDItem';
-import { DialogFactory } from '../dialog/DialogFactory';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory';
-import { TagManager } from '../sys/TagManager';
+import { RollAttackMixin } from './mixins/RollAttackMixin.js';
+import { FDItem } from './FDItem.js';
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
+import { TagManager } from '../sys/TagManager.js';
 export class SpellItem extends RollAttackMixin(FDItem) {
     constructor(data, context) {
         /** Default behavior, just call super() and do all the default Item inits */

@@ -1,4 +1,4 @@
-import { GearItem } from './GearItem';
+import { GearItem } from './GearItem.js';
 
 export class ArmorItem extends GearItem {
    /** @override */
@@ -27,3 +27,4 @@ export class ArmorItem extends GearItem {
       }
    }
 }
+

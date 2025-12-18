@@ -1,12 +1,12 @@
-﻿import { ChatBuilder } from './ChatBuilder';
-import { AbilityCheckChatBuilder } from './AbilityCheckChatBuilder';
-import { GenericRollChatBuilder } from './GenericRollChatBuilder';
-import { AttackRollChatBuilder } from './AttackRollChatBuilder';
-import { SkillRollChatBuilder } from './SkillRollChatBuilder';
-import { DamageRollChatBuilder } from './DamageRollChatBuilder';
-import { SpellCastChatBuilder } from './SpellCastChatBuilder';
-import { SpecialAbilityChat } from './SpecialAbilityChat';
-import { ItemRollChat } from './ItemRollChat';
+import { ChatBuilder } from './ChatBuilder.js';
+import { AbilityCheckChatBuilder } from './AbilityCheckChatBuilder.js';
+import { GenericRollChatBuilder } from './GenericRollChatBuilder.js';
+import { AttackRollChatBuilder } from './AttackRollChatBuilder.js';
+import { SkillRollChatBuilder } from './SkillRollChatBuilder.js';
+import { DamageRollChatBuilder } from './DamageRollChatBuilder.js';
+import { SpellCastChatBuilder } from './SpellCastChatBuilder.js';
+import { SpecialAbilityChat } from './SpecialAbilityChat.js';
+import { ItemRollChat } from './ItemRollChat.js';
 
 /**
  * Enumeration for chat factory types.
@@ -34,9 +34,7 @@ type ChatTypeEnum = typeof CHAT_TYPE[keyof typeof CHAT_TYPE];
 const handler: ProxyHandler<any> = {
    construct(_target, args: [ChatTypeEnum, ...any[]]): any {
       const [type, ...bArgs] = args;
-
-      // Cast to any[] so the spread is accepted
-      const argsArray = bArgs as any[];
+      //const bArgs = [...argsArray];
 
       let result: any = null;
       if (type === CHAT_TYPE.ABILITY_CHECK) {
@@ -62,3 +60,4 @@ const handler: ProxyHandler<any> = {
 };
 
 export const ChatFactory = new Proxy(ChatBuilder, handler);
+

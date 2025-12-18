@@ -1,6 +1,6 @@
-import { fadeFinder } from "../utils/finder";
-import { FDItem } from "./FDItem";
-import { TagManager } from "../sys/TagManager";
+import { fadeFinder } from "../utils/finder.js";
+import { FDItem } from "./FDItem.js";
+import { TagManager } from "../sys/TagManager.js";
 export class AncestryDefinitionItem extends FDItem {
     static ValidItemTypes = ["item", "weapon", "armor"];
     constructor(data, context) {

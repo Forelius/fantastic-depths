@@ -1,4 +1,4 @@
-import { CharacterSheetBase } from "./CharacterSheetBase";
+import { CharacterSheetBase } from "./CharacterSheetBase.js";
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
  * @extends {CharacterSheetBase}

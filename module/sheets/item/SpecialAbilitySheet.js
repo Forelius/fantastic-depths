@@ -1,8 +1,8 @@
-import { DragDropMixin } from "../mixins/DragDropMixin";
-import { ConditionMixin } from "../mixins/ConditionMixin";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
-import { EffectManager } from "../../sys/EffectManager";
-import { fadeFinder } from "../../utils/finder";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { ConditionMixin } from "../mixins/ConditionMixin.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { EffectManager } from "../../sys/EffectManager.js";
+import { fadeFinder } from "../../utils/finder.js";
 /**
  * Sheet class for SpecialAbilityItem.
  */

@@ -1,10 +1,10 @@
-import { fadeDialog } from "./fadeDialog";
-import { AttackDialog } from "./AttackDialog"
-import { SavingThrowDialog } from "./SavingThrowDialog"
-import { AbilityCheckDialog } from "./AbilityCheckDialog"
-import { LightMgrDialog } from "./LightMgrDialog"
-import { WrestlingDialog } from "./WrestlingDialog"
-import { DamageTypeDialog } from "./DamageTypeDialog"
+import { fadeDialog } from "./fadeDialog.js";
+import { AttackDialog } from "./AttackDialog.js"
+import { SavingThrowDialog } from "./SavingThrowDialog.js"
+import { AbilityCheckDialog } from "./AbilityCheckDialog.js"
+import { LightMgrDialog } from "./LightMgrDialog.js"
+import { WrestlingDialog } from "./WrestlingDialog.js"
+import { DamageTypeDialog } from "./DamageTypeDialog.js"
 /**
  * Create a type of dialog to be used.
  * @param {any} dataset Requires that dataset.dialog be set.
@@ -33,3 +33,4 @@ export const DialogFactory = async (dataset = null, caller = null, options: any 
    }
    return result;
 };
+

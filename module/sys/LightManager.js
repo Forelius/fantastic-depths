@@ -1,4 +1,4 @@
-import { DialogFactory } from '../dialog/DialogFactory';
+import { DialogFactory } from '../dialog/DialogFactory.js';
 export class LightManager {
     static initialize() { }
     static getToken() {

@@ -1,9 +1,9 @@
-import { ClassDefinitionItem } from "../../item/ClassDefinitionItem";
-import { FDItem } from "../../item/FDItem";
-import { fadeFinder } from "../..//utils/finder";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
-import { DragDropMixin } from "../mixins/DragDropMixin";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin";
+import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.js";
+import { FDItem } from "../../item/FDItem.js";
+import { fadeFinder } from "../..//utils/finder.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

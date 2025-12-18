@@ -1,4 +1,4 @@
-import { CodeMigrate } from "../migration";
+import { CodeMigrate } from "../migration.js";
 
 export class Shove {
    static ActorSizes = [

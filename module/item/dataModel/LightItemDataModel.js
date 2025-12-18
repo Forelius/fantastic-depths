@@ -1,4 +1,4 @@
-import { GearItemDataModel } from "./GearItemDataModel";
+import { GearItemDataModel } from "./GearItemDataModel.js";
 /**
  * Data model for a skill item extending GearItemDataModel.
  */

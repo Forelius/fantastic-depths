@@ -1,7 +1,7 @@
-import { fadeFinder } from "../../utils/finder";
+import { fadeFinder } from "../../utils/finder.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
-import { EffectManager } from '../../sys/EffectManager';
+import { EffectManager } from '../../sys/EffectManager.js';
 
 /**
  * Base sheet class for FDItem.
@@ -131,3 +131,4 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
       await fp.browse();
    }
 }
+

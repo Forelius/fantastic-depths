@@ -1,4 +1,4 @@
-import { FDActorSheetV2 } from "./FDActorSheetV2";
+import { FDActorSheetV2 } from "./FDActorSheetV2.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -136,3 +136,4 @@ export class MonsterSheet extends FDActorSheetV2 {
       await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }
+

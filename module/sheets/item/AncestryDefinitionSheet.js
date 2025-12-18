@@ -1,9 +1,9 @@
-import { AncestryDefinitionItem } from "../../item/AncestryDefinitionItem";
-import { DragDropMixin } from "../mixins/DragDropMixin";
-import { EffectManager } from "../../sys/EffectManager";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
-import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin";
+import { AncestryDefinitionItem } from "../../item/AncestryDefinitionItem.js";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { EffectManager } from "../../sys/EffectManager.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
+import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}

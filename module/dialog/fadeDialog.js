@@ -1,6 +1,6 @@
 const { DialogV2 } = foundry.applications.api;
-import { rollTableDialog } from '../dialog/rollTableDialog';
-import { CodeMigrate } from "../sys/migration";
+import { rollTableDialog } from '../dialog/rollTableDialog.js';
+import { CodeMigrate } from "../sys/migration.js";
 export class fadeDialog {
     static async getGenericDialog(dataset, caller) {
         const dialogData = {

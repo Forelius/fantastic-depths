@@ -1,8 +1,8 @@
-import { DialogFactory } from "../../dialog/DialogFactory";
-import { ClassDefinitionItem } from "../../item/ClassDefinitionItem";
-import { FDItem } from "../../item/FDItem";
-import { Formatter } from "../../utils/Formatter";
-import { fadeFinder } from "../../utils/finder";
+import { DialogFactory } from "../../dialog/DialogFactory.js";
+import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.js";
+import { FDItem } from "../../item/FDItem.js";
+import { Formatter } from "../../utils/Formatter.js";
+import { fadeFinder } from "../../utils/finder.js";
 
 export class ClassSystemBase {
    get isMultiClassSystem() {
@@ -1170,3 +1170,4 @@ export class MultiClassSystem extends ClassSystemBase {
       });
    }
 } 
+

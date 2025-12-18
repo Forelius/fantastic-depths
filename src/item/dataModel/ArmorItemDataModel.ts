@@ -1,4 +1,4 @@
-import { GearItemDataModel } from "./GearItemDataModel";
+import { GearItemDataModel } from "./GearItemDataModel.js";
 
 /**
  * Data model for an armor item extending GearItemDataModel.
@@ -47,3 +47,4 @@ export class ArmorItemDataModel extends GearItemDataModel {
       this.equipped = this.natural === true ? true : this.equipped;
    }
 }
+

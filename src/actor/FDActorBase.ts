@@ -1,4 +1,4 @@
-import { DialogFactory } from "../dialog/DialogFactory";
+import { DialogFactory } from "../dialog/DialogFactory.js";
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -258,3 +258,4 @@ export class FDActorBase extends Actor {
       dmgSys.ApplyDamage(this, value, damageType, attackType, weapon);
    }
 }
+

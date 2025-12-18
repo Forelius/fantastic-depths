@@ -1,5 +1,5 @@
-import { GenericRollChatBuilder } from './GenericRollChatBuilder';
-import { CodeMigrate } from "../sys/migration";
+import { GenericRollChatBuilder } from './GenericRollChatBuilder.js';
+import { CodeMigrate } from "../sys/migration.js";
 
 export class SkillRollChatBuilder extends GenericRollChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/skill-roll.hbs';
@@ -68,3 +68,4 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       await ChatMessage.create(chatMessageData);
    }
 }
+

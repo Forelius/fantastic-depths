@@ -1,4 +1,4 @@
-import { UserTablesConfig } from "./apps/UserTablesConfig";
+import { UserTablesConfig } from "./apps/UserTablesConfig.js";
 export class fadeSettings {
     /**
      * Register all of the system's settings.

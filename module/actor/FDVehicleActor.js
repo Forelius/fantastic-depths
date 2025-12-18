@@ -1,4 +1,4 @@
-import { FDCombatActor } from "./FDCombatActor";
+import { FDCombatActor } from "./FDCombatActor.js";
 /**
  * Extends the basic actor class with modifications for all system actors.
  * @extends {FDCombatActor}

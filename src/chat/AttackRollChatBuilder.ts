@@ -1,5 +1,5 @@
-import { ChatBuilder } from "./ChatBuilder";
-import { CodeMigrate } from "../sys/migration";
+import { ChatBuilder } from "./ChatBuilder.js";
+import { CodeMigrate } from "../sys/migration.js";
 
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
@@ -79,3 +79,4 @@ export class AttackRollChatBuilder extends ChatBuilder {
       });
    }
 } 
+

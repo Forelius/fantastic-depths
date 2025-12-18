@@ -1,4 +1,4 @@
-﻿import { fadeFinder } from "../utils/finder";
+import { fadeFinder } from "../utils/finder.js";
 
 /**
 * Enumeration for chat result codes.
@@ -11,7 +11,7 @@ const RESULT_TYPE = {
 };
 
 // ------------------------------------------------------------
-// 1️⃣  Define the shape of the static side
+// 1??  Define the shape of the static side
 // ------------------------------------------------------------
 interface ChatBuilderStatic {
    /** The template that the subclass supplies */
@@ -45,7 +45,7 @@ export abstract class ChatBuilder {
     * @prop {string} template - Path to hbs template. Must be defined by subclasses.
     */
    constructor(...args: any) {
-      const { dataset, ...options } = args;
+      const [dataset, options] = args;
       // `new.target` is the concrete subclass constructor at runtime.
       const ctor = new.target as typeof ChatBuilder & ChatBuilderStatic;
 
@@ -386,3 +386,4 @@ export abstract class ChatBuilder {
       return result;
    }
 }
+

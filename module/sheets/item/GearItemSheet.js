@@ -1,9 +1,9 @@
-import { EffectManager } from "../../sys/EffectManager";
-import { FDItemSheetV2 } from "./FDItemSheetV2";
-import { ConditionMixin } from "../mixins/ConditionMixin";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin";
-import { SpellMixin } from "../mixins/SpellMixin";
-import { DragDropMixin } from "../mixins/DragDropMixin";
+import { EffectManager } from "../../sys/EffectManager.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { ConditionMixin } from "../mixins/ConditionMixin.js";
+import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
+import { SpellMixin } from "../mixins/SpellMixin.js";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
 export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)))) {
     /**
     * Get the default options for the sheet.

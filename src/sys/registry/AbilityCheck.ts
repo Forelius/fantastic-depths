@@ -1,6 +1,6 @@
-import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory";
-import { ChatBuilder } from "../../chat/ChatBuilder";
-import { DialogFactory } from "../../dialog/DialogFactory";
+import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
+import { ChatBuilder } from "../../chat/ChatBuilder.js";
+import { DialogFactory } from "../../dialog/DialogFactory.js";
 
 /** Ability checks are often implemented differently for different systems. */
 export class AbilityCheck {

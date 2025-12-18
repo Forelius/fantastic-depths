@@ -1,5 +1,5 @@
 // fadeCombat
-import { SocketManager } from "../SocketManager";
+import { SocketManager } from "../SocketManager.js";
 // Custom Combat class
 export class fadeCombat extends Combat {
     /**

@@ -1,5 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
-import { CodeMigrate } from "../sys/migration";
+import { CodeMigrate } from "../sys/migration.js";
 export class WrestlingDialog {
     static async getDialog(dataset, caller, options) {
         const { attackers, defender, states } = options;
@@ -42,7 +42,7 @@ export class WrestlingDialog {
             ],
             close: () => { }
         }, {
-            classes: ["fantastic-depths", ...DialogV2.defaultOptions.classes]
+            classes: ["fantastic-depths", ...DialogV2.DEFAULT_OPTIONS.classes]
         });
         return dialogResp;
     }

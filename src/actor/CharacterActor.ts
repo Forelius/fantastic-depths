@@ -1,7 +1,7 @@
-import { FDCombatActor } from './FDCombatActor';
-import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem";
-import { DialogFactory } from '../dialog/DialogFactory';
-import { fadeFinder } from '../utils/finder';
+import { FDCombatActor } from './FDCombatActor.js';
+import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem.js";
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { fadeFinder } from '../utils/finder.js';
 
 export class CharacterActor extends FDCombatActor {
    constructor(data, context) {
@@ -164,3 +164,4 @@ export class CharacterActor extends FDCombatActor {
       }
    }
 }
+

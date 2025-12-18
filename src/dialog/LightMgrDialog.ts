@@ -1,5 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
-import { CodeMigrate } from "../sys/migration";
+import { CodeMigrate } from "../sys/migration.js";
 
 export class LightMgrDialog {
    static async getDialog(dataset, caller, opt) {
@@ -45,3 +45,4 @@ export class LightMgrDialog {
       return result;
    }
 }
+

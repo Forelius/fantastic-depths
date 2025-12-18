@@ -1,4 +1,4 @@
-import { FDItemSheetV2 } from './FDItemSheetV2';
+import { FDItemSheetV2 } from './FDItemSheetV2.js';
 
 /**
  * Sheet class for ActorMasteryItem.
@@ -56,3 +56,4 @@ export class ActorMasterySheet extends FDItemSheetV2 {
       return context;
    }
 }
+

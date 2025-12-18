@@ -1,4 +1,4 @@
-import { Formatter } from "./utils/Formatter";
+import { Formatter } from "./utils/Formatter.js";
 export class fadeHandlebars {
     static clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));

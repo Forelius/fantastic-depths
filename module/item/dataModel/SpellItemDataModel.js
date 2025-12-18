@@ -1,4 +1,4 @@
-import { SpellData } from '../fields/SpellField';
+import { SpellData } from '../fields/SpellField.js';
 /**
  * Data model for a spell item.
  */

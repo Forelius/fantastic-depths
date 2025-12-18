@@ -1,5 +1,5 @@
 const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-import { CodeMigrate } from "../sys/migration";
+import { CodeMigrate } from "../sys/migration.js";
 export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor() {
         super();

@@ -1,7 +1,7 @@
-import { FDCombatActorDM } from "./FDCombatActorDM";
-import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator';
-import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator';
-import { MonsterData } from '../fields/MonsterField';
+import { FDCombatActorDM } from "./FDCombatActorDM.js";
+import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.js';
+import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.js';
+import { MonsterData } from '../fields/MonsterField.js';
 
 export class MonsterDataModel extends FDCombatActorDM {
    static defineSchema() {
@@ -57,3 +57,4 @@ export class MonsterDataModel extends FDCombatActorDM {
       }
    }
 }
+

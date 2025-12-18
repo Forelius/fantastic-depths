@@ -1,5 +1,5 @@
 const { DialogV2 } = foundry.applications.api;
-import { CodeMigrate } from "../sys/migration";
+import { CodeMigrate } from "../sys/migration.js";
 export class AttackDialog {
     /**
      * Display a dialog allowing the caller to select a type of attack and attack roll modifier.

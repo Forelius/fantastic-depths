@@ -1,4 +1,4 @@
-import { DialogFactory } from "../dialog/DialogFactory";
+import { DialogFactory } from "../dialog/DialogFactory.js";
 /**
  * Extends the basic actor class with modifications for all system actors.
  * @extends {Actor}
