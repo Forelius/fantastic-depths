@@ -25,28 +25,26 @@ export class MonsterDataModel extends FDCombatActorDM {
       this._prepareXP();
    }
 
-   getParsedHD() {
-      const classSystem = game.fade.registry.getSystem("classSystem");
-      return classSystem.getParsedHD(this.hp.hd);
-   }
-
    /**
     * Calculate average hitpoints based on hitdice.
     */
    _prepareHitPoints() {
       if (this.hp.max == null) {
-         const { base, modifier, dieSides } = this.getParsedHD();
-         this.hp.value = Math.ceil(((dieSides + 1) / 2) * base) + modifier;
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         const { numberOfDice, numberOfSides, modifier } = classSystem.getParsedHD(this.hp.hd);
+         this.hp.value = Math.ceil(((numberOfSides + 1) / 2) * numberOfDice) + modifier;
          this.hp.max = this.hp.value;
       }
    }
 
+   /** Calculate experience points for killing this monster. Only works with modifiers of +/-. */
    _prepareXP() {
       if (this.details.xpAward == null || this.details.xpAward == 0) {
+         const classSystem = game.fade.registry.getSystem("classSystem");
+         const { numberOfDice, modifierSign, modifier } = classSystem.getParsedHD(this.hp.hd);
          const xpCalc = new MonsterXPCalculator();
-         const { base, modifier, dieSides, sign } = this.getParsedHD();
-         if (base > 0 || modifier > 0) {
-            const xp = xpCalc.getXP(`${base}${sign}${(modifier != 0 ? modifier : '')}`, this.details.abilityCount);
+         if (numberOfDice > 0 || modifier > 0) {
+            const xp = xpCalc.getXP(`${numberOfDice}${modifierSign}${(modifier != 0 ? modifier : '')}`, this.details.abilityCount);
             this.details.xpAward = xp;
          }
       }

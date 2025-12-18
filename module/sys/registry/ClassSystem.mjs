@@ -3,6 +3,7 @@ import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.mjs";
 import { FDItem } from "../../item/FDItem.mjs";
 import { Formatter } from "../../utils/Formatter.mjs";
 import { fadeFinder } from "../../utils/finder.mjs";
+import { MonsterXPCalculator } from "../../utils/MonsterXPCalculator.mjs"
 
 export class ClassSystemBase {
    get isMultiClassSystem() {
@@ -223,36 +224,44 @@ export class ClassSystemBase {
       }
    }
 
-   /**
-    * Parsed hitdice into their component parts.
-    * @param {any} hd The hitdice string
-    * @returns An object with base, modifier, dieSides and sign properties.
-    */
-   getParsedHD(hd) {
-      // Regular expression to check for a dice specifier like d<number>
-      const diceRegex = /d(\d+)/;
-      // Regular expression to capture the base number and any modifiers (+, -, *, /) that follow
-      const modifierRegex = /([+\-*/]\d+)$/;
-      const match = hd.match(diceRegex);
-      let dieSides = 8;
+   getParsedHD(hd, defaultSides = 8) {
+      const regex = /(\d*\.?\d+)(?:d(\d+))?([+\-*])?(\d+)?/; // Allow for decimal numbers in the number of dice and optional sides
+      const match = hd.match(regex);
+
       if (match) {
-         dieSides = parseInt(match[1], 10);
+         let numberOfDice = parseFloat(match[1]); // Use parseFloat to handle decimal values
+         let numberOfSides = match[2] ? parseInt(match[2], 10) : defaultSides; // Use defaultSides if sides are missing
+         const modifierSign = match[3] || '';
+         const modifierNumber = match[4] ? parseInt(match[4], 10) : 0;
+         const modifier = modifierSign === '-' ? -modifierNumber :
+            modifierSign === '+' ? modifierNumber :
+               modifierSign === '*' ? modifierNumber : 0;
+         // If numberOfDice is less than 1, adjust numberOfSides accordingly
+         if (numberOfDice < 1) {
+            numberOfSides = Math.ceil(numberOfSides * numberOfDice); // Calculate sides based on the fraction
+            numberOfDice = 1; // Set numberOfDice to 1 since we are effectively rolling one die
+         }
+
+         return {
+            numberOfDice,
+            numberOfSides,
+            modifier,
+            modifierSign
+         };
       } else {
-         dieSides = 8;
+         return { error: 'Invalid dice specification. Please use the format [number of dice]d[number of sides][modifier].' };
       }
-      // If no dice specifier is found, check if there's a modifier like +1, *2, etc.
-      let base = hd.replace(modifierRegex, ""); // Extract base number
-      let modifier = hd.match(modifierRegex)?.[0] || 0; // Extract modifier (if any)
-      base = parseFloat(base);
-      modifier = parseInt(modifier, 10);
-      const sign = modifier <= 0 ? "" : "+";
-      return { base, modifier, dieSides, sign };
    }
 
    getHighestHD(actor) {
       return actor.system.hp.hd;
    }
 
+   /**
+    * Returns the monster's hd, the character's highest level attained, or 1 if not a monster or character.
+    * @param {any} actor The actor to get highest level for.
+    * @returns {number} The highest level or hd.
+    */
    getHighestLevel(actor) {
       let result = 1;
       if (actor.type === "monster") {
@@ -998,9 +1007,9 @@ export class MultiClassSystem extends ClassSystemBase {
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       for (let actorClass of actorClasses) {
          if (actorClass.system.hd) {
-            const { base, modifier, dieSides, sign } = this.getParsedHD(actorClass.system.hd);
-            if (highestBase < base) {
-               highestBase = base;
+            const { numberOfDice } = this.getParsedHD(actorClass.system.hd);
+            if (highestBase < numberOfDice) {
+               highestBase = numberOfDice;
                hd = actorClass.system.hd;
             }
          } else {
