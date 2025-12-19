@@ -2,8 +2,9 @@
  * None or armor-only if used by itself.
  */
 export class BasicEncumbrance {
-   options: any;
-   CONFIG: any;
+   options: { encSetting: string };;
+   CONFIG: { tableMonster: null, tablePC: null, defaultGearEnc: 0 };
+
    constructor(options) {
       this.options = options;
       this.CONFIG = CONFIG.FADE.Encumbrance.Basic;
@@ -14,7 +15,8 @@ export class BasicEncumbrance {
     * @param {any} actor The actor who's encumbrance is being prepared
     */
    prepareDerivedData(actor) {
-      let encumbrance: any = {};
+      const encumbrance = { value: 0, max: 0 };
+
       Object.assign(encumbrance, actor.system.encumbrance);
       Object.assign(encumbrance, {
          mv: actor.system.movement.max,
@@ -38,6 +40,7 @@ export class BasicEncumbrance {
     * Calculate encumbrance for different categories.
     * @param {any} items The items to calculate encumbrance with.
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    calcCategoryEnc(items) {
       return {};
    }
@@ -48,10 +51,12 @@ export class BasicEncumbrance {
     * @param {any} actor
     * @returns
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    _getTotalEnc(actor) {
       return 0;
    }
 
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    _getEncTier(actor, totalEnc) {
       let table;
 
@@ -96,7 +101,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
     * @param {any} items The items to calculate encumbrance with.
     */
    calcCategoryEnc(items) {
-      const results: any = {};
+      const results = { gearEnc: 0, weaponsEnc: 0, ammoEnc: 0, armorEnc: 0 };
 
       // Gear
       results.gearEnc = this.CONFIG.defaultGearEnc + items.filter(item => item.type === "treasure" || item.system.isTreasure === true).reduce((sum, item) => {

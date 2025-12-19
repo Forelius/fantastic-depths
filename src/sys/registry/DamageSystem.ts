@@ -1,8 +1,7 @@
 export class DamageSystem {
-   options: any;
-   useAV: any;
-   constructor(options) {
-      this.options = options;
+   useAV: boolean;
+   constructor() {
+      this.useAV = this.useAV === undefined ? game.settings.get(game.system.id, "useArmorValue") : this.useAV;
    }
 
    /**
@@ -15,13 +14,12 @@ export class DamageSystem {
     * @param {any} damageSource (optional) The weapon, spell or other item that caused the damage.
     */
    async ApplyDamage(actor, delta, damageType, attackType, damageSource = null) {
-      this.useAV = this.useAV === undefined ? game.settings.get(game.system.id, "useArmorValue") : this.useAV;
       const systemData = actor.system;
       const tokenName = actor.parent?.name ?? actor.name;
       let finalDelta = delta;
       const prevHP = systemData.hp.value;
       let finalHP = Math.min((systemData.hp.value + finalDelta), systemData.hp.max);
-      let digest = [];
+      const digest = [];
       const isHeal = delta > 0;
 
       if (isHeal) {
@@ -61,7 +59,7 @@ export class DamageSystem {
       const digest = [];
 
       // Check each VS Group modifier on the weapon
-      for (const [groupId, modData] of Object.entries(vsGroupMods) as any) {
+      for (const [groupId, modData] of Object.entries(vsGroupMods) as [string, Record<string, number>][]) {
          // Find the group definition in CONFIG.FADE.ActorGroups
          const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
 
@@ -115,7 +113,7 @@ export class DamageSystem {
       return result;
    }
 
-   getMeleeDamageScale(weapon, digest, attackerData, targetActor) {
+   getMeleeDamageScale(digest, attackerData) {
       let result = 1;
       if (attackerData.mod.combat.dmgScale != null && attackerData.mod.combat.dmgScale != 1) {
          result = Number(attackerData.mod.combat.dmgScale);
@@ -240,7 +238,7 @@ export class DamageSystem {
 
    #sendChatAndToast(source, digest) {
       let chatContent = source ? `<div class="text-size18">${source.name}</div>` : "";
-      for (let msg of digest) {
+      for (const msg of digest) {
          chatContent += `<div>${msg}</div>`;
       }
 
@@ -249,7 +247,7 @@ export class DamageSystem {
       }
 
       const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker
-      let chatData = {
+      const chatData = {
          speaker: speaker,
          content: chatContent
       };

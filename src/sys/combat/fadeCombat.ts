@@ -65,7 +65,7 @@ export class fadeCombat extends Combat {
     * @returns {Promise<Combat>}
     **/
    async startCombat() {
-      let result = super.startCombat();
+      const result = super.startCombat();
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
       if (game.user.isGM) {
          this.#resetCombatants();
@@ -84,8 +84,8 @@ export class fadeCombat extends Combat {
     * @returns {Promise<Combat>}
     * */
    async nextRound() {
-      let nextRound = this.round + 1;
-      let result = super.nextRound();
+      const nextRound = this.round + 1;
+      const result = super.nextRound();
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
 
       if (game.user.isGM) {
@@ -94,7 +94,7 @@ export class fadeCombat extends Combat {
          // If initiative next round mode is reset...
          if (this.nextRoundMode === "reset") {
             // Reset initiative for all combatants
-            for (let combatant of this.combatants) {
+            for (const combatant of this.combatants) {
                // Reset initiative to null
                await combatant.update({ initiative: null });
             }
@@ -172,6 +172,7 @@ export class fadeCombat extends Combat {
     */
    onCreateCombat(combat) {
       if (game.user.isGM) {
+         console.log(`Combat created`, combat);
          const speaker = { alias: game.user.name };  // Use the player's name as the speaker
          // Send a chat message when combat begins
          ChatMessage.create({
@@ -195,7 +196,7 @@ export class fadeCombat extends Combat {
             speaker: speaker,
             content: game.i18n.localize("FADE.Chat.combatTracker.ended"),
          });
-         for (let combatant of combat.combatants) {
+         for (const combatant of combat.combatants) {
             combatant.roundReset(true);
          }
       }
@@ -208,6 +209,7 @@ export class fadeCombat extends Combat {
     * @param {object} options Hook options
     * @param {string} userId User ID who triggered creation
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    async onCreateCombatant(combatant, options, userId) {
       if (game.user.isGM) {
          if (combatant.actor === null || combatant.actor === undefined) {
@@ -241,7 +243,7 @@ export class fadeCombat extends Combat {
     */
    updateStateTracking(turns) {
       // Update state tracking
-      let c = turns[this.turn];
+      const c = turns[this.turn];
       this.current = {
          round: this.round,
          turn: this.turn,
@@ -285,7 +287,7 @@ export class fadeCombat extends Combat {
     */
    #resetCombatants() {
       this.#tryShowPlayerCombatForm();
-      for (let combatant of this.combatants) {
+      for (const combatant of this.combatants) {
          combatant.roundReset();
       }
    }

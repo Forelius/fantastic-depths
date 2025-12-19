@@ -1,6 +1,6 @@
 export class RandomCharacterConfig {
-   abilityScoreFormula: any;
-   constructor(options: any = {}) {
+   abilityScoreFormula: string;
+   constructor(options) {
       this.abilityScoreFormula = options?.abilityScoreFormula || "3d6";
    }
 }

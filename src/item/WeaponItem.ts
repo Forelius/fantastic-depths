@@ -1,6 +1,7 @@
 import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
 import { RollAttackMixin } from "./mixins/RollAttackMixin.js";
 import { GearItem } from "./GearItem.js";
+import { WeaponMasteryInterface } from "../sys/registry/WeaponMastery.js";
 
 export class WeaponItem extends RollAttackMixin(GearItem) {
    get isWeaponItem() { return true }
@@ -20,8 +21,8 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       const weaponData = this.system;
       const targetActor = targetToken?.actor;
       const attackerData = this.parent.system;
-      const masterySystem = game.fade.registry.getSystem("weaponMastery");
-      let evaluatedRoll = this.getEvaluatedRollSync(weaponData.damageRoll);
+      const masterySystem = game.fade.registry.getSystem("weaponMastery") as WeaponMasteryInterface;
+      const evaluatedRoll = this.getEvaluatedRollSync(weaponData.damageRoll);
       let formula = evaluatedRoll?.formula;
       let digest = [];
       let modifier = 0;
@@ -31,7 +32,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
       if (attackType === "melee") {
          modifier += dmgSys.getMeleeDamageMod(this, digest, attackerData, targetActor);
-         scale = dmgSys.getMeleeDamageScale(this, digest, attackerData, targetActor);
+         scale = dmgSys.getMeleeDamageScale(digest, attackerData);
       } else if (attackType === "missile") {
          modifier += dmgSys.getMissileDamageMod(this, digest, attackerData, targetActor, ammoItem);
       } else if (attackType === "breath") {
@@ -49,7 +50,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
 
       // Check weapon mastery
       if (hasDamage && masterySystem) {
-         const wmResult = masterySystem.getDamageMods(this, targetWeaponType, formula, modifier);
+         const wmResult = masterySystem.getDamageMods(this, formula, targetWeaponType);
          if (wmResult) {
             formula = wmResult?.formula ?? formula;
             digest = [...digest, ...wmResult.digest];
@@ -78,8 +79,9 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       } : null;
    }
 
-   async showAttackChatMessage(result: any = {}) {
-      let { attacker, ammoItem, dialogResp, digest, rollEval } = result;
+   async showAttackChatMessage(result = { attacker: null, dialogResp: null, digest: null, rollEval: null, ammoItem: null }) {
+      const { attacker, dialogResp, digest, rollEval } = result;
+      let ammoItem = result.ammoItem;
       const chatData = {
          resp: dialogResp,
          caller: this,
@@ -100,7 +102,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
     * @returns An array of valid attack types for this weapon.
     */
    getAttackTypes() {
-      let result = [];
+      const result = [];
       const isBreath = this.system.breath?.length > 0 && this.system.savingThrow === "breath";
 
       if (isBreath) {
@@ -163,4 +165,3 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       }
    }
 }
-

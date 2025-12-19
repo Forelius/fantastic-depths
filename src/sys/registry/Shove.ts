@@ -1,4 +1,5 @@
 import { CodeMigrate } from "../migration.js";
+import { SYSTEM_ID } from "../config.js";
 
 export class Shove {
    static ActorSizes = [
@@ -24,14 +25,14 @@ export class Shove {
       }
 
       // Get dialog data
-      const defenderData: any = await this.getDialogData(attacker, defender);
+      const defenderData = await this.getDialogData(attacker, defender);
       if (!defenderData) return; // Exit if canceled
 
       // Extract values
-      let { attsize, attbonus, defsize, defhd, defbonus } = defenderData;
+      const { attsize, attbonus, defsize, defhd, defbonus } = defenderData;
 
       // Calculate Resist value
-      let resistValue = this.getShoveResist(defsize) + Math.ceil(defhd / 2) + defbonus;
+      const resistValue = this.getShoveResist(defsize) + Math.ceil(Number(defhd) / 2) + Number(defbonus);
 
       // Get attacker roll die and roll
       const attackDie = this.getShoveDie(attsize);
@@ -67,8 +68,8 @@ export class Shove {
       });
    }
 
-   async getDialogData(attacker, defender) {
-      const template = 'systems/fantastic-depths/templates/dialog/shove.hbs';
+   async getDialogData(attacker, defender): Promise<Record<string, unknown>> {
+      const template = `systems/${SYSTEM_ID}/templates/dialog/shove.hbs`;
       const dialogData = {
          attacker,
          defender,

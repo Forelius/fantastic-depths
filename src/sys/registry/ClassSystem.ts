@@ -3,8 +3,9 @@ import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.js";
 import { FDItem } from "../../item/FDItem.js";
 import { Formatter } from "../../utils/Formatter.js";
 import { fadeFinder } from "../../utils/finder.js";
+import { setBag } from "../../utils/globalHelpers.js";
 
-export class ClassSystemBase {
+export abstract class ClassSystemBase {
    get isMultiClassSystem() {
       return false;
    }
@@ -24,6 +25,7 @@ export class ClassSystemBase {
     * @param {any} actor - The actor object for which the spell slots context is being prepared.
     * @returns {Promise<any[]>} - An array containing the context object with spell slot information.
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    async prepareSpellsContext(actor) { return []; }
 
    /**
@@ -38,6 +40,7 @@ export class ClassSystemBase {
     * @param {Event} event - The event object associated with the action (if applicable).
     * @returns {Promise<void>} - A promise that resolves when all spells have been reset and notifications are sent.
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    async resetSpells(actor, event) {
       const spells = actor.items.filter((item) => item.type === "spell");
       spells.forEach(async (spell) => {
@@ -51,6 +54,7 @@ export class ClassSystemBase {
       await ChatMessage.create({ content: msg });
    }
 
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    async onCharacterActorUpdate(actor, updateData, skipItems = false) { }
 
    /**
@@ -61,7 +65,8 @@ export class ClassSystemBase {
     * @param {any} item The item being updated.
     * @param {any} updateData The update data from the update event.
     */
-   async onActorItemUpdate(actor, item, updateData, skipItems = false) { }
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   async onActorItemUpdate(actor, item, updateData) { }
 
    /**
     * Clears the class data for a specified actor and class name.
@@ -100,14 +105,14 @@ export class ClassSystemBase {
       await actor.update({ system: update });
       const abilityNames = classItem.system.specialAbilities.map(item => item.name);
       const actorAbilities = actor.items.filter(item => item.type === "specialAbility" && item.system.category !== "save" && abilityNames.includes(item.name));
-      for (let classAbility of actorAbilities) {
+      for (const classAbility of actorAbilities) {
          classAbility.delete();
       }
       const itemNames = classItem.system.classItems.map(item => item.name);
-      let actorItems = [...actor.items.filter(item => (item.type === "weapon" || item.type === "armor") && itemNames.includes(item.name)),
+      const actorItems = [...actor.items.filter(item => (item.type === "weapon" || item.type === "armor") && itemNames.includes(item.name)),
       ...actor.items.filter(item => item.type === "actorClass" && item.name === className)];
 
-      for (let actorItem of actorItems) {
+      for (const actorItem of actorItems) {
          actorItem.delete();
       }
    }
@@ -356,7 +361,7 @@ export class ClassSystemBase {
       for (let i = 0; i < spellLevelCount; i++) {
          spellLevels.push({ spells: [] })
       }
-      for (let spellItem of spellItems) {
+      for (const spellItem of spellItems) {
          spellItem.img = spellItem.img || Item.DEFAULT_ICON;
          const slotIndex = spellItem.system.spellLevel - firstSpellLevel;
          if (spellItem.system.spellLevel !== undefined && spellLevels?.length >= slotIndex && slotIndex >= 0) {
@@ -582,7 +587,7 @@ export class SingleClassSystem extends ClassSystemBase {
          await this.#prepareClassInfo(actor);
          await this.#updateLevelClass(actor, skipItems);
       } else if (actor.system.details?.class === "") {
-         let update = {
+         const update = {
             details: {
                classKey: null,
                castAsKey: null,
@@ -597,7 +602,7 @@ export class SingleClassSystem extends ClassSystemBase {
             }
          };
          // Get ability scores from actor
-         for (let [akey, aval] of Object.entries(actor.system.abilities)) {
+         for (const [akey] of Object.entries(actor.system.abilities)) {
             update.abilities[akey] = { min: 1 };
          }
          await actor.update({ system: update });
@@ -696,41 +701,39 @@ export class SingleClassSystem extends ClassSystemBase {
       const classDataObj = await this._getClassData(actor.system.details.class, actor.system.details.level);
       if (classDataObj) {
          const { classItem, classData, currentLevel, levelData, prevLevelData, nextLevelData, nameLevel } = classDataObj;
-         let update: any = {
+         const update: PropertyBag = {
             details: {
                level: currentLevel,
                classKey: classData.key,
                castAsKey: classData.castAsKey,
                xp: {
-                  bonus: classItem.getXPBonus(actor.system.abilities)
-               }
+                  bonus: classItem.getXPBonus(actor.system.abilities),
+               },
             },
             combat: {
                // If false then take from class data, otherwise whatever character's value was set to.
                basicProficiency: classData.basicProficiency,
                unskilledToHitMod: classData.unskilledToHitMod,
             },
-            hp: {},
-            thac0: {},
          };
 
          // Level stuff
          if (levelData) {
             update.thbonus = levelData.thbonus;
-            update.hp.hd = levelData.hd;
-            update.thac0.value = levelData.thac0;
+            update.hp = { hd: levelData.hd };
+            update.thac0 = { value: levelData.thac0 };
             if (actor.system.details.title == "" || actor.system.details.title == null || actor.system.details.title == prevLevelData?.title) {
                const ordinalized = Formatter.formatOrdinal(currentLevel);
-               update.details.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
+               setBag(update.details, ["title"], levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title);
             }
             update.abilities = await actor.setupMinAbilityScores(classItem.system.abilities);
          }
 
          if (nextLevelData) {
-            update.details.xp.next = nextLevelData.xp;
+            setBag(update.details, ["xp", "next"], nextLevelData.xp);
          }
 
-         update.details.species = actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species;
+         setBag(update.details, ["species"], actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species);
 
          await actor.update({ system: update });
       } else {
@@ -794,7 +797,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {any} item The item being updated.
     * @param {any} updateData The update data from the update event.
     */
-   async onActorItemUpdate(actor, item, updateData, skipItems = false) {
+   async onActorItemUpdate(actor, item, updateData) {
       if (item.type === "actorClass" && (updateData.system.level !== undefined
          || updateData.name !== undefined
          || updateData.system.isPrimary !== undefined)) {
@@ -875,7 +878,7 @@ export class MultiClassSystem extends ClassSystemBase {
             }
          }
       } else {
-         for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
+         for (const actorClass of actor.items.filter(item => item.type === "actorClass")) {
             result = { ...result, ...this.getLevelAndCastAsLevel(actorClass.system.level, actorClass.system.key, actorClass.system.castAsKey) };
          }
       }
@@ -921,7 +924,7 @@ export class MultiClassSystem extends ClassSystemBase {
       } else {
          const casterClasses = actor.items.filter(item => item.type === "actorClass" && item.system.maxSpellLevel > 0);
 
-         for (let casterClass of casterClasses) {
+         for (const casterClass of casterClasses) {
             const classSpells = actor.items.filter(item => item.type === "spell" && item.system.classes?.some(cls => cls.name === casterClass.name));
             const firstSpellLevel = casterClass.system.firstSpellLevel;
             const maxSpellLevel = casterClass.system.maxSpellLevel;
@@ -965,7 +968,7 @@ export class MultiClassSystem extends ClassSystemBase {
       const primaries = actor.items.filter(item => item.type === "actorClass" && (item.system.isPrimary === true || hasPrimary === false));
       const indivAmount = Math.floor(amount / (primaries?.length ?? 1));
       const amounts = [];
-      for (let actorClass of actorClasses) {
+      for (const actorClass of actorClasses) {
          if (hasPrimary === false || actorClass.system.isPrimary === true) {
             amounts.push((Math.floor(Number((actorClass.system.xp.bonus ?? 0) / 100) * indivAmount)) + indivAmount);
          } else {
@@ -976,12 +979,12 @@ export class MultiClassSystem extends ClassSystemBase {
    }
 
    async awardXP(actor, amounts) {
-      let xps = (input => input.split("/").map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
+      const xps = (input => input.split("/").map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       if (xps?.length > 0 && xps?.length == actorClasses?.length) {
          const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
          let index = 0;
-         for (let actorClass of actorClasses) {
+         for (const actorClass of actorClasses) {
             const currentXP = Number(foundry.utils.getProperty(actorClass, "system.xp.value") ?? 0);
             const finalXP = Number(xps[index]) + currentXP;
             if (hasPrimary === false || actorClass.system.isPrimary === true) {
@@ -1004,7 +1007,7 @@ export class MultiClassSystem extends ClassSystemBase {
       let hd = null;
       let highestBase = 0;
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
-      for (let actorClass of actorClasses) {
+      for (const actorClass of actorClasses) {
          if (actorClass.system.hd) {
             const { numberOfDice } = this.getParsedHD(actorClass.system.hd);
             if (highestBase < numberOfDice) {
@@ -1024,7 +1027,7 @@ export class MultiClassSystem extends ClassSystemBase {
          result = super.getHighestLevel(actor);
       } else if (actor.type === "character") {
          const actorClasses = actor.items.filter(item => item.type === "actorClass");
-         for (let actorClass of actorClasses) {
+         for (const actorClass of actorClasses) {
             if (actorClass.system.level) {
                if (result < actorClass.system.level) {
                   result = actorClass.system.level;
@@ -1047,7 +1050,7 @@ export class MultiClassSystem extends ClassSystemBase {
       const classDataObj = await this._getClassData(item.name, (updateData.system?.level ?? item.system.level));
       if (classDataObj) {
          const { classItem, classData, currentLevel, levelData, nextLevelData, nameLevel } = classDataObj;
-         let update: any = {
+         const update: PropertyBag = {
             key: classData.key,
             castAsKey: classData.castAsKey,
             level: currentLevel,
@@ -1071,11 +1074,11 @@ export class MultiClassSystem extends ClassSystemBase {
             update.thbonus = levelData.thbonus;
             const ordinalized = Formatter.formatOrdinal(currentLevel);
             update.title = levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title;
-            update.xp.current = levelData.xp;
+            setBag(update, ["xp", "current"], levelData.xp);
          }
 
          if (nextLevelData) {
-            update.xp.next = nextLevelData.xp;
+            setBag(update, ["xp", "next"], nextLevelData.xp);
          }
 
          await item.update({ system: update });
@@ -1123,7 +1126,7 @@ export class MultiClassSystem extends ClassSystemBase {
       let bestSavesData = {};
       const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
 
-      for (let actorClass of actor.items.filter(item => item.type === "actorClass")) {
+      for (const actorClass of actor.items.filter(item => item.type === "actorClass")) {
          // If current actor class is a primary class or there are no primary classes...
          if (hasPrimary === false || actorClass.system.isPrimary === true) {
             // Saving throws
@@ -1169,5 +1172,4 @@ export class MultiClassSystem extends ClassSystemBase {
          "system.details.xp.bonus": xpBonus,
       });
    }
-} 
-
+}

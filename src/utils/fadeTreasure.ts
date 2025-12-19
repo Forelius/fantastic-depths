@@ -1,10 +1,20 @@
 import { fadeFinder } from '../utils/finder.js';
 
+type CoinJewelry = {
+   content: string,
+   value: number
+};
+
+type Gem = {
+   name: string,
+   value: number
+};
+
 /**
  * Utility class for treasure table rolls.
  */
 export class fadeTreasure {
-   group: { coins: any[]; gems: any[]; jewelry: any[]; special: any[]; items: any[]; };
+   group: { coins: CoinJewelry[]; gems: Gem[]; jewelry: CoinJewelry[]; special: []; items: string []; };
    constructor() {
       this.group = {
          coins: [],
@@ -60,29 +70,37 @@ export class fadeTreasure {
       ChatMessage.create(chatMsgData);
    }
 
-   async #rollWorldTableMulti(tableName, rollFormula) {
+   /**
+    * Rolls on the specified table with the specified formula.
+    * @param tableName The name of the table to roll on.
+    * @param rollFormula The roll formula to use.
+    * @returns The table result as a string.
+    */
+   async #rollWorldTableMulti(tableName: string, rollFormula): Promise<string> {
+      let result = null;
       const table = await fadeFinder.getRollTable(tableName);
       if (!table) {
          console.error(`No RollTable named "${tableName}" found!`);
-         return;
+      } else {
+         // Roll the formula to get how many times we'll draw
+         const drawRoll = new Roll(rollFormula);
+         await drawRoll.evaluate();
+         const numberOfDraws = drawRoll.total;
+
+         // Draw from the table multiple times
+         const results: string[] = [];
+         for (let i = 0; i < numberOfDraws; i++) {
+            // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
+            const draw = await table.draw({ displayChat: false });
+            // Usually draw.results is an array; we’ll grab the text from the first result
+            const resultText: string = draw.results.map(r => r.getChatText());
+            results.push(resultText.length > 0 ? resultText : resultText[0]);
+         }
+
+         result = this.#formatOutput(results);
       }
 
-      // Roll the formula to get how many times we'll draw
-      const drawRoll = new Roll(rollFormula);
-      await drawRoll.evaluate();
-      const numberOfDraws = drawRoll.total;
-
-      // Draw from the table multiple times
-      const results = [];
-      for (let i = 0; i < numberOfDraws; i++) {
-         // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
-         const draw = await table.draw({ displayChat: false });
-         // Usually draw.results is an array; we’ll grab the text from the first result
-         const resultText = draw.results.map(r => r.getChatText());
-         results.push(resultText.length > 0 ? resultText : resultText[0]);
-      }
-
-      return this.#formatOutput(results);
+      return result;
    }
 
    async #doTableRolls(tables) {
@@ -179,15 +197,15 @@ export class fadeTreasure {
    #processGemsRoll(itemRoll) {
       const gemsArray = CONFIG.FADE.TreasureTypes.gems;
       for (let i = 0; i < itemRoll.total; i++) {
-         const random = Math.floor(Math.random() * (gemsArray.length));
+         const random: number = Math.floor(Math.random() * (gemsArray.length));
          const gem = gemsArray[random];
          const localizedType = game.i18n.localize(`FADE.treasure.${gem.type}`) || gem.type;
          this.group.gems.push({ name: localizedType, value: gem.value });
       }
    }
 
-   #formatOutput(textResults) {
-      let output = "<div>";
+   #formatOutput(textResults): string {
+      let output: string = "<div>";
       for (const resultText of textResults) {
          if (Array.isArray(resultText)) {
             output += `<div><span>${resultText[0]}</span>`;
@@ -208,4 +226,3 @@ export class fadeTreasure {
       return output;
    }
 }
-

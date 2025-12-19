@@ -1,10 +1,13 @@
 import { fadeFinder } from "../../utils/finder.js";
 import { SocketManager } from "../SocketManager.js"
+import { UserTables } from "./UserTables.js";
+import { WeaponMasteryInterface } from "./WeaponMastery.js";
 
-export class ToHitInterface {
-   getAttackRoll(actor, weapon, attackType, options = {}) { throw new Error("Method not implemented."); }
-   async getToHitResults(attacker, weapon, targetTokens, roll, attackType = "melee") { throw new Error("Method not implemented."); }
-   getDiceSum(roll) { throw new Error("Method not implemented."); }
+export interface ToHitInterface {
+   rangeModifiers: Record<string, number>;
+   getAttackRoll(actor, weapon, attackType, options);
+   getToHitResults(attacker, weapon, targetTokens, roll, attackType);
+   getDiceSum(roll);
    /**
    * Get the lowest AC that can be hit by the specified roll and THAC0
    * @param {any} roll The sum of the dice rolled.
@@ -12,24 +15,28 @@ export class ToHitInterface {
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
    */
-   getLowestACHit(roll, rollTotal, thac0) { throw new Error("Method not implemented."); return 20; }
+   getLowestACHit(roll, rollTotal, thac0): number;
+   getDistance(token1, token2): number;
+   getRange(distance, ranges): string;
 }
 
-export class ToHitSystemBase extends ToHitInterface {
-   rangeModifiers: any;
-   toHitSystem: any;
+abstract class ToHitSystemBase implements ToHitInterface {
+   rangeModifiers: Record<string, number>;
+   toHitSystem: string;
    isAAC: boolean;
-   masterySystem: any;
-   acAbbr: any;
+   masterySystem: WeaponMasteryInterface;
+   acAbbr: string;
    constructor() {
-      super();
-      const userTablesSystem = game.fade.registry.getSystem("userTables");
+      const userTablesSystem: UserTables = game.fade.registry.getSystem("userTables");
       const rangedMods = userTablesSystem.getKeyValuesJson("ranged-modifiers");
       this.rangeModifiers = rangedMods;
       this.toHitSystem = game.settings.get(game.system.id, "toHitSystem");
       this.isAAC = this.toHitSystem === "aac";
       this.masterySystem = game.fade.registry.getSystem("weaponMastery");
    }
+
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   getLowestACHit(roll, rollTotal, thac0) { return Infinity; }
 
    /**
     * Get the attack roll formula for the specified weapon, attack type, mod and target.
@@ -43,7 +50,7 @@ export class ToHitSystemBase extends ToHitInterface {
     *    attackRoll - In case the attack roll is not a straight 1d20.
     * @returns
     */
-   getAttackRoll(actor, weapon, attackType, options: any = {}) {
+   getAttackRoll(actor, weapon, attackType, options = { mod: null, target: null, targetWeaponType: null, attackRoll: null, ammoItem: null }) {
       const weaponData = weapon.system;
       let formula = options.attackRoll ?? game.settings.get(game.system.id, "attackRollFormula");;
       let digest = [];
@@ -127,9 +134,9 @@ export class ToHitSystemBase extends ToHitInterface {
 
          // Target results for each individual target.
          // Warning: This is not correctly handling weapon mastery-based mods to attack roll, since attack rolls assume a single target weapon type.
-         for (let targetToken of targetTokens) {
-            let targetActor = targetToken.actor;
-            let targetResult = {
+         for (const targetToken of targetTokens) {
+            const targetActor = targetToken.actor;
+            const targetResult = {
                targetuuid: targetToken.uuid,
                targetname: targetToken.name,
                targetac: this.#getNormalTargetAC(targetToken, attackType),
@@ -138,7 +145,7 @@ export class ToHitSystemBase extends ToHitInterface {
             };
 
             let ac = targetActor.system.ac?.total;
-            let aac = targetActor.system.ac?.totalAAC;
+            const aac = targetActor.system.ac?.totalAAC;
 
             // If weapon mastery system is enabled...
             if (this.masterySystem) {
@@ -181,9 +188,9 @@ export class ToHitSystemBase extends ToHitInterface {
             //message: "Saving throw required.",
             targetResults: []
          };
-         for (let targetToken of targetTokens) {
+         for (const targetToken of targetTokens) {
             const saveLocalized = (await fadeFinder.getSavingThrow(weapon.system.savingThrow))?.name;
-            let targetResult = {
+            const targetResult = {
                targetuuid: targetToken.uuid,
                targetname: targetToken.name,
                message: `save vs. ${saveLocalized}`
@@ -211,7 +218,7 @@ export class ToHitSystemBase extends ToHitInterface {
       return sum;
    }
 
-   getDistance(token1, token2) {
+   getDistance(token1, token2): number {
       let result = 0;
       if (token1 && token2) {
          const waypoints = [token1.object.center, token2.object.center];
@@ -226,7 +233,7 @@ export class ToHitSystemBase extends ToHitInterface {
       return Math.floor(result);
    }
 
-   getRange(distance, ranges) {
+   getRange(distance, ranges): string {
       let result = null;
       if (distance < 6) {
          result = "close";
@@ -336,7 +343,7 @@ export class ToHitSystemBase extends ToHitInterface {
       const vsGroupMods = weaponData.mod?.vsGroup;
       if (vsGroupMods) {
          // Check each VS Group modifier on the weapon
-         for (const [groupId, modData] of Object.entries(vsGroupMods) as any) {
+         for (const [groupId, modData] of Object.entries(vsGroupMods) as [string, Record<string,number>][]) {
             // Find the group definition in CONFIG.FADE.ActorGroups
             const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
 
@@ -395,6 +402,7 @@ export class ToHitAAC extends ToHitSystemBase {
    * @param {any} thac0 The attacker's effective THAC0
    * @returns {Number} The lowest AC that this roll can hit.
    */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    getLowestACHit(roll, rollTotal, thac0) {
       return rollTotal;
    }
@@ -520,15 +528,13 @@ export class ToHitHeroic extends ToHitSystemBase {
    * @returns {Number} The lowest AC that this roll can hit.
    */
    getLowestACHit(roll, rollTotal, thac0) {
-      let result;
       const toHitTable = this.#getToHitTable(thac0);
       // Filter all entries that the rollTotal can hit
       const validEntries = toHitTable.filter(entry => rollTotal >= entry.toHit);
       // Find the lowest AC from valid entries
-      result = validEntries.reduce((minEntry, currentEntry) => {
+      return validEntries.reduce((minEntry, currentEntry) => {
          return currentEntry.ac < minEntry.ac ? currentEntry : minEntry;
       }, { ac: Infinity }).ac;
-      return result;
    }
 
    #getToHitTable(thac0, repeater = 0) {
@@ -581,4 +587,3 @@ export class ToHitHeroic extends ToHitSystemBase {
       return toHitTable;
    }
 }
-

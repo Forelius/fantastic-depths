@@ -1,9 +1,9 @@
-const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField, ObjectField } = foundry.data.fields;
+const { NumberField, SchemaField } = foundry.data.fields;
 
 export class AbilityScoreBase {
-   abilityScoreSetting: any;
+   abilityScoreSetting: string;
    hasAbilityScoreMods: boolean;
-   abilityScoreMods: any;
+   abilityScoreMods: string;
    constructor() {
       this.abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
       this.hasAbilityScoreMods = this.abilityScoreSetting === "withmod";
@@ -11,7 +11,7 @@ export class AbilityScoreBase {
    }
 
    prepareBaseData(dataModel) {
-      for (let [key] of Object.entries(dataModel.abilities)) {
+      for (const [key] of Object.entries(dataModel.abilities)) {
          const value = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.value`)) || 0;
          const tempMod = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.tempMod`)) || 0;
          foundry.utils.setProperty(dataModel.abilities, `${key}.total`, value + tempMod);
@@ -22,7 +22,7 @@ export class AbilityScoreBase {
       // If this is a character or if monsters have ability score mods...
       if (dataModel.parent.type === "character" || this.hasAbilityScoreMods === true) {
          // Initialize ability score modifiers
-         for (let [key] of Object.entries(dataModel.abilities)) {
+         for (const [key] of Object.entries(dataModel.abilities)) {
             const adjustments = this.getAdjustments(key);
             const total = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.total`)) || 0;
             const sorted = (adjustments ?? []).sort((a, b) => b.min - a.min);
@@ -33,6 +33,7 @@ export class AbilityScoreBase {
       }
    }
 
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    getAdjustments(abilityScoreKey) {
       return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
    }

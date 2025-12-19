@@ -1,6 +1,7 @@
 import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
 import { ChatBuilder } from "../../chat/ChatBuilder.js";
 import { DialogFactory } from "../../dialog/DialogFactory.js";
+import { UserTables } from "./UserTables.js";
 
 /** Ability checks are often implemented differently for different systems. */
 export class AbilityCheck {
@@ -13,7 +14,7 @@ export class AbilityCheck {
       const dataset = event.target.dataset;
       let dialogResp = null;
       let chatType = CHAT_TYPE.ABILITY_CHECK;
-      let digest = [];
+      const digest = [];
 
       dataset.formula = game.settings.get(game.system.id, "abilityCheckFormula");
       dataset.dialog = dataset.test;
@@ -23,12 +24,12 @@ export class AbilityCheck {
          if (dialogResp) {
             let mod = 0;
             dialogResp.formula = dialogResp.formula?.length > 0 ? dialogResp.formula : dataset.formula;
-            let manualMod = Number(dialogResp.mod) || 0;
+            const manualMod = Number(dialogResp.mod) || 0;
             if (manualMod != 0) {
                digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: manualMod }));
             }
             const difficultyLevels = game.fade.registry.getSystem("userTables").getKeyValuesJson("difficulty-levels");
-            let difficultyMod = dialogResp.difficulty?.length > 0 ? Number(difficultyLevels[dialogResp.difficulty]) || 0 : 0;
+            const difficultyMod = dialogResp.difficulty?.length > 0 ? Number(difficultyLevels[dialogResp.difficulty]) || 0 : 0;
             if (difficultyMod != 0) {
                digest.push(game.i18n.format("FADE.Chat.rollMods.difficulty", { mod: difficultyMod }));
             }
@@ -76,9 +77,10 @@ export class TieredAbilityCheck extends AbilityCheck {
     * @returns {string|null} The tier name, or null if no match.
     */
    getTieredResultName(diff, invert = false) {
-      const tieredResults = game.fade.registry.getSystem("userTables").getKeyValuesJson("tiered-results");
+      const userTablesSys: UserTables = game.fade.registry.getSystem("userTables");
+      const tieredResults = userTablesSys.getKeyValuesJson("tiered-results");
       const entries = Object.entries(tieredResults);
-      const sorted = entries.sort((a:any, b:any) => invert ? a[1] - b[1] : b[1] - a[1]);
+      const sorted = entries.sort((a, b) => invert ? a[1] - b[1] : b[1] - a[1]);
       let result = null;
       for (const [name, threshold] of sorted) {
          if (invert ? diff <= threshold : diff >= threshold) {
