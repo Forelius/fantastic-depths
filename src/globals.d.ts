@@ -13,5 +13,5 @@ declare global {
    // or another PropertyBag, allowing unlimited nesting.
    type PropertyBag = {
       [K: string]: Leaf | PropertyBag;
-   };   
+   };
 }

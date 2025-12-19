@@ -1,16 +1,16 @@
 import { CharacterSheetBase } from "./CharacterSheetBase.js";
+import { SheetTab } from "../SheetTab.js";
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
  * @extends {CharacterSheetBase}
  */
-// @ts-ignore
 export class CharacterSheet extends CharacterSheetBase {
    constructor(options = {}) {
       super(options);
    }
 
-   static DEFAULT_OPTIONS = {
+   static DEFAULT_OPTIONS: Record<string, unknown> = {
       position: {
          width: 650,
          height: 600,
@@ -21,7 +21,7 @@ export class CharacterSheet extends CharacterSheetBase {
       classes: ["character"],
    }
 
-   static PARTS = {
+   static PARTS: Record<string, unknown> = {
       tabnav: {
          template: "systems/fantastic-depths/templates/actor/character/side-tabs.hbs",
       },
@@ -77,8 +77,8 @@ export class CharacterSheet extends CharacterSheetBase {
       }
    }
 
-   async _prepareContext(options) {
-      const context = await super._prepareContext(options);
+   async _prepareContext() {
+      const context = await super._prepareContext();
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;
@@ -86,33 +86,33 @@ export class CharacterSheet extends CharacterSheetBase {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<any>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
 
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
-      const tabs: any = {
-         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
+      const tabs: Record<string, SheetTab> = {
+         abilities: new SheetTab("abilities", group, "FADE.tabs.abilities"),
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: "items", group, label: "FADE.items" };
-         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
+         tabs.items = new SheetTab("items", group, "FADE.items");
+         tabs.skills = new SheetTab("skills", group, "FADE.tabs.skills");
          if (this.actor.system.config.maxSpellLevel > 0) {
-            tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+            tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells");
          }
-         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
-         tabs.description = { id: "description", group, label: "FADE.tabs.description" };
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
+         tabs.description = new SheetTab("description", group, "FADE.tabs.description");
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");
       }
 
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }
@@ -145,8 +145,7 @@ export class CharacterSheet extends CharacterSheetBase {
       const tab = button.dataset.tab;
       if (!tab || button.classList.contains("active") || (event.button !== 0)) return;
       const group = button.dataset.group;
-      const navElement = button.closest(".tabs");
-      this.changeTab(tab, group, { event, navElement });
+      this.changeTab(tab, group);
    }
 
    /**
@@ -154,12 +153,10 @@ export class CharacterSheet extends CharacterSheetBase {
     * @param {string} tab        The name of the tab which should become active
     * @param {string} group      The name of the tab group which defines the set of tabs
     * @param {object} [options]  Additional options which affect tab navigation
-    * @param {Event} [options.event]                 An interaction event which caused the tab change, if any
-    * @param {HTMLElement} [options.navElement]      An explicit navigation element being modified
     * @param {boolean} [options.force=false]         Force changing the tab even if the new tab is already active
     * @param {boolean} [options.updatePosition=true] Update application position after changing the tab?
     */
-   changeTab(tab, group, { event, navElement, force = false, updatePosition = true } = { event: null, navElement: null }) {
+   changeTab(tab, group, { force, updatePosition } = { force: false, updatePosition: true }) {
       if (!tab || !group) throw new Error("You must pass both the tab and tab group identifier");
       if ((this.tabGroups[group] === tab) && !force) return;  // No change necessary
       const tabElement = this.element.querySelector(`.tabs > [data-group="${group}"][data-tab="${tab}"]`);
@@ -178,10 +175,9 @@ export class CharacterSheet extends CharacterSheetBase {
 
       // Update automatic width or height
       if (!updatePosition) return;
-      const positionUpdate: any = {};
+      const positionUpdate: Record<string, string> = {};
       if (this.options.position.width === "auto") positionUpdate.width = "auto";
       if (this.options.position.height === "auto") positionUpdate.height = "auto";
       if (!foundry.utils.isEmpty(positionUpdate)) this.setPosition(positionUpdate);
    }
 }
-

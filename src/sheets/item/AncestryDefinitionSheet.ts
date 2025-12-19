@@ -2,6 +2,7 @@ import { AncestryDefinitionItem } from "../../item/AncestryDefinitionItem.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
 import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
 
@@ -97,20 +98,20 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "description";
-      const tabs = {
-         description: { id: "description", group, label: "FADE.tabs.description", cssClass: "item" },
-         attributes: { id: "attributes", group, label: "FADE.tabs.attributes", cssClass: "item" },
-         specialAbilities: { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural", cssClass: "item" },
-         items: { id: "items", group, label: "FADE.items" },
-         effects: { id: "effects", group, label: "FADE.tabs.effects", cssClass: "item" },
+      const tabs: Record<string, SheetTab> = {
+         description: new SheetTab("description", group, "FADE.tabs.description", "item"),
+         attributes: new SheetTab("attributes", group, "FADE.tabs.attributes", "item"),
+         specialAbilities: new SheetTab("specialAbilities", group, "FADE.SpecialAbility.plural", "item"),
+         items: new SheetTab("items", group, "FADE.items"),
+         effects: new SheetTab("effects", group, "FADE.tabs.effects", "item"),
       }
-      for (const v of Object.values(tabs) as any) {
+      for (const v of Object.values(tabs) as SheetTab[]) {
          v.active = this.tabGroups[v.group] === v.id;
          v.cssClass = v.active ? "active" : "";
       }

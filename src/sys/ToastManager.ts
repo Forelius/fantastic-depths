@@ -1,6 +1,6 @@
 export class ToastManager {
    toastContainer: HTMLDivElement;
-   lastToastTime: {};
+   lastToastTime: Record<string,number>;
    constructor() {
       this.toastContainer = document.createElement('div');
       this.toastContainer.classList.add('toast-container');

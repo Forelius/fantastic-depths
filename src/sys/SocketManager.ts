@@ -96,7 +96,7 @@ export class SocketManager {
          case "closePlayerCombat":
             if (game.user.isGM === false) {
                for (const app of Object.values(ui.windows) as any) {
-                  if (app.id === PlayerCombatForm.APP_ID) {
+                  if (app?.id === PlayerCombatForm.APP_ID) {
                      app.close(); // Closes the form
                   }
                }

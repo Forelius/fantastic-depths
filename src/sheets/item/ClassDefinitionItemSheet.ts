@@ -2,6 +2,7 @@ import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.js";
 import { FDItem } from "../../item/FDItem.js";
 import { fadeFinder } from "../..//utils/finder.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
 
@@ -9,7 +10,6 @@ import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {FDItemSheetV2}
  */
-// @ts-ignore
 export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
    /**
    * Get the default options for the sheet.
@@ -120,27 +120,27 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
 
    /**
     * Prepare an array of form header tabs.
-    * @returns {Record<string, Partial<any>>}
+    * @returns {Record<string, SheetTab>}
     */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "description";
 
-      const tabs: any = {
-         levels: { id: "levels", group, label: "FADE.tabs.levels" },
-         description: { id: "description", group, label: "FADE.tabs.description" },
-         saves: { id: "saves", group, label: "FADE.Actor.Saves.long" },
-         primereqs: { id: "primereqs", group, label: "FADE.tabs.primeRequisites" },
-         specialAbilities: { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" },
-         items: { id: "items", group, label: "FADE.items" },
+      const tabs: Record<string, SheetTab> = {
+         levels: new SheetTab("levels", group, "FADE.tabs.levels"),
+         description: new SheetTab("description", group, "FADE.tabs.description"),
+         saves: new SheetTab("saves", group, "FADE.Actor.Saves.long"),
+         primereqs: new SheetTab("primereqs", group, "FADE.tabs.primeRequisites"),
+         specialAbilities: new SheetTab("specialAbilities", group, "FADE.SpecialAbility.plural"),
+         items: new SheetTab("items", group, "FADE.items"),
       }
 
       if (this.item.system.maxSpellLevel > 0) {
-         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+         tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells");
       }
 
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }

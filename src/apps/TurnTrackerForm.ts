@@ -171,11 +171,9 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    /**
    * Actions performed after any render of the Application.
    * Post-render steps are not awaited by the render process.
-   * @param {any} context      Prepared context data
-   * @param {any} options                 Provided render options
    * @protected
    */
-   _onRender(context, options) {
+   _onRender() {
       if (game.user.isGM == false) return;
 
       // Initialize tab system

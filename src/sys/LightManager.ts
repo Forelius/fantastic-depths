@@ -17,6 +17,7 @@ export class LightManager {
     * @param {any} options
     * @param {any} userId The user who triggered the time changed.
     */
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    static async onUpdateWorldTime(worldTime, dt, options, userId) {
       if (dt !== 0) {
          // Iterate over all canvas tokens

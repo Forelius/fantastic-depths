@@ -59,11 +59,9 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    /**
      * Actions performed after any render of the Application.
      * Post-render steps are not awaited by the render process.
-     * @param {ApplicationRenderContext} context      Prepared context data
-     * @param {RenderOptions} options                 Provided render options
      * @protected
      */
-   _onRender(context, options) {
+   _onRender() {
       if (this.isEditable) {
          const inputField = this.element.querySelector('input[data-action="addTag"]');
          inputField?.addEventListener('keydown', (event) => {
@@ -131,4 +129,3 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
       await fp.browse();
    }
 }
-

@@ -10,7 +10,6 @@ import { CodeMigrate } from "../../sys/migration.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
-// @ts-ignore
 export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
    constructor(options = {}) {
@@ -18,7 +17,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       this.isRestoringCollapsedState = false;
    }
 
-   static DEFAULT_OPTIONS = {
+   static DEFAULT_OPTIONS: Record<string, unknown> = {
       position: {
          width: 650,
          height: 500,
@@ -181,7 +180,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       });
    }
 
-   async _prepareContext(options) {
+   async _prepareContext() {
       // Retrieve the data structure from the base sheet. You can inspect or log
       // the context variable to see the structure, but some key properties for
       // sheets are the actor object, the data object, whether or not it's
@@ -705,7 +704,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const current = foundry.utils.getProperty(this.document._source, attr);
       const defaultArtwork = this.document.constructor.getDefaultArtwork?.(this.document._source) ?? {};
       const defaultImage = foundry.utils.getProperty(defaultArtwork, attr);
-      // @ts-ignore
       const fp = new FilePicker({
          current,
          type: "image",
@@ -842,9 +840,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    /**
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
-    * @param {any} event
     */
-   static async #clickEditAncestry(this: FDActorSheetV2, event) {
+   static async #clickEditAncestry(this: FDActorSheetV2) {
       const ancestryItem = await fadeFinder.getAncestry(this.actor.system.details.species);
       ancestryItem?.sheet?.render(true)
    }
@@ -987,9 +984,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    /**
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
-    * @param {any} event
     */
-   static async #clickAddActorGroup(this: FDActorSheetV2, event) {
+   static async #clickAddActorGroup(this: FDActorSheetV2) {
       const actor = this.actor;
       const currentGroups = actor.system.actorGroups || [];
 
@@ -1028,7 +1024,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             icon: "fas fa-plus",
             label: game.i18n.localize("FADE.apps.userTables.actions.new"),
             default: true,
-            callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
+            callback: (...args) => {
+               const [,button,] = args;
+               return new CodeMigrate.FormDataExtended(button.form).object.actorGroup
+            }
          },
          {
             icon: "fas fa-times",

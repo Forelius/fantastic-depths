@@ -38,22 +38,20 @@ const DragDropMixin = (superclass) => class extends superclass {
 
    /**
     * Define whether a user is able to begin a dragstart workflow for a given drag selector
-    * @param {string} selector       The candidate HTML selector for dragging
     * @returns {boolean}             Can the current user drag this selector?
     * @protected
     */
-   _canDragStart(selector) {
+   _canDragStart() {
       // game.user fetches the current user
       return this.isEditable;
    }
 
    /**
     * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
-    * @param {string} selector       The candidate HTML selector for the drop target
     * @returns {boolean}             Can the current user drop on this selector?
     * @protected
     */
-   _canDragDrop(selector) {
+   _canDragDrop() {
       // game.user fetches the current user
       return this.isEditable;
    }
@@ -88,10 +86,9 @@ const DragDropMixin = (superclass) => class extends superclass {
 
    /**
     * Callback actions which occur when a dragged element is over a drop target.
-    * @param {DragEvent} event       The originating DragEvent
     * @protected
     */
-   _onDragOver(event) { }
+   _onDragOver() { }
 
    /**
     * Callback actions which occur when a dragged element is dropped on a target.
@@ -109,7 +106,7 @@ const DragDropMixin = (superclass) => class extends superclass {
          case "ActiveEffect":
             return this._onDropActiveEffect(event, data);
          case "Actor":
-            return this._onDropActor(event, data);
+            return this._onDropActor();
          case "Item":
             return this._onDropItem(event, data);
          case "Folder":
@@ -161,7 +158,7 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @returns {Promise<void>}
     * @protected
     */
-   async _onDropActor(event, actor) { }
+   async _onDropActor() { }
 
 
    /**

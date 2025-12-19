@@ -1,17 +1,17 @@
 import { FDActorSheetV2 } from "./FDActorSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {FDActorSheetV2}
  */
-// @ts-ignore
 export class MonsterSheet extends FDActorSheetV2 {
    constructor(options = {}) {
       super(options);
       this.editScores = false;
    }
 
-   static DEFAULT_OPTIONS = {
+   static DEFAULT_OPTIONS: Record<string, unknown> = {
       position: {
          width: 650,
          height: 600,
@@ -25,7 +25,7 @@ export class MonsterSheet extends FDActorSheetV2 {
       }
    }
 
-   static PARTS = {
+   static PARTS: Record<string, unknown> = {
       header: {
          template: "systems/fantastic-depths/templates/actor/monster/header.hbs",
       },
@@ -80,8 +80,8 @@ export class MonsterSheet extends FDActorSheetV2 {
       }
    }
 
-   async _prepareContext(options) {
-      const context = await super._prepareContext(options);
+   async _prepareContext() {
+      const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       const abilityScoreSetting = game.settings.get(game.system.id, "monsterAbilityScores");
       context.hasAbilityScores = abilityScoreSetting !== "none";
@@ -94,7 +94,7 @@ export class MonsterSheet extends FDActorSheetV2 {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<any>>}
+   * @returns {Record<string, SheetTab>}
    */
    #getTabs() {
       const group = "primary";
@@ -102,26 +102,26 @@ export class MonsterSheet extends FDActorSheetV2 {
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
-      const tabs: any = {
-         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
-         description: { id: "description", group, label: "FADE.tabs.description" },
-         effects: { id: "effects", group, label: "FADE.tabs.effects" },
+      const tabs: Record<string, SheetTab> = {
+         abilities: new SheetTab("abilities", group, "FADE.tabs.abilities"),
+         description: new SheetTab("description", group, "FADE.tabs.description"),
+         effects: new SheetTab("effects", group, "FADE.tabs.effects"),
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: "items", group, label: "FADE.items" };
-         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
+         tabs.items = new SheetTab("items", group, "FADE.items");
+         tabs.skills = new SheetTab("skills", group, "FADE.tabs.skills");
       }
 
       if (this.actor.system.config.maxSpellLevel > 0) {
-         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+         tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells");
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");
       }
 
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }
@@ -129,11 +129,8 @@ export class MonsterSheet extends FDActorSheetV2 {
       return tabs;
    }
 
-   static async #clickAttackGroup(event) {
-      const dataset = event.target.dataset;
-      // @ts-ignore
+   static async #clickAttackGroup(this: MonsterSheet, event) {
       const item = this._getItemFromActor(event);
       await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }
-

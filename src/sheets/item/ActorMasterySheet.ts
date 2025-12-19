@@ -31,8 +31,8 @@ export class ActorMasterySheet extends FDItemSheetV2 {
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   async _prepareContext(options) {
-      const context: any = {};
+   async _prepareContext() {
+      const context: PropertyBag = {};
 
       context.item = this.item;
       context.system = this.item.system;
@@ -56,4 +56,3 @@ export class ActorMasterySheet extends FDItemSheetV2 {
       return context;
    }
 }
-

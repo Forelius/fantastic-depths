@@ -109,21 +109,19 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
    /**
     * Define whether a user is able to begin a dragstart workflow for a given element
-    * @param {string} selector       The candidate HTML selector for dragging
     * @returns {boolean}             Can the current user drag this element?
     * @protected
     */
-   _canDragStart(selector) {
+   _canDragStart() {
       return game.user.isGM;
    }
 
    /**
     * Define whether a user is able to conclude a drag-and-drop workflow for a given element
-    * @param {string} selector       The candidate HTML selector for the drop target
     * @returns {boolean}             Can the current user drop on this element?
     * @protected
     */
-   _canDragDrop(selector) {
+   _canDragDrop() {
       return game.user.isGM;
    }
 
