@@ -8,18 +8,18 @@ export class rollTableDialog {
       //-------
       // In Foundry, folders have a "type" property that matches the document type they hold.
       // For roll tables, this is usually "RollTable". 
-      let tableFolders = await game.fade.fadeFinder.getFolders("RollTable")
+      const tableFolders = await game.fade.fadeFinder.getFolders("RollTable")
       if (!tableFolders.length) {
          return ui.notifications.warn("No folders for Roll Tables were found.");
       }
-      let folders = tableFolders.sort((a, b) => a.name.localeCompare(b.name))
+      const folders = tableFolders.sort((a, b) => a.name.localeCompare(b.name))
          .reduce((acc, item) => { acc[`${item.uuid}`] = item.name; return acc; }, {});
       //-------
 
       // Use the first folder in the list as the default.
       const defaultFolderId = tableFolders[0]?.uuid;
-      let rollTables = await game.fade.fadeFinder.getDocsFromFolder(defaultFolderId, "RollTable");
-      let tables = rollTables.sort((a, b) => a.name.localeCompare(b.name))
+      const rollTables = await game.fade.fadeFinder.getDocsFromFolder(defaultFolderId, "RollTable");
+      const tables = rollTables.sort((a, b) => a.name.localeCompare(b.name))
          .reduce((acc, item) => { acc[`${item.uuid}`] = item.name; return acc; }, {});
 
       // Get roll modes from the Foundry system
@@ -97,4 +97,3 @@ export class rollTableDialog {
       }
    }
 }
-

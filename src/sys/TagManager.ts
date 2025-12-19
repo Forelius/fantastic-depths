@@ -16,7 +16,7 @@ export class TagManager {
       }
 
       const propertyName = `system.${this.property}`;
-      let updates = {};
+      const updates = {};
       updates[propertyName] = systemData[this.property];
 
       // Call update on the parent document
@@ -32,7 +32,7 @@ export class TagManager {
          systemData[this.property].splice(index, 1);
       }
       const propertyName = `system.${this.property}`;
-      let updates = {};
+      const updates = {};
       updates[propertyName] = systemData[this.property];
 
       // Call update on the parent document

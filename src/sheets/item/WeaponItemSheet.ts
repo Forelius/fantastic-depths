@@ -109,7 +109,7 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
-      let droppedItem = await Item.implementation.fromDropData(data);
+      const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...
       if (droppedItem?.type === "spell") {
          await this.onDropSpellItem(droppedItem);

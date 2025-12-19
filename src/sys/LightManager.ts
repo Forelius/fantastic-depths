@@ -20,7 +20,7 @@ export class LightManager {
    static async onUpdateWorldTime(worldTime, dt, options, userId) {
       if (dt !== 0) {
          // Iterate over all canvas tokens
-         for (let placeable of canvas.tokens.placeables) {
+         for (const placeable of canvas.tokens.placeables) {
             const actor = placeable.actor ?? placeable.document.actor;
             if (actor) {
                // Get the token actor's active light.
@@ -100,4 +100,3 @@ export class LightManager {
       }
    }
 }
-

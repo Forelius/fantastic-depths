@@ -161,8 +161,8 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
 
       const elem = event.target;
       const dataset = elem.dataset;
-      let formula = dataset.formula;
-      let chatType = CHAT_TYPE.GENERIC_ROLL;;
+      const formula = dataset.formula;
+      const chatType = CHAT_TYPE.GENERIC_ROLL;;
 
       const rollContext = { ...this.item.getRollData() };
       const rolled = await new Roll(formula, rollContext).evaluate();
@@ -218,4 +218,3 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
       this.item.languageManager.popTag(tag);
    }
 }
-

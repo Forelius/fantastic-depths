@@ -317,7 +317,7 @@ export abstract class ChatBuilder {
          }
          // Special abilities and spells
          if (options.abilities === true) {
-            for (let ability of [...actionItem.system.specialAbilities || []]) {
+            for (const ability of [...actionItem.system.specialAbilities || []]) {
                let sourceItem = await fromUuid(ability.uuid);
                if (sourceItem && (isIdentified || ability.action === "consume")) {
                   sourceItem = foundry.utils.deepClone(sourceItem);
@@ -334,7 +334,7 @@ export abstract class ChatBuilder {
                   });
                }
             }
-            for (let spell of [...actionItem.system.spells || []]) {
+            for (const spell of [...actionItem.system.spells || []]) {
                let sourceItem = await fromUuid(spell.uuid);
                if (sourceItem && (isIdentified || spell.action === "consume")) {
                   sourceItem = foundry.utils.deepClone(sourceItem);
@@ -357,7 +357,7 @@ export abstract class ChatBuilder {
    async _getConditionsForChat(item, hideDuration = false) {
       const conditions = foundry.utils.deepClone(item.system.conditions);
       const durationMsgs = [];
-      for (let condition of conditions) {
+      for (const condition of conditions) {
          const durationResult = await this._getConditionDurationResult(condition, item);
          condition.duration = durationResult?.durationSec ?? condition.duration;
          if (hideDuration === true) {
@@ -370,7 +370,7 @@ export abstract class ChatBuilder {
    }
 
    async _getConditionDurationResult(condition, item) {
-      let result = {
+      const result = {
          text: (condition.durationFormula !== "" && condition.durationFormula !== null) ?
             `${condition.name} ${game.i18n.localize("FADE.Spell.duration")}: ${condition.durationFormula} ${game.i18n.localize("FADE.rounds")}`
             : "",
@@ -386,4 +386,3 @@ export abstract class ChatBuilder {
       return result;
    }
 }
-

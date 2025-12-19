@@ -27,17 +27,17 @@ export class SpellCastChatBuilder extends ChatBuilder {
       } else {
          // Add targets for DM chat message
          toHitResult = { targetResults: [], message: "" };
-         for (let targetToken of targetTokens) {
+         for (const targetToken of targetTokens) {
             toHitResult.targetResults.push({ targetuuid: targetToken.uuid, targetname: targetToken.name });
          }
       }
 
       if (game.fade.toastManager) {
-         let toast = `${description}${toHitResult.message}`;
+         const toast = `${description}${toHitResult.message}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, caster);
+      const actions = await this._getActionsForChat(item, caster);
 
       // Prepare data for the chat template
       const chatData = {
@@ -79,4 +79,3 @@ export class SpellCastChatBuilder extends ChatBuilder {
       });
    }
 }
-

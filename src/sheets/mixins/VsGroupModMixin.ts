@@ -106,7 +106,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
       });
 
       if (result) {
-         let updateData = { [`system.mod.vsGroup.${result.id}`]: { dmg: 0, toHit: 0, special: result.special ? "" : null } };
+         const updateData = { [`system.mod.vsGroup.${result.id}`]: { dmg: 0, toHit: 0, special: result.special ? "" : null } };
          await this.item.update(updateData);
       }
    }

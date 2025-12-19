@@ -294,7 +294,7 @@ export class FDItem extends Item {
     */
    async _tryUseChargeThenUsage(getOnly = false, actionItem) {
       let result = false;
-      let item = actionItem || this;
+      const item = actionItem || this;
 
       if (item.system.charges !== undefined) {
          result = await this._tryUseCharge(getOnly, actionItem);
@@ -313,8 +313,8 @@ export class FDItem extends Item {
     * @returns True if quantity is above zero.
     */
    async _tryUseCharge(getOnly = false, actionItem) {
-      let item = actionItem || this; // The item could be this or a parent item.
-      let result = item.hasCharge;
+      const item = actionItem || this; // The item could be this or a parent item.
+      const result = item.hasCharge;
 
       if (getOnly !== true) {
          // Deduct 1 if not infinite and not zero
@@ -341,8 +341,8 @@ export class FDItem extends Item {
     * @returns True if quantity is above zero.
     */
    async _tryUseUsage(getOnly = false, actionItem) {
-      let item = actionItem || this; // The item could be this or a parent item.
-      let result = item.hasUse;
+      const item = actionItem || this; // The item could be this or a parent item.
+      const result = item.hasUse;
 
       if (getOnly === false) {
          // Deduct 1 if not infinite and not zero
@@ -371,4 +371,3 @@ export class FDItem extends Item {
       return { instigator, owner, ownerActor, ownerToken, instigatorActor, instigatorToken };
    }
 }
-

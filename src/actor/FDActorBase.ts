@@ -111,7 +111,7 @@ export class FDActorBase extends Actor {
 
       // Active effects
       // Ensure the actor has active effects to update
-      for (let effect of this.allApplicableEffects()) {
+      for (const effect of this.allApplicableEffects()) {
          if (effect.isTemporary && effect.duration?.type !== "none") {
             effect.updateDuration();
             // Adjust the duration based on the time passed
@@ -126,7 +126,7 @@ export class FDActorBase extends Actor {
 
                // Notify chat.
                const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-               let chatContent = game.i18n.format("FADE.Chat.effectEnds", { effectName: effect.name, actorName: this.name });
+               const chatContent = game.i18n.format("FADE.Chat.effectEnds", { effectName: effect.name, actorName: this.name });
                ChatMessage.create({ speaker: speaker, content: chatContent });
             }
          }
@@ -245,11 +245,11 @@ export class FDActorBase extends Actor {
 
    async #handleHPChange(value) {
       let damageType = null;
-      let attackType = null;
-      let weapon = null;
+      const attackType = null;
+      const weapon = null;
       if (value < 0) {
-         let dataset = { dialog: "damageType" };
-         let dialogResp = await DialogFactory(dataset, this);
+         const dataset = { dialog: "damageType" };
+         const dialogResp = await DialogFactory(dataset, this);
          damageType = dialogResp.damageType;
       } else {
          damageType = "heal";

@@ -109,7 +109,7 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
-      let droppedItem = await Item.implementation.fromDropData(data);
+      const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...
       if (droppedItem?.type === "spell") {
          await this.onDropSpellItem(droppedItem);
@@ -153,4 +153,3 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
       return tabs;
    }
 }
-

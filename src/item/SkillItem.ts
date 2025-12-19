@@ -28,7 +28,7 @@ export class SkillItem extends FDItem {
    getDamageRoll() {
       const isHeal = this.system.healFormula?.length > 0;
       let damageFormula = null;
-      let modifier = 0;
+      const modifier = 0;
       let hasDamage = true; // Has heals or damage
 
       if (isHeal) {
@@ -94,13 +94,13 @@ export class SkillItem extends FDItem {
 
       let result = null;
       if (rolling === true) {
-         let mod = manualMod + levelMod;
+         const mod = manualMod + levelMod;
          rollData.formula = mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
          // Roll
          const rollContext = { ...rollData, ...dialogResp || {} };
          const targetRoll = await new Roll(systemData.targetFormula, rollContext).evaluate();
          rollContext.mod = mod;
-         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const rolled = await new Roll(rollData.formula, rollContext).evaluate();
          // Show the chat message
          dataset.pass = systemData.operator; // this is a less than or equal to roll
          dataset.target = targetRoll.total; // systemData.rollTarget;
@@ -124,4 +124,3 @@ export class SkillItem extends FDItem {
       return result;
    }
 }
-

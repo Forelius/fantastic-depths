@@ -26,7 +26,7 @@ export class ConditionItem extends FDItem {
    }
 
    async setEffectsDuration(durationSec) {
-      for (let effect of this.effects) {
+      for (const effect of this.effects) {
          await effect.update({ "duration.seconds": durationSec });
       }
    }
@@ -85,11 +85,11 @@ export class ConditionItem extends FDItem {
             if (applyTo.length > 0) {
                const durationSec = Number.parseInt(dataset.duration);
                let chatContent = game.i18n.format("FADE.Chat.appliedCondition", { condition: sourceCondition.name });
-               for (let target of applyTo) {
+               for (const target of applyTo) {
                   if (target.actor.isOwner === true) {
                      const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
                      if (Number.isNaN(durationSec) === false) {
-                        for (let condition of conditions) {
+                        for (const condition of conditions) {
                            condition.setEffectsDuration(durationSec);
                         }
                      }
@@ -159,7 +159,7 @@ export class ConditionItem extends FDItem {
             // Ensure we have a target ID
             if (removeFrom.length > 0) {
                let chatContent = game.i18n.format("FADE.Chat.removedCondition", { condition: sourceCondition.name });
-               for (let target of removeFrom) {
+               for (const target of removeFrom) {
                   if (target.actor.isOwner === true) {
                      const actorCondition = target.actor.items.find(i => i.type === "condition" && i.system.key === sourceCondition.system.key);
                      if (actorCondition) {
@@ -179,4 +179,3 @@ export class ConditionItem extends FDItem {
       }
    }
 }
-

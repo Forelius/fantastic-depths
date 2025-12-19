@@ -20,7 +20,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
       let rollData;
       const attackerActor = this.actor;
       const attackerToken = this.actor?.token;
-      let result = {
+      const result = {
          attacker: attackerToken ?? attackerActor,
          ammoItem: null,
          dialogResp: null,
@@ -44,7 +44,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
          if (result.canAttack) {
             // If not breath...
             if (systemData.damageType !== "breath" && attackType !== "breath") {
-               let rollOptions = {
+               const rollOptions = {
                   mod: result.dialogResp.mod,
                   target: targetToken?.actor,
                   ammoItem: result.ammoItem,
@@ -97,7 +97,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
    }
 
    async #missileAttack() {
-      let ammoItem = this.actor?.getAmmoItem(this);
+      const ammoItem = this.actor?.getAmmoItem(this);
       await this.#tryUseAmmo();
       return ammoItem;
    }
@@ -127,4 +127,3 @@ const RollAttackMixin = (superclass) => class extends superclass {
 }
 
 export { RollAttackMixin }
-

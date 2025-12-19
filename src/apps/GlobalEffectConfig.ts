@@ -9,7 +9,7 @@ class GlobalEffectConfig extends ActiveEffectConfig {
 
   async _updateObject(event, formData) {
     // Instead of interacting with parent, update global effects
-    let globalEffects = game.settings.get(game.system.id, 'globalEffects');
+    const globalEffects = game.settings.get(game.system.id, 'globalEffects');
     const effectId = this.object.id;
     const effectIndex = globalEffects.findIndex(e => e.id === effectId);
 

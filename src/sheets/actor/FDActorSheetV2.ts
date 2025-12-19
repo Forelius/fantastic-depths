@@ -244,7 +244,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       );
       // Equipped Weapons
       const attackGroups = [];
-      for (let item of this.actor.items) {
+      for (const item of this.actor.items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // If an equipped non-siege weapon
          if (item.type === "weapon" && item.system.equipped === true && item.system.weaponType !== "siege") {
@@ -555,7 +555,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
-      for (let item of items) {
+      for (const item of items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === "item" || item.type === "light" || item.type === "treasure") {
@@ -655,7 +655,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Attach derived data manually            
       if (item.system.container === true) {
          const docItem = this.actor.items.get(item._id);
-         for (let innerItem of docItem?.containedItems) {
+         for (const innerItem of docItem?.containedItems) {
             this._mapContainer(innerItem);
          }
          item.contained = docItem?.containedItems || [];
@@ -725,7 +725,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @param {any} event
     */
    static async #clickToggleEquipped(this: FDActorSheetV2, event) {
-      let updateObj = {};
+      const updateObj = {};
       const item = this._getItemFromActor(event);
       let isEquipped = item.system.equipped;
       // if the item is not equipped or the item is not cursed or the user is GM...
@@ -855,7 +855,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    static async #clickRollGeneric(this: FDActorSheetV2, event) {
       const dataset = event.target.dataset;
-      let formula = dataset.formula;
+      const formula = dataset.formula;
       const chatType = CHAT_TYPE.GENERIC_ROLL;
       const rollContext = { ...this.actor.getRollData() };
       const rolled = await new Roll(formula, rollContext).evaluate();

@@ -22,7 +22,7 @@ export class MacroManager {
    static async createMacro(macroData, assignToHotbar = false) {
       console.log(`Creating macro: ${macroData.name}`);
 
-      let existingMacro = game.macros.find(m => m.name === macroData.name);
+      const existingMacro = game.macros.find(m => m.name === macroData.name);
       if (!existingMacro) {
          const macro = await Macro.create(macroData);
 

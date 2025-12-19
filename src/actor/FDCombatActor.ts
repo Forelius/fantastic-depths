@@ -76,7 +76,7 @@ export class FDCombatActor extends FDActorBase {
       if (this.id) {
          // Apply the mastery level override, if present.
          if (this.system.mod.masteryLevelOverride) {
-            for (let mastery of this.items.filter(item => item.type === "mastery")) {
+            for (const mastery of this.items.filter(item => item.type === "mastery")) {
                mastery.system.effectiveLevel = this.system.mod.masteryLevelOverride;
             }
          }
@@ -98,7 +98,7 @@ export class FDCombatActor extends FDActorBase {
       const ctrlKey = event?.ctrlKey ?? false;
       const rollData = this.getRollData();
       let dialogResp = null;
-      let dataset = {
+      const dataset = {
          dialog: "save",
          pass: savingThrow.system.operator,
          target: savingThrow.system.target,
@@ -129,7 +129,7 @@ export class FDCombatActor extends FDActorBase {
 
          // Ability score mod
          const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
-         let abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action);
+         const abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action);
          if (abilityScoreMod !== 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
          }
@@ -143,7 +143,7 @@ export class FDCombatActor extends FDActorBase {
          rollMod += manualMod + abilityScoreMod + effectMod;
          rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
-         let rolled = await new Roll(rollData.formula, rollContext).evaluate();
+         const rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
             context: this,
             caller: savingThrow,
@@ -169,11 +169,11 @@ export class FDCombatActor extends FDActorBase {
       const dataset = event.currentTarget.dataset;
       /** @type {Array<any>} */ // or /** @type {Token[]} */
       const selected = Array.from(canvas.tokens.controlled);
-      let hasSelected = selected.length > 0;
+      const hasSelected = selected.length > 0;
       if (hasSelected === false) {
          ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
       } else {
-         for (let target of selected) {
+         for (const target of selected) {
             // Roll for each token's actor
             (target as any).actor.rollSavingThrow(dataset.type, event);
          }
@@ -257,7 +257,7 @@ export class FDCombatActor extends FDActorBase {
       ];
 
       // Ranged weapon actions
-      let rangedWeapons = this.items.filter(item => item.type === "weapon"
+      const rangedWeapons = this.items.filter(item => item.type === "weapon"
          && item.system.canRanged === true && item.system.equipped === true
          && (item.system.quantity === null || item.system.quantity > 0));
       if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
@@ -277,7 +277,6 @@ export class FDCombatActor extends FDActorBase {
       const specialAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.combatManeuver !== null && item.system.combatManeuver !== "null")
          .map((item) => item.system.combatManeuver);
       for (const ability of specialAbilities) {
-         const config = CONFIG.FADE.CombatManeuvers[ability];
          result.push(ability);
       }
 
@@ -386,13 +385,13 @@ export class FDCombatActor extends FDActorBase {
 
       // Iterate over items and set each one.
       for (const actorItem of actorItems) {
-         let changes = itemsData.find(item => item.name === actorItem.name)?.changes;
+         const changes = itemsData.find(item => item.name === actorItem.name)?.changes;
          if (changes) {
             try {
                promises.push(actorItem.update(JSON.parse(changes)));
             }
             catch (err) {
-               console.error(`Invalid item changes specified for ${actorItem.name}.`);
+               console.error(`Invalid item changes specified for ${actorItem.name}.`, err);
             }
          }
       }
@@ -417,7 +416,7 @@ export class FDCombatActor extends FDActorBase {
 
    setupMinAbilityScores(abilities) {
       const updated = {};
-      for (let [key] of Object.entries(abilities)) {
+      for (const [key] of Object.entries(abilities)) {
          if (this.system.abilities[key]?.min < abilities[key].min) {
             updated[key] = { min: abilities[key].min };
          }

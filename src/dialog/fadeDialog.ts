@@ -116,7 +116,7 @@ export class fadeDialog {
                return acc;
             }, {});
 
-            let result = await DialogV2.wait({
+            const result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
                position: { width: 460 },
@@ -232,7 +232,7 @@ export class fadeDialog {
       }
 
       // Create the dialog content
-      let content = `
+      const content = `
         <form>
             <div class="form-group">
                 <label for="abilitySelect">Select Special Ability:</label>
@@ -248,7 +248,7 @@ export class fadeDialog {
     `;
 
       // Create the dialog using DialogV2
-      let result = await DialogV2.wait({
+      const result = await DialogV2.wait({
          window: { title: "Roll Special Ability" },
          rejectClose: false,
          position: { width: 400 },
@@ -303,4 +303,3 @@ export class fadeDialog {
       }
    }
 }
-

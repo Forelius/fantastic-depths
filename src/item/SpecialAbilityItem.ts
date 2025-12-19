@@ -65,7 +65,7 @@ export class SpecialAbilityItem extends FDItem {
       const ctrlKey = event?.ctrlKey ?? false;
       const showResult = this._getShowResult(event);
       let roll = null;
-      let digest = [];
+      const digest = [];
 
       if (await this._tryUseChargeThenUsage(true, actionItem) === false) {
          canProceed = false;
@@ -144,4 +144,3 @@ export class SpecialAbilityItem extends FDItem {
       return `${summary}${description}`;
    }
 }
-

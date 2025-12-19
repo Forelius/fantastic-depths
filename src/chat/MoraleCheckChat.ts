@@ -40,7 +40,7 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
 
       if (game.fade.toastManager) {
          const abilityName = game.i18n.localize(`FADE.Actor.Abilities.${mdata.ability}.long`);
-         let toast = `${actorName}: ${abilityName} check.${resultString ?? ''}`;
+         const toast = `${actorName}: ${abilityName} check.${resultString ?? ''}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
@@ -49,4 +49,3 @@ export class AbilityCheckChatBuilder extends ChatBuilder {
       await ChatMessage.create(chatMessageData);
    }
 }
-

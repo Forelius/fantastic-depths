@@ -7,7 +7,7 @@ export class fadeHandlebars {
 
    static registerHelpers() {
       Handlebars.registerHelper("fadeor", (...args) => {
-         // The last argument Handlebars passes is the options hash – ignore it.
+         // The last argument Handlebars passes is the options hash ï¿½ ignore it.
          const values = args.slice(0, -1);
          // Return true if **any** preceding value is truthy, treating empty arrays as falsy.
          return values.some(v => {
@@ -37,7 +37,7 @@ export class fadeHandlebars {
       Handlebars.registerHelper("formatHitDice", (hitDice) => {
          const classSystem = game.fade.registry.getSystem("classSystem");
          const { numberOfDice, numberOfSides, modifier, modifierSign } = classSystem.getParsedHD(hitDice);
-         let result = `${numberOfDice}d${numberOfSides}${modifierSign}${modifier != 0 ? modifier : ""}`;
+         const result = `${numberOfDice}d${numberOfSides}${modifierSign}${modifier != 0 ? modifier : ""}`;
          return result;
       });
       // Register a Handlebars helper to check if an array includes a value
@@ -48,7 +48,7 @@ export class fadeHandlebars {
       // Round down
       Handlebars.registerHelper("divide", (a, b) => Math.floor(Number(a) / Number(b)));
       Handlebars.registerHelper("contextMergeEach", function (array, options) {
-         // If the first argument isn’t a proper array, do nothing or handle differently.
+         // If the first argument isnï¿½t a proper array, do nothing or handle differently.
          if (!Array.isArray(array)) return "";
 
          // "parentContext" is whatever "this" was **outside** the helper call.
@@ -60,7 +60,7 @@ export class fadeHandlebars {
          for (let i = 0; i < array.length; i++) {
             const item = array[i];
 
-            // Create a new "data frame" so we mimic #each’s index, first, last, etc.
+            // Create a new "data frame" so we mimic #eachï¿½s index, first, last, etc.
             // (options.data can contain additional metadata that Foundry or Handlebars might track.)
             const data = Handlebars.createFrame(options.data || {});
             data.index = i;
@@ -85,4 +85,3 @@ export class fadeHandlebars {
       });
    }
 }
-

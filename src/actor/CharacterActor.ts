@@ -58,7 +58,7 @@ export class CharacterActor extends FDCombatActor {
       let changes = [];
       const ignore = ["_stats", "_id", "flags"];
       if (type === "property") {
-         for (let key in updateData) {
+         for (const key in updateData) {
             const fullKey = parentKey ? `${parentKey}.${key}` : key;
 
             if (ignore.includes(fullKey) === false) {
@@ -121,7 +121,7 @@ export class CharacterActor extends FDCombatActor {
 
       // Manage the ancestry embedded item
       if (actorItems?.length > 0) {
-         for (let actorItem of actorItems) actorItem.delete();
+         for (const actorItem of actorItems) actorItem.delete();
       }
 
       if (ancestryDefItem) {
@@ -134,7 +134,7 @@ export class CharacterActor extends FDCombatActor {
          const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
          const languages = ancestryDefItem.system.languages;
          let hasMinAbilityScore = false;
-         for (let [key] of Object.entries(ancestryDefItem.system.abilities)) {
+         for (const [key] of Object.entries(ancestryDefItem.system.abilities)) {
             if (ancestryDefItem.system.abilities[key].min > 3) hasMinAbilityScore = true;
          }
 

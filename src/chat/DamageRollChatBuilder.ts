@@ -38,7 +38,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       // Render the content using the template, now with messageId
-      let content = await CodeMigrate.RenderTemplate(this.template, renderData);
+      const content = await CodeMigrate.RenderTemplate(this.template, renderData);
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          [`flags.${game.system.id}.attackdata`]: {
@@ -197,7 +197,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       // Ensure we have a target ID
       if (applyTo.length > 0) {
          let delta = parseInt(dataset.amount, 10);
-         for (let target of applyTo) {
+         for (const target of applyTo) {
             if (target.actor.isOwner === true) {
                // If not restoring HP
                if (dataset.damagetype != "heal") {
@@ -214,4 +214,3 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
    }
 }
-

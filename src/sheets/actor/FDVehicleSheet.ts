@@ -116,7 +116,7 @@ export class FDVehicleSheet extends FDActorSheetV2 {
          const treasure = [];
          const items = [...this.actor.items];
          // Iterate through items, allocating to arrays
-         for (let item of items) {
+         for (const item of items) {
             item.img = item.img || Item.DEFAULT_ICON;
             // If a contained item...
             if (item.system.containerId?.length > 0) {
@@ -207,4 +207,3 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }
-

@@ -425,7 +425,7 @@ export class fadeSettings {
 
    // This function applies the selected theme by adding/removing relevant classes
    applyTheme(theme) {
-      let root = document.documentElement;
+      const root = document.documentElement;
       if (theme === "dark") {
          root.classList.add("dark-mode");
          root.classList.remove("light-mode");
@@ -467,4 +467,3 @@ export class fadeSettings {
       const currentValue = game.settings.get(game.system.id, "initiativeMode");
    }
 }
-

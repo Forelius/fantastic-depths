@@ -26,7 +26,7 @@ export class ClassDefinitionItem extends FDItem {
       // Create the saving throw member variables dynamically from the world's save items.
       const finderSaves = await fadeFinder.getSavingThrows();
       const saveCodes = finderSaves.map(item => item.system.customSaveCode);
-      for (let saveCode of saveCodes) {
+      for (const saveCode of saveCodes) {
          newSaveData[saveCode] = 15;
       }
       newSaveData.level = maxLevel + 1; // Increment the level by 1
@@ -104,7 +104,7 @@ export class ClassDefinitionItem extends FDItem {
       // Get qualifying primreqs
       // @ts-ignore
       const tierEntries = Object.entries(tiers).sort((a, b) => a[0] - b[0]);
-      let qualified = {};
+      const qualified = {};
       for (const [tierKey, tierVal] of tierEntries) {
          const currentPerc = parseInt(tierKey);
          for (const [groupKey, groupVal] of Object.entries(tierVal)) {
@@ -166,7 +166,7 @@ export class ClassDefinitionItem extends FDItem {
 
 
       let levelSequence = currentFirstLevel ?? newFirstLevel;
-      for (let level of levels) {
+      for (const level of levels) {
          // Pre-order in case levels are all screwed up
          level.level = levelSequence++;
       }
@@ -232,4 +232,3 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.spells": spells });
    }
 }
-

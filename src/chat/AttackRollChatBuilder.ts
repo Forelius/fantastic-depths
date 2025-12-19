@@ -35,7 +35,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
+      const actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
 
       const chatData = {
          rollContent,
@@ -48,7 +48,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          ammoItem: options?.ammoItem,
          actions
       };
-      let content = await CodeMigrate.RenderTemplate(this.template, chatData);
+      const content = await CodeMigrate.RenderTemplate(this.template, chatData);
       let conditionsResult = null;
       if (weaponItem.isIdentified == true) {
          conditionsResult = await this._getConditionsForChat(weaponItem);
@@ -78,5 +78,4 @@ export class AttackRollChatBuilder extends ChatBuilder {
          targets: targetTokens.map(i => i.uuid)
       });
    }
-} 
-
+}

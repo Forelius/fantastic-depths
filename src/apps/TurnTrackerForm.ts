@@ -282,7 +282,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
 
       const trackedActorIds = game.settings.get(game.system.id, 'partyTrackerData');
-      for (let trackedActorId of trackedActorIds) {
+      for (const trackedActorId of trackedActorIds) {
          const trackedActor = game.actors.get(trackedActorId);
          const needRestCondition = await fromUuid(this.turnData.settings.needRestCondition);
          const condition = trackedActor.items.find(item => item.type === needRestCondition.type && item.name === needRestCondition.name);
@@ -307,7 +307,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
          if (this.turnData.settings.needRestCondition) {
             const condition = await fromUuid(this.turnData.settings.needRestCondition);
             const trackedActorIds = game.settings.get(game.system.id, 'partyTrackerData');
-            for (let trackedActorId of trackedActorIds) {
+            for (const trackedActorId of trackedActorIds) {
                const trackedActor = game.actors.get(trackedActorId);
                if (!trackedActor.items.find(item => item.type === condition.type && item.name === condition.name)) {
                   const itemData = [condition.toObject()];
@@ -319,4 +319,3 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       return chatContent;
    }
 }
-

@@ -9,7 +9,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       this.isGM = game.user.isGM;
 
       // Load tracked actors from the settings
-      let storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
+      const storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
 
       // Store the updated tracked actor IDs
       this.trackedActorIds = storedData;

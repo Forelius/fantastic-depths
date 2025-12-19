@@ -320,7 +320,7 @@ Hooks.once("ready", async () => {
             await LightManager.onUpdateWorldTime(worldTime, dt, options, userId);
             //console.debug("updateWorldTime", worldTime, dt, options, userId);
             const placeables = canvas?.tokens.placeables;
-            for (let placeable of placeables) {
+            for (const placeable of placeables) {
                const token = placeable.document;
                if (token.actor) {  // Only process tokens with an actor
                   token.actor.onUpdateWorldTime(worldTime, dt, options, userId);  // Correctly call the actor's method
@@ -379,4 +379,3 @@ Hooks.on("renderSidebarTab", async (object, html) => {
       gamesystem.find(".system").after(rendered);
    }
 });
-
