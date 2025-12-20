@@ -52,6 +52,7 @@ export class fadeHandlebars {
          if (!Array.isArray(array)) return "";
 
          // "parentContext" is whatever "this" was **outside** the helper call.
+         // eslint-disable-next-line @typescript-eslint/no-this-alias
          const parentContext = this;
          // We"ll accumulate the rendered output in `result`.
          let result = "";

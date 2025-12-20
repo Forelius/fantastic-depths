@@ -1,4 +1,4 @@
-const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField, ObjectField } = foundry.data.fields;
+const { BooleanField, EmbeddedDataField, NumberField, SchemaField, StringField, ObjectField } = foundry.data.fields;
 
 /**
  * Field for storing FDCombatActor data.

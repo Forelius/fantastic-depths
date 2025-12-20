@@ -4,7 +4,7 @@ import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { EffectManager } from "../../sys/EffectManager.js";
 import { fadeFinder } from "../../utils/finder.js";
-
+import { FADE } from "../../sys/config.js"
 /**
  * Sheet class for SpecialAbilityItem.
  */
@@ -84,7 +84,7 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
-      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, any]) => {
+      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, Record<string, number>]) => {
          acc[key] = game.i18n.localize(value?.label ?? value); // cause v12 and v13 different
          return acc;
       }, {});
@@ -110,8 +110,8 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
       // Combat Maneuvers
       const combatManeuvers = [];
       combatManeuvers.push({ value: null, text: game.i18n.localize("None") });
-      combatManeuvers.push(...Object.entries(CONFIG.FADE.CombatManeuvers)
-         .filter((action: any) => action[1].classes?.length > 0)
+      combatManeuvers.push(...Object.entries(FADE.CombatManeuvers)
+         .filter((action) => (action[1].classes as [])?.length > 0)
          .map((action) => {
             return { value: action[0], text: game.i18n.localize(`FADE.combat.maneuvers.${action[0]}.name`) }
          }).sort((a, b) => a.text.localeCompare(b.text)));

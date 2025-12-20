@@ -6,7 +6,7 @@ export class SpecialAbilityChat extends ChatBuilder {
 
    async createChatMessage() {
       const { context, caller, roll, options, digest } = this.data;
-      const targetTokens = Array.from(game.user.targets).map((i: any) => i.document ?? i);
+      const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const item = caller;
       const dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
@@ -61,7 +61,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          }
       }
 
-      const { conditions, durationMsgs } = await this._getConditionsForChat(item);
+      const { conditions } = await this._getConditionsForChat(item);
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode

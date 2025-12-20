@@ -1,4 +1,4 @@
-const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField } = foundry.data.fields;
+const { BooleanField, EmbeddedDataField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 /**
  * Field for storing Character data.
@@ -45,4 +45,4 @@ export class CharacterData extends foundry.abstract.DataModel {
          }),
       };
    }
-} 
+}

@@ -1,10 +1,18 @@
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 
+export type ChatAction = {
+   type: string;
+   owneruuid: string;
+   itemuuid: string;
+   actionuuid: string;
+   // add other common fields if needed
+};
+
 /**
- * Extend the basic Item with some very simple modifications.
+ * Extend the basic Item with simple modifications.
  * @extends {Item}
  */
-export class FDItem extends Item {
+export abstract class FDItem extends Item {
    constructor(data, context) {
       super(data, context);
    }
@@ -135,8 +143,8 @@ export class FDItem extends Item {
       return description;
    }
 
-   getActionsForChat(owner, options = {}) {
-      return [];
+   getActionsForChat(_owner?, _options?): ChatAction[] {
+      return [] as ChatAction[];
    }
 
    /**
@@ -146,15 +154,8 @@ export class FDItem extends Item {
     * @param {any} dataset The data- tag values from the clicked element
     */
    async roll(dataset) {
-      const owner = dataset.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.currentActiveToken || canvas.tokens.controlled?.[0]?.document;
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-         return null;
-      }
-
+      const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
-      //const speaker = ChatMessage.getSpeaker({ actor: this.actor });
       const rollMode = game.settings.get('core', 'rollMode');
       const chatData = {
          caller: this,

@@ -26,6 +26,7 @@ interface ChatBuilderStatic {
 export abstract class ChatBuilder {
    /** Instance members */
    protected readonly RESULT_TYPE = RESULT_TYPE;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    protected readonly data: Record<string, any>;
    protected readonly template: string;
 
@@ -44,7 +45,7 @@ export abstract class ChatBuilder {
     * @param {Object} dataset.digest - A roll digest consisting of an array of strings.
     * @prop {string} template - Path to hbs template. Must be defined by subclasses.
     */
-   constructor(...args: any) {
+   constructor(...args) {
       const [dataset, options] = args;
       // `new.target` is the concrete subclass constructor at runtime.
       const ctor = new.target as typeof ChatBuilder & ChatBuilderStatic;

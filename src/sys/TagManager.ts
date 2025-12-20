@@ -1,4 +1,5 @@
 export class TagManager {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    parentDocument: any;
    property: string;
    constructor(parentDocument, tagProperty='tags') {

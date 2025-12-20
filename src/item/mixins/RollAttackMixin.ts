@@ -36,7 +36,7 @@ const RollAttackMixin = (superclass) => class extends superclass {
       else if (attackerActor) {
          result.ammoItem = attackerActor?.getAmmoItem(this);
          const targetTokens = Array.from(game.user.targets);
-         const targetToken: any = targetTokens.length > 0 ? targetTokens[0] : null;
+         const targetToken: Token = targetTokens.length > 0 ? targetTokens[0] : null;
 
          result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: this, targetToken }));
          attackType = result.dialogResp?.attackType;

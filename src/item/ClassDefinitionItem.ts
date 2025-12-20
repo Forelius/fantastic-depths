@@ -1,5 +1,5 @@
 import { fadeFinder } from "../utils/finder.js";
-import { SavingThrowsData } from "./dataModel/ClassDefinitionDataModel.js";
+import { PrimeRequisite, SavingThrowsData } from "./dataModel/ClassDefinitionDataModel.js";
 import { FDItem } from "./FDItem.js";
 
 export class ClassDefinitionItem extends FDItem {
@@ -41,12 +41,7 @@ export class ClassDefinitionItem extends FDItem {
       const primeReqs = this.system.primeReqs || [];
 
       // Define the new primeReq data
-      const newPrimeReqData = {
-         concatLogic: "",
-         percentage: 5,
-         minScore: 13,
-         ability: "",    // Default ability, empty string
-      };
+      const newPrimeReqData = new PrimeRequisite("", 13, 5, "");
 
       // Add the new primeReq to the array
       primeReqs.push(newPrimeReqData);
@@ -80,14 +75,14 @@ export class ClassDefinitionItem extends FDItem {
     * @param {any} abilities The character's ability scores.
     * @returns {number} The total xp bonus for this class.
     */
-   getXPBonus(abilities) {
+   getXPBonus(abilities): number {
       let i = 0;
-      const primeReqs = [...this.system.primeReqs]; // work with copy
+      const primeReqs: PrimeRequisite[] = [...this.system.primeReqs]; // work with copy
 
       // primeReqs are already sorted by percentage in ascending order.
       const tiers = primeReqs.reduce((acc, curr) => {
          if (!acc[curr.percentage]) {
-            acc[curr.percentage] = {};
+            acc[curr.percentage] = {} as Record<number, PrimeRequisite[]>;
             i = 0;
          }
          if (curr.concatLogic?.length > 0 && curr.concatLogic !== "none") {
@@ -99,15 +94,15 @@ export class ClassDefinitionItem extends FDItem {
             acc[curr.percentage][i] = [curr];
          }
          return acc;
-      }, {});
+      }, {} as Record<number, Record<number,PrimeRequisite[]>>);
 
-      // Get qualifying primreqs
-      // @ts-ignore
-      const tierEntries = Object.entries(tiers).sort((a, b) => a[0] - b[0]);
+      // Sort by percentage
+      const tierEntries = Object.entries(tiers).sort((a, b) => Number(a[0]) - Number(b[0]));
       const qualified = {};
+      // Get qualifying primreqs
       for (const [tierKey, tierVal] of tierEntries) {
          const currentPerc = parseInt(tierKey);
-         for (const [groupKey, groupVal] of Object.entries(tierVal)) {
+         for (const [, groupVal] of Object.entries(tierVal)) {
             let isQualified = false;
             const reqId = `${groupVal.reduce((acc, curr) => acc = `${acc}${curr.concatLogic === "none" ? "" : `-${curr.concatLogic}-`}${curr.ability}`, "")}`;
             for (const requirement of groupVal) {
@@ -136,7 +131,7 @@ export class ClassDefinitionItem extends FDItem {
 
       // Only keep highest of same ability score matches.
       // My brain hurts. 
-      return Object.entries(qualified).reduce((acc, curr) =>  acc + Object.entries(curr[1])[0][1], 0);
+      return Object.entries(qualified).reduce((acc, curr) => acc + Object.entries(curr[1])[0][1], 0);
    }
 
    /**
@@ -148,15 +143,15 @@ export class ClassDefinitionItem extends FDItem {
       super._onUpdate(updateData, options, userId);
       if (updateData.system?.maxLevel !== undefined || updateData.system?.firstLevel !== undefined) {
          // This is an async method
-         await this.#updateLevels(updateData);
-         await this.#updateSpellLevels(updateData);
+         await this.#updateLevels();
+         await this.#updateSpellLevels();
       }
       if (updateData.system?.maxSpellLevel !== undefined || updateData.system?.firstSpellLevel !== undefined) {
-         await this.#updateSpellLevels(updateData);
+         await this.#updateSpellLevels();
       }
    }
 
-   async #updateLevels(updateData) {
+   async #updateLevels() {
       // This will filter out levels with a level of null or negative, because those need to be removed.
       const levels = [...this.system.levels.filter(item => typeof item.level === typeof 0)];
 
@@ -204,7 +199,7 @@ export class ClassDefinitionItem extends FDItem {
       await this.update({ "system.levels": levels });
    }
 
-   async #updateSpellLevels(updateData) {
+   async #updateSpellLevels() {
       let spells = [];
       const levelsCount = this.system.levels.length;
       const spellLevelNo = this.system.maxSpellLevel - this.system.firstSpellLevel + 1;
@@ -214,11 +209,11 @@ export class ClassDefinitionItem extends FDItem {
          for (let i = 0; i < levelsCount; i++) {
             // Pre-set spellLevels to be same size as levels.
             if (spells[i] === undefined) {
-               spells.push(Array.from({ length: this.system.maxSpellLevel + 1 - this.system.firstSpellLevel }, (_, index) => 0));
+               spells.push(Array.from({ length: this.system.maxSpellLevel + 1 - this.system.firstSpellLevel }, () => 0));
             } else if (spells[i]?.length > spellLevelNo) {
                spells[i].splice(spellLevelNo - spells[i]?.length, spellLevelNo - spells[i]?.length);
             } else if (spells[i]?.length < spellLevelNo) {
-               spells[i].push(...Array.from({ length: spellLevelNo - spells[i]?.length }, (_, index) => 0));
+               spells[i].push(...Array.from({ length: spellLevelNo - spells[i]?.length }, () => 0));
             }
          }
 

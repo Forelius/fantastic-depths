@@ -1024,10 +1024,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             icon: "fas fa-plus",
             label: game.i18n.localize("FADE.apps.userTables.actions.new"),
             default: true,
-            callback: (...args) => {
-               const [,button,] = args;
-               return new CodeMigrate.FormDataExtended(button.form).object.actorGroup
-            }
+            callback: (_, button) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
          },
          {
             icon: "fas fa-times",

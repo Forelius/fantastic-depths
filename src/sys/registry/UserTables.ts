@@ -1,8 +1,11 @@
 import { UserTablesConfig } from "../../apps/UserTablesConfig.js"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UserTableType = { id: string, name: string, type: string, table: Record<string, any> };
+
 export class UserTables {
    static TABLE_TYPES = ["bonus", "keyvalue", "keyjson", "jsonarray"];
-   #userTables;
+   #userTables: Record<string, UserTableType>;
 
    constructor() {
       this.#userTables = {};
@@ -10,16 +13,16 @@ export class UserTables {
       this.#tryAddDefaultTables();
    }
 
-   getTables() {
+   getTables(): Record<string, UserTableType> {
       return foundry.utils.deepClone(this.#userTables);
    }
 
-   setTables(tables) {
+   setTables(tables: Record<string, UserTableType>) {
       this.#userTables = tables;
       game.settings.set(game.system.id, 'userTables', this.#userTables);
    }
 
-   setTable({ id, name, type, table }) {
+   setTable({ id, name, type, table }): void {
       if (Array.isArray(table) === false) {
          console.error(`addTable ${name} table is not an array.`);
          return;
@@ -59,7 +62,7 @@ export class UserTables {
       game.settings.set(game.system.id, 'userTables', this.#userTables);
    }
 
-   removeTable(id) {
+   removeTable(id): void {
       if (this.#userTables[id]) {
          delete this.#userTables[id];
          game.settings.set(game.system.id, 'userTables', this.#userTables);
@@ -67,7 +70,7 @@ export class UserTables {
       }
    }
 
-   getTable(id) {
+   getTable(id): UserTableType {
       return this.#userTables[id];
    }
 
@@ -95,7 +98,7 @@ export class UserTables {
     * @param {string} key The key for the requested value
     * @returns A numeric value if the key exists, otherwise null.
     */
-   getKeyValue(id: string, key: string) {
+   getKeyValue(id: string, key: string): number {
       let result = null;
       if (this.getTable(id)?.type === "keyvalue") {
          const table = this.getTable(id)?.table;

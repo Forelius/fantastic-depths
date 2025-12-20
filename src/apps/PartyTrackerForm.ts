@@ -87,7 +87,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
    * @param {any} options                 Provided render options
    * @protected
    */
-   _onRender(context, options) {
+   _onRender(_context, _options) {
       if (game.user.isGM) {
          Hooks.off('updateActor', this._updateTrackedActor);
          Hooks.on('updateActor', this._updateTrackedActor);
@@ -184,7 +184,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {Event} event - The initial triggering submission event
     * @param {object} formData - The object of validated form data with which to update the object
     */
-   async _updateObject(event, formData) {
+   async _updateObject(event, _formData) {
       event.preventDefault();
       // Handle any form data updates if needed
    }
@@ -206,7 +206,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {any} formData    Processed data for the submitted form
     * @returns {Promise<void>}
     */
-   static async #onSubmit(event, form, formData) {
+   static async #onSubmit(event, _form, _formData) {
       event.preventDefault();
       // Handle form submission if needed
    }
@@ -256,7 +256,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {DragEvent} event       The originating DragEvent
     * @protected
     */
-   _onDragStart(event) {
+   _onDragStart(_event) {
       // For party tracker, we don't need to handle drag start since we only accept drops
    }
 
@@ -265,7 +265,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {DragEvent} event       The originating DragEvent
     * @protected
     */
-   _onDragOver(event) {
+   _onDragOver(_event) {
       // Default behavior is fine
    }
 }

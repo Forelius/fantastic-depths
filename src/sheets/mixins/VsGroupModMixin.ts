@@ -88,8 +88,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
                action: "add",
                label: "Add",
                default: true,
-               callback: (...args) => {
-                  const [, button,] = args;
+               callback: (_, button) => {
                   const formData = new CodeMigrate.FormDataExtended(button.form).object;
                   return CONFIG.FADE.ActorGroups.find(i => i.id == formData.actorGroup);
                }

@@ -23,7 +23,7 @@ export class rollTableDialog {
          .reduce((acc, item) => { acc[`${item.uuid}`] = item.name; return acc; }, {});
 
       // Get roll modes from the Foundry system
-      const rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: any) => {
+      const rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string,Record<string,unknown>]) => {
          acc[key] = game.i18n.localize(value.label ?? value);
          return acc;
       }, {});
@@ -37,7 +37,7 @@ export class rollTableDialog {
             {
                action: 'roll',
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => {
+               callback: (_event, button, _dialog) => {
                   return {
                      action: button.dataset?.action,
                      data: new CodeMigrate.FormDataExtended(button.form).object
@@ -48,7 +48,7 @@ export class rollTableDialog {
             {
                action: 'close',
                label: game.i18n.localize('FADE.dialog.close'),
-               callback: function (event, button, dialog) { }
+               callback: function (_event, _button, _dialog) { }
             }
          ],
          close: () => { },

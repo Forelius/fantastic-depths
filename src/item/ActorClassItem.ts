@@ -23,4 +23,3 @@ export class ActorClassItem extends FDItem {
       return '--';
    }
 }
-

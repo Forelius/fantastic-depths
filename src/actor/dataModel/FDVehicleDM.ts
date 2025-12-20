@@ -1,6 +1,6 @@
 import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.js';
-const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField, ObjectField } = foundry.data.fields;
+const { BooleanField, NumberField, SchemaField, StringField, ObjectField } = foundry.data.fields;
 
 export class FDVehicleDM extends FDActorBaseDM {
    static defineSchema() {
@@ -143,4 +143,3 @@ export class FDVehicleDM extends FDActorBaseDM {
       }
    }
 }
-

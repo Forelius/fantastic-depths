@@ -14,7 +14,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const casterActor = caster?.actor || caster; // context could be actor or token.
       const casterName = caster?.name; // context could be actor or token.
       const item = caller;
-      const targetTokens = Array.from(game.user.targets).map((i: any) => i.document ?? i);
+      const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const dmgHealRoll = caller.getDamageRoll(null, targetTokens?.[0]);
       const descData = { caster: casterName, spell: item.name };
       const description = game.i18n.format("FADE.Chat.spellCast", descData);

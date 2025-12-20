@@ -11,7 +11,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const { caller, context, resp, roll, mdata, digest, options } = this.data;
       const attacker = context.document ?? context; // This could be a token or actor
       const attackerName = attacker.token?.name ?? attacker.name;
-      const targetTokens = Array.from(game.user.targets).map((i: any) => i.document ?? i);
+      const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const targetToken = targetTokens?.length > 0 ? targetTokens[0] : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
       const weaponItem = caller;

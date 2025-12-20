@@ -24,7 +24,7 @@ export class ItemRollChat extends ChatBuilder {
       const item = caller;
       const dmgHealRoll = null;
       // Note: Weapons don't have target until they are used to attack.
-      const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i:any) => i.document ?? i) : null;
+      const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i:PropertyBag) => (i.document ?? i) as Token) : null;
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);

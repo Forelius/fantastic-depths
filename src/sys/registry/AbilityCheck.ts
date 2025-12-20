@@ -34,7 +34,7 @@ export class AbilityCheck {
                digest.push(game.i18n.format("FADE.Chat.rollMods.difficulty", { mod: difficultyMod }));
             }
             mod += manualMod + difficultyMod;
-            dataset.formula = `${dialogResp.formula}+${mod}`;
+            dataset.formula = mod !== 0 ? `${dialogResp.formula}+${mod}` : dialogResp.formula;
          } else {
             // This will stop the process below.
             chatType = null;

@@ -59,4 +59,3 @@ export class FDCombatActorDM extends FDActorBaseDM {
       this.mod.save.all = 0;
    }
 }
-

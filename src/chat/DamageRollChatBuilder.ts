@@ -5,7 +5,7 @@ import { CodeMigrate } from "../sys/migration.js";
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
 
-   async getRollContent(roll, mdata) {
+   async getRollContent(roll, _mdata) {
       return roll.render();
    }
 
@@ -79,10 +79,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const damager = owneruuid ? await fromUuid(owneruuid) : undefined;
       const damagerName = damager?.name;
       const damagerToken = damager.actor ? damager : damagerItem.actor?.currentActiveToken;
-      //if (!damagerToken) {
-      //   ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-      //   return result;
-      //}
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";

@@ -1,4 +1,4 @@
-const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField } = foundry.data.fields;
+const { BooleanField, EmbeddedDataField, StringField } = foundry.data.fields;
 
 /**
  * Field for storing Identifiable data.

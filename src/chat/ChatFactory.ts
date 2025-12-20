@@ -31,12 +31,11 @@ type ChatTypeEnum = typeof CHAT_TYPE[keyof typeof CHAT_TYPE];
  * @param {...*} args.1 - Additional arguments passed to the constructor of the chat builder.
  * @returns {ChatBuilder} An instance of a chat builder based on the provided type.
  */
-const handler: ProxyHandler<any> = {
-   construct(_target, args: [ChatTypeEnum, ...any[]]): any {
+const handler = {
+   construct(_target, args: [ChatTypeEnum, ...[]]): ChatBuilder {
       const [type, ...bArgs] = args;
-      //const bArgs = [...argsArray];
 
-      let result: any = null;
+      let result = null;
       if (type === CHAT_TYPE.ABILITY_CHECK) {
          result = new AbilityCheckChatBuilder(...bArgs);
       } else if (type === CHAT_TYPE.ATTACK_ROLL) {
@@ -60,4 +59,3 @@ const handler: ProxyHandler<any> = {
 };
 
 export const ChatFactory = new Proxy(ChatBuilder, handler);
-

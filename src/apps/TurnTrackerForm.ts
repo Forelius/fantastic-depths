@@ -10,12 +10,15 @@ type DungeonStats = {
 class TurnData {
    dungeon: DungeonStats;
    timeSteps: {
-      round: any; turn: any; hour: number; // 60 minutes
+      round: number;
+      turn: number;
+      hour: number; // 60 minutes
       day: number;
    };
    settings: { needRestCondition: string; restFrequency: number; };
-   worldTime: any;
-   constructor(data: any | null) {
+   worldTime;
+
+   constructor(data) {
       this.dungeon = { session: 0, total: 0, rest: 0 };
 
       Object.assign(this, data);
@@ -191,7 +194,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    /**
     * Handle the updateWorldTime event.
     */
-   _updateWorldTime = foundry.utils.debounce(async (worldTime, dt, options, userId) => {
+   _updateWorldTime = foundry.utils.debounce(async (worldTime, _dt, _options, _userId) => {
       let chatContent = "";
       const speaker = { alias: game.user.name };
       const timeSteps = this.turnData.timeSteps;

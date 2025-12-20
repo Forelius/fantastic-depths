@@ -61,7 +61,7 @@ export class PlayerCombatForm extends FormApplication {
     * @param {any} options
     * @param {any} userId
     */
-   _updateTrackedActor = (actor, updateData, options, userId) => {
+   _updateTrackedActor = (actor, updateData, _options, _userId) => {
       // Check if the updated actor is in the tracked actors list by ID
       if (game.combat && this.trackedTokenIds.includes(actor.currentActiveToken?.id)) {
          // Find the row matching the actor ID
@@ -113,7 +113,7 @@ export class PlayerCombatForm extends FormApplication {
    * @param {Event} event - The initial triggering submission event
    * @param {object} formData - The object of validated form data with which to update the object
    */
-   async _updateObject(event, formData) {
+   async _updateObject(event, _formData) {
       event.preventDefault();
    }
 
@@ -134,13 +134,13 @@ export class PlayerCombatForm extends FormApplication {
       }
    }
 
-   #updateCombatant = (combatant, updateData, options, userId) => {
+   #updateCombatant = (combatant, updateData, _options, _userId) => {
       if (game.combat && this.trackedTokenIds.includes(combatant.token?.id)) {
          this.#updateCombatantData(combatant, updateData);
       }
    }
 
-   #updateItem = (item, updateData, options, userId) => {
+   #updateItem = (item, _updateData, _options, _userId) => {
       const token = item?.parent?.currentActiveToken; // The actor the item belongs to
       if (game.combat && token && this.trackedTokenIds.includes(token.id)) {
          this.render();  // Re-render to reflect updated actor data

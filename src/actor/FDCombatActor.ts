@@ -168,14 +168,14 @@ export class FDCombatActor extends FDActorBase {
       event.stopPropagation(); // Stop other handlers from triggering the event
       const dataset = event.currentTarget.dataset;
       /** @type {Array<any>} */ // or /** @type {Token[]} */
-      const selected = Array.from(canvas.tokens.controlled);
+      const selected: Token[] = Array.from(canvas.tokens.controlled);
       const hasSelected = selected.length > 0;
       if (hasSelected === false) {
          ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
       } else {
          for (const target of selected) {
             // Roll for each token's actor
-            (target as any).actor.rollSavingThrow(dataset.type, event);
+            target.actor.rollSavingThrow(dataset.type, event);
          }
       }
    }
@@ -337,7 +337,7 @@ export class FDCombatActor extends FDActorBase {
                const changes = JSON.parse(abilityData?.changes);
                promises.push(specialAbility.update(changes));
             }
-            catch (err) {
+            catch (_err) {
                console.error(`Invalid class ability changes specified for ${specialAbility.name}.`);
             }
          }

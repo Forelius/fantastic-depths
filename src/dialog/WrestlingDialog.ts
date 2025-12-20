@@ -35,7 +35,7 @@ export class WrestlingDialog {
                action: 'roll',
                label: game.i18n.localize('FADE.roll'),
                default: true,
-               callback: (event, button, dialog) => {
+               callback: (_event, button, _dialog) => {
                   return { action: button.dataset.action, ...(new CodeMigrate.FormDataExtended(button.form).object) }
                }
             },

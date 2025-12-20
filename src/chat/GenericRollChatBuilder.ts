@@ -63,7 +63,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
 
       let targetTokens;
       if (item?.hasTargets === true) {
-         targetTokens = isSave ? [] : Array.from(game.user.targets).map((i: any) => i.document ?? i);
+         targetTokens = isSave ? [] : Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       }
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 

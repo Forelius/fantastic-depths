@@ -77,7 +77,7 @@ export class SpecialAbilityItem extends FDItem {
          dataset.label = this.name;
 
          if (dialogResp) {
-            dialogResp.rolling === true
+            //dialogResp.rolling = true;
          } else if (ctrlKey === true) {
             dialogResp = {
                rolling: true,
