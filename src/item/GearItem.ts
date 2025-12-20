@@ -43,6 +43,7 @@ export class GearItem extends FDItem {
    }
 
    get isDropped() {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let current = this;
       let result = false;
       while (current) {
@@ -80,12 +81,7 @@ export class GearItem extends FDItem {
     * @param {any} dataset The data- tag values from the clicked element
     */
    async roll(dataset) {
-      const owner = dataset?.owneruuid ? foundry.utils.deepClone(await fromUuid(dataset.owneruuid)) : null;
-      const instigator = owner || this.actor?.currentActiveToken || this.actor || canvas.tokens.controlled?.[0]?.document;
-      if (!instigator) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-         return null;
-      }
+      const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
       const rollMode = game.settings.get('core', 'rollMode');
       const chatData = {

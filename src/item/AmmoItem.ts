@@ -23,6 +23,7 @@ export class AmmoItem extends FDItem {
    }
 
    get isDropped() {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let current = this;
       let result = false;
       while (current) {
@@ -51,4 +52,3 @@ export class AmmoItem extends FDItem {
       this.system.unidentifiedName = this.system.unidentifiedName ?? this.name;
    }
 }
-

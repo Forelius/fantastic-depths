@@ -1,10 +1,10 @@
 import { FDActorSheetV2 } from "./FDActorSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {FDActorSheetV2}
  */
-// @ts-ignore
 export class CharacterSheetBase extends FDActorSheetV2 {
    constructor(options = {}) {
       super(options);
@@ -24,7 +24,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       return result;
    }
 
-   static DEFAULT_OPTIONS = {
+   static DEFAULT_OPTIONS: Record<string, unknown> = {
       position: {
          width: 650,
          height: 600,
@@ -35,7 +35,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       classes: ["character"],
    }
 
-   static PARTS = {
+   static PARTS: Record<string, unknown> = {
       header: {
          template: "systems/fantastic-depths/templates/actor/character/header.hbs",
       },
@@ -91,8 +91,8 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       }
    }
 
-   async _prepareContext(options) {
-      const context = await super._prepareContext(options);
+   async _prepareContext() {
+      const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       context.hasMultiClass = game.settings.get(game.system.id, "classSystem") !== "single";
       context.editScores = this.editScores;
@@ -106,34 +106,34 @@ export class CharacterSheetBase extends FDActorSheetV2 {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<any>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
 
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
-      const tabs: any = {
-         abilities: { id: "abilities", group, label: "FADE.tabs.abilities" },
+      const tabs: Record<string, SheetTab> = {
+         abilities: new SheetTab("abilities", group, "FADE.tabs.abilities"),
       }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: "items", group, label: "FADE.items" };
-         tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
+         tabs.items = new SheetTab("items", group, "FADE.items");
+         tabs.skills = new SheetTab("skills", group, "FADE.tabs.skills");
          const classSystem = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
-            tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+            tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells");
          }
-         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
-         tabs.description = { id: "description", group, label: "FADE.tabs.description" };
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
+         tabs.description = new SheetTab("description", group, "FADE.tabs.description");
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");
       }
 
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }
@@ -141,4 +141,3 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       return tabs;
    }
 }
-

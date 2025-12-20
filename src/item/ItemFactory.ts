@@ -16,8 +16,8 @@ import { AmmoItem } from "../item/AmmoItem.js";
 
 const handler = {
    construct(_item, ...args) {
-      const context: any = args[0][1];
-      const data: any = args[0][0];
+      const context = args[0][1];
+      const data = args[0][0];
       const itemType: string = data.type;
 
       let result = null;
@@ -42,4 +42,3 @@ const handler = {
 };
 
 export const ItemFactory = new Proxy(FDItem, handler);
-

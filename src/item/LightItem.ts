@@ -1,4 +1,5 @@
 import { LightManager } from "../sys/LightManager.js";
+import { ChatAction } from "./FDItem.js";
 import { GearItem } from "./GearItem.js";
 
 export class LightItem extends GearItem {
@@ -28,6 +29,7 @@ export class LightItem extends GearItem {
       // Extract the fuel type from the lightSource
       // If there's no external fuel source needed, use the lightSource itself
       if (this.usesExternalFuel === false && (this.system.quantity === null || this.system.quantity > 0)) {
+         // eslint-disable-next-line @typescript-eslint/no-this-alias
          fuelItem = this;
       } else if (this.usesExternalFuel === true) {
          const fuelType = this.system.light.fuelType;
@@ -39,8 +41,8 @@ export class LightItem extends GearItem {
       return fuelItem;
    }
 
-   getActionsForChat(owner, options = {}) {
-      const actions = [
+   getActionsForChat(owner, _options): ChatAction[] {
+      const actions: ChatAction[] = [
          {
             type: "toggleLight",
             owneruuid: owner.uuid,
@@ -94,7 +96,6 @@ export class LightItem extends GearItem {
 
    async toggleLight(dataset) {
       const owner = await fromUuid(dataset.owneruuid);
-      //const token = owner.getActiveTokens().?[0]?.document ?? owner.getActiveTokens()?.[0];
       const token = owner.actor ? owner : owner.getActiveTokens()?.[0]?.document ?? owner.getActiveTokens()?.[0];
       if (token) {
          if (this.system.light.enabled) {

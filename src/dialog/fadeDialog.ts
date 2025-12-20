@@ -24,7 +24,7 @@ export class fadeDialog {
                action: "roll",
                default: true,
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
+               callback: (_, button) => new CodeMigrate.FormDataExtended(button?.form).object
             }
          ],
          close: () => { },
@@ -66,7 +66,7 @@ export class fadeDialog {
                      action: "attack",
                      label: game.i18n.localize('FADE.combat.maneuvers.attack.name'),
                      default: true,
-                     callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object
+                     callback: (_, button) => new CodeMigrate.FormDataExtended(button.form).object
                   },
                   {
                      action: "close",
@@ -92,7 +92,7 @@ export class fadeDialog {
       return result;
    }
 
-   static async getSelectSpellDialog(memorizedOnly = false) {
+   static async getSelectSpellDialog() {
       const actor = canvas.tokens.controlled?.[0]?.actor;
       if (actor) {
          if (actor.testUserPermission(game.user, "OWNER") == false) {
@@ -116,7 +116,7 @@ export class fadeDialog {
                return acc;
             }, {});
 
-            let result = await DialogV2.wait({
+            const result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
                position: { width: 460 },
@@ -125,7 +125,7 @@ export class fadeDialog {
                   {
                      action: 'cast',
                      label: game.i18n.localize('FADE.combat.maneuvers.spell.name'),
-                     callback: (event, button, dialog) => {
+                     callback: (_, button) => {
                         return {
                            action: button.dataset?.action,
                            data: new CodeMigrate.FormDataExtended(button.form).object
@@ -136,7 +136,7 @@ export class fadeDialog {
                   {
                      action: 'view',
                      label: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
-                     callback: (event, button, dialog) => {
+                     callback: (_, button) => {
                         return {
                            action: button.dataset?.action,
                            data: new CodeMigrate.FormDataExtended(button.form).object
@@ -146,7 +146,7 @@ export class fadeDialog {
                   {
                      action: 'close',
                      label: game.i18n.localize('FADE.dialog.close'),
-                     callback: function (event, button, dialog) { return null; }
+                     callback: function () { return null; }
                   },
                ],
                close: () => { return null; },
@@ -232,7 +232,7 @@ export class fadeDialog {
       }
 
       // Create the dialog content
-      let content = `
+      const content = `
         <form>
             <div class="form-group">
                 <label for="abilitySelect">Select Special Ability:</label>
@@ -248,7 +248,7 @@ export class fadeDialog {
     `;
 
       // Create the dialog using DialogV2
-      let result = await DialogV2.wait({
+      const result = await DialogV2.wait({
          window: { title: "Roll Special Ability" },
          rejectClose: false,
          position: { width: 400 },
@@ -257,7 +257,7 @@ export class fadeDialog {
             {
                action: 'roll',
                label: "Roll",
-               callback: (event, button, dialog) => {
+               callback: (_, button) => {
                   return {
                      action: button.dataset?.action,
                      data: new CodeMigrate.FormDataExtended(button.form).object
@@ -268,7 +268,7 @@ export class fadeDialog {
             {
                action: 'cancel',
                label: "Cancel",
-               callback: function (event, button, dialog) { return null; },
+               callback: function () { return null; },
                default: true
             }
          ],
@@ -303,4 +303,3 @@ export class fadeDialog {
       }
    }
 }
-

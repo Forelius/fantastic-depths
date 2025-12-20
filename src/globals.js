@@ -1,8 +1,10 @@
+ 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * @global
  * @readonly
  * @type {any}
-    */
+ */
 const canvas = undefined;
 /** @global @readonly @type {any} */ const Folder = undefined;
 /** @global @readonly @type {any} */ const SortingHelpers = undefined;

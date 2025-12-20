@@ -22,9 +22,9 @@ export class ItemRollChat extends ChatBuilder {
       const rolls = roll ? [roll] : [];
       let rollContent = null;
       const item = caller;
-      let dmgHealRoll = null;
+      const dmgHealRoll = null;
       // Note: Weapons don't have target until they are used to attack.
-      const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i:any) => i.document ?? i) : null;
+      const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i:PropertyBag) => (i.document ?? i) as Token) : null;
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
@@ -44,7 +44,7 @@ export class ItemRollChat extends ChatBuilder {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, saves: !item.isWeaponItem, abilities:false });
+      const actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, saves: !item.isWeaponItem, abilities:false });
 
       // Prepare data for the chat template
       const chatData = {
@@ -115,4 +115,3 @@ export class ItemRollChat extends ChatBuilder {
       return resultString;
    }
 }
-

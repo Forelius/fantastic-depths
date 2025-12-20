@@ -12,7 +12,7 @@ import { DamageTypeDialog } from "./DamageTypeDialog.js"
  * @param {any} options
  * @returns
  */
-export const DialogFactory = async (dataset = null, caller = null, options: any = { dataset: null, weapon: null, targetToken: null }) => {
+export const DialogFactory = async (dataset = null, caller = null, options: Record<string,unknown> = { dataset: null, weapon: null, targetToken: null }) => {
    let result;
    if (dataset.dialog === "ability") {
       result = await AbilityCheckDialog.getDialog(dataset, caller);
@@ -33,4 +33,3 @@ export const DialogFactory = async (dataset = null, caller = null, options: any 
    }
    return result;
 };
-

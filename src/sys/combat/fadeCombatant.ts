@@ -49,7 +49,7 @@ export class fadeCombatant extends Combatant {
 
          this._availableActions = Object.entries(CONFIG.FADE.CombatManeuvers)
             .filter(action => actions.includes(action[0]))
-            .map(([key, value]) => ({
+            .map(([key]) => ({
                text: game.i18n.localize(`FADE.combat.maneuvers.${key}.name`),
                value: key,
             }))
@@ -102,7 +102,7 @@ export class fadeCombatant extends Combatant {
 
       // Reset weapon attacks to zero
       const weapons = this.actor.items.filter(item => item.type === "weapon");
-      for (let weapon of weapons) {
+      for (const weapon of weapons) {
          promises.push(weapon.update({ "system.attacks.used": 0 }));
       }
 

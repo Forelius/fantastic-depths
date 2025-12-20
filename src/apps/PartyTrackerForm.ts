@@ -9,7 +9,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       this.isGM = game.user.isGM;
 
       // Load tracked actors from the settings
-      let storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
+      const storedData = game.settings.get(game.system.id, 'partyTrackerData') || [];
 
       // Store the updated tracked actor IDs
       this.trackedActorIds = storedData;
@@ -87,7 +87,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
    * @param {any} options                 Provided render options
    * @protected
    */
-   _onRender(context, options) {
+   _onRender(_context, _options) {
       if (game.user.isGM) {
          Hooks.off('updateActor', this._updateTrackedActor);
          Hooks.on('updateActor', this._updateTrackedActor);
@@ -109,21 +109,19 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
 
    /**
     * Define whether a user is able to begin a dragstart workflow for a given element
-    * @param {string} selector       The candidate HTML selector for dragging
     * @returns {boolean}             Can the current user drag this element?
     * @protected
     */
-   _canDragStart(selector) {
+   _canDragStart() {
       return game.user.isGM;
    }
 
    /**
     * Define whether a user is able to conclude a drag-and-drop workflow for a given element
-    * @param {string} selector       The candidate HTML selector for the drop target
     * @returns {boolean}             Can the current user drop on this element?
     * @protected
     */
-   _canDragDrop(selector) {
+   _canDragDrop() {
       return game.user.isGM;
    }
 
@@ -186,7 +184,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {Event} event - The initial triggering submission event
     * @param {object} formData - The object of validated form data with which to update the object
     */
-   async _updateObject(event, formData) {
+   async _updateObject(event, _formData) {
       event.preventDefault();
       // Handle any form data updates if needed
    }
@@ -208,7 +206,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {any} formData    Processed data for the submitted form
     * @returns {Promise<void>}
     */
-   static async #onSubmit(event, form, formData) {
+   static async #onSubmit(event, _form, _formData) {
       event.preventDefault();
       // Handle form submission if needed
    }
@@ -258,7 +256,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {DragEvent} event       The originating DragEvent
     * @protected
     */
-   _onDragStart(event) {
+   _onDragStart(_event) {
       // For party tracker, we don't need to handle drag start since we only accept drops
    }
 
@@ -267,7 +265,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {DragEvent} event       The originating DragEvent
     * @protected
     */
-   _onDragOver(event) {
+   _onDragOver(_event) {
       // Default behavior is fine
    }
 }

@@ -1,7 +1,11 @@
 const { DialogV2, ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 import { CodeMigrate } from "../sys/migration.js";
+import { UserTables, UserTableType } from "../sys/registry/UserTables.js";
 
 export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+   userTablesSys: UserTables;
+   system: { currentTable: UserTableType, selectedTable: string };
+
    constructor() {
       super();
       this.userTablesSys = game.fade.registry.getSystem('userTables');
@@ -70,7 +74,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       if (partId === 'header') {
          const userTables = this.userTablesSys.getTables();
          const tableNames = { none: game.i18n.localize('FADE.apps.userTables.selectTable') };
-         Object.assign(tableNames, Object.entries(userTables).reduce((acc, item: any) => {
+         Object.assign(tableNames, Object.entries(userTables).reduce((acc, item) => {
             acc[item[0]] = item[1].name;
             return acc;
          }, {}));
@@ -126,7 +130,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       }
    }
 
-   async addTable(data) {
+   async addTable() {
       const tableTypes = game.fade.registry.getSystem("userTables", true).type.TABLE_TYPES
          .map(type => { return { id: type, name: game.i18n.localize(`FADE.apps.userTables.tableTypes.${type}`) } });
 
@@ -158,7 +162,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
             },
             {
                label: "FADE.apps.userTables.actions.createTable",
-               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object
+               callback: (_event, button, _dialog) => new CodeMigrate.FormDataExtended(button.form).object
             },
          ],
          rejectClose: false,
@@ -174,7 +178,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       }
    }
 
-   loadTable(data) {
+   loadTable() {
       const table = foundry.utils.deepClone(this.userTablesSys.getTable(this.system.selectedTable));
       if (table.type === "bonus") {
          table.table = table.table.sort((a, b) => a.min - b.min);
@@ -191,7 +195,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       this.userTablesSys.setTable(this.system.currentTable);
    }
 
-   async removeTable(data) {
+   async removeTable() {
       const prompt = game.i18n.localize('FADE.apps.userTables.removePrompt');
       const proceed = await foundry.applications.api.DialogV2.confirm({
          window: prompt,
@@ -250,7 +254,7 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
      * @param {PointerEvent} event - The originating click event
      * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
      */
-   static async #addRow(event, target) {
+   static async #addRow(_event, _target) {
       const table = this.fixTable(this.system.currentTable.table);
       if (this.system.currentTable.type === "bonus") {
          table.push({ min: 0, bonus: 0 });
@@ -277,4 +281,3 @@ export class UserTablesConfig extends HandlebarsApplicationMixin(ApplicationV2) 
       await this.render();
    }
 }
-

@@ -1,5 +1,5 @@
 import { IdentifiableData } from '../fields/IdentifiableField.js';
-const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, SetField, StringField } = foundry.data.fields;
+const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 /**
  * Data model for a generic item inheriting from multiple templates.
  */

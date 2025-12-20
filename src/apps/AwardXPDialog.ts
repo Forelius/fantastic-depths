@@ -1,5 +1,7 @@
+import { FDActorBase } from "../actor/FDActorBase";
+
 export class AwardXPDialog extends FormApplication {
-   constructor(object = {}, options: any = {}) {
+   constructor(object = {}, options = { actorIds: null }) {
       super(object, options);
       // Keep the IDs
       this.actorIds = options.actorIds;
@@ -97,7 +99,7 @@ export class AwardXPDialog extends FormApplication {
       // 1) Gather the actor docs
       const actors = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
       // 2) Sum factors
-      let totalFactors = Object.values(this.actorXPs).reduce<number>((sum: number, actor:any) => { return sum + (actor.shareFactor || 0) }, 0);
+      const totalFactors = Object.values(this.actorXPs).reduce<number>((sum: number, actor: FDActorBase ) => { return sum + (actor.shareFactor || 0) }, 0);
       // 3) For each actor, compute the new default XP
       for (const actor of actors) {
          const factor = this.actorXPs[actor.id].shareFactor || 0;

@@ -10,7 +10,6 @@ import { CodeMigrate } from "../../sys/migration.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
-// @ts-ignore
 export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
    constructor(options = {}) {
@@ -18,7 +17,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       this.isRestoringCollapsedState = false;
    }
 
-   static DEFAULT_OPTIONS = {
+   static DEFAULT_OPTIONS: Record<string, unknown> = {
       position: {
          width: 650,
          height: 500,
@@ -181,7 +180,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       });
    }
 
-   async _prepareContext(options) {
+   async _prepareContext() {
       // Retrieve the data structure from the base sheet. You can inspect or log
       // the context variable to see the structure, but some key properties for
       // sheets are the actor object, the data object, whether or not it's
@@ -244,7 +243,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       );
       // Equipped Weapons
       const attackGroups = [];
-      for (let item of this.actor.items) {
+      for (const item of this.actor.items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // If an equipped non-siege weapon
          if (item.type === "weapon" && item.system.equipped === true && item.system.weaponType !== "siege") {
@@ -555,7 +554,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
-      for (let item of items) {
+      for (const item of items) {
          item.img = item.img || Item.DEFAULT_ICON;
          // Append to gear or treasure.
          if (item.type === "item" || item.type === "light" || item.type === "treasure") {
@@ -655,7 +654,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Attach derived data manually            
       if (item.system.container === true) {
          const docItem = this.actor.items.get(item._id);
-         for (let innerItem of docItem?.containedItems) {
+         for (const innerItem of docItem?.containedItems) {
             this._mapContainer(innerItem);
          }
          item.contained = docItem?.containedItems || [];
@@ -705,7 +704,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const current = foundry.utils.getProperty(this.document._source, attr);
       const defaultArtwork = this.document.constructor.getDefaultArtwork?.(this.document._source) ?? {};
       const defaultImage = foundry.utils.getProperty(defaultArtwork, attr);
-      // @ts-ignore
       const fp = new FilePicker({
          current,
          type: "image",
@@ -725,7 +723,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @param {any} event
     */
    static async #clickToggleEquipped(this: FDActorSheetV2, event) {
-      let updateObj = {};
+      const updateObj = {};
       const item = this._getItemFromActor(event);
       let isEquipped = item.system.equipped;
       // if the item is not equipped or the item is not cursed or the user is GM...
@@ -842,9 +840,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    /**
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
-    * @param {any} event
     */
-   static async #clickEditAncestry(this: FDActorSheetV2, event) {
+   static async #clickEditAncestry(this: FDActorSheetV2) {
       const ancestryItem = await fadeFinder.getAncestry(this.actor.system.details.species);
       ancestryItem?.sheet?.render(true)
    }
@@ -855,7 +852,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    static async #clickRollGeneric(this: FDActorSheetV2, event) {
       const dataset = event.target.dataset;
-      let formula = dataset.formula;
+      const formula = dataset.formula;
       const chatType = CHAT_TYPE.GENERIC_ROLL;
       const rollContext = { ...this.actor.getRollData() };
       const rolled = await new Roll(formula, rollContext).evaluate();
@@ -987,9 +984,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
    /**
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
-    * @param {any} event
     */
-   static async #clickAddActorGroup(this: FDActorSheetV2, event) {
+   static async #clickAddActorGroup(this: FDActorSheetV2) {
       const actor = this.actor;
       const currentGroups = actor.system.actorGroups || [];
 
@@ -1028,7 +1024,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             icon: "fas fa-plus",
             label: game.i18n.localize("FADE.apps.userTables.actions.new"),
             default: true,
-            callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
+            callback: (_, button) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
          },
          {
             icon: "fas fa-times",

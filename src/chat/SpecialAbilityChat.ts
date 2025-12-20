@@ -6,9 +6,9 @@ export class SpecialAbilityChat extends ChatBuilder {
 
    async createChatMessage() {
       const { context, caller, roll, options, digest } = this.data;
-      const targetTokens = Array.from(game.user.targets).map((i: any) => i.document ?? i);
+      const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const item = caller;
-      let dmgHealRoll = item.getDamageRoll(null);
+      const dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "", target: null, operator: null };
       let description = '?';
@@ -31,11 +31,11 @@ export class SpecialAbilityChat extends ChatBuilder {
       }
 
       if (game.fade.toastManager) {
-         let toast = `${description}${rollResult.message}`;
+         const toast = `${description}${rollResult.message}`;
          game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, context, { saves: false, attacks: false, abilities: false });
+      const actions = await this._getActionsForChat(item, context, { saves: false, attacks: false, abilities: false });
 
       // Prepare data for the chat template
       const chatData = {
@@ -53,15 +53,15 @@ export class SpecialAbilityChat extends ChatBuilder {
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
 
       // Add targets for DM chat message
-      let toHitResult = { targetResults: [], message: '' };
+      const toHitResult = { targetResults: [], message: '' };
       const noTargets = ["save", "explore"]; // some categories don't have targets.
       if (noTargets.includes(item.system.category) === false) {
-         for (let targetToken of targetTokens) {
+         for (const targetToken of targetTokens) {
             toHitResult.targetResults.push({ targetuuid: targetToken.uuid, targetname: targetToken.name });
          }
       }
 
-      const { conditions, durationMsgs } = await this._getConditionsForChat(item);
+      const { conditions } = await this._getConditionsForChat(item);
       const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode
@@ -93,7 +93,7 @@ export class SpecialAbilityChat extends ChatBuilder {
     * @returns A result object. Object contains one members: message, target.
     */
    async #getRollResult(specAbility, roll) {
-      let result = { message: null, target: null, operator: null };
+      const result = { message: null, target: null, operator: null };
       const systemData = specAbility.system;
       let target = systemData.target;
       if (systemData.operator?.length > 0 && target?.length > 0) {
@@ -116,4 +116,3 @@ export class SpecialAbilityChat extends ChatBuilder {
       return result;
    }
 }
-

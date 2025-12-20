@@ -425,7 +425,7 @@ export class fadeSettings {
 
    // This function applies the selected theme by adding/removing relevant classes
    applyTheme(theme) {
-      let root = document.documentElement;
+      const root = document.documentElement;
       if (theme === "dark") {
          root.classList.add("dark-mode");
          root.classList.remove("light-mode");
@@ -435,7 +435,7 @@ export class fadeSettings {
       }
    }
 
-   renderSettingsConfig(app, html, data) {
+   renderSettingsConfig(_app, html, _data) {
       html = $(html);
       // Select the Initiative Mode dropdown by its name attribute
       const initiativeModeSetting = html.find(`select[name="${game.system.id}.initiativeMode"]`);
@@ -462,9 +462,5 @@ export class fadeSettings {
             declaredActionsInput?.prop("disabled", false);
          }
       });
-
-      // Set the initial state when the settings form is rendered
-      const currentValue = game.settings.get(game.system.id, "initiativeMode");
    }
 }
-

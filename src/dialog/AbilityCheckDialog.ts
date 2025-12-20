@@ -10,7 +10,7 @@ export class AbilityCheckDialog {
       const template = abilityCheckSys.dialogTemplate;
       const templateContent = await CodeMigrate.RenderTemplate(template, {
          difficulty: "medium",
-         difficultyLevels: Object.entries(difficultyLevels).reduce((acc, [key, value]) => {
+         difficultyLevels: Object.entries(difficultyLevels).reduce((acc, [key]) => {
             acc[key] = game.i18n.localize(`FADE.dialog.difficulty.levels.${key}`);
             return acc;
          }, {}),
@@ -32,7 +32,7 @@ export class AbilityCheckDialog {
             {
                action: "check",
                label: game.i18n.localize("FADE.dialog.abilityCheck"),
-               callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
+               callback: (_event, button, _dialog) => new CodeMigrate.FormDataExtended(button.form).object,
                default: true
             },
          ],
@@ -42,4 +42,3 @@ export class AbilityCheckDialog {
       return dialogResp;
    }
 }
-

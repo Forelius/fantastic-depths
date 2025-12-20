@@ -108,7 +108,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
 
             // Set condition durations.
             const conditions = foundry.utils.deepClone(this.system.conditions);
-            for (let condition of conditions) {
+            for (const condition of conditions) {
                condition.duration = durationResult.durationSec;
             }
             const chatOptions = {
@@ -143,7 +143,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
     */
    async _tryCastThenCharge(getOnly = false, actionItem) {
       let result = false;
-      let item = actionItem || this;
+      const item = actionItem || this;
 
       if (item.system.cast !== undefined) {
          result = await this._tryCastMemorized(getOnly, actionItem);
@@ -163,7 +163,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
     */
    async _tryCastThenChargeThenUse(getOnly = false, actionItem, action) {
       let result = false;
-      let item = actionItem || this;
+      const item = actionItem || this;
 
       if (item.system.cast !== undefined) {
          result = await this._tryCastMemorized(getOnly, actionItem);
@@ -186,8 +186,8 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    }
 
    async _tryCastMemorized(getOnly = false, actionItem) {
-      let item = actionItem || this;
-      let result = item.hasCast;
+      const item = actionItem || this;
+      const result = item.hasCast;
 
       if (getOnly !== true) {
          // Add 1 if not infinite and above max casts
@@ -206,7 +206,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    }
 
    async #getDurationResult(dataset) {
-      let result = {
+      const result = {
          text: `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`,
          durationSec: null,
       };
@@ -226,4 +226,3 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       return result;
    }
 }
-

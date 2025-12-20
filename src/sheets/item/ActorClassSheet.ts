@@ -40,7 +40,7 @@ export class ActorClassSheet extends FDItemSheetV2 {
    /**
     * Prepare data to be used in the Handlebars template.
     */
-   async _prepareContext(options) {
+   async _prepareContext() {
       const context = {
          item: this.item,
          system: this.item.system,

@@ -5,7 +5,7 @@ import { CodeMigrate } from "../sys/migration.js";
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
 
-   async getRollContent(roll, mdata) {
+   async getRollContent(roll, _mdata) {
       return roll.render();
    }
 
@@ -38,7 +38,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
 
       // Render the content using the template, now with messageId
-      let content = await CodeMigrate.RenderTemplate(this.template, renderData);
+      const content = await CodeMigrate.RenderTemplate(this.template, renderData);
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          [`flags.${game.system.id}.attackdata`]: {
@@ -79,10 +79,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const damager = owneruuid ? await fromUuid(owneruuid) : undefined;
       const damagerName = damager?.name;
       const damagerToken = damager.actor ? damager : damagerItem.actor?.currentActiveToken;
-      //if (!damagerToken) {
-      //   ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenAssoc'));
-      //   return result;
-      //}
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
@@ -197,7 +193,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       // Ensure we have a target ID
       if (applyTo.length > 0) {
          let delta = parseInt(dataset.amount, 10);
-         for (let target of applyTo) {
+         for (const target of applyTo) {
             if (target.actor.isOwner === true) {
                // If not restoring HP
                if (dataset.damagetype != "heal") {
@@ -214,4 +210,3 @@ export class DamageRollChatBuilder extends ChatBuilder {
       }
    }
 }
-

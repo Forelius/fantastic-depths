@@ -1,5 +1,6 @@
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
 import { ConditionMixin } from "../mixins/ConditionMixin.js";
 import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
@@ -9,7 +10,6 @@ import { DragDropMixin } from "../mixins/DragDropMixin.js";
 /**
  * Sheet class for WeaponItem.
  */
-// @ts-ignore
 export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(VsGroupModMixin(FDItemSheetV2))))) {
    /**
    * Get the default options for the sheet.
@@ -109,7 +109,7 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       const data = TextEditor.getDragEventData(event);
-      let droppedItem = await Item.implementation.fromDropData(data);
+      const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...
       if (droppedItem?.type === "spell") {
          await this.onDropSpellItem(droppedItem);
@@ -160,24 +160,24 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<any>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
       // Default tab for first time it"s rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "description";
 
-      const tabs: any = {
-         description: { id: "description", group, label: "FADE.tabs.description" }
+      const tabs: Record<string, SheetTab>  = {
+         description: new SheetTab("description", group, "FADE.tabs.description")
       }
       if (game.user.isGM) {
-         tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes" };
-         tabs.specialAbilities = { id: "specialAbilities", group, label: "FADE.SpecialAbility.plural" };
-         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
-         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
+         tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes");
+         tabs.specialAbilities = new SheetTab("specialAbilities", group, "FADE.SpecialAbility.plural");
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");
       }
 
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }

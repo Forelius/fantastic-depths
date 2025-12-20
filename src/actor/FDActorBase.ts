@@ -57,7 +57,7 @@ export class FDActorBase extends Actor {
     * @param {any} options
     * @param {String} userId
     */
-   async onUpdateActor(updateData, options, userId) {
+   async onUpdateActor(updateData, _options, _userId) {
       // Hit points updated.
       if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
          await this.update({ "system.combat.isDead": true });
@@ -68,7 +68,7 @@ export class FDActorBase extends Actor {
       }
    }
 
-   async onUpdateActorItem(item, updateData, options, userId) {
+   async onUpdateActorItem(item, updateData, _options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
@@ -78,7 +78,7 @@ export class FDActorBase extends Actor {
       }
    }
 
-   async onCreateActorItem(item, options, userId) {
+   async onCreateActorItem(item, _options, userId) {
       const user = game.users.get(userId);
       if (item.type === "mastery") {
          await item.updatePropertiesFromMastery();
@@ -90,7 +90,7 @@ export class FDActorBase extends Actor {
       }
    }
 
-   onDeleteActorItem(item, options, userId) {
+   onDeleteActorItem(item, _options, userId) {
       const user = game.users.get(userId);
       // Check if the logging feature is enabled and the user is not a GM
       const isLoggingEnabled = game.settings.get(game.system.id, "logCharacterChanges");
@@ -104,14 +104,14 @@ export class FDActorBase extends Actor {
    /**
    * Handler for updateWorldTime event.
    */
-   onUpdateWorldTime(worldTime, dt, options, userId) {
+   onUpdateWorldTime(_worldTime, _dt, _options, _userId) {
       // Only the GM should handle updating effects
       // Ensure there's an active scene and tokens on the canvas
       if (!game.user.isGM || !canvas?.scene) return;
 
       // Active effects
       // Ensure the actor has active effects to update
-      for (let effect of this.allApplicableEffects()) {
+      for (const effect of this.allApplicableEffects()) {
          if (effect.isTemporary && effect.duration?.type !== "none") {
             effect.updateDuration();
             // Adjust the duration based on the time passed
@@ -126,7 +126,7 @@ export class FDActorBase extends Actor {
 
                // Notify chat.
                const speaker = { alias: game.users.get(game.userId).name };  // Use the player's name as the speaker
-               let chatContent = game.i18n.format("FADE.Chat.effectEnds", { effectName: effect.name, actorName: this.name });
+               const chatContent = game.i18n.format("FADE.Chat.effectEnds", { effectName: effect.name, actorName: this.name });
                ChatMessage.create({ speaker: speaker, content: chatContent });
             }
          }
@@ -159,6 +159,7 @@ export class FDActorBase extends Actor {
       */
    async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
       if (this.isOwner === false) return this;
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let result = this;
       // If delta damage...
       if (isDelta === true && attribute === "hp") {
@@ -245,11 +246,11 @@ export class FDActorBase extends Actor {
 
    async #handleHPChange(value) {
       let damageType = null;
-      let attackType = null;
-      let weapon = null;
+      const attackType = null;
+      const weapon = null;
       if (value < 0) {
-         let dataset = { dialog: "damageType" };
-         let dialogResp = await DialogFactory(dataset, this);
+         const dataset = { dialog: "damageType" };
+         const dialogResp = await DialogFactory(dataset, this);
          damageType = dialogResp.damageType;
       } else {
          damageType = "heal";

@@ -11,8 +11,8 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
       const dmgHealRoll = item.getDamageRoll(null);
-      let targetNumber = Number(mdata.target); // Ensure the target number is a number
-      const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i: any) => i.document ?? i) : null;
+      const targetNumber = Number(mdata.target); // Ensure the target number is a number
+      const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token) : null;
 
       // Determine the roll result based on the provided data
       let resultString;
@@ -68,4 +68,3 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       await ChatMessage.create(chatMessageData);
    }
 }
-

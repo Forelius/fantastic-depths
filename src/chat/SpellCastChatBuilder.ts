@@ -14,7 +14,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const casterActor = caster?.actor || caster; // context could be actor or token.
       const casterName = caster?.name; // context could be actor or token.
       const item = caller;
-      const targetTokens = Array.from(game.user.targets).map((i: any) => i.document ?? i);
+      const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const dmgHealRoll = caller.getDamageRoll(null, targetTokens?.[0]);
       const descData = { caster: casterName, spell: item.name };
       const description = game.i18n.format("FADE.Chat.spellCast", descData);
@@ -27,17 +27,17 @@ export class SpellCastChatBuilder extends ChatBuilder {
       } else {
          // Add targets for DM chat message
          toHitResult = { targetResults: [], message: "" };
-         for (let targetToken of targetTokens) {
+         for (const targetToken of targetTokens) {
             toHitResult.targetResults.push({ targetuuid: targetToken.uuid, targetname: targetToken.name });
          }
       }
 
       if (game.fade.toastManager) {
-         let toast = `${description}${toHitResult.message}`;
+         const toast = `${description}${toHitResult.message}`;
          game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
       }
 
-      let actions = await this._getActionsForChat(item, caster);
+      const actions = await this._getActionsForChat(item, caster);
 
       // Prepare data for the chat template
       const chatData = {
@@ -79,4 +79,3 @@ export class SpellCastChatBuilder extends ChatBuilder {
       });
    }
 }
-

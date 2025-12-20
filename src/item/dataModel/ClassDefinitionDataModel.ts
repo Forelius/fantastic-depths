@@ -1,15 +1,15 @@
 const { ArrayField, BooleanField, ObjectField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 export class ClassLevelData {
-   level: any;
+   level: number;
    xp: number;
-   thac0: any;
+   thac0: number;
    thbonus: number;
    hd: string;
    hdcon: boolean;
-   title: null;
-   femaleTitle: null;
-   attackRank: null;
+   title: string;
+   femaleTitle: string;
+   attackRank: string;
    constructor(options = { level: null }) {
       this.level = options?.level ?? 1;
       this.xp = 0;
@@ -20,6 +20,19 @@ export class ClassLevelData {
       this.title = null;
       this.femaleTitle = null;
       this.attackRank = null;
+   }
+}
+
+export class PrimeRequisite {
+   concatLogic: string;
+   ability: string;
+   percentage: number;
+   minScore: number;
+   constructor(ability, minScore, percentage, concatLogic = null) {
+      this.ability = ability;
+      this.minScore = minScore;
+      this.percentage = percentage;
+      this.concatLogic = concatLogic;
    }
 }
 

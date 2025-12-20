@@ -27,7 +27,7 @@ export class ActorMasteryItem extends FDItem {
       if (!masteryLevel) return; // Exit if no mastery data is found for the given name
 
       // Update the mastery fields with data from the specified level in FADE.WeaponMastery
-      let result = {
+      const result = {
          weaponType: masteryItem.system.weaponType,
          primaryType: masteryItem.system.primaryType,
          range: {
@@ -70,4 +70,3 @@ export class ActorMasteryItem extends FDItem {
       return description;
    }
 }
-

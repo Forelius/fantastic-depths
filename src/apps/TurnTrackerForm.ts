@@ -10,12 +10,15 @@ type DungeonStats = {
 class TurnData {
    dungeon: DungeonStats;
    timeSteps: {
-      round: any; turn: any; hour: number; // 60 minutes
+      round: number;
+      turn: number;
+      hour: number; // 60 minutes
       day: number;
    };
    settings: { needRestCondition: string; restFrequency: number; };
-   worldTime: any;
-   constructor(data: any | null) {
+   worldTime;
+
+   constructor(data) {
       this.dungeon = { session: 0, total: 0, rest: 0 };
 
       Object.assign(this, data);
@@ -171,11 +174,9 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    /**
    * Actions performed after any render of the Application.
    * Post-render steps are not awaited by the render process.
-   * @param {any} context      Prepared context data
-   * @param {any} options                 Provided render options
    * @protected
    */
-   _onRender(context, options) {
+   _onRender() {
       if (game.user.isGM == false) return;
 
       // Initialize tab system
@@ -193,7 +194,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
    /**
     * Handle the updateWorldTime event.
     */
-   _updateWorldTime = foundry.utils.debounce(async (worldTime, dt, options, userId) => {
+   _updateWorldTime = foundry.utils.debounce(async (worldTime, _dt, _options, _userId) => {
       let chatContent = "";
       const speaker = { alias: game.user.name };
       const timeSteps = this.turnData.timeSteps;
@@ -282,7 +283,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
 
       const trackedActorIds = game.settings.get(game.system.id, 'partyTrackerData');
-      for (let trackedActorId of trackedActorIds) {
+      for (const trackedActorId of trackedActorIds) {
          const trackedActor = game.actors.get(trackedActorId);
          const needRestCondition = await fromUuid(this.turnData.settings.needRestCondition);
          const condition = trackedActor.items.find(item => item.type === needRestCondition.type && item.name === needRestCondition.name);
@@ -307,7 +308,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
          if (this.turnData.settings.needRestCondition) {
             const condition = await fromUuid(this.turnData.settings.needRestCondition);
             const trackedActorIds = game.settings.get(game.system.id, 'partyTrackerData');
-            for (let trackedActorId of trackedActorIds) {
+            for (const trackedActorId of trackedActorIds) {
                const trackedActor = game.actors.get(trackedActorId);
                if (!trackedActor.items.find(item => item.type === condition.type && item.name === condition.name)) {
                   const itemData = [condition.toObject()];
@@ -319,4 +320,3 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       return chatContent;
    }
 }
-

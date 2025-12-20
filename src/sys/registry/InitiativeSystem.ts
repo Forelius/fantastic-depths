@@ -1,14 +1,20 @@
 import { DialogFactory } from "../../dialog/DialogFactory.js";
 import { SocketManager } from "../SocketManager.js"
+import { fadeCombatant } from "../combat/fadeCombatant.js";
 import { CodeMigrate } from "../migration.js";
 
-class BaseInitiative {
-   initiativeMode: any;
+abstract class BaseInitiative {
+   declaredActions: boolean;
+   initiativeMode: string;
+   initiativeFormula: string;
    constructor() {
+      this.declaredActions = game.settings.get(game.system.id, "declaredActions");
       this.initiativeMode = game.settings.get(game.system.id, "initiativeMode");
+      this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
    }
 
-   async rollInitiative(combat, ids, options: any = {}): Promise<any> { throw new Error("Method not implemented."); }
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   async rollInitiative(combat, ids, options): Promise<void> { throw new Error("Method not implemented."); }
 
    /**
     * @returns Combatant[]
@@ -22,6 +28,7 @@ class BaseInitiative {
       return combat.updateStateTracking(turns);
    }
 
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    sortCombatant(a, b) { throw new Error("Method not implemented."); }
 
    /**
@@ -31,7 +38,7 @@ class BaseInitiative {
     */
    async renderCombatTracker(html, data) {
       // Iterate over each combatant and apply a CSS class based on disposition
-      for (let combatant of data.combat.combatants) {
+      for (const combatant of data.combat.combatants) {
          /* console.debug(combatant);*/
          const disposition = combatant.token.disposition;
          const combatantElement = html.querySelector(`.combatant[data-combatant-id="${combatant.id}"]`);
@@ -74,14 +81,10 @@ class BaseInitiative {
 }
 
 export class IndivInit extends BaseInitiative {
-   declaredActions: any;
    phaseOrder: string[];
-   initiativeFormula: any;
    constructor() {
       super();
-      this.declaredActions = game.settings.get(game.system.id, "declaredActions");
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases.normal);
-      this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
    }
 
    /**
@@ -89,22 +92,18 @@ export class IndivInit extends BaseInitiative {
    * @override
    * @param {object} combat The combat instance
    * @param {string|string[]} ids A Combatant id or Array of ids for which to roll
-   * @param {object} [options={}] Additional options which modify how initiative rolls are created or presented.
-   * @param {string|null} [options.formula] A non-default initiative formula to roll. Otherwise, the system default is used.
-   * @param {boolean} [options.updateTurn=true] Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
-   * @param {object} [options.messageOptions={}] Additional options with which to customize created Chat Messages
    * @returns {Promise<any>} A promise which resolves to the updated Combat document once updates are complete.
    */
-   async rollInitiative(combat, ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   async rollInitiative(combat, ids, options): Promise<void> {
       const combatants = combat.combatants.filter((i) => ids.length === 0 || ids.includes(i.id));
       await this.#doInitiativeRoll(combat, combatants);  // Use the custom initiative function
-      return this;
    }
 
    sortCombatant(a, b) {
       let result = 0;
-      let aActor = a.actor;
-      let bActor = b.actor;
+      const aActor = a.actor;
+      const bActor = b.actor;
 
       if (aActor && bActor) {
          // Use combat phases order
@@ -148,14 +147,13 @@ export class IndivInit extends BaseInitiative {
 
    /**
     * The custom rollInitiative function
-    * @param {any} combat
     */
-   async #doInitiativeRoll(combat, combatants) {
+   async #doInitiativeRoll(combat, combatants): Promise<void> {
       // Array to accumulate roll results for the digest message
-      let rollResults = [];
+      const rollResults = [];
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
 
-      for (let combatant of combatants) {
+      for (const combatant of combatants) {
          const updates = [];
          const rollData = combatant.actor.getRollData();
          const mod = abilityScoreSys.getInitiativeMod(combatant.actor); // Get the initiative modifier
@@ -190,16 +188,23 @@ export class IndivInit extends BaseInitiative {
    }
 }
 
+interface FactionGroups {
+   /** Entities that are openly cooperative */
+   friendly: fadeCombatant[];
+   /** Entities that are neither friend nor foe */
+   neutral: fadeCombatant[];
+   /** Entities that are openly antagonistic */
+   hostile: fadeCombatant[];
+   /** Entities that are hidden or covert */
+   secret: fadeCombatant[];
+}
+
 export class GroupInit extends BaseInitiative {
-   declaredActions: any;
    phaseOrder: string[];
-   initiativeFormula: any;
-   groups: { friendly: any[]; neutral: any[]; hostile: any[]; secret: any[]; };
+   groups: FactionGroups;
    constructor() {
       super();
-      this.declaredActions = game.settings.get(game.system.id, "declaredActions");
       this.phaseOrder = Object.keys(CONFIG.FADE.CombatPhases.normal);
-      this.initiativeFormula = game.settings.get(game.system.id, "initiativeFormula");
    }
 
    /**
@@ -210,10 +215,10 @@ export class GroupInit extends BaseInitiative {
    * options.formula: A non-default initiative formula to roll. Otherwise, the system default is used.
    * options.updateTurn: Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
    * options.messageOptions: Additional options with which to customize created Chat Messages.
-   * @returns {Promise<any>} A promise which resolves to the updated Combat document once updates are complete.
+   * @returns {Promise<void>} A promise which resolves to the updated Combat document once updates are complete.
     */
-   async rollInitiative(combat, ids, options: any = {}): Promise<any> {
-      const { formula = null, updateTurn = true, messageOptions = {} } = options;
+   async rollInitiative(combat, ids, options = { messageOptions: { group: null } }): Promise<void> {
+      const { messageOptions } = options;
       // Get all combatants and group them by disposition
       let groups = messageOptions?.group ? [messageOptions?.group] : [];
       if (groups.length === 0 && ids.length > 0) {
@@ -238,8 +243,6 @@ export class GroupInit extends BaseInitiative {
             SocketManager.sendToGM("rollGroupInitiative", { combatid: combat.id });
          }
       }
-
-      return this;
    }
 
    /**
@@ -294,10 +297,10 @@ export class GroupInit extends BaseInitiative {
     */
    async doInitiativeRoll(combat, combatants, group = null) {
       // Array to accumulate roll results for the digest message
-      let rollResults = [];
+      const rollResults = [];
 
       // Get all combatants and group them by disposition         
-      this.groups = this.groupCombatants(combatants);
+      this.groups = this.#groupCombatants(combatants);
 
       // Friendly group (uses modifiers)
       if ((group === null || group === "friendly") && this.groups.friendly.length > 0) {
@@ -338,36 +341,6 @@ export class GroupInit extends BaseInitiative {
     */
    hasDeclaredAction(combatants, action) {
       return combatants.filter(combatant => combatant.actor.system.combat.declaredAction === action)?.length > 0;
-   }
-
-   /**
-    * Creates groups based on token disposition.
-    * @param {any} combatants
-    * @returns
-    */
-   groupCombatants(combatants) {
-      const groups = {
-         friendly: [],
-         neutral: [],
-         hostile: [],
-         secret: [],
-      };
-
-      // Iterate over combatants and group them by their token disposition
-      for (let combatant of combatants) {
-         const disposition = combatant.token.disposition;
-         if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-            groups.friendly.push(combatant);
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
-            groups.neutral.push(combatant);
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-            groups.hostile.push(combatant);
-         } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-            groups.secret.push(combatant);
-         }
-      }
-
-      return groups;
    }
 
    // method to handle group-based initiative
@@ -416,10 +389,41 @@ export class GroupInit extends BaseInitiative {
       }
       return result;
    }
+
+   /**
+    * Creates groups based on token disposition.
+    * @param {fadeCombatant[]} combatants
+    * @returns
+    */
+   #groupCombatants(combatants): FactionGroups {
+      const groups = {
+         friendly: [],
+         neutral: [],
+         hostile: [],
+         secret: [],
+      };
+
+      // Iterate over combatants and group them by their token disposition
+      for (const combatant of combatants) {
+         const disposition = combatant.token.disposition;
+         if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+            groups.friendly.push(combatant);
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+            groups.neutral.push(combatant);
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+            groups.hostile.push(combatant);
+         } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+            groups.secret.push(combatant);
+         }
+      }
+
+      return groups;
+   }
+
 }
 
 export class AltGroupInit extends GroupInit {
-   phaseOrders: any;
+   phaseOrders: Record<string,unknown>;
    phaseIndex: number;
    constructor() {
       super();
@@ -504,7 +508,7 @@ export class AltGroupInit extends GroupInit {
    async renderCombatTracker(html, data) {
       // Iterate over each combatant and apply a CSS class based on disposition
       const swifter = {};
-      for (let combatant of data.combat.turns) {
+      for (const combatant of data.combat.turns) {
          let isSwifterPhase = false;
          if ((combatant.canMove || combatant.isSwifterAction) && swifter[combatant.id] === undefined) {
             swifter[combatant.id] = true;

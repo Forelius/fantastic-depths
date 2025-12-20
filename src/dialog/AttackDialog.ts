@@ -1,5 +1,7 @@
 const { DialogV2 } = foundry.applications.api;
 import { CodeMigrate } from "../sys/migration.js";
+import { ToHitInterface } from "../sys/registry/ToHitSystem.js";
+import { WeaponMasteryInterface } from "../sys/registry/WeaponMastery.js";
 
 export class AttackDialog {
    /**
@@ -32,8 +34,8 @@ export class AttackDialog {
       let result = null;
       const attackerToken = caller.currentActiveToken ?? caller;
       const attackerName = caller.token?.name || caller.name;
-      const masterySystem = game.fade.registry.getSystem("weaponMastery");
-      const toHitSystem = game.fade.registry.getSystem("toHitSystem");
+      const masterySystem: WeaponMasteryInterface = game.fade.registry.getSystem("weaponMastery");
+      const toHitSystem: ToHitInterface = game.fade.registry.getSystem("toHitSystem");
       const targetToken = options.targetToken?.document ?? options.targetToken;
       const targetActor = options.targetToken?.actor;
 
@@ -98,6 +100,7 @@ export class AttackDialog {
                action: "check",
                label: game.i18n.localize("FADE.roll"),
                default: true,
+               // eslint-disable-next-line @typescript-eslint/no-unused-vars
                callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
             },
          ],
@@ -111,7 +114,7 @@ export class AttackDialog {
                rangedSelectorDiv.style.display = changeEvent.target.value === "missile" ? "block" : "none";
             });
             dialog.querySelectorAll(`input[name="rangeType"]`).forEach(radio => {
-               radio.addEventListener("change", changeEvent => {
+               radio.addEventListener("change", () => {
                   AttackDialog._updateRange(dialog.querySelector(`[name="attackType"]`).value, dialog);
                });
             });
@@ -128,4 +131,3 @@ export class AttackDialog {
       modInput.value = isMissile ? toHitSystem.rangeModifiers[selectedRange] : 0;
    }
 }
-

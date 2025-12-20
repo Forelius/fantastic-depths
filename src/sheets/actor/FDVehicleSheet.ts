@@ -1,10 +1,10 @@
 import { FDActorSheetV2 } from "./FDActorSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {FDActorSheetV2}
  */
-// @ts-ignore
 export class FDVehicleSheet extends FDActorSheetV2 {
    constructor(options = {}) {
       super(options);
@@ -12,7 +12,7 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       this.isCombatVehicle = this.combatVehicleTypes.includes(this.actor.system.vehicleType);
    }
 
-   static DEFAULT_OPTIONS = {
+   static DEFAULT_OPTIONS: Record<string, unknown> = {
       position: {
          width: 650,
          height: 510,
@@ -26,7 +26,7 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       }
    }
 
-   static PARTS = {
+   static PARTS: Record<string, unknown> = {
       header: {
          template: "systems/fantastic-depths/templates/actor/vehicle/header.hbs",
       },
@@ -87,8 +87,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       }
    }
 
-   async _prepareContext(options) {
-      const context = await super._prepareContext(options);
+   async _prepareContext() {
+      const context = await super._prepareContext();
       context.showExplTarget = game.settings.get(game.system.id, "showExplorationTarget");
       context.hasAbilityScores = false;
       context.hasAbilityScoreMods = false;
@@ -116,7 +116,7 @@ export class FDVehicleSheet extends FDActorSheetV2 {
          const treasure = [];
          const items = [...this.actor.items];
          // Iterate through items, allocating to arrays
-         for (let item of items) {
+         for (const item of items) {
             item.img = item.img || Item.DEFAULT_ICON;
             // If a contained item...
             if (item.system.containerId?.length > 0) {
@@ -157,42 +157,42 @@ export class FDVehicleSheet extends FDActorSheetV2 {
    /**
     * Prepare an array of form header tabs.
     * @this {any}
-    * @returns {any}
+    * @returns {Record<string, SheetTab>}
     */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
       const actorData = this.actor.system;
-      const tabs: any = {};
+      const tabs: Record<string, SheetTab> = {};
       if (this.isCombatVehicle) {
          // Default tab for first time it"s rendered this session
          if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
-         tabs.abilities = { id: "abilities", group, label: "FADE.tabs.abilities" };
+         tabs.abilities = new SheetTab("abilities", group, "FADE.tabs.abilities");
       } else {
          // Default tab for first time it"s rendered this session
          if (!this.tabGroups[group] || this.tabGroups[group] === "abilities") this.tabGroups[group] = "items";
       }
 
-      tabs.description = { id: "description", group, label: "FADE.tabs.description" };
+      tabs.description = new SheetTab("description", group, "FADE.tabs.description");
 
       if (this.isCombatVehicle)
-         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
-         tabs.items = { id: "items", group, label: "FADE.items" };
+         tabs.items = new SheetTab("items", group, "FADE.items");
          if (actorData.vehicleType == "mount") {
-            tabs.skills = { id: "skills", group, label: "FADE.tabs.skills" };
+            tabs.skills = new SheetTab("skills", group, "FADE.tabs.skills");
          }
       }
 
       if (actorData.config.maxSpellLevel > 0) {
-         tabs.spells = { id: "spells", group, label: "FADE.tabs.spells" };
+         tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells");
       }
 
       if (game.user.isGM) {
-         tabs.gmOnly = { id: "gmOnly", group, label: "FADE.tabs.gmOnly" };
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");
       }
 
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }
@@ -200,11 +200,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       return tabs;
    }
 
-   static async #clickAttackGroup(event) {
-      const dataset = event.target.dataset;
-      // @ts-ignore
+   static async #clickAttackGroup(this: FDVehicleSheet, event) {
       const item = this._getItemFromActor(event);
       await item.update({ "system.attacks.group": (item.system.attacks.group + 1) % 6 });
    }
 }
-

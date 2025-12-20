@@ -1,3 +1,4 @@
+import { FDActorBase } from "../../actor/FDActorBase.js";
 import { DialogFactory } from "../../dialog/DialogFactory.js";
 
 export class Wrestling {
@@ -15,9 +16,9 @@ export class Wrestling {
     */
    static async showWrestlingDialog() {
       // Gather controlled tokens and targets
-      const attackers = Array.from(canvas.tokens.controlled);
+      const attackers: Token[] = Array.from(canvas.tokens.controlled);
       const defender = game.user.targets?.first();
-      const dlgOptions: any = {
+      const dlgOptions = {
          attackers,
          defender,
          states: Wrestling.States.map((state) => ({
@@ -43,7 +44,7 @@ export class Wrestling {
 
          // Parse WR inputs for attackers
          const attackerWRs = {};
-         attackers.forEach((attacker: any) => {
+         attackers.forEach((attacker) => {
             const inputId = `attackerWR-${attacker.id}`;
             const value = dialogResp[inputId];
             attackerWRs[attacker.id] = value ? parseInt(value, 10) : 0; // Default to 0 if empty
@@ -59,7 +60,7 @@ export class Wrestling {
          wrestlingData = {
             attackerGroup: {
                leaderWR: Math.max(...Object.values(attackerWRs) as number[]), // Highest WR among attackers
-               members: attackers.map((attacker: any) => ({
+               members: attackers.map((attacker: FDActorBase) => ({
                   name: attacker.name,
                   id: attacker.id,
                   hd: attacker.actor.system.hp.hd, // Hit Dice
@@ -91,7 +92,7 @@ export class Wrestling {
    }
 
    async calculateWrestlingOutcome(wrestlingData) {
-      let { attackerGroup, wrestlingState, defender } = wrestlingData;
+      const { attackerGroup, wrestlingState, defender } = wrestlingData;
 
       // Calculate group WR
       const leaderHD = attackerGroup.leaderHD; // Leader's Hit Dice
@@ -99,7 +100,7 @@ export class Wrestling {
 
       // Apply -3 penalty if pinned
       defender.bonus = defender.wrestling + (wrestlingState === "attpin" ? -3 : 0);
-      for (let attacker of attackerGroup.members) {
+      for (const attacker of attackerGroup.members) {
          if (attacker.id === attackerGroup.members[0].id) {
             attacker.bonus = attacker.wrestling + (wrestlingState === "defpin" ? -3 : 0);
          } else {

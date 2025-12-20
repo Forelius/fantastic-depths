@@ -26,12 +26,12 @@ export class LightMgrDialog {
             {
                action: "ignite",
                label: game.i18n.localize("FADE.dialog.lightManager.ignite"),
-               callback: (event, button, dialog) => { return { action: "ignite", ...(new CodeMigrate.FormDataExtended(button.form).object) } },
+               callback: (_event, button, _dialog) => { return { action: "ignite", ...(new CodeMigrate.FormDataExtended(button.form).object) } },
             },
             {
                action: "extinguish",
                label: game.i18n.localize("FADE.dialog.lightManager.extinguish"),
-               callback: (event, button, dialog) => { return { action: "extinguish", ...(new CodeMigrate.FormDataExtended(button.form).object) } },
+               callback: (_event, button, _dialog) => { return { action: "extinguish", ...(new CodeMigrate.FormDataExtended(button.form).object) } },
             },
             {
                action: "close",
@@ -45,4 +45,3 @@ export class LightMgrDialog {
       return result;
    }
 }
-

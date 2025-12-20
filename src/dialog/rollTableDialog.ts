@@ -8,22 +8,22 @@ export class rollTableDialog {
       //-------
       // In Foundry, folders have a "type" property that matches the document type they hold.
       // For roll tables, this is usually "RollTable". 
-      let tableFolders = await game.fade.fadeFinder.getFolders("RollTable")
+      const tableFolders = await game.fade.fadeFinder.getFolders("RollTable")
       if (!tableFolders.length) {
          return ui.notifications.warn("No folders for Roll Tables were found.");
       }
-      let folders = tableFolders.sort((a, b) => a.name.localeCompare(b.name))
+      const folders = tableFolders.sort((a, b) => a.name.localeCompare(b.name))
          .reduce((acc, item) => { acc[`${item.uuid}`] = item.name; return acc; }, {});
       //-------
 
       // Use the first folder in the list as the default.
       const defaultFolderId = tableFolders[0]?.uuid;
-      let rollTables = await game.fade.fadeFinder.getDocsFromFolder(defaultFolderId, "RollTable");
-      let tables = rollTables.sort((a, b) => a.name.localeCompare(b.name))
+      const rollTables = await game.fade.fadeFinder.getDocsFromFolder(defaultFolderId, "RollTable");
+      const tables = rollTables.sort((a, b) => a.name.localeCompare(b.name))
          .reduce((acc, item) => { acc[`${item.uuid}`] = item.name; return acc; }, {});
 
       // Get roll modes from the Foundry system
-      const rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: any) => {
+      const rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string,Record<string,unknown>]) => {
          acc[key] = game.i18n.localize(value.label ?? value);
          return acc;
       }, {});
@@ -37,7 +37,7 @@ export class rollTableDialog {
             {
                action: 'roll',
                label: game.i18n.localize('FADE.roll'),
-               callback: (event, button, dialog) => {
+               callback: (_event, button, _dialog) => {
                   return {
                      action: button.dataset?.action,
                      data: new CodeMigrate.FormDataExtended(button.form).object
@@ -48,7 +48,7 @@ export class rollTableDialog {
             {
                action: 'close',
                label: game.i18n.localize('FADE.dialog.close'),
-               callback: function (event, button, dialog) { }
+               callback: function (_event, _button, _dialog) { }
             }
          ],
          close: () => { },
@@ -97,4 +97,3 @@ export class rollTableDialog {
       }
    }
 }
-

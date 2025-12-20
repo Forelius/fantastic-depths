@@ -101,7 +101,7 @@ export class EffectManager {
 
       // Retrieve global effects from the persistent setting
       let globalEffects = game.settings.get(game.system.id, 'globalEffects');
-      let effect = globalEffects.find(e => e.id === effectId);
+      const effect = globalEffects.find(e => e.id === effectId);
 
       // Handle the specific action
       switch (action) {

@@ -15,4 +15,3 @@ export class CharacterDataModel extends FDCombatActorDM {
       this.encumbrance.max = this.encumbrance.max || game.fade.registry.getSystem("encumbranceSystem").CONFIG.maxLoad;
    }
 }
-

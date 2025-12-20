@@ -1,8 +1,11 @@
 import { UserTablesConfig } from "../../apps/UserTablesConfig.js"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UserTableType = { id: string, name: string, type: string, table: Record<string, any> };
+
 export class UserTables {
    static TABLE_TYPES = ["bonus", "keyvalue", "keyjson", "jsonarray"];
-   #userTables;
+   #userTables: Record<string, UserTableType>;
 
    constructor() {
       this.#userTables = {};
@@ -10,44 +13,44 @@ export class UserTables {
       this.#tryAddDefaultTables();
    }
 
-   getTables() {
+   getTables(): Record<string, UserTableType> {
       return foundry.utils.deepClone(this.#userTables);
    }
 
-   setTables(tables) {
+   setTables(tables: Record<string, UserTableType>) {
       this.#userTables = tables;
       game.settings.set(game.system.id, 'userTables', this.#userTables);
    }
 
-   setTable({ id, name, type, table }) {
+   setTable({ id, name, type, table }): void {
       if (Array.isArray(table) === false) {
          console.error(`addTable ${name} table is not an array.`);
          return;
       }
 
       if (type === "bonus") {
-         for (let row of table) {
+         for (const row of table) {
             if (row.min === null || row.min === undefined || row.bonus === null || row.bonus === undefined) {
                console.error(`addTable ${name} is not a valid bonus table. Requires properties: min, bonus`);
                return;
             }
          }
       } else if (type === "keyvalue") {
-         for (let row of table) {
+         for (const row of table) {
             if (row.key === null || row.key === undefined || row.value === null || row.value === undefined) {
                console.error(`addTable ${name} is not a valid key/value table. Requires properties: key, value`);
                return;
             }
          }
       } else if (type === "keyjson") {
-         for (let row of table) {
+         for (const row of table) {
             if (row.key === null || row.key === undefined || row.json === null || row.json === undefined) {
                console.error(`addTable ${name} is not a valid key/json table. Requires properties: key, json`);
                return;
             }
          }
       } else if (type === "jsonarray") {
-         for (let row of table) {
+         for (const row of table) {
             if (row.json === null || row.json === undefined) {
                console.error(`addTable ${name} is not a valid json array table. Requires properties: json`);
                return;
@@ -59,7 +62,7 @@ export class UserTables {
       game.settings.set(game.system.id, 'userTables', this.#userTables);
    }
 
-   removeTable(id) {
+   removeTable(id): void {
       if (this.#userTables[id]) {
          delete this.#userTables[id];
          game.settings.set(game.system.id, 'userTables', this.#userTables);
@@ -67,17 +70,17 @@ export class UserTables {
       }
    }
 
-   getTable(id) {
+   getTable(id): UserTableType {
       return this.#userTables[id];
    }
 
    /**
     * Get a numneric value for the specified bonus minimum from a bonus type table.
-    * @param {any} id The id of the table.
-    * @param {any} value The value to compare against the bonus table's min property.
+    * @param {string} id The id of the table.
+    * @param {number} value The value to compare against the bonus table's min property.
     * @returns A numeric value.
     */
-   getBonus(id, value) {
+   getBonus(id: string, value: number): number {
       let result = null;
       if (this.getTable(id)?.type === "bonus") {
          const table = this.getTable(id)?.table;
@@ -91,11 +94,11 @@ export class UserTables {
 
    /**
     * Get a numeric value for the specified key from a keyvalue type table.
-    * @param {any} id The id of the table.
-    * @param {any} key The key for the requested value
+    * @param {string} id The id of the table.
+    * @param {string} key The key for the requested value
     * @returns A numeric value if the key exists, otherwise null.
     */
-   getKeyValue(id, key) {
+   getKeyValue(id: string, key: string): number {
       let result = null;
       if (this.getTable(id)?.type === "keyvalue") {
          const table = this.getTable(id)?.table;
@@ -108,13 +111,13 @@ export class UserTables {
 
    /**
     * Get a json object from a keyvalue type table.
-    * @param {any} id The id of the table.
-    * @returns A JSON object with a property for every key value. Each value is a numeric.
+    * @param {string} id The id of the table.
+    * @returns {Record<string, number>} A JSON object with a property for every key value. Each value is a numeric.
     */
-   getKeyValuesJson(id) {
-      let result = null;
+   getKeyValuesJson(id: string): Record<string, number> {
+      let result: Record<string, number> = null;
       if (this.getTable(id)?.type === "keyvalue") {
-         let table = this.getTable(id)?.table;
+         const table = this.getTable(id)?.table;
          result = table?.reduce((acc, item) => { acc[item.key] = Number(item.value); return acc; }, {});
       } else {
          console.warn(`User table ${id} does not exist or does not support getKeyValuesObject.`);
@@ -124,13 +127,13 @@ export class UserTables {
 
    /**
     * Get a numeric/string/json object from a keyjson type table.
-    * @param {any} id The id of the table.
+    * @param {string} id The id of the table.
     * @returns A numeric, string or json object with a property for every key.
     */
-   getKeyJson(id) {
+   getKeyJson(id: string) {
       let result = null;
       if (this.getTable(id)?.type === "keyjson") {
-         let table = this.getTable(id)?.table;
+         const table = this.getTable(id)?.table;
          result = table?.reduce((acc, item) => { acc[item.key] = this.convertJsonToObject(item); return acc; }, {});
       } else {
          console.warn(`User table ${id} does not exist or does not support getKeyJson.`);
@@ -140,12 +143,12 @@ export class UserTables {
 
    /**
     * Get the array of json objects from a jsonarray type table.
-    * @param {any} id The id of the table.
+    * @param {string} id The id of the table.
     */
-   getJsonArray(id) {
+   getJsonArray(id: string) {
       let result = null;
       if (this.getTable(id)?.type === "jsonarray") {
-         let table = this.getTable(id)?.table;
+         const table = this.getTable(id)?.table;
          result = table?.map(this.convertJsonToObject);
       } else {
          console.warn(`User table ${id} does not exist or does not support getJsonArray.`);
@@ -156,7 +159,7 @@ export class UserTables {
    convertJsonToObject(item) {
       let value = Number(item.json);
       if (isNaN(value)) {
-         try { value = JSON.parse(item.json); } catch (error) { }
+         try { value = JSON.parse(item.json); } catch (error) { console.warn(error); }
       }
       return value ?? item.json;
    }
@@ -334,4 +337,3 @@ game.fade.registry.getSystem("userTables").addTable('dwarf-resiliance', 'Dwarf R
 game.fade.registry.getSystem("userTables").getBonus("dwarf-resiliance", 7);
 eval('game.fade.registry.getSystem("userTables").getBonus("dwarf-resiliance", 7)');
 */
-

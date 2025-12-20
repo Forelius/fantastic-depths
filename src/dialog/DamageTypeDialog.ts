@@ -2,7 +2,7 @@ const { DialogV2 } = foundry.applications.api;
 import { CodeMigrate } from "../sys/migration.js";
 
 export class DamageTypeDialog {
-   static async getDialog(dataset, caller, options) {
+   static async getDialog(_dataset, _caller, _options) {
       const dialogData = { damageTypes: null };
       let dialogResp = null;
 
@@ -24,7 +24,7 @@ export class DamageTypeDialog {
             action: "apply",
             default: true,
             label: game.i18n.localize('FADE.Chat.apply'),
-            callback: (event, button, dialog) => new CodeMigrate.FormDataExtended(button.form).object,
+            callback: (_event, button, _dialog) => new CodeMigrate.FormDataExtended(button.form).object,
          }],
          close: () => { },
          classes: ["fantastic-depths"]

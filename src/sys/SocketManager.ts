@@ -95,8 +95,9 @@ export class SocketManager {
             break;
          case "closePlayerCombat":
             if (game.user.isGM === false) {
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
                for (const app of Object.values(ui.windows) as any) {
-                  if (app.id === PlayerCombatForm.APP_ID) {
+                  if (app?.id === PlayerCombatForm.APP_ID) {
                      app.close(); // Closes the form
                   }
                }

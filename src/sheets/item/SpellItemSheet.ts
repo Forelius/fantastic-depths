@@ -1,5 +1,6 @@
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 import { fadeFinder } from "../../utils/finder.js";
 
 /**
@@ -114,23 +115,25 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
+   #getTabs(): Record<string, SheetTab> {
       const group = "primary";
+
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "description";
-      const tabs: any = {
-         description: { id: "description", group, label: "FADE.tabs.description" }
+      const tabs: Record<string, SheetTab> = {
+         description: new SheetTab("description", group, "FADE.tabs.description")
       }
       if (game.user.isGM) {
-         tabs.attributes = { id: "attributes", group, label: "FADE.tabs.attributes" };
-         tabs.effects = { id: "effects", group, label: "FADE.tabs.effects" };
+         tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes");
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
       }
-      for (const tab of Object.values(tabs) as any) {
+      for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;
          tab.cssClass = tab.active ? "active" : "";
       }
+
       return tabs;
    }
 

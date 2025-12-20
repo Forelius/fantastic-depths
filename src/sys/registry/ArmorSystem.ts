@@ -5,16 +5,18 @@ export class ArmorSystemBase {
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
       const abilityScoreACMod = abilityScoreSys.getBaseACMod(actor);
       const baseAC = CONFIG.FADE.Armor.acNaked - abilityScoreACMod - actor.system.mod.baseAc;
-      let ac:any = {};
-      ac.nakedAAC = CONFIG.FADE.ToHit.baseTHAC0 - baseAC;
-      ac.naked = baseAC;
-      ac.nakedRanged = ac.naked;
-      // AC value is used for wrestling rating and should not include Dexterity bonus.
-      ac.value = CONFIG.FADE.Armor.acNaked;
-      ac.total = baseAC;
-      ac.totalRanged = baseAC;
-      ac.mod = 0;
-      ac.shield = 0;
+      const ac = {
+         nakedAAC: CONFIG.FADE.ToHit.baseTHAC0 - baseAC,
+         naked: baseAC,
+         nakedRanged: CONFIG.FADE.ToHit.baseTHAC0 - baseAC,
+         // AC value is used for wrestling rating and should not include Dexterity bonus.
+         value: CONFIG.FADE.Armor.acNaked,
+         total: baseAC,
+         totalRanged: baseAC,
+         mod: 0,
+         shield: 0,
+         mastery: null
+      }
       return ac;
    }
 
@@ -39,7 +41,7 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       const acDigest = [];
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
       const abilityScoreACMod = abilityScoreSys.getBaseACMod(actor);
-      let ac = this.reset(actor);
+      const ac = this.reset(actor);
       const { naturalArmor, equippedArmor, equippedShield } = this.getArmorPieces(actor);
 
       if (abilityScoreACMod !== 0) {

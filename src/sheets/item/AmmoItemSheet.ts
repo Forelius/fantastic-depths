@@ -1,6 +1,7 @@
-import { FDItemSheetV2 } from './FDItemSheetV2.js';
-import { VsGroupModMixin } from '../mixins/VsGroupModMixin.js';
-import { fadeFinder } from '../../utils/finder.js';
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
+import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
+import { fadeFinder } from "../../utils/finder.js";
 
 /**
  * Sheet class for AmmoItem.
@@ -19,7 +20,7 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
          minimizable: false,
          contentClasses: ["scroll-body"]
       },
-      classes: ['fantastic-depths', 'sheet', 'item'],
+      classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
       }
@@ -54,12 +55,12 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description']
+      options.parts = ["header", "tabnav", "description"]
 
       if (game.user.isGM) {
-         options.parts.push('attributes');
-         //options.parts.push('effects');
-         options.parts.push('gmOnly');
+         options.parts.push("attributes");
+         //options.parts.push("effects");
+         options.parts.push("gmOnly");
       }
    }
 
@@ -71,14 +72,14 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
 
       // Damage types
       const damageTypes = []
-      damageTypes.push({ value: "", text: game.i18n.localize('None') });
+      damageTypes.push({ value: "", text: game.i18n.localize("None") });
       damageTypes.push(...CONFIG.FADE.DamageTypes.map((type) => {
          return { value: type, text: game.i18n.localize(`FADE.DamageTypes.types.${type}`) }
       }));
       context.damageTypes = damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Saving throws
       const saves = [];
-      saves.push({ value: "", text: game.i18n.localize('None') });
+      saves.push({ value: "", text: game.i18n.localize("None") });
       const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
       saves.push(...saveItems.map((save) => {
          return { value: save.system.customSaveCode, text: save.system.shortName }
@@ -93,24 +94,23 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
-      const group = 'primary';
+   #getTabs(): Record<string, SheetTab> {
+      const group = "primary";
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
-      const tabs: any = {
-         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' }
+      if (!this.tabGroups[group]) this.tabGroups[group] = "description";
+      const tabs: Record<string, SheetTab> = {
+         description: new SheetTab("description", group, "FADE.tabs.description", "item")
       };
       if (game.user.isGM) {
-         tabs.attributes = { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' };
-         tabs.gmOnly = { id: 'gmOnly', group, label: 'FADE.tabs.gmOnly', cssClass: 'item' };
+         tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes", "item");
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly", "item");
       }
-      for (const v of Object.values(tabs) as any) {
+      for (const v of Object.values(tabs) as SheetTab[]) {
          v.active = this.tabGroups[v.group] === v.id;
          v.cssClass = v.active ? "active" : "";
       }
       return tabs;
    }
 }
-

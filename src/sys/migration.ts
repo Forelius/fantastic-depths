@@ -7,7 +7,7 @@ import { SYSTEM_ID } from './config.js';
  * and potential migrations.
  */
 export class MySystemVersion {
-   version: any;
+   version: string;
    major: number;
    minor: number;
    patch: number;
@@ -16,8 +16,8 @@ export class MySystemVersion {
       this.version = version;
 
       // Parse version string
-      let [core, rc] = version?.split('-') ?? []; // Split into core version and rc (if present)
-      let split = core?.split('.') ?? [];
+      const [core, rc] = version?.split('-') ?? []; // Split into core version and rc (if present)
+      const split = core?.split('.') ?? [];
       this.major = parseInt(split[0]) ?? 0;
       this.minor = parseInt(split[1]) ?? 0;
       this.patch = parseInt(split[2]) ?? 0;
@@ -80,7 +80,7 @@ export class DataMigrator {
    }
 
    async migrate() {
-      let isMigrated = true;
+      const isMigrated = true;
       if (game.user.isGM) {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
@@ -105,7 +105,7 @@ export class DataMigrator {
       }
 
       // Function to import a compendium
-      async function importCompendium(compendiumName, folderName) {
+      async function importCompendium(compendiumName) {
          if (game.user.isGM === false) {
             ui.notifications.warn("You must be a GM to perform this operation.");
             return;
@@ -113,7 +113,7 @@ export class DataMigrator {
          const compendium = game.packs.get(compendiumName);
          if (compendium) {
             // Import all items into a new folder
-            const importedDocuments = await compendium.importAll({ folderName: folderName, keepId: true });
+            //const importedDocuments = await compendium.importAll({ folderName: folderName, keepId: true });
          } else {
             ui.notifications.error(`Compendium '${compendiumName}' not found.`);
          }
@@ -124,9 +124,9 @@ export class DataMigrator {
          // Delete the 'FaDe Items' folder and its contents
          await deleteFolderAndContents(folderName, folderType);
          // Import the 'item-compendium' from the 'fade-compendiums' system into a new folder
-         await importCompendium(compendiumName, folderName);
+         await importCompendium(compendiumName);
          if (permissionLevel > 0) {
-            let folder = game.folders.find(f => f.name === folderName && f.type === folderType);
+            const folder = game.folders.find(f => f.name === folderName && f.type === folderType);
             ui.notifications.info(`Setting permissions. This could take a few minutes. You will be notified when the process completes.`);
             await updatePermissions(folder, permissionLevel, folderType);
          }
@@ -178,11 +178,11 @@ export class DataMigrator {
    #testMigrate() {
       const v1 = new MySystemVersion("0.7.20");
       const v2 = new MySystemVersion("0.7.21");
-      const v3 = new MySystemVersion("0.7.21-rc.1");
+      //const v3 = new MySystemVersion("0.7.21-rc.1");
       const v4 = new MySystemVersion("0.7.21-rc.7");
       const v5 = new MySystemVersion("0.8.0");
       const v7 = new MySystemVersion('0.8.0-rc.1');
-      const v6 = new MySystemVersion("1.0.0");
+      //const v6 = new MySystemVersion("1.0.0");
 
       v1.lt(v2);
       v2.lt(v1);

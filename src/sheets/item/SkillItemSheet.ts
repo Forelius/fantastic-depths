@@ -1,5 +1,6 @@
-import { EffectManager } from '../../sys/EffectManager.js';
-import { FDItemSheetV2 } from './FDItemSheetV2.js';
+import { EffectManager } from "../../sys/EffectManager.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import { SheetTab } from "../SheetTab.js";
 /**
  * Sheet class for SkillItem.
  */
@@ -17,7 +18,7 @@ export class SkillItemSheet extends FDItemSheetV2 {
          minimizable: false,
          contentClasses: ["scroll-body"]
       },
-      classes: ['fantastic-depths', 'sheet', 'item'],
+      classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
       }
@@ -52,10 +53,10 @@ export class SkillItemSheet extends FDItemSheetV2 {
       // So we need to call `super` first
       super._configureRenderOptions(options);
       // Completely overriding the parts
-      options.parts = ['header', 'tabnav', 'description', 'attributes']
+      options.parts = ["header", "tabnav", "description", "attributes"]
 
       if (game.user.isGM) {
-         options.parts.push('effects');
+         options.parts.push("effects");
       }
    }
 
@@ -66,7 +67,7 @@ export class SkillItemSheet extends FDItemSheetV2 {
       const context = await super._prepareContext(options);
 
       // Prepare roll modes select options
-      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, any]) => {
+      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, PropertyBag]) => {
          acc[key] = game.i18n.localize(value.label ?? value);
          return acc;
       }, {});
@@ -93,20 +94,20 @@ export class SkillItemSheet extends FDItemSheetV2 {
 
    /**
    * Prepare an array of form header tabs.
-   * @returns {Record<string, Partial<ApplicationTab>>}
+   * @returns {Record<string, SheetTab>}
    */
-   #getTabs() {
-      const group = 'primary';
+   #getTabs(): Record<string, SheetTab> {
+      const group = "primary";
       // Default tab for first time it's rendered this session
-      if (!this.tabGroups[group]) this.tabGroups[group] = 'description';
-      const tabs: any = {
-         description: { id: 'description', group, label: 'FADE.tabs.description', cssClass: 'item' },
-         attributes: { id: 'attributes', group, label: 'FADE.tabs.attributes', cssClass: 'item' }
+      if (!this.tabGroups[group]) this.tabGroups[group] = "description";
+      const tabs: Record<string, SheetTab> = {
+         description: new SheetTab("description", group, "FADE.tabs.description", "item"),
+         attributes: new SheetTab("attributes", group, "FADE.tabs.attributes", "item")
       }
       if (game.user.isGM) {
-         tabs.effects = { id: 'effects', group, label: 'FADE.tabs.effects', cssClass: 'item' };
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects", "item");
       }
-      for (const v of Object.values(tabs) as any) {
+      for (const v of Object.values(tabs) as SheetTab[]) {
          v.active = this.tabGroups[v.group] === v.id;
          v.cssClass = v.active ? "active" : "";
       }

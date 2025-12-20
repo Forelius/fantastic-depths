@@ -7,7 +7,7 @@ export class WrestlingDialog {
 
       // Find the maximum WR among the attackers
       const maxWR = Math.max(...attackers.map(a => a.actor.system.wrestling));
-      let primaryAttackerId = attackers.find(a => a.actor.system.wrestling === maxWR).id;
+      const primaryAttackerId = attackers.find(a => a.actor.system.wrestling === maxWR).id;
 
       // Prepare dialog data
       const dialogData = {
@@ -26,7 +26,7 @@ export class WrestlingDialog {
       const template = 'systems/fantastic-depths/templates/dialog/wrestling.hbs';
       const content = await CodeMigrate.RenderTemplate(template, dialogData);
 
-      let dialogResp = await DialogV2.wait({
+      const dialogResp = await DialogV2.wait({
          window: { title: game.i18n.localize("FADE.dialog.wrestling.wrestlingContest") },
          rejectClose: false,
          content,
@@ -35,7 +35,7 @@ export class WrestlingDialog {
                action: 'roll',
                label: game.i18n.localize('FADE.roll'),
                default: true,
-               callback: (event, button, dialog) => {
+               callback: (_event, button, _dialog) => {
                   return { action: button.dataset.action, ...(new CodeMigrate.FormDataExtended(button.form).object) }
                }
             },
@@ -53,4 +53,3 @@ export class WrestlingDialog {
       return dialogResp;
    }
 }
-

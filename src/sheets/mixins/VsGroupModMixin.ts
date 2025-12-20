@@ -37,7 +37,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
       // Prepare vsGroup data for actor groups that have been added
       const vsGroupData = [];
       const vsGroupObj = this.item.system.mod.vsGroup || {};
-      for (const [groupId, groupData] of Object.entries(vsGroupObj) as any) {
+      for (const [groupId, groupData] of Object.entries(vsGroupObj) as [string, Record<string, number>][]) {
          const group = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
          if (group) {
             const groupName = game.i18n.localize(`FADE.Actor.actorGroups.${groupId}`);
@@ -74,9 +74,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
             <div class="form-group">
                <label>Select Actor Group:</label>
                <select name="actorGroup">
-                  ${availableGroups.map(group =>
-         `<option value="${group.value}">${group.label}</option>`
-      ).join('')}
+                  ${availableGroups.map(group => `<option value="${group.value}">${group.label}</option>`).join('')}
                </select>
             </div>
          </form>`;
@@ -90,7 +88,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
                action: "add",
                label: "Add",
                default: true,
-               callback: (event, button, dialog) => {
+               callback: (_, button) => {
                   const formData = new CodeMigrate.FormDataExtended(button.form).object;
                   return CONFIG.FADE.ActorGroups.find(i => i.id == formData.actorGroup);
                }
@@ -106,7 +104,7 @@ const VsGroupModMixin = (superclass) => class extends superclass {
       });
 
       if (result) {
-         let updateData = { [`system.mod.vsGroup.${result.id}`]: { dmg: 0, toHit: 0, special: result.special ? "" : null } };
+         const updateData = { [`system.mod.vsGroup.${result.id}`]: { dmg: 0, toHit: 0, special: result.special ? "" : null } };
          await this.item.update(updateData);
       }
    }

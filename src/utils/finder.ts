@@ -89,7 +89,7 @@ export class fadeFinder {
 
    static async getFolders(type) {
       // Get world folders of the type
-      let worldFolders = game.folders.filter(f => f.type === type);
+      const worldFolders = game.folders.filter(f => f.type === type);
 
       // Get all compendium packs of the type
       const rollTablePacks = game.packs.filter(pack => pack.documentName === type);
@@ -124,14 +124,12 @@ export class fadeFinder {
       }
 
       // Ensure compendium packs are loaded
-      let docs;
       if (folder.pack) {
          const pack = game.packs.get(folder.pack);
          if (!pack) {
             console.warn(`Compendium not found: ${folder.pack}`);
             return [];
          }
-         docs = await pack.getDocuments();
       }
 
       // Collect documents directly in this folder
@@ -200,7 +198,7 @@ export class fadeFinder {
     */
    static async getClassAbilitiesByCode(key, owner) {
       // Extract class identifier and level from the input
-      let match = key.match(/^([a-zA-Z]+)(\d+)$/);
+      const match = key.match(/^([a-zA-Z]+)(\d+)$/);
       const parsed = match ? { classKey: match[1], classLevel: parseInt(match[2], 10) } : null;
       let result;
       if (parsed) {
@@ -320,7 +318,7 @@ export class fadeFinder {
       return result
    }
 
-   static async getRollTable(name) {
+   static async getRollTable(name: string) {
       const type = 'rolltable'
       let source = fadeFinder._getWorldSource(type);
       let result = fadeFinder._getItem(source, name);
@@ -331,7 +329,7 @@ export class fadeFinder {
       return result;
    }
 
-   static async getRollTableById(id) {
+   static async getRollTableById(id: string) {
       const type = 'rolltable'
       let source = fadeFinder._getWorldSource(type);
       let result = fadeFinder._getItemById(source, id);

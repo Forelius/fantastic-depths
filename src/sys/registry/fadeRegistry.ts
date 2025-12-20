@@ -15,11 +15,9 @@ import { AbilityCheck, TieredAbilityCheck } from "./AbilityCheck.js";
 import { RandomCharacter } from "./random/RandomCharacter.js";
 
 export class fadeRegistry {
-   systemDictionary: {};
-   eventDictionary: {};
+   systemDictionary: object;
    constructor() {
       this.systemDictionary = {};
-      this.eventDictionary = {};
    }
 
    // TODO: These if/else blocks shouldn't be necessary. Registry should know how to handle or move out of registry.
@@ -43,7 +41,7 @@ export class fadeRegistry {
          this.registerSystem("abilityCheck", new TieredAbilityCheck(), TieredAbilityCheck);
       }
       this.registerSystem("armorSystem", new ClassicArmorSystem(), ClassicArmorSystem);
-      this.registerSystem("damageSystem", new DamageSystem(null), DamageSystem);
+      this.registerSystem("damageSystem", new DamageSystem(), DamageSystem);
 
       // Load weaponMastery before toHitSystem.
       const masterySetting = game.settings.get(game.system.id, "weaponMastery");
@@ -114,4 +112,3 @@ export class fadeRegistry {
       return this.systemDictionary[id]?.type;
    }
 }
-
