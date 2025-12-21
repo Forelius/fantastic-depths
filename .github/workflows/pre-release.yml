@@ -70,6 +70,7 @@ jobs:
           -x "node_modules/*" \
           -x ".vs/*" \
           -x "src/*" \
+          -x "module/fantastic-depths.js*" \
           -x "package.json" \
           -x "package-lock.json"
 
