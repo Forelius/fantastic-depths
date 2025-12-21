@@ -269,4 +269,3 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       // Default behavior is fine
    }
 }
-

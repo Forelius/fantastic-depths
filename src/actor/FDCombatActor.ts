@@ -433,5 +433,4 @@ export class FDCombatActor extends FDActorBase {
       }
       return result;
    }
-} 
-
+}

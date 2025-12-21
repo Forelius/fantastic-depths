@@ -52,5 +52,4 @@ export class FDVehicleActor extends FDCombatActor {
 
       return allowed;
    }
-} 
-
+}

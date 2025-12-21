@@ -53,4 +53,3 @@ export class MonsterActor extends FDCombatActor {
       }
    }   
 }
-
