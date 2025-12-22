@@ -43,7 +43,7 @@ export class MonsterSheet extends FDActorSheetV2 {
       },
       spells: {
          template: "systems/fantastic-depths/templates/actor/shared/spellsMulti.hbs",
-      },      
+      },
       description: {
          template: "systems/fantastic-depths/templates/actor/monster/description.hbs",
       },
@@ -87,6 +87,11 @@ export class MonsterSheet extends FDActorSheetV2 {
       context.hasAbilityScores = abilityScoreSetting !== "none";
       context.hasAbilityScoreMods = abilityScoreSetting === "withmod";
       context.editScores = this.editScores;
+      context.specialAbilities = [
+         ...context.specialAbilities,
+         ...context.exploration.map(item => item.item)
+      ];
+      context.exploration = [];
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;
