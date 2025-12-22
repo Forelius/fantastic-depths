@@ -98,6 +98,7 @@ export class FDVehicleSheet extends FDActorSheetV2 {
          ...context.specialAbilities,
          ...context.exploration.map(item => item.item)
       ];
+      context.exploration = [];
       // Prepare siege weapons
       context.siegeWeapons = context.weapons?.filter(i => i.system.weaponType === "siege");
       // Prepare the tabs.
