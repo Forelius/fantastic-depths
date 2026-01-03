@@ -327,7 +327,7 @@ export abstract class ChatBuilder {
                      owneruuid: owner.uuid,
                      itemuuid: ability.uuid,
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
-                     itemName: ability.action === "consume" ? "???" : ability.name,
+                     itemName: isIdentified === false ? "???" : ability.name,
                      // This is the modifier entered for this special ability entry.
                      // Remember: This is a contained special ability, not the special ability item itself.
                      mod: ability.mod,
@@ -344,7 +344,7 @@ export abstract class ChatBuilder {
                      owneruuid: owner.uuid,
                      itemuuid: spell.uuid,
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
-                     itemName: spell.action === "consume" ? "???" : spell.name,
+                     itemName: isIdentified === false ? "???" : spell.name,
                      castAs: spell.castAs,
                      action: spell.action
                   });

@@ -6,6 +6,7 @@
    "scripts": {
       "clean": "rimraf ./module",
       "build": "npm run clean && rollup -c",
+      "buildd": "npx tsc",
       "buildcss": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --no-source-map",
       "watchcss": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --source-map --watch",
       "publish": "--echo git tag <version> && git push origin main && git push origin <version>",
