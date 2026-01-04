@@ -22,7 +22,6 @@ export class ItemRollChat extends ChatBuilder {
       const rolls = roll ? [roll] : [];
       let rollContent = null;
       const item = caller;
-      const dmgHealRoll = null;
       // Note: Weapons don't have target until they are used to attack.
       const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token) : null;
 
@@ -65,7 +64,6 @@ export class ItemRollChat extends ChatBuilder {
       if (item?.isWeaponItem !== true && item.isIdentified === true) {
          condsForChat = await this._getConditionsForChat(item);
       }
-      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
@@ -77,8 +75,6 @@ export class ItemRollChat extends ChatBuilder {
                owneruuid: context.uuid,
                itemuuid: item.uuid,
                targets: targetTokens?.map(i => ({ targetuuid: i.uuid, targetname: i.name })),
-               damageRoll,
-               healRoll,
                actions,
                conditions: condsForChat?.conditions
             }

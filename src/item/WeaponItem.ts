@@ -2,6 +2,7 @@ import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
 import { RollAttackMixin } from "./mixins/RollAttackMixin.js";
 import { GearItem } from "./GearItem.js";
 import { WeaponMasteryInterface } from "../sys/registry/WeaponMastery.js";
+import { DamageRollResult, createDamageRollResult } from "./FDItem.js"
 
 export class WeaponItem extends RollAttackMixin(GearItem) {
    get isWeaponItem() { return true }
@@ -17,7 +18,7 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       this._prepareDamageLabel();
    }
 
-   getDamageRoll(attackType, resp, targetWeaponType, targetToken, ammoItem) {
+   getDamageRoll(attackType, resp, targetWeaponType, targetToken, ammoItem): DamageRollResult {
       const weaponData = this.system;
       const targetActor = targetToken?.actor;
       const attackerData = this.parent.system;
@@ -67,16 +68,16 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
          }
       }
 
-      return hasDamage ? {
+      return hasDamage ? createDamageRollResult({
          damageFormula: formula,
          damageType: weaponData.damageType,
          digest,
          hasDamage,
          attackType,
-         targetUuid: targetToken?.uuid,
+         targetuuid: targetToken?.uuid,
          targetWeaponType,
          ammouuid: ammoItem?.uuid,
-      } : null;
+      }) : null;
    }
 
    async showAttackChatMessage(result = { attacker: null, dialogResp: null, digest: null, rollEval: null, ammoItem: null }) {

@@ -19,11 +19,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       let rollContent = null;
       const actors = ["character", "monster", "vehicle"];
       const item = actors.includes(caller.type) ? null : caller;
-      const dmgHealRoll = null;
       const isSave = item?.system?.category === "save";
-      //if (isSave == false && item?.getDamageRoll && options?.isUsing === true) {
-      //   dmgHealRoll = item?.getDamageRoll(null);
-      //}
 
       if (roll && options.showResult !== false) {
          rollContent = await this.getRollContent(roll, mdata);
@@ -65,7 +61,6 @@ export class GenericRollChatBuilder extends ChatBuilder {
       if (item?.hasTargets === true) {
          targetTokens = isSave ? [] : Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       }
-      const { damageRoll, healRoll } = this._getDamageHealRolls(dmgHealRoll);
 
       // Prepare chat message data, including rollMode from mdata
       const chatMessageData = this.getChatMessageData({
@@ -77,8 +72,6 @@ export class GenericRollChatBuilder extends ChatBuilder {
                owneruuid: context.uuid,
                itemuuid: item?.uuid,
                targets: targetTokens?.map(i => ({ targetuuid: i.uuid, targetname: i.name })),
-               damageRoll,
-               healRoll,
                actions
             }
          }

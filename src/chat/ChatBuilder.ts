@@ -1,4 +1,5 @@
 import { fadeFinder } from "../utils/finder.js";
+import { DamageRollResult } from "../item/FDItem.js"
 
 /**
 * Enumeration for chat result codes.
@@ -246,7 +247,7 @@ export abstract class ChatBuilder {
       return content;
    }
 
-   _getDamageHealRolls(dmgHealRoll) {
+   _getDamageHealRolls(dmgHealRoll: DamageRollResult): { damageRoll: DamageRollResult, healRoll: DamageRollResult } {
       let damageRoll;
       let healRoll;
       if (dmgHealRoll?.damageFormula?.length > 0) {

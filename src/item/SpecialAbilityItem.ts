@@ -1,4 +1,4 @@
-import { FDItem } from "./FDItem.js";
+import { FDItem, DamageRollResult, createDamageRollResult } from "./FDItem.js";
 import { DialogFactory } from "../dialog/DialogFactory.js";
 import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
 import { TagManager } from "../sys/TagManager.js";
@@ -23,7 +23,7 @@ export class SpecialAbilityItem extends FDItem {
       return noTargets.includes(this.system.category);
    }
 
-   getDamageRoll(resp) {
+   getDamageRoll(resp): DamageRollResult {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       let damageFormula = evaluatedRoll?.formula;
@@ -46,7 +46,12 @@ export class SpecialAbilityItem extends FDItem {
          damageType = isHeal ? "heal" : (this.system.damageType == "" ? "physical" : this.system.damageType);
       }
 
-      return hasDamage ? { damageFormula, damageType, digest, hasDamage } : null;
+      return hasDamage ? createDamageRollResult({
+         damageFormula,
+         damageType,
+         digest,
+         hasDamage
+      }) : null;
    }
 
    /**

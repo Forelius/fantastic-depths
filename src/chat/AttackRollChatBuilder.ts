@@ -1,12 +1,11 @@
 import { ChatBuilder } from "./ChatBuilder.js";
 import { CodeMigrate } from "../sys/migration.js";
+import { WeaponItem } from "../item/WeaponItem.js"
 
+/** Only a weapon item will create an instance of this chat builder. */
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
 
-   /**
-   * Called by the various Actor and Item derived classes to create a chat message.
-   */
    async createChatMessage() {
       const { caller, context, resp, roll, mdata, digest, options } = this.data;
       const attacker = context.document ?? context; // This could be a token or actor
@@ -14,7 +13,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const targetToken = targetTokens?.length > 0 ? targetTokens[0] : null;
       const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
-      const weaponItem = caller;
+      const weaponItem: WeaponItem = caller;
       const descData = {
          attacker: attackerName,
          attackType: game.i18n.localize(`FADE.dialog.attackType.${resp.attackType}`).toLowerCase(),
@@ -28,7 +27,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       }
 
       const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weaponItem, targetTokens, roll, resp.attackType);
-      const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetToken);
+      const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetToken, options?.ammoItem);
 
       if (game.fade.toastManager) {
          const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;

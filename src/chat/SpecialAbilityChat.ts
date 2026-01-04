@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
+import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js"
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
@@ -7,7 +8,7 @@ export class SpecialAbilityChat extends ChatBuilder {
    async createChatMessage() {
       const { context, caller, roll, options, digest } = this.data;
       const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
-      const item = caller;
+      const item: SpecialAbilityItem = caller;
       const dmgHealRoll = item.getDamageRoll(null);
       let rollContent = null;
       let rollResult = { message: "", target: null, operator: null };

@@ -1,5 +1,6 @@
 import { ChatBuilder } from "./ChatBuilder.js";
 import { CodeMigrate } from "../sys/migration.js";
+import { SpellItem } from "../item/SpellItem.js"
 
 export class SpellCastChatBuilder extends ChatBuilder {
    static template = "systems/fantastic-depths/templates/chat/spell-cast.hbs";
@@ -13,9 +14,9 @@ export class SpellCastChatBuilder extends ChatBuilder {
       const caster = context; // Can be actor or token
       const casterActor = caster?.actor || caster; // context could be actor or token.
       const casterName = caster?.name; // context could be actor or token.
-      const item = caller;
+      const item: SpellItem = caller;
       const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
-      const dmgHealRoll = caller.getDamageRoll(null, targetTokens?.[0]);
+      const dmgHealRoll = item.getDamageRoll(null, targetTokens?.[0]);
       const descData = { caster: casterName, spell: item.name };
       const description = game.i18n.format("FADE.Chat.spellCast", descData);
 

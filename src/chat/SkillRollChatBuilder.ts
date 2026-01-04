@@ -1,5 +1,6 @@
 import { GenericRollChatBuilder } from './GenericRollChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
+import { SkillItem } from "../item/SkillItem.js"
 
 export class SkillRollChatBuilder extends GenericRollChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/skill-roll.hbs';
@@ -7,10 +8,10 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
    async createChatMessage() {
       const { context, mdata, roll, caller, options, digest } = this.data;
       const token = context;
-      const item = caller;
+      const item: SkillItem = caller;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
-      const dmgHealRoll = item.getDamageRoll(null);
+      const dmgHealRoll = item.getDamageRoll();
       const targetNumber = Number(mdata.target); // Ensure the target number is a number
       const targetTokens = item.hasTargets ? Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token) : null;
 

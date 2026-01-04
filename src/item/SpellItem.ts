@@ -1,5 +1,5 @@
 import { RollAttackMixin } from './mixins/RollAttackMixin.js';
-import { FDItem } from './FDItem.js';
+import { DamageRollResult, createDamageRollResult, FDItem } from './FDItem.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 import { TagManager } from '../sys/TagManager.js';
@@ -25,11 +25,11 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       systemData.damageType = systemData.damageType || ""
    }
 
-   getDamageRoll(resp, targetToken) {
+   getDamageRoll(resp, targetToken): DamageRollResult {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       const digest = [];
-      let damageFormula = evaluatedRoll?.formula;
+      let damageFormula:string = evaluatedRoll?.formula;
       let modifier = 0;
       let hasDamage = true;
 
@@ -43,12 +43,12 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          hasDamage = false;
       }
 
-      return hasDamage ? {
+      return hasDamage ? createDamageRollResult({
          damageFormula,
-         targetUuid: targetToken?.uuid,
+         targetuuid: targetToken?.uuid,
          damageType: isHeal ? "heal" : "magic",
          digest
-      } : null;
+      }) : null;
    }
 
    /**

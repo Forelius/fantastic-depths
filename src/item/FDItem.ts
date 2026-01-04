@@ -1,12 +1,41 @@
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
+﻿import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
 
 export type ChatAction = {
    type: string;
    owneruuid: string;
    itemuuid: string;
    actionuuid: string;
-   // add other common fields if needed
 };
+
+export type DamageRollResult = {
+   damageFormula: string;
+   damageType: string;
+   digest: string[];
+   hasDamage: boolean;
+   attackType: string;
+   targetWeaponType: string;
+   targetuuid: string;
+   ammouuid: string;
+};
+
+/**
+ * Factory that returns a fully‑typed DamageRollResult.
+ * Missing properties are filled with defaults.
+ */
+export function createDamageRollResult(overrides: Partial<DamageRollResult> = {}): DamageRollResult {
+   const defaults: DamageRollResult = {
+      damageFormula: "",
+      damageType: "",
+      digest: [],
+      hasDamage: false,
+      attackType: "",
+      targetWeaponType: "",
+      targetuuid: "",
+      ammouuid: "",
+   };
+
+   return { ...defaults, ...overrides };
+}
 
 /**
  * Extend the basic Item with simple modifications.
@@ -77,7 +106,7 @@ export abstract class FDItem extends Item {
    /** @protected */
    prepareBaseData() {
       super.prepareBaseData();
-      if (this.type === 'treasure') {
+      if (this.type === "treasure") {
          this.system.quantityMax = 0;
       }
    }
@@ -138,7 +167,7 @@ export abstract class FDItem extends Item {
          relativeTo: this.actor,
       });
       if (description?.length <= 0) {
-         description = '--';
+         description = "--";
       }
       return description;
    }
@@ -156,7 +185,7 @@ export abstract class FDItem extends Item {
    async roll(dataset) {
       const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
-      const rollMode = game.settings.get('core', 'rollMode');
+      const rollMode = game.settings.get("core", "rollMode");
       const chatData = {
          caller: this,
          context: instigator,
@@ -183,7 +212,7 @@ export abstract class FDItem extends Item {
          }
          catch (error) {
             if (game.user.isGM === true) {
-               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+               console.error(`Invalid roll formula for ${this.name}. Formula="${formula}". Owner=${this.parent?.name}`, error);
             }
          }
       }
@@ -207,7 +236,7 @@ export abstract class FDItem extends Item {
          }
          catch (error) {
             if (game.user.isGM === true) {
-               console.error(`Invalid roll formula for ${this.name}. Formula='${formula}''. Owner=${this.parent?.name}`, error);
+               console.error(`Invalid roll formula for ${this.name}. Formula="${formula}". Owner=${this.parent?.name}`, error);
             }
          }
       }
@@ -326,7 +355,7 @@ export abstract class FDItem extends Item {
       }
       // If there are no charges remaining, show a UI notification
       if (result === false) {
-         const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.knownName });
+         const message = game.i18n.format("FADE.notification.noCharges", { itemName: item.knownName });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: item.actor?.name, } });
       }
@@ -354,7 +383,7 @@ export abstract class FDItem extends Item {
       }
       // If there are no usages remaining, show a UI notification
       if (result === false) {
-         const message = game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name });
+         const message = game.i18n.format("FADE.notification.zeroQuantity", { itemName: item.name });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: item.actor?.name } });
       }

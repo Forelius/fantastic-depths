@@ -1,4 +1,4 @@
-import { FDItem } from './FDItem.js';
+import { FDItem, DamageRollResult, createDamageRollResult } from './FDItem.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 
@@ -25,7 +25,7 @@ export class SkillItem extends FDItem {
       }
    }
 
-   getDamageRoll() {
+   getDamageRoll(): DamageRollResult {
       const isHeal = this.system.healFormula?.length > 0;
       let damageFormula = null;
       const modifier = 0;
@@ -39,7 +39,12 @@ export class SkillItem extends FDItem {
          hasDamage = false;
       }
 
-      return hasDamage ? { damageFormula, damageType: isHeal ? "heal" : null, digest: [], hasDamage: isHeal === true } : null;
+      return hasDamage ? createDamageRollResult({
+         damageFormula,
+         damageType: isHeal ? "heal" : null,
+         digest: [],
+         hasDamage: isHeal === true
+      }) : null;
    }
 
    /**

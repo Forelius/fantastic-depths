@@ -1,6 +1,8 @@
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatBuilder } from './ChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
+import { DamageRollResult } from '../item/FDItem.js';
+import { WeaponItem } from "../item/WeaponItem.js"
 
 export class DamageRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
@@ -50,9 +52,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
    }
 
    /**
-   * Click event handler for damage/heal roll buttons.
-   * @param {any} event
-         */
+    * Click event handler for damage/heal roll buttons.
+    * @param {any} event
+    **/
    static async clickDamageRoll(event) {
       const element = event.currentTarget;
       const dataset = element.dataset;
@@ -69,8 +71,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
    /**
     * Handles the damage/heal roll
     * @param {any} ev
-          * @param {any} dataset
-                */
+    * @param {any} dataset
+    **/
    static async handleDamageRoll(ev, dataset) {
       const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetuuid, owneruuid } = dataset;
       const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
@@ -82,15 +84,14 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";
-      let damageRoll = null;
-      const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
+      let damageRoll: DamageRollResult = null;
+      //const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
 
-      // TODO: Revisit this to make sure this is the correct way to determine the correct method to call.
-      if (weaponDamageTypes.includes(dataset.damagetype)) {
+      if (damagerItem instanceof WeaponItem) {// weaponDamageTypes.includes(dataset.damagetype)) {
          damageRoll = damagerItem.getDamageRoll(attacktype, null, targetweapontype, targetToken, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
-         damageRoll = damagerItem.getDamageRoll(null);
+         damageRoll = damagerItem.getDamageRoll();
       }
 
       if (damageRoll) {
@@ -102,7 +103,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          }, damagerItem);
          rolling = dialogResp != null;
 
-         if (weaponDamageTypes.includes(dataset.damagetype)) {
+         if (damagerItem instanceof WeaponItem) {
             damageRoll = damagerItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetToken, ammoItem);
          } else if (otherDamageTypes.includes(dataset.damagetype)) {
             damageRoll = damagerItem.getDamageRoll(dialogResp);
@@ -136,10 +137,10 @@ export class DamageRollChatBuilder extends ChatBuilder {
             const builder = new DamageRollChatBuilder(chatData, options);
             builder.createChatMessage();
 
-            Hooks.call("fadeDamageRoll", { 
-               tokenUuid: damagerToken?.uuid, 
-               actorUuid: damager.actor?.uuid ?? damager.uuid, 
-               itemUuid: weaponuuid, 
+            Hooks.call("fadeDamageRoll", {
+               tokenUuid: damagerToken?.uuid,
+               actorUuid: damager.actor?.uuid ?? damager.uuid,
+               itemUuid: weaponuuid,
                target: targetToken?.uuid
             });
          }
@@ -149,7 +150,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
    /**
     * Click event handler for apply damage/heal buttons.
     * @param {any} ev
-          */
+    */
    static async clickApplyDamage(ev) {
       const element = ev.currentTarget;
       const dataset = element.dataset;
