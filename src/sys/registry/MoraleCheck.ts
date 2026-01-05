@@ -27,7 +27,7 @@ export class MoraleCheck {
          const rollContext = { ...actor.getRollData(), ...dialogResp || {} };
          const rolled = await new Roll(dataset.formula, rollContext).evaluate();
          const chatData = { caller: actor, context: actor, mdata: dataset, roll: rolled };
-         const showResult = actor._getShowResult(event);
+         const showResult = actor.getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
          await builder.createChatMessage();
       }

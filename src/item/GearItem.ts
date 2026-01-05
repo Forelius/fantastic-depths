@@ -7,6 +7,8 @@ import { TagManager } from '../sys/TagManager.js';
  * @extends {FDItem}
  */
 export class GearItem extends FDItem {
+   tagManager: TagManager;
+
    constructor(data, context) {
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager
@@ -44,14 +46,14 @@ export class GearItem extends FDItem {
 
    get isDropped(): boolean {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      let current = this;
+      let current: GearItem = this;
       let result = false;
       while (current) {
          if (current.system.isDropped) {
             result = true;
             current = null;
          } else if (this.actor && current.system.containerId) {
-            current = this.actor.items.get(current.system.containerId);
+            current = this.actor.items.get(current.system.containerId) as GearItem;
          } else {
             current = null;
          }
@@ -60,7 +62,7 @@ export class GearItem extends FDItem {
    }
 
    get isUsable(): boolean {
-      return this.chargesMax > 0 || this.chargesMax === null;
+      return this.system.chargesMax > 0 || this.system.chargesMax === null;
    }
 
    /** @protected */

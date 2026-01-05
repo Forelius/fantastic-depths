@@ -1,3 +1,4 @@
+import { FDActorBase } from "../actor/FDActorBase.js";
 import { LightManager } from "../sys/LightManager.js";
 import { ChatAction } from "./FDItem.js";
 import { GearItem } from "./GearItem.js";
@@ -79,7 +80,7 @@ export class LightItem extends GearItem {
             // With all of that taken care of, if we have fuel for the light source...
             if (this.hasFuel === true) {
                const lightSettings = this.system.getLightSettings();
-               await this.actor.setActiveLight(this.id);
+               await (this.actor as FDActorBase).setActiveLight(this.id);
                await this.update({ "system.light.enabled": true });
                await token.update({ light: lightSettings });
                this.notify(game.i18n.format('FADE.Item.light.enabled', { actor: token.name, item: this.name }), 'info');

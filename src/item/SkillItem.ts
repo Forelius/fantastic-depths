@@ -120,7 +120,7 @@ export class SkillItem extends FDItem {
             roll: rolled,
             digest
          };
-         const showResult = this._getShowResult(event);
+         const showResult = this.getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData, { showResult });
          await builder.createChatMessage();
       }

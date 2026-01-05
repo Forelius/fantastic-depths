@@ -4,6 +4,8 @@ import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
 import { TagManager } from "../sys/TagManager.js";
 
 export class SpecialAbilityItem extends FDItem {
+   tagManager: TagManager;
+
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
@@ -67,7 +69,7 @@ export class SpecialAbilityItem extends FDItem {
       const rollData = this.getRollData();
       rollData.level = dataset.level;
       const ctrlKey = event?.ctrlKey ?? false;
-      const showResult = this._getShowResult(event);
+      const showResult = this.getShowResult(event);
       let roll = null;
       const digest = [];
 

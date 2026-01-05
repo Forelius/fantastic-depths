@@ -1,6 +1,8 @@
 ﻿import { FDActorBase } from '../actor/FDActorBase.js';
+import { FDCombatActor } from '../actor/FDCombatActor.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { FDItem } from './FDItem.js';
+import { WeaponItem } from './WeaponItem.js';
 
 export type AttackRollResult = {
    attacker: FDActorBase;
@@ -35,36 +37,33 @@ export function createAttackRollResult(overrides = {}): AttackRollResult {
 * @param {any} superclass Assumes superclass is derived from FDItem.
 * @returns
 */
-export class RollAttackService {
-   item: FDItem;
-
-   constructor(item: FDItem) {
-      this.item = item;
+export class AttackRollService {
+   constructor() {
    }
    /**
    * Handle clickable rolls.
    */
-   async rollAttack(dataset = null): Promise<AttackRollResult> {
-      const systemData = this.item.system;
+   async rollAttack(item: FDItem, dataset: PropertyBag = null): Promise<AttackRollResult> {
+      const systemData = item.system;
       let attackType;
       let rollData;
-      const attackerActor = this.item.actor;
-      const attackerToken = this.item.actor?.token;
+      const attackerActor = item.actor as FDCombatActor;
+      const attackerToken = item.actor?.token;
       const result = createAttackRollResult({
          attacker: attackerToken ?? attackerActor,
          canAttack: true,
       });
 
       if (systemData.quantity === 0) {
-         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.item.name }));
+         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name }));
          result.canAttack = false;
       }
       else if (attackerActor) {
-         result.ammoItem = attackerActor?.getAmmoItem(this.item);
+         result.ammoItem = attackerActor?.getAmmoItem(item);
          const targetTokens = Array.from(game.user.targets);
          const targetToken: Token = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: this.item, targetToken }));
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: item, targetToken }));
          attackType = result.dialogResp?.attackType;
          result.canAttack = result.dialogResp != null;
          if (result.canAttack) {
@@ -89,8 +88,8 @@ export class RollAttackService {
                   rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kl`;
                }
 
-               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.item.actor, this.item, attackType, rollOptions);
-               rollData = this.item.getRollData();
+               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(item.actor, item, attackType, rollOptions);
+               rollData = item.getRollData();
                rollData.formula = attackRoll.formula;
                result.digest = attackRoll.digest;
             }
@@ -98,7 +97,7 @@ export class RollAttackService {
 
          // Check if the attack type is a missile/ranged attack
          if (result.canAttack && attackType === 'missile') {
-            result.ammoItem = await this.#missileAttack();
+            result.ammoItem = await this.#missileAttack(item);
             result.canAttack = result.ammoItem !== null && result.ammoItem !== undefined;
          } else {
             result.ammoItem = null;
@@ -110,8 +109,8 @@ export class RollAttackService {
                const rollContext = { ...rollData, ...result.dialogResp || {} };
                result.rollEval = await new Roll(rollData.formula, rollContext).evaluate();
             }
-            if (this.item.showAttackChatMessage) {
-               await this.item.showAttackChatMessage(result);
+            if (item instanceof WeaponItem) {
+               await item.showAttackChatMessage(result);
             }
          }
       } else {
@@ -126,9 +125,9 @@ export class RollAttackService {
     * Get missile attack ammo if it exist and use it, otherwise use  weapon itself as ammo.
     * @returns
     */
-   async #missileAttack(): Promise<FDItem> {
-      const ammoItem = this.item.actor?.getAmmoItem(this.item);
-      await this.#tryUseAmmo();
+   async #missileAttack(item: FDItem): Promise<FDItem> {
+      const ammoItem = (item.actor as FDCombatActor)?.getAmmoItem(item);
+      await this.#tryUseAmmo(item);
       return ammoItem;
    }
 
@@ -137,13 +136,13 @@ export class RollAttackService {
     * @private
     * @returns The ammo item, if one exists.
     */
-   async #tryUseAmmo(): Promise<FDItem> {
-      const ammoItem = this.item.actor?.getAmmoItem(this);
+   async #tryUseAmmo(item: FDItem): Promise<FDItem> {
+      const ammoItem = (item.actor as FDCombatActor)?.getAmmoItem(item);
       // If there's no ammo, show a UI notification
       if (ammoItem === undefined || ammoItem === null) {
-         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: this.item.actor?.name, weaponName: this.item.name });
+         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: item.actor?.name, weaponName: item.name });
          ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: this.item.actor.name, } });
+         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
       } else { // if (getOnly !== true) {
          // Deduct 1 ammo if not infinite
          if (ammoItem.system.quantity !== null) {

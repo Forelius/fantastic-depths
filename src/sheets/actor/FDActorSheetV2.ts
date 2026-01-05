@@ -7,6 +7,7 @@ import { FDItem } from "../../item/FDItem.js";
 import { fadeFinder } from "../../utils/finder.js";
 import { CodeMigrate } from "../../sys/migration.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
+import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -274,7 +275,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     */
    async _onDropItem(event, item) {
       if (!this.actor.isOwner) return;
-      const droppedItem = await Item.implementation.fromDropData(item);
+      const droppedItem = await Item.implementation.fromDropData(item) as FDItem;
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
@@ -284,7 +285,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       } else {
          // If the dropped item is a weapon mastery definition item...
          if (droppedItem.type === "weaponMastery" && this.#hasSameActorMastery(droppedItem) === false) {
-            droppedItem.createActorWeaponMastery(this.actor);
+            (droppedItem as MasteryDefinitionItem).createActorWeaponMastery(this.actor);
          }
          // If the dropped item is a class definition item...
          else if (droppedItem.type === "class" && this.#hasSameActorClass(droppedItem) === false) {
@@ -863,7 +864,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          mdata: dataset,
          roll: rolled
       };
-      const showResult = this.actor._getShowResult(event);
+      const showResult = this.actor.getShowResult(event);
       const builder = new ChatFactory(chatType, chatData, { showResult });
       await builder.createChatMessage();
    }

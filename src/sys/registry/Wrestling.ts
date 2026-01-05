@@ -199,4 +199,3 @@ export class Wrestling {
       return result + (actor.system.mod?.wrestling ?? 0);
    }
 }
-

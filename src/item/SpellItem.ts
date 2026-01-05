@@ -1,4 +1,4 @@
-import { RollAttackService, AttackRollResult } from './RollAttackService.js';
+import { AttackRollService, AttackRollResult } from './AttackRollService.js';
 import { DamageRollResult, createDamageRollResult, FDItem } from './FDItem.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
@@ -6,11 +6,14 @@ import { TagManager } from '../sys/TagManager.js';
 import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
 
 export class SpellItem extends FDItem {
+   attackRollService: AttackRollService;
+   tagManager: TagManager;
+
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager
-      this.attackRollService = new RollAttackService(this);
+      this.attackRollService = new AttackRollService();
    }
 
    prepareBaseData() {
@@ -83,11 +86,11 @@ export class SpellItem extends FDItem {
     * @param dataset
     * @returns
     */
-   async rollAttack(dataset = null): Promise<AttackRollResult> {
-      return await this.attackRollService.rollAttack(dataset);
+   async rollAttack(dataset: PropertyBag = null): Promise<AttackRollResult> {
+      return await this.attackRollService.rollAttack(this, dataset);
    }
 
-   async doSpellcast(dataset = null): Promise<void> {
+   async doSpellcast(dataset: PropertyBag = null): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
 

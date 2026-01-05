@@ -18,7 +18,7 @@ export class FDActorBase extends Actor {
       }
    }
 
-   get currentActiveToken() {
+   get currentActiveToken(): Token {
       let result = null;
       const activeTokens = this.getActiveTokens();
       // Get the first active token.
@@ -240,7 +240,7 @@ export class FDActorBase extends Actor {
     * @param {any} event
     * @returns True if the results should be shown, otherwise false.
     */
-   _getShowResult(event) {
+   getShowResult(event): boolean {
       let result = true;
       const shiftKey = event?.originalEvent?.shiftKey ?? false;
       if (game.user.isGM === true) {

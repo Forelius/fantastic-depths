@@ -8,7 +8,7 @@ export class AbilityCheck {
    get dialogTemplate() { return "systems/fantastic-depths/templates/dialog/tiered-difficulty.hbs"; }
    get chatTemplate() { return "systems/fantastic-depths/templates/chat/ability-check.hbs"; }
 
-   async execute(data): Promise<void>  {
+   async execute(data): Promise<void> {
       const { actor, event } = data;
       const ctrlKey = event.ctrlKey;
       const dataset = event.target.dataset;
@@ -56,13 +56,13 @@ export class AbilityCheck {
             roll: rolled,
             digest
          };
-         const showResult = actor._getShowResult(event);
+         const showResult = actor.getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
          await builder.createChatMessage();
       }
    }
 
-   getResultString(builder, options) {
+   getResultString(builder, options): string {
       // Determine if the roll is successful based on the roll type and target number      
       const testResult = builder.getBoolRollResultType(options);
       return builder.getBoolResultHTML(testResult);
@@ -95,7 +95,7 @@ export class TieredAbilityCheck extends AbilityCheck {
       return result;
    }
 
-   getResultString(builder, options) {
+   getResultString(builder, options): string {
       const { roll, target, operator, autosuccess, autofail } = options;
       const naturalTotal = ChatBuilder.getDiceSum(roll);
       const diff = roll.total - target;

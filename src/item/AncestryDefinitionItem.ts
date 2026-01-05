@@ -4,6 +4,7 @@ import { TagManager } from "../sys/TagManager.js";
 
 export class AncestryDefinitionItem extends FDItem {
    static ValidItemTypes = ["item", "weapon", "armor"];
+   languageManager: TagManager;
 
    constructor(data, context) {
       super(data, context);

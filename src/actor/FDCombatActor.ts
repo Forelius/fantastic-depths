@@ -3,6 +3,7 @@ import { fadeFinder } from '../utils/finder.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 import { TagManager } from '../sys/TagManager.js';
+import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js";
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -154,7 +155,7 @@ export class FDCombatActor extends FDActorBase {
             digest
          };
 
-         const showResult = savingThrow._getShowResult(event);
+         const showResult = savingThrow.getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();
       }
@@ -426,10 +427,10 @@ export class FDCombatActor extends FDActorBase {
       return updated;
    }
 
-   #getSavingThrow(saveType) {
+   #getSavingThrow(saveType): SpecialAbilityItem {
       const result = this.items.find(item => item.type === "specialAbility"
          && item.system.category === "save"
-         && item.system.customSaveCode === saveType);
+         && item.system.customSaveCode === saveType) as SpecialAbilityItem;
       if (!result) {
          ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { saveType }));
       }

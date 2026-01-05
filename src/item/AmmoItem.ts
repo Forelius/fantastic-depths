@@ -1,4 +1,5 @@
 import { FDItem } from './FDItem.js';
+import { GearItem } from './GearItem.js';
 
 export class AmmoItem extends FDItem {
    get ownerToken() {
@@ -24,14 +25,14 @@ export class AmmoItem extends FDItem {
 
    get isDropped() {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      let current = this;
+      let current: AmmoItem | GearItem = this;
       let result = false;
       while (current) {
          if (current.system.isDropped) {
             result = true;
             current = null;
          } else if (this.actor && current.system.containerId) {
-            current = this.actor.items.get(current.system.containerId);
+            current = this.actor.items.get(current.system.containerId) as GearItem;
          } else {
             current = null;
          }

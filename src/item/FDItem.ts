@@ -135,7 +135,7 @@ export abstract class FDItem extends Item {
       if (data.img === undefined) {
          data.img = this.defaultIcons[data.type] || "icons/svg/item-bag.svg"; // Fallback icon
       }
-      return super.create(data, context);
+      return await super.create(data, context);
    }
 
    /**
@@ -309,7 +309,7 @@ export abstract class FDItem extends Item {
     * @param {any} event
     * @returns True if the results should be shown, otherwise false.
     */
-   _getShowResult(event): boolean {
+   getShowResult(event): boolean {
       let result = this.system.showResult ?? true;
       const shiftKey = event?.originalEvent?.shiftKey ?? false;
       if (game.user.isGM === true) {

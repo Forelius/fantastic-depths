@@ -7,9 +7,9 @@ export class ActorClassItem extends FDItem {
     * @param {any} options
     * @param {any} userId
     */
-   _onUpdate(updateData, options, userId) {
-      super._onUpdate(updateData, options, userId);
-      this.updatePropertiesFromUpdate(updateData);
+   _onUpdate(changed: object, options: object, userId: string): void {
+      super._onUpdate(changed, options, userId);
+      this.updatePropertiesFromUpdate(changed);
    }
 
    //** Update item properties based on FADE.WeaponMastery */
