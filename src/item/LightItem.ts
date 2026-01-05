@@ -6,7 +6,7 @@ export class LightItem extends GearItem {
    /**
     * Does this light source require and external fuel such as lantern oil.
     */
-   get usesExternalFuel() {
+   get usesExternalFuel(): boolean {
       return this.system.light.fuelType?.length > 0;
    }
 
@@ -14,7 +14,7 @@ export class LightItem extends GearItem {
     * Is the torch burnt out or does the lantern have any oil?
     * NOTE: A duration of null means infinite duration.
     */
-   get hasFuel() {
+   get hasFuel(): boolean {
       return this.system.light.duration == null
          || (this.system.light.secondsRemain > 0 && this.system.quantity > 0);
    }
@@ -147,4 +147,3 @@ export class LightItem extends GearItem {
       }
    }
 }
-

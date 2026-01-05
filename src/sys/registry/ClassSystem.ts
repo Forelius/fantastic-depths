@@ -14,6 +14,12 @@ export abstract class ClassSystemBase {
       return actor.system.config.maxSpellLevel > 0;
    }
 
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   abstract calcXPAward(actor: Actor, amount: number): Promise<any[]>;
+   abstract awardXP(actor: Actor, amounts: string): Promise<void>;
+   abstract getRollData(actor: Actor);
+   abstract createActorClass(actor: Actor, item: FDItem): Promise<FDocument>;
+
    /**
     * Prepares a context array of spell slots for the actor sheet.
     *
@@ -556,8 +562,8 @@ export class SingleClassSystem extends ClassSystemBase {
     * @param {Object} item - The class item object containing the class details to be applied.
     * @returns {Promise<void>} - A promise that resolves when the actor's class data has been updated.
     */
-   async createActorClass(actor, item) {
-      await actor.update({
+   async createActorClass(actor: Actor, item: FDItem): Promise<FDocument> {
+      return await actor.update({
          "system.details.level": 1,
          "system.details.class": item.name,
          "system.details.classKey": item.system.key,
@@ -652,7 +658,7 @@ export class SingleClassSystem extends ClassSystemBase {
     * @param {any} actor - The actor object for which the roll data is being prepared.
     * @returns - An object with a class property that contains class level.
     */
-   getRollData(actor) {
+   getRollData(actor: Actor) {
       let result = {};
       if (actor.type === "monster") {
          const classAs = actor.system.details.castAs;
@@ -668,13 +674,14 @@ export class SingleClassSystem extends ClassSystemBase {
       return result;
    }
 
-   async calcXPAward(actor, amount) {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   async calcXPAward(actor: Actor, amount: number): Promise<any[]> {
       // If there's a bonus % in actor.system.details.xp.bonus
       const bonusPct = Number(actor.system.details?.xp?.bonus ?? 0) / 100;
       return [amount + Math.floor(amount * bonusPct)];
    }
 
-   async awardXP(actor, amounts) {
+   async awardXP(actor: Actor, amounts: string): Promise<void> {
       const amount = Number(amounts || 0);
       if (amount) {
          const currentXP = Number(foundry.utils.getProperty(actor, "system.details.xp.value") ?? 0);
@@ -823,7 +830,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {Object} item - The item object representing the class to be created.
     * @returns {Promise<Object>} - A promise that resolves to the newly created actor class item.
     */
-   async createActorClass(actor, item) {
+   async createActorClass(actor: Actor, item: FDItem): Promise<FDocument> {
       const classLevel = item.system.levels[0];
       const nextClassLevel = item.system.levels[1];
       const newItem = await FDItem.create({
@@ -866,7 +873,7 @@ export class MultiClassSystem extends ClassSystemBase {
     * @param {any} actor - The actor object for which the roll data is being prepared.
     * @returns - An object with a class property that contains class level.
     */
-   getRollData(actor) {
+   getRollData(actor: Actor) {
       let result = {};
 
       if (actor.type === "monster") {
@@ -962,7 +969,8 @@ export class MultiClassSystem extends ClassSystemBase {
       return spellClasses;
    }
 
-   async calcXPAward(actor, amount) {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   async calcXPAward(actor: Actor, amount: number): Promise<any[]> {
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       const hasPrimary = actor.items.some(item => item.type === "actorClass" && item.system.isPrimary === true);
       const primaries = actor.items.filter(item => item.type === "actorClass" && (item.system.isPrimary === true || hasPrimary === false));
@@ -978,7 +986,7 @@ export class MultiClassSystem extends ClassSystemBase {
       return amounts;
    }
 
-   async awardXP(actor, amounts) {
+   async awardXP(actor: Actor, amounts: string): Promise<void> {
       const xps = (input => input.split("/").map(part => /^\d+$/.test(part) ? Number(part) : null))(amounts);
       const actorClasses = actor.items.filter(item => item.type === "actorClass");
       if (xps?.length > 0 && xps?.length == actorClasses?.length) {

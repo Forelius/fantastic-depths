@@ -8,7 +8,7 @@ export class AbilityCheck {
    get dialogTemplate() { return "systems/fantastic-depths/templates/dialog/tiered-difficulty.hbs"; }
    get chatTemplate() { return "systems/fantastic-depths/templates/chat/ability-check.hbs"; }
 
-   async execute(data) {
+   async execute(data): Promise<void>  {
       const { actor, event } = data;
       const ctrlKey = event.ctrlKey;
       const dataset = event.target.dataset;
@@ -58,7 +58,7 @@ export class AbilityCheck {
          };
          const showResult = actor._getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
-         builder.createChatMessage();
+         await builder.createChatMessage();
       }
    }
 

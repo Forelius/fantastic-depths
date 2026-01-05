@@ -1,5 +1,5 @@
-import { FDActorBase } from "../../actor/FDActorBase.js";
 import { DialogFactory } from "../../dialog/DialogFactory.js";
+import { ClassSystemBase } from "./ClassSystem.js";
 
 export class Wrestling {
    static States = ["defpin", "deftakedown", "defgrab", "free", "attgrab", "atttakedown", "attpin"];
@@ -60,7 +60,7 @@ export class Wrestling {
          wrestlingData = {
             attackerGroup: {
                leaderWR: Math.max(...Object.values(attackerWRs) as number[]), // Highest WR among attackers
-               members: attackers.map((attacker: FDActorBase) => ({
+               members: attackers.map((attacker: Token) => ({
                   name: attacker.name,
                   id: attacker.id,
                   hd: attacker.actor.system.hp.hd, // Hit Dice
@@ -168,7 +168,7 @@ export class Wrestling {
          wrestlingMastery = actor.items.find(item => item.type === "mastery" && item.system.weaponType === "wr");
       }
 
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       const { numberOfDice } = classSystem.getParsedHD(actor.system.hp?.hd);
 
       if (actor.type === "character") {

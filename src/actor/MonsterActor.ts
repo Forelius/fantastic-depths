@@ -1,6 +1,7 @@
 // actor-character
 import { FDCombatActor } from './FDCombatActor.js';
 import { fadeFinder } from '../utils/finder.js';
+import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
 
 export class MonsterActor extends FDCombatActor {
    constructor(data, context) {
@@ -30,7 +31,7 @@ export class MonsterActor extends FDCombatActor {
             await this.setupSpecialAbilities(result.classAbilityData);
          }
       }
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       if (updateData.system?.details?.castAs?.length > 0) {
          await classSystem.setupMonsterClassMagic(this);
       }

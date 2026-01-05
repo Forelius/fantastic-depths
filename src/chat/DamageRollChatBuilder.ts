@@ -11,7 +11,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       return roll.render();
    }
 
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const { context, mdata, roll, options, digest } = this.data;
       const rolls = [roll];
       const rollContent = await this.getRollContent(roll, mdata);
@@ -135,7 +135,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
                attackName,
             };
             const builder = new DamageRollChatBuilder(chatData, options);
-            builder.createChatMessage();
+            await builder.createChatMessage();
 
             Hooks.call("fadeDamageRoll", {
                tokenUuid: damagerToken?.uuid,

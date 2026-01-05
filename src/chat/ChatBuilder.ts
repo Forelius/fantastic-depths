@@ -175,7 +175,7 @@ export abstract class ChatBuilder {
     * @abstract
     * @throws {Error} if unimplemented.
     */
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const className = this.constructor.name;
       throw new Error(`${className}.createChatMessage() is unimplemented.`);
    }

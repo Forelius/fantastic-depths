@@ -1,4 +1,5 @@
 import { DialogFactory } from "../dialog/DialogFactory.js";
+import { ClassSystemBase } from "../sys/registry/ClassSystem.js";
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -30,7 +31,8 @@ export class FDActorBase extends Actor {
    }
 
    get highestLevel() {
-      return game.fade.registry.getSystem("classSystem")?.getHighestLevel(this);
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
+      return classSystem?.getHighestLevel(this);
    }
 
    /** override */
@@ -101,6 +103,9 @@ export class FDActorBase extends Actor {
       }
    }
 
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   logActorChanges(updateData, oldData, user, type, parentKey = '', recursionLevel = 1) { }
+
    /**
    * Handler for updateWorldTime event.
    */
@@ -142,7 +147,7 @@ export class FDActorBase extends Actor {
     * @returns Roll data object contain actor system data and classes data.
     */
    getRollData() {
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       const classes = classSystem.getRollData(this);
       return { ...this.system, classes };
    }
@@ -157,16 +162,16 @@ export class FDActorBase extends Actor {
     * @param {boolean} isBar       Whether the new value is part of an attribute bar, or just a direct value
     * @returns {Promise<typeof Actor>}  The updated Actor document
     */
-   async modifyTokenAttribute(attribute, value, isDelta = false, isBar = true) {
+   async modifyTokenAttribute(attribute: string, value: number, isDelta: boolean = false, isBar: boolean = true): Promise<Actor> {
       if (this.isOwner === false) return this;
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      let result = this;
+      let result: Actor = this;
       // If delta damage...
       if (isDelta === true && attribute === "hp") {
          // Try debouncing to prevent ENTER key from propogating
          setTimeout(() => this.#handleHPChange(value), 100);
       } else {
-         result = super.modifyTokenAttribute(attribute, value, isDelta, isBar);
+         result = await super.modifyTokenAttribute(attribute, value, isDelta, isBar);
       }
       return result;
    }

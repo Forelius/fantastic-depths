@@ -2,6 +2,7 @@ import { FDCombatActor } from './FDCombatActor.js';
 import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem.js";
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { fadeFinder } from '../utils/finder.js';
+import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
 
 export class CharacterActor extends FDCombatActor {
    constructor(data, context) {
@@ -35,7 +36,7 @@ export class CharacterActor extends FDCombatActor {
       }
       // Class or level updated.
       if (this.id) {
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          await classSystem.onCharacterActorUpdate(this, updateData);
 
          if (updateData.system?.details?.species !== undefined
@@ -149,7 +150,7 @@ export class CharacterActor extends FDCombatActor {
                yesLabel: game.i18n.localize('FADE.dialog.yes'),
                noLabel: game.i18n.localize('FADE.dialog.no'),
                defaultChoice: "yes"
-            }, this.actor);
+            }, this);
 
             if (dialogResp?.resp?.result === true) {
                await this.setupSpecialAbilities(abilitiesData);
@@ -164,4 +165,3 @@ export class CharacterActor extends FDCombatActor {
       }
    }
 }
-

@@ -5,7 +5,7 @@ import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js"
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
 
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const { context, caller, roll, options, digest } = this.data;
       const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const item: SpecialAbilityItem = caller;

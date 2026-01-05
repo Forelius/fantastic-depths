@@ -1,11 +1,16 @@
 import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
-import { RollAttackMixin } from "./mixins/RollAttackMixin.js";
+import { RollAttackService, AttackRollResult } from './RollAttackService.js';
 import { GearItem } from "./GearItem.js";
 import { WeaponMasteryInterface } from "../sys/registry/WeaponMastery.js";
 import { DamageRollResult, createDamageRollResult } from "./FDItem.js"
 
-export class WeaponItem extends RollAttackMixin(GearItem) {
-   get isWeaponItem() { return true }
+export class WeaponItem extends GearItem {
+   get isWeaponItem(): boolean { return true }
+
+   constructor(data, context) {
+      super(data, context);
+      this.attackRollService = new RollAttackService(this);
+   }
 
    prepareBaseData() {
       super.prepareBaseData();
@@ -16,6 +21,15 @@ export class WeaponItem extends RollAttackMixin(GearItem) {
       super.prepareDerivedData();
       this._prepareModText();
       this._prepareDamageLabel();
+   }
+
+   /**
+    * Pass-thru to attack roll service.
+    * @param dataset
+    * @returns
+    */
+   async rollAttack(dataset = null): Promise<AttackRollResult> {
+      return await this.attackRollService.rollAttack(dataset);
    }
 
    getDamageRoll(attackType, resp, targetWeaponType, targetToken, ammoItem): DamageRollResult {

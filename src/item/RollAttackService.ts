@@ -1,44 +1,70 @@
-import { DialogFactory } from '../../dialog/DialogFactory.js';
+﻿import { FDActorBase } from '../actor/FDActorBase.js';
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { FDItem } from './FDItem.js';
+
+export type AttackRollResult = {
+   attacker: FDActorBase;
+   ammoItem: FDItem;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   dialogResp: any;
+   digest: string[];
+   canAttack: boolean;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   rollEval: any;
+};
+
+/**
+ * Factory that returns a fully‑typed AttackRollResult.
+ * Missing properties are filled with defaults.
+ */
+export function createAttackRollResult(overrides = {}): AttackRollResult {
+   const defaults = {
+      attacker: null,
+      ammoItem: null,
+      dialogResp: null,
+      digest: [],
+      canAttack: true,
+      rollEval: null
+   };
+
+   return { ...defaults, ...overrides };
+}
 
 /**
 * Requires class implements getAttackTypes()
 * @param {any} superclass Assumes superclass is derived from FDItem.
 * @returns
 */
-const RollAttackMixin = (superclass) => class extends superclass {
-   constructor(data, context) {
-      super(data, context);
-   }
+export class RollAttackService {
+   item: FDItem;
 
+   constructor(item: FDItem) {
+      this.item = item;
+   }
    /**
    * Handle clickable rolls.
-   * @param {any} dataset
    */
-   async rollAttack(dataset) {
-      const systemData = this.system;
+   async rollAttack(dataset = null): Promise<AttackRollResult> {
+      const systemData = this.item.system;
       let attackType;
       let rollData;
-      const attackerActor = this.actor;
-      const attackerToken = this.actor?.token;
-      const result = {
+      const attackerActor = this.item.actor;
+      const attackerToken = this.item.actor?.token;
+      const result = createAttackRollResult({
          attacker: attackerToken ?? attackerActor,
-         ammoItem: null,
-         dialogResp: null,
-         digest: [],
          canAttack: true,
-         rollEval: null
-      };
+      });
 
-      if (this.system.quantity === 0) {
-         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.name }));
+      if (systemData.quantity === 0) {
+         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: this.item.name }));
          result.canAttack = false;
       }
       else if (attackerActor) {
-         result.ammoItem = attackerActor?.getAmmoItem(this);
+         result.ammoItem = attackerActor?.getAmmoItem(this.item);
          const targetTokens = Array.from(game.user.targets);
          const targetToken: Token = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: this, targetToken }));
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: this.item, targetToken }));
          attackType = result.dialogResp?.attackType;
          result.canAttack = result.dialogResp != null;
          if (result.canAttack) {
@@ -63,8 +89,8 @@ const RollAttackMixin = (superclass) => class extends superclass {
                   rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kl`;
                }
 
-               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.actor, this, attackType, rollOptions);
-               rollData = this.getRollData();
+               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(this.item.actor, this.item, attackType, rollOptions);
+               rollData = this.item.getRollData();
                rollData.formula = attackRoll.formula;
                result.digest = attackRoll.digest;
             }
@@ -84,8 +110,8 @@ const RollAttackMixin = (superclass) => class extends superclass {
                const rollContext = { ...rollData, ...result.dialogResp || {} };
                result.rollEval = await new Roll(rollData.formula, rollContext).evaluate();
             }
-            if (this.showAttackChatMessage) {
-               await this.showAttackChatMessage(result);
+            if (this.item.showAttackChatMessage) {
+               await this.item.showAttackChatMessage(result);
             }
          }
       } else {
@@ -96,8 +122,12 @@ const RollAttackMixin = (superclass) => class extends superclass {
       return result;
    }
 
-   async #missileAttack() {
-      const ammoItem = this.actor?.getAmmoItem(this);
+   /**
+    * Get missile attack ammo if it exist and use it, otherwise use  weapon itself as ammo.
+    * @returns
+    */
+   async #missileAttack(): Promise<FDItem> {
+      const ammoItem = this.item.actor?.getAmmoItem(this.item);
       await this.#tryUseAmmo();
       return ammoItem;
    }
@@ -105,17 +135,16 @@ const RollAttackMixin = (superclass) => class extends superclass {
    /**
     * Gets the equipped ammo item and optionally uses it.
     * @private
-    * @param {any} getOnly If true, does not use, just gets.
     * @returns The ammo item, if one exists.
     */
-   async #tryUseAmmo(getOnly = false) {
-      const ammoItem = this.actor?.getAmmoItem(this);
+   async #tryUseAmmo(): Promise<FDItem> {
+      const ammoItem = this.item.actor?.getAmmoItem(this);
       // If there's no ammo, show a UI notification
       if (ammoItem === undefined || ammoItem === null) {
-         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: this.actor?.name, weaponName: this.name });
+         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: this.item.actor?.name, weaponName: this.item.name });
          ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: this.actor.name, } });
-      } else if (getOnly !== true) {
+         ChatMessage.create({ content: message, speaker: { alias: this.item.actor.name, } });
+      } else { // if (getOnly !== true) {
          // Deduct 1 ammo if not infinite
          if (ammoItem.system.quantity !== null) {
             const newQuantity = Math.max(0, ammoItem.system.quantity - 1);
@@ -125,5 +154,3 @@ const RollAttackMixin = (superclass) => class extends superclass {
       return ammoItem;
    }
 }
-
-export { RollAttackMixin }

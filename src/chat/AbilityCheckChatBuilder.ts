@@ -4,7 +4,7 @@ import { CodeMigrate } from "../sys/migration.js";
 export class AbilityCheckChatBuilder extends ChatBuilder {
    static template = "dummy";
 
-   async createChatMessage() {
+   async createChatMessage(): Promise<void>{
       const { caller, context, mdata, roll, options, digest } = this.data;
       const abilityCheckSys = await game.fade.registry.getSystem("abilityCheck");
       const rolls = [roll];

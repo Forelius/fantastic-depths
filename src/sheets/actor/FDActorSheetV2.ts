@@ -6,6 +6,7 @@ import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
 import { FDItem } from "../../item/FDItem.js";
 import { fadeFinder } from "../../utils/finder.js";
 import { CodeMigrate } from "../../sys/migration.js";
+import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -277,7 +278,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const targetId = event.target.closest(".item")?.dataset?.itemId;
       const targetItem = this.actor.items.get(targetId);
       const targetIsContainer = targetItem?.system.container;
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
          this._onSortItem(event, droppedItem);
       } else {
@@ -638,7 +639,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.masteries = masteries;
       context.treasure = treasure.sort((a, b) => a.system.cost - b.system.cost);
       context.treasureValue = this.getTreasureValue(context);
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       context.spellClasses = await classSystem.prepareSpellsContext(this.actor);
       context.specialAbilities = specialAbilities;
       context.classAbilities = classAbilities;
@@ -677,7 +678,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @param {any} event
     */
    static async #clickResetSpells(this: FDActorSheetV2, event) {
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       await classSystem.resetSpells(this.actor, event);
    }
 
@@ -850,7 +851,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickRollGeneric(this: FDActorSheetV2, event) {
+   static async #clickRollGeneric(this: FDActorSheetV2, event): Promise<void>  {
       const dataset = event.target.dataset;
       const formula = dataset.formula;
       const chatType = CHAT_TYPE.GENERIC_ROLL;
@@ -864,7 +865,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       };
       const showResult = this.actor._getShowResult(event);
       const builder = new ChatFactory(chatType, chatData, { showResult });
-      return builder.createChatMessage();
+      await builder.createChatMessage();
    }
 
    /**

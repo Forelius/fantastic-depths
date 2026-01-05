@@ -1,5 +1,6 @@
 import { CharacterSheetBase } from "./CharacterSheetBase.js";
 import { SheetTab } from "../SheetTab.js";
+import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 
 /**
  * Extend the basic FDActorSheetV2 with some very simple modifications
@@ -65,7 +66,7 @@ export class CharacterSheet extends CharacterSheetBase {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          options.parts.push("items");
          options.parts.push("skills");
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
             options.parts.push("spells");
          }

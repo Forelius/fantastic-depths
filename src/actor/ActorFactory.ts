@@ -21,5 +21,4 @@ const handler = {
    }
 };
 
-export const ActorFactory = new Proxy(FDCombatActor, handler); 
-
+export const ActorFactory = new Proxy(FDCombatActor, handler);

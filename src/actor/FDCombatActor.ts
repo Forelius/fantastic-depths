@@ -9,6 +9,8 @@ import { TagManager } from '../sys/TagManager.js';
  * @extends {FDActorBase}
  */
 export class FDCombatActor extends FDActorBase {
+   tagManager: TagManager;
+
    constructor(data, context) {
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager

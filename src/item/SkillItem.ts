@@ -3,7 +3,7 @@ import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 
 export class SkillItem extends FDItem {
-   get hasTargets() {
+   get hasTargets(): boolean{
       return true;
    }
 
@@ -52,7 +52,7 @@ export class SkillItem extends FDItem {
    * @override
    * @param {any} event The originating click event
    */
-   async roll(dataset, dialogResp = null, event = null) {
+   async roll(dataset, dialogResp = null, event = null): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       const systemData = this.system;
       const digest = [];
@@ -97,7 +97,6 @@ export class SkillItem extends FDItem {
          }
       }
 
-      let result = null;
       if (rolling === true) {
          const mod = manualMod + levelMod;
          rollData.formula = mod != 0 ? `${systemData.rollFormula}+@mod` : `${systemData.rollFormula}`;
@@ -123,9 +122,7 @@ export class SkillItem extends FDItem {
          };
          const showResult = this._getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.SKILL_ROLL, chatData, { showResult });
-         result = builder.createChatMessage();
+         await builder.createChatMessage();
       }
-
-      return result;
    }
 }

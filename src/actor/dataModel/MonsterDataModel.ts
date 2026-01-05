@@ -2,6 +2,7 @@ import { FDCombatActorDM } from "./FDCombatActorDM.js";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.js';
 import { MonsterXPCalculator } from '../../utils/MonsterXPCalculator.js';
 import { MonsterData } from '../fields/MonsterField.js';
+import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 
 export class MonsterDataModel extends FDCombatActorDM {
    static defineSchema() {
@@ -30,7 +31,7 @@ export class MonsterDataModel extends FDCombatActorDM {
     */
    _prepareHitPoints() {
       if (this.hp.max == null) {
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          const { numberOfDice, numberOfSides, modifier } = classSystem.getParsedHD(this.hp.hd);
          this.hp.value = Math.ceil(((numberOfSides + 1) / 2) * numberOfDice) + modifier;
          this.hp.max = this.hp.value;
@@ -40,7 +41,7 @@ export class MonsterDataModel extends FDCombatActorDM {
    /** Calculate experience points for killing this monster. Only works with modifiers of +/-. */
    _prepareXP() {
       if (this.details.xpAward == null || this.details.xpAward == 0) {
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          const { numberOfDice, modifierSign, modifier } = classSystem.getParsedHD(this.hp.hd);
          const xpCalc = new MonsterXPCalculator();
          if (numberOfDice > 0 || modifier > 0) {

@@ -156,7 +156,7 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
     * @param {Event} event   The originating click event
     * @protected
     */
-   static async #clickRoll(this: FDItemSheetV2, event) {
+   static async #clickRoll(this: FDItemSheetV2, event): Promise<void> {
       event.preventDefault();
       event.stopPropagation();
 
@@ -174,7 +174,7 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
          roll: rolled
       };
       const builder = new ChatFactory(chatType, chatData, { showResult: true });
-      return builder.createChatMessage();
+      await builder.createChatMessage();
    }
 
    /**

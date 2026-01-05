@@ -1,14 +1,16 @@
-import { RollAttackMixin } from './mixins/RollAttackMixin.js';
+import { RollAttackService, AttackRollResult } from './RollAttackService.js';
 import { DamageRollResult, createDamageRollResult, FDItem } from './FDItem.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
 import { TagManager } from '../sys/TagManager.js';
+import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
 
-export class SpellItem extends RollAttackMixin(FDItem) {
+export class SpellItem extends FDItem {
    constructor(data, context) {
       /** Default behavior, just call super() and do all the default Item inits */
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager
+      this.attackRollService = new RollAttackService(this);
    }
 
    prepareBaseData() {
@@ -29,7 +31,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       const isHeal = this.system.healFormula?.length > 0;
       const evaluatedRoll = this.getEvaluatedRollSync(isHeal ? this.system.healFormula : this.system.dmgFormula);
       const digest = [];
-      let damageFormula:string = evaluatedRoll?.formula;
+      let damageFormula: string = evaluatedRoll?.formula;
       let modifier = 0;
       let hasDamage = true;
 
@@ -55,7 +57,6 @@ export class SpellItem extends RollAttackMixin(FDItem) {
    * Handle clickable rolls.
    */
    async roll(dataset) {
-      const { instigator } = await this.getInstigator(dataset);
       if (dataset?.skipdlg === true) {
          // I'm not sure this condition ever happens.
          super.roll(dataset);
@@ -70,14 +71,23 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          });
 
          if (dialogResp?.resp?.result === false) {
-            super.roll(dataset, instigator);
+            super.roll(dataset);
          } else if (dialogResp?.resp?.result === true) {
             await this.doSpellcast(dataset);
          }
       }
    }
 
-   async doSpellcast(dataset = null) {
+   /**
+    * Pass-thru to attack roll service.
+    * @param dataset
+    * @returns
+    */
+   async rollAttack(dataset = null): Promise<AttackRollResult> {
+      return await this.attackRollService.rollAttack(dataset);
+   }
+
+   async doSpellcast(dataset = null): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
 
@@ -86,9 +96,11 @@ export class SpellItem extends RollAttackMixin(FDItem) {
       if (await this._tryCastThenChargeThenUse(true, actionItem, dataset?.action)) {
          // Determine if spell requires an attack roll, such as touch spells.
          let rollAttackResult = null;
+
+         // If the spell requires a successful melee attack...
          if (this.system.attackType === 'melee') {
             // Roll the attack.
-            rollAttackResult = await this.rollAttack(null);
+            rollAttackResult = await this.rollAttack();
          }
 
          // Get the spell duration data.
@@ -214,7 +226,7 @@ export class SpellItem extends RollAttackMixin(FDItem) {
          const rollData = this.getRollData();
          // If a castAs override is specified, like from a magic item with spellcasting abilities...
          if (dataset?.castas) {
-            const classSystem = game.fade.registry.getSystem("classSystem");
+            const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
             const parsed = classSystem.parseClassAs(dataset.castas);
             rollData.classes[parsed.classId] = { castLevel: parsed.classLevel };
          }

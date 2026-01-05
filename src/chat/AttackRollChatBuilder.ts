@@ -6,7 +6,7 @@ import { WeaponItem } from "../item/WeaponItem.js"
 export class AttackRollChatBuilder extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/attack-roll.hbs';
 
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const { caller, context, resp, roll, mdata, digest, options } = this.data;
       const attacker = context.document ?? context; // This could be a token or actor
       const attackerName = attacker.token?.name ?? attacker.name;

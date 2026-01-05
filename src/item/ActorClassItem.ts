@@ -1,3 +1,4 @@
+import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
 import { FDItem } from './FDItem.js';
 
 export class ActorClassItem extends FDItem {
@@ -8,13 +9,13 @@ export class ActorClassItem extends FDItem {
     */
    _onUpdate(updateData, options, userId) {
       super._onUpdate(updateData, options, userId);
-         this.updatePropertiesFromUpdate(updateData);
+      this.updatePropertiesFromUpdate(updateData);
    }
 
    //** Update item properties based on FADE.WeaponMastery */
    async updatePropertiesFromUpdate(updateData) {
       if (this.id && this.actor) {
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          await classSystem.onActorItemUpdate(this.actor, this, updateData);
       }
    }

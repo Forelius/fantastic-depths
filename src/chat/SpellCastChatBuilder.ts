@@ -8,7 +8,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    /**
    * Called by the various Actor and Item derived classes to create a chat message.
    */
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const { context, caller, roll, options, digest } = this.data;
       const rollMode = game.settings.get("core", "rollMode");
       const caster = context; // Can be actor or token

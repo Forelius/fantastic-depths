@@ -1,6 +1,31 @@
-import { FDActorBase } from "../actor/FDActorBase";
+import { ClassSystemBase } from "../sys/registry/ClassSystem";
+
+type ActorXP = {
+   id: string;
+   name: string;
+   shareFactor: number;
+   xpBonus: number;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   xps: any[];
+   xpsText: string;
+};
+
+export function createActorXP(overrides = {}) {
+   const defaults = {
+      id: null,
+      name: null,
+      shareFactor: 1,
+      xpBonus: 0,
+      xps: [],
+      xpsText: ""
+   };
+   return { ...defaults, ...overrides };
+}
 
 export class AwardXPDialog extends FormApplication {
+   actorXPs: Record<string, ActorXP>;
+   classSystem: ClassSystemBase;
+
    constructor(object = {}, options = { actorIds: null }) {
       super(object, options);
       // Keep the IDs
@@ -37,12 +62,12 @@ export class AwardXPDialog extends FormApplication {
       let totalFactors = 0;
       for (const actor of actors) {
          if (this.actorXPs[actor.id] === undefined) {
-            this.actorXPs[actor.id] = {
+            this.actorXPs[actor.id] = createActorXP({
                id: actor.id,
                name: actor.name,
                shareFactor: 1,
                xpBonus: actor.system.details.xp.bonus
-            };
+            });
          }
          totalFactors += this.actorXPs[actor.id].shareFactor;
       }
@@ -97,9 +122,9 @@ export class AwardXPDialog extends FormApplication {
     */
    async _updateActorXPFields(html) {
       // 1) Gather the actor docs
-      const actors = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
+      const actors: Actor[] = this.actorIds.map(id => game.actors.get(id)).filter(a => a);
       // 2) Sum factors
-      const totalFactors = Object.values(this.actorXPs).reduce<number>((sum: number, actor: FDActorBase ) => { return sum + (actor.shareFactor || 0) }, 0);
+      const totalFactors = Object.values(this.actorXPs).reduce<number>((sum: number, actorXP: ActorXP) => { return sum + (actorXP.shareFactor || 0) }, 0);
       // 3) For each actor, compute the new default XP
       for (const actor of actors) {
          const factor = this.actorXPs[actor.id].shareFactor || 0;

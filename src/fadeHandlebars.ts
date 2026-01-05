@@ -1,3 +1,4 @@
+import { ClassSystemBase } from "./sys/registry/ClassSystem.js";
 import { Formatter } from "./utils/Formatter.js";
 
 export class fadeHandlebars {
@@ -35,7 +36,7 @@ export class fadeHandlebars {
          return accum;
       });
       Handlebars.registerHelper("formatHitDice", (hitDice) => {
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          const { numberOfDice, numberOfSides, modifier, modifierSign } = classSystem.getParsedHD(hitDice);
          const result = `${numberOfDice}d${numberOfSides}${modifierSign}${modifier != 0 ? modifier : ""}`;
          return result;

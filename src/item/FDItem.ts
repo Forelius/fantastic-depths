@@ -22,8 +22,8 @@ export type DamageRollResult = {
  * Factory that returns a fully‑typed DamageRollResult.
  * Missing properties are filled with defaults.
  */
-export function createDamageRollResult(overrides: Partial<DamageRollResult> = {}): DamageRollResult {
-   const defaults: DamageRollResult = {
+export function createDamageRollResult(overrides = {}): DamageRollResult {
+   const defaults = {
       damageFormula: "",
       damageType: "",
       digest: [],
@@ -31,7 +31,7 @@ export function createDamageRollResult(overrides: Partial<DamageRollResult> = {}
       attackType: "",
       targetWeaponType: "",
       targetuuid: "",
-      ammouuid: "",
+      ammouuid: ""
    };
 
    return { ...defaults, ...overrides };
@@ -57,20 +57,20 @@ export abstract class FDItem extends Item {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
    /** Returns true if this item type shows selected targets on its chat card, otherwise false. */
-   get hasTargets() {
+   get hasTargets(): boolean {
       return false; // The item itself does not have targets.
    }
    /** A different way to say melee attack for items that aren't ranged, but also not melee (siege weapons). */
-   get canAttack() { return this.system.canMelee === true && this.system.weaponType === "siege" }
-   get canMelee() { return this.system.canMelee === true && this.system.weaponType !== "siege" }
-   get canShoot() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0; }
-   get canThrow() { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0; }
+   get canAttack(): boolean { return this.system.canMelee === true && this.system.weaponType === "siege" }
+   get canMelee(): boolean { return this.system.canMelee === true && this.system.weaponType !== "siege" }
+   get canShoot(): boolean { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) > 0; }
+   get canThrow(): boolean { return this.system.canRanged === true && (this.system.ammoType?.length ?? 0) === 0; }
    /** Returns true if the item uses charges and either there are charges remaining or there are infinite charges (chargesMax === null). */
-   get hasCharge() { return this.system.charges !== undefined && (this.system.charges > 0 || this.system.chargesMax === null); }
+   get hasCharge(): boolean { return this.system.charges !== undefined && (this.system.charges > 0 || this.system.chargesMax === null); }
    /** Returns true if the item uses quantity and either there are uses remaining or there are infinite uses (quantityMax === null). */
-   get hasUse() { return this.system.quantity !== undefined && (this.system.quantity > 0 || this.system.quantityMax === null); }
+   get hasUse(): boolean { return this.system.quantity !== undefined && (this.system.quantity > 0 || this.system.quantityMax === null); }
    /** Returns true if this item either has available casts or has infinite casts, otherwise false. */
-   get hasCast() {
+   get hasCast(): boolean {
       return this.system.cast !== undefined && (this.system.cast < this.system.memorized || this.system.memorized === null);
    }
    /** The name of the item as known by the players. */
@@ -99,7 +99,7 @@ export abstract class FDItem extends Item {
          ? this.system.description ?? ""
          : this.system.unidentifiedDesc;
    }
-   get isIdentified() {
+   get isIdentified(): boolean {
       return this.system.isIdentified === undefined || this.system.isIdentified === true;
    }
 
@@ -182,7 +182,7 @@ export abstract class FDItem extends Item {
     * @public
     * @param {any} dataset The data- tag values from the clicked element
     */
-   async roll(dataset) {
+   async roll(dataset): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
       const rollMode = game.settings.get("core", "rollMode");
@@ -192,7 +192,7 @@ export abstract class FDItem extends Item {
          rollMode
       };
       const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData);
-      return await builder.createChatMessage();
+      await builder.createChatMessage();
    }
 
    /**
@@ -221,11 +221,11 @@ export abstract class FDItem extends Item {
 
    /**
     * Evaluates a roll formula synchronously into a numerical value.
-    * @param {any} formula The roll formula
+    * @param {string} formula The roll formula
     * @param {any} options The Roll.evaluate options. Default minimize=true will generate lowest possible value.
     * @returns If the formula and options are valid, an evaluated roll object.
     */
-   getEvaluatedRollSync(formula, options = { minimize: true }) {
+   getEvaluatedRollSync(formula: string, options = { minimize: true }) {
       let result = null;
       if (formula !== null && formula !== "") {
          const rollData = this.getRollData();
@@ -243,19 +243,21 @@ export abstract class FDItem extends Item {
       return result;
    }
 
-   async getEvaluatedRollFormula(formula) {
-      return (await this.getEvaluatedRoll(formula))?.formula;
-   }
-
-   getEvaluatedRollFormulaSync(formula) {
-      return this.getEvaluatedRollSync(formula)?.formula;
+   async getInstigator(dataset) {
+      const owner = dataset?.owneruuid ? await fromUuid(dataset.owneruuid) : null;
+      const ownerActor = owner?.actor ? owner.actor : owner;
+      const ownerToken = owner?.actor ? owner : owner?.currentActiveToken;
+      const instigatorActor = owner ? ownerActor : this.actor;
+      const instigatorToken = owner ? ownerToken : this.actor?.currentActiveToken;
+      const instigator = instigatorToken ?? instigatorActor;
+      return { instigator, owner, ownerActor, ownerToken, instigatorActor, instigatorToken };
    }
 
    /**
     * Process all item active effects that are not set to transfer to the owning actor.
     * @protected
     */
-   _processNonTransferActiveEffects() {
+   _processNonTransferActiveEffects(): void {
       const data = this.system;
 
       // Apply Active Effects only if transfer is false
@@ -307,7 +309,7 @@ export abstract class FDItem extends Item {
     * @param {any} event
     * @returns True if the results should be shown, otherwise false.
     */
-   _getShowResult(event) {
+   _getShowResult(event): boolean {
       let result = this.system.showResult ?? true;
       const shiftKey = event?.originalEvent?.shiftKey ?? false;
       if (game.user.isGM === true) {
@@ -319,10 +321,10 @@ export abstract class FDItem extends Item {
    /**
     * Some items may have charges and quantity uses both. if the item has the charges property then
     * charge is used, otherwise quantity is used.
-    * @param {any} getOnly If true, does not use, just gets.
-    * @param {any} actionItem The item that owns this item, or null.
+    * @param {boolean} getOnly If true, does not use, just gets.
+    * @param {FDItem} actionItem The item that owns this item, or null.
     */
-   async _tryUseChargeThenUsage(getOnly = false, actionItem) {
+   async _tryUseChargeThenUsage(getOnly = false, actionItem: FDItem): Promise<boolean> {
       let result = false;
       const item = actionItem || this;
 
@@ -338,11 +340,11 @@ export abstract class FDItem extends Item {
    /**
     * Determines if any charges are available and if so decrements charges by one
     * @private
-    * @param {any} getOnly If true, does not use, just gets.
-    * @param {any} actionItem The item that owns this item, or null.
+    * @param {boolean} getOnly If true, does not use, just gets.
+    * @param {FDItem} actionItem The item that owns this item, or null.
     * @returns True if quantity is above zero.
     */
-   async _tryUseCharge(getOnly = false, actionItem) {
+   async _tryUseCharge(getOnly = false, actionItem: FDItem): Promise<boolean> {
       const item = actionItem || this; // The item could be this or a parent item.
       const result = item.hasCharge;
 
@@ -366,11 +368,11 @@ export abstract class FDItem extends Item {
    /**
     * Determines if any uses are available and if so decrements quantity by one
     * @private
-    * @param {any} getOnly If true, does not use, just gets.
-    * @param {any} actionItem The item that owns this item, or null.
+    * @param {boolean} getOnly If true, does not use, just gets.
+    * @param {FDItem} actionItem The item that owns this item, or null.
     * @returns True if quantity is above zero.
     */
-   async _tryUseUsage(getOnly = false, actionItem) {
+   async _tryUseUsage(getOnly = false, actionItem: FDItem): Promise<boolean> {
       const item = actionItem || this; // The item could be this or a parent item.
       const result = item.hasUse;
 
@@ -389,15 +391,5 @@ export abstract class FDItem extends Item {
       }
 
       return result;
-   }
-
-   async getInstigator(dataset) {
-      const owner = dataset?.owneruuid ? await fromUuid(dataset.owneruuid) : null;
-      const ownerActor = owner?.actor ? owner.actor : owner;
-      const ownerToken = owner?.actor ? owner : owner?.currentActiveToken;
-      const instigatorActor = owner ? ownerActor : this.actor;
-      const instigatorToken = owner ? ownerToken : this.actor?.currentActiveToken;
-      const instigator = instigatorToken ?? instigatorActor;
-      return { instigator, owner, ownerActor, ownerToken, instigatorActor, instigatorToken };
    }
 }

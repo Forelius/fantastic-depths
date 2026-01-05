@@ -23,12 +23,12 @@ export class GearItem extends FDItem {
       return this.parent?.items.filter(item => item.system.containerId === this.id) || [];
    }
 
-   get isContained() {
+   get isContained(): boolean {
       return this.system.containerId?.length > 0;
    }
 
    /** A getter for dynamically calculating the total weight of this item, including contained items. */
-   get totalEnc() {
+   get totalEnc(): number {
       let result = 0;
       if (this.system.container === true) {
          result = this.containedItems?.reduce((sum, ritem) => { return sum + ritem.totalEnc }, 0) || 0;
@@ -42,7 +42,7 @@ export class GearItem extends FDItem {
       return result;
    }
 
-   get isDropped() {
+   get isDropped(): boolean {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       let current = this;
       let result = false;
@@ -59,7 +59,7 @@ export class GearItem extends FDItem {
       return result;
    }
 
-   get isUsable() {
+   get isUsable(): boolean {
       return this.chargesMax > 0 || this.chargesMax === null;
    }
 
@@ -80,7 +80,7 @@ export class GearItem extends FDItem {
     * does not override this message the result is a chat message with the item description.
     * @param {any} dataset The data- tag values from the clicked element
     */
-   async roll(dataset) {
+   async roll(dataset): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
       const rollMode = game.settings.get('core', 'rollMode');
@@ -90,6 +90,6 @@ export class GearItem extends FDItem {
          rollMode
       };
       const builder = new ChatFactory(CHAT_TYPE.ITEM_ROLL, chatData);
-      return await builder.createChatMessage();
+      await builder.createChatMessage();
    }
 }

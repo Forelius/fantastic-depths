@@ -2,7 +2,7 @@ import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
 import { DialogFactory } from "../../dialog/DialogFactory.js";
 
 export class MoraleCheck {
-   async execute(data) {
+   async execute(data): Promise<void> {
       const { actor, event } = data;
       const ctrlKey = event.ctrlKey;
       const dataset = event.target.dataset;
@@ -29,7 +29,7 @@ export class MoraleCheck {
          const chatData = { caller: actor, context: actor, mdata: dataset, roll: rolled };
          const showResult = actor._getShowResult(event);
          const builder = new ChatFactory(chatType, chatData, { showResult });
-         builder.createChatMessage();
+         await builder.createChatMessage();
       }
    }
 }

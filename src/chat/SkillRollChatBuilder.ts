@@ -5,7 +5,7 @@ import { SkillItem } from "../item/SkillItem.js"
 export class SkillRollChatBuilder extends GenericRollChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/skill-roll.hbs';
 
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const { context, mdata, roll, caller, options, digest } = this.data;
       const token = context;
       const item: SkillItem = caller;

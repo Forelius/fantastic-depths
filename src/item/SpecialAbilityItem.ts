@@ -18,7 +18,7 @@ export class SpecialAbilityItem extends FDItem {
       return summary;
    }
 
-   get hasTargets() {
+   get hasTargets(): boolean {
       const noTargets = ["save", "explore"];
       return noTargets.includes(this.system.category);
    }
@@ -58,8 +58,7 @@ export class SpecialAbilityItem extends FDItem {
    * Handle clickable rolls.
    * @param {any} event The originating click event
    */
-   async roll(dataset, dialogResp = null, event = null) {
-      let result = null;
+   async roll(dataset, dialogResp = null, event = null): Promise<void> {
       const { instigator, instigatorActor } = await this.getInstigator(dataset);
       const itemSystem = this.system;
       const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
@@ -137,13 +136,11 @@ export class SpecialAbilityItem extends FDItem {
             digest
          };
          const builder = new ChatFactory(CHAT_TYPE.SPECIAL_ABILITY, chatData, { showResult });
-         result = builder.createChatMessage();
+         await builder.createChatMessage();
       }
-
-      return result;
    }
 
-   async getInlineDescription() {
+   async getInlineDescription(): Promise<string> {
       const description = await super.getInlineDescription();
       const summary = this.targetSummary?.length > 0 ? `<p>${this.targetSummary}</p>` : "";
       return `${summary}${description}`;

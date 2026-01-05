@@ -1,5 +1,6 @@
 import { FDActorSheetV2 } from "./FDActorSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
+import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -79,7 +80,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          options.parts.push("items");
          options.parts.push("skills");
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
             options.parts.push("spells");
          }
@@ -121,7 +122,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       if (this.actor.testUserPermission(game.user, "OWNER")) {
          tabs.items = new SheetTab("items", group, "FADE.items");
          tabs.skills = new SheetTab("skills", group, "FADE.tabs.skills");
-         const classSystem = game.fade.registry.getSystem("classSystem");
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          if (classSystem.canCastSpells(this.actor)) {
             tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells");
          }

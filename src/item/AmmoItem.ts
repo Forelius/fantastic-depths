@@ -6,12 +6,12 @@ export class AmmoItem extends FDItem {
       return this.actor ? this.actor.currentActiveToken : null;
    }
 
-   get isContained() {
+   get isContained(): boolean {
       return this.system.containerId?.length > 0;
    }
 
    /** A getter for dynamically calculating the total weight of this item, including contained items. */
-   get totalEnc() {
+   get totalEnc(): number {
       let result = 0;
       let weight = this.system.weight ?? 0;
       if (this.system.equipped) {

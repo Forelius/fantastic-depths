@@ -12,7 +12,7 @@ export class GenericRollChatBuilder extends ChatBuilder {
       }
    }
 
-   async createChatMessage() {
+   async createChatMessage(): Promise<void> {
       const { context, mdata, roll, caller, options, digest } = this.data;
       let resultString = null;
       const rolls = roll ? [roll] : [];

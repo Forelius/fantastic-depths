@@ -27,4 +27,3 @@ export class ArmorItem extends GearItem {
       }
    }
 }
-

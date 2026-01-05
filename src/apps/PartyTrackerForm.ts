@@ -1,4 +1,5 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+import { ClassSystemBase } from "../sys/registry/ClassSystem.js";
 import { AwardXPDialog } from "./AwardXPDialog.js"
 
 export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -72,7 +73,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     */
    getTotalPartyLevel() {
       const trackedActors = this.trackedActorIds.map(id => game.actors.get(id)).filter(actor => actor);
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       const result = trackedActors.reduce((acc, actor) => {
          const highestLevel = classSystem.getHighestLevel(actor) ?? 1;
          return highestLevel + acc;

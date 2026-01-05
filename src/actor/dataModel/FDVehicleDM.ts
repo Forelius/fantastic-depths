@@ -1,5 +1,6 @@
 import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.js';
+import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 const { BooleanField, NumberField, SchemaField, StringField, ObjectField } = foundry.data.fields;
 
 export class FDVehicleDM extends FDActorBaseDM {
@@ -126,7 +127,7 @@ export class FDVehicleDM extends FDActorBaseDM {
     * Calculate average hitpoints based on hitdice.
     */
    _prepareHitPoints() {
-      const classSystem = game.fade.registry.getSystem("classSystem");
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       if (this.hp.max == null) {
          // Not valid for formulas with * modifier sign
          const { numberOfDice, numberOfSides, modifier } = classSystem.getParsedHD(this.hp.hd);
