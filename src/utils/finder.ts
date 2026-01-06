@@ -1,3 +1,5 @@
+import { ClassDefinitionItem } from "../item/ClassDefinitionItem";
+
 export class fadeFinder {
 
    static _actorPackName() {
@@ -391,7 +393,7 @@ export class fadeFinder {
     * @param {String|null} [key=null] The class key.
     * @returns {ClassDefinitionItem|undefined} A requested class item if found, otherwise undefined.
     */
-   static async getClass(name, key=null) {
+   static async getClass(name, key = null): Promise<ClassDefinitionItem> {
       const type = 'class';
       function doFind(source, name, key) {
          if (name) return source?.filter(item => item.name.toLowerCase() == name.toLowerCase())?.[0];

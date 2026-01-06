@@ -270,62 +270,75 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * Handle a dropped Item on the Actor Sheet.
     * @param {any} event     The initiating drop event
     * @param {Item} item           The dropped Item document
-    * @returns {Promise<void>}
+    * @returns {Promise<Item[] | boolean>}
     * @protected
     */
-   async _onDropItem(event, item) {
-      if (!this.actor.isOwner) return;
-      const droppedItem = await Item.implementation.fromDropData(item) as FDItem;
-      const targetId = event.target.closest(".item")?.dataset?.itemId;
-      const targetItem = this.actor.items.get(targetId);
-      const targetIsContainer = targetItem?.system.container;
-      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
-      if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
-         this._onSortItem(event, droppedItem);
-      } else {
-         // If the dropped item is a weapon mastery definition item...
-         if (droppedItem.type === "weaponMastery" && this.#hasSameActorMastery(droppedItem) === false) {
-            (droppedItem as MasteryDefinitionItem).createActorWeaponMastery(this.actor);
-         }
-         // If the dropped item is a class definition item...
-         else if (droppedItem.type === "class" && this.#hasSameActorClass(droppedItem) === false) {
-            if (this.actor.type === "character") {
-               classSystem.createActorClass(this.actor, droppedItem);
+   async _onDropItem(event, item): Promise<Item[] | boolean> {
+      let result: Item[] | boolean = false;
+
+      if (this.actor.isOwner) {
+         const droppedItem = await Item.implementation.fromDropData(item) as FDItem;
+         const targetId = event.target.closest(".item")?.dataset?.itemId;
+         const targetItem = this.actor.items.get(targetId);
+         const targetIsContainer = targetItem?.system.container;
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
+
+         if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
+            result = this._onSortItem(event, droppedItem);
+         } else {
+            // If the dropped item is a weapon mastery definition item...
+            if (droppedItem.type === "weaponMastery" && this.#hasSameActorMastery(droppedItem) === false) {
+               result = [(await (droppedItem as MasteryDefinitionItem).createActorWeaponMastery(this.actor) as Item)];
             }
-         }
-         // If the drop target is a container...
-         else if (droppedItem.type === "item" || droppedItem.type === "light" || droppedItem.type === "treasure") {
-            if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
-               const itemData = droppedItem.toObject();
-               if (droppedItem.actor == null) {
-                  const newItem = await this._onDropItemCreate(itemData);
-                  await newItem[0].update({ "system.containerId": targetId });
-               } else if (droppedItem.actor.id != this.actor.id) {
-                  const newItem = await this._onDropItemCreate(itemData);
-                  await newItem[0].update({ "system.containerId": targetId });
-               } else {
-                  await droppedItem.update({ "system.containerId": targetId });
+            // If the dropped item is a class definition item...
+            else if (droppedItem.type === "class" && this.#hasSameActorClass(droppedItem) === false) {
+               if (this.actor.type === "character") {
+                  result = [(await classSystem.createActorClass(this.actor, droppedItem) as Item)];
                }
             }
-            // The drop target is not a container
-            else {
-               // If the dropped item is owned by an actor already...
-               if (droppedItem.actor !== null) {
-                  // Remove the item from any container
-                  await droppedItem.update({ "system.containerId": null });
+            // If the drop target is a container...
+            else if (droppedItem.type === "item" || droppedItem.type === "light" || droppedItem.type === "treasure") {
+               if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
+                  const itemData = droppedItem.toObject();
+                  if (droppedItem.actor == null) {
+                     const newItem = await this._onDropItemCreate(itemData);
+                     await newItem[0].update({ "system.containerId": targetId });
+                     result = newItem;
+                  } else if (droppedItem.actor.id != this.actor.id) {
+                     const newItem = await this._onDropItemCreate(itemData);
+                     await newItem[0].update({ "system.containerId": targetId });
+                     result = newItem;
+                  } else {
+                     await droppedItem.update({ "system.containerId": targetId });
+                  }
                }
-               super._onDropItem(event, item);
+               // The drop target is not a container
+               else {
+                  // If the dropped item is owned by an actor already...
+                  if (droppedItem.actor !== null) {
+                     // Remove the item from any container
+                     await droppedItem.update({ "system.containerId": null });
+                  }
+                  result = await super._onDropItem(event, item);
+               }
+            } else if (droppedItem.type === "species") {
+               if (this.actor.type === "character") {
+                  await this.actor.update({ "system.details.species": droppedItem.name });
+               }
+            } else if (droppedItem.type === "effect") {
+            } else {
+               let canAdd = true;
+               if (droppedItem.type === "spell") {
+                  canAdd = classSystem.canCastSpells(this.actor);
+               }
+               if (canAdd === true) {
+                  result = await super._onDropItem(event, item);
+               }
             }
-         } else if (droppedItem.type === "species") {
-            if (this.actor.type === "character") {
-               await this.actor.update({ "system.details.species": droppedItem.name });
-            }
-         } else if (droppedItem.type === "effect") {
-         }
-         else {
-            super._onDropItem(event, item);
          }
       }
+
+      return result;
    }
 
    async _onContainerItemAdd(item, target) {
@@ -852,7 +865,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickRollGeneric(this: FDActorSheetV2, event): Promise<void>  {
+   static async #clickRollGeneric(this: FDActorSheetV2, event): Promise<void> {
       const dataset = event.target.dataset;
       const formula = dataset.formula;
       const chatType = CHAT_TYPE.GENERIC_ROLL;

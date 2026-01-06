@@ -6,11 +6,11 @@ import { fadeFinder } from "../../utils/finder.js";
 import { setBag } from "../../utils/globalHelpers.js";
 
 export abstract class ClassSystemBase {
-   get isMultiClassSystem() {
+   get isMultiClassSystem(): boolean  {
       return false;
    }
 
-   canCastSpells(actor) {
+   canCastSpells(actor: Actor): boolean {
       return actor.system.config.maxSpellLevel > 0;
    }
 
@@ -42,12 +42,12 @@ export abstract class ClassSystemBase {
     * this change. After resetting the spells, a notification message is displayed 
     * to inform the user, and a chat message is created to log the reset action.
     * @public
-    * @param {Object} actor - The actor object whose spells are to be reset.
+    * @param {Actor} actor - The actor object whose spells are to be reset.
     * @param {Event} event - The event object associated with the action (if applicable).
     * @returns {Promise<void>} - A promise that resolves when all spells have been reset and notifications are sent.
     */
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   async resetSpells(actor, event) {
+   async resetSpells(actor: Actor, event) {
       const spells = actor.items.filter((item) => item.type === "spell");
       spells.forEach(async (spell) => {
          spell.system.cast = 0;
@@ -724,6 +724,13 @@ export class SingleClassSystem extends ClassSystemBase {
             },
          };
 
+         if (classData.maxSpellLevel) {
+            update.config = {
+               firstSpellLevel: classData.firstSpellLevel,
+               maxSpellLevel: classData.maxSpellLevel
+            }
+         }
+
          // Level stuff
          if (levelData) {
             update.thbonus = levelData.thbonus;
@@ -782,7 +789,7 @@ export class MultiClassSystem extends ClassSystemBase {
       return actor.items.find(i => i.type === "actorClass" && i.system.isPrimary === true);
    }
 
-   canCastSpells(actor) {
+   canCastSpells(actor: Actor): boolean  {
       let result = false;
       if (actor.type === "monster") {
          result = actor.system.config.maxSpellLevel > 0;
@@ -792,7 +799,7 @@ export class MultiClassSystem extends ClassSystemBase {
       return result;
    }
 
-   get isMultiClassSystem() {
+   get isMultiClassSystem(): boolean  {
       return true;
    }
 

@@ -16,6 +16,7 @@ declare global {
    const game: any;
    const CONFIG: any;
    type Token = any;
+   type ActiveEffect = any;
 
    class DataModel {
       static defineSchema();

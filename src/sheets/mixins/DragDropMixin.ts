@@ -61,26 +61,27 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @param {any} event       The originating DragEvent
     * @protected
     */
-   _onDragStart(event) {
+   _onDragStart(event): void {
       const currentTarget = event.currentTarget;
-      if ("link" in event.target.dataset) return;
-      let dragData;
+      if (event.target.dataset.link === undefined) {
+         let dragData;
 
-      // Owned Items
-      if (currentTarget.dataset.itemId) {
-         const item = this.actor.items.get(currentTarget.dataset.itemId);
-         dragData = item.toDragData();
-      }
+         // Owned Items
+         if (currentTarget.dataset.itemId) {
+            const item = this.actor.items.get(currentTarget.dataset.itemId);
+            dragData = item.toDragData();
+         }
 
-      // Active Effect
-      if (currentTarget.dataset.effectId) {
-         const effect = this.actor.effects.get(currentTarget.dataset.effectId);
-         dragData = effect.toDragData();
-      }
+         // Active Effect
+         if (currentTarget.dataset.effectId) {
+            const effect = this.actor.effects.get(currentTarget.dataset.effectId);
+            dragData = effect.toDragData();
+         }
 
-      // Set data transfer
-      if (dragData) {
-         event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+         // Set data transfer
+         if (dragData) {
+            event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+         }
       }
    }
 
@@ -92,26 +93,34 @@ const DragDropMixin = (superclass) => class extends superclass {
 
    /**
     * Callback actions which occur when a dragged element is dropped on a target.
-    * @param {DragEvent} event       The originating DragEvent
+    * @param {DragEvent} event The originating DragEvent
     * @protected
     */
-   async _onDrop(event) {
+   async _onDrop(event): Promise<boolean | Item[] | Actor> {
       const data = TextEditor.getDragEventData(event);
       const actor = this.actor;
       const allowed = Hooks.call("dropActorSheetData", actor, this, data);
-      if (allowed === false) return;
+      let result: Actor | Item[] | boolean = false;
 
-      // Handle different data types
-      switch (data.type) {
-         case "ActiveEffect":
-            return this._onDropActiveEffect(event, data);
-         case "Actor":
-            return this._onDropActor();
-         case "Item":
-            return this._onDropItem(event, data);
-         case "Folder":
-            return this._onDropFolder(event, data);
+      if (allowed === true) {
+         // Handle different data types
+         switch (data.type) {
+            case "ActiveEffect":
+               result = await this._onDropActiveEffect(event, data);
+               break;
+            case "Actor":
+               result = await this._onDropActor();
+               break;
+            case "Item":
+               result = await this._onDropItem(event, data);
+               break;
+            case "Folder":
+               result = await this._onDropFolder(event, data);
+               break;
+         }
       }
+
+      return result;
    }
 
    /**
@@ -139,45 +148,53 @@ const DragDropMixin = (superclass) => class extends superclass {
     * Handle a dropped Active Effect on the Actor Sheet.
     * The default implementation creates an Active Effect embedded document on the Actor.
     * @param {DragEvent} event      The initiating drop event
-    * @param {any} effect  The dropped ActiveEffect document
-    * @returns {Promise<void>}
+    * @param {ActiveEffect} effect  The dropped ActiveEffect document
+    * @returns {Promise<ActiveEffect|void>}
     * @protected
     */
-   async _onDropActiveEffect(event, effect) {
-      if (!this.actor.isOwner) return;
-      if (!effect || (effect.target === this.actor)) return;
-      const droppedEffect = await ActiveEffect.implementation.fromDropData(effect);
-      const keepId = !this.actor.effects.has(droppedEffect.id);
-      await ActiveEffect.create(droppedEffect.toObject(), { parent: this.actor, keepId });
+   async _onDropActiveEffect(event, effect: ActiveEffect): Promise<ActiveEffect | void> {
+      if (this.actor.isOwner) {
+         if (effect && (effect.target !== this.actor)) {
+            const droppedEffect = await ActiveEffect.implementation.fromDropData(effect);
+            const keepId = !this.actor.effects.has(droppedEffect.id);
+            await ActiveEffect.create(droppedEffect.toObject(), { parent: this.actor, keepId });
+         }
+      }
    }
 
    /**
     * Handle a dropped Actor on the Actor Sheet.
     * @param {DragEvent} event     The initiating drop event
     * @param {Actor} actor         The dropped Actor document
-    * @returns {Promise<void>}
+    * @returns {Promise<Actor | boolean>}
     * @protected
     */
-   async _onDropActor() { }
+   async _onDropActor(): Promise<Actor | boolean> { return false; }
 
 
    /**
     * Handle a dropped Item on the Actor Sheet.
     * @param {DragEvent} event     The initiating drop event
     * @param {Item} item           The dropped Item document
-    * @returns {Promise<void>}
+    * @returns {Promise<Item[] | void>}
     * @protected
     */
-   async _onDropItem(event, item) {
+   async _onDropItem(event, item): Promise<Item[] | boolean> {
+      let result: Item[] | boolean = false;
       // If dropped item's actor is not owned by this user...
-      if (!this.actor?.isOwner) return;
-      // Get the item
-      const droppedItem = await Item.implementation.fromDropData(item);
-      // If this item's actor is the same as the dropped item's actor (owner), do sort action
-      if (this.actor.uuid === droppedItem?.parent?.uuid) return this._onSortItem(event, droppedItem);
-      // Create new instance of item and if same id item already exists, don't keep id for this item.
-      const keepId = !this.actor.items?.has(droppedItem.id);
-      await Item.create(droppedItem.toObject(), { parent: this.actor, keepId });
+      if (this.actor?.isOwner) {
+         // Get the item
+         const droppedItem = await Item.implementation.fromDropData(item);
+         // If this item's actor is the same as the dropped item's actor (owner), do sort action
+         if (this.actor.uuid === droppedItem?.parent?.uuid) {
+            result = await this._onSortItem(event, droppedItem);
+         } else {
+            // Create new instance of item and if same id item already exists, don't keep id for this item.
+            const keepId = !this.actor.items?.has(droppedItem.id);
+            result = [(await Item.create(droppedItem.toObject(), { parent: this.actor, keepId }) as Item)];
+         }
+      }
+      return result;
    }
 
    /**
@@ -188,15 +205,19 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @returns {Promise<Item[]>}
     * @protected
     */
-   async _onDropFolder(event, data) {
-      if (!this.actor.isOwner) return [];
-      const folder = await Folder.implementation.fromDropData(data);
-      if (folder.type !== "Item") return [];
-      const droppedItemData = await Promise.all(folder.contents.map(async item => {
-         if (!(document instanceof Item)) item = await fromUuid(item.uuid);
-         return item.toObject();
-      }));
-      return this._onDropItemCreate(droppedItemData);
+   async _onDropFolder(event, data): Promise<Item[]> {
+      let result: Item[] = [];
+      if (this.actor.isOwner) {
+         const folder = await Folder.implementation.fromDropData(data);
+         if (folder.type === "Item") {
+            const droppedItemData = await Promise.all(folder.contents.map(async item => {
+               if (!(document instanceof Item)) item = await fromUuid(item.uuid);
+               return item.toObject();
+            }));
+            result = await this._onDropItemCreate(droppedItemData);
+         }
+      }
+      return result;
    }
 
    /**
@@ -206,9 +227,9 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @returns {Promise<Item[]>}
     * @protected
     */
-   async _onDropItemCreate(itemData) {
+   async _onDropItemCreate(itemData): Promise<Item[]> {
       itemData = itemData instanceof Array ? itemData : [itemData];
-      return this.actor.createEmbeddedDocuments("Item", itemData);
+      return await this.actor.createEmbeddedDocuments("Item", itemData);
    }
 
    /**
