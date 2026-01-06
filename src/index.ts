@@ -96,7 +96,7 @@ export * from './sheets/item/SpecialAbilitySheet';
 export * from './sheets/item/SpellItemSheet';
 export * from './sheets/item/TreasureItemSheet';
 export * from './sheets/item/WeaponItemSheet';
-export * from './sheets/mixins/ConditionMixin';
+export * from './sheets/item/ConditionSheetService';
 export * from './sheets/mixins/DragDropMixin';
 export * from './sheets/mixins/SpecialAbilityMixin';
 export * from './sheets/mixins/SpellMixin';

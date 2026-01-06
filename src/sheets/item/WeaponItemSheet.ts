@@ -2,7 +2,7 @@ import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
-import { ConditionMixin } from "../mixins/ConditionMixin.js";
+import { ConditionSheetService } from "./ConditionSheetService.js";
 import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
 import { SpellMixin } from "../mixins/SpellMixin.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
@@ -10,7 +10,9 @@ import { DragDropMixin } from "../mixins/DragDropMixin.js";
 /**
  * Sheet class for WeaponItem.
  */
-export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(VsGroupModMixin(FDItemSheetV2))))) {
+export class WeaponItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(VsGroupModMixin(FDItemSheetV2)))) {
+   conditionService: ConditionSheetService;
+
    /**
    * Get the default options for the sheet.
    */
@@ -27,7 +29,8 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
       classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      }
+      },
+      ...ConditionSheetService.DEFAULT_OPTIONS
    }
 
    static PARTS = {
@@ -56,6 +59,11 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
 
    tabGroups = {
       primary: "description"
+   }
+
+   constructor(options = {}) {
+      super(options);
+      this.conditionService = new ConditionSheetService();
    }
 
    _configureRenderOptions(options) {
@@ -116,7 +124,7 @@ export class WeaponItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMix
       } else if (droppedItem?.type === "specialAbility") {
          await this.onDropSpecialAbilityItem(droppedItem);
       } else if (droppedItem?.type === "condition") {
-         await this.onDropConditionItem(droppedItem);
+         await this.conditionService.onDropConditionItem(this.item, droppedItem);
       }
    }
 

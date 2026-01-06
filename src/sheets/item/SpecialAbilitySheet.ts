@@ -1,5 +1,5 @@
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
-import { ConditionMixin } from "../mixins/ConditionMixin.js";
+import { ConditionSheetService } from "./ConditionSheetService.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { EffectManager } from "../../sys/EffectManager.js";
@@ -8,10 +8,10 @@ import { FADE } from "../../sys/config.js"
 /**
  * Sheet class for SpecialAbilityItem.
  */
-export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemSheetV2)) {
-   /**
-   * Get the default options for the sheet.
-   */
+export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
+   conditionService: ConditionSheetService;
+
+   /** Get the default options for the sheet. */
    static DEFAULT_OPTIONS = {
       position: {
          width: 580,
@@ -25,7 +25,8 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
       classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      }
+      },
+      ...ConditionSheetService.DEFAULT_OPTIONS
    }
 
    static PARTS = {
@@ -48,6 +49,11 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
 
    tabGroups = {
       primary: "description"
+   }
+
+   constructor(options = {}) {
+      super(options);
+      this.conditionService = new ConditionSheetService();
    }
 
    _configureRenderOptions(options) {
@@ -133,7 +139,7 @@ export class SpecialAbilitySheet extends ConditionMixin(DragDropMixin(FDItemShee
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === "condition") {
          // Retrieve the array
-         await this.onDropConditionItem(droppedItem);
+         await this.conditionService.onDropConditionItem(this.item, droppedItem);
       }
    }
 

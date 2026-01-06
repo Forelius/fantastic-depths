@@ -5,6 +5,9 @@
  */
 const SpecialAbilityMixin = (superclass) => {
    class SpecialAbilityMixinClass extends superclass {
+      constructor(options = {}) {
+         super(options);
+      }
 
       /**
        * Handle deleting a special ability

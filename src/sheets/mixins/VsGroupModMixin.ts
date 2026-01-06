@@ -6,6 +6,10 @@ import { CodeMigrate } from "../../sys/migration.js";
  * @returns
  */
 const VsGroupModMixin = (superclass) => class extends superclass {
+   constructor(options = {}) {
+      super(options);
+   }
+
    /**
     * Default options for the mixin
     */

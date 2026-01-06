@@ -76,5 +76,5 @@ declare global {
       getActiveTokens(): any[];
       allApplicableEffects();
       modifyTokenAttribute(attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<Actor>;
-   }
+   }   
 }

@@ -1,15 +1,15 @@
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
-import { ConditionMixin } from "../mixins/ConditionMixin.js";
+import { ConditionSheetService } from "./ConditionSheetService.js";
 import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
 import { SpellMixin } from "../mixins/SpellMixin.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 
-export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)))) {
-   /**
-   * Get the default options for the sheet.
-   */
+export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2))) {
+   conditionService: ConditionSheetService;
+
+   /** Get the default options for the sheet. */
    static DEFAULT_OPTIONS = {
       position: {
          width: 600,
@@ -23,7 +23,8 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
       classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      }
+      },
+      ...ConditionSheetService.DEFAULT_OPTIONS
    }
 
    static PARTS = {
@@ -69,6 +70,11 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
+   }
+
+   constructor(options = {}) {
+      super(options);
+      this.conditionService = new ConditionSheetService();
    }
 
    /**
@@ -117,7 +123,7 @@ export class GearItemSheet extends ConditionMixin(SpellMixin(SpecialAbilityMixin
       } else if (droppedItem?.type === "specialAbility") {
          await this.onDropSpecialAbilityItem(droppedItem);
       } else if (droppedItem?.type === "condition") {
-         await this.onDropConditionItem(droppedItem);
+         await this.conditionService.onDropConditionItem(this.item, droppedItem);
       }
    }
 

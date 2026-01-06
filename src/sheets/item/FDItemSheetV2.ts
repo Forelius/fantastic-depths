@@ -23,6 +23,10 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
       }
    };
 
+   constructor(options = {}) {
+      super(options);
+   }
+
    /**
     * Prepare data to be used in the Handlebars template.
     */

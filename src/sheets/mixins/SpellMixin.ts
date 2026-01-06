@@ -5,6 +5,10 @@
  */
 const SpellMixin = (superclass) => {
    class SpellMixinClass extends superclass {
+      constructor(options = {}) {
+         super(options);
+      }
+
       /**
        * Handle deleting a spell
        * @param {any} event The originating click event
