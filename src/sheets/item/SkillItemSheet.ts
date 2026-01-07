@@ -114,4 +114,3 @@ export class SkillItemSheet extends FDItemSheetV2 {
       return tabs;
    }
 }
-

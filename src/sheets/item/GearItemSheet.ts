@@ -1,31 +1,40 @@
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
-import { ConditionSheetService } from "./ConditionSheetService.js";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
-import { SpellMixin } from "../mixins/SpellMixin.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { ConditionSheetService } from "./ConditionSheetService.js";
+import { SpellSheetService } from "./SpellSheetService.js";
+import { SpecialAbilitySheetService } from "./SpecialAbilitySheetService.js";
 
-export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(FDItemSheetV2))) {
+export class GearItemSheet extends DragDropMixin(FDItemSheetV2) {
+   specialAbilityService: SpecialAbilitySheetService;
    conditionService: ConditionSheetService;
+   spellService: SpellSheetService;
 
-   /** Get the default options for the sheet. */
-   static DEFAULT_OPTIONS = {
-      position: {
-         width: 600,
-         height: 400,
-      },
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
+      position: { width: 600, height: 400 },
       window: {
          resizable: true,
          minimizable: false,
          contentClasses: ["scroll-body"]
       },
       classes: ["fantastic-depths", "sheet", "item"],
-      form: {
-         submitOnChange: true
-      },
-      ...ConditionSheetService.DEFAULT_OPTIONS
-   }
+      form: { submitOnChange: true }
+   };
+
+   /** All services */
+   private static readonly SERVICES = [
+      ConditionSheetService.DEFAULT_OPTIONS,
+      SpecialAbilitySheetService.DEFAULT_OPTIONS,
+      SpellSheetService.DEFAULT_OPTIONS
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = GearItemSheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...GearItemSheet.BASE } // start with a shallow copy of the base
+   );
 
    static PARTS = {
       header: {
@@ -55,6 +64,12 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
    tabGroups = {
       primary: "description"
    }
+   constructor(options = {}) {
+      super(options);
+      this.conditionService = new ConditionSheetService();
+      this.specialAbilityService = new SpecialAbilitySheetService();
+      this.spellService = new SpellSheetService();
+   }
 
    /** @override */
    _configureRenderOptions(options) {
@@ -70,11 +85,6 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
-   }
-
-   constructor(options = {}) {
-      super(options);
-      this.conditionService = new ConditionSheetService();
    }
 
    /**
@@ -119,9 +129,9 @@ export class GearItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...
       if (droppedItem?.type === "spell") {
-         await this.onDropSpellItem(droppedItem);
+         await this.spellService.onDropSpellItem(this.item, droppedItem);
       } else if (droppedItem?.type === "specialAbility") {
-         await this.onDropSpecialAbilityItem(droppedItem);
+         await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
       } else if (droppedItem?.type === "condition") {
          await this.conditionService.onDropConditionItem(this.item, droppedItem);
       }

@@ -11,8 +11,8 @@ import { FADE } from "../../sys/config.js"
 export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
    conditionService: ConditionSheetService;
 
-   /** Get the default options for the sheet. */
-   static DEFAULT_OPTIONS = {
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
       position: {
          width: 580,
          height: 420,
@@ -25,9 +25,19 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      },
-      ...ConditionSheetService.DEFAULT_OPTIONS
-   }
+      }
+   };
+
+   /** All services */
+   private static readonly SERVICES = [
+      ConditionSheetService.DEFAULT_OPTIONS,
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = SpecialAbilitySheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...SpecialAbilitySheet.BASE } // start with a shallow copy of the base
+   );
 
    static PARTS = {
       header: {

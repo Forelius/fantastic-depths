@@ -4,17 +4,17 @@ import { fadeFinder } from "../..//utils/finder.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
+import { SpecialAbilitySheetService } from "../../index.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {FDItemSheetV2}
  */
-export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
-   /**
-   * Get the default options for the sheet.
-   */
-   static DEFAULT_OPTIONS = {
+export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
+   specialAbilityService: SpecialAbilitySheetService;
+
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
       position: {
          width: 700,
          height: 500,
@@ -32,7 +32,18 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
          createItem: ClassDefinitionItemSheet.#onCreateChild,
          deleteItem: ClassDefinitionItemSheet.#onDeleteChild,
       }
-   }
+   };
+
+   /** All services */
+   private static readonly SERVICES = [
+      SpecialAbilitySheetService.DEFAULT_OPTIONS,
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = ClassDefinitionItemSheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...ClassDefinitionItemSheet.BASE } // start with a shallow copy of the base
+   );
 
    static PARTS = {
       header: {
@@ -66,6 +77,11 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
 
    tabGroups = {
       primary: "description"
+   }
+
+   constructor(options = {}) {
+      super(options);
+      this.specialAbilityService = new SpecialAbilitySheetService();
    }
 
    async createActorClass(owner) {
@@ -156,7 +172,7 @@ export class ClassDefinitionItemSheet extends SpecialAbilityMixin(DragDropMixin(
       if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
       } else if (droppedItem?.type === "specialAbility") {
-         await this.onDropSpecialAbilityItem(droppedItem);
+         await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
       }
    }
 

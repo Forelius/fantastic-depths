@@ -4,17 +4,17 @@ import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
+import { SpecialAbilitySheetService} from "./SpecialAbilitySheetService.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(FDItemSheetV2)) {
-   /**
-   * Get the default options for the sheet.
-   */
-   static DEFAULT_OPTIONS = {
+export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
+   specialAbilityService: SpecialAbilitySheetService;
+
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
       position: {
          width: 650,
          height: 500,
@@ -34,7 +34,18 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
          deleteItem: AncestryDefinitionSheet.#onDeleteChild,
          clickRoll: AncestryDefinitionSheet.#clickRoll,
       }
-   }
+   };
+
+   /** All services */
+   private static readonly SERVICES = [
+      SpecialAbilitySheetService.DEFAULT_OPTIONS,
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = AncestryDefinitionSheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...AncestryDefinitionSheet.BASE } // start with a shallow copy of the base
+   );
 
    static PARTS = {
       header: {
@@ -63,6 +74,11 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
    /** @override */
    tabGroups = {
       primary: "description"
+   }
+
+   constructor(options = {}) {
+      super(options);
+      this.specialAbilityService = new SpecialAbilitySheetService();
    }
 
    /** @override */
@@ -147,7 +163,7 @@ export class AncestryDefinitionSheet extends SpecialAbilityMixin(DragDropMixin(F
       if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
       } else if (droppedItem?.type === "specialAbility") {
-         await this.onDropSpecialAbilityItem(droppedItem);
+         await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
       }
    }
 

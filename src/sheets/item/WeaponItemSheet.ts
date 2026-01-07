@@ -3,20 +3,20 @@ import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
 import { ConditionSheetService } from "./ConditionSheetService.js";
-import { SpecialAbilityMixin } from "../mixins/SpecialAbilityMixin.js";
-import { SpellMixin } from "../mixins/SpellMixin.js";
+import { SpecialAbilitySheetService } from "./SpecialAbilitySheetService.js";
+import { SpellSheetService } from "./SpellSheetService.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 
 /**
  * Sheet class for WeaponItem.
  */
-export class WeaponItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixin(VsGroupModMixin(FDItemSheetV2)))) {
+export class WeaponItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2)) {
    conditionService: ConditionSheetService;
+   specialAbilityService: SpecialAbilitySheetService;
+   spellService: SpellSheetService;
 
-   /**
-   * Get the default options for the sheet.
-   */
-   static DEFAULT_OPTIONS = {
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
       position: {
          width: 600,
          height: 400,
@@ -29,9 +29,21 @@ export class WeaponItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixi
       classes: ["fantastic-depths", "sheet", "item"],
       form: {
          submitOnChange: true
-      },
-      ...ConditionSheetService.DEFAULT_OPTIONS
+      }
    }
+
+   /** All services */
+   private static readonly SERVICES = [
+      ConditionSheetService.DEFAULT_OPTIONS,
+      SpecialAbilitySheetService.DEFAULT_OPTIONS,
+      SpellSheetService.DEFAULT_OPTIONS
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = WeaponItemSheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...WeaponItemSheet.BASE } // start with a shallow copy of the base
+   );
 
    static PARTS = {
       header: {
@@ -64,6 +76,8 @@ export class WeaponItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixi
    constructor(options = {}) {
       super(options);
       this.conditionService = new ConditionSheetService();
+      this.specialAbilityService = new SpecialAbilitySheetService();
+      this.spellService = new SpellSheetService();
    }
 
    _configureRenderOptions(options) {
@@ -120,9 +134,9 @@ export class WeaponItemSheet extends SpellMixin(SpecialAbilityMixin(DragDropMixi
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...
       if (droppedItem?.type === "spell") {
-         await this.onDropSpellItem(droppedItem);
+         await this.spellService.onDropSpellItem(this.item, droppedItem);
       } else if (droppedItem?.type === "specialAbility") {
-         await this.onDropSpecialAbilityItem(droppedItem);
+         await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
       } else if (droppedItem?.type === "condition") {
          await this.conditionService.onDropConditionItem(this.item, droppedItem);
       }
