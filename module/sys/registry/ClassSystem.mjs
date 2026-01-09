@@ -572,7 +572,15 @@ export class SingleClassSystem extends ClassSystemBase {
             || updateData.system?.details?.level !== undefined
             || updateData.system?.abilities !== undefined)) {
          await this.#prepareClassInfo(actor);
-         await this.#updateLevelClass(actor, skipItems);
+         // This is kludgey. Filter out updates caused by setting an ability score's min property.
+         const isOnlyMin = updateData.system?.abilities ? Object.values(updateData.system.abilities).every(entry => {
+            const keys = Object.keys(entry); return keys.length === 1 && keys[0] === "min";
+         }) : false;
+
+         // This method might set an ability score's min property and it should not retrigger this.
+         if (isOnlyMin === false) {
+            await this.#updateLevelClass(actor, skipItems);
+         }
       } else if (actor.system.details?.class === "") {
          let update = {
             details: {
