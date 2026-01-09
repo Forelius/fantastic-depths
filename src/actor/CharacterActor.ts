@@ -158,9 +158,11 @@ export class CharacterActor extends FDCombatActor {
                await this.setupLanguages(languages);
             }
 
+            // TODO: This isn't doing anything right now. Uncomment and fix.
+            /*
             if (hasMinAbilityScore) {
-               await this.setupMinAbilityScores(ancestryDefItem.system.abilities);
-            }
+               const abiltyUpdates = this.setupMinAbilityScores(ancestryDefItem.system.abilities);
+            }*/
          }
       }
    }

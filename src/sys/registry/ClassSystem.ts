@@ -6,7 +6,7 @@ import { fadeFinder } from "../../utils/finder.js";
 import { setBag } from "../../utils/globalHelpers.js";
 
 export abstract class ClassSystemBase {
-   get isMultiClassSystem(): boolean  {
+   get isMultiClassSystem(): boolean {
       return false;
    }
 
@@ -591,7 +591,16 @@ export class SingleClassSystem extends ClassSystemBase {
             || updateData.system?.details?.level !== undefined
             || updateData.system?.abilities !== undefined)) {
          await this.#prepareClassInfo(actor);
-         await this.#updateLevelClass(actor, skipItems);
+
+         // This is kludgey. Filter out updates caused by setting an ability score's min property.
+         const isOnlyMin = updateData.system?.abilities ? Object.values(updateData.system.abilities).every(entry => {
+            const keys = Object.keys(entry); return keys.length === 1 && keys[0] === "min";
+         }) : false;
+
+         // This method might set an ability score's min property and it should not retrigger this.
+         if (isOnlyMin === false) {
+            await this.#updateLevelClass(actor, skipItems);
+         }
       } else if (actor.system.details?.class === "") {
          const update = {
             details: {
@@ -756,13 +765,14 @@ export class SingleClassSystem extends ClassSystemBase {
    }
 
    /**
-    * Updates the class and level data for the given actor, including saving throws and special abilities.
+    * Updates aving throws and special abilities based on class and class  level.
     * This method is called by the update Character event handler when class or level data changes.
     * @param {any} actor - The actor whose class and level data is to be updated.
     * @param {boolean} [skipItems=false] - Flag to skip updating items associated with the class.
     */
    async #updateLevelClass(actor, skipItems = false) {
       const className = actor.system.details.class?.toLowerCase();
+      // Get the class definition item
       const classItem = await fadeFinder.getClass(className);
 
       if (classItem) {
@@ -789,7 +799,7 @@ export class MultiClassSystem extends ClassSystemBase {
       return actor.items.find(i => i.type === "actorClass" && i.system.isPrimary === true);
    }
 
-   canCastSpells(actor: Actor): boolean  {
+   canCastSpells(actor: Actor): boolean {
       let result = false;
       if (actor.type === "monster") {
          result = actor.system.config.maxSpellLevel > 0;
@@ -799,7 +809,7 @@ export class MultiClassSystem extends ClassSystemBase {
       return result;
    }
 
-   get isMultiClassSystem(): boolean  {
+   get isMultiClassSystem(): boolean {
       return true;
    }
 
