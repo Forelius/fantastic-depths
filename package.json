@@ -5,7 +5,7 @@
    "type": "module",
    "scripts": {
       "clean": "rimraf ./module",
-      "build": "npm run clean && rollup -c",
+      "build": "npm run clean && rollup -c && npm run buildcss",
       "buildd": "npx tsc",
       "buildcss": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --no-source-map",
       "watchcss": "sass src/scss/fantastic-depths.scss css/fantastic-depths.css --style=expanded --source-map --watch",
