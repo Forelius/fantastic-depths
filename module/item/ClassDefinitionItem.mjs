@@ -76,67 +76,29 @@ export class ClassDefinitionItem extends FDItem {
    }
 
    /**
-    * 
-    * @param {any} abilities The character's ability scores.
-    * @returns {number} The total xp bonus for this class.
-    */
+     * 
+     * @param {any} abilities The character's ability scores.
+     * @returns {number} The total xp bonus for this class.
+     */
    getXPBonus(abilities) {
-      let i = 0;
-      const primeReqs = [...this.system.primeReqs]; // work with copy
+      let result = 0;
 
-      // primeReqs are already sorted by percentage in ascending order.
-      const tiers = primeReqs.reduce((acc, curr) => {
-         if (!acc[curr.percentage]) {
-            acc[curr.percentage] = {};
-            i = 0;
+      try {
+         // primeReqs are already sorted by percentage in ascending order.
+         const primeReqs = [...this.system.primeReqs]; // work with copy
+         const tiers = this.#createPrimeReqTiers(primeReqs);
+         const qualified = this.#createQualifiedPrimeReqs(tiers, abilities);
+         if (qualified !== null) {
+            // Only keep highest of same ability score matches.
+            result = Object.values(Object.values(qualified).at(-1))[0]
+            // ...or instead add them all together
+            //result = Object.entries(qualified).reduce((acc, curr) => acc + Object.entries(curr[1])[0][1], 0);
          }
-         if (curr.concatLogic?.length > 0 && curr.concatLogic !== "none") {
-            if (!acc[curr.percentage]) acc[curr.percentage][i] = [curr];
-            else acc[curr.percentage][i].push(curr);
-         } else {
-            // This type wasn't previously stored
-            i++;
-            acc[curr.percentage][i] = [curr];
-         }
-         return acc;
-      }, {});
-
-      // Get qualifying primreqs
-      // @ts-ignore
-      const tierEntries = Object.entries(tiers).sort((a, b) => a[0] - b[0]);
-      let qualified = {};
-      for (const [tierKey, tierVal] of tierEntries) {
-         const currentPerc = parseInt(tierKey);
-         for (const [groupKey, groupVal] of Object.entries(tierVal)) {
-            let isQualified = false;
-            const reqId = `${groupVal.reduce((acc, curr) => acc = `${acc}${curr.concatLogic === "none" ? "" : `-${curr.concatLogic}-`}${curr.ability}`, "")}`;
-            for (const requirement of groupVal) {
-               if (requirement.concatLogic === "none" || requirement.concatLogic === "or") {
-                  isQualified = abilities[requirement.ability].value >= requirement.minScore;
-               } else {
-                  isQualified = isQualified && abilities[requirement.ability].value >= requirement.minScore;
-               }
-            }
-            if (isQualified) {
-               if (qualified[reqId]) {
-                  if (qualified[reqId][tierKey]) {
-                     qualified[reqId][tierKey] += currentPerc;
-                  } else {
-                     qualified[reqId] = {};
-                     qualified[reqId][tierKey] = currentPerc;
-                  }
-               }
-               else {
-                  qualified[reqId] = {};
-                  qualified[reqId][tierKey] = currentPerc;
-               }
-            }
-         }
+      } catch (err) {
+         console.error(`Error calculating XP bonus.`, err);
       }
 
-      // Only keep highest of same ability score matches.
-      // My brain hurts. 
-      return Object.entries(qualified).reduce((acc, curr) =>  acc + Object.entries(curr[1])[0][1], 0);
+      return result;
    }
 
    /**
@@ -148,12 +110,84 @@ export class ClassDefinitionItem extends FDItem {
       super._onUpdate(updateData, options, userId);
       if (updateData.system?.maxLevel !== undefined || updateData.system?.firstLevel !== undefined) {
          // This is an async method
-         await this.#updateLevels(updateData);
-         await this.#updateSpellLevels(updateData);
+         await this.#updateLevels();
+         await this.#updateSpellLevels();
       }
       if (updateData.system?.maxSpellLevel !== undefined || updateData.system?.firstSpellLevel !== undefined) {
-         await this.#updateSpellLevels(updateData);
+         await this.#updateSpellLevels();
       }
+   }
+
+   /**
+    * Create the tiers structure from the primeReqs. 
+    * @param primeReqs
+    * @returns
+    */
+   #createPrimeReqTiers(primeReqs) {
+      let i = 0;
+      return primeReqs.reduce((acc, curr) => {
+         if (!acc[curr.percentage]) {
+            acc[curr.percentage] = {};
+            i = 0;
+         }
+         if (curr.concatLogic?.length > 0 && curr.concatLogic !== "none") {
+            if (!acc[curr.percentage]) {
+               acc[curr.percentage][i] = [curr];
+            } else {
+               acc[curr.percentage][i].push(curr);
+            }
+         } else {
+            // This type wasn't previously stored
+            i++;
+            acc[curr.percentage][i] = [curr];
+         }
+         return acc;
+      }, {});
+   }
+
+   /**
+    * 
+    * @param tiers
+    * @param abilities
+    * @returns
+    */
+   #createQualifiedPrimeReqs(tiers, abilities) {
+      // Sort by percentage
+      const tierEntries = Object.entries(tiers).sort((a, b) => Number(a[0]) - Number(b[0]));
+      let qualified = null;
+
+      // Get qualifying primreqs
+      for (const [tierKey, tierVal] of tierEntries) {
+         const currentPerc = parseInt(tierKey);
+         for (const [, groupVal] of Object.entries(tierVal)) {
+            let isQualified = false;
+            const reqId = `${groupVal.reduce((acc, curr) => acc = `${acc}${curr.concatLogic === "none" ? "" : `-${curr.concatLogic}-`}${curr.ability}`, "")}`;
+            for (const requirement of groupVal) {
+               if (requirement.concatLogic === "none" || requirement.concatLogic === "or") {
+                  isQualified = isQualified || abilities[requirement.ability].value >= requirement.minScore;
+               } else {
+                  isQualified = isQualified && abilities[requirement.ability].value >= requirement.minScore;
+               }
+            }
+            if (isQualified) {
+               if (qualified?.[reqId]) {
+                  if (qualified[reqId][tierKey]) {
+                     qualified[reqId][tierKey] += currentPerc;
+                  } else {
+                     qualified[reqId] = {};
+                     qualified[reqId][tierKey] = currentPerc;
+                  }
+               }
+               else {
+                  qualified = qualified === null ? {} : qualified;
+                  qualified[reqId] = {};
+                  qualified[reqId][tierKey] = currentPerc;
+               }
+            }
+         }
+      }
+
+      return qualified;
    }
 
    async #updateLevels(updateData) {
