@@ -94,6 +94,7 @@ export class AttackDialog {
             height: "auto"
          },
          rejectClose: false,
+         modal: true,
          content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {

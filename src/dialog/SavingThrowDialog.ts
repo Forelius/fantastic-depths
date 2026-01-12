@@ -11,6 +11,7 @@ export class SavingThrowDialog {
       dialogResp = await DialogV2.wait({
          window: { title },
          rejectClose: false,
+         modal: true,
          content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {
@@ -36,4 +37,3 @@ export class SavingThrowDialog {
       return dialogResp;
    }
 }
-

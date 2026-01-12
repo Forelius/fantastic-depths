@@ -17,6 +17,7 @@ export class fadeDialog {
 
       dialogResp = await DialogV2.wait({
          window: { title },
+         modal: true,
          rejectClose: false,
          content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
@@ -60,6 +61,7 @@ export class fadeDialog {
             result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
+               modal: true,
                content: await CodeMigrate.RenderTemplate(template, dialogData),
                buttons: [
                   {
@@ -119,6 +121,7 @@ export class fadeDialog {
             const result = await DialogV2.wait({
                window: { title: dialogData.label },
                rejectClose: false,
+               modal: true,
                position: { width: 460 },
                content: await CodeMigrate.RenderTemplate(template, dialogData),
                buttons: [
@@ -178,6 +181,7 @@ export class fadeDialog {
 
       dialogResp.resp = await DialogV2.wait({
          window: { title },
+         modal: true,
          rejectClose: false,
          content: `<div style="margin:0 0 8px;">${content}</div>`,
          buttons: [
@@ -253,6 +257,7 @@ export class fadeDialog {
          rejectClose: false,
          position: { width: 400 },
          content: content,
+         modal: true,
          buttons: [
             {
                action: 'roll',

@@ -21,6 +21,7 @@ export class LightMgrDialog {
       const result = await DialogV2.wait({
          window: { title: game.i18n.localize("FADE.dialog.lightManager.title") },
          rejectClose: false,
+         modal: true,
          content: await CodeMigrate.RenderTemplate(template, dialogData),
          buttons: [
             {

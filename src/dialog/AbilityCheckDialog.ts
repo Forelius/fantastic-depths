@@ -26,6 +26,7 @@ export class AbilityCheckDialog {
             width: 300,
             height: "auto"
          },
+         modal: true,
          rejectClose: false,
          content: templateContent,
          buttons: [

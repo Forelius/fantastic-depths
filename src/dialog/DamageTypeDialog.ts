@@ -20,6 +20,7 @@ export class DamageTypeDialog {
          window: { title },
          rejectClose: false,
          content,
+         modal: true,
          buttons: [{
             action: "apply",
             default: true,
