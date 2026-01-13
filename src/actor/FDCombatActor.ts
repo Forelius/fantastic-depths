@@ -94,8 +94,8 @@ export class FDCombatActor extends FDActorBase {
    async rollSavingThrow(type, event) {
       if (this.testUserPermission(game.user, "OWNER") === false) return;
 
-      const savingThrow = this.#getSavingThrow(type); // Saving throw item
-      if (!savingThrow) return;
+      const saveItem = this.#getSavingThrow(type); // Saving throw item
+      if (!saveItem) return;
 
       const digest = [];
       const ctrlKey = event?.ctrlKey ?? false;
@@ -103,10 +103,10 @@ export class FDCombatActor extends FDActorBase {
       let dialogResp = null;
       const dataset = {
          dialog: "save",
-         pass: savingThrow.system.operator,
-         target: savingThrow.system.target,
-         rollmode: savingThrow.system.rollMode,
-         label: savingThrow.name,
+         pass: saveItem.system.operator,
+         target: saveItem.system.target,
+         rollmode: saveItem.system.rollMode,
+         label: saveItem.name,
          type: null
       }
       if (this.type === "character") {
@@ -132,7 +132,7 @@ export class FDCombatActor extends FDActorBase {
 
          // Ability score mod
          const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
-         const abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action);
+         const abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action, saveItem);
          if (abilityScoreMod !== 0) {
             digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
          }
@@ -144,18 +144,18 @@ export class FDCombatActor extends FDActorBase {
             digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
          }
          rollMod += manualMod + abilityScoreMod + effectMod;
-         rollData.formula = rollMod !== 0 ? `${savingThrow.system.rollFormula}+@mod` : `${savingThrow.system.rollFormula}`;
+         rollData.formula = rollMod !== 0 ? `${saveItem.system.rollFormula}+@mod` : `${saveItem.system.rollFormula}`;
          const rollContext = { ...rollData, mod: rollMod };
          const rolled = await new Roll(rollData.formula, rollContext).evaluate();
          const chatData = {
             context: this,
-            caller: savingThrow,
+            caller: saveItem,
             mdata: dataset,
             roll: rolled,
             digest
          };
 
-         const showResult = savingThrow.getShowResult(event);
+         const showResult = saveItem.getShowResult(event);
          const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
          return await builder.createChatMessage();
       }

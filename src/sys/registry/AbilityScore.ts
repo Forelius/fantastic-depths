@@ -167,11 +167,24 @@ export class AbilityScoreRetro extends AbilityScoreBase {
       return actor.system.abilities.dex.mod;
    }
 
-   getSavingThrowMod(actor, action) {
+   getSavingThrowMod(actor, action, item) {
       let result = 0;
       if (action === "magic") {
          result = actor.system.abilities?.wis?.mod ?? 0;
       }
+
+      // Factor in the special ability item's modifier, if it has one.
+      if (item?.system.abilityMod?.length > 0) {
+         let abilityMod = actor.system.abilities[item.system.abilityMod].mod;
+         if (abilityMod != 0) {
+            // If this is a roll under, then the ability score modifier should subtract from the roll.
+            if (item.system.operator == "lt" || item.system.operator == "lte" || item.system.operator == "<" || item.system.operator == "<=") {
+               abilityMod = -abilityMod;
+            }
+         }
+         result += abilityMod;
+      }
+
       return result;
    }
 
