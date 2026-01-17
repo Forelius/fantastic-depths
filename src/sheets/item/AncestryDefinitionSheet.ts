@@ -3,7 +3,8 @@ import { DragDropMixin } from "../mixins/DragDropMixin.js";
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
-import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
+import { ChatFactory } from "../../chat/ChatFactory.js";
+import { CHAT_TYPE } from "../../chat/ChatTypeEnum.js"
 import { SpecialAbilitySheetService} from "./SpecialAbilitySheetService.js";
 
 /**

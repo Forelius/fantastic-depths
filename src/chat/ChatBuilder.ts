@@ -1,5 +1,5 @@
 import { fadeFinder } from "../utils/finder.js";
-import { DamageRollResult } from "../item/FDItem.js"
+import { DamageRollResult } from "../item/type/DamageRollResult.js"
 
 /**
 * Enumeration for chat result codes.

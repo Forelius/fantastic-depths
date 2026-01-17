@@ -1,8 +1,10 @@
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
+import { ChatFactory } from "../chat/ChatFactory.js";
+import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
 import { AttackRollService, AttackRollResult } from './AttackRollService.js';
 import { GearItem } from "./GearItem.js";
 import { WeaponMasteryInterface } from "../sys/registry/WeaponMastery.js";
-import { DamageRollResult, createDamageRollResult } from "./FDItem.js"
+import { createDamageRollResult } from "./FDItem.js"
+import { DamageRollResult } from "./type/DamageRollResult.js"
 
 export class WeaponItem extends GearItem {
    attackRollService: AttackRollService;

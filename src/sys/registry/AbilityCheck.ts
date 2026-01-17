@@ -1,4 +1,5 @@
-import { ChatFactory, CHAT_TYPE } from "../../chat/ChatFactory.js";
+import { ChatFactory } from "../../chat/ChatFactory.js";
+import { CHAT_TYPE } from "../../chat/ChatTypeEnum.js"
 import { ChatBuilder } from "../../chat/ChatBuilder.js";
 import { DialogFactory } from "../../dialog/DialogFactory.js";
 import { UserTables } from "./UserTables.js";

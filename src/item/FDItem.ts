@@ -1,22 +1,8 @@
-﻿import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
-
-export type ChatAction = {
-   type: string;
-   owneruuid: string;
-   itemuuid: string;
-   actionuuid: string;
-};
-
-export type DamageRollResult = {
-   damageFormula: string;
-   damageType: string;
-   digest: string[];
-   hasDamage: boolean;
-   attackType: string;
-   targetWeaponType: string;
-   targetuuid: string;
-   ammouuid: string;
-};
+﻿import { ChatFactory } from "../chat/ChatFactory.js";
+import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
+import { DamageRollResult } from "./type/DamageRollResult.js"
+import { ChatAction } from "./type/ChatAction.js"
+import { IFDItem } from "./interface/IFDItem.js"
 
 /**
  * Factory that returns a fully‑typed DamageRollResult.
@@ -41,7 +27,7 @@ export function createDamageRollResult(overrides = {}): DamageRollResult {
  * Extend the basic Item with simple modifications.
  * @extends {Item}
  */
-export abstract class FDItem extends Item {
+export abstract class FDItem extends Item implements IFDItem {
    constructor(data, context) {
       super(data, context);
    }

@@ -1,7 +1,8 @@
 import { FDActorBase } from "./FDActorBase.js";
 import { fadeFinder } from '../utils/finder.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
+import { ChatFactory } from '../chat/ChatFactory.js';
+import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
 import { TagManager } from '../sys/TagManager.js';
 import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js";
 

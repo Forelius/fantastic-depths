@@ -1,6 +1,6 @@
 import { FDActorBase } from "../actor/FDActorBase.js";
 import { LightManager } from "../sys/LightManager.js";
-import { ChatAction } from "./FDItem.js";
+import { ChatAction } from "./type/ChatAction.js";
 import { GearItem } from "./GearItem.js";
 
 export class LightItem extends GearItem {

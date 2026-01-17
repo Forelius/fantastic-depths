@@ -1,6 +1,8 @@
-import { FDItem, DamageRollResult, createDamageRollResult } from "./FDItem.js";
+import { FDItem, createDamageRollResult } from "./FDItem.js";
+import { DamageRollResult } from "./type/DamageRollResult.js"
 import { DialogFactory } from "../dialog/DialogFactory.js";
-import { ChatFactory, CHAT_TYPE } from "../chat/ChatFactory.js";
+import { ChatFactory } from "../chat/ChatFactory.js";
+import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
 import { TagManager } from "../sys/TagManager.js";
 
 export class SpecialAbilityItem extends FDItem {

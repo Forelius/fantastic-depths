@@ -1,4 +1,5 @@
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
+import { ChatFactory } from '../chat/ChatFactory.js';
+import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
 import { FDItem } from './FDItem.js';
 import { TagManager } from '../sys/TagManager.js';
 

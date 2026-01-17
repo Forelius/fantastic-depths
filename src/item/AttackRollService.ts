@@ -2,7 +2,6 @@
 import { FDCombatActor } from '../actor/FDCombatActor.js';
 import { DialogFactory } from '../dialog/DialogFactory.js';
 import { FDItem } from './FDItem.js';
-import { WeaponItem } from './WeaponItem.js';
 
 export type AttackRollResult = {
    attacker: FDActorBase;
@@ -43,7 +42,7 @@ export class AttackRollService {
    /**
    * Handle clickable rolls.
    */
-   async rollAttack(item: FDItem, dataset: PropertyBag = null): Promise<AttackRollResult> {
+   async rollAttack(item, dataset: PropertyBag = null): Promise<AttackRollResult> {
       const systemData = item.system;
       let attackType;
       let rollData;
@@ -109,7 +108,7 @@ export class AttackRollService {
                const rollContext = { ...rollData, ...result.dialogResp || {} };
                result.rollEval = await new Roll(rollData.formula, rollContext).evaluate();
             }
-            if (item instanceof WeaponItem) {
+            if (item.type === "weapon") {
                await item.showAttackChatMessage(result);
             }
          }

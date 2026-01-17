@@ -1,11 +1,10 @@
-import { DialogFactory } from '../dialog/DialogFactory.js';
-import { ChatBuilder } from './ChatBuilder.js';
+import { DialogFactory } from "../dialog/DialogFactory.js";
+import { ChatBuilder } from "./ChatBuilder.js";
 import { CodeMigrate } from "../sys/migration.js";
-import { DamageRollResult } from '../item/FDItem.js';
-import { WeaponItem } from "../item/WeaponItem.js"
+import { DamageRollResult } from "../item/type/DamageRollResult.js";
 
 export class DamageRollChatBuilder extends ChatBuilder {
-   static template = 'systems/fantastic-depths/templates/chat/damage-roll.hbs';
+   static template = "systems/fantastic-depths/templates/chat/damage-roll.hbs";
 
    async getRollContent(roll, _mdata) {
       return roll.render();
@@ -85,10 +84,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
       let dialogResp = null;
       const isHeal = damagetype === "heal";
       let damageRoll: DamageRollResult = null;
-      //const weaponDamageTypes = ["physical", "breath", "fire", "frost", "poison", "piercing"];
       const otherDamageTypes = ["magic", "heal", "hull", "fall", "corrosive"];
 
-      if (damagerItem instanceof WeaponItem) {// weaponDamageTypes.includes(dataset.damagetype)) {
+      if (damagerItem.type === "weapon") {// weaponDamageTypes.includes(dataset.damagetype)) {
          damageRoll = damagerItem.getDamageRoll(attacktype, null, targetweapontype, targetToken, ammoItem);
       } else if (otherDamageTypes.includes(dataset.damagetype)) {
          damageRoll = damagerItem.getDamageRoll();
@@ -103,7 +101,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
          }, damagerItem);
          rolling = dialogResp != null;
 
-         if (damagerItem instanceof WeaponItem) {
+         if (damagerItem.type === "weapon") {
             damageRoll = damagerItem.getDamageRoll(attacktype, dialogResp, targetweapontype, targetToken, ammoItem);
          } else if (otherDamageTypes.includes(dataset.damagetype)) {
             damageRoll = damagerItem.getDamageRoll(dialogResp);
@@ -120,7 +118,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
                weapon: attackName,
                damage
             };
-            const resultString = isHeal ? game.i18n.format('FADE.Chat.healFlavor', descData) : game.i18n.format('FADE.Chat.damageFlavor2', descData);
+            const resultString = isHeal ? game.i18n.format("FADE.Chat.healFlavor", descData) : game.i18n.format("FADE.Chat.damageFlavor2", descData);
             dataset.desc = dataset.desc ? dataset.desc : resultString;
 
             const chatData = {
@@ -165,10 +163,10 @@ export class DamageRollChatBuilder extends ChatBuilder {
       if (hasTarget && hasSelected) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
-            title: game.i18n.localize('FADE.dialog.applyToPrompt'),
-            content: game.i18n.localize('FADE.dialog.applyToPrompt'),
-            yesLabel: game.i18n.localize('FADE.dialog.targeted'),
-            noLabel: game.i18n.localize('FADE.dialog.selected'),
+            title: game.i18n.localize("FADE.dialog.applyToPrompt"),
+            content: game.i18n.localize("FADE.dialog.applyToPrompt"),
+            yesLabel: game.i18n.localize("FADE.dialog.targeted"),
+            noLabel: game.i18n.localize("FADE.dialog.selected"),
             defaultChoice: "yes"
          });
 
@@ -188,7 +186,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       } else if (hasSelected) {
          applyTo = selected;
       } else {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noTokenWarning'));
+         ui.notifications.warn(game.i18n.localize("FADE.notification.noTokenWarning"));
       }
 
       // Ensure we have a target ID
@@ -203,7 +201,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
                } else {
                   delta = Math.abs(delta);
                }
-               // Apply damage to the token's actor
+               // Apply damage to the token"s actor
                const dmgSys = game.fade.registry.getSystem("damageSystem");
                dmgSys.ApplyDamage(target.actor, delta, dataset.damagetype, dataset.attacktype, weapon);
             }

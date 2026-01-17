@@ -4,7 +4,7 @@ import { fadeFinder } from "../..//utils/finder.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
-import { SpecialAbilitySheetService } from "../../index.js";
+import { SpecialAbilitySheetService } from "./SpecialAbilitySheetService.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

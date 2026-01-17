@@ -1,9 +1,11 @@
-import { AttackRollService, AttackRollResult } from './AttackRollService.js';
-import { DamageRollResult, createDamageRollResult, FDItem } from './FDItem.js';
-import { DialogFactory } from '../dialog/DialogFactory.js';
-import { ChatFactory, CHAT_TYPE } from '../chat/ChatFactory.js';
-import { TagManager } from '../sys/TagManager.js';
-import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
+import { AttackRollService, AttackRollResult } from "./AttackRollService.js";
+import { createDamageRollResult, FDItem } from "./FDItem.js";
+import { DamageRollResult } from "./type/DamageRollResult.js"
+import { DialogFactory } from "../dialog/DialogFactory.js";
+import { ChatFactory } from "../chat/ChatFactory.js";
+import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
+import { TagManager } from "../sys/TagManager.js";
+import { ClassSystemBase } from "../sys/registry/ClassSystem.js";
 
 export class SpellItem extends FDItem {
    attackRollService: AttackRollService;
@@ -41,7 +43,7 @@ export class SpellItem extends FDItem {
       if (resp?.mod && resp?.mod !== 0) {
          damageFormula = damageFormula ? `${damageFormula}+${resp.mod}` : `${resp.mod}`;
          modifier += resp.mod;
-         digest.push(game.i18n.format('FADE.Chat.rollMods.manual', { mod: resp.mod }));
+         digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: resp.mod }));
       }
 
       if (modifier <= 0 && (evaluatedRoll == null || evaluatedRoll?.total <= 0)) {
@@ -61,15 +63,15 @@ export class SpellItem extends FDItem {
    */
    async roll(dataset) {
       if (dataset?.skipdlg === true) {
-         // I'm not sure this condition ever happens.
+         // I"m not sure this condition ever happens.
          super.roll(dataset);
       } else {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
-            title: game.i18n.localize('FADE.dialog.spellcast.title'),
-            content: game.i18n.localize('FADE.dialog.spellcast.content'),
-            noLabel: game.i18n.localize('FADE.dialog.spellcast.noLabel'),
-            yesLabel: game.i18n.localize('FADE.dialog.spellcast.yesLabel'),
+            title: game.i18n.localize("FADE.dialog.spellcast.title"),
+            content: game.i18n.localize("FADE.dialog.spellcast.content"),
+            noLabel: game.i18n.localize("FADE.dialog.spellcast.noLabel"),
+            yesLabel: game.i18n.localize("FADE.dialog.spellcast.yesLabel"),
             defaultChoice: "yes"
          });
 
@@ -101,7 +103,7 @@ export class SpellItem extends FDItem {
          let rollAttackResult = null;
 
          // If the spell requires a successful melee attack...
-         if (this.system.attackType === 'melee') {
+         if (this.system.attackType === "melee") {
             // Roll the attack.
             rollAttackResult = await this.rollAttack();
          }
@@ -191,7 +193,7 @@ export class SpellItem extends FDItem {
             result = await this._tryUseUsage(getOnly, actionItem);
          }
          if (result === false) {
-            const message = game.i18n.format('FADE.notification.noCharges', { itemName: item.knownName });
+            const message = game.i18n.format("FADE.notification.noCharges", { itemName: item.knownName });
             ui.notifications.warn(message);
             ChatMessage.create({ content: message, speaker: { alias: item.actor?.name, } });
          }
@@ -212,7 +214,7 @@ export class SpellItem extends FDItem {
       }
       // If there are no charges remaining, show a UI notification
       if (result === false) {
-         const message = game.i18n.format('FADE.notification.notMemorized', { actorName: item.actor.name, spellName: this.name });
+         const message = game.i18n.format("FADE.notification.notMemorized", { actorName: item.actor.name, spellName: this.name });
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
       }
@@ -222,10 +224,10 @@ export class SpellItem extends FDItem {
 
    async #getDurationResult(dataset) {
       const result = {
-         text: `${game.i18n.format('FADE.Spell.duration')}: ${this.system.duration}`,
+         text: `${game.i18n.format("FADE.Spell.duration")}: ${this.system.duration}`,
          durationSec: null,
       };
-      if (this.system.durationFormula !== '-' && this.system.durationFormula !== null) {
+      if (this.system.durationFormula !== "-" && this.system.durationFormula !== null) {
          const rollData = this.getRollData();
          // If a castAs override is specified, like from a magic item with spellcasting abilities...
          if (dataset?.castas) {
@@ -234,7 +236,7 @@ export class SpellItem extends FDItem {
             rollData.classes[parsed.classId] = { castLevel: parsed.classLevel };
          }
          const rollEval = await new Roll(this.system.durationFormula, rollData).evaluate();
-         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize('FADE.rounds')})`;
+         result.text = `${result.text} (${rollEval.total} ${game.i18n.localize("FADE.rounds")})`;
          const roundSeconds = game.settings.get(game.system.id, "roundDurationSec") ?? 10;
          result.durationSec = rollEval.total * roundSeconds;
       }
