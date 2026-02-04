@@ -158,7 +158,7 @@ export abstract class ChatBuilder {
       const { roll } = this.data;
       // If there was a roll involved in the chat message...
       if (obj.rolls ?? roll) {
-         const rollsData = { rolls: null }; // Empty for now. 
+         const rollsData = { rolls: obj.rolls }; 
          if (!obj.rolls) rollsData.rolls = Array.isArray(roll) ? roll : [roll];
          Object.assign(chatMessageData, rollsData);
 
