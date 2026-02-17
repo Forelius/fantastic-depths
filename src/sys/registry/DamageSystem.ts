@@ -138,8 +138,9 @@ export class DamageSystem {
          digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
       }
       if (attackerData.mod.combat.dmg != null && attackerData.mod.combat.dmg != 0) {
-         modifier += Number(attackerData.mod.combat.dmg);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: attackerData.mod.combat.dmg }));
+         const effectModVal = Number(attackerData.mod.combat.dmg);
+         modifier += effectModVal;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: effectModVal  }));
       }
       if (targetActor) {
          const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
@@ -167,8 +168,9 @@ export class DamageSystem {
          digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
       }
       if (attackerData.mod.combat.dmgRanged != null && attackerData.mod.combat.dmgRanged != 0) {
-         modifier += Number(attackerData.mod.combat.dmgRanged);
-         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: attackerData.mod.combat.dmgRanged }));
+         const effectModVal = Number(attackerData.mod.combat.dmgRanged);
+         modifier += effectModVal;
+         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: effectModVal }));
       }
       // Bow, sling or thrown has vs group modifier?
       if (targetActor) {
