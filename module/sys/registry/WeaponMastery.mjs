@@ -53,7 +53,7 @@ export class WeaponMasteryBase extends WeaponMasteryInterface {
          if (ownerMastery) {
             // Get the to hit bonus, if any.
             const toHitMod = ownerMastery.pToHit;
-            if (toHitMod > 0) {
+            if (toHitMod != 0) {
                result.mod += toHitMod;
                const primsec = game.i18n.localize("FADE.Mastery.primary");
                result.digest.push(game.i18n.format("FADE.Chat.rollMods.masteryMod", { primsec, mod: toHitMod }));
@@ -229,7 +229,7 @@ export class WeaponMasteryHeroic extends WeaponMasteryBase {
             const bIsPrimary = targetWeaponType === ownerMastery.primaryType || ownerMastery.primaryType === "all";
             // Get the to hit bonus, if any.
             const toHitMod = bIsPrimary ? ownerMastery.pToHit : ownerMastery.sToHit;
-            if (toHitMod > 0) {
+            if (toHitMod != 0) {
                result.mod += toHitMod;
                const primsec = bIsPrimary ? game.i18n.localize("FADE.Mastery.primary") : game.i18n.localize("FADE.Mastery.secondary");
                result.digest.push(game.i18n.format("FADE.Chat.rollMods.masteryMod", { primsec, mod: toHitMod }));
