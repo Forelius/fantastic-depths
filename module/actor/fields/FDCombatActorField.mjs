@@ -63,11 +63,11 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
             initiative: new NumberField({ initial: 0 }),
             combat: new SchemaField({
                toHit: new NumberField({ initial: 0 }),
-               dmg: new StringField({ nullable: true, initial: null }),
+               dmg: new NumberField({ initial: 0 }),
                // Scale melee total damage by multiplying
                dmgScale: new NumberField({ initial: 1 }),
                toHitRanged: new NumberField({ initial: 0 }),
-               dmgRanged: new StringField({ nullable: true, initial: null }),
+               dmgRanged: new NumberField({ initial: 0 }),
                selfDmg: new NumberField({ initial: 0 }),
                selfDmgRanged: new NumberField({ initial: 0 }),
                selfDmgBreath: new NumberField({ initial: 0 }),
