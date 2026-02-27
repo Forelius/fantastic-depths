@@ -88,7 +88,9 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
       if (damagerItem.type === "weapon") {// weaponDamageTypes.includes(dataset.damagetype)) {
          damageRoll = damagerItem.getDamageRoll(attacktype, null, targetweapontype, targetToken, ammoItem);
-      } else if (otherDamageTypes.includes(dataset.damagetype)) {
+      } 
+      // Why was this checking the damagetype?
+      else {// if (otherDamageTypes.includes(dataset.damagetype)) {
          damageRoll = damagerItem.getDamageRoll();
       }
 
@@ -208,4 +210,4 @@ export class DamageRollChatBuilder extends ChatBuilder {
          }
       }
    }
-}
+} 
