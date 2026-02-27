@@ -51,6 +51,21 @@ jobs:
             echo "is_valid=false" >> $GITHUB_ENV
           fi
 
+      - name: Setup Node.js
+        if: env.is_valid == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: env.is_valid == 'true'
+        run: npm ci
+
+      - name: Build package
+        if: env.is_valid == 'true'
+        run: npm run build
+
       - name: Prepare release zip
         if: env.is_valid == 'true'
         run: |
@@ -60,6 +75,7 @@ jobs:
           -x "node_modules/*" \
           -x ".vs/*" \
           -x "src/*" \
+          -x "module/fantastic-depths.js*" \
           -x "package.json" \
           -x "package-lock.json"
       

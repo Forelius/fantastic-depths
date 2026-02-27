@@ -1,0 +1,154 @@
+﻿import { FDActorBase } from '../actor/FDActorBase.js';
+import { FDCombatActor } from '../actor/FDCombatActor.js';
+import { DialogFactory } from '../dialog/DialogFactory.js';
+import { FDItem } from './FDItem.js';
+
+export type AttackRollResult = {
+   attacker: FDActorBase;
+   ammoItem: FDItem;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   dialogResp: any;
+   digest: string[];
+   canAttack: boolean;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   rollEval: any;
+};
+
+/**
+ * Factory that returns a fully‑typed AttackRollResult.
+ * Missing properties are filled with defaults.
+ */
+export function createAttackRollResult(overrides = {}): AttackRollResult {
+   const defaults = {
+      attacker: null,
+      ammoItem: null,
+      dialogResp: null,
+      digest: [],
+      canAttack: true,
+      rollEval: null
+   };
+
+   return { ...defaults, ...overrides };
+}
+
+/**
+* Requires class implements getAttackTypes()
+* @param {any} superclass Assumes superclass is derived from FDItem.
+* @returns
+*/
+export class AttackRollService {
+   constructor() {
+   }
+   /**
+   * Handle clickable rolls.
+   */
+   async rollAttack(item, dataset: PropertyBag = null): Promise<AttackRollResult> {
+      const systemData = item.system;
+      let attackType;
+      let rollData;
+      const attackerActor = item.actor as FDCombatActor;
+      const attackerToken = item.actor?.token;
+      const result = createAttackRollResult({
+         attacker: attackerToken ?? attackerActor,
+         canAttack: true,
+      });
+
+      if (systemData.quantity === 0) {
+         ui.notifications.warn(game.i18n.format('FADE.notification.zeroQuantity', { itemName: item.name }));
+         result.canAttack = false;
+      }
+      else if (attackerActor) {
+         result.ammoItem = attackerActor?.getAmmoItem(item);
+         const targetTokens = Array.from(game.user.targets);
+         const targetToken: Token = targetTokens.length > 0 ? targetTokens[0] : null;
+
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: item, targetToken }));
+         attackType = result.dialogResp?.attackType;
+         result.canAttack = result.dialogResp != null;
+         if (result.canAttack) {
+            // If not breath...
+            if (systemData.damageType !== "breath" && attackType !== "breath") {
+               const rollOptions = {
+                  mod: result.dialogResp.mod,
+                  target: targetToken?.actor,
+                  ammoItem: result.ammoItem,
+                  targetWeaponType: null,
+                  // This is the roll if no advantage or disadvantage. See below.
+                  attackRoll: result.dialogResp.attackRoll
+               };
+               if (result.dialogResp.targetWeaponType) {
+                  rollOptions.targetWeaponType = result.dialogResp.targetWeaponType;
+               }
+
+               // Handle advantage or disadvantage.
+               if (result.dialogResp.rollFormulaType === 'advantage') {
+                  rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kh`;
+               } else if (result.dialogResp.rollFormulaType === 'disadvantage') {
+                  rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kl`;
+               }
+
+               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(item.actor, item, attackType, rollOptions);
+               rollData = item.getRollData();
+               rollData.formula = attackRoll.formula;
+               result.digest = attackRoll.digest;
+            }
+         }
+
+         // Check if the attack type is a missile/ranged attack
+         if (result.canAttack && attackType === 'missile') {
+            result.ammoItem = await this.#missileAttack(item);
+            result.canAttack = result.ammoItem !== null && result.ammoItem !== undefined;
+         } else {
+            result.ammoItem = null;
+         }
+
+         // Perform the roll if there's ammo or if it's a melee attack
+         if (result.canAttack) {
+            if (rollData) {
+               const rollContext = { ...rollData, ...result.dialogResp || {} };
+               result.rollEval = await new Roll(rollData.formula, rollContext).evaluate();
+            }
+            if (item.type === "weapon") {
+               await item.showAttackChatMessage(result);
+            }
+         }
+      } else {
+         ui.notifications.warn(game.i18n.localize('FADE.notification.selectToken1'));
+         result.canAttack = false;
+      }
+
+      return result;
+   }
+
+   /**
+    * Get missile attack ammo if it exist and use it, otherwise use  weapon itself as ammo.
+    * @returns
+    */
+   async #missileAttack(item: FDItem): Promise<FDItem> {
+      const ammoItem = (item.actor as FDCombatActor)?.getAmmoItem(item);
+      await this.#tryUseAmmo(item);
+      return ammoItem;
+   }
+
+   /**
+    * Gets the equipped ammo item and optionally uses it.
+    * @private
+    * @returns The ammo item, if one exists.
+    */
+   async #tryUseAmmo(item: FDItem): Promise<FDItem> {
+      const ammoItem = (item.actor as FDCombatActor)?.getAmmoItem(item);
+      // If there's no ammo, show a UI notification
+      if (ammoItem === undefined || ammoItem === null) {
+         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: item.actor?.name, weaponName: item.name });
+         ui.notifications.warn(message);
+         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
+      } else { // if (getOnly !== true) {
+         // Deduct 1 ammo if not infinite
+         if (ammoItem.system.quantity !== null) {
+            const newQuantity = Math.max(0, ammoItem.system.quantity - 1);
+            await ammoItem.update({ "system.quantity": newQuantity });
+         }
+      }
+      return ammoItem;
+   }
+}

@@ -24,7 +24,7 @@
     "maximum": 14
   },
   "esmodules": [
-    "module/fantastic-depths.mjs"
+    "module/fantastic-depths.min.js"
   ],
   "styles": [
     "css/fantastic-depths.css"

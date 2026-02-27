@@ -1,0 +1,100 @@
+import { EffectManager } from "../../sys/EffectManager.js";
+import { FDItemSheetV2 } from "./FDItemSheetV2.js";
+import {  SheetTab } from "../SheetTab.js";
+
+export class TreasureItemSheet extends FDItemSheetV2 {
+   /**
+    * Get the default options for the sheet.
+    */
+   static DEFAULT_OPTIONS = {
+      position: {
+         width: 570,
+         height: 350,
+      },
+      window: {
+         resizable: true,
+         minimizable: false,
+         contentClasses: ["scroll-body"]
+      },
+      classes: ["fantastic-depths", "sheet", "item"],
+      form: {
+         submitOnChange: true
+      }
+   }
+
+   static PARTS = {
+      header: {
+         template: "systems/fantastic-depths/templates/item/treasure/header.hbs",
+      },
+      tabnav: {
+         template: "templates/generic/tab-navigation.hbs",
+      },
+      description: {
+         template: "systems/fantastic-depths/templates/item/shared/description.hbs",
+      },
+      attributes: {
+         template: "systems/fantastic-depths/templates/item/treasure/attributes.hbs",
+      },
+      effects: {
+         template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/shared/gmOnly.hbs",
+      }
+   }
+
+   /** @override */
+   tabGroups = {
+      primary: "description"
+   }
+
+   /** @override */
+   _configureRenderOptions(options) {
+      // This fills in `options.parts` with an array of ALL part keys by default
+      // So we need to call `super` first
+      super._configureRenderOptions(options);
+      // Completely overriding the parts
+      options.parts = ["header", "tabnav", "description"]
+      if (game.user.isGM) {
+         options.parts.push("attributes");
+         options.parts.push("effects");
+         options.parts.push("gmOnly");
+      }
+   }
+
+   /** @override */
+   async _prepareContext(options) {
+      // Retrieve base data structure.
+      const context = await super._prepareContext(options);
+      // Prepare the tabs.
+      context.tabs = this.#getTabs();
+      // Prepare active effects for easier access
+      context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
+      return context;
+   }
+
+   /**
+   * Prepare an array of form header tabs.
+   * @returns {Record<string, SheetTab>}
+   */
+   #getTabs(): Record<string, SheetTab> {
+      const group = "primary";
+
+      // Default tab for first time it's rendered this session
+      if (!this.tabGroups[group]) this.tabGroups[group] = "description";
+      const tabs: Record<string, SheetTab> = {
+         description: new SheetTab("description", group, "FADE.tabs.description", "item"),
+      }
+      if (game.user.isGM) {
+         tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes", "item");
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects", "item");
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly", "item");
+      }
+      for (const v of Object.values(tabs) as SheetTab[]) {
+         v.active = this.tabGroups[v.group] === v.id;
+         v.cssClass = v.active ? "active" : "";
+      }
+
+      return tabs;
+   }
+}
