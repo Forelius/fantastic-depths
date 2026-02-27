@@ -117,27 +117,6 @@ export class AbilityScoreBase {
    getAdjustments(abilityScoreKey) {
       return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
    }
-}
-
-export class AbilityScoreRetro extends AbilityScoreBase {
-   constructor() {
-      super();
-   }  
-
-   prepareDerivedData(dataModel) {
-      super.prepareDerivedData(dataModel);
-      // If this is a character or if monsters have ability score mods...
-      if (dataModel.parent.type === "character" || this.hasAbilityScoreMods === true) {
-         // Only character
-         if (dataModel.parent.type === "character") {
-            // Retainers stuff only on characters
-            const adjustments = this.getAdjustments("cha");
-            const adjustment = adjustments.sort((a, b) => b.min - a.min).find(item => dataModel.abilities.cha.total >= item.min);
-            dataModel.retainer.max = adjustment.maxRetainers;
-            dataModel.retainer.morale = (adjustment.retainerMorale ?? 10);
-         }
-      }
-   }
 
    getBaseACMod(actor) {
       return actor.system.abilities?.dex.mod ?? 0;
@@ -187,6 +166,27 @@ export class AbilityScoreRetro extends AbilityScoreBase {
 
       return result;
    }
+}
+
+export class AbilityScoreRetro extends AbilityScoreBase {
+   constructor() {
+      super();
+   }  
+
+   prepareDerivedData(dataModel) {
+      super.prepareDerivedData(dataModel);
+      // If this is a character or if monsters have ability score mods...
+      if (dataModel.parent.type === "character" || this.hasAbilityScoreMods === true) {
+         // Only character
+         if (dataModel.parent.type === "character") {
+            // Retainers stuff only on characters
+            const adjustments = this.getAdjustments("cha");
+            const adjustment = adjustments.sort((a, b) => b.min - a.min).find(item => dataModel.abilities.cha.total >= item.min);
+            dataModel.retainer.max = adjustment.maxRetainers;
+            dataModel.retainer.morale = (adjustment.retainerMorale ?? 10);
+         }
+      }
+   }
 
    sortForInitiative(aActor, bActor) {
       let result = 0;
@@ -224,4 +224,4 @@ export class AbilityScoreOriginal extends AbilityScoreBase {
       const allAbilityScores = game.fade.registry.getSystem("userTables").getKeyJson(`ability-mods-${this.abilityScoreMods}`);
       return allAbilityScores[abilityScoreKey];
    }
-}
+} 
