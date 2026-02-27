@@ -10,44 +10,10 @@ export class AbilityScoreBase {
       this.abilityScoreMods = game.settings.get(game.system.id, "abilityScoreMods");
    }
 
-   prepareBaseData(dataModel) {
-      for (const [key] of Object.entries(dataModel.abilities)) {
-         const value = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.value`)) || 0;
-         const tempMod = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.tempMod`)) || 0;
-         foundry.utils.setProperty(dataModel.abilities, `${key}.total`, value + tempMod);
-      }
-   }
-
-   prepareDerivedData(dataModel) {
-      // If this is a character or if monsters have ability score mods...
-      if (dataModel.parent.type === "character" || this.hasAbilityScoreMods === true) {
-         // Initialize ability score modifiers
-         for (const [key] of Object.entries(dataModel.abilities)) {
-            const adjustments = this.getAdjustments(key);
-            const total = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.total`)) || 0;
-            const sorted = (adjustments ?? []).sort((a, b) => b.min - a.min);
-            const adjustment = sorted.find(item => total >= item.min) ?? sorted[0];
-            const modValue = adjustment ? Number(adjustment.value) || 0 : 0;
-            foundry.utils.setProperty(dataModel.abilities, `${key}.mod`, modValue);
-         }
-      }
-   }
-
-   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   getAdjustments(abilityScoreKey) {
-      return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
-   }
-}
-
-export class AbilityScoreRetro extends AbilityScoreBase {
-   constructor() {
-      super();
-   }
-
    /**
-    * For the character and monster data models
-    * @returns {SchemaField} A new SchemaField containing all of the ability scores.
-    */
+       * For the character and monster data models
+       * @returns {SchemaField} A new SchemaField containing all of the ability scores.
+       */
    defineSchemaForActor() {
       return new SchemaField({
          str: new SchemaField({
@@ -123,6 +89,40 @@ export class AbilityScoreRetro extends AbilityScoreBase {
          })
       });
    }
+
+   prepareBaseData(dataModel) {
+      for (const [key] of Object.entries(dataModel.abilities)) {
+         const value = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.value`)) || 0;
+         const tempMod = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.tempMod`)) || 0;
+         foundry.utils.setProperty(dataModel.abilities, `${key}.total`, value + tempMod);
+      }
+   }
+
+   prepareDerivedData(dataModel) {
+      // If this is a character or if monsters have ability score mods...
+      if (dataModel.parent.type === "character" || this.hasAbilityScoreMods === true) {
+         // Initialize ability score modifiers
+         for (const [key] of Object.entries(dataModel.abilities)) {
+            const adjustments = this.getAdjustments(key);
+            const total = Number(foundry.utils.getProperty(dataModel.abilities, `${key}.total`)) || 0;
+            const sorted = (adjustments ?? []).sort((a, b) => b.min - a.min);
+            const adjustment = sorted.find(item => total >= item.min) ?? sorted[0];
+            const modValue = adjustment ? Number(adjustment.value) || 0 : 0;
+            foundry.utils.setProperty(dataModel.abilities, `${key}.mod`, modValue);
+         }
+      }
+   }
+
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   getAdjustments(abilityScoreKey) {
+      return game.fade.registry.getSystem("userTables")?.getJsonArray(`ability-mods-${this.abilityScoreMods}`);
+   }
+}
+
+export class AbilityScoreRetro extends AbilityScoreBase {
+   constructor() {
+      super();
+   }  
 
    prepareDerivedData(dataModel) {
       super.prepareDerivedData(dataModel);
