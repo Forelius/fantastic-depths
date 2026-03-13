@@ -217,8 +217,9 @@ export class GroupInit extends BaseInitiative {
    * options.messageOptions: Additional options with which to customize created Chat Messages.
    * @returns {Promise<void>} A promise which resolves to the updated Combat document once updates are complete.
     */
-   async rollInitiative(combat, ids, options = { messageOptions: { group: null } }): Promise<void> {
-      const { messageOptions } = options;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   async rollInitiative(combat, ids, options: any = {}): Promise<void> {
+      const messageOptions = options?.messageOptions ?? { group: null };
       // Get all combatants and group them by disposition
       let groups = messageOptions?.group ? [messageOptions?.group] : [];
       if (groups.length === 0 && ids.length > 0) {

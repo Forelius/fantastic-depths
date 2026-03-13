@@ -95,8 +95,8 @@ export class FDVehicleSheet extends FDActorSheetV2 {
       context.vehicleTypes = this._getVehicleTypeOptions();
       context.hasCombat = this.isCombatVehicle;
       context.specialAbilities = [
-         ...context.specialAbilities,
-         ...context.exploration.map(item => item.item)
+         ...(context.specialAbilities ?? []),
+         ...(context.exploration?.map(item => item.item) ?? [])
       ];
       context.exploration = [];
       // Prepare siege weapons
