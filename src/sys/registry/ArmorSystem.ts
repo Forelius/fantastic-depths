@@ -104,6 +104,12 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       }
    }
 
+   /**
+    * This is for non-armor magic items.
+    * @param actor
+    * @param acDigest
+    * @param ac
+    */
    prepareACMod(actor, acDigest, ac) {
       if (actor.system.mod.baseAc != 0) {
          // Not sure why this does nothing.
@@ -112,6 +118,8 @@ export class ClassicArmorSystem extends ArmorSystemBase {
       if (actor.system.mod.ac != 0) {
          // Apply actor's ac modifier to total
          ac.total -= actor.system.mod.ac;
+         // This also applies to the actor's ranged ac
+         ac.totalRanged -= actor.system.mod.ac;
          acDigest.push(`${game.i18n.localize('FADE.Armor.mod')}: ${actor.system.mod.ac}`);
       }
       if (actor.system.mod.rangedAc != 0) {

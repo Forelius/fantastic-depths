@@ -50,7 +50,7 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
             // For items that modify AC (add/subtract only) but are not armor items.
             ac: new NumberField({ initial: 0 }),
             // For items that modify ranged AC (add/subtract only) but are not armor items.
-            // Cumulative with mod.ac, otherwise not backwards compatible.
+            // Cumulative with mod.ac, otherwise not backwards compatible. That means rangedAc includes ac value.
             rangedAc: new NumberField({ initial: 0 }),
             // Modifies the natural/naked AC.
             baseAc: new NumberField({ initial: 0 }),
