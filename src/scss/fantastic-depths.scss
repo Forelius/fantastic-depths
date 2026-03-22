@@ -12,7 +12,6 @@
 /* Global styles */
 @import 'global/toast';
 @import 'global/window';
-@import 'global/grid';
 @import 'global/flex';
 @import 'global/themes';
 @import 'global/chat';
@@ -20,8 +19,11 @@
 
 /* Styles limited to fantastic-depths sheets */
 .system-fantastic-depths {
-  @import 'components/_character';
-  @import 'components/forms';
-  @import 'components/items';
-  @import 'components/effects';
+   .fantastic-depths {
+      @import 'global/grid';
+   }
+   @import 'components/_character';
+   @import 'components/forms';
+   @import 'components/items';
+   @import 'components/effects';
 }
