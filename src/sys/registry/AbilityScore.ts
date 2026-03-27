@@ -166,8 +166,16 @@ export class AbilityScoreBase {
 
       return result;
    }
+
+   sortForInitiative(aActor, bActor) {
+      return 0;
+   }
+
 }
 
+/**
+ * Currently for Simple and Heroic mode.
+ */
 export class AbilityScoreRetro extends AbilityScoreBase {
    constructor() {
       super();
@@ -215,6 +223,9 @@ export class AbilityScoreRetro extends AbilityScoreBase {
    }
 }
 
+/**
+ * For original mode.
+ */
 export class AbilityScoreOriginal extends AbilityScoreBase {
    constructor() {
       super();

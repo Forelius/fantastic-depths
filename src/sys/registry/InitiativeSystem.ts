@@ -42,6 +42,7 @@ abstract class BaseInitiative {
          /* console.debug(combatant);*/
          const disposition = combatant.token.disposition;
          const combatantElement = html.querySelector(`.combatant[data-combatant-id="${combatant.id}"]`);
+         if (combatantElement == null || combatantElement.clasList === undefined) continue;
          // Set disposition indicator
          if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
             combatantElement.classList.add("disposition-friendly");
