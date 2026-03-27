@@ -3,6 +3,7 @@ import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
 import { DamageRollResult } from "./type/DamageRollResult.js"
 import { ChatAction } from "./type/ChatAction.js"
 import { IFDItem } from "./interface/IFDItem.js"
+import { FDActorBase } from "../actor/FDActorBase.js";
 
 /**
  * Factory that returns a fully‑typed DamageRollResult.
@@ -131,9 +132,13 @@ export abstract class FDItem extends Item implements IFDItem {
       // Starts off by populating the roll data with a shallow copy of `this.system`
       const rollData = { ...this.system };
       // Quit early if there's no parent actor
-      if (this.actor !== null) {
+      const actor: FDActorBase = this.actor as FDActorBase;
+      if (actor !== null) {
          // If present, add the actor's roll data
-         rollData.actor = this.actor.getRollData();
+         rollData.actor = actor.getRollData();
+         // This makes sure the item's rolldata has a classes property, if needed.
+         // Warning: Spells already have a classes property, but in this context it is currently not used.
+         rollData.classes = rollData.actor?.classes;
       }
       return rollData;
    }
