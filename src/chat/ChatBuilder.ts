@@ -149,7 +149,7 @@ export abstract class ChatBuilder {
       const chatMessageData = {
          ...obj,
          author: game.user.id,
-         type: obj.type ?? (CONST.CHAT_MESSAGE_STYLES?.OTHER ?? CONST.CHAT_MESSAGE_TYPES.OTHER),
+         type: obj.type ?? (ChatMessage.TYPES[0]),
       };
 
       // Manipulated the dom to place digest info in roll's tooltip
