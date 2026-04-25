@@ -17,6 +17,17 @@ export class fadeCombat extends Combat {
       Hooks.on("deleteCombat", (combat) => combat.onDeleteCombat(combat));
       Hooks.on("createCombatant", async (combatant, options, userId) => await options.parent.onCreateCombatant(combatant, options, userId));
       Hooks.on("deleteCombatant", async (combatant, options, userId) => await options.parent.onDeleteCombatant(combatant, options, userId));
+
+      // In v14, Combatant.token resolves through the scene's embedded token collection,
+      // which is not yet populated when setupTurns() runs during early page load.
+      // Unlinked tokens (monsters) return null at that point and get filtered out.
+      // Re-running setupTurns after the canvas is ready ensures all tokens are resolvable.
+      Hooks.on("canvasReady", () => {
+         if (game.combat) {
+            game.combat.setupTurns();
+            ui.combat?.render();
+         }
+      });
    }
 
    /**

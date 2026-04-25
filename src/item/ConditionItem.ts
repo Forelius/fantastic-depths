@@ -27,7 +27,13 @@ export class ConditionItem extends FDItem {
 
    async setEffectsDuration(durationSec) {
       for (const effect of this.effects) {
-         await effect.update({ "duration.seconds": durationSec });
+         // Set both 'type' (legacy) and 'units' (V14+) for backwards compatibility
+         await effect.update({
+            "duration.seconds": durationSec,
+            "duration.value": durationSec,
+            "duration.units": "seconds", // V14 property
+            "duration.type": "seconds"   // Legacy fallback
+         });
       }
    }
 
@@ -86,8 +92,9 @@ export class ConditionItem extends FDItem {
                const durationSec = Number.parseInt(dataset.duration);
                let chatContent = game.i18n.format("FADE.Chat.appliedCondition", { condition: sourceCondition.name });
                for (const target of applyTo) {
-                  if (target.actor.isOwner === true) {
+                  if (target.actor?.isOwner) {
                      const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
+
                      if (Number.isNaN(durationSec) === false) {
                         for (const condition of conditions) {
                            condition.setEffectsDuration(durationSec);

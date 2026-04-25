@@ -204,6 +204,19 @@ export class DataMigrator {
 export class CodeMigrate {
    static FormDataExtended = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
    static RenderTemplate = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+
+   static getEffectStart(cls: typeof ActiveEffect): object {
+      return (cls as any).getEffectStart?.() ?? { time: game.time.worldTime };
+   }
+
+   // In v13, duration.remaining and duration.expired are read-only computed getters.
+   // In v14+ they are writable properties on the prepared duration object.
+   static setEffectDurationProps(duration: any, remaining: number, expired: boolean): void {
+      if (Number(game.version) >= 14) {
+         duration.remaining = remaining;
+         duration.expired = expired;
+      }
+   }
    
    static rollEvaluateSync(roll) {
       if (Number(game.version) >= 12) {

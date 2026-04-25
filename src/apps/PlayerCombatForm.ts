@@ -11,6 +11,7 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
       id: "party-combat-form",
       window: {
          resizable: true,
+         contentClasses: ["scroll-body"],
       },
       position: {
          width: 400,

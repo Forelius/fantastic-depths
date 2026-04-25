@@ -117,7 +117,7 @@ export class FDActorBase extends Actor {
       // Active effects
       // Ensure the actor has active effects to update
       for (const effect of this.allApplicableEffects()) {
-         if (effect.isTemporary && effect.duration?.type !== "none") {
+         if (effect.isTemporary && (effect.duration?.units != null || effect.duration?.type !== "none")) {
             effect.updateDuration();
             // Adjust the duration based on the time passed
             if (effect.duration.remaining <= 0) {
