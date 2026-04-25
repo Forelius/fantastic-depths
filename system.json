@@ -47,6 +47,30 @@
   "download": "#{DOWNLOAD}#",
   "changelog": "#{CHANGELOG}#",
   "background": "systems/fantastic-depths/assets/cover.webp",
+  "documentTypes": {
+    "Actor": {
+      "character": {},
+      "monster": {},
+      "vehicle": {}
+    },
+    "Item": {
+      "item": {},
+      "weapon": {},
+      "armor": {},
+      "spell": {},
+      "skill": {},
+      "actorClass": {},
+      "mastery": {},
+      "specialAbility": {},
+      "class": {},
+      "weaponMastery": {},
+      "light": {},
+      "condition": {},
+      "treasure": {},
+      "species": {},
+      "ammo": {}
+    }
+  },
   "grid": {
     "distance": 5,
     "units": "ft"

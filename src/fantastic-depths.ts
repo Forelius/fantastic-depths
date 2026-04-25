@@ -5,7 +5,6 @@ import { ActorFactory } from "./actor/ActorFactory.js";
 import { ItemFactory } from "./item/ItemFactory.js";
 import { AddonIntegration } from "./sys/addonIntegration.js"
 import { fadeRegistry } from "./sys/registry/fadeRegistry.js"
-import { fadeCompendium } from "./sys/fadeCompendium.js"
 
 import { CharacterDataModel } from "./actor/dataModel/CharacterDataModel.js";
 import { MonsterDataModel } from "./actor/dataModel/MonsterDataModel.js";
@@ -253,11 +252,11 @@ async function handleAsyncInit() {
    await preloadHandlebarsTemplates();
 }
 
-Hooks.once("setup", () => {
-   // Apply custom item compendium
-   game.packs.filter(p => p.metadata.type === "Item")
-      .forEach(p => p.applicationClass = fadeCompendium);
-});
+//Hooks.once("setup", () => {
+//   // Apply custom item compendium
+//   game.packs.filter(p => p.metadata.type === "Item")
+//      .forEach(p => p.applicationClass = fadeCompendium);
+//});
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
