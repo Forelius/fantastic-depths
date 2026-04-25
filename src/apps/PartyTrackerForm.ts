@@ -130,7 +130,8 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * Handle the drop event for actors 
     */
    async _onDrop(event) {
-      const data = TextEditor.getDragEventData(event);
+      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const data = TextEditorImpl.getDragEventData(event);
 
       if (data.type !== "Actor" || !data.uuid) {
          console.error("Dropped data is not a valid actor.");

@@ -97,7 +97,8 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @protected
     */
    async _onDrop(event): Promise<boolean | Item[] | Actor> {
-      const data = TextEditor.getDragEventData(event);
+      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const data = TextEditorImpl.getDragEventData(event);
       const actor = this.actor;
       const allowed = Hooks.call("dropActorSheetData", actor, this, data);
       let result: Actor | Item[] | boolean = false;
