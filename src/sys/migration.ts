@@ -226,12 +226,39 @@ export class CodeMigrate {
       }
    }
 
-    static async rollEvaluate(roll) {
-      if (Number(game.version) >= 12) {
-         await roll.evaluate();
-      } else {
-         await roll.evaluate({ async: true });
-      }
-   }
+static async rollEvaluate(roll) {
+       if (Number(game.version) >= 12) {
+          await roll.evaluate();
+       } else {
+          await roll.evaluate({ async: true });
+       }
+    }
+
+    static applyChatRollMode(chatMessageData: Record<string, unknown>, rollMode: string): void {
+       if (Number(game.version) >= 14) {
+          const modeMap: Record<string, string> = {
+             roll: "public",
+             publicroll: "public",
+             gmroll: "gm",
+             blindroll: "blind",
+             selfroll: "self"
+          };
+          const mode = modeMap[rollMode] ?? rollMode;
+          ChatMessage.applyMode(chatMessageData, mode);
+       } else {
+          ChatMessage.applyRollMode(chatMessageData, rollMode);
+       }
+    }
+
+    static getDefaultChatMode(): string {
+       if (Number(game.version) >= 14) {
+          return game.settings.get("core", "messageMode") as string ?? "public";
+       }
+       return game.settings.get("core", "rollMode") as string ?? "roll";
+    }
+
+    static getRollModeSetting(): string {
+       return this.getDefaultChatMode();
+    }
 }
 

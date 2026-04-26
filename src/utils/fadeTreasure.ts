@@ -1,4 +1,5 @@
 import { fadeFinder } from '../utils/finder.js';
+import { CodeMigrate } from '../sys/migration.js';
 
 type CoinJewelry = {
    content: string,
@@ -66,7 +67,7 @@ export class fadeTreasure {
       const chatMsgData = {
          content: chatContentArray.join('')
       };
-      ChatMessage.applyRollMode(chatMsgData, "gmroll");
+      CodeMigrate.applyChatRollMode(chatMsgData, "gmroll");
       ChatMessage.create(chatMsgData);
    }
 
@@ -92,7 +93,7 @@ export class fadeTreasure {
          for (let i = 0; i < numberOfDraws; i++) {
             // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
             const draw = await table.draw({ displayChat: false });
-            // Usually draw.results is an array; we’ll grab the text from the first result
+            // Usually draw.results is an array; weï¿½ll grab the text from the first result
             const resultText: string = draw.results.map(r => r.getChatText());
             results.push(resultText.length > 0 ? resultText : resultText[0]);
          }

@@ -720,7 +720,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const current = foundry.utils.getProperty(this.document._source, attr);
       const defaultArtwork = this.document.constructor.getDefaultArtwork?.(this.document._source) ?? {};
       const defaultImage = foundry.utils.getProperty(defaultArtwork, attr);
-      const fp = new FilePicker({
+      const fp = new foundry.applications.apps.FilePicker.implementation({
          current,
          type: "image",
          redirectToRoot: defaultImage ? [defaultImage] : [],

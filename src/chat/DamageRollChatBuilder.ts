@@ -19,7 +19,7 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const damagerName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
-      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
+      const rollMode = mdata.rollmode || CodeMigrate.getRollModeSetting();
 
       // Prepare data for the chat template, including the message ID
       const renderData = {

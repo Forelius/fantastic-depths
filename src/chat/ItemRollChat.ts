@@ -37,7 +37,7 @@ export class ItemRollChat extends ChatBuilder {
       const actorName = context.name; // Actor name (e.g., character name)
       const userName = game.users.current.name; // User name (e.g., player name)
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
-      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
+      const rollMode = mdata?.rollmode || CodeMigrate.getRollModeSetting();
 
       if (roll) {
          this.handleToast(actorName, mdata, roll, resultString, rollMode);

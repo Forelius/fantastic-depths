@@ -1,5 +1,6 @@
-﻿import { ChatFactory } from "../chat/ChatFactory.js";
+import { ChatFactory } from "../chat/ChatFactory.js";
 import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
+import { CodeMigrate } from "../sys/migration.js";
 import { DamageRollResult } from "./type/DamageRollResult.js"
 import { ChatAction } from "./type/ChatAction.js"
 import { IFDItem } from "./interface/IFDItem.js"
@@ -176,7 +177,7 @@ export abstract class FDItem extends Item implements IFDItem {
    async roll(dataset): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
-      const rollMode = game.settings.get("core", "rollMode");
+      const rollMode = CodeMigrate.getRollModeSetting();
       const chatData = {
          caller: this,
          context: instigator,

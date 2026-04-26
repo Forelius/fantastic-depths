@@ -10,7 +10,7 @@ export class SpellCastChatBuilder extends ChatBuilder {
    */
    async createChatMessage(): Promise<void> {
       const { context, caller, roll, options, digest } = this.data;
-      const rollMode = game.settings.get("core", "rollMode");
+      const rollMode = CodeMigrate.getRollModeSetting();
       const caster = context; // Can be actor or token
       const casterActor = caster?.actor || caster; // context could be actor or token.
       const casterName = caster?.name; // context could be actor or token.

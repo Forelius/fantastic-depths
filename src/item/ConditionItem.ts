@@ -1,4 +1,5 @@
 import { DialogFactory } from '../dialog/DialogFactory.js';
+import { CodeMigrate } from '../sys/migration.js';
 import { FDItem } from './FDItem.js';
 
 export class ConditionItem extends FDItem {
@@ -105,7 +106,7 @@ export class ConditionItem extends FDItem {
                }
 
                if (game.fade.toastManager) {
-                  game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+                  game.fade.toastManager.showHtmlToast(chatContent, "info", CodeMigrate.getRollModeSetting());
                }
                const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker
                ChatMessage.create({ speaker: speaker, content: chatContent });
@@ -177,7 +178,7 @@ export class ConditionItem extends FDItem {
                }
 
                if (game.fade.toastManager) {
-                  game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+                  game.fade.toastManager.showHtmlToast(chatContent, "info", CodeMigrate.getRollModeSetting());
                }
                const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker
                ChatMessage.create({ speaker: speaker, content: chatContent });
