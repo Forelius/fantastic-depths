@@ -39,9 +39,9 @@ export class fadeTreasure {
          chatContentArray.push(`<div class="text-size16b">${game.i18n.format('FADE.treasure.coins', { total: total.toLocaleString() })}</div>`);
          chatContentArray.push(...this.group.coins.map(item => item.content));
       }
-      if (this.group.gems.length > 0) {
-         const total = this.group.gems.reduce((acc, item) => item.value + acc, 0);
-         chatContentArray.push(`<div class="text-size16">${game.i18n.format('FADE.treasure.gems', { total: total.toLocaleString() })}</div>`);
+if (this.group.gems.length > 0) {
+          const total = this.group.gems.reduce((acc, item) => item.value + acc, 0);
+          chatContentArray.push(`<div class="text-size16b">${game.i18n.format('FADE.treasure.gems', { total: total.toLocaleString() })}</div>`);
          const normalized = this.group.gems.map(item => {
             return game.i18n.format('FADE.treasure.formatValue', { name: item.name, value: item.value.toLocaleString() });
          }).reduce((acc, item) => {
