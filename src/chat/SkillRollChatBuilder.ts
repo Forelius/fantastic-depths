@@ -26,7 +26,7 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       const userName = game.users.current.name; // User name (e.g., player name)
 
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
-      const rollMode = mdata.rollmode || game.settings.get("core", "rollMode");
+      const rollMode = mdata.rollmode || CodeMigrate.getRollModeSetting();
 
       this.handleToast(tokenName, mdata, roll, resultString, rollMode);
 

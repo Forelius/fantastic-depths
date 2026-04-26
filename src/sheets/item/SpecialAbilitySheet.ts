@@ -144,7 +144,8 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
-      const data = TextEditor.getDragEventData(event);
+      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const data = TextEditorImpl.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a weapon mastery definition item...
       if (droppedItem.type === "condition") {

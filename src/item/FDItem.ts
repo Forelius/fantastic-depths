@@ -1,5 +1,6 @@
-﻿import { ChatFactory } from "../chat/ChatFactory.js";
+import { ChatFactory } from "../chat/ChatFactory.js";
 import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
+import { CodeMigrate } from "../sys/migration.js";
 import { DamageRollResult } from "./type/DamageRollResult.js"
 import { ChatAction } from "./type/ChatAction.js"
 import { IFDItem } from "./interface/IFDItem.js"
@@ -176,7 +177,7 @@ export abstract class FDItem extends Item implements IFDItem {
    async roll(dataset): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
-      const rollMode = game.settings.get("core", "rollMode");
+      const rollMode = CodeMigrate.getRollModeSetting();
       const chatData = {
          caller: this,
          context: instigator,
@@ -251,17 +252,28 @@ export abstract class FDItem extends Item implements IFDItem {
    _processNonTransferActiveEffects(): void {
       const data = this.system;
 
-      // Apply Active Effects only if transfer is false
-      const changes = this.effects
-         .filter(effect => !effect.disabled && effect.transfer === false) // Only local effects
-         .flatMap(effect => effect.changes);
+      const getChanges = (effect) => {
+         // In V14, changes are in system. In V13, they are on the root.
+         return effect.system?.changes ?? effect.changes ?? [];
+      };
 
-      // Process changes
+      const changes = this.effects
+         .filter(effect => !effect.disabled && effect.transfer === false)
+         .flatMap(effect => getChanges(effect));
+
       for (const change of changes) {
+         if (!change.key || !change.value) continue; // Safety check
+
          if (change.key.startsWith("system.")) {
-            const path = change.key.slice(7); // Strip "system." prefix
+            const path = change.key.slice(7);
+
+            // Use the current value from the data object
             const currentValue = foundry.utils.getProperty(data, path);
+
+            // Apply the change logic
             const newValue = this._applyEffectChange(change.mode, currentValue, change.value);
+
+            // Update the data object in-memory
             foundry.utils.setProperty(data, path, newValue);
          }
       }

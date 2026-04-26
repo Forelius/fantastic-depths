@@ -1,5 +1,6 @@
 import { ChatFactory } from '../chat/ChatFactory.js';
 import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
+import { CodeMigrate } from '../sys/migration.js';
 import { FDItem } from './FDItem.js';
 import { TagManager } from '../sys/TagManager.js';
 
@@ -86,7 +87,7 @@ export class GearItem extends FDItem {
    async roll(dataset): Promise<void> {
       const { instigator } = await this.getInstigator(dataset);
       // Initialize chat data.
-      const rollMode = game.settings.get('core', 'rollMode');
+      const rollMode = CodeMigrate.getRollModeSetting();
       const chatData = {
          caller: this,
          context: instigator, // actor or token

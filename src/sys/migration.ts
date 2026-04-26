@@ -204,7 +204,20 @@ export class DataMigrator {
 export class CodeMigrate {
    static FormDataExtended = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
    static RenderTemplate = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
-   
+
+   static getEffectStart(cls: typeof ActiveEffect): object {
+      return (cls as any).getEffectStart?.() ?? { time: game.time.worldTime };
+   }
+
+   // In v13, duration.remaining and duration.expired are read-only computed getters.
+   // In v14+ they are writable properties on the prepared duration object.
+   static setEffectDurationProps(duration: any, remaining: number, expired: boolean): void {
+      if (Number(game.version) >= 14) {
+         duration.remaining = remaining;
+         duration.expired = expired;
+      }
+   }
+
    static rollEvaluateSync(roll) {
       if (Number(game.version) >= 12) {
          roll.evaluateSync();
@@ -213,12 +226,50 @@ export class CodeMigrate {
       }
    }
 
-    static async rollEvaluate(roll) {
+   static async rollEvaluate(roll) {
       if (Number(game.version) >= 12) {
          await roll.evaluate();
       } else {
          await roll.evaluate({ async: true });
       }
    }
+
+   static applyChatRollMode(chatMessageData: Record<string, unknown>, rollMode: string): void {
+      if (Number(game.version) >= 14) {
+         const modeMap: Record<string, string> = {
+            roll: "public",
+            publicroll: "public",
+            gmroll: "gm",
+            blindroll: "blind",
+            selfroll: "self"
+         };
+         const mode = modeMap[rollMode] ?? rollMode;
+         ChatMessage.applyMode(chatMessageData, mode);
+      } else {
+         ChatMessage.applyRollMode(chatMessageData, rollMode);
+      }
+   }
+
+   static getDefaultChatMode(): string {
+      if (Number(game.version) >= 14) {
+         return game.settings.get("core", "messageMode") as string ?? "public";
+      }
+      return game.settings.get("core", "rollMode") as string ?? "roll";
+   }
+
+   static getRollModeSetting(): string {
+      return this.getDefaultChatMode();
+   }
+
+static async getTableResultText(result): Promise<string> {
+       // getChatText is deprecated in v13, removed in v15; use getChatText until then to preserve i18n
+       if (Number(game.version) >= 13) {
+          const html = await result.getHTML();
+          const div = document.createElement("div");
+          div.innerHTML = html;
+          return div.textContent ?? "";
+       }
+       return result.getChatText();
+    }
 }
 

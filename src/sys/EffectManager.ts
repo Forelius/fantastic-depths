@@ -156,6 +156,8 @@ export class EffectManager {
             img: 'icons/svg/aura.svg',
             origin: owner.uuid,
             'duration.rounds': dataset.effectType === 'temporary' ? 1 : undefined,
+            'duration.value': dataset.effectType === 'temporary' ? 1 : undefined,
+            'duration.units': dataset.effectType === 'temporary' ? 'rounds' : undefined,
             disabled: dataset.effectType === 'inactive',
          }]);
       } else {

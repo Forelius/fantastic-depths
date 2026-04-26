@@ -1,4 +1,5 @@
 import { fadeFinder } from "../utils/finder.js";
+import { CodeMigrate } from "../sys/migration.js";
 import { DamageRollResult } from "../item/type/DamageRollResult.js"
 
 /**
@@ -163,8 +164,8 @@ export abstract class ChatBuilder {
          Object.assign(chatMessageData, rollsData);
 
          // Decide roll mode (public, gm only,...)
-         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? game.settings.get("core", "rollMode");
-         ChatMessage.applyRollMode(chatMessageData, rollMode);
+const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? CodeMigrate.getDefaultChatMode();
+          CodeMigrate.applyChatRollMode(chatMessageData, rollMode);
       }
 
       return chatMessageData;

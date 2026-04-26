@@ -12,7 +12,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const attackerName = attacker.token?.name ?? attacker.name;
       const targetTokens = Array.from(game.user.targets).map((i: PropertyBag) => (i.document ?? i) as Token);
       const targetToken = targetTokens?.length > 0 ? targetTokens[0] : null;
-      const rollMode = mdata?.rollmode || game.settings.get("core", "rollMode");
+      const rollMode = mdata?.rollmode || CodeMigrate.getRollModeSetting();
       const weaponItem: WeaponItem = caller;
       const descData = {
          attacker: attackerName,

@@ -91,16 +91,11 @@ export class SocketManager {
             console.log(`Log from ${data.playerName}:`, data.data);
             break;
          case "showPlayerCombat":
-            new PlayerCombatForm().render(true);
+            (foundry.applications.instances.get(PlayerCombatForm.APP_ID) ?? new PlayerCombatForm()).render(true);
             break;
          case "closePlayerCombat":
             if (game.user.isGM === false) {
-               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-               for (const app of Object.values(ui.windows) as any) {
-                  if (app?.id === PlayerCombatForm.APP_ID) {
-                     app.close(); // Closes the form
-                  }
-               }
+               foundry.applications.instances.get(PlayerCombatForm.APP_ID)?.close();
             }
             break;
          case "incAttacksAgainst":

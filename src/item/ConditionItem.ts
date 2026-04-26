@@ -1,4 +1,5 @@
 import { DialogFactory } from '../dialog/DialogFactory.js';
+import { CodeMigrate } from '../sys/migration.js';
 import { FDItem } from './FDItem.js';
 
 export class ConditionItem extends FDItem {
@@ -27,7 +28,13 @@ export class ConditionItem extends FDItem {
 
    async setEffectsDuration(durationSec) {
       for (const effect of this.effects) {
-         await effect.update({ "duration.seconds": durationSec });
+         // Set both 'type' (legacy) and 'units' (V14+) for backwards compatibility
+         await effect.update({
+            "duration.seconds": durationSec,
+            "duration.value": durationSec,
+            "duration.units": "seconds", // V14 property
+            "duration.type": "seconds"   // Legacy fallback
+         });
       }
    }
 
@@ -86,8 +93,9 @@ export class ConditionItem extends FDItem {
                const durationSec = Number.parseInt(dataset.duration);
                let chatContent = game.i18n.format("FADE.Chat.appliedCondition", { condition: sourceCondition.name });
                for (const target of applyTo) {
-                  if (target.actor.isOwner === true) {
+                  if (target.actor?.isOwner) {
                      const conditions = (await target.actor.createEmbeddedDocuments("Item", [sourceCondition]));
+
                      if (Number.isNaN(durationSec) === false) {
                         for (const condition of conditions) {
                            condition.setEffectsDuration(durationSec);
@@ -98,7 +106,7 @@ export class ConditionItem extends FDItem {
                }
 
                if (game.fade.toastManager) {
-                  game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+                  game.fade.toastManager.showHtmlToast(chatContent, "info", CodeMigrate.getRollModeSetting());
                }
                const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker
                ChatMessage.create({ speaker: speaker, content: chatContent });
@@ -170,7 +178,7 @@ export class ConditionItem extends FDItem {
                }
 
                if (game.fade.toastManager) {
-                  game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+                  game.fade.toastManager.showHtmlToast(chatContent, "info", CodeMigrate.getRollModeSetting());
                }
                const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker
                ChatMessage.create({ speaker: speaker, content: chatContent });

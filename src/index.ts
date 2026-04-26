@@ -112,7 +112,6 @@ export * from './sys/combat/fadeCombat';
 export * from './sys/combat/fadeCombatant';
 export * from './sys/config';
 export * from './sys/fadeChatMessage';
-export * from './sys/fadeCompendium';
 export * from './sys/fadeEffect';
 export * from './sys/migration';
 export * from './sys/registry/AbilityCheck';

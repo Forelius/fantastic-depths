@@ -1,3 +1,4 @@
+import { CodeMigrate } from '../migration.js';
 export class DamageSystem {
    useAV: boolean;
    constructor() {
@@ -245,7 +246,7 @@ export class DamageSystem {
       }
 
       if (game.fade.toastManager) {
-         game.fade.toastManager.showHtmlToast(chatContent, "info", game.settings.get("core", "rollMode"));
+         game.fade.toastManager.showHtmlToast(chatContent, "info", CodeMigrate.getRollModeSetting());
       }
 
       const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker

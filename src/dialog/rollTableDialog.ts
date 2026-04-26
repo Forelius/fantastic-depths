@@ -89,7 +89,7 @@ export class rollTableDialog {
          // Create a message to display the result
          const messageContent = `<div class="text-size16">${rollTable.name}</div><p>${rolledResultsText}</p><hr/><p><strong>${rollTotal} + ${data.modifier} = ${total}</strong></p>`;
          const chatMsgData = { content: messageContent, speaker: ChatMessage.getSpeaker() };
-         ChatMessage.applyRollMode(chatMsgData, data.rollMode);
+         CodeMigrate.applyChatRollMode(chatMsgData, data.rollMode);
          // Send the result to chat
          ChatMessage.create(chatMsgData);
       } else {

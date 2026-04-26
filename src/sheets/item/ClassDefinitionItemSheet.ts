@@ -167,7 +167,8 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
       super._onDrop(event);
-      const data = TextEditor.getDragEventData(event);
+      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const data = TextEditorImpl.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
       if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
