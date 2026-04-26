@@ -15,7 +15,7 @@ type Gem = {
  * Utility class for treasure table rolls.
  */
 export class fadeTreasure {
-   group: { coins: CoinJewelry[]; gems: Gem[]; jewelry: CoinJewelry[]; special: []; items: string []; };
+   group: { coins: CoinJewelry[]; gems: Gem[]; jewelry: CoinJewelry[]; special: []; items: string[]; };
    constructor() {
       this.group = {
          coins: [],
@@ -88,15 +88,21 @@ export class fadeTreasure {
          await drawRoll.evaluate();
          const numberOfDraws = drawRoll.total;
 
-         // Draw from the table multiple times
-         const results: string[] = [];
-         for (let i = 0; i < numberOfDraws; i++) {
-            // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
-            const draw = await table.draw({ displayChat: false });
-            // Usually draw.results is an array; we�ll grab the text from the first result
-            const resultText: string = draw.results.map(r => r.getChatText());
-            results.push(resultText.length > 0 ? resultText : resultText[0]);
-         }
+// Draw from the table multiple times
+          const results: (string | string[])[] = [];
+for (let i = 0; i < numberOfDraws; i++) {
+             // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
+             const draw = await table.draw({ displayChat: false });
+             // Grab text from each result
+             const resultTexts: string[] = [];
+             for (const r of draw.results) {
+                const text = await CodeMigrate.getTableResultText(r);
+                if (text) resultTexts.push(text);
+             }
+             // Match original behavior: push array if has items, else push first result (empty string)
+             if (resultTexts.length > 0) results.push(resultTexts);
+             else if (draw.results.length > 0) results.push(['']);
+          }
 
          result = this.#formatOutput(results);
       }
@@ -179,13 +185,12 @@ export class fadeTreasure {
             const rollTableConfig = CONFIG.FADE.TreasureTypes.jewelry.rollTables.find(item => jewelryValue.value >= item.min && jewelryValue.value <= item.max);
             // Find the roll table by name
             const table = await fadeFinder.getRollTable(rollTableConfig.table);
-            if (table) {
-               // Draw once. Set displayChat to false to avoid too numerous chat messages for each draw
-               const draw = await table.draw({ displayChat: false });
-               let resultText = draw.results.map(r => r.getChatText());
-               resultText = resultText.length > 0 ? resultText : resultText[0];
-               const content = game.i18n.format('FADE.treasure.formatValue', { name: resultText, value: jewelryValue.value.toLocaleString() });
-               this.group.jewelry.push({ content: `<div>${content}</div>`, value: jewelryValue.value });
+if (table) {
+                // Draw once. Set displayChat to false to avoid too numerous chat messages for each draw
+                const draw = await table.draw({ displayChat: false });
+                const resultText = await CodeMigrate.getTableResultText(draw.results[0]);
+                const content = game.i18n.format('FADE.treasure.formatValue', { name: resultText, value: jewelryValue.value.toLocaleString() });
+                this.group.jewelry.push({ content: `<div>${content}</div>`, value: jewelryValue.value });
             } else {
                console.error(`RollTable named "${rollTableConfig.table}" not found.`);
             }
