@@ -34,10 +34,10 @@ abstract class BaseInitiative {
    /**
     * Add custom elements to the combat tracker UI.
     * @param {any} html
+    * @param {any} html
     * @param {any} data
     */
-   async renderCombatTracker(html, data) {
-      console.log(`renderCombatTracker called.`, data.combat.combatants);
+   async renderCombatTracker(app, html, data) {
       // Iterate over each combatant and apply a CSS class based on disposition
       for (const combatant of data.combat.combatants) {
          /* console.debug(combatant);*/
@@ -78,7 +78,7 @@ abstract class BaseInitiative {
          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
       }
 
-      if (combatantControls.querySelector(".declared-action")) return;
+      if (combatantElement.querySelector(".declared-action")) return;
       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
    }
@@ -507,11 +507,11 @@ export class AltGroupInit extends GroupInit {
    /**
     * @override
     * Add custom elements to the combat tracker UI.
+    * @param {any} app
     * @param {any} html
     * @param {any} data
     */
-   async renderCombatTracker(html, data) {
-      console.log(`renderCombatTracker (swifter) called.`, data.combat.combatants);
+   async renderCombatTracker(app, html, data) {
       // Iterate over each combatant and apply a CSS class based on disposition
       const swifter = {};
       for (const combatant of data.combat.turns) {
@@ -522,7 +522,7 @@ export class AltGroupInit extends GroupInit {
          }
 
          const disposition = combatant.token.disposition;
-         const combatantElems = document.querySelectorAll(`.combatant[data-combatant-id="${combatant.id}"]`);
+         const combatantElems = html.querySelectorAll(`.combatant[data-combatant-id="${combatant.id}"]`);
 
          // Set disposition indicator
          if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
@@ -535,6 +535,7 @@ export class AltGroupInit extends GroupInit {
             combatantElems.forEach(el => el.classList.add("disposition-secret"));
          }
 
+         // If the combatant is acting in the swifter phase...
          if (isSwifterPhase === true) {
             const swifterElem = combatantElems[0];
             await this.setupSwifterElem(swifterElem, combatant);
@@ -563,7 +564,7 @@ export class AltGroupInit extends GroupInit {
          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
       }
 
-      if (combatantControls.querySelector(".declared-action")) return;
+      if (combatantElement.querySelector(".declared-action")) return;
       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
    }

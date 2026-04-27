@@ -172,7 +172,7 @@ export class fadeCombat extends Combat {
          html = html[0];
       }
       if (data?.combat?.combatants) {
-         this.initiativeSystem.renderCombatTracker(html, data);
+         this.initiativeSystem.renderCombatTracker(app, html, data);
       }
    }
 
