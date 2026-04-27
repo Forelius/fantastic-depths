@@ -34,9 +34,10 @@ abstract class BaseInitiative {
    /**
     * Add custom elements to the combat tracker UI.
     * @param {any} html
+    * @param {any} html
     * @param {any} data
     */
-   async renderCombatTracker(html, data) {
+   async renderCombatTracker(app, html, data) {
       // Iterate over each combatant and apply a CSS class based on disposition
       for (const combatant of data.combat.combatants) {
          /* console.debug(combatant);*/
@@ -64,22 +65,23 @@ abstract class BaseInitiative {
     * @param {any} combatantElement
     * @param {any} combatant
     */
-async setupElem(combatantElement, combatant) {
-       const combatantControls = combatantElement.querySelector(".combatant-controls");
-       const templateData = {
-          combatant,
-          showMove: combatant.canMove,
-          showAction: true
-       };
-       if (combatant.isSlowed) {
-          const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
-          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
-       }
+   async setupElem(combatantElement, combatant) {
+      const combatantControls = combatantElement.querySelector(".combatant-controls");
+      const templateData = {
+         combatant,
+         showMove: combatant.canMove,
+         showAction: true
+      };
+      //console.log(`setupElem called for ${combatant.actor?.name}`, combatant);
+      if (combatant.isSlowed) {
+         const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
+         combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+      }
 
-       if (combatantControls.querySelector(".declared-action")) return;
-       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
-       combatantControls.insertAdjacentHTML("afterend", controlsContent);
-    }
+      if (combatantElement.querySelector(".declared-action")) return;
+      const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
+      combatantControls.insertAdjacentHTML("afterend", controlsContent);
+   }
 }
 
 export class IndivInit extends BaseInitiative {
@@ -426,7 +428,7 @@ export class GroupInit extends BaseInitiative {
 }
 
 export class AltGroupInit extends GroupInit {
-   phaseOrders: Record<string,unknown>;
+   phaseOrders: Record<string, unknown>;
    phaseIndex: number;
    constructor() {
       super();
@@ -505,10 +507,11 @@ export class AltGroupInit extends GroupInit {
    /**
     * @override
     * Add custom elements to the combat tracker UI.
+    * @param {any} app
     * @param {any} html
     * @param {any} data
     */
-   async renderCombatTracker(html, data) {
+   async renderCombatTracker(app, html, data) {
       // Iterate over each combatant and apply a CSS class based on disposition
       const swifter = {};
       for (const combatant of data.combat.turns) {
@@ -519,7 +522,7 @@ export class AltGroupInit extends GroupInit {
          }
 
          const disposition = combatant.token.disposition;
-         const combatantElems = document.querySelectorAll(`.combatant[data-combatant-id="${combatant.id}"]`);
+         const combatantElems = html.querySelectorAll(`.combatant[data-combatant-id="${combatant.id}"]`);
 
          // Set disposition indicator
          if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
@@ -532,6 +535,7 @@ export class AltGroupInit extends GroupInit {
             combatantElems.forEach(el => el.classList.add("disposition-secret"));
          }
 
+         // If the combatant is acting in the swifter phase...
          if (isSwifterPhase === true) {
             const swifterElem = combatantElems[0];
             await this.setupSwifterElem(swifterElem, combatant);
@@ -547,42 +551,43 @@ export class AltGroupInit extends GroupInit {
     * @param {any} combatantElement
     * @param {any} combatant
     */
-async setupSwifterElem(combatantElement, combatant) {
-       const combatantControls = combatantElement.querySelector(".combatant-controls");
-       const templateData = {
-          combatant,
-          isSwifter: true,
-          showMove: combatant.canMove,
-          showAction: combatant.isSwifterAction
-       };
-       if (combatant.isSlowed) {
-          const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
-          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
-       }
-       if (combatantControls.querySelector(".declared-action")) return;
-       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
-       combatantControls.insertAdjacentHTML("afterend", controlsContent);
-    }
+   async setupSwifterElem(combatantElement, combatant) {
+      const combatantControls = combatantElement.querySelector(".combatant-controls");
+      const templateData = {
+         combatant,
+         isSwifter: true,
+         showMove: combatant.canMove,
+         showAction: combatant.isSwifterAction
+      };
+      if (combatant.isSlowed) {
+         const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
+         combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+      }
+
+      if (combatantElement.querySelector(".declared-action")) return;
+      const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
+      combatantControls.insertAdjacentHTML("afterend", controlsContent);
+   }
 
    /**
     * Adds the combat manuever declaration control to the combat tracker.
     * @param {any} combatantElement
     * @param {any} combatant
     */
-async setupSlowerElem(combatantElement, combatant) {
-       const combatantControls = combatantElement.querySelector(".combatant-controls");
-       const templateData = {
-          combatant,
-          isSlower: true,
-          showAction: !combatant.isSwifterAction
-       };
-       if (combatant.isSlowed) {
-          const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
-          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
-       }
-       if (combatantControls.querySelector(".declared-action")) return;
-       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
-       combatantControls.insertAdjacentHTML("afterend", controlsContent);
-    }
+   async setupSlowerElem(combatantElement, combatant) {
+      const combatantControls = combatantElement.querySelector(".combatant-controls");
+      const templateData = {
+         combatant,
+         isSlower: true,
+         showAction: !combatant.isSwifterAction
+      };
+      if (combatant.isSlowed) {
+         const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
+         combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+      }
+      if (combatantControls.querySelector(".declared-action")) return;
+      const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
+      combatantControls.insertAdjacentHTML("afterend", controlsContent);
+   }
 }
 
