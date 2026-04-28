@@ -22,12 +22,16 @@ export class fadeCombat extends Combat {
       // which is not yet populated when setupTurns() runs during early page load.
       // Unlinked tokens (monsters) return null at that point and get filtered out.
       // Re-running setupTurns after the canvas is ready ensures all tokens are resolvable.
-      Hooks.on("canvasReady", () => {
-         if (game.combat) {
-            game.combat.setupTurns();
-            ui.combat?.render();
+      Hooks.on("canvasReady", fadeCombat.needsSetupTurns);
+   }
+
+   static needsSetupTurns() {
+      for (const combat of game.combats) {
+         if (combat instanceof fadeCombat) {
+            combat.setupTurns();
          }
-      });
+      }
+      ui.combat?.render();
    }
 
    /**

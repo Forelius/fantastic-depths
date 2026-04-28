@@ -81,6 +81,13 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
       return result;
    }
 
+   /** @override */
+   _onFirstRender(context, options) {
+      if (game.user.isGM) {
+         Hooks.on('updateActor', this._updateTrackedActor);
+      }
+   }
+
    /**
    * Actions performed after any render of the Application.
    * Post-render steps are not awaited by the render process.
@@ -89,23 +96,20 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
    * @protected
    */
    _onRender(_context, _options) {
-      if (game.user.isGM) {
-         Hooks.off('updateActor', this._updateTrackedActor);
-         Hooks.on('updateActor', this._updateTrackedActor);
+      if (!game.user.isGM) return;
 
-         // Bind drag and drop handlers
-         this.#dragDrop.forEach((d) => d.bind(this.element));
+      // Bind drag and drop handlers
+      this.#dragDrop.forEach((d) => d.bind(this.element));
 
-         // Add double-click listener for opening actor sheets
-         this.element.querySelectorAll(".party-member").forEach(element => {
-            element.addEventListener("dblclick", (event) => {
-               const actorId = event.currentTarget.dataset.actorId;
-               const actor = game.actors.get(actorId);
-               if (!actor) return;
-               actor.sheet.render(true);
-            });
+      // Add double-click listener for opening actor sheets
+      this.element.querySelectorAll(".party-member").forEach(element => {
+         element.addEventListener("dblclick", (event) => {
+            const actorId = event.currentTarget.dataset.actorId;
+            const actor = game.actors.get(actorId);
+            if (!actor) return;
+            actor.sheet.render(true);
          });
-      }
+      });
    }
 
    /**

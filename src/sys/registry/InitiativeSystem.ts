@@ -76,11 +76,16 @@ abstract class BaseInitiative {
       if (combatant.isSlowed) {
          const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+         //console.debug(`setupElem: Inserted slow content for ${combatant.name}(${combatant.id})`);
       }
 
-      if (combatantElement.querySelector(".declared-action")) return;
+      if (combatantElement.querySelector(".declared-action")) {
+         console.debug(`setupElem: ${combatant.name}(${combatant.id}) already has declared action element. Skipping.`, combatantElement.querySelector(".declared-action"));
+         return;
+      }
       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
+      console.debug(`setupElem: Inserting declared action for ${combatant.name}(${combatant.id}) completed.`);
    }
 }
 
@@ -458,6 +463,7 @@ export class AltGroupInit extends GroupInit {
          turns.sort((a, b) => this.sortCombatant(a, b));
       }
 
+      console.debug(`setupTurns called. swiftTurns.length=${swiftTurns.length} turns.length=${turns.length}`);
       return combat.updateStateTracking([...swiftTurns, ...turns]);
    }
 
@@ -538,56 +544,39 @@ export class AltGroupInit extends GroupInit {
          // If the combatant is acting in the swifter phase...
          if (isSwifterPhase === true) {
             const swifterElem = combatantElems[0];
-            await this.setupSwifterElem(swifterElem, combatant);
+            //await this.setupSwifterElem(swifterElem, combatant);
+            await this.setupElem(swifterElem, combatant, true);
          } else {
             const slowerElem = (!combatant.isSwifterAction && combatant.canMove) ? combatantElems[1] : combatantElems[0];
-            await this.setupSlowerElem(slowerElem, combatant);
+            //await this.setupSlowerElem(slowerElem, combatant);
+            await this.setupElem(slowerElem, combatant, false);
          }
       }
    }
 
-   /**
-    * Adds the combat manuever declaration control to the combat tracker.
-    * @param {any} combatantElement
-    * @param {any} combatant
-    */
-   async setupSwifterElem(combatantElement, combatant) {
+   async setupElem(combatantElement, combatant, isSwifter = false) {
       const combatantControls = combatantElement.querySelector(".combatant-controls");
+
       const templateData = {
          combatant,
-         isSwifter: true,
-         showMove: combatant.canMove,
-         showAction: combatant.isSwifterAction
+         isSwifter: isSwifter,
+         isSlower: !isSwifter,
+         showMove: isSwifter ? combatant.canMove : false,
+         // Priority 1: If no initiative, always show. 
+         // Priority 2: If initiative exists, filter by phase.
+         showAction: (combatant.initiative === null) ||
+            (isSwifter ? combatant.isSwifterAction : !combatant.isSwifterAction)
       };
+
       if (combatant.isSlowed) {
          const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
       }
 
-      if (combatantElement.querySelector(".declared-action")) return;
-      const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
-      combatantControls.insertAdjacentHTML("afterend", controlsContent);
-   }
+      if (combatantElement.querySelector(".combatant-controls + .declared-action")) return;
 
-   /**
-    * Adds the combat manuever declaration control to the combat tracker.
-    * @param {any} combatantElement
-    * @param {any} combatant
-    */
-   async setupSlowerElem(combatantElement, combatant) {
-      const combatantControls = combatantElement.querySelector(".combatant-controls");
-      const templateData = {
-         combatant,
-         isSlower: true,
-         showAction: !combatant.isSwifterAction
-      };
-      if (combatant.isSlowed) {
-         const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
-         combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
-      }
-      if (combatantControls.querySelector(".declared-action")) return;
       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
+      console.debug(`setupElem: Inserting declared action for ${combatant.name}(${combatant.id}) completed.`);
    }
 }
-
