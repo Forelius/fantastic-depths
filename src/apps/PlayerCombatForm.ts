@@ -37,28 +37,27 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
       };
    }
 
+   /** @override */
+   _onFirstRender(context, options) {
+      Hooks.on('updateActor', this._updateTrackedActor);
+      Hooks.on("updateCombatant", this.#updateCombatant);
+      Hooks.on("updateItem", this.#updateItem);
+      Hooks.on("createCombatant", this.#createCombatant);
+      Hooks.on("deleteCombatant", this.#deleteCombatant);
+   }
+
    _onRender(_context, _options) {
       this.element.querySelectorAll('[name="declaredAction"]').forEach(el => {
          el.addEventListener("change", (event) => this.#onPlayerChangedAction(event));
       });
-      Hooks.off('updateActor', this._updateTrackedActor);
-      Hooks.on('updateActor', this._updateTrackedActor);
-      Hooks.off("updateCombatant", this.#updateCombatant);
-      Hooks.on("updateCombatant", this.#updateCombatant);
-      Hooks.off("updateItem", this.#updateItem);
-      Hooks.on("updateItem", this.#updateItem);
-      Hooks.off("createCombatant", (combatant, options, userId) => this.#createCombatant(combatant, options, userId));
-      Hooks.on("createCombatant", (combatant, options, userId) => this.#createCombatant(combatant, options, userId));
-      Hooks.off("deleteCombatant", (combatant, options, userId) => this.#deleteCombatant(combatant, options, userId));
-      Hooks.on("deleteCombatant", (combatant, options, userId) => this.#deleteCombatant(combatant, options, userId));
    }
 
    close(options) {
       Hooks.off('updateActor', this._updateTrackedActor);
       Hooks.off("updateCombatant", this.#updateCombatant);
       Hooks.off("updateItem", this.#updateItem);
-      Hooks.off("createCombatant", (combatant, options, userId) => this.#createCombatant(combatant, options, userId));
-      Hooks.off("deleteCombatant", (combatant, options, userId) => this.#deleteCombatant(combatant, options, userId));
+      Hooks.off("createCombatant", this.#createCombatant);
+      Hooks.off("deleteCombatant", this.#deleteCombatant);
       delete game.fade.combatForm;
       return super.close(options);
    }
@@ -150,7 +149,7 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {string} userId User ID who triggered creation
     */
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   #createCombatant(combatant, options, userId) {
+   #createCombatant = (combatant, options, userId) => {
       if (combatant.actor === null || combatant.actor === undefined) {
          console.warn(`World actor no longer exists for combatant ${combatant.name}. Skipping combatant.`);
       } else {
@@ -160,7 +159,7 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
             this.render({ force: true });
          }
       }
-   }
+   };
 
    /**
     * @public
@@ -170,12 +169,12 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * @param {string} userId User ID who triggered deletion
     */
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   #deleteCombatant(combatant, options, userId) {
+   #deleteCombatant = (combatant, options, userId) => {
       console.log(`PlayerCombatForm detected a deleted combatant.`, combatant);
       const rowElement = this.element?.querySelector(`tr[data-token-id="${combatant.tokenId}"]`);
       if (rowElement) {
          console.log(`PlayerCombatForm Found removed combatant. Refreshing form.`);
          this.render({ force: true });
       }
-   }
+   };
 }

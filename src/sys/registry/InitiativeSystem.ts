@@ -463,6 +463,7 @@ export class AltGroupInit extends GroupInit {
          turns.sort((a, b) => this.sortCombatant(a, b));
       }
 
+      console.debug(`setupTurns called. swiftTurns.length=${swiftTurns.length} turns.length=${turns.length}`);
       return combat.updateStateTracking([...swiftTurns, ...turns]);
    }
 
