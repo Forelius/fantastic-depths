@@ -57,6 +57,8 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
       Hooks.off('updateActor', this._updateTrackedActor);
       Hooks.off("updateCombatant", this.#updateCombatant);
       Hooks.off("updateItem", this.#updateItem);
+      Hooks.off("createCombatant", (combatant, options, userId) => this.#createCombatant(combatant, options, userId));
+      Hooks.off("deleteCombatant", (combatant, options, userId) => this.#deleteCombatant(combatant, options, userId));
       delete game.fade.combatForm;
       return super.close(options);
    }
@@ -152,7 +154,7 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
       if (combatant.actor === null || combatant.actor === undefined) {
          console.warn(`World actor no longer exists for combatant ${combatant.name}. Skipping combatant.`);
       } else {
-         const rowElement = this.element.querySelector(`tr[data-token-id="${combatant.tokenId}"]`);
+         const rowElement = this.element?.querySelector(`tr[data-token-id="${combatant.tokenId}"]`);
          if (!rowElement) {
             console.log(`PlayerCombatForm detected a new combatant. Refreshing form.`, combatant.actor);
             this.render({ force: true });
@@ -170,7 +172,7 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
    #deleteCombatant(combatant, options, userId) {
       console.log(`PlayerCombatForm detected a deleted combatant.`, combatant);
-      const rowElement = this.element.querySelector(`tr[data-token-id="${combatant.tokenId}"]`);
+      const rowElement = this.element?.querySelector(`tr[data-token-id="${combatant.tokenId}"]`);
       if (rowElement) {
          console.log(`PlayerCombatForm Found removed combatant. Refreshing form.`);
          this.render({ force: true });
