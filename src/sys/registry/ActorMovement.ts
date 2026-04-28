@@ -16,7 +16,7 @@ export class ActorMovement {
          actor.system.movement2.day = Math.floor(actor.system.movement2.turn / 5);
          actor.system.movement2.run = Math.floor(actor.system.movement2.turn / runDivisor);
       } else {
-         console.debug(`No movement2 specified for ${actor.name}`);
+         //console.debug(`No movement2 specified for ${actor.name}`);
       }
    }
 }
