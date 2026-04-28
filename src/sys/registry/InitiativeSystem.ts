@@ -76,11 +76,17 @@ abstract class BaseInitiative {
       if (combatant.isSlowed) {
          const slowContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-slow.hbs", templateData);
          combatantControls.querySelector(".token-effects").insertAdjacentHTML("beforeend", slowContent);
+         console.debug(`setupElem: Inserted slow content for ${combatant.name}(${combatant.id})`);
       }
 
-      if (combatantElement.querySelector(".declared-action")) return;
+      if (combatantElement.querySelector(".declared-action")) {
+         console.debug(`setupElem: ${combatant.name}(${combatant.id}) already has declared action element. Skipping.`, combatantElement.querySelector(".declared-action"));
+         return;
+      }
+      console.debug(`setupElem: Inserting declared action for ${combatant.name}...`);
       const controlsContent = await CodeMigrate.RenderTemplate("systems/fantastic-depths/templates/sidebar/combatant-controls.hbs", templateData);
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
+      console.debug(`setupElem: Inserting declared action for ${combatant.name} completed.`);
    }
 }
 
@@ -590,4 +596,3 @@ export class AltGroupInit extends GroupInit {
       combatantControls.insertAdjacentHTML("afterend", controlsContent);
    }
 }
-

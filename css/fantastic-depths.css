@@ -317,7 +317,7 @@ table.compact-table input {
   height: 16px;
 }
 
-.declared-action {
+.declared-action, .slowed-action {
   font-size: 11px;
   color: #888888;
 }
