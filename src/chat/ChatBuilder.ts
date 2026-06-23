@@ -147,11 +147,10 @@ export abstract class ChatBuilder {
     * obj.flavor - Chat flavor text. Supercedes this.data.caller.name if present.
     */
    getChatMessageData(obj) {
-      const chatMessageData = {
-         ...obj,
-         author: game.user.id,
-         type: obj.type ?? (ChatMessage.TYPES[0]),
-      };
+      const chatMessageData = { ...obj, author: game.user.id };
+
+      if ("CHAT_MESSAGE_STYLES" in CONST) chatMessageData.style = Number(obj.style ?? obj.type ?? 0);
+      else chatMessageData.type = Number(obj.type ?? obj.style ?? 0);
 
       // Manipulated the dom to place digest info in roll's tooltip
       chatMessageData.content = this.moveDigest(chatMessageData.content);
@@ -159,13 +158,13 @@ export abstract class ChatBuilder {
       const { roll } = this.data;
       // If there was a roll involved in the chat message...
       if (obj.rolls ?? roll) {
-         const rollsData = { rolls: obj.rolls }; 
+         const rollsData = { rolls: obj.rolls };
          if (!obj.rolls) rollsData.rolls = Array.isArray(roll) ? roll : [roll];
          Object.assign(chatMessageData, rollsData);
 
          // Decide roll mode (public, gm only,...)
-const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? CodeMigrate.getDefaultChatMode();
-          CodeMigrate.applyChatRollMode(chatMessageData, rollMode);
+         const rollMode = obj.rollMode ?? obj.resp?.rollMode ?? CodeMigrate.getDefaultChatMode();
+         CodeMigrate.applyChatRollMode(chatMessageData, rollMode);
       }
 
       return chatMessageData;
