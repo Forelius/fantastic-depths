@@ -2,7 +2,7 @@ import { IdentifiableData } from '../fields/IdentifiableField.js';
 const { BooleanField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
 
 /**
- * Data model for an ammo item extending GearItemDataModel.
+ * Data model for an ammo item.
  */
 export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
    static defineSchema() {
