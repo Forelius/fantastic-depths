@@ -191,8 +191,7 @@ const DragDropMixin = (superclass) => class extends superclass {
             result = await this._onSortItem(event, droppedItem);
          } else {
             // Create new instance of item and if same id item already exists, don't keep id for this item.
-            const keepId = !this.actor.items?.has(droppedItem.id);
-            result = [(await Item.create(droppedItem.toObject(), { parent: this.actor, keepId }) as Item)];
+            result = [(await this._moveOrSplitItem(event, droppedItem, droppedItem.toObject()))];
          }
       }
       return result;
@@ -228,9 +227,9 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @returns {Promise<Item[]>}
     * @protected
     */
-   async _onDropItemCreate(itemData): Promise<Item[]> {
+   async _onDropItemCreate(itemData, options = {}): Promise<Item[]> {
       itemData = itemData instanceof Array ? itemData : [itemData];
-      return await this.actor.createEmbeddedDocuments("Item", itemData);
+      return await this.actor.createEmbeddedDocuments("Item", itemData, options);
    }
 
    /**
@@ -266,6 +265,33 @@ const DragDropMixin = (superclass) => class extends superclass {
 
       // Perform the update
       return this.actor.updateEmbeddedDocuments("Item", updateData);
+   }
+
+   /**
+    * Move an item from a source actor to this actor, or split the stack if Shift is held.
+    * @param {DragEvent} event        The initiating drop event (used for Shift detection)
+    * @param {Item} droppedItem       The source item being moved
+    * @param {object} itemData        Serialized item data from droppedItem.toObject()
+    * @returns {Promise<Item>}        The newly created item on this actor
+    * @protected
+    */
+   async _moveOrSplitItem(event, droppedItem, itemData): Promise<Item> {
+      const isSplit = event.shiftKey && droppedItem.system?.quantity > 1;
+      if (isSplit) {
+         itemData.system.quantity = 1;
+      }
+      itemData.system.containerId = "";
+      const keepId = !this.actor.items?.has(droppedItem.id);
+      const created = await this._onDropItemCreate(itemData, { keepId });
+      const newItem = created[0];
+      if (droppedItem.parent && droppedItem.isOwner && CONFIG.FADE.MovableItems.includes(droppedItem.type)) {
+         if (isSplit) {
+            await droppedItem.update({ "system.quantity": droppedItem.system.quantity - 1 });
+         } else {
+            await droppedItem.delete();
+         }
+      }
+      return newItem;
    }
 }
 

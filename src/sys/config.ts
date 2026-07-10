@@ -166,7 +166,7 @@ export const FADE = {
       charge: { phase: "melee", special: true, classes: ["monster"], needAbility: true, canMove: true },
       swoop: { phase: "melee", special: true, classes: ["monster"], needAbility: true, canMove: true },
       crush: { phase: "melee", special: true, classes: ["monster"], needAbility: true, canMove: true }
-   } as Record<string,Record<string,unknown>>,
+   } as Record<string, Record<string, unknown>>,
    ActorSizes: [
       { id: "T", isCombat: false, maxFeet: 2 },   // Tiny: Up to 2 feet
       { id: "S", isCombat: true, maxFeet: 4 },    // Small: 2 to 4 feet
@@ -304,5 +304,6 @@ export const FADE = {
             { wtPortion: 0, mvFactor: 0, name: "over" },
          ]
       }
-   }
+   },
+   MovableItems: ["ammo", "item", "treasure", "armor", "weapon", "light"]
 };

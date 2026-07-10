@@ -305,23 +305,18 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                      const newItem = await this._onDropItemCreate(itemData);
                      await newItem[0].update({ "system.containerId": targetId });
                      result = newItem;
-                  } else if (droppedItem.actor.id != this.actor.id) {
-                     const newItem = await this._onDropItemCreate(itemData);
-                     await newItem[0].update({ "system.containerId": targetId });
-                     result = newItem;
+                   } else if (droppedItem.actor.id != this.actor.id) {
+                      const newItem = await this._moveOrSplitItem(event, droppedItem, itemData);
+                      await newItem.update({ "system.containerId": targetId });
+                      result = [newItem];
                   } else {
                      await droppedItem.update({ "system.containerId": targetId });
                   }
                }
                // The drop target is not a container
-               else {
-                  // If the dropped item is owned by an actor already...
-                  if (droppedItem.actor !== null) {
-                     // Remove the item from any container
-                     await droppedItem.update({ "system.containerId": null });
-                  }
-                  result = await super._onDropItem(event, item);
-               }
+                else {
+                   result = await super._onDropItem(event, item);
+                }
             } else if (droppedItem.type === "species") {
                if (this.actor.type === "character") {
                   await this.actor.update({ "system.details.species": droppedItem.name });
