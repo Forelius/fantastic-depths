@@ -1,8 +1,6 @@
 import { FDCombatActor } from './FDCombatActor.js';
-import { AncestryDefinitionItem } from "../item/AncestryDefinitionItem.js";
-import { DialogFactory } from '../dialog/DialogFactory.js';
-import { fadeFinder } from '../utils/finder.js';
 import { ClassSystemBase } from '../sys/registry/ClassSystem.js';
+import { AncestrySystem } from '../sys/registry/AncestrySystem.js';
 
 export class CharacterActor extends FDCombatActor {
    constructor(data, context) {
@@ -39,10 +37,8 @@ export class CharacterActor extends FDCombatActor {
          const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
          await classSystem.onCharacterActorUpdate(this, updateData);
 
-         if (updateData.system?.details?.species !== undefined
-            || updateData.system?.details?.level !== undefined) {
-            await this._updateAncestry();
-         }
+         const ancestrySystem: AncestrySystem = game.fade.registry.getSystem("ancestrySystem");
+         await ancestrySystem.onCharacterActorUpdate(this, updateData);
       }
    }
 
@@ -109,61 +105,6 @@ export class CharacterActor extends FDCombatActor {
             content: `<p>Player ${user.name} updated ${this.name}:</p><p>${changeDescs}</p>`,
             whisper: ChatMessage.getWhisperRecipients("GM"), // Whisper to all active GMs
          });
-      }
-   }
-
-   /**
-    * Called by update actor to update ancestry-related data.
-    */
-   async _updateAncestry() {
-      const nameInput = this.system.details.species?.toLowerCase();
-      const ancestryDefItem = await fadeFinder.getAncestry(nameInput);
-      const actorItems = this.items.filter(item => item.type === 'species');
-
-      // Manage the ancestry embedded item
-      if (actorItems?.length > 0) {
-         for (const actorItem of actorItems) actorItem.delete();
-      }
-
-      if (ancestryDefItem) {
-         const itemData = [ancestryDefItem.toObject()];
-         await this.createEmbeddedDocuments("Item", itemData);
-
-         // Ancestry special abilities
-         const abilityIds = this.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
-         const abilitiesData = (await AncestryDefinitionItem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
-         const itemsData = await fadeFinder.getAncestryItems(nameInput, this.highestLevel);
-         const languages = ancestryDefItem.system.languages;
-         let hasMinAbilityScore = false;
-         for (const [key] of Object.entries(ancestryDefItem.system.abilities)) {
-            if (ancestryDefItem.system.abilities[key].min > 3) hasMinAbilityScore = true;
-         }
-
-         if (abilitiesData || itemsData || languages) {
-            const dialogResp = await DialogFactory({
-               dialog: "yesno",
-               title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: this.system.details.species }),
-               content: game.i18n.format('FADE.dialog.specialAbilities.content', {
-                  name: this.system.details.species,
-                  type: game.i18n.localize('FADE.Actor.Ancestry')
-               }),
-               yesLabel: game.i18n.localize('FADE.dialog.yes'),
-               noLabel: game.i18n.localize('FADE.dialog.no'),
-               defaultChoice: "yes"
-            }, this);
-
-            if (dialogResp?.resp?.result === true) {
-               await this.setupSpecialAbilities(abilitiesData);
-               await this.setupItems(itemsData, AncestryDefinitionItem.ValidItemTypes);
-               await this.setupLanguages(languages);
-            }
-
-            // TODO: This isn't doing anything right now. Uncomment and fix.
-            /*
-            if (hasMinAbilityScore) {
-               const abiltyUpdates = this.setupMinAbilityScores(ancestryDefItem.system.abilities);
-            }*/
-         }
       }
    }
 }

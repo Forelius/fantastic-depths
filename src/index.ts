@@ -117,6 +117,7 @@ export * from './sys/migration';
 export * from './sys/registry/AbilityCheck';
 export * from './sys/registry/AbilityScore';
 export * from './sys/registry/ActorMovement';
+export * from './sys/registry/AncestrySystem';
 export * from './sys/registry/ArmorSystem';
 export * from './sys/registry/ClassSystem';
 export * from './sys/registry/DamageSystem';
