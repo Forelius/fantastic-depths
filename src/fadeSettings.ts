@@ -367,6 +367,15 @@ export class fadeSettings {
          requiresReload: true,
          restricted: true, // Only the GM can change this setting
       });
+      game.settings.register(game.system.id, "promptAddClassAbilities", {
+         name: "SETTINGS.promptAddClassAbilities.name",
+         hint: "SETTINGS.promptAddClassAbilities.hint",
+         scope: "world",
+         config: true,
+         type: Boolean,
+         default: true,
+         restricted: true, // Only the GM can change this setting
+      });
    }
 
    #registerNonConfigSettings() {

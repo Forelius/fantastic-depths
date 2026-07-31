@@ -1413,6 +1413,10 @@
             "single": "Single",
             "advanced": "Advanced"
          }
+      },
+      "promptAddClassAbilities": {
+         "name": "Prompt for Class Abilities",
+         "hint": "When enabled, the GM is asked before class-granted special abilities and items are added to a character upon leveling. When disabled, they are added automatically."
       }
    }
 }

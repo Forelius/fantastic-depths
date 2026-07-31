@@ -519,13 +519,23 @@ export abstract class ClassSystemBase {
       }
    }
 
+   /**
+    * Prompt the user to add the class special abilities and items granted at the specified level.
+    * @param {Actor} actor The actor to add the abilities and items to.
+    * @param {string} className The class name.
+    * @param {number} currentLevel The current class level.
+    */
    async _promptAddAbilityItems(actor, className, currentLevel) {
       const abilityNames = actor.items.filter(item => item.type === "specialAbility").map(item => item.name);
       const itemNames = actor.items.filter(item => ClassDefinitionItem.ValidItemTypes.includes(item.type)).map(item => item.name);
       const abilitiesData = await fadeFinder.getClassAbilities(className, currentLevel);
       const itemsData = await fadeFinder.getClassItems(className, currentLevel);
-      if ((abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
-         || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0)) {
+
+      const prompt = game.settings.get(game.system.id, "promptAddClassAbilities");
+      const hasNew = (abilitiesData && abilitiesData.filter(item => abilityNames.includes(item.name) === false).length > 0)
+         || (itemsData && itemsData.filter(item => itemNames.includes(item.name) === false).length > 0);
+
+      if (prompt === true && hasNew) {
          const dialogResp = await DialogFactory({
             dialog: "yesno",
             title: game.i18n.localize("FADE.dialog.specialAbilities.title"),
@@ -538,14 +548,11 @@ export abstract class ClassSystemBase {
             defaultChoice: "yes"
          }, actor);
 
-         if (dialogResp?.resp?.result === true) {
-            await actor.setupSpecialAbilities(abilitiesData);
-            await actor.setupItems(itemsData, ClassDefinitionItem.ValidItemTypes);
-         }
-      } else {
-         await actor.setupSpecialAbilities(abilitiesData);
-         await actor.setupItems(itemsData, ClassDefinitionItem.ValidItemTypes);
+         if (dialogResp?.resp?.result !== true) return;
       }
+
+      await actor.setupSpecialAbilities(abilitiesData);
+      await actor.setupItems(itemsData, ClassDefinitionItem.ValidItemTypes);
    }
 }
 

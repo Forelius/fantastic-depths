@@ -7,11 +7,19 @@
 const DragDropMixin = (superclass) => class extends superclass {
    #dragDrop;
 
+   /**
+    * Initialize drag-and-drop workflow handlers for this Application.
+    * @param {object} options The application options.
+    */
    constructor(options = {}) {
       super(options);
       this.#dragDrop = this.#createDragDropHandlers();
    }
 
+   /**
+    * Default application options including the drag and drop selectors.
+    * @type {Record<string, unknown>}
+    */
    static DEFAULT_OPTIONS: Record<string, unknown> = {
       dragDrop: [{ dragSelector: "[data-document-id]", dropSelector: "form" }]
    }
@@ -139,8 +147,7 @@ const DragDropMixin = (superclass) => class extends superclass {
             dragover: this._onDragOver.bind(this),
             drop: this._onDrop.bind(this),
          };
-         // TODO: Remove after v12 support.
-         const dragDropImp = foundry?.applications?.ux?.DragDrop?.implementation ? foundry.applications.ux.DragDrop.implementation : DragDrop;
+         const dragDropImp = foundry?.applications?.ux?.DragDrop?.implementation;
          return new dragDropImp(d);
       });
    }
