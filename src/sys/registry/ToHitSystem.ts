@@ -2,6 +2,7 @@ import { fadeFinder } from "../../utils/finder.js";
 import { SocketManager } from "../SocketManager.js"
 import { UserTables } from "./UserTables.js";
 import { WeaponMasteryInterface } from "./WeaponMastery.js";
+import { getAncestryVsGroupMod, getVsGroupMod } from "../../utils/vsGroupMod.js";
 
 export interface ToHitInterface {
    rangeModifiers: Record<string, number>;
@@ -35,6 +36,14 @@ abstract class ToHitSystemBase implements ToHitInterface {
       this.masterySystem = game.fade.registry.getSystem("weaponMastery");
    }
 
+   /**
+    * Base implementation that returns Infinity, indicating no AC can be hit. Overridden by subclasses.
+    * @param {any} roll The sum of the dice rolled.
+    * @param {any} rollTotal The attack roll total
+    * @param {any} thac0 The attacker's effective THAC0
+    * @returns {Number} The lowest AC that this roll can hit.
+    * @protected
+    */
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
    getLowestACHit(roll, rollTotal, thac0) { return Infinity; }
 
@@ -51,7 +60,6 @@ abstract class ToHitSystemBase implements ToHitInterface {
     * @returns
     */
    getAttackRoll(actor, weapon, attackType, options = { mod: null, target: null, targetWeaponType: null, attackRoll: null, ammoItem: null }) {
-      const weaponData = weapon.system;
       let formula = options.attackRoll ?? game.settings.get(game.system.id, "attackRollFormula");;
       let digest = [];
       let modifier = 0;
@@ -69,7 +77,7 @@ abstract class ToHitSystemBase implements ToHitInterface {
       }
 
       if (attackType === "melee") {
-         modifier += this.#getMeleeAttackRollMods(actor, weaponData, digest, options.target);
+         modifier += this.#getMeleeAttackRollMods(actor, weapon, digest, options.target);
       } else {
          // Missile attack
          modifier += this.#getMissileAttackRollMods(actor, weapon, digest, options.target, options?.ammoItem);
@@ -218,6 +226,12 @@ abstract class ToHitSystemBase implements ToHitInterface {
       return sum;
    }
 
+   /**
+    * Get the distance between two tokens, accounting for elevation differences.
+    * @param {any} token1 - The first token.
+    * @param {any} token2 - The second token.
+    * @returns {number} The measured grid distance between the two tokens (floored).
+    */
    getDistance(token1, token2): number {
       let result = 0;
       if (token1 && token2) {
@@ -233,6 +247,12 @@ abstract class ToHitSystemBase implements ToHitInterface {
       return Math.floor(result);
    }
 
+   /**
+    * Determine the range category for a given distance based on the weapon's ranges.
+    * @param {number} distance - The distance between attacker and target.
+    * @param {object} ranges - The weapon's range values (short, medium, long).
+    * @returns {string|null} The range category ("close", "short", "medium" or "long"), or null if out of range.
+    */
    getRange(distance, ranges): string {
       let result = null;
       if (distance < 6) {
@@ -247,40 +267,69 @@ abstract class ToHitSystemBase implements ToHitInterface {
       return result;
    }
 
-   #getMeleeAttackRollMods(actor, weaponData, digest, target) {
-      const targetData = target?.system;
-      let result = 0;
-      const systemData = actor.system;
-      const targetMods = targetData?.mod.combat;
-      const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
-      const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
+   /**
+     * Get the total melee attack roll modifier, including weapon, effect, ability score, target and VS Group modifiers.
+     * @param {any} actor - The attacking actor.
+     * @param {any} weapon - The weapon item being used.
+     * @param {any[]} digest - Array to collect human-readable modifier descriptions.
+     * @param {any} target - (optional) The target actor or token.
+     * @returns {number} - The total melee attack roll modifier.
+     * @private
+     */
+    #getMeleeAttackRollMods(actor, weapon, digest, target) {
+       const weaponData = weapon.system;
+       const targetData = target?.system;
+       let result = 0;
+       const systemData = actor.system;
+       const targetMods = targetData?.mod.combat;
+       const hasWeaponMod = weaponData.mod !== undefined && weaponData.mod !== null;
+       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
 
-      if (hasWeaponMod && weaponData.mod.toHit !== 0) {
-         result += weaponData.mod.toHit;
-         digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.toHit }));
-      }
-      if (systemData.mod?.combat.toHit !== 0) {
-         result += systemData.mod.combat.toHit;
-         digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: systemData.mod.combat.toHit }));
-      }
-      // If the attacker has ability scores...
-      if (abilityScoreSys.hasMeleeToHitMod(actor)) {
-         const abilityScoreMod = abilityScoreSys.getMeleeToHitMod(actor);
-         result += abilityScoreMod;
-         digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
-      }
-      if (targetMods && targetMods.selfToHit !== 0) {
-         result += targetMods.selfToHit;
-         digest.push(game.i18n.format("FADE.Chat.rollMods.targetMod", { mod: targetMods.selfToHit }));
-      }
+       if (hasWeaponMod && weaponData.mod.toHit !== 0) {
+          result += weaponData.mod.toHit;
+          digest.push(game.i18n.format("FADE.Chat.rollMods.weaponMod", { mod: weaponData.mod.toHit }));
+       }
+       if (systemData.mod?.combat.toHit !== 0) {
+          result += systemData.mod.combat.toHit;
+          digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: systemData.mod.combat.toHit }));
+       }
+       // If the attacker has ability scores...
+       if (abilityScoreSys.hasMeleeToHitMod(actor)) {
+          const abilityScoreMod = abilityScoreSys.getMeleeToHitMod(actor);
+          result += abilityScoreMod;
+          digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
+       }
+       if (targetMods && targetMods.selfToHit !== 0) {
+          result += targetMods.selfToHit;
+          digest.push(game.i18n.format("FADE.Chat.rollMods.targetMod", { mod: targetMods.selfToHit }));
+       }
 
-      if (target) {
-         result += this.#getVsGroupMod(weaponData, target, digest);
-      }
+        if (target) {
+           const vsGroupResult = getVsGroupMod(target, weapon, "toHit");
+           if (vsGroupResult) {
+              result += vsGroupResult.mod;
+              digest.push(...vsGroupResult.digest);
+           }
+           const ancestryVsGroupResult = getAncestryVsGroupMod(actor, target, "toHit");
+           if (ancestryVsGroupResult) {
+              result += ancestryVsGroupResult.mod;
+              digest.push(...ancestryVsGroupResult.digest);
+           }
+        }
 
-      return result;
-   }
+       return result;
+    }
 
+   /**
+    * Get the total missile attack roll modifier, including weapon, effect, ammo, ability score, target and VS Group modifiers.
+    * @param {any} actor - The attacking actor.
+    * @param {any} weapon - The weapon item being used.
+    * @param {any[]} digest - Array to collect human-readable modifier descriptions.
+    * @param {any} target - (optional) The target actor or token.
+    * @param {any} ammoItem - (optional) The ammunition item being used, if any.
+    * @returns {number} - The total missile attack roll modifier.
+    * @private
+    */
    #getMissileAttackRollMods(actor, weapon, digest, target, ammoItem) {
       let result = 0;
       const weaponData = weapon.system;
@@ -322,46 +371,33 @@ abstract class ToHitSystemBase implements ToHitInterface {
          digest.push(game.i18n.format("FADE.Chat.rollMods.targetMod", { mod: targetMods.selfToHitRanged }));
       }
 
-      if (target) {
-         // Thrown and missile device weapons
-         result += this.#getVsGroupMod(weaponData, target, digest);
-         if (ammoIsNotWeapon) {
-            // Ammunition mod
-            result += this.#getVsGroupMod(ammoItem.system, target, digest);
-         }
-      }
+        if (target) {
+           // Thrown and missile device weapons
+           const weaponVsGroupResult = getVsGroupMod(target, weapon, "toHit");
+           if (weaponVsGroupResult) {
+              result += weaponVsGroupResult.mod;
+              digest.push(...weaponVsGroupResult.digest);
+           }
+           if (ammoIsNotWeapon) {
+              // Ammunition mod
+              const ammoVsGroupResult = getVsGroupMod(target, ammoItem, "toHit");
+              if (ammoVsGroupResult) {
+                 result += ammoVsGroupResult.mod;
+                 digest.push(...ammoVsGroupResult.digest);
+              }
+           }
+           const ancestryVsGroupResult = getAncestryVsGroupMod(actor, target, "toHit");
+           if (ancestryVsGroupResult) {
+              result += ancestryVsGroupResult.mod;
+              digest.push(...ancestryVsGroupResult.digest);
+           }
+        }
 
-      return result;
-   }
-
-   #getVsGroupMod(weaponData, target, digest) {
-      let result = 0;
-      const targetData = target?.system;
-      const dmgSys = game.fade.registry.getSystem("damageSystem");
-      // vsGroup tohit modifier
-      const actorGroups = targetData.actorGroups || [];
-      const vsGroupMods = weaponData.mod?.vsGroup;
-      if (vsGroupMods) {
-         // Check each VS Group modifier on the weapon
-         for (const [groupId, modData] of Object.entries(vsGroupMods) as [string, Record<string,number>][]) {
-            // Find the group definition in CONFIG.FADE.ActorGroups
-            const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
-
-            // Check if group applies: start with group membership, then check special rule if needed
-            const isMember = actorGroups.includes(groupId);
-            const groupApplies = isMember || (groupDef?.rule && dmgSys.checkSpecialRule(target, groupDef.rule, modData));
-
-            if (groupApplies) {
-               result += modData.toHit || 0;
-               digest.push(game.i18n.format("FADE.Chat.rollMods.vsGroupMod", { group: groupId, mod: modData.toHit }));
-            }
-         }
-      }
       return result;
    }
 
    /**
-    * Creates the DM's view of an attack result for the specified target.
+     * Creates the DM's view of an attack result for the specified target.
     * Use this when not using weapon mastery rules.
     * @param {any} targetToken
     * @param {any} attackType
@@ -434,6 +470,12 @@ export class ToHitClassic extends ToHitSystemBase {
       return result;
    }
 
+   /**
+    * Build a Basic/Expert style to-hit table for the given THAC0.
+    * @param {number} thac0 - The attacker's effective THAC0.
+    * @returns {Array<{ac: number, toHit: number}>} - An array of entries mapping AC to the roll needed to hit it.
+    * @private
+    */
    // Basic/Expert style to-hit table.
    #getToHitTable(thac0) {
       const tableRow = [];
@@ -473,6 +515,13 @@ export class ToHitDarkDungeons extends ToHitSystemBase {
       return result;
    }
 
+   /**
+    * Build a Dark Dungeons style to-hit table for the given THAC0.
+    * @param {number} thac0 - The attacker's effective THAC0.
+    * @param {number} repeater - (optional) Counter used for repeating to-hit values.
+    * @returns {Array<{ac: number, toHit: number}>} - An array of entries mapping AC to the roll needed to hit it.
+    * @private
+    */
    #getToHitTable(thac0, repeater = 0) {
       const toHitTable = [];
       repeater = Math.max(repeater, 0);
@@ -537,6 +586,13 @@ export class ToHitHeroic extends ToHitSystemBase {
       }, { ac: Infinity }).ac;
    }
 
+   /**
+    * Build a Heroic style to-hit table for the given THAC0.
+    * @param {number} thac0 - The attacker's effective THAC0.
+    * @param {number} repeater - (optional) Counter used for repeating to-hit values.
+    * @returns {Array<{ac: number, toHit: number}>} - An array of entries mapping AC to the roll needed to hit it.
+    * @private
+    */
    #getToHitTable(thac0, repeater = 0) {
       const toHitTable = [];
       const repeatMax = 5;

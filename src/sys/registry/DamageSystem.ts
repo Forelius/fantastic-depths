@@ -1,6 +1,12 @@
 import { CodeMigrate } from '../migration.js';
+import { getAncestryVsGroupMod, getVsGroupMod } from "../../utils/vsGroupMod.js";
 export class DamageSystem {
    useAV: boolean;
+
+   /**
+    * Initializes the damage system, determining whether the Armor Value optional rule is enabled.
+    * @public
+    */
    constructor() {
       this.useAV = this.useAV === undefined ? game.settings.get(game.system.id, "useArmorValue") : this.useAV;
    }
@@ -44,76 +50,12 @@ export class DamageSystem {
    }
 
    /**
-    * Calculate damage modifier based on token's actor groups and weapon's VS Group modifiers
-    * @param {any} targetActor - The target actor
-    * @param {Item} modierItem - The weapon/ammo item with VS Group modifiers
-    * @returns {any} - An object with mod (total damage modifier) and digest properties.
+    * Get the damage scale multiplier for a melee attack.
+    * @param {any[]} digest - Array to collect human-readable modifier descriptions.
+    * @param {object} attackerData - The attacker's derived data (including combat modifiers).
+    * @returns {number} - The damage scale multiplier (defaults to 1).
+    * @public
     */
-   GetVsGroupMod(targetActor, modierItem) {
-      if (!targetActor || !modierItem?.system?.mod?.vsGroup) {
-         return null;
-      }
-
-      const actorGroups = targetActor.system.actorGroups || [];
-      const vsGroupMods = modierItem.system.mod.vsGroup;
-      let totalMod = 0;
-      const digest = [];
-
-      // Check each VS Group modifier on the weapon
-      for (const [groupId, modData] of Object.entries(vsGroupMods) as [string, Record<string, number>][]) {
-         // Find the group definition in CONFIG.FADE.ActorGroups
-         const groupDef = CONFIG.FADE.ActorGroups.find(g => g.id === groupId);
-
-         // Check if group applies: start with group membership, then check special rule if needed
-         const isMember = actorGroups.includes(groupId);
-         const groupApplies = isMember || (groupDef?.rule && this.checkSpecialRule(targetActor, groupDef.rule, modData));
-
-         if (groupApplies) {
-            totalMod += modData.dmg || 0;
-            digest.push(game.i18n.format('FADE.Chat.rollMods.vsGroupMod', { group: groupId, mod: modData.dmg }));
-         }
-      }
-
-      return { mod: Number(totalMod), digest };
-   }
-
-   /**
-    * Check if a token meets the criteria for a special rule
-    * @param {any} actor - The target actor
-    * @param {string} rule - The rule to check
-    * @returns {boolean} - Whether the token meets the rule criteria
-    * @private
-    */
-   checkSpecialRule(actor, rule, modData) {
-      let result = false;
-      switch (rule) {
-         case "enchanted":
-            // Check if actor is enchanted
-            result = actor.system.isEnchanted === true;
-            break;
-         case "spellcaster":
-            // Check if actor can cast spells (has spell levels > 0)
-            result = actor.system.config?.maxSpellLevel > 0;
-            break;
-         case "equippedWeapon":
-            // Check if actor has any equipped weapons
-            result = actor.items.some(item => item.type === "weapon" && item.system.equipped === true && item.system.natural === false);
-            break;
-         case "alignment":
-            // Check if actor alignment matches
-            result = actor.system.details.alignment == modData.special;
-            break;
-         case "name":
-            // Check if actor name starts with...
-            result = actor.name.startsWith(modData.special);
-            break;
-         default:
-            console.warn(`Unknown special rule: ${rule}`);
-            break;
-      }
-      return result;
-   }
-
    getMeleeDamageScale(digest, attackerData) {
       let result = 1;
       if (attackerData.mod.combat.dmgScale != null && attackerData.mod.combat.dmgScale != 1) {
@@ -123,6 +65,15 @@ export class DamageSystem {
       return result;
    }
 
+   /**
+    * Get the total damage modifier for a melee attack, including weapon, ability score, effect and VS Group modifiers.
+    * @param {Item} weapon - The weapon item being used.
+    * @param {any[]} digest - Array to collect human-readable modifier descriptions.
+    * @param {object} attackerData - The attacker's derived data (including combat modifiers).
+    * @param {any} targetActor - (optional) The target actor, used for VS Group modifiers.
+    * @returns {number} - The total melee damage modifier.
+    * @public
+    */
    getMeleeDamageMod(weapon, digest, attackerData, targetActor) {
       let modifier = 0;
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
@@ -144,15 +95,30 @@ export class DamageSystem {
          digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod", { mod: effectModVal  }));
       }
       if (targetActor) {
-         const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
+         const vsGroupResult = getVsGroupMod(targetActor, weapon, "dmg");
          if (vsGroupResult != null && vsGroupResult.mod != 0) {
             modifier += Number(vsGroupResult.mod);
             digest.push(...vsGroupResult.digest);
+         }
+         const ancestryVsGroupResult = getAncestryVsGroupMod(weapon?.parent, targetActor, "dmg");
+         if (ancestryVsGroupResult != null && ancestryVsGroupResult.mod != 0) {
+            modifier += Number(ancestryVsGroupResult.mod);
+            digest.push(...ancestryVsGroupResult.digest);
          }
       }
       return modifier;
    }
 
+   /**
+    * Get the total damage modifier for a missile attack, including weapon, ability score, effect, VS Group and ammo modifiers.
+    * @param {Item} weapon - The weapon item being used.
+    * @param {any[]} digest - Array to collect human-readable modifier descriptions.
+    * @param {object} attackerData - The attacker's derived data (including combat modifiers).
+    * @param {any} targetActor - (optional) The target actor, used for VS Group modifiers.
+    * @param {Item} ammoItem - (optional) The ammunition item being used, if any.
+    * @returns {number} - The total missile damage modifier.
+    * @public
+    */
    getMissileDamageMod(weapon, digest, attackerData, targetActor, ammoItem) {
       let modifier = 0;
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
@@ -175,10 +141,15 @@ export class DamageSystem {
       }
       // Bow, sling or thrown has vs group modifier?
       if (targetActor) {
-         const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
+         const vsGroupResult = getVsGroupMod(targetActor, weapon, "dmg");
          if (vsGroupResult != null && vsGroupResult.mod != 0) {
             modifier += Number(vsGroupResult.mod);
             digest.push(...vsGroupResult.digest);
+         }
+         const ancestryVsGroupResult = getAncestryVsGroupMod(weapon?.parent, targetActor, "dmg");
+         if (ancestryVsGroupResult != null && ancestryVsGroupResult.mod != 0) {
+            modifier += Number(ancestryVsGroupResult.mod);
+            digest.push(...ancestryVsGroupResult.digest);
          }
       }
       // If there is an ammo item and it isn't the weapon itself (thrown)...
@@ -187,20 +158,28 @@ export class DamageSystem {
             modifier += Number(ammoItem?.system.mod.dmgRanged);
             digest.push(game.i18n.format("FADE.Chat.rollMods.ammoMod", { mod: ammoItem?.system.mod.dmgRanged }));
          }
-         if (ammoItem?.id != weapon.id) {
-            // Non-thrown ammo item vs group modifier
-            if (targetActor) {
-               const vsGroupResult = this.GetVsGroupMod(targetActor, weapon);
-               if (vsGroupResult != null && vsGroupResult.mod != 0) {
-                  modifier += Number(vsGroupResult.mod);
-                  digest.push(...vsGroupResult.digest);
-               }
+          if (ammoItem?.id != weapon.id) {
+              // Non-thrown ammo item vs group modifier
+              if (targetActor) {
+                  const vsGroupResult = getVsGroupMod(targetActor, ammoItem, "dmg");
+                if (vsGroupResult != null && vsGroupResult.mod != 0) {
+                   modifier += Number(vsGroupResult.mod);
+                   digest.push(...vsGroupResult.digest);
+                }
             }
          }
       }
       return modifier;
    }
 
+   /**
+    * Calculate how much damage is mitigated based on the damage type and the actor's combat modifiers.
+    * @param {string} damageType - What type of damage is being done.
+    * @param {any} actor - The actor taking damage.
+    * @param {number} delta - The negative delta representing the damage dealt.
+    * @returns {number} - The amount of damage mitigated (never more than the damage dealt).
+    * @private
+    */
    #mitigateDamage(damageType, actor, delta) {
       let result = 0;
       const combatMods = actor.system.mod.combat;
@@ -221,6 +200,14 @@ export class DamageSystem {
       return result;
    }
 
+   /**
+    * Calculate physical damage mitigation, optionally using the Armor Value (AV) rule.
+    * @param {any} actor - The actor taking damage.
+    * @param {string} damageType - What type of damage is being done.
+    * @param {number} delta - The negative delta representing the damage dealt.
+    * @returns {number} - The amount of physical damage mitigated.
+    * @private
+    */
    #getPhysicalMitigation(actor, damageType, delta) {
       let result = actor.system.mod.combat.selfDmg;
       if (this.useAV) {
@@ -239,6 +226,12 @@ export class DamageSystem {
       return result;
    }
 
+   /**
+    * Send the damage/healing digest to the chat as a toast notification and a chat message.
+    * @param {Item|null} source - (optional) The weapon, spell or other item that caused the damage.
+    * @param {string[]} digest - The list of human-readable messages describing what happened.
+    * @private
+    */
    #sendChatAndToast(source, digest) {
       let chatContent = source ? `<div class="text-size18">${source.name}</div>` : "";
       for (const msg of digest) {

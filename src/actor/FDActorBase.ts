@@ -35,6 +35,15 @@ export class FDActorBase extends Actor {
       return classSystem?.getHighestLevel(this);
    }
 
+   /**
+    * Check if this actor is a member of the specified actor group.
+    * @param {string} groupId The actor group id from CONFIG.FADE.ActorGroups.
+    * @returns {boolean} True if the actor is a member of the group.
+    */
+   isInGroup(groupId) {
+      return this.system.actorGroups?.includes(groupId) ?? false;
+   }
+
    /** override */
    prepareBaseData() {
       super.prepareBaseData();
