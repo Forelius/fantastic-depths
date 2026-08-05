@@ -36,7 +36,7 @@ export class SpecialAbilityChat extends ChatBuilder {
          game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
-      const actions = await this._getActionsForChat(item, context, { saves: false, attacks: false, abilities: false });
+      const actions = await this._getActionsForChat(item, context, { saves: true, attacks: false, abilities: false });
 
       // Prepare data for the chat template
       const chatData = {
