@@ -1,4 +1,3 @@
-import { fadeFinder } from "../utils/finder.js";
 import { FDItem } from "./FDItem.js";
 import { TagManager } from "../sys/TagManager.js";
 
@@ -44,16 +43,6 @@ export class AncestryDefinitionItem extends FDItem {
       // Add the new item to the array
       items.push(newItem);
       await this.update({ "system.ancestryItems": items });
-   }
-
-   static async getSpecialAbilities(name) {
-      const theItem = await fadeFinder.getAncestry(name);
-      let result;
-      if (theItem) {
-         result = theItem.system.specialAbilities.reduce((acc, a) => ((acc[a.name] = !acc[a.name] ? a : acc[a.name]), acc), {});
-         result = result ? Object.values(result) : null;
-      }
-      return result?.length > 0 ? result : undefined;
    }
 }
 

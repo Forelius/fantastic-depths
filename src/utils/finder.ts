@@ -2,23 +2,56 @@ import { ClassDefinitionItem } from "../item/ClassDefinitionItem";
 
 export class fadeFinder {
 
+   /**
+    * Get the configured name of the actor compendium pack.
+    * @private
+    * @returns {string} The actor pack name setting.
+    */
    static _actorPackName() {
       return game.settings.get(game.system.id, "actorPack");
    }
+
+   /**
+    * Get the actor compendium pack.
+    * @private
+    * @returns {CompendiumCollection|null} The actor pack or null if not found.
+    */
    static _getActorPack() {
       return game.packs.get(fadeFinder._actorPackName() ?? 'fade-compendiums.actor-compendium');
    }
 
+   /**
+    * Get the configured name of the item compendium pack.
+    * @private
+    * @returns {string} The item pack name setting.
+    */
    static _itemPackName() {
       return game.settings.get(game.system.id, "itemPack");
    }
+
+   /**
+    * Get the item compendium pack.
+    * @private
+    * @returns {CompendiumCollection|null} The item pack or null if not found.
+    */
    static _getItemPack() {
       return game.packs.get(fadeFinder._itemPackName() ?? 'fade-compendiums.item-compendium');
    }
 
+   /**
+    * Get the configured name of the roll table compendium pack.
+    * @private
+    * @returns {string} The roll table pack name setting.
+    */
    static _rollTablePackName() {
       return game.settings.get(game.system.id, "rollTablePack");
    }
+
+   /**
+    * Get the roll table compendium pack.
+    * @private
+    * @returns {CompendiumCollection|null} The roll table pack or null if not found.
+    */
    static _getRollTablePack() {
       return game.packs.get(fadeFinder._rollTablePackName() ?? 'fade-compendiums.roll-table-compendium');
    }
@@ -74,10 +107,21 @@ export class fadeFinder {
       return source?.filter(item => item.name.toLowerCase() == name.toLowerCase())?.[0];
    }
 
+   /**
+    * Get an item from the source by its document id.
+    * @private
+    * @param {Array} source The source array to search.
+    * @param {String} id The id of the item to get.
+    * @returns {Document|undefined} The requested item if found, otherwise undefined.
+    */
    static _getItemById(source, id) {
       return source?.filter(item => item.id === id)?.[0];
    }
 
+   /**
+    * Get all saving throw special ability documents from the world or compendiums.
+    * @returns {Array} An array of saving throw special abilities.
+    */
    static async getSavingThrows() {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
@@ -89,6 +133,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Get all folders of the given type from both the world and compendium packs.
+    * @param {string} type The folder document type (e.g., "Item", "RollTable").
+    * @returns {Promise<Array<Folder>>} A flat array of folders.
+    */
    static async getFolders(type) {
       // Get world folders of the type
       const worldFolders = game.folders.filter(f => f.type === type);
@@ -145,6 +194,11 @@ export class fadeFinder {
       return documents;
    }
 
+   /**
+    * Get all roll tables from the world and/or compendiums.
+    * @param {boolean} [compendiumOnly=false] If true, only search compendiums.
+    * @returns {Promise<Array>} An array of roll table documents.
+    */
    static async getRollTables(compendiumOnly = false) {
       const type = 'rolltable';
       let result;
@@ -155,6 +209,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Get all condition documents from the world and/or compendiums.
+    * @param {boolean} [compendiumOnly=false] If true, only search compendiums.
+    * @returns {Promise<Array>} An array of condition documents.
+    */
    static async getConditions(compendiumOnly = false) {
       const type = 'condition';
       let result;
@@ -165,6 +224,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Get all actor documents from the world and/or compendiums.
+    * @param {boolean} [compendiumOnly=false] If true, only search compendiums.
+    * @returns {Promise<Array>} An array of actor documents.
+    */
    static async getActors(compendiumOnly = false) {
       const type = 'actor';
       let result;
@@ -320,6 +384,11 @@ export class fadeFinder {
       return result
    }
 
+   /**
+    * Retrieve a roll table document by name from either the world or compendiums.
+    * @param {string} name The name of the roll table.
+    * @returns {Promise<Document|undefined>} The requested roll table if found, otherwise undefined.
+    */
    static async getRollTable(name: string) {
       const type = 'rolltable'
       let source = fadeFinder._getWorldSource(type);
@@ -331,6 +400,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve a roll table document by id from either the world or compendiums.
+    * @param {string} id The id of the roll table.
+    * @returns {Promise<Document|undefined>} The requested roll table if found, otherwise undefined.
+    */
    static async getRollTableById(id: string) {
       const type = 'rolltable'
       let source = fadeFinder._getWorldSource(type);
@@ -342,6 +416,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve a saving throw special ability by its custom save code from either the world or compendiums.
+    * @param {string} customSaveCode The custom save code of the saving throw.
+    * @returns {Promise<Document|undefined>} The requested saving throw if found, otherwise undefined.
+    */
    static async getSavingThrow(customSaveCode) {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
@@ -408,6 +487,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve a species/ancestry document by name from either the world or compendiums.
+    * @param {any} name The name of the ancestry.
+    * @returns {Promise<Document|undefined>} The requested ancestry if found, otherwise undefined.
+    */
    static async getAncestry(name) {
       const type = "species";
       let source = fadeFinder._getWorldSource(type);
@@ -419,6 +503,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve a weapon mastery definition document by name from either the world or compendiums.
+    * @param {any} name The name of the weapon mastery.
+    * @returns {Promise<Document|undefined>} The requested weapon mastery if found, otherwise undefined.
+    */
    static async getWeaponMastery(name) {
       const type = 'weaponMastery'
       let source = fadeFinder._getWorldSource(type);
@@ -430,6 +519,11 @@ export class fadeFinder {
       return result;
    }
 
+   /**
+    * Retrieve an actor document by its exact name from either the world or compendiums.
+    * @param {any} name The name of the actor.
+    * @returns {Promise<Document|undefined>} The requested actor if found, otherwise undefined.
+    */
    static async getActorByName(name) {
       const type = 'actor';
       let result;
@@ -442,6 +536,11 @@ export class fadeFinder {
       return result?.[0];
    }
 
+   /**
+    * Retrieve a condition document by name from either the world or compendiums.
+    * @param {any} name The name of the condition.
+    * @returns {Promise<Document|undefined>} The requested condition if found, otherwise undefined.
+    */
    static async getCondition(name) {
       const type = 'condition'
       let source = fadeFinder._getWorldSource(type);

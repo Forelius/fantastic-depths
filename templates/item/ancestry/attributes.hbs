@@ -70,28 +70,29 @@
          {{/if}}
       </div>
    </div>
-   {{! Languages }}
-   <div class="bordered">
-      <div class="flexrow tag-section">
-         <div class="flex0 add-tag">
-            {{#if isGM}}
-            <input type="text" data-action="addLanguage" placeholder="{{localize 'FADE.Tags.addLanguage'}}" data-tooltip="{{localize 'FADE.Tags.languageDesc'}}" />
-            {{/if}}
-         </div>
-         <div class="flex3">
-            <div class="flexrow">
-               <ol class="tag-list" style="height:auto;line-height: 15px;">
-                  {{#each system.languages as |language|}}
-                  <li class="tag" data-tag="{{language}}">
-                     <span>{{language}}</span>
-                     {{#if @root.isGM}}
-                     <a data-action="deleteLanguage"><i class="fas fa-times"></i></a>
-                     {{/if}}
-                  </li>
-                  {{/each}}
-               </ol>
-            </div>
-         </div>
-      </div>
-   </div>
-</section>
+    {{! Languages }}
+    <div class="bordered">
+       <div class="flexrow tag-section">
+          <div class="flex0 add-tag">
+             {{#if isGM}}
+             <input type="text" data-action="addLanguage" placeholder="{{localize 'FADE.Tags.addLanguage'}}" data-tooltip="{{localize 'FADE.Tags.languageDesc'}}" />
+             {{/if}}
+          </div>
+          <div class="flex3">
+             <div class="flexrow">
+                <ol class="tag-list" style="height:auto;line-height: 15px;">
+                   {{#each system.languages as |language|}}
+                   <li class="tag" data-tag="{{language}}">
+                      <span>{{language}}</span>
+                      {{#if @root.isGM}}
+                      <a data-action="deleteLanguage"><i class="fas fa-times"></i></a>
+                      {{/if}}
+                   </li>
+                   {{/each}}
+                </ol>
+             </div>
+          </div>
+       </div>
+    </div>
+    {{> "vsGroupMod"}}
+ </section>

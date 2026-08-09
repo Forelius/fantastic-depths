@@ -12,7 +12,7 @@ export class MonsterActor extends FDCombatActor {
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
-      this.system.wrestling = game.fade.registry.getSystem('wrestling').calculateWrestlingRating(this);
+      this.system.wrestling = game.fade.registry.getSystem('wrestling')?.calculateWrestlingRating(this);
    }
 
    /**
@@ -31,10 +31,12 @@ export class MonsterActor extends FDCombatActor {
             await this.setupSpecialAbilities(result.classAbilityData);
          }
       }
+      // If castAs updated...
       const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
       if (updateData.system?.details?.castAs?.length > 0) {
          await classSystem.setupMonsterClassMagic(this);
       }
+      // If saveAs updated...
       if (updateData.system?.details?.saveAs?.length > 0) {
          await this.#prepareSavingThrows(classSystem);
       }

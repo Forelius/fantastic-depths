@@ -1,5 +1,6 @@
 import { AncestryDefinitionItem } from "../../item/AncestryDefinitionItem.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
@@ -11,7 +12,7 @@ import { SpecialAbilitySheetService} from "./SpecialAbilitySheetService.js";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class AncestryDefinitionSheet extends DragDropMixin(FDItemSheetV2) {
+export class AncestryDefinitionSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2)) {
    specialAbilityService: SpecialAbilitySheetService;
 
    /** Base configuration: the part that never comes from a service */

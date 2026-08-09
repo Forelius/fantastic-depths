@@ -11,6 +11,7 @@ import { Wrestling } from "./Wrestling.js";
 import { Shove } from "./Shove.js";
 import { UserTables } from "./UserTables.js";
 import { SingleClassSystem, MultiClassSystem } from "./ClassSystem.js";
+import { AncestrySystem } from "./AncestrySystem.js";
 import { AbilityCheck, TieredAbilityCheck } from "./AbilityCheck.js";
 import { RandomCharacter } from "./random/RandomCharacter.js";
 
@@ -85,6 +86,7 @@ export class fadeRegistry {
       this.registerSystem("wrestling", Wrestling, Wrestling);
       this.registerSystem("shove", Shove, Shove);
       this.registerSystem("actorMovement", ActorMovement, ActorMovement);
+      this.registerSystem("ancestrySystem", new AncestrySystem(), AncestrySystem);
 
       const classSystem = game.settings.get(game.system.id, "classSystem");
       if (classSystem === "single") {

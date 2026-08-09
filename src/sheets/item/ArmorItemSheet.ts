@@ -1,15 +1,21 @@
 import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { ConditionSheetService } from "./ConditionSheetService.js";
+import { SpecialAbilitySheetService } from "./SpecialAbilitySheetService.js";
+import { SpellSheetService } from "./SpellSheetService.js";
 
 /**
  * Sheet class for ArmorItem.
  */
-export class ArmorItemSheet extends FDItemSheetV2 {
-   /**
-    * Get the default options for the sheet.
-    */
-   static DEFAULT_OPTIONS = {
+export class ArmorItemSheet extends DragDropMixin(FDItemSheetV2) {
+   conditionService: ConditionSheetService;
+   specialAbilityService: SpecialAbilitySheetService;
+   spellService: SpellSheetService;
+
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
       position: {
          width: 570,
          height: 400,
@@ -23,7 +29,20 @@ export class ArmorItemSheet extends FDItemSheetV2 {
       form: {
          submitOnChange: true
       }
-   }
+   };
+
+   /** All services */
+   private static readonly SERVICES = [
+      ConditionSheetService.DEFAULT_OPTIONS,
+      SpecialAbilitySheetService.DEFAULT_OPTIONS,
+      SpellSheetService.DEFAULT_OPTIONS
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = ArmorItemSheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...ArmorItemSheet.BASE } // start with a shallow copy of the base
+   );
 
    static PARTS = {
       header: {
@@ -38,6 +57,9 @@ export class ArmorItemSheet extends FDItemSheetV2 {
       attributes: {
          template: "systems/fantastic-depths/templates/item/armor/attributes.hbs",
       },
+      specialAbilities: {
+         template: "systems/fantastic-depths/templates/item/shared/specAbilitiesAndSpells.hbs",
+      },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/effects.hbs",
       },
@@ -50,6 +72,12 @@ export class ArmorItemSheet extends FDItemSheetV2 {
    tabGroups = {
       primary: "description"
    }
+   constructor(options = {}) {
+      super(options);
+      this.conditionService = new ConditionSheetService();
+      this.specialAbilityService = new SpecialAbilitySheetService();
+      this.spellService = new SpellSheetService();
+   }
 
    /** @override */
    _configureRenderOptions(options) {
@@ -61,6 +89,7 @@ export class ArmorItemSheet extends FDItemSheetV2 {
 
       if (game.user.isGM) {
          options.parts.push("attributes");
+         options.parts.push("specialAbilities");
          options.parts.push("effects");
          options.parts.push("gmOnly");
       }
@@ -81,6 +110,9 @@ export class ArmorItemSheet extends FDItemSheetV2 {
          context.encOptions = encOptions;
       }
 
+      // Ability actions
+      context.actions = this._getActionOptions();
+
       // Prepare the tabs.
       context.tabs = this.#getTabs();
 
@@ -88,6 +120,21 @@ export class ArmorItemSheet extends FDItemSheetV2 {
       context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
 
       return context;
+   }
+
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const data = TextEditorImpl.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
+      // If the dropped item is a spell item...
+      if (droppedItem?.type === "spell") {
+         await this.spellService.onDropSpellItem(this.item, droppedItem);
+      } else if (droppedItem?.type === "specialAbility") {
+         await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
+      } else if (droppedItem?.type === "condition") {
+         await this.conditionService.onDropConditionItem(this.item, droppedItem);
+      }
    }
 
    /**
@@ -105,6 +152,7 @@ export class ArmorItemSheet extends FDItemSheetV2 {
 
       if (game.user.isGM) {
          tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes", "item");
+         tabs.specialAbilities = new SheetTab("specialAbilities", group, "FADE.SpecialAbility.plural");
          tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects", "item");
          tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly", "item");
       }

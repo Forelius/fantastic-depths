@@ -26,7 +26,7 @@
                data-tooltip='{{localize "DOCUMENT.Update" type=(localize "FADE.SpecialAbility.long")}}'>
                <i class='fas fa-pencil'></i>
             </a>
-            {{#if @root.isGM}}
+            {{#if @root.isOwner}}
             <a class='item-control'
                data-action="deleteItem"
                data-tooltip='{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}'>

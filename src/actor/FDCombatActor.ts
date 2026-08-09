@@ -290,13 +290,21 @@ export class FDCombatActor extends FDActorBase {
    /**
     * @public
     * Add and/or update the actor's class-given special abilities.
+    * This is not the drag/drop event itself, it is merely utility method to setup special abilities.
     * @param {any} abilitiesData The class ability array for the desired level.
     * @returns void
     */
    async setupSpecialAbilities(abilitiesData) {
-      if (game.user.isGM === false || !(abilitiesData?.length > 0)) return;
+      // only allow the GM to do this.
+      //if (game.user.isGM === false) return;
+      // Return if there are no abilities in the array.
+      if (!(abilitiesData?.length > 0)) return;
+      // Return if the user does not own this actor.
+      if (!this.testUserPermission(game.user, "OWNER")) return;
+
       let promises = [];
-      // Get this actor's class ability items.
+
+      // Get this actor's currently owned class ability items.
       let actorAbilities = this.items.filter(item => item.type === "specialAbility" && item.system.category !== "save");
 
       // Determine which special abilities are missing and need to be added.
@@ -347,6 +355,7 @@ export class FDCombatActor extends FDActorBase {
          }
       }
 
+      // Wait for all async calls to complete
       if (promises.length > 0) {
          await Promise.all(promises);
       }

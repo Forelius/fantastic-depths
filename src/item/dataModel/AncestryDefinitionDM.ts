@@ -1,4 +1,4 @@
-const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { ArrayField, BooleanField, NumberField, ObjectField, SchemaField, StringField } = foundry.data.fields;
 export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
    static defineSchema() {
       const schema = {
@@ -12,9 +12,13 @@ export class AncestryDefinitionDM extends foundry.abstract.TypeDataModel {
          heightFormulaF: new StringField({ nullable: true }),
          weightFormulaF: new StringField({ nullable: true }),
          ageFormula: new StringField({ nullable: true }),
-         // If true the character or class has basic proficiency with all weapons.
-         basicProficiency: new BooleanField({ required: true, initial: false }),
-         classes: new ArrayField(
+          // If true the character or class has basic proficiency with all weapons.
+          basicProficiency: new BooleanField({ required: true, initial: false }),
+          // VS Group modifiers granted by this ancestry.
+          mod: new SchemaField({
+             vsGroup: new ObjectField({}),
+          }),
+          classes: new ArrayField(
             new SchemaField({
                name: new StringField({ required: true, initial: '' }),
                maxLevel: new NumberField({ required: true })
