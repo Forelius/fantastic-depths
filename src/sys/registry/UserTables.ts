@@ -10,6 +10,7 @@ export class UserTables {
    constructor() {
       this.#userTables = {};
       this.#loadTables();
+      //this.tryAddDefaultTables(this.#userTables);
    }
 
    Init() {

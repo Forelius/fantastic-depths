@@ -133,6 +133,8 @@ Hooks.once("init", async function () {
    settings.RegisterSystemSettings();
    // Hook into the rendering of the settings form
    Hooks.on("renderSettingsConfig", (app, html, data) => settings.renderSettingsConfig(app, html, data));
+   Hooks.call("beforeFadeRegisterDefaultSystems", game.fade.registry);
+
    game.fade.registry.registerDefaultSystems();
 
    await handleAsyncInit();
