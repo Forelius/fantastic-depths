@@ -87,7 +87,7 @@ Hooks.once("init", async function () {
       registry: new fadeRegistry(),
    };
 
-   Hooks.call("beforeFadeInit", game.fadeRegistry);
+   Hooks.call("beforeFadeInit", game.fade.registry);
 
    // Add custom constants for configuration.
    CONFIG.FADE = FADE;
