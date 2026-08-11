@@ -10,7 +10,10 @@ export class UserTables {
    constructor() {
       this.#userTables = {};
       this.#loadTables();
-      this.#tryAddDefaultTables();
+   }
+
+   Init() {
+      this.tryAddDefaultTables(this.#userTables);
    }
 
    getTables(): Record<string, UserTableType> {
@@ -168,10 +171,10 @@ export class UserTables {
       UserTablesConfig.displayForm();
    }
 
-   #tryAddDefaultTables() {
+   tryAddDefaultTables(userTables) {
       // Ranged Modifiers
-      if (this.#userTables["ranged-modifiers"] === undefined) {
-         this.#userTables["ranged-modifiers"] = {
+      if (userTables["ranged-modifiers"] === undefined) {
+         userTables["ranged-modifiers"] = {
             id: "ranged-modifiers",
             name: "Ranged Modifiers",
             type: "keyvalue",
@@ -183,8 +186,8 @@ export class UserTables {
          };
       }
       // Ability Score Modifiers - Simple
-      if (this.#userTables["ability-mods-simple"] === undefined) {
-         this.#userTables["ability-mods-simple"] = {
+      if (userTables["ability-mods-simple"] === undefined) {
+         userTables["ability-mods-simple"] = {
             id: "ability-mods-simple",
             name: "Ability Modifiers - Simple",
             type: "jsonarray",
@@ -196,8 +199,8 @@ export class UserTables {
          };
       }
       // Ability Score Modifiers - Heroic
-      if (this.#userTables["ability-mods-heroic"] === undefined) {
-         this.#userTables["ability-mods-heroic"] = {
+      if (userTables["ability-mods-heroic"] === undefined) {
+         userTables["ability-mods-heroic"] = {
             id: "ability-mods-heroic",
             name: "Ability Modifiers - Heroic",
             type: "jsonarray",
@@ -231,8 +234,8 @@ export class UserTables {
             ]
          };
       }
-      if (this.#userTables["difficulty-levels"] === undefined) {
-         this.#userTables["difficulty-levels"] = {
+      if (userTables["difficulty-levels"] === undefined) {
+         userTables["difficulty-levels"] = {
             id: "difficulty-levels",
             name: "Difficulty Levels",
             type: "keyvalue",
@@ -245,8 +248,8 @@ export class UserTables {
             ]
          };
       }
-      if (this.#userTables["tiered-results"] === undefined) {
-         this.#userTables["tiered-results"] = {
+      if (userTables["tiered-results"] === undefined) {
+         userTables["tiered-results"] = {
             id: "tiered-results",
             name: "Tiered Results",
             type: "keyvalue",
@@ -259,8 +262,8 @@ export class UserTables {
             ]
          };
       }
-      if (this.#userTables["ability-mods-original"] === undefined) {
-         this.#userTables["ability-mods-original"] = {
+      if (userTables["ability-mods-original"] === undefined) {
+         userTables["ability-mods-original"] = {
             id: "ability-mods-original",
             name: "Ability Modifiers - Original",
             type: "keyjson",
