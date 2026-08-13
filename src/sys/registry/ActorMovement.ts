@@ -1,5 +1,5 @@
 export class ActorMovement {
-   static prepareMovementRates(actor) {
+   prepareMovementRates(actor) {
       const roundDivisor = game.settings.get(game.system.id, "mvRoundDivisor") ?? 3;
       const runDivisor = game.settings.get(game.system.id, "runRoundDivisor") ?? 1.5;
       if (actor.system.encumbrance.mv > 0) {

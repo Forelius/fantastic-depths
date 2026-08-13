@@ -113,7 +113,7 @@ export class fadeRegistry {
          this.registerSystem("shove", Shove, Shove);
       }
       if (this.hasSystem("actorMovement") === false) {
-         this.registerSystem("actorMovement", ActorMovement, ActorMovement);
+         this.registerSystem("actorMovement", new ActorMovement(), ActorMovement);
       }
       if (this.hasSystem("ancestrySystem") === false) {
          this.registerSystem("ancestrySystem", new AncestrySystem(), AncestrySystem);
