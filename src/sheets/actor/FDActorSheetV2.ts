@@ -893,10 +893,11 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickRollSave(this: FDActorSheetV2, event) {
-      const item = this._getItemFromActor(event);
-      this.actor.rollSavingThrow(item.system.customSaveCode, event);
-   }
+    static async #clickRollSave(this: FDActorSheetV2, event) {
+       const item = this._getItemFromActor(event);
+       const savingThrowSys = game.fade.registry.getSystem("savingThrowSystem");
+       savingThrowSys.execute({ actor: this.actor, type: item.system.customSaveCode, event });
+    }
 
    /**
     * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass

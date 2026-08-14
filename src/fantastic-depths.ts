@@ -5,6 +5,7 @@ import { ActorFactory } from "./actor/ActorFactory.js";
 import { ItemFactory } from "./item/ItemFactory.js";
 import { AddonIntegration } from "./sys/addonIntegration.js"
 import { fadeRegistry } from "./sys/registry/fadeRegistry.js"
+import { SavingThrowSystem } from "./sys/registry/SavingThrowSystem.js"
 
 import { CharacterDataModel } from "./actor/dataModel/CharacterDataModel.js";
 import { MonsterDataModel } from "./actor/dataModel/MonsterDataModel.js";
@@ -284,7 +285,7 @@ Hooks.once("ready", async () => {
    $(document).on("click", ".apply-condition", async (event) => await ConditionItem.clickApplyCondition(event));
    $(document).on("click", ".remove-condition", async (event) => await ConditionItem.clickRemoveCondition(event));
    $(document).on("click", ".collapser", Collapser.toggleCollapsibleContent);
-   $(document).on("click", ".saving-roll", FDCombatActor.handleSavingThrowRequest);
+   $(document).on("click", ".saving-roll", SavingThrowSystem.handleSavingThrowRequest);
    $(document).on("click", ".action-roll, .spell-cast, .attack-roll", FDCombatActor.handleActionRoll);
 
    const fxMgr = new EffectManager();

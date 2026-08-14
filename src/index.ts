@@ -125,6 +125,7 @@ export * from './sys/registry/EncSystem';
 export * from './sys/registry/InitiativeSystem';
 export * from './sys/registry/MoraleCheck';
 export * from './sys/registry/Shove';
+export * from './sys/registry/SavingThrowSystem';
 export * from './sys/registry/ToHitSystem';
 export * from './sys/registry/UserTables';
 export * from './sys/registry/WeaponMastery';
