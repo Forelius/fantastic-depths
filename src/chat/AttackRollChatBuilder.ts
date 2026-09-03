@@ -1,6 +1,7 @@
 import { ChatBuilder } from "./ChatBuilder.js";
 import { CodeMigrate } from "../sys/migration.js";
 import { WeaponItem } from "../item/WeaponItem.js"
+import { fadeFinder } from "../utils/finder.js";
 
 /** Only a weapon item will create an instance of this chat builder. */
 export class AttackRollChatBuilder extends ChatBuilder {
@@ -36,6 +37,21 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       const actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
 
+      const ammoItem = options?.ammoItem;
+      if (ammoItem?.system?.savingThrow?.length > 0 && ammoItem.system.savingThrow !== weaponItem.system.savingThrow) {
+         const save = await fadeFinder.getSavingThrow(ammoItem.system.savingThrow);
+         if (save) {
+            actions.push({
+               type: "save",
+               owneruuid: context.uuid,
+               itemuuid: save.uuid,
+               actionuuid: ammoItem.uuid,
+               shortName: save?.system.shortName,
+               customSaveCode: save?.system.customSaveCode,
+            });
+         }
+      }
+
       const chatData = {
          rollContent,
          description,
@@ -44,7 +60,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
          digest,
          weaponItem,
          resp,
-         ammoItem: options?.ammoItem,
+         ammoItem,
          actions
       };
       const content = await CodeMigrate.RenderTemplate(this.template, chatData);
