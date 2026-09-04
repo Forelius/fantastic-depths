@@ -1,10 +1,6 @@
 import { FDActorBase } from "./FDActorBase.js";
 import { fadeFinder } from '../utils/finder.js';
-import { DialogFactory } from '../dialog/DialogFactory.js';
-import { ChatFactory } from '../chat/ChatFactory.js';
-import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
 import { TagManager } from '../sys/TagManager.js';
-import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js";
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -83,103 +79,6 @@ export class FDCombatActor extends FDActorBase {
             for (const mastery of this.items.filter(item => item.type === "mastery")) {
                mastery.system.effectiveLevel = this.system.mod.masteryLevelOverride;
             }
-         }
-      }
-   }
-
-   /**
-    * Performs the requested saving throw roll on the actor.
-    * @public
-    * @param {any} type A string key of the saving throw type.
-    *                                                     */
-   async rollSavingThrow(type, event) {
-      if (this.testUserPermission(game.user, "OWNER") === false) return;
-
-      const saveItem = this.#getSavingThrow(type); // Saving throw item
-      if (!saveItem) return;
-
-      const digest = [];
-      const ctrlKey = event?.ctrlKey ?? false;
-      const rollData = this.getRollData();
-      let dialogResp = null;
-      const dataset = {
-         dialog: "save",
-         pass: saveItem.system.operator,
-         target: saveItem.system.target,
-         rollmode: saveItem.system.rollMode,
-         label: saveItem.name,
-         type: null
-      }
-      if (this.type === "character") {
-         dataset.type = type;
-      }
-
-      if (ctrlKey === true) {
-         dialogResp = {
-            mod: 0
-         };
-      } else {
-         dialogResp = await DialogFactory(dataset, this);
-      }
-
-      if (dialogResp) {
-         let rollMod = 0;
-
-         // Modifier from dialog         
-         const manualMod = Number(dialogResp.mod) || 0;
-         if (manualMod != 0) {
-            digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: dialogResp.mod }));
-         }
-
-         // Ability score mod
-         const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
-         const abilityScoreMod = abilityScoreSys.getSavingThrowMod(this, dialogResp.action, saveItem);
-         if (abilityScoreMod !== 0) {
-            digest.push(game.i18n.format("FADE.Chat.rollMods.abilityScoreMod", { mod: abilityScoreMod }));
-         }
-
-         // Mods from active effects
-         let effectMod = this.system.mod.save[type] || 0;
-         effectMod += this.system.mod.save.all || 0;
-         if (effectMod != 0) {
-            digest.push(game.i18n.format("FADE.Chat.rollMods.effectMod2", { mod: effectMod }));
-         }
-         rollMod += manualMod + abilityScoreMod + effectMod;
-         rollData.formula = rollMod !== 0 ? `${saveItem.system.rollFormula}+@mod` : `${saveItem.system.rollFormula}`;
-         const rollContext = { ...rollData, mod: rollMod };
-         const rolled = await new Roll(rollData.formula, rollContext).evaluate();
-         const chatData = {
-            context: this,
-            caller: saveItem,
-            mdata: dataset,
-            roll: rolled,
-            digest
-         };
-
-         const showResult = saveItem.getShowResult(event);
-         const builder = new ChatFactory(CHAT_TYPE.GENERIC_ROLL, chatData, { showResult });
-         return await builder.createChatMessage();
-      }
-   }
-
-   /**
-    * Static event handler for click on the saving throw button in chat.
-    * @public
-    * @param {any} event
-    */
-   static async handleSavingThrowRequest(event) {
-      event.preventDefault(); // Prevent the default behavior
-      event.stopPropagation(); // Stop other handlers from triggering the event
-      const dataset = event.currentTarget.dataset;
-      /** @type {Array<any>} */ // or /** @type {Token[]} */
-      const selected: Token[] = Array.from(canvas.tokens.controlled);
-      const hasSelected = selected.length > 0;
-      if (hasSelected === false) {
-         ui.notifications.warn(game.i18n.localize("FADE.notification.selectToken1"));
-      } else {
-         for (const target of selected) {
-            // Roll for each token's actor
-            target.actor.rollSavingThrow(dataset.type, event);
          }
       }
    }
@@ -435,15 +334,5 @@ export class FDCombatActor extends FDActorBase {
          }
       }
       return updated;
-   }
-
-   #getSavingThrow(saveType): SpecialAbilityItem {
-      const result = this.items.find(item => item.type === "specialAbility"
-         && item.system.category === "save"
-         && item.system.customSaveCode === saveType) as SpecialAbilityItem;
-      if (!result) {
-         ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { saveType }));
-      }
-      return result;
    }
 }

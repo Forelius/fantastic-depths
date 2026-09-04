@@ -9,6 +9,7 @@ import { IndivInit, GroupInit, AltGroupInit } from "./InitiativeSystem.js";
 import { WeaponMasteryHeroic, WeaponMasteryBase } from "./WeaponMastery.js";
 import { Wrestling } from "./Wrestling.js";
 import { Shove } from "./Shove.js";
+import { SavingThrowSystem } from "./SavingThrowSystem.js";
 import { UserTables } from "./UserTables.js";
 import { SingleClassSystem, MultiClassSystem } from "./ClassSystem.js";
 import { AncestrySystem } from "./AncestrySystem.js";
@@ -111,6 +112,9 @@ export class fadeRegistry {
       }
       if (this.hasSystem("shove") === false) {
          this.registerSystem("shove", Shove, Shove);
+      }
+      if (this.hasSystem("savingThrowSystem") === false) {
+         this.registerSystem("savingThrowSystem", new SavingThrowSystem(), SavingThrowSystem);
       }
       if (this.hasSystem("actorMovement") === false) {
          this.registerSystem("actorMovement", new ActorMovement(), ActorMovement);
