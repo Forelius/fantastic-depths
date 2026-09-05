@@ -109,7 +109,7 @@ export class ClassicEncumbrance extends BasicEncumbrance {
       }, 0);
       // Weapons
       results.weaponsEnc = items.filter(item => item.type === "weapon").reduce((sum, item) => {
-         return sum + (item.system.weight || 0);
+         return sum + this._getItemEncumbrance(item); // (item.system.weight || 0);
       }, 0);
       // Ammo
       results.ammoEnc = items.filter(item => item.type === "ammo").reduce((sum, item) => {
