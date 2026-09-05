@@ -286,6 +286,13 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
 
          if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
             result = this._onSortItem(event, droppedItem);
+
+            // Dragging a contained item out onto the top-level list (outside any
+            // container's contained-items area) must detach it from its container.
+            const sourceItem = this.actor.items.get(droppedItem.id);
+            if (sourceItem?.system.containerId && event.target.closest(".contained-items") === null) {
+               await sourceItem.update({ "system.containerId": "" });
+            }
          } else {
             // If the dropped item is a weapon mastery definition item...
             if (droppedItem.type === "weaponMastery" && this.#hasSameActorMastery(droppedItem) === false) {
