@@ -646,7 +646,8 @@
             "possessed": "Possessed",
             "confused": "Confused",
             "ethereal": "Ethereal",
-            "fading": "Fading"
+            "fading": "Fading",
+            "silent": "Silent"
          }
       },
       "Tags": {
