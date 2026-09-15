@@ -257,7 +257,7 @@ export abstract class ChatBuilder {
       return { damageRoll, healRoll };
    }
 
-   async _getActionsForChat(actionItem, owner, options = { saves: null, attacks: null, abilities: null }) {
+   async _getActionsForChat(actionItem, owner, options: { saves?: boolean, attacks?: boolean, abilities?: boolean } = {}) {
       const isIdentified = actionItem?.system.isIdentified ?? false;
       // Merge default options with provided options
       options = { ...{ attacks: true, abilities: true, saves: true }, ...options };
