@@ -9,15 +9,19 @@ import { fadeFinder } from "../../utils/finder.js";
 import { CodeMigrate } from "../../sys/migration.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
+import { SpellScrollService } from "./SpellScrollService.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
 export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
+   spellScrollService: SpellScrollService;
+
    constructor(options = {}) {
       super(options);
       this.isRestoringCollapsedState = false;
+      this.spellScrollService = new SpellScrollService();
    }
 
    static DEFAULT_OPTIONS: Record<string, unknown> = {
@@ -329,14 +333,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                   await this.actor.update({ "system.details.species": droppedItem.name });
                }
             } else if (droppedItem.type === "effect") {
+            } else if (droppedItem.type === "spell") {
+               result = await this.spellScrollService.onDropSpell(this, event, item, droppedItem);
             } else {
-               let canAdd = true;
-               if (droppedItem.type === "spell") {
-                  canAdd = classSystem.canCastSpells(this.actor);
-               }
-               if (canAdd === true) {
-                  result = await super._onDropItem(event, item);
-               }
+               result = await super._onDropItem(event, item);
             }
          }
       }

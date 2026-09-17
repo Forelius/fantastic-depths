@@ -668,6 +668,7 @@
          "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
          "missingItem2": "{actor} does not have a {type}.",
          "noCharges": "{itemName} has no charges remaining and can't be used.",
+         "noSpellScrollTemplate": "No spell scroll template was found. The template is an item in the compendiums with the GM note marker &lt;spell-scroll-template&gt;.",
          "zeroQuantity": "{itemName} has a quantity of zero and can't be used.",
          "noAmmo": "{actorName} does not have {weaponName} ammunition equipped.",
          "advancedTime": "<div>Time advances {turns} turn(s), {rounds} round(s).</div>",
@@ -875,6 +876,12 @@
             "content": "Do you want to cast the spell or only view its description?",
             "yesLabel": "Cast Spell",
             "noLabel": "View Description"
+         },
+         "spellScroll": {
+            "title": "Add Spell or Spell Scroll",
+            "content": "Add as a spell or a spell scroll?",
+            "spellLabel": "Spell",
+            "scrollLabel": "Spell Scroll"
          },
          "useItem": {
             "title": "Use item?",
