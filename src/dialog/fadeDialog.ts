@@ -211,6 +211,39 @@ export class fadeDialog {
       return dialogResp;
    }
 
+   /**
+    * Ask the player whether a dropped spell should be added as a spell or as a spell scroll.
+    * @returns {Promise<{resp: string|null}>} The player's choice: "spell", "scroll", or null if dismissed.
+    */
+   static async getSpellScrollChoiceDialog() {
+      const dialogResp = { resp: null };
+
+      dialogResp.resp = await DialogV2.wait({
+         window: { title: game.i18n.localize('FADE.dialog.spellScroll.title') },
+         modal: true,
+         rejectClose: false,
+         position: { width: 400, height: "auto" },
+         content: `<div style="margin:0 0 8px;">${game.i18n.localize('FADE.dialog.spellScroll.content')}</div>`,
+         buttons: [
+            {
+               action: 'spell',
+               label: game.i18n.localize('FADE.dialog.spellScroll.spellLabel'),
+               callback: () => 'spell',
+               default: true
+            },
+            {
+               action: 'scroll',
+               label: game.i18n.localize('FADE.dialog.spellScroll.scrollLabel'),
+               callback: () => 'scroll'
+            }
+         ],
+         close: () => { return null; },
+         classes: ["fantastic-depths"]
+      });
+
+      return dialogResp;
+   }
+
    static async getRolltableDialog() {
       const dialog = new rollTableDialog();
       await dialog.getDialog();

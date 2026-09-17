@@ -520,6 +520,33 @@ export class fadeFinder {
    }
 
    /**
+    * Is the item the spell scroll template?
+    * The template is any item whose GM note contains the "<spell-scroll-template>" marker.
+    * @private
+    * @param {any} item The item document to check.
+    * @returns {boolean} True if the item is the spell scroll template, otherwise false.
+    */
+   static _isSpellScrollTemplate(item) {
+      return item.system?.gm?.notes?.includes("<spell-scroll-template>") === true;
+   }
+
+   /**
+    * Retrieve the spell scroll template item from either the world or compendiums.
+    * The template is any item whose GM note contains the "<spell-scroll-template>" marker.
+    * @returns {Promise<Document|undefined>} The spell scroll template item if found, otherwise undefined.
+    */
+   static async getSpellScrollTemplate() {
+      const type = 'anyItem';
+      let source = fadeFinder._getWorldSource(type);
+      let result = source?.filter(item => fadeFinder._isSpellScrollTemplate(item))?.[0];
+      if (!result) {
+         source = await fadeFinder._getPackSource(type);
+         result = source?.filter(item => fadeFinder._isSpellScrollTemplate(item))?.[0];
+      }
+      return result;
+   }
+
+   /**
     * Retrieve an actor document by its exact name from either the world or compendiums.
     * @param {any} name The name of the actor.
     * @returns {Promise<Document|undefined>} The requested actor if found, otherwise undefined.
