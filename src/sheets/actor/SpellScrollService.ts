@@ -60,6 +60,39 @@ export class SpellScrollService {
          }
          scrollData.system.description = description;
       }
+      scrollData.system.spells = [{
+         action: "cast",
+         castAs: await this.#getCastAs(spellItem),
+         uuid: spellItem.uuid,
+         name: spellName,
+      }];
       return await sheet._onDropItemCreate(scrollData);
+   }
+
+   /**
+    * Determine the castAs key for a spell.
+    * If the spell specifies a single class, that class is used. If it specifies
+    * multiple classes, the class is chosen favoring class keys "M", then "C",
+    * falling back to the first class listed.
+    * @private
+    * @param {any} spellItem The spell Item document.
+    * @returns {Promise<string>} The castAs key (e.g. "M2"), or "" if no class could be used.
+    */
+   async #getCastAs(spellItem) {
+      const spellClasses = spellItem.system.classes ?? [];
+      if (spellClasses.length === 0) return "";
+
+      const classDocs = (await Promise.all(spellClasses.map(c => fromUuid(c.uuid))))
+         .filter(doc => doc?.type === "class");
+      if (classDocs.length === 0) return "";
+
+      const classKey = classDocs.length === 1
+         ? classDocs[0].system.key
+         : ((classDocs.find(doc => doc.system.key === "M")
+            ?? classDocs.find(doc => doc.system.key === "C")
+            ?? classDocs[0]).system.key);
+
+      if (!classKey) return "";
+      return `${classKey}${spellItem.system.spellLevel ?? ""}`;
    }
 }
