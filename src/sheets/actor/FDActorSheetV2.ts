@@ -6,19 +6,22 @@ import { ChatFactory } from "../../chat/ChatFactory.js";
 import { CHAT_TYPE } from "../../chat/ChatTypeEnum.js"
 import { FDItem } from "../../item/FDItem.js";
 import { fadeFinder } from "../../utils/finder.js";
-import { fadeDialog } from "../../dialog/fadeDialog.js";
 import { CodeMigrate } from "../../sys/migration.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
+import { SpellScrollService } from "./SpellScrollService.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  */
 export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
+   spellScrollService: SpellScrollService;
+
    constructor(options = {}) {
       super(options);
       this.isRestoringCollapsedState = false;
+      this.spellScrollService = new SpellScrollService();
    }
 
    static DEFAULT_OPTIONS: Record<string, unknown> = {
@@ -331,21 +334,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
                }
             } else if (droppedItem.type === "effect") {
             } else if (droppedItem.type === "spell") {
-               const dialogResp = await fadeDialog.getSpellScrollChoiceDialog();
-               if (dialogResp?.resp === "spell") {
-                  // Adds the spell to the actor's spell list, like before.
-                  if (classSystem.canCastSpells(this.actor)) {
-                     result = await super._onDropItem(event, item);
-                  }
-               } else if (dialogResp?.resp === "scroll") {
-                  // Adds a copy of the spell scroll template to the actor's inventory.
-                  const scrollTemplate = await fadeFinder.getSpellScrollTemplate();
-                  if (scrollTemplate) {
-                     result = await this._onDropItemCreate(scrollTemplate.toObject());
-                  } else {
-                     ui.notifications.warn(game.i18n.localize('FADE.notification.noSpellScrollTemplate'));
-                  }
-               }
+               result = await this.spellScrollService.onDropSpell(this, event, item, droppedItem);
             } else {
                result = await super._onDropItem(event, item);
             }

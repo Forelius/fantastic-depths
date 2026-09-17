@@ -191,17 +191,28 @@ const DragDropMixin = (superclass) => class extends superclass {
       let result: Item[] | boolean = false;
       // If dropped item's actor is not owned by this user...
       if (this.actor?.isOwner) {
-         // Get the item
-         const droppedItem = await Item.implementation.fromDropData(item);
-         // If this item's actor is the same as the dropped item's actor (owner), do sort action
-         if (this.actor.uuid === droppedItem?.parent?.uuid) {
-            result = await this._onSortItem(event, droppedItem);
-         } else {
-            // Create new instance of item and if same id item already exists, don't keep id for this item.
-            result = [(await this._moveOrSplitItem(event, droppedItem, droppedItem.toObject()))];
-         }
+         result = await this._onDropItemDefault(event, item);
       }
       return result;
+   }
+
+   /**
+    * Handle a dropped Item using the base workflow: sort within the same actor,
+    * otherwise move or split the item onto this actor.
+    * @param {DragEvent} event     The initiating drop event
+    * @param {Item} item           The dropped Item document
+    * @returns {Promise<Item[] | boolean>}
+    * @protected
+    */
+   async _onDropItemDefault(event, item): Promise<Item[] | boolean> {
+      // Get the item
+      const droppedItem = await Item.implementation.fromDropData(item);
+      // If this item's actor is the same as the dropped item's actor (owner), do sort action
+      if (this.actor.uuid === droppedItem?.parent?.uuid) {
+         return this._onSortItem(event, droppedItem);
+      }
+      // Create new instance of item and if same id item already exists, don't keep id for this item.
+      return [(await this._moveOrSplitItem(event, droppedItem, droppedItem.toObject()))];
    }
 
    /**

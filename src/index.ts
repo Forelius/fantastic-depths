@@ -81,6 +81,7 @@ export * from './sheets/actor/CharacterSheetBase';
 export * from './sheets/actor/FDActorSheetV2';
 export * from './sheets/actor/FDVehicleSheet';
 export * from './sheets/actor/MonsterSheet';
+export * from './sheets/actor/SpellScrollService';
 export * from './sheets/item/ActorClassSheet';
 export * from './sheets/item/ActorMasterySheet';
 export * from './sheets/item/AmmoItemSheet';
