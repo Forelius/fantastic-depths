@@ -62,6 +62,14 @@ export class SpellItem extends FDItem {
    * Handle clickable rolls.
    */
    async roll(dataset) {
+      // Hidden spells consumed from unidentified items have no viewable description,
+      // so skip the description/cast dialog and cast directly.
+      if (dataset?.action === "consume") {
+         const ownerItem = dataset.actionuuid ? await fromUuid(dataset.actionuuid) : null;
+         if (ownerItem && ownerItem.isIdentified === false) {
+            return await this.doSpellcast(dataset);
+         }
+      }
       if (dataset?.skipdlg === true) {
          // I"m not sure this condition ever happens.
          super.roll(dataset);
