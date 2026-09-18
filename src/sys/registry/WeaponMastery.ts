@@ -154,7 +154,7 @@ export class WeaponMasteryBase implements WeaponMasteryInterface {
     * @returns {Object|undefined} - The mastery item or undefined.
     */
    _getOwnerMastery(weapon) {
-      return weapon?.actor.items.find(item => item.type === "mastery" && item.name === weapon?.system.mastery);
+      return weapon?.actor?.items.find(item => item.type === "mastery" && item.name === weapon?.system.mastery);
    }
 
 
@@ -442,7 +442,7 @@ export class WeaponMasteryHeroic extends WeaponMasteryBase {
     * taking into account the number of times the actor has been attacked this round,
     * and the fact that the AC bonus only applies a limited number of times per round.
     *
-    * The actor’s combat object contains:
+    * The actorï¿½s combat object contains:
     *   - system.combat.attAgainstH: number of handheld attacks this round
     *   - system.combat.attAgainstM: number of monster attacks this round
     *

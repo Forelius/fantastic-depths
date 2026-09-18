@@ -42,12 +42,14 @@ export class AttackRollService {
    /**
    * Handle clickable rolls.
    */
-   async rollAttack(item, dataset: PropertyBag = null): Promise<AttackRollResult> {
+   async rollAttack(item, dataset: PropertyBag = null, attacker = item.actor): Promise<AttackRollResult> {
       const systemData = item.system;
       let attackType;
       let rollData;
-      const attackerActor = item.actor as FDCombatActor;
-      const attackerToken = item.actor?.token;
+      // Contained spells (e.g. inside magic items) are not owned by an actor.
+      // The caller may supply the attacking actor (the item's owner) in that case.
+      const attackerActor = attacker as FDCombatActor;
+      const attackerToken = item.actor?.token ?? attackerActor?.currentActiveToken;
       const result = createAttackRollResult({
          attacker: attackerToken ?? attackerActor,
          canAttack: true,
@@ -87,7 +89,7 @@ export class AttackRollService {
                   rollOptions.attackRoll = `{${result.dialogResp.attackRoll},${result.dialogResp.attackRoll}}kl`;
                }
 
-               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(item.actor, item, attackType, rollOptions);
+               const attackRoll = game.fade.registry.getSystem('toHitSystem').getAttackRoll(attackerActor, item, attackType, rollOptions);
                rollData = item.getRollData();
                rollData.formula = attackRoll.formula;
                result.digest = attackRoll.digest;
