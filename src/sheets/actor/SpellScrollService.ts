@@ -16,19 +16,36 @@ export class SpellScrollService {
     * @returns {Promise<Item[] | boolean>} The result of the chosen action.
     */
    async onDropSpell(sheet, event, item, spellItem) {
+      // If there is no scroll template, just add the spell as a spell.
+      const scrollTemplate = await fadeFinder.getSpellScrollTemplate();
+      if (!scrollTemplate) {
+         return await this.#addSpell(sheet, event, item);
+      }
+
       const dialogResp = await fadeDialog.getSpellScrollChoiceDialog();
 
       if (dialogResp?.resp === "spell") {
-         // Adds the spell to the actor's spell list.
-         const classSystem = game.fade.registry.getSystem("classSystem") as ClassSystemBase;
-         if (classSystem.canCastSpells(sheet.actor)) {
-            return await sheet._onDropItemDefault(event, item);
-         }
+         return await this.#addSpell(sheet, event, item);
       } else if (dialogResp?.resp === "scroll") {
-         // Adds a copy of the spell scroll template to the actor's inventory.
-         return await this.#createScrollItem(sheet, spellItem);
+         return await this.#createScrollItem(sheet, spellItem, scrollTemplate);
       }
 
+      return false;
+   }
+
+   /**
+    * Add a spell to the actor's spell list.
+    * @private
+    * @param {any} sheet The actor sheet receiving the drop.
+    * @param {DragEvent} event The initiating drop event.
+    * @param {any} item The raw drop data of the dropped spell item.
+    * @returns {Promise<Item[] | boolean>} The result of the default item drop.
+    */
+   async #addSpell(sheet, event, item) {
+      const classSystem = game.fade.registry.getSystem("classSystem") as ClassSystemBase;
+      if (classSystem.canCastSpells(sheet.actor)) {
+         return await sheet._onDropItemDefault(event, item);
+      }
       return false;
    }
 
@@ -37,15 +54,10 @@ export class SpellScrollService {
     * @private
     * @param {any} sheet The actor sheet receiving the scroll.
     * @param {any} spellItem The dropped spell Item document.
-    * @returns {Promise<Item[] | boolean>} The created scroll item, or false if the template wasn't found.
+    * @param {any} scrollTemplate The spell scroll template item.
+    * @returns {Promise<Item[]>} The created scroll item.
     */
-   async #createScrollItem(sheet, spellItem) {
-      const scrollTemplate = await fadeFinder.getSpellScrollTemplate();
-      if (!scrollTemplate) {
-         ui.notifications.warn(game.i18n.localize('FADE.notification.noSpellScrollTemplate'));
-         return false;
-      }
-
+   async #createScrollItem(sheet, spellItem, scrollTemplate) {
       const spellName = spellItem.name;
       const spellClasses = spellItem.system.classes;
       const scrollData = scrollTemplate.toObject();
