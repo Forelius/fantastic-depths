@@ -62,6 +62,14 @@ export class SpellItem extends FDItem {
    * Handle clickable rolls.
    */
    async roll(dataset) {
+      // Hidden spells consumed from unidentified items have no viewable description,
+      // so skip the description/cast dialog and cast directly.
+      if (dataset?.action === "consume") {
+         const ownerItem = dataset.actionuuid ? await fromUuid(dataset.actionuuid) : null;
+         if (ownerItem && ownerItem.isIdentified === false) {
+            return await this.doSpellcast(dataset);
+         }
+      }
       if (dataset?.skipdlg === true) {
          // I"m not sure this condition ever happens.
          super.roll(dataset);
@@ -88,12 +96,12 @@ export class SpellItem extends FDItem {
     * @param dataset
     * @returns
     */
-   async rollAttack(dataset: PropertyBag = null): Promise<AttackRollResult> {
-      return await this.attackRollService.rollAttack(this, dataset);
+   async rollAttack(dataset: PropertyBag = null, attacker = this.actor): Promise<AttackRollResult> {
+      return await this.attackRollService.rollAttack(this, dataset, attacker);
    }
 
-   async doSpellcast(dataset: PropertyBag = null): Promise<void> {
-      const { instigator } = await this.getInstigator(dataset);
+async doSpellcast(dataset: PropertyBag = null): Promise<void> {
+      const { instigator, instigatorActor } = await this.getInstigator(dataset);
       const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
 
       // If the item is not owned by an actor then assume it is owned by another item.
@@ -105,7 +113,12 @@ export class SpellItem extends FDItem {
          // If the spell requires a successful melee attack...
          if (this.system.attackType === "melee") {
             // Roll the attack.
-            rollAttackResult = await this.rollAttack();
+            // Contained spells (e.g. inside magic items) are not owned by an actor,
+            // so the item's owner is used as the attacker.
+            if (this.actor === null && instigatorActor) {
+               ui.notifications.warn(game.i18n.localize("FADE.notification.usingOwnerAsAttacker"));
+            }
+            rollAttackResult = await this.rollAttack(dataset, instigatorActor);
          }
 
          // Get the spell duration data.

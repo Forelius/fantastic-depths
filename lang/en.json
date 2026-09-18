@@ -665,6 +665,7 @@
          "notMemorized": "{actorName} tries to cast {spellName}, but the spell is not memorized.",
          "noTokenWarning": "You must select a token or assign a default character to perform this action.",
          "noTokenWarning2": "You must select a token to perform this action.",
+         "usingOwnerAsAttacker": "This spell is not owned by a character. The item's owner is being used as the attacker.",
          "missingItem": "The required item type ({type}) was not found or its quantity is zero.",
          "missingItem2": "{actor} does not have a {type}.",
          "noCharges": "{itemName} has no charges remaining and can't be used.",

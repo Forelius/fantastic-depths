@@ -125,7 +125,7 @@ abstract class ToHitSystemBase implements ToHitInterface {
 
          const attackerWeaponType = weapon.type === "weapon" && weapon.system.weaponType ? weapon.system.weaponType : "monster";
          // Some weapons, like siege weapons with a crew, have their own thac0.
-         const thac0 = weapon.system.siege.thac0 > 0 ? weapon.system.siege.thac0 : attackingActor.system.thac0.value;
+         const thac0 = weapon.system?.siege?.thac0 > 0 ? weapon.system.siege.thac0 : attackingActor.system.thac0.value;
          // Determine what the lowest AC hit is
          const hitAC = this.getLowestACHit(this.getDiceSum(roll), roll.total, thac0);
          let hitACMessage = game.i18n.localize("FADE.Chat.attackACNone");
