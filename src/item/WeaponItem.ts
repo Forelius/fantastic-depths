@@ -11,9 +11,25 @@ export class WeaponItem extends GearItem {
 
    get isWeaponItem(): boolean { return true }
 
+   /** True when this ranged weapon requires a separate ammo item. */
+   get canShoot(): boolean { return this.system.canRanged === true && this.getAmmoTypes().length > 0; }
+
+   /** True when this ranged weapon is thrown / uses itself as ammo. */
+   get canThrow(): boolean { return this.system.canRanged === true && this.getAmmoTypes().length === 0; }
+
    constructor(data, context) {
       super(data, context);
       this.attackRollService = new AttackRollService();
+   }
+
+   /**
+    * Ammo types this weapon can use, parsed from the comma-delimited system.ammoType string.
+    * Empty string and "none" mean no separate ammo (thrown / self).
+    */
+   getAmmoTypes(): string[] {
+      const raw = this.system.ammoType;
+      if (!raw || raw === "none") return [];
+      return String(raw).split(",").map((s) => s.trim()).filter(Boolean);
    }
 
    prepareBaseData() {
@@ -63,6 +79,7 @@ export class WeaponItem extends GearItem {
          digest.push(game.i18n.format("FADE.Chat.rollMods.manual", { mod: resp.mod }));
       }
 
+      // If there is no damage and the damage modifier is not at least 1...
       if (modifier <= 0 && evaluatedRoll?.total <= 0) {
          hasDamage = false;
       }
@@ -70,8 +87,9 @@ export class WeaponItem extends GearItem {
       // Check weapon mastery
       if (hasDamage && masterySystem) {
          const wmResult = masterySystem.getDamageMods(this, formula, targetWeaponType);
-         if (wmResult) {
-            formula = wmResult?.formula ?? formula;
+         // Only apply a mastery formula when it is non-empty; "" must not wipe the weapon formula.
+         if (wmResult?.formula) {
+            formula = wmResult.formula;
             digest = [...digest, ...wmResult.digest];
          }
       }
@@ -88,7 +106,7 @@ export class WeaponItem extends GearItem {
 
       return hasDamage ? createDamageRollResult({
          damageFormula: formula,
-         damageType: weaponData.damageType,
+         damageType: this.#resolveDamageType(weaponData.damageType, ammoItem),
          digest,
          hasDamage,
          attackType,
@@ -96,6 +114,15 @@ export class WeaponItem extends GearItem {
          targetWeaponType,
          ammouuid: ammoItem?.uuid,
       }) : null;
+   }
+
+   /**
+    * When the weapon damage type is "ammo", use the ammo item's damage type instead.
+    */
+   #resolveDamageType(weaponDamageType, ammoItem): string {
+      if (weaponDamageType !== "ammo") return weaponDamageType;
+      const ammoDamageType = ammoItem?.system?.damageType;
+      return ammoDamageType?.length > 0 ? ammoDamageType : "physical";
    }
 
    async showAttackChatMessage(result = { attacker: null, dialogResp: null, digest: null, rollEval: null, ammoItem: null }) {

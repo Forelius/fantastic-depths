@@ -1,6 +1,7 @@
 import { FDActorBase } from "./FDActorBase.js";
 import { fadeFinder } from '../utils/finder.js';
 import { TagManager } from '../sys/TagManager.js';
+import { AttackRollService } from '../item/AttackRollService.js';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -8,10 +9,12 @@ import { TagManager } from '../sys/TagManager.js';
  */
 export class FDCombatActor extends FDActorBase {
    tagManager: TagManager;
+   attackRollService: AttackRollService;
 
    constructor(data, context) {
       super(data, context);
       this.tagManager = new TagManager(this); // Initialize TagManager
+      this.attackRollService = new AttackRollService();
    }
 
    /**
@@ -113,32 +116,6 @@ export class FDCombatActor extends FDActorBase {
    }
 
    /**
-    * Finds and returns the appropriate ammo for the specified weapon.
-    * The ammo item must be equipped for it to be recognized.
-    * @public
-    * @param {any} weapon
-    * @returns {any} The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
-    */
-   getAmmoItem(weapon) {
-      let ammoItem = null;
-      const ammoType = weapon.system.ammoType;
-
-      // If there's no ammo needed use the weapon itself
-      if (weapon.system.isRanged === false) {
-         // Do nothing, return null
-      } else if ((!ammoType || ammoType === "" || ammoType === "none") && weapon.system.quantity !== 0) {
-         ammoItem = weapon;
-      } else {
-         const ammoItems = ["ammo"];
-         // Find an item in the actor's inventory that matches the ammoType and has a quantity > 0
-         ammoItem = this.items.find(item => ammoItems.includes(item.type) && item.system.equipped === true
-            && item.system.ammoType == ammoType && item.system.quantity !== 0);
-      }
-
-      return ammoItem;
-   }
-
-   /**
     * Get an array of strings indicating which combat maneuvers this actor is capable of.
     * @returns {string[]}
     */
@@ -163,7 +140,7 @@ export class FDCombatActor extends FDActorBase {
       const rangedWeapons = this.items.filter(item => item.type === "weapon"
          && item.system.canRanged === true && item.system.equipped === true
          && (item.system.quantity === null || item.system.quantity > 0));
-      if (rangedWeapons.find(item => (item.system.ammoType?.length > 0 && this.getAmmoItem(item) !== null)
+      if (rangedWeapons.find(item => (item.getAmmoTypes?.().length > 0 && this.attackRollService.getAmmoItem(item, this) !== null)
          || (item.system.damageType === "breath" || item.system.natural === true))) {
          result.push("fire");
       } else {

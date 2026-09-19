@@ -463,6 +463,7 @@
             "short": "Ammo",
             "type": "Ammo Type",
             "typeHint": "The type of ammunition this item is. Leave blank is if this is not ammunition.",
+            "typeHint2": "Comma-delimited ammo types this weapon can use (e.g. arrow,bolt). Leave blank if unused. Damage type Ammo (variable) uses the ammo's damage type.",
             "long": "Ammunition",
             "load": "Load",
             "maxLoad": "Max Load"
@@ -958,7 +959,8 @@
             "heal": "Healing",
             "hull": "Hull",
             "fall": "Fall",
-            "piercing": "Armor-piercing"
+            "piercing": "Armor-piercing",
+            "ammo": "Ammo (variable)"
          }
       },
       "combat": {

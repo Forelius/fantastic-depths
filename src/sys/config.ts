@@ -29,7 +29,8 @@ export const FADE = {
       "heal",
       "hull",
       "fall",
-      "piercing" // Short for armor-piercing. Is physical and ignores half of AV.
+      "piercing", // Short for armor-piercing. Is physical and ignores half of AV.
+      "ammo" // Damage comes from the ammunition used.
    ],
    ConcatLogic: [
       "none",

@@ -152,6 +152,7 @@ export class WeaponItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2
       damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.poison"), value: "poison" });
       damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.corrosive"), value: "corrosive" });
       damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.piercing"), value: "piercing" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.ammo"), value: "ammo" });
       return damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 

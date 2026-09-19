@@ -39,9 +39,46 @@ export function createAttackRollResult(overrides = {}): AttackRollResult {
 export class AttackRollService {
    constructor() {
    }
+
    /**
-   * Handle clickable rolls.
-   */
+    * Finds and returns the appropriate ammo for the specified weapon.
+    * The ammo item must be equipped for it to be recognized.
+    * @param weapon
+    * @param owningActor Actor whose inventory is searched. Defaults to the weapon's actor.
+    * @returns The equipped ammo item if it exists and its quantity is greater than zero, otherwise null.
+    */
+   getAmmoItem(weapon, owningActor = weapon?.actor) {
+      let ammoItem = null;
+      const ammoTypes = typeof weapon.getAmmoTypes === "function"
+         ? weapon.getAmmoTypes()
+         : (!weapon.system.ammoType || weapon.system.ammoType === "none"
+            ? []
+            : String(weapon.system.ammoType).split(",").map((s) => s.trim()).filter(Boolean));
+
+      // If there's no ammo needed use the weapon itself
+      if (weapon.system.isRanged === false) {
+         // Do nothing, return null
+      } else if (ammoTypes.length === 0 && weapon.system.quantity !== 0) {
+         ammoItem = weapon;
+      } else if (owningActor) {
+         const ammoItems = ["ammo"];
+         // Find equipped ammo whose type is one of the weapon's allowed ammo types
+         ammoItem = owningActor.items.find(item => ammoItems.includes(item.type) && item.system.equipped === true
+            && ammoTypes.includes(item.system.ammoType) && item.system.quantity !== 0);
+      }
+
+      return ammoItem;
+   }
+
+   /**
+    * Resolve ammo, prompt for attack options, evaluate the to-hit roll, and show the attack chat card.
+    * For missile attacks, consumes one unit of ammo when quantity is finite.
+    * Contained items (e.g. spells on magic items) may pass an explicit attacker when the item has no actor owner.
+    * @param item The weapon (or attack-capable item) being rolled.
+    * @param dataset Optional form/dataset properties passed through to the attack dialog.
+    * @param attacker The attacking actor; defaults to the item's actor.
+    * @returns Attack roll result including attacker, ammo, dialog response, digest, evaluation, and whether the attack proceeded.
+    */
    async rollAttack(item, dataset: PropertyBag = null, attacker = item.actor): Promise<AttackRollResult> {
       const systemData = item.system;
       let attackType;
@@ -60,7 +97,7 @@ export class AttackRollService {
          result.canAttack = false;
       }
       else if (attackerActor) {
-         result.ammoItem = attackerActor?.getAmmoItem(item);
+         result.ammoItem = this.getAmmoItem(item, attackerActor);
          const targetTokens = Array.from(game.user.targets);
          const targetToken: Token = targetTokens.length > 0 ? targetTokens[0] : null;
 
@@ -98,7 +135,7 @@ export class AttackRollService {
 
          // Check if the attack type is a missile/ranged attack
          if (result.canAttack && attackType === 'missile') {
-            result.ammoItem = await this.#missileAttack(item);
+            result.ammoItem = await this.#missileAttack(item, attackerActor);
             result.canAttack = result.ammoItem !== null && result.ammoItem !== undefined;
          } else {
             result.ammoItem = null;
@@ -126,9 +163,9 @@ export class AttackRollService {
     * Get missile attack ammo if it exist and use it, otherwise use  weapon itself as ammo.
     * @returns
     */
-   async #missileAttack(item: FDItem): Promise<FDItem> {
-      const ammoItem = (item.actor as FDCombatActor)?.getAmmoItem(item);
-      await this.#tryUseAmmo(item);
+   async #missileAttack(item: FDItem, owningActor: FDCombatActor = item.actor as FDCombatActor): Promise<FDItem> {
+      const ammoItem = this.getAmmoItem(item, owningActor);
+      await this.#tryUseAmmo(item, owningActor);
       return ammoItem;
    }
 
@@ -137,13 +174,13 @@ export class AttackRollService {
     * @private
     * @returns The ammo item, if one exists.
     */
-   async #tryUseAmmo(item: FDItem): Promise<FDItem> {
-      const ammoItem = (item.actor as FDCombatActor)?.getAmmoItem(item);
+   async #tryUseAmmo(item: FDItem, owningActor: FDCombatActor = item.actor as FDCombatActor): Promise<FDItem> {
+      const ammoItem = this.getAmmoItem(item, owningActor);
       // If there's no ammo, show a UI notification
       if (ammoItem === undefined || ammoItem === null) {
-         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: item.actor?.name, weaponName: item.name });
+         const message = game.i18n.format('FADE.notification.noAmmo', { actorName: owningActor?.name ?? item.actor?.name, weaponName: item.name });
          ui.notifications.warn(message);
-         ChatMessage.create({ content: message, speaker: { alias: item.actor.name, } });
+         ChatMessage.create({ content: message, speaker: { alias: owningActor?.name ?? item.actor?.name, } });
       } else { // if (getOnly !== true) {
          // Deduct 1 ammo if not infinite
          if (ammoItem.system.quantity !== null) {
