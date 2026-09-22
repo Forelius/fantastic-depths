@@ -69,7 +69,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
                damageRoll,
                healRoll,
                actions,
-               placeTemplate: hasAreaTemplate(item)
+               placeTemplate: hasAreaTemplate(item),
+               castAs: options.castAs || null,
             }
          }
       });

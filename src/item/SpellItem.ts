@@ -143,7 +143,8 @@ async doSpellcast(dataset: PropertyBag = null): Promise<void> {
             }
             const chatOptions = {
                conditions,
-               durationMsg: null
+               durationMsg: null,
+               castAs: dataset?.castas || null,
             };
             if (actionItem == null) {
                // Only show duration if not being cast from an item.

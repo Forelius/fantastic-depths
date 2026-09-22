@@ -1,4 +1,5 @@
 import { hasAreaTemplate } from "../../item/fields/TemplateField.js";
+import { ClassSystemBase } from "../registry/ClassSystem.js";
 
 /**
  * Places Foundry Measured Templates from item area-template data.
@@ -20,19 +21,34 @@ export class MeasuredTemplateService {
          return;
       }
 
-      await MeasuredTemplateService.placeFromItem(item);
+      const owner = target.dataset.owneruuid ? await fromUuid(target.dataset.owneruuid) : null;
+      const actor = item.actor ?? owner?.actor ?? owner ?? null;
+      await MeasuredTemplateService.placeFromItem(item, {
+         actor,
+         castAs: target.dataset.castas || null,
+      });
    }
 
    /**
     * Start a cursor-follow template preview and create it on the scene when confirmed.
     */
-   static async placeFromItem(item): Promise<void> {
+   static async placeFromItem(item, options: { actor?: Actor; castAs?: string } = {}): Promise<void> {
       if (!canvas?.scene || !canvas.ready) {
          ui.notifications.warn(game.i18n.localize("FADE.Chat.placeTemplate.noScene"));
          return;
       }
 
+      const evalOptions = {
+         actor: options.actor ?? item.actor ?? null,
+         castAs: options.castAs || null,
+      };
       const tpl = item.system.template;
+      const length = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.distance, evalOptions);
+      if (!(length > 0)) {
+         ui.notifications.warn(game.i18n.localize("FADE.Chat.placeTemplate.invalidDistance"));
+         return;
+      }
+
       const token = canvas.tokens.controlled?.[0];
       const fillColor = typeof game.user.color === "string"
          ? game.user.color
@@ -41,7 +57,7 @@ export class MeasuredTemplateService {
       const templateData: Record<string, unknown> = {
          t: tpl.type,
          user: game.user.id,
-         distance: Number(tpl.distance),
+         distance: length,
          direction: 0,
          x: token?.center?.x ?? canvas.stage.pivot.x,
          y: token?.center?.y ?? canvas.stage.pivot.y,
@@ -50,16 +66,18 @@ export class MeasuredTemplateService {
       };
 
       if (tpl.type === "cone") {
-         templateData.angle = Number(tpl.angle) > 0 ? Number(tpl.angle) : 53.13;
+         const angle = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.angle, evalOptions);
+         templateData.angle = angle > 0 ? angle : 53.13;
       } else if (tpl.type === "ray") {
-         if (Number(tpl.width) > 0) {
-            templateData.width = Number(tpl.width);
+         const width = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.width, evalOptions);
+         if (width > 0) {
+            templateData.width = width;
          }
       } else if (tpl.type === "rect") {
          // Sheet distance/width are side lengths. Foundry stores the diagonal and its
          // angle (e.g. a 10'×10' square → distance ≈ 14.142, direction 45).
-         const length = Number(tpl.distance);
-         const width = Number(tpl.width) > 0 ? Number(tpl.width) : length;
+         const widthRaw = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.width, evalOptions);
+         const width = widthRaw > 0 ? widthRaw : length;
          templateData.distance = Math.hypot(length, width);
          templateData.direction = Math.atan2(width, length) * (180 / Math.PI);
       }
@@ -73,6 +91,43 @@ export class MeasuredTemplateService {
          await MeasuredTemplateService.#drawPreview(object);
       } catch {
          // Placement cancelled (right-click / Escape).
+      }
+   }
+
+   /**
+    * Same pattern as spell duration: getRollData, optional castAs patch, Roll.evaluate.
+    */
+   static async #evaluateTemplateNumber(item, formula, options: { actor?: Actor; castAs?: string } = {}): Promise<number> {
+      const raw = String(formula ?? "").trim();
+      if (!raw) return 0;
+      if (/^[+-]?\d+(\.\d+)?$/.test(raw)) {
+         return Number(raw);
+      }
+
+      const rollData = typeof item.getRollData === "function" ? item.getRollData() : { ...item.system };
+      // Contained spells may have no parent actor; use the chat card owner when provided.
+      if (!rollData.actor && options.actor) {
+         rollData.actor = options.actor.getRollData();
+         rollData.classes = rollData.actor?.classes;
+      }
+      if (options.castAs) {
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
+         const parsed = classSystem.parseClassAs(options.castAs);
+         if (parsed?.classId) {
+            rollData.classes = rollData.classes || {};
+            rollData.classes[parsed.classId] = { castLevel: parsed.classLevel };
+         }
+      }
+
+      try {
+         const rollEval = await new Roll(raw, rollData).evaluate();
+         return Number(rollEval.total) || 0;
+      } catch (error) {
+         if (game.user.isGM) {
+            console.error(`Invalid area template formula "${raw}" on ${item.name}.`, error);
+         }
+         ui.notifications.warn(game.i18n.localize("FADE.Chat.placeTemplate.invalidDistance"));
+         return 0;
       }
    }
 
@@ -93,7 +148,6 @@ export class MeasuredTemplateService {
                   ? canvas.grid.getSnappedPoint(pos, { mode })
                   : canvas.grid.getSnappedPoint(pos, { mode: 1 });
             }
-            // Fallback for older grid APIs
             if (typeof canvas.grid.getSnappedPosition === "function") {
                const snapped = canvas.grid.getSnappedPosition(pos.x, pos.y, 2);
                return { x: snapped.x, y: snapped.y };

@@ -115,10 +115,15 @@ export class fadeChatMessage extends ChatMessage {
       const placeTemplate = this.getFlag(game.system.id, "placeTemplate");
       const owneruuid = this.getFlag(game.system.id, "owneruuid");
       const itemuuid = this.getFlag(game.system.id, "itemuuid");
+      const castAs = this.getFlag(game.system.id, "castAs");
       if (!placeTemplate || !owneruuid || !itemuuid) return result;
       const owner = await fromUuid(owneruuid);
       if (owner?.testUserPermission(game.user, "OWNER")) {
-         const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/place-template-btn.hbs', { owneruuid, itemuuid });
+         const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/place-template-btn.hbs', {
+            owneruuid,
+            itemuuid,
+            castAs: castAs || "",
+         });
          result = document.createElement("div");
          result.innerHTML = content;
       }
