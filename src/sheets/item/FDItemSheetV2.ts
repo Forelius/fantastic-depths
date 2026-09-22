@@ -97,6 +97,15 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
       return saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
+   _getTemplateTypeOptions() {
+      const types = [];
+      types.push({ value: "", text: game.i18n.localize("None") });
+      types.push(...CONFIG.FADE.TemplateTypes.map((type) => {
+         return { value: type, text: game.i18n.localize(`FADE.AreaTemplate.types.${type}`) };
+      }));
+      return types.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+   }
+
    static async #clickEffect(event) {
       await EffectManager.onManageActiveEffect(event, this.item)
    }

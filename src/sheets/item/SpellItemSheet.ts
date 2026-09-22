@@ -95,6 +95,8 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
+      context.templateTypes = this._getTemplateTypeOptions();
+
       context.tabs = this.#getTabs();
 
       return context;

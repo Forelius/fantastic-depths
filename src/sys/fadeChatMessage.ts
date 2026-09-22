@@ -32,6 +32,7 @@ export class fadeChatMessage extends ChatMessage {
       // Damage and heal buttons
       let dmgHeal = await this.#addDamageRollButton();
       dmgHeal += await this.#addHealRollButton();
+      dmgHeal += await this.#addPlaceTemplateButton();
       if (dmgHeal.length > 0) {
          const tempDiv = document.createElement('div');
          tempDiv.innerHTML = dmgHeal;
@@ -103,6 +104,21 @@ export class fadeChatMessage extends ChatMessage {
       // Only those with permission make it past here.
       if (owner?.testUserPermission(game.user, "OWNER")) {
          const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/roll-heal-btn.hbs', { ...data, owneruuid, itemuuid });
+         result = document.createElement("div");
+         result.innerHTML = content;
+      }
+      return result?.outerHTML ?? "";
+   }
+
+   async #addPlaceTemplateButton() {
+      let result = null;
+      const placeTemplate = this.getFlag(game.system.id, "placeTemplate");
+      const owneruuid = this.getFlag(game.system.id, "owneruuid");
+      const itemuuid = this.getFlag(game.system.id, "itemuuid");
+      if (!placeTemplate || !owneruuid || !itemuuid) return result;
+      const owner = await fromUuid(owneruuid);
+      if (owner?.testUserPermission(game.user, "OWNER")) {
+         const content = await CodeMigrate.RenderTemplate('systems/fantastic-depths/templates/chat/place-template-btn.hbs', { owneruuid, itemuuid });
          result = document.createElement("div");
          result.innerHTML = content;
       }

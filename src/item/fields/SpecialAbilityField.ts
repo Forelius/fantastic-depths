@@ -1,3 +1,4 @@
+import { defineAreaTemplateSchema } from "./TemplateField.js";
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 /**
@@ -42,6 +43,7 @@ export class SpecialAbilityData extends foundry.abstract.DataModel {
          showResult: new BooleanField({ required: false, initial: true }),
          quantity: new NumberField({ required: false, initial: 1, nullable: true }),
          quantityMax: new NumberField({ required: false, initial: null, nullable: true }),
+         template: defineAreaTemplateSchema(),
          conditions: new ArrayField(
             new SchemaField({
                name: new StringField({ required: true, initial: '' }),

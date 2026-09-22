@@ -1,6 +1,7 @@
 import { ChatBuilder } from './ChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
 import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js"
+import { hasAreaTemplate } from "../item/fields/TemplateField.js";
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
@@ -79,7 +80,8 @@ export class SpecialAbilityChat extends ChatBuilder {
                conditions,
                damageRoll,
                healRoll,
-               actions
+               actions,
+               placeTemplate: hasAreaTemplate(item)
             }
          }
       });

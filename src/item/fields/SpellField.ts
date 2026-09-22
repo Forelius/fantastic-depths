@@ -1,3 +1,4 @@
+import { defineAreaTemplateSchema } from "./TemplateField.js";
 const { ArrayField, BooleanField, EmbeddedDataField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 /**
@@ -39,6 +40,7 @@ export class SpellData extends foundry.abstract.DataModel {
          saveDmgFormula: new StringField({ nullable: true, initial: null }),
          attackType: new StringField({ required: false, initial: "" }),
          damageType: new StringField({ required: false, initial: "" }),
+         template: defineAreaTemplateSchema(),
          conditions: new ArrayField(
             new SchemaField({
                name: new StringField({ required: true, initial: '' }),

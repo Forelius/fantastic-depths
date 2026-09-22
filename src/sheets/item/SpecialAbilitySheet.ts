@@ -133,6 +133,8 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
          }).sort((a, b) => a.text.localeCompare(b.text)));
       context.combatManeuvers = combatManeuvers.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});;
 
+      context.templateTypes = this._getTemplateTypeOptions();
+
       // Prepare the tabs.
       context.tabs = this.#getTabs();
 

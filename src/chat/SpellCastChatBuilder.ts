@@ -1,6 +1,7 @@
 import { ChatBuilder } from "./ChatBuilder.js";
 import { CodeMigrate } from "../sys/migration.js";
 import { SpellItem } from "../item/SpellItem.js"
+import { hasAreaTemplate } from "../item/fields/TemplateField.js";
 
 export class SpellCastChatBuilder extends ChatBuilder {
    static template = "systems/fantastic-depths/templates/chat/spell-cast.hbs";
@@ -67,7 +68,8 @@ export class SpellCastChatBuilder extends ChatBuilder {
                conditions: options.conditions,
                damageRoll,
                healRoll,
-               actions
+               actions,
+               placeTemplate: hasAreaTemplate(item)
             }
          }
       });

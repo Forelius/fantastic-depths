@@ -121,6 +121,7 @@ export class WeaponItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2
          context.weaponGrips = this._getWeaponGripOptions();
          // Saving throws
          context.savingThrows = await this._getSavingThrowOptions();
+         context.templateTypes = this._getTemplateTypeOptions();
       } else if (partId === "effects") {
          // Prepare active effects for easier access
          context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);

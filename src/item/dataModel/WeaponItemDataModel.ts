@@ -1,4 +1,5 @@
 import { GearItemDataModel } from "./GearItemDataModel.js";
+import { defineAreaTemplateSchema } from "../fields/TemplateField.js";
 const { BooleanField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
 /**
  * Data model for a weapon item extending GearItemDataModel.
@@ -33,6 +34,7 @@ export class WeaponItemDataModel extends GearItemDataModel {
          // grip is currently unused and hidden on sheet. remove?
          grip: new StringField({ required: false, nullable: true, initial: null }),
          natural: new BooleanField({ required: false, initial: false }),
+         template: defineAreaTemplateSchema(),
          mod: new SchemaField({
             dmg: new NumberField({ initial: 0 }),
             toHit: new NumberField({ initial: 0 }),

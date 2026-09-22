@@ -324,6 +324,21 @@
          "durationFormulaHint": "The effect's duration in rounds. An infinity symbol indicates an infinite duration. A zero indicates an instantaneous effect with no duration.",
          "healFormula": "Heal Roll"
       },
+      "AreaTemplate": {
+         "type": "Area Template",
+         "distance": "Distance",
+         "distanceHint": "Circle radius; cone/ray length; rectangle side length (square if width is blank). Converted to Foundry's diagonal on place.",
+         "angle": "Angle",
+         "angleHint": "Cone aperture in degrees. Leave blank to use the Foundry default. Not used for rectangles.",
+         "width": "Width",
+         "widthHint": "Ray width, or the other side of a rectangle. Leave blank on a rectangle to make a square.",
+         "types": {
+            "circle": "Circle",
+            "cone": "Cone",
+            "ray": "Ray",
+            "rect": "Rectangle"
+         }
+      },
       "Item": {
          "plural": "Gear",
          "uses": "Uses",
@@ -718,6 +733,12 @@
             "applied": "{damage} points of {type} damage applied to {tokenName}.",
             "killed": "<span class='attack-fail'>{tokenName} has fallen in battle.</span>",
             "restoredLife": "<span class='attack-success'>{tokenName} has been restored to life.</span>"
+         },
+         "placeTemplate": {
+            "name": "Place Template",
+            "hint": "Place an area-effect template on the scene.",
+            "invalid": "This item does not have a valid area template.",
+            "noScene": "Open a scene before placing a template."
          },
          "combatTracker": {
             "begin": "Combat has begun!",

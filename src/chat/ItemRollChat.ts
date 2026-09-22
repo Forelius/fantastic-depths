@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
+import { hasAreaTemplate } from "../item/fields/TemplateField.js";
 
 export class ItemRollChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/item-roll.hbs';
@@ -76,7 +77,8 @@ export class ItemRollChat extends ChatBuilder {
                itemuuid: item.uuid,
                targets: targetTokens?.map(i => ({ targetuuid: i.uuid, targetname: i.name })),
                actions,
-               conditions: condsForChat?.conditions
+               conditions: condsForChat?.conditions,
+               placeTemplate: hasAreaTemplate(item)
             }
          }
       });

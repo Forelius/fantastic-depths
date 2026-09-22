@@ -58,6 +58,7 @@ import { fadeHandlebars } from "./fadeHandlebars.js";
 import { fadeDialog } from "./dialog/fadeDialog.js";
 import { DamageRollChatBuilder } from "./chat/DamageRollChatBuilder.js";
 import { AttackRollChatBuilder } from "./chat/AttackRollChatBuilder.js";
+import { MeasuredTemplateService } from "./sys/services/MeasuredTemplateService.js";
 import { ConditionItem } from "./item/ConditionItem.js";
 import { DataMigrator } from "./sys/migration.js";
 import { EffectManager } from "./sys/EffectManager.js";
@@ -284,6 +285,7 @@ Hooks.once("ready", async () => {
    $(document).on("click", ".apply-damage, .apply-heal", DamageRollChatBuilder.clickApplyDamage);
    $(document).on("click", ".apply-condition", async (event) => await ConditionItem.clickApplyCondition(event));
    $(document).on("click", ".remove-condition", async (event) => await ConditionItem.clickRemoveCondition(event));
+   $(document).on("click", ".place-template", MeasuredTemplateService.clickPlaceTemplate);
    $(document).on("click", ".collapser", Collapser.toggleCollapsibleContent);
    $(document).on("click", ".saving-roll", SavingThrowSystem.handleSavingThrowRequest);
    $(document).on("click", ".action-roll, .spell-cast, .attack-roll", FDCombatActor.handleActionRoll);

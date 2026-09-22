@@ -18,6 +18,13 @@ export const FADE = {
       "breath",
       "save"
    ],
+   /** Foundry MeasuredTemplate shapes usable as item area effects. */
+   TemplateTypes: [
+      "circle",
+      "cone",
+      "ray",
+      "rect"
+   ],
    DamageTypes: [
       "physical",
       "breath", // Is physical
