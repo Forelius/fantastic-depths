@@ -64,6 +64,7 @@ export class SpellScrollService {
       scrollData.name = scrollData.name.replaceAll("<spell-name>", spellName);
       if (scrollData.system?.description) {
          let description = scrollData.system.description.replaceAll("&lt;spell-name&gt;", spellName);
+         description = description.replaceAll("&lt;spell-desc&gt;", spellItem.system.description ?? "");
          if (spellClasses?.length > 0) {
             const classNames = spellClasses.map(c => c.name).join(", ");
             description = description.replaceAll("&lt;classes&gt;", classNames);
