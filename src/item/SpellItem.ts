@@ -1,4 +1,4 @@
-import { AttackRollService, AttackRollResult } from "./AttackRollService.js";
+import { AttackRollService, AttackRollResult } from "../sys/services/AttackRollService.js";
 import { createDamageRollResult, FDItem } from "./FDItem.js";
 import { DamageRollResult } from "./type/DamageRollResult.js"
 import { DialogFactory } from "../dialog/DialogFactory.js";

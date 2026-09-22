@@ -1,6 +1,6 @@
 import { ChatFactory } from "../chat/ChatFactory.js";
 import { CHAT_TYPE } from "../chat/ChatTypeEnum.js"
-import { AttackRollService, AttackRollResult } from './AttackRollService.js';
+import { AttackRollService, AttackRollResult } from '../sys/services/AttackRollService.js';
 import { GearItem } from "./GearItem.js";
 import { WeaponMasteryInterface } from "../sys/registry/WeaponMastery.js";
 import { createDamageRollResult } from "./FDItem.js"

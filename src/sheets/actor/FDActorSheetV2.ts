@@ -9,7 +9,7 @@ import { fadeFinder } from "../../utils/finder.js";
 import { CodeMigrate } from "../../sys/migration.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
-import { SpellScrollService } from "./SpellScrollService.js";
+import { SpellScrollService } from "../../sys/services/SpellScrollService.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications

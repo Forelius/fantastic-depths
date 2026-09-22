@@ -1,7 +1,7 @@
 import { FDActorBase } from "./FDActorBase.js";
 import { fadeFinder } from '../utils/finder.js';
 import { TagManager } from '../sys/TagManager.js';
-import { AttackRollService } from '../item/AttackRollService.js';
+import { AttackRollService } from '../sys/services/AttackRollService.js';
 
 /**
  * Extends the basic actor class with modifications for all system actors.
@@ -64,6 +64,9 @@ export class FDCombatActor extends FDActorBase {
             assignIfUndefined(documents, changeData, "prototypeToken.scale", 1);
             break;
       }
+
+      assignIfUndefined(documents, changeData, "prototypeToken.bar1.attribute", "hp");
+      assignIfUndefined(documents, changeData, "prototypeToken.displayBars", CONST.TOKEN_DISPLAY_MODES.CONTROL);
 
       // Update the document with the changed data if it's a new actor
       if (Object.keys(changeData).length) {

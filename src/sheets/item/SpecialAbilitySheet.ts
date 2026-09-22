@@ -1,5 +1,5 @@
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
-import { ConditionSheetService } from "./ConditionSheetService.js";
+import { ConditionSheetService } from "../../sys/services/ConditionSheetService.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { EffectManager } from "../../sys/EffectManager.js";

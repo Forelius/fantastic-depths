@@ -1,7 +1,7 @@
-﻿import { FDActorBase } from '../actor/FDActorBase.js';
-import { FDCombatActor } from '../actor/FDCombatActor.js';
-import { DialogFactory } from '../dialog/DialogFactory.js';
-import { FDItem } from './FDItem.js';
+﻿import { FDActorBase } from '../../actor/FDActorBase.js';
+import { FDCombatActor } from '../../actor/FDCombatActor.js';
+import { DialogFactory } from '../../dialog/DialogFactory.js';
+import { FDItem } from '../../item/FDItem.js';
 
 export type AttackRollResult = {
    attacker: FDActorBase;

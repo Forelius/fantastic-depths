@@ -1,6 +1,6 @@
 import { fadeDialog } from "../../dialog/fadeDialog.js";
 import { fadeFinder } from "../../utils/finder.js";
-import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
+import { ClassSystemBase } from "../registry/ClassSystem.js";
 
 /**
  * A class for handling a spell dropped onto an actor sheet.

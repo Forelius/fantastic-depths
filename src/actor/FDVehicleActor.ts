@@ -45,6 +45,9 @@ export class FDVehicleActor extends FDCombatActor {
             break;
       }
 
+      assignIfUndefined(documents, changeData, "prototypeToken.bar1.attribute", "hp");
+      assignIfUndefined(documents, changeData, "prototypeToken.displayBars", CONST.TOKEN_DISPLAY_MODES.CONTROL);
+
       // Update the document with the changed data if it's a new actor
       if (Object.keys(changeData).length) {
          this.updateSource(changeData); // updateSource instead of update, no _id needed

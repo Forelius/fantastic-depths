@@ -2,9 +2,9 @@ import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
-import { ConditionSheetService } from "./ConditionSheetService.js";
-import { SpecialAbilitySheetService } from "./SpecialAbilitySheetService.js";
-import { SpellSheetService } from "./SpellSheetService.js";
+import { ConditionSheetService } from "../../sys/services/ConditionSheetService.js";
+import { SpecialAbilitySheetService } from "../../sys/services/SpecialAbilitySheetService.js";
+import { SpellSheetService } from "../../sys/services/SpellSheetService.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 
 /**
