@@ -9,18 +9,20 @@ export type AreaTemplateData = {
    type: string;
    /** Plain number or Foundry roll formula (e.g. "40" or "10+(@actor.details.level*2)"). */
    distance: string;
+   direction: string;
    angle: string;
    width: string;
 };
 
 /**
  * Nested schema for optional area-effect Measured Template geometry on items.
- * Distance/angle/width are strings so they can hold roll formulas.
+ * Distance/direction/angle/width are strings so they can hold roll formulas.
  */
 export function defineAreaTemplateSchema() {
    return new SchemaField({
       type: new StringField({ required: false, initial: "" }),
       distance: new StringField({ required: false, initial: "" }),
+      direction: new StringField({ required: false, initial: "" }),
       angle: new StringField({ required: false, initial: "" }),
       width: new StringField({ required: false, initial: "" }),
    });

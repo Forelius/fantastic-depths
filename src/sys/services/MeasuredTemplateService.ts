@@ -48,6 +48,8 @@ export class MeasuredTemplateService {
          ui.notifications.warn(game.i18n.localize("FADE.Chat.placeTemplate.invalidDistance"));
          return;
       }
+      const directionRaw = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.direction, evalOptions);
+      const direction = Number.isFinite(directionRaw) ? ((directionRaw % 360) + 360) % 360 : 0;
 
       const token = canvas.tokens.controlled?.[0];
       const fillColor = typeof game.user.color === "string"
@@ -58,7 +60,7 @@ export class MeasuredTemplateService {
          t: tpl.type,
          user: game.user.id,
          distance: length,
-         direction: 0,
+         direction,
          x: token?.center?.x ?? canvas.stage.pivot.x,
          y: token?.center?.y ?? canvas.stage.pivot.y,
          fillColor,
@@ -76,10 +78,17 @@ export class MeasuredTemplateService {
       } else if (tpl.type === "rect") {
          // Sheet distance/width are side lengths. Foundry stores the diagonal and its
          // angle (e.g. a 10'×10' square → distance ≈ 14.142, direction 45).
+         // If width is set, derive that angle from the sides. Otherwise keep the sheet
+         // direction (blank → 0 would be a degenerate line; default to a square).
          const widthRaw = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.width, evalOptions);
-         const width = widthRaw > 0 ? widthRaw : length;
-         templateData.distance = Math.hypot(length, width);
-         templateData.direction = Math.atan2(width, length) * (180 / Math.PI);
+         if (widthRaw > 0) {
+            templateData.distance = Math.hypot(length, widthRaw);
+            templateData.direction = Math.atan2(widthRaw, length) * (180 / Math.PI);
+         } else if (!String(tpl.direction ?? "").trim()) {
+            templateData.distance = Math.hypot(length, length);
+            templateData.direction = 45;
+         }
+         // else: distance stays as the Foundry diagonal; direction from the sheet.
       }
 
       const DocumentClass = CONFIG.MeasuredTemplate.documentClass;

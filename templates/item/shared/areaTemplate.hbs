@@ -11,6 +11,10 @@
          <label for="system.template.distance" data-tooltip="{{localize 'FADE.AreaTemplate.distanceHint'}}">{{localize 'FADE.AreaTemplate.distance'}}</label>
       </div>
       <div class="flex1">
+         <input type="text" name="system.template.direction" value="{{system.template.direction}}" data-dtype="String" {{#unless isGM}} readonly{{/unless}} />
+         <label for="system.template.direction" data-tooltip="{{localize 'FADE.AreaTemplate.directionHint'}}">{{localize 'FADE.AreaTemplate.direction'}}</label>
+      </div>
+      <div class="flex1">
          <input type="text" name="system.template.angle" value="{{system.template.angle}}" data-dtype="String" {{#unless isGM}} readonly{{/unless}} />
          <label for="system.template.angle" data-tooltip="{{localize 'FADE.AreaTemplate.angleHint'}}">{{localize 'FADE.AreaTemplate.angle'}}</label>
       </div>

@@ -327,11 +327,13 @@
       "AreaTemplate": {
          "type": "Area Template",
          "distance": "Distance",
-         "distanceHint": "Circle radius; cone/ray length; rectangle side length (square if width is blank). Plain number or roll formula, e.g. 40 or 10+(@classes.M.castLevel*2).",
+         "distanceHint": "Circle radius; cone/ray length; rectangle side length when Width is set (or diagonal when using Direction alone). Plain number or roll formula, e.g. 40 or 10+(@classes.M.castLevel*2).",
+         "direction": "Direction",
+         "directionHint": "Initial facing in degrees (or a formula). For rectangles, the diagonal angle that sets aspect ratio when width is blank (45 = square). Scroll wheel still adjusts during placement.",
          "angle": "Angle",
          "angleHint": "Cone aperture in degrees (or a formula). Leave blank to use the Foundry default. Not used for rectangles.",
          "width": "Width",
-         "widthHint": "Ray width, or the other side of a rectangle (number or formula). Leave blank on a rectangle to make a square.",
+         "widthHint": "Ray width, or the other side of a rectangle (number or formula). Leave blank on a rectangle to make a square (or set Direction instead).",
          "types": {
             "circle": "Circle",
             "cone": "Cone",
