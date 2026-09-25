@@ -286,6 +286,13 @@ Hooks.once("ready", async () => {
    $(document).on("click", ".apply-condition", async (event) => await ConditionItem.clickApplyCondition(event));
    $(document).on("click", ".remove-condition", async (event) => await ConditionItem.clickRemoveCondition(event));
    $(document).on("click", ".place-template", MeasuredTemplateService.clickPlaceTemplate);
+   $(document).on("click", ".clear-template", MeasuredTemplateService.clickClearTemplate);
+   Hooks.on("createMeasuredTemplate", (doc) => {
+      MeasuredTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
+   });
+   Hooks.on("deleteMeasuredTemplate", (doc) => {
+      MeasuredTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
+   });
    $(document).on("click", ".collapser", Collapser.toggleCollapsibleContent);
    $(document).on("click", ".saving-roll", SavingThrowSystem.handleSavingThrowRequest);
    $(document).on("click", ".action-roll, .spell-cast, .attack-roll", FDCombatActor.handleActionRoll);

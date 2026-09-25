@@ -710,6 +710,25 @@ table.compact-table input {
   margin: 0.4rem 0.1rem;
   width: 98%;
 }
+.chat-message .message-content .place-template-buttons {
+  display: flex;
+  align-items: stretch;
+  gap: 0.15rem;
+  width: 98%;
+  margin: 0.4rem 0.1rem;
+}
+.chat-message .message-content .place-template-buttons button {
+  margin: 0;
+  width: auto;
+}
+.chat-message .message-content .place-template-buttons .place-template {
+  flex: 1;
+}
+.chat-message .message-content .place-template-buttons .clear-template {
+  flex: 0 0 2rem;
+  width: 2rem;
+  padding: 0;
+}
 .chat-message .message-content .content-link, .chat-message .message-content .inline-roll {
   color: #e9c68b;
 }

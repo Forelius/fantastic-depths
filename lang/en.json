@@ -739,6 +739,7 @@
          "placeTemplate": {
             "name": "Place Template",
             "hint": "Place an area-effect template on the scene.",
+            "clear": "Clear placed templates",
             "invalid": "This item does not have a valid area template.",
             "invalidDistance": "Could not evaluate the area template distance formula.",
             "noScene": "Open a scene before placing a template."

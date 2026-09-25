@@ -1,4 +1,5 @@
 import { CodeMigrate } from "./migration.js";
+import { MeasuredTemplateService } from "./services/MeasuredTemplateService.js";
 
 export class fadeChatMessage extends ChatMessage {
    /** @inheritDoc */
@@ -123,6 +124,7 @@ export class fadeChatMessage extends ChatMessage {
             owneruuid,
             itemuuid,
             castAs: castAs || "",
+            hasPlacedTemplate: MeasuredTemplateService.hasPlacedTemplate(this.id),
          });
          result = document.createElement("div");
          result.innerHTML = content;

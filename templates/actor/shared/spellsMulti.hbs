@@ -19,6 +19,7 @@
             <div class="item-name">
                {{localize "FADE.Spell.SpellLVL" level=(add @index ../firstSpellLevel)}}
             </div>
+            <div class="item-80px">{{localize "FADE.Spell.range"}}</div>
             <div class="item-40px">{{localize "FADE.Spell.slots"}}</div>
             <div class="item-80px flexrow">
                <input type="text" value="{{slot.used}}" name="slot.used" data-dtype="Number" placeholder="0" readonly data-tooltip="{{localize "FADE.Spell.castSlots"}}" />/
@@ -38,7 +39,8 @@
                   </div>
                   <a class="item-control" data-action="expandDesc" data-tooltip="{{localize "FADE.dialog.spellcast.noLabel"}}">{{item.name}}</a>
                </div>
-               <div class="item-40px">{{localize "FADE.Spell.casts"}}</div>
+               <div class="item-80px item-prop">{{item.system.range}}</div>
+               <div class="item-40px"></div>
                <div class="item-80px flexrow editable">
                   <input type="text" value="{{item.system.cast}}" data-dtype="Number" placeholder="0" data-field="system.cast"
                          data-tooltip="{{localize "FADE.Spell.cast"}}" />/

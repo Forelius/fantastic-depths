@@ -23,16 +23,66 @@ export class MeasuredTemplateService {
 
       const owner = target.dataset.owneruuid ? await fromUuid(target.dataset.owneruuid) : null;
       const actor = item.actor ?? owner?.actor ?? owner ?? null;
+      const messageId = (target.closest("[data-message-id]") as HTMLElement | null)?.dataset.messageId ?? null;
       await MeasuredTemplateService.placeFromItem(item, {
          actor,
          castAs: target.dataset.castas || null,
+         messageId,
       });
+   }
+
+   /**
+    * Chat-card click handler for .clear-template buttons.
+    * Deletes measured templates spawned from this chat message.
+    */
+   static async clickClearTemplate(event: Event): Promise<void> {
+      event.preventDefault();
+      event.stopPropagation();
+      const target = event.currentTarget as HTMLButtonElement;
+      const messageId = (target.closest("[data-message-id]") as HTMLElement | null)?.dataset.messageId;
+      if (!messageId || !canvas?.scene) return;
+
+      const templateIds = canvas.scene.templates
+         .filter((t) => t.getFlag(game.system.id, "messageId") === messageId && t.isOwner)
+         .map((t) => t.id);
+      if (!templateIds.length) return;
+
+      target.disabled = true;
+      try {
+         await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", templateIds);
+      } finally {
+         target.disabled = false;
+      }
+   }
+
+   /**
+    * Show or hide the clear-template button on a chat message based on placed templates.
+    */
+   static toggleClearTemplateButton(messageId: string | null | undefined): void {
+      if (!messageId || !canvas?.ready) return;
+
+      const hasMeasuredTemplates = !!canvas.scene?.templates.some(
+         (t) => t.getFlag(game.system.id, "messageId") === messageId && t.isOwner
+      );
+      document
+         .querySelectorAll(`li[data-message-id="${messageId}"] .clear-template`)
+         .forEach((button) => button.classList.toggle("hidden", !hasMeasuredTemplates));
+   }
+
+   /**
+    * Whether this chat message currently has an owned placed template on the active scene.
+    */
+   static hasPlacedTemplate(messageId: string | null | undefined): boolean {
+      if (!messageId || !canvas?.ready || !canvas.scene) return false;
+      return canvas.scene.templates.some(
+         (t) => t.getFlag(game.system.id, "messageId") === messageId && t.isOwner
+      );
    }
 
    /**
     * Start a cursor-follow template preview and create it on the scene when confirmed.
     */
-   static async placeFromItem(item, options: { actor?: Actor; castAs?: string } = {}): Promise<void> {
+   static async placeFromItem(item, options: { actor?: Actor; castAs?: string; messageId?: string | null } = {}): Promise<void> {
       if (!canvas?.scene || !canvas.ready) {
          ui.notifications.warn(game.i18n.localize("FADE.Chat.placeTemplate.noScene"));
          return;
@@ -66,6 +116,14 @@ export class MeasuredTemplateService {
          fillColor,
          hidden: false,
       };
+
+      if (options.messageId) {
+         templateData.flags = {
+            [game.system.id]: {
+               messageId: options.messageId,
+            },
+         };
+      }
 
       if (tpl.type === "cone") {
          const angle = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.angle, evalOptions);
