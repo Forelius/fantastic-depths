@@ -1,6 +1,7 @@
 import { ChatBuilder } from './ChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
 import { SpecialAbilityItem } from "../item/SpecialAbilityItem.js"
+import { hasAreaTemplate } from "../item/fields/TemplateField.js";
 
 export class SpecialAbilityChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/special-ability.hbs';
@@ -29,11 +30,6 @@ export class SpecialAbilityChat extends ChatBuilder {
          });
       } else {
          description = game.i18n.format('FADE.Chat.useSpecAbility', { owner: context.name, specAbility: item.name });
-      }
-
-      if (game.fade.toastManager) {
-         const toast = `${description}${rollResult.message}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
       }
 
       const actions = await this._getActionsForChat(item, context, { saves: true, attacks: false, abilities: false });
@@ -79,7 +75,8 @@ export class SpecialAbilityChat extends ChatBuilder {
                conditions,
                damageRoll,
                healRoll,
-               actions
+               actions,
+               placeTemplate: hasAreaTemplate(item)
             }
          }
       });

@@ -58,10 +58,10 @@ import { fadeHandlebars } from "./fadeHandlebars.js";
 import { fadeDialog } from "./dialog/fadeDialog.js";
 import { DamageRollChatBuilder } from "./chat/DamageRollChatBuilder.js";
 import { AttackRollChatBuilder } from "./chat/AttackRollChatBuilder.js";
+import { MeasuredTemplateService } from "./sys/services/MeasuredTemplateService.js";
 import { ConditionItem } from "./item/ConditionItem.js";
 import { DataMigrator } from "./sys/migration.js";
 import { EffectManager } from "./sys/EffectManager.js";
-import { ToastManager } from "./sys/ToastManager.js";
 import { Collapser } from "./utils/collapser.js";
 import { fadeChatMessage } from "./sys/fadeChatMessage.js"
 import { SocketManager } from "./sys/SocketManager.js"
@@ -284,6 +284,14 @@ Hooks.once("ready", async () => {
    $(document).on("click", ".apply-damage, .apply-heal", DamageRollChatBuilder.clickApplyDamage);
    $(document).on("click", ".apply-condition", async (event) => await ConditionItem.clickApplyCondition(event));
    $(document).on("click", ".remove-condition", async (event) => await ConditionItem.clickRemoveCondition(event));
+   $(document).on("click", ".place-template", MeasuredTemplateService.clickPlaceTemplate);
+   $(document).on("click", ".clear-template", MeasuredTemplateService.clickClearTemplate);
+   Hooks.on("createMeasuredTemplate", (doc) => {
+      MeasuredTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
+   });
+   Hooks.on("deleteMeasuredTemplate", (doc) => {
+      MeasuredTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
+   });
    $(document).on("click", ".collapser", Collapser.toggleCollapsibleContent);
    $(document).on("click", ".saving-roll", SavingThrowSystem.handleSavingThrowRequest);
    $(document).on("click", ".action-roll, .spell-cast, .attack-roll", FDCombatActor.handleActionRoll);
@@ -292,22 +300,7 @@ Hooks.once("ready", async () => {
    await fxMgr.OnGameReady();
 
    if (game.socket) {
-      game.fade.SocketManager = new SocketManager();
-      const toastsEnabled = game.settings.get(game.system.id, "toasts");
-      if (toastsEnabled) {
-         // Ensure that the socket is ready before using it
-         game.fade.toastManager = new ToastManager();
-         game.socket.on(`system.${game.system.id}`, (data) => {
-            //console.debug("onSocketReceived", data);
-            if (data.action === "showToast") {
-               // Call the public method to create the toast
-               game.fade.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
-            } else {
-               game.fade.SocketManager.receiveSocketMessage(data)
-            }
-         });
-         console.info(`Registered socket listener: system.${game.system.id}`);
-      }
+      SocketManager.SetupOnReady();
    } else {
       console.warn(`Game socket not found: system.${game.system.id}`);
    }

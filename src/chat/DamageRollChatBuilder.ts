@@ -34,10 +34,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
          digest
       };
 
-      if (game.fade.toastManager) {
-         game.fade.toastManager.showHtmlToast(options.resultString, "info", rollMode);
-      }
-
       // Render the content using the template, now with messageId
       const content = await CodeMigrate.RenderTemplate(this.template, renderData);
       const chatMessageData = this.getChatMessageData({

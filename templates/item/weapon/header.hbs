@@ -29,7 +29,7 @@
             <input type='text' name="system.damageRoll" value='{{system.damageRoll}}' data-dtype='String' data-tooltip="{{system.damageRoll}}" {{#unless isGM}} readonly{{/unless}} />
             <label for="system.damageRoll">{{localize 'FADE.Weapon.damage.long'}}</label>
          </li>
-         <li style="max-width:90px;">
+         <li style="max-width:120px;">
             <select name="system.damageType" {{#unless isGM}} disabled='disabled' {{/unless}}>
                {{selectOptions damageTypes selected=system.damageType}}
             </select>

@@ -1,4 +1,4 @@
-import { FDItemSheetV2 } from "./FDItemSheetV2";
+import { FDItemSheetV2 } from "../../sheets/item/FDItemSheetV2.js";
 
 /**
  * A class adding Conditions to an FDItemSheetV2 class.

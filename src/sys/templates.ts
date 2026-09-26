@@ -37,5 +37,6 @@ export const preloadHandlebarsTemplates = async function () {
       itemFlags: 'systems/fantastic-depths/templates/item/parts/item-flags.hbs',
       itemIdentified: 'systems/fantastic-depths/templates/item/parts/item-identified.hbs',
       vsGroupMod: 'systems/fantastic-depths/templates/item/shared/vsGroupMod.hbs',
+      areaTemplate: 'systems/fantastic-depths/templates/item/shared/areaTemplate.hbs',
    });
 };

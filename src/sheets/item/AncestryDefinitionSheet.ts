@@ -6,7 +6,7 @@ import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { ChatFactory } from "../../chat/ChatFactory.js";
 import { CHAT_TYPE } from "../../chat/ChatTypeEnum.js"
-import { SpecialAbilitySheetService} from "./SpecialAbilitySheetService.js";
+import { SpecialAbilitySheetService } from "../../sys/services/SpecialAbilitySheetService.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

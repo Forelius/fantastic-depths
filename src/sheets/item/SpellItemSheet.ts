@@ -44,7 +44,11 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
       },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/conditions.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
       }
+
    }
 
    /** @override */
@@ -63,6 +67,7 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
       if (game.user.isGM) {
          options.parts.push("attributes");
          options.parts.push("effects");
+         options.parts.push("gmOnly");
       }
    }
 
@@ -94,6 +99,8 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
          return { value: save.system.customSaveCode, text: save.system.shortName }
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      context.templateTypes = this._getTemplateTypeOptions();
 
       context.tabs = this.#getTabs();
 
@@ -129,6 +136,7 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
       if (game.user.isGM) {
          tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes");
          tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");
       }
       for (const tab of Object.values(tabs) as SheetTab[]) {
          tab.active = this.tabGroups[tab.group] === tab.id;

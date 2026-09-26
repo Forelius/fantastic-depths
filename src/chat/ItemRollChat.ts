@@ -1,5 +1,6 @@
 import { ChatBuilder } from './ChatBuilder.js';
 import { CodeMigrate } from "../sys/migration.js";
+import { hasAreaTemplate } from "../item/fields/TemplateField.js";
 
 export class ItemRollChat extends ChatBuilder {
    static template = 'systems/fantastic-depths/templates/chat/item-roll.hbs';
@@ -39,10 +40,6 @@ export class ItemRollChat extends ChatBuilder {
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata?.rollmode || CodeMigrate.getRollModeSetting();
 
-      if (roll) {
-         this.handleToast(actorName, mdata, roll, resultString, rollMode);
-      }
-
       const actions = await this._getActionsForChat(item, context, { attacks: item.isWeaponItem, saves: !item.isWeaponItem, abilities: true });
 
       // Prepare data for the chat template
@@ -76,22 +73,14 @@ export class ItemRollChat extends ChatBuilder {
                itemuuid: item.uuid,
                targets: targetTokens?.map(i => ({ targetuuid: i.uuid, targetname: i.name })),
                actions,
-               conditions: condsForChat?.conditions
+               conditions: condsForChat?.conditions,
+               placeTemplate: hasAreaTemplate(item)
             }
          }
       });
 
       // Create the chat message
       await ChatMessage.create(chatMessageData);
-   }
-
-   handleToast(actorName, mdata, roll, resultString, rollMode) {
-      if (game.fade.toastManager) {
-         let toast = `${actorName}: ${mdata?.label ?? ''}${mdata?.desc ?? ''}`;
-         toast += `<div>Roll: ${roll.total}</div>`;
-         if (resultString) toast += `<div>${resultString}</div>`;
-         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
    }
 
    getResultString(mdata, roll, targetNumber) {

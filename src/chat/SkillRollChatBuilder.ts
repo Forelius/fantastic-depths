@@ -28,8 +28,6 @@ export class SkillRollChatBuilder extends GenericRollChatBuilder {
       // Determine rollMode (use mdata.rollmode if provided, fallback to default)
       const rollMode = mdata.rollmode || CodeMigrate.getRollModeSetting();
 
-      this.handleToast(tokenName, mdata, roll, resultString, rollMode);
-
       // Prepare data for the chat template
       const chatData = {
          rollContent,

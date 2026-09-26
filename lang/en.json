@@ -324,6 +324,23 @@
          "durationFormulaHint": "The effect's duration in rounds. An infinity symbol indicates an infinite duration. A zero indicates an instantaneous effect with no duration.",
          "healFormula": "Heal Roll"
       },
+      "AreaTemplate": {
+         "type": "Area Template",
+         "distance": "Distance",
+         "distanceHint": "Circle radius; cone/ray length; rectangle side length when Width is set (or diagonal when using Direction alone). Plain number or roll formula, e.g. 40 or 10+(@classes.M.castLevel*2).",
+         "direction": "Direction",
+         "directionHint": "Initial facing in degrees (or a formula). For rectangles, the diagonal angle that sets aspect ratio when width is blank (45 = square). Scroll wheel still adjusts during placement.",
+         "angle": "Angle",
+         "angleHint": "Cone aperture in degrees (or a formula). Leave blank to use the Foundry default. Not used for rectangles.",
+         "width": "Width",
+         "widthHint": "Ray width, or the other side of a rectangle (number or formula). Leave blank on a rectangle to make a square (or set Direction instead).",
+         "types": {
+            "circle": "Circle",
+            "cone": "Cone",
+            "ray": "Ray",
+            "rect": "Rectangle"
+         }
+      },
       "Item": {
          "plural": "Gear",
          "uses": "Uses",
@@ -463,6 +480,7 @@
             "short": "Ammo",
             "type": "Ammo Type",
             "typeHint": "The type of ammunition this item is. Leave blank is if this is not ammunition.",
+            "typeHint2": "Comma-delimited ammo types this weapon can use (e.g. arrow,bolt). Leave blank if unused. Damage type Ammo (variable) uses the ammo's damage type.",
             "long": "Ammunition",
             "load": "Load",
             "maxLoad": "Max Load"
@@ -718,6 +736,14 @@
             "killed": "<span class='attack-fail'>{tokenName} has fallen in battle.</span>",
             "restoredLife": "<span class='attack-success'>{tokenName} has been restored to life.</span>"
          },
+         "placeTemplate": {
+            "name": "Place Template",
+            "hint": "Place an area-effect template on the scene.",
+            "clear": "Clear placed templates",
+            "invalid": "This item does not have a valid area template.",
+            "invalidDistance": "Could not evaluate the area template distance formula.",
+            "noScene": "Open a scene before placing a template."
+         },
          "combatTracker": {
             "begin": "Combat has begun!",
             "created": "Combat encounter created.",
@@ -958,7 +984,8 @@
             "heal": "Healing",
             "hull": "Hull",
             "fall": "Fall",
-            "piercing": "Armor-piercing"
+            "piercing": "Armor-piercing",
+            "ammo": "Ammo (variable)"
          }
       },
       "combat": {
@@ -1257,10 +1284,6 @@
          "Basic": "Armor Only",
          "Classic": "Classic",
          "Expert": "Dark Dungeons"
-      },
-      "toasts": {
-         "hint": "Display toasts on die rolls.",
-         "name": "Die Roll Toasts"
       },
       "EncMax": {
          "Hint": "The maximum weight that can be carried while still able to move.",

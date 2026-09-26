@@ -681,7 +681,7 @@ export class SingleClassSystem extends ClassSystemBase {
          if ((classAs?.length ?? 0) >= 0) {
             const parsed = this.parseClassAs(classAs);
             if (parsed?.classId && typeof parsed?.classLevel === typeof 0) {
-               result[parsed.classId] = { level: parsed.classLevel };
+               result[parsed.classId] = { level: parsed.classLevel, castLevel: parsed.classLevel };
             }
          }
       } else if (actor.system.details?.classKey?.length > 0) {
@@ -905,7 +905,7 @@ export class MultiClassSystem extends ClassSystemBase {
          if ((classAs?.length ?? 0) >= 0) {
             const parsed = this.parseClassAs(classAs);
             if (parsed?.classId && typeof parsed?.classLevel === typeof 0) {
-               result[parsed.classId] = { level: parsed.classLevel };
+               result[parsed.classId] = { level: parsed.classLevel, castLevel: parsed.classLevel };
             }
          }
       } else {

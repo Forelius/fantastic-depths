@@ -1,5 +1,5 @@
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
-import { ConditionSheetService } from "./ConditionSheetService.js";
+import { ConditionSheetService } from "../../sys/services/ConditionSheetService.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { EffectManager } from "../../sys/EffectManager.js";
@@ -132,6 +132,8 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
             return { value: action[0], text: game.i18n.localize(`FADE.combat.maneuvers.${action[0]}.name`) }
          }).sort((a, b) => a.text.localeCompare(b.text)));
       context.combatManeuvers = combatManeuvers.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});;
+
+      context.templateTypes = this._getTemplateTypeOptions();
 
       // Prepare the tabs.
       context.tabs = this.#getTabs();

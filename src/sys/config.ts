@@ -18,6 +18,13 @@ export const FADE = {
       "breath",
       "save"
    ],
+   /** Foundry MeasuredTemplate shapes usable as item area effects. */
+   TemplateTypes: [
+      "circle",
+      "cone",
+      "ray",
+      "rect"
+   ],
    DamageTypes: [
       "physical",
       "breath", // Is physical
@@ -29,7 +36,8 @@ export const FADE = {
       "heal",
       "hull",
       "fall",
-      "piercing" // Short for armor-piercing. Is physical and ignores half of AV.
+      "piercing", // Short for armor-piercing. Is physical and ignores half of AV.
+      "ammo" // Damage comes from the ammunition used.
    ],
    ConcatLogic: [
       "none",

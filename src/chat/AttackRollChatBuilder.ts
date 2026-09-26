@@ -2,6 +2,7 @@ import { ChatBuilder } from "./ChatBuilder.js";
 import { CodeMigrate } from "../sys/migration.js";
 import { WeaponItem } from "../item/WeaponItem.js"
 import { fadeFinder } from "../utils/finder.js";
+import { hasAreaTemplate } from "../item/fields/TemplateField.js";
 
 /** Only a weapon item will create an instance of this chat builder. */
 export class AttackRollChatBuilder extends ChatBuilder {
@@ -29,11 +30,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
 
       const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weaponItem, targetTokens, roll, resp.attackType);
       const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetToken, options?.ammoItem);
-
-      if (game.fade.toastManager) {
-         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
 
       const actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
 
@@ -82,6 +78,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                targets: toHitResult.targetResults,
                actions,
                conditions: conditionsResult?.conditions,
+               placeTemplate: hasAreaTemplate(weaponItem)
             }
          }
       });

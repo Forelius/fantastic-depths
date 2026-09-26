@@ -2,9 +2,9 @@ import { EffectManager } from "../../sys/EffectManager.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
-import { ConditionSheetService } from "./ConditionSheetService.js";
-import { SpecialAbilitySheetService } from "./SpecialAbilitySheetService.js";
-import { SpellSheetService } from "./SpellSheetService.js";
+import { ConditionSheetService } from "../../sys/services/ConditionSheetService.js";
+import { SpecialAbilitySheetService } from "../../sys/services/SpecialAbilitySheetService.js";
+import { SpellSheetService } from "../../sys/services/SpellSheetService.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
 
 /**
@@ -121,6 +121,7 @@ export class WeaponItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2
          context.weaponGrips = this._getWeaponGripOptions();
          // Saving throws
          context.savingThrows = await this._getSavingThrowOptions();
+         context.templateTypes = this._getTemplateTypeOptions();
       } else if (partId === "effects") {
          // Prepare active effects for easier access
          context.effects = EffectManager.prepareActiveEffectCategories(this.item.effects);
@@ -152,6 +153,7 @@ export class WeaponItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2
       damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.poison"), value: "poison" });
       damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.corrosive"), value: "corrosive" });
       damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.piercing"), value: "piercing" });
+      damageTypes.push({ text: game.i18n.localize("FADE.DamageTypes.types.ammo"), value: "ammo" });
       return damageTypes.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }
 
