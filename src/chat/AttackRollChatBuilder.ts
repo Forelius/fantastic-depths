@@ -31,11 +31,6 @@ export class AttackRollChatBuilder extends ChatBuilder {
       const toHitResult = await game.fade.registry.getSystem('toHitSystem').getToHitResults(attacker, weaponItem, targetTokens, roll, resp.attackType);
       const damageRoll = weaponItem.getDamageRoll(resp.attackType, null, resp.targetWeaponType, targetToken, options?.ammoItem);
 
-      if (game.fade.toastManager) {
-         const toast = `${description}${(toHitResult?.message ? toHitResult.message : '')}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
-
       const actions = await this._getActionsForChat(weaponItem, context, { attacks: false, saves: true, abilities: false });
 
       const ammoItem = options?.ammoItem;

@@ -1285,10 +1285,6 @@
          "Classic": "Classic",
          "Expert": "Dark Dungeons"
       },
-      "toasts": {
-         "hint": "Display toasts on die rolls.",
-         "name": "Die Roll Toasts"
-      },
       "EncMax": {
          "Hint": "The maximum weight that can be carried while still able to move.",
          "Name": "Encumbrance Max"

@@ -102,7 +102,6 @@ export * from './sys/LightManager';
 export * from './sys/MacroManager';
 export * from './sys/SocketManager';
 export * from './sys/TagManager';
-export * from './sys/ToastManager';
 export * from './sys/addonIntegration';
 export * from './sys/combat/fadeCombat';
 export * from './sys/combat/fadeCombatant';

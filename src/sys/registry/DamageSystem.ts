@@ -1,4 +1,3 @@
-import { CodeMigrate } from '../migration.js';
 import { getAncestryVsGroupMod, getVsGroupMod } from "../../utils/vsGroupMod.js";
 export class DamageSystem {
    useAV: boolean;
@@ -46,7 +45,7 @@ export class DamageSystem {
 
       await actor.update({ "system.hp.value": finalHP });
 
-      this.#sendChatAndToast(damageSource, digest);
+      this.#sendChat(damageSource, digest);
    }
 
    /**
@@ -227,19 +226,15 @@ export class DamageSystem {
    }
 
    /**
-    * Send the damage/healing digest to the chat as a toast notification and a chat message.
+    * Send the damage/healing digest to the chat as a chat message.
     * @param {Item|null} source - (optional) The weapon, spell or other item that caused the damage.
     * @param {string[]} digest - The list of human-readable messages describing what happened.
     * @private
     */
-   #sendChatAndToast(source, digest) {
+   #sendChat(source, digest) {
       let chatContent = source ? `<div class="text-size18">${source.name}</div>` : "";
       for (const msg of digest) {
          chatContent += `<div>${msg}</div>`;
-      }
-
-      if (game.fade.toastManager) {
-         game.fade.toastManager.showHtmlToast(chatContent, "info", CodeMigrate.getRollModeSetting());
       }
 
       const speaker = { alias: game.users.get(game.userId).name }; // Use the player's name as the speaker

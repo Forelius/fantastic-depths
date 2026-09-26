@@ -34,11 +34,6 @@ export class SpellCastChatBuilder extends ChatBuilder {
          }
       }
 
-      if (game.fade.toastManager) {
-         const toast = `${description}${toHitResult.message}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", rollMode);
-      }
-
       const actions = await this._getActionsForChat(item, caster);
 
       // Prepare data for the chat template

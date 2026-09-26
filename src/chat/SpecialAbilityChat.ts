@@ -32,11 +32,6 @@ export class SpecialAbilityChat extends ChatBuilder {
          description = game.i18n.format('FADE.Chat.useSpecAbility', { owner: context.name, specAbility: item.name });
       }
 
-      if (game.fade.toastManager) {
-         const toast = `${description}${rollResult.message}`;
-         game.fade.toastManager.showHtmlToast(toast, "info", item.system.rollMode);
-      }
-
       const actions = await this._getActionsForChat(item, context, { saves: true, attacks: false, abilities: false });
 
       // Prepare data for the chat template

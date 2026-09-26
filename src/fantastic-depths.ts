@@ -62,7 +62,6 @@ import { MeasuredTemplateService } from "./sys/services/MeasuredTemplateService.
 import { ConditionItem } from "./item/ConditionItem.js";
 import { DataMigrator } from "./sys/migration.js";
 import { EffectManager } from "./sys/EffectManager.js";
-import { ToastManager } from "./sys/ToastManager.js";
 import { Collapser } from "./utils/collapser.js";
 import { fadeChatMessage } from "./sys/fadeChatMessage.js"
 import { SocketManager } from "./sys/SocketManager.js"
@@ -301,22 +300,7 @@ Hooks.once("ready", async () => {
    await fxMgr.OnGameReady();
 
    if (game.socket) {
-      game.fade.SocketManager = new SocketManager();
-      const toastsEnabled = game.settings.get(game.system.id, "toasts");
-      if (toastsEnabled) {
-         // Ensure that the socket is ready before using it
-         game.fade.toastManager = new ToastManager();
-         game.socket.on(`system.${game.system.id}`, (data) => {
-            //console.debug("onSocketReceived", data);
-            if (data.action === "showToast") {
-               // Call the public method to create the toast
-               game.fade.toastManager.createToastFromSocket(data.message, data.type, data.useHtml);
-            } else {
-               game.fade.SocketManager.receiveSocketMessage(data)
-            }
-         });
-         console.info(`Registered socket listener: system.${game.system.id}`);
-      }
+      SocketManager.SetupOnReady();
    } else {
       console.warn(`Game socket not found: system.${game.system.id}`);
    }
