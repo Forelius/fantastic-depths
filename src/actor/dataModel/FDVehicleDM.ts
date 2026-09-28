@@ -1,9 +1,9 @@
-import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
+import { FDPhysicalActorDM } from "../dataModel/FDPhysicalActorDM.js";
 import { MonsterTHAC0Calculator } from '../../utils/MonsterTHAC0Calculator.js';
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 const { BooleanField, NumberField, SchemaField, StringField, ObjectField } = foundry.data.fields;
 
-export class FDVehicleDM extends FDActorBaseDM {
+export class FDVehicleDM extends FDPhysicalActorDM {
    static defineSchema() {
       const baseSchema = super.defineSchema();
       const combatSchema = {

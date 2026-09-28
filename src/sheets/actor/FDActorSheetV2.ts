@@ -202,7 +202,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Add the actor"s data to context.data for easier access, as well as flags.
       context.system = actor.system;
       context.flags = actor.flags;
-      context.isSpellcaster = actor.system.config.maxSpellLevel > 0;
+      context.isSpellcaster = actor.system.config?.maxSpellLevel > 0;
       context.isGM = game.user.isGM;
       context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
 
@@ -216,7 +216,7 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery") != "none";
       context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
       context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
-      context.useAV = game.settings.get(game.system.id, "useArmorValue") && this.actor.system.ac.av?.length > 0;
+      context.useAV = game.settings.get(game.system.id, "useArmorValue") && this.actor.system.ac?.av?.length > 0;
       context.sizes = CONFIG.FADE.ActorSizes
          .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});

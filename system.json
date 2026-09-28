@@ -51,7 +51,8 @@
     "Actor": {
       "character": {},
       "monster": {},
-      "vehicle": {}
+      "vehicle": {},
+      "prop": {}
     },
     "Item": {
       "item": {},

@@ -10,11 +10,13 @@ import { SavingThrowSystem } from "./sys/registry/SavingThrowSystem.js"
 import { CharacterDataModel } from "./actor/dataModel/CharacterDataModel.js";
 import { MonsterDataModel } from "./actor/dataModel/MonsterDataModel.js";
 import { FDVehicleDM } from "./actor/dataModel/FDVehicleDM.js";
+import { FDActorBaseDM } from "./actor/dataModel/FDActorBaseDM.js";
 import { FDCombatActor } from "./actor/FDCombatActor.js";
 import { CharacterSheet } from "./sheets/actor/CharacterSheet.js";
 import { CharacterSheetBase } from "./sheets/actor/CharacterSheetBase.js";
 import { MonsterSheet } from "./sheets/actor/MonsterSheet.js";
 import { FDVehicleSheet } from "./sheets/actor/FDVehicleSheet.js";
+import { FDPropSheet } from "./sheets/actor/FDPropSheet.js";
 
 import { ClassDefinitionDataModel } from "./item/dataModel/ClassDefinitionDataModel.js";
 import { MasteryDefinitionDataModel } from "./item/dataModel/MasteryDefinitionDataModel.js";
@@ -101,7 +103,8 @@ Hooks.once("init", async function () {
    CONFIG.Actor.dataModels = {
       character: CharacterDataModel,
       monster: MonsterDataModel,
-      vehicle: FDVehicleDM
+      vehicle: FDVehicleDM,
+      prop: FDActorBaseDM
    };
    CONFIG.Item.documentClass = ItemFactory;
    CONFIG.Item.dataModels = {
@@ -171,6 +174,11 @@ function registerSheets() {
    gActors.registerSheet("fantastic-depths", FDVehicleSheet, {
       label: "FADE.SheetLabel.Vehicle",
       types: ["vehicle"],
+      makeDefault: true
+   });
+   gActors.registerSheet("fantastic-depths", FDPropSheet, {
+      label: "FADE.SheetLabel.Prop",
+      types: ["prop"],
       makeDefault: true
    });
    // TODO: Remove after v12 support.
