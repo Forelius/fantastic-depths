@@ -13,8 +13,7 @@ export class FDPropSheet extends FDActorSheetV2 {
       },
       form: {
          submitOnChange: true
-      },
-      classes: ["monster"],
+      }
    }
 
    static PARTS: Record<string, unknown> = {
@@ -23,6 +22,9 @@ export class FDPropSheet extends FDActorSheetV2 {
       },
       tabnav: {
          template: "templates/generic/tab-navigation.hbs",
+      },
+      items: {
+         template: "systems/fantastic-depths/templates/actor/shared/items.hbs",
       },
       description: {
          template: "systems/fantastic-depths/templates/actor/prop/description.hbs",
@@ -38,20 +40,21 @@ export class FDPropSheet extends FDActorSheetV2 {
 
    _configureRenderOptions(options) {
       super._configureRenderOptions(options);
-      options.parts = ["header", "tabnav", "description"];
+      options.parts = ["header", "tabnav"];
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         options.parts.push("description");
+         options.parts.push("items");
+      }
       if (game.user.isGM) {
          options.parts.push("gmOnly");
       }
    }
 
-   async _prepareContext() {
-      const context = await super._prepareContext();
-      context.tabs = this.#getTabs();
-      return context;
-   }
-
-   /** Props have no combat/item sheet categories. */
-   async _prepareItems(_context) { }
+    async _prepareContext() {
+       const context = await super._prepareContext();
+       context.tabs = this.#getTabs();
+       return context;
+    }
 
    /**
     * Prepare an array of form header tabs.
@@ -61,9 +64,12 @@ export class FDPropSheet extends FDActorSheetV2 {
       const group = "primary";
       if (!this.tabGroups[group]) this.tabGroups[group] = "description";
 
-      const tabs: Record<string, SheetTab> = {
-         description: new SheetTab("description", group, "FADE.tabs.description"),
-      };
+      const tabs: Record<string, SheetTab> = {};
+
+      if (this.actor.testUserPermission(game.user, "OWNER")) {
+         tabs.description = new SheetTab("description", group, "FADE.tabs.description");
+         tabs.items = new SheetTab("items", group, "FADE.items");
+      }
 
       if (game.user.isGM) {
          tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly");

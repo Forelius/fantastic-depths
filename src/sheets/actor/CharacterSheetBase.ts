@@ -1,12 +1,12 @@
-import { FDActorSheetV2 } from "./FDActorSheetV2.js";
+import { FDCombatActorSheet } from "./FDCombatActorSheet.js";
 import { SheetTab } from "../SheetTab.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 
 /**
- * Extend the basic ActorSheet with some very simple modifications
- * @extends {FDActorSheetV2}
+ * Extend the basic FDCombatActorSheet with some modifications
+ * @extends {FDCombatActorSheet}
  */
-export class CharacterSheetBase extends FDActorSheetV2 {
+export class CharacterSheetBase extends FDCombatActorSheet {
    constructor(options = {}) {
       super(options);
       this.editScores = false;
@@ -100,6 +100,7 @@ export class CharacterSheetBase extends FDActorSheetV2 {
       context.hasAbilityScoreMods = true;
       context.currentXp = Number(this.actor.system.details.xp.value);
       context.nextXp = Number(this.actor.system.details.xp.next);
+
       // Prepare the tabs.
       context.tabs = this.#getTabs();
       return context;

@@ -3,8 +3,8 @@
       <div class="flexrow">
          <div class='item-name contained'>
             <div class='item-image {{#if item.isUsable}}rollable2{{else}}chatable2{{/if}}'
-               data-action="rollItem"
-               data-roll-type='item'>
+                 data-action="rollItem"
+                 data-roll-type='item'>
                <a data-roll-type='item'><img src='{{item.img}}' width='24' height='24' /></a>
             </div>
             {{#if item.system.container}}
@@ -22,12 +22,14 @@
          <div class="item-50px item-prop" data-tooltip="{{localize 'FADE.Item.weight.desc'}}"><label>{{item.system.totalWeight}}</label></div>
          {{/if}}
          <div class='item-controls'>
+            {{#if @root.showEquipped}}
             {{#if (and item.system.equippable item.system.isAmmo)}}
             <a class="item-control {{#unless item.system.equipped}}item-unequipped{{/unless}}"
                data-action="toggleEquipped"
                data-tooltip="{{#if item.system.equipped}}{{localize 'FADE.Item.unequip'}}{{else}}{{localize 'FADE.Item.equip'}}{{/if}}">
                <i class="fas{{#if item.system.isAmmo}} fa-hand{{else}} fa-tshirt{{/if}}"></i>
             </a>
+            {{/if}}
             {{/if}}
             <a class="item-control"
                data-action="editItem"
@@ -46,9 +48,9 @@
 </div>
 {{#if item.system.container}}
 <div class="contained-items{{#unless item.system.isOpen}} container-collapsed{{/unless}}">
-{{#each item.contained as |childItem|}}
-{{> "itemContained" parentItem=../item item=childItem rootobj=../rootobj}}
-{{/each}}
+   {{#each item.contained as |childItem|}}
+   {{> "itemContained" parentItem=../item item=childItem rootobj=../rootobj}}
+   {{/each}}
 </div>
 {{/if}}
 {{#unless item.system.container}}

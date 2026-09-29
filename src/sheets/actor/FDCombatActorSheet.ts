@@ -1,15 +1,17 @@
-const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { EffectManager } from "../../sys/EffectManager.js";
 import { ChatFactory } from "../../chat/ChatFactory.js";
 import { CHAT_TYPE } from "../../chat/ChatTypeEnum.js"
 import { FDItem } from "../../item/FDItem.js";
+import { fadeFinder } from "../../utils/finder.js";
+import { CodeMigrate } from "../../sys/migration.js";
+import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
+import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
 import { SpellScrollService } from "../../sys/services/SpellScrollService.js";
 
-/**
- * Extend the basic ActorSheet with some very simple modifications
- */
-export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
+export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
    spellScrollService: SpellScrollService;
 
@@ -34,12 +36,34 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       },
       classes: ["fantastic-depths", "sheet", "actor"],
       actions: {
-         editImage: FDActorSheetV2.#onEditImage,
-         createItem: FDActorSheetV2.#clickCreateItem,
-         deleteItem: FDActorSheetV2.#clickDeleteItem,
-         editItem: FDActorSheetV2.#clickEditItem,
-         toggleContainer: FDActorSheetV2.#clickToggleContainer,
-         expandDesc: FDActorSheetV2.#clickExpandDesc,
+         deleteTag: FDCombatActorSheet.#clickDeleteTag,
+         addActorGroup: FDCombatActorSheet.#clickAddActorGroup,
+         deleteActorGroup: FDCombatActorSheet.#clickDeleteActorGroup,
+         createEffect: FDCombatActorSheet.#clickEffect,
+         editEffect: FDCombatActorSheet.#clickEffect,
+         deleteEffect: FDCombatActorSheet.#clickEffect,
+         toggleEffect: FDCombatActorSheet.#clickEffect,
+         editImage: FDCombatActorSheet.#onEditImage,
+         resetSpells: FDCombatActorSheet.#clickResetSpells,
+         rollItem: FDCombatActorSheet.#clickRollItem,
+         rollGeneric: FDCombatActorSheet.#clickRollGeneric,
+         rollAbility: FDCombatActorSheet.#clickRollAbility,
+         rollMorale: FDCombatActorSheet.#clickRollMorale,
+         rollSave: FDCombatActorSheet.#clickRollSave,
+         createItem: FDCombatActorSheet.#clickCreateItem,
+         deleteItem: FDCombatActorSheet.#clickDeleteItem,
+         editItem: FDCombatActorSheet.#clickEditItem,
+         editClass: FDCombatActorSheet.#clickEditClass,
+         editAncestry: FDCombatActorSheet.#clickEditAncestry,
+         toggleEquipped: FDCombatActorSheet.#clickToggleEquipped,
+         toggleHeader: FDCombatActorSheet.#clickToggleHeader,
+         toggleContainer: FDCombatActorSheet.#clickToggleContainer,
+         useConsumable: FDCombatActorSheet.#clickUseConsumable,
+         addConsumable: FDCombatActorSheet.#clickAddConsumable,
+         useCharge: FDCombatActorSheet.#clickUseCharge,
+         addCharge: FDCombatActorSheet.#clickAddCharge,
+         editAbilityScores: FDCombatActorSheet.#clickEditAbilityScores,
+         expandDesc: FDCombatActorSheet.#clickExpandDesc,
       }
    }
 
@@ -52,8 +76,8 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    /**
      * Actions performed after any render of the Application.
      * Post-render steps are not awaited by the render process.
-     * @param {any} context Prepared context data
-     * @param {any} options Provided render options
+     * @param {any} context      Prepared context data
+     * @param {any} options                 Provided render options
      * @protected
      */
    _onRender(context, options) {
@@ -61,6 +85,17 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       super._onRender(context, options);
 
       if (this.isEditable === false) return;
+
+      // Use setTimeout to allow the DOM to be fully updated before restoring collapsed state
+      setTimeout(async () => { await this._restoreCollapsedState(); }, 0);
+
+      const inputField = this.element.querySelector('input[data-action="addTag"]');
+      inputField?.addEventListener('keydown', (event) => {
+         if (event.key === 'Enter') { // Check if the Enter key is pressed
+            const value = event.target.value; // Get the value of the input
+            this.actor.tagManager.pushTag(value); // Push the value to the tag manager
+         }
+      });
 
       // Add search functionality
       const searchField = this.element.querySelector('input[name="search"]');
@@ -160,7 +195,14 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const actor = this.actor.toObject(false);
       context.actor = actor;
       context.actor.uuid = this.actor.uuid;
-      context.showEquipped = false;
+
+      // Add the actor"s data to context.data for easier access, as well as flags.
+      context.system = actor.system;
+      context.flags = actor.flags;
+      context.isSpellcaster = actor.system.config?.maxSpellLevel > 0;
+      context.isGM = game.user.isGM;
+      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
+      context.showEquipped = true;
 
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
@@ -171,25 +213,52 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          relativeTo: this.actor,
       });
 
-      // Add the actor"s data to context.data for easier access, as well as flags.
-      context.system = actor.system;
-      context.flags = actor.flags;
-      context.isSpellcaster = false;
-      context.isGM = game.user.isGM;
-      context.isOwner = this.actor.testUserPermission(game.user, "OWNER");
-
       // Adding a pointer to CONFIG.FADE
-      context.config = CONFIG.FADE;
+      context.config = CONFIG.FADE;      
       const encSetting = game.settings.get(game.system.id, "encumbrance");
       context.isBasicEnc = encSetting === "basic";
       context.showWeight = encSetting === "expert" || encSetting === "classic";
       context.isAAC = game.settings.get(game.system.id, "toHitSystem") === "aac";
+      context.masterySetting = game.settings.get(game.system.id, "weaponMastery");
+      context.weaponMasteryEnabled = game.settings.get(game.system.id, "weaponMastery") != "none";
+      context.abilityAbbr = game.settings.get(game.system.id, "abilityAbbr");
+      context.saveAbbr = game.settings.get(game.system.id, "saveAbbr");
       context.useAV = game.settings.get(game.system.id, "useArmorValue") && this.actor.system.ac?.av?.length > 0;
-      context.sizes = CONFIG.FADE.ActorSizes.map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
+      context.sizes = CONFIG.FADE.ActorSizes
+         .map((size) => { return { text: game.i18n.localize(`FADE.Actor.sizes.${size.id}`), value: size.id } })
          .reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
+
+      // Prepare actor groups for button-based selection
+      const actorGroupsOptions = {};
+      CONFIG.FADE.ActorGroups.forEach(group => {
+         if (group.special !== true) {
+            actorGroupsOptions[group.id] = game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`);
+         }
+      });
+      context.actorGroups = actorGroupsOptions;
 
       // Prepare shared actor data and items.
       await this._prepareItems(context);
+
+      // Prepare active effects
+      // A generator that returns all effects stored on the actor as well as any items
+      context.effects = EffectManager.prepareActiveEffectCategories(
+         this.actor.allApplicableEffects()
+      );
+      // Equipped Weapons
+      const attackGroups = [];
+      for (const item of this.actor.items) {
+         item.img = item.img || Item.DEFAULT_ICON;
+         // If an equipped non-siege weapon
+         if (item.type === "weapon" && item.system.equipped === true && item.system.weaponType !== "siege") {
+            const group = item.system.attacks.group;
+            if (!attackGroups[group]) {
+               attackGroups[group] = [];
+            }
+            attackGroups[group].push(item);
+         }
+      }
+      context.attackGroups = attackGroups;
 
       return context;
    }
@@ -214,45 +283,55 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          const targetId = event.target.closest(".item")?.dataset?.itemId;
          const targetItem = this.actor.items.get(targetId);
          const targetIsContainer = targetItem?.system.container;
+         const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
 
          if (this.actor.uuid === droppedItem?.parent?.uuid && targetIsContainer !== true) {
             result = this._onSortItem(event, droppedItem);
 
-            // Dragging a contained item out onto the top-level list (outside any container's contained-items area) must detach it from its container.
+            // Dragging a contained item out onto the top-level list (outside any
+            // container's contained-items area) must detach it from its container.
             const sourceItem = this.actor.items.get(droppedItem.id);
             if (sourceItem?.system.containerId && event.target.closest(".contained-items") === null) {
                await sourceItem.update({ "system.containerId": "" });
             }
          } else {
+            // If the dropped item is a weapon mastery definition item...
+            if (droppedItem.type === "weaponMastery" && this.#hasSameActorMastery(droppedItem) === false) {
+               result = [(await (droppedItem as MasteryDefinitionItem).createActorWeaponMastery(this.actor) as Item)];
+            }
+            // If the dropped item is a class definition item...
+            else if (droppedItem.type === "class" && this.#hasSameActorClass(droppedItem) === false) {
+               if (this.actor.type === "character") {
+                  result = [(await classSystem.createActorClass(this.actor, droppedItem) as Item)];
+               }
+            }
             // If the drop target is a container...
-            if (droppedItem.type === "item" || droppedItem.type === "light" || droppedItem.type === "treasure") {
+            else if (droppedItem.type === "item" || droppedItem.type === "light" || droppedItem.type === "treasure") {
                if (targetIsContainer && droppedItem.system.containerId !== targetId && targetId !== droppedItem.id) {
                   const itemData = droppedItem.toObject();
                   if (droppedItem.actor == null) {
                      const newItem = await this._onDropItemCreate(itemData);
                      await newItem[0].update({ "system.containerId": targetId });
                      result = newItem;
-                  } else if (droppedItem.actor.id != this.actor.id) {
-                     const newItem = await this._moveOrSplitItem(event, droppedItem, itemData);
-                     await newItem.update({ "system.containerId": targetId });
-                     result = [newItem];
+                   } else if (droppedItem.actor.id != this.actor.id) {
+                      const newItem = await this._moveOrSplitItem(event, droppedItem, itemData);
+                      await newItem.update({ "system.containerId": targetId });
+                      result = [newItem];
                   } else {
                      await droppedItem.update({ "system.containerId": targetId });
                   }
                }
                // The drop target is not a container
-               else {
-                  result = await super._onDropItem(event, item);
-               }
-            } else if (droppedItem.type === "skill") {
-            } else if (droppedItem.type === "condition") {
-            } else if (droppedItem.type === "specialAbility") {
-            } else if (droppedItem.type === "actorClass") {
-            } else if (droppedItem.type === "weaponMastery") {
-            } else if (droppedItem.type === "class") {
+                else {
+                   result = await super._onDropItem(event, item);
+                }
             } else if (droppedItem.type === "species") {
+               if (this.actor.type === "character") {
+                  await this.actor.update({ "system.details.species": droppedItem.name });
+               }
             } else if (droppedItem.type === "effect") {
             } else if (droppedItem.type === "spell") {
+               result = await this.spellScrollService.onDropSpell(this, event, item, droppedItem);
             } else {
                result = await super._onDropItem(event, item);
             }
@@ -289,6 +368,31 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
+     * @param event
+     * @param {boolean} decrement
+     */
+   async _useConsumable(event, decrement) {
+      const item = this._getItemFromActor(event);
+      let quantity = item.system.quantity;
+      await item.update({ "system.quantity": decrement ? --quantity : ++quantity, });
+   }
+
+   /**
+     * @param event
+     * @param {boolean} decrement
+     */
+   async _useCharge(event, decrement) {
+      const item = this._getItemFromActor(event);
+      let charges = item.system.charges;
+      // Only allow GM to increase charges
+      if (game.user.isGM === true) {
+         await item.update({ "system.charges": decrement ? --charges : ++charges, });
+      } else if (decrement === false) {
+         await item.update({ "system.charges": --charges });
+      }
+   }
+
+   /**
     * Event handler for editable item fields.
     * @param {any} event
     * @returns
@@ -309,6 +413,50 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
       result = await item.update(updateData);
       return result;
+   }
+
+   /**
+    * Restore the expanded state of all collapsible headers.
+    * @protected
+    */
+   async _restoreCollapsedState() {
+      this.isRestoringCollapsedState = true;
+      const rememberCollapsedState = game.settings.get(game.system.id, "rememberCollapsedState");
+      // Retrieve all flags that start with "collapsed-"
+      const flags = this.actor.flags[game.system.id] || {};
+
+      if (rememberCollapsedState === true) {
+         Object.keys(flags).forEach(async (key) => {
+            // Only process flags that start with "collapsed-"
+            if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
+               const sectionName = key.replace("collapsed-", ""); // Extract section name
+               const isCollapsed = flags[key];
+               if (isCollapsed === true) {
+                  // Find the collapsible section by the "name" attribute
+                  const target = this.element.querySelector(`[name="${sectionName}"]`);
+                  if (target) {
+                     await FDCombatActorSheet.#toggleContent(this, target);
+                  } else {
+                     // Not found.
+                     console.debug(`_restoreCollapsedState: Element not found ${sectionName}. Flag removed.`);
+                     await this.actor.unsetFlag(game.system.id, key);
+                  }
+               }
+            } else if (key === "collapsed-undefined") {
+               // Clean up any invalid flags (optional)
+               await this.actor.unsetFlag(game.system.id, key);
+               console.warn("Removed invalid flag: collapsed-undefined");
+            }
+         });
+      } else {
+         // This will clear the collapsed flags if the remember collapsed state setting is false.
+         Object.keys(flags).forEach(async (key) => {
+            if (key.startsWith("collapsed-") && key !== "collapsed-undefined") {
+               await this.actor.unsetFlag(game.system.id, key);
+            }
+         });
+      }
+      this.isRestoringCollapsedState = false;
    }
 
    /**
@@ -352,6 +500,13 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       }
 
       this.actor.updateEmbeddedDocuments("Item", updates);
+   }
+
+   #hasSameActorMastery(item) {
+      return this.actor.items.find(i => i.type === "mastery" && i.name === item.name) !== undefined;
+   }
+   #hasSameActorClass(item) {
+      return this.actor.items.find(i => i.type === "actorClass" && i.name === item.name) !== undefined;
    }
 
    /**
@@ -402,7 +557,15 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       const weapons = [];
       const ammo = [];
       const armor = [];
+      const skills = [];
+      const masteries = [];
       const treasure = [];
+      const specialAbilities = [];
+      const exploration = [];
+      const classAbilities = [];
+      const savingThrows = [];
+      const conditions = [];
+      const actorClasses = [];
 
       const items = [...this.actor.items];
       // Iterate through items, allocating to arrays
@@ -439,6 +602,43 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
          else if (item.type === "armor") {
             armor.push(item);
          }
+         // Append to skills.
+         else if (item.type === "skill") {
+            skills.push(item);
+         }
+         // Append to conditions.
+         else if (item.type === "condition") {
+            conditions.push(item);
+         }
+         // Append to masteries.
+         else if (item.type === "mastery") {
+            masteries.push(item);
+         }
+         // Append to classes.
+         else if (item.type === "actorClass") {
+            actorClasses.push(item);
+         }
+         // Append to specialAbility.
+         else if (item.type === "specialAbility") {
+            const operators = {
+               eq: "=",
+               gt: "&gt;",
+               lt: "&lt;",
+               gte: "&gt;=",
+               lte: "&lt;="
+            };
+            if (item.system.category === "explore") {
+               exploration.push({ item, op: operators[item.system.operator] });
+            } else if (item.system.category === "save") {
+               savingThrows.push(item);
+            }
+            // Characters differentiate between class ability and special ability.
+            else if (this.actor.type == "character" && (item.system.category === "class" || item.system.category === "spellcasting")) {
+               classAbilities.push(item);
+            } else {
+               specialAbilities.push(item);
+            }
+         }
       }
 
       // Add derived data to each item
@@ -449,8 +649,18 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       context.weapons = weapons;
       context.ammo = ammo;
       context.armor = armor;
+      context.skills = skills;
+      context.masteries = masteries;
       context.treasure = treasure.sort((a, b) => a.system.cost - b.system.cost);
       context.treasureValue = this.getTreasureValue(context);
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
+      context.spellClasses = await classSystem.prepareSpellsContext(this.actor);
+      context.specialAbilities = specialAbilities;
+      context.classAbilities = classAbilities;
+      context.exploration = exploration;
+      context.savingThrows = savingThrows.sort((a, b) => a.name.localeCompare(b.name));
+      context.conditions = conditions;
+      context.actorClasses = actorClasses;
 
       Object.assign(context, game.fade.registry.getSystem("encumbranceSystem").calcCategoryEnc(this.actor.items));
    }
@@ -470,12 +680,38 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickEffect(this: FDCombatActorSheet, event) {
+      await EffectManager.onManageActiveEffect(event, this.actor)
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickResetSpells(this: FDCombatActorSheet, event) {
+      const classSystem: ClassSystemBase = game.fade.registry.getSystem("classSystem");
+      await classSystem.resetSpells(this.actor, event);
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static #clickDeleteTag(this: FDCombatActorSheet, event) {
+      const tag = event.target.closest(".tag-delete").dataset.tag;
+      this.actor.tagManager.popTag(tag);
+   }
+
+   /**
    * Edit a Document image.
-   * @this {FDActorSheetV2}
+   * @this {FDCombatActorSheet}
    * @param {any} _event
    * @param {any} target
    */
-   static async #onEditImage(this: FDActorSheetV2, _event, target) {
+   static async #onEditImage(this: FDCombatActorSheet, _event, target) {
       if (target.nodeName !== "IMG") {
          throw new Error("The editImage action is available only for IMG elements.");
       }
@@ -498,31 +734,63 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickToggleEquipped(this: FDCombatActorSheet, event) {
+      const updateObj = {};
+      const item = this._getItemFromActor(event);
+      let isEquipped = item.system.equipped;
+      // if the item is not equipped or the item is not cursed or the user is GM...
+      if (isEquipped === false || item.system.isCursed === false || game.user.isGM) {
+         // Toggle the equipped state and store the new state in isEquipped
+         isEquipped = !isEquipped;
+
+         // If this is armor and we are equipping it...
+         if (item.type === "armor" && isEquipped === true) {
+            // Unequip other same type armor.
+            const otherSameTypeArmor = this.actor.items.find(aitem => aitem.type === item.type
+               && aitem.system.equipped === true
+               && aitem.system.isShield === item.system.isShield
+               && aitem.system.natural === item.system.natural);
+            if (otherSameTypeArmor) {
+               await otherSameTypeArmor.update({ "system.equipped": !isEquipped });
+            }
+         } else if (item.type === "item" || item.type === "light") {
+            updateObj["system.containerId"] = null;
+         }
+
+         updateObj["system.equipped"] = isEquipped;
+         await item.update(updateObj);
+      }
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
    static async #clickToggleHeader(event) {
       // If not the create item column...
       const parent = event.target.closest(".items-list");
       if (parent) {
-         await FDActorSheetV2.#toggleContent(this, parent);
+         await FDCombatActorSheet.#toggleContent(this, parent);
       }
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickToggleContainer(this: FDActorSheetV2, event) {
+   static async #clickToggleContainer(this: FDCombatActorSheet, event) {
       await this._toggleContainedItems(event)
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
     * @param {any} event The originating click event
     */
-   static async #clickCreateItem(this: FDActorSheetV2, event) {
+   static async #clickCreateItem(this: FDCombatActorSheet, event) {
       event.preventDefault();
       const target = event.target.closest(".item-control");
       // Get the type of item to create.
@@ -556,29 +824,48 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickDeleteItem(this: FDActorSheetV2, event) {
+   static async #clickDeleteItem(this: FDCombatActorSheet, event) {
       const item = this._getItemFromActor(event);
+      if (item.type === "condition" && game.user.isGM === false) return;
       const parent = $(event.target).parents(".item");
       item.delete();
       parent.slideUp(200, () => this.render(false));
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickEditItem(this: FDActorSheetV2, event) {
+   static async #clickEditItem(this: FDCombatActorSheet, event) {
       this._getItemFromActor(event)?.sheet?.render(true);
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickRollGeneric(this: FDActorSheetV2, event): Promise<void> {
+   static async #clickEditClass(event) {
+      const dataset = event.target.dataset;
+      const classItem = await fadeFinder.getClass(dataset.classname);
+      classItem?.sheet?.render(true)
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    */
+   static async #clickEditAncestry(this: FDCombatActorSheet) {
+      const ancestryItem = await fadeFinder.getAncestry(this.actor.system.details.species);
+      ancestryItem?.sheet?.render(true)
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickRollGeneric(this: FDCombatActorSheet, event): Promise<void> {
       const dataset = event.target.dataset;
       const formula = dataset.formula;
       const chatType = CHAT_TYPE.GENERIC_ROLL;
@@ -596,10 +883,10 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickRollItem(this: FDActorSheetV2, event) {
+   static async #clickRollItem(this: FDCombatActorSheet, event) {
       const dataset = event.target.dataset;
       const item = this._getItemFromActor(event);
       // Directly roll item and skip the rest
@@ -607,10 +894,75 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
    }
 
    /**
-    * @this {FDActorSheetV2} `this` is expected to be an instance of MyClass
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
     * @param {any} event
     */
-   static async #clickExpandDesc(this: FDActorSheetV2, event) {
+    static async #clickRollSave(this: FDCombatActorSheet, event) {
+       const item = this._getItemFromActor(event);
+       const savingThrowSys = game.fade.registry.getSystem("savingThrowSystem");
+       savingThrowSys.execute({ actor: this.actor, type: item.system.customSaveCode, event });
+    }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickRollAbility(this: FDCombatActorSheet, event) {
+      const abilityCheckSys = game.fade.registry.getSystem("abilityCheck");
+      abilityCheckSys.execute({ actor: this.actor, event });
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickRollMorale(this: FDCombatActorSheet, event) {
+      const moraleCheckSys = game.fade.registry.getSystem("moraleCheck");
+      moraleCheckSys.execute({ actor: this.actor, event });
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickUseConsumable(this: FDCombatActorSheet, event) {
+      await this._useConsumable(event, true);
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickAddConsumable(this: FDCombatActorSheet, event) {
+      await this._useConsumable(event, false);
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickUseCharge(this: FDCombatActorSheet, event) {
+      await this._useCharge(event, true);
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickAddCharge(this: FDCombatActorSheet, event) {
+      await this._useCharge(event, false);
+   }
+
+   static async #clickEditAbilityScores(this: FDCombatActorSheet, event) {
+      this.editScores = !this.editScores;
+      $(event.currentTarget).find(".ability-score-input, .ability-score, .ability-mod").toggle();
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickExpandDesc(this: FDCombatActorSheet, event) {
       // If not the create item column...
       //const itemElement = event.target.closest(".item");
       let currentElement = event.target;
@@ -643,6 +995,77 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
             descElem.classList.add("desc-collapsed");
             descElem.innerHTML = '';
          }
+      }
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    */
+   static async #clickAddActorGroup(this: FDCombatActorSheet) {
+      const actor = this.actor;
+      const currentGroups = actor.system.actorGroups || [];
+
+      // Get available groups that aren't already added
+      const availableGroups = CONFIG.FADE.ActorGroups
+         .filter(group => !currentGroups.includes(group.id))
+         .map(group => ({
+            value: group.id,
+            label: game.i18n.localize(`FADE.Actor.actorGroups.${group.id}`)
+         }));
+
+      if (availableGroups.length === 0) {
+         //ui.notifications.info("All actor groups have already been added.");
+         return;
+      }
+
+      // Create a simple dialog to select which group to add
+      const selectedGroup = await DialogV2.wait({
+         window: { title: game.i18n.localize("FADE.Actor.actorGroups.group") },
+         position: {
+            width: 300,
+            height: "auto"
+         },
+         rejectClose: false,
+         classes: ["fantastic-depths"],
+         content: `<form>
+               <div class="form-group">
+                  <label>${game.i18n.localize("FADE.Actor.actorGroups.group")}:</label>
+                  <select name="actorGroup">
+                     ${availableGroups.map(group => `<option value="${group.value}">${group.label}</option>`).join('')}
+                  </select>
+               </div>
+            </form>`,
+         buttons: [{
+            action: "add",
+            icon: "fas fa-plus",
+            label: game.i18n.localize("FADE.apps.userTables.actions.new"),
+            default: true,
+            callback: (_, button) => new CodeMigrate.FormDataExtended(button.form).object.actorGroup
+         },
+         {
+            icon: "fas fa-times",
+            label: game.i18n.localize("FADE.dialog.cancel"),
+            callback: () => { }
+         }],
+         close: () => { }
+      });
+
+      if (selectedGroup) {
+         const newGroups = [...currentGroups, selectedGroup];
+         await actor.update({ "system.actorGroups": newGroups });
+      }
+   }
+
+   /**
+    * @this {FDCombatActorSheet} `this` is expected to be an instance of MyClass
+    * @param {any} event
+    */
+   static async #clickDeleteActorGroup(this: FDCombatActorSheet, event) {
+      const groupToDelete = event.target.closest("[data-tag]").dataset.tag;
+      if (groupToDelete) {
+         const currentGroups = this.actor.system.actorGroups || [];
+         const newGroups = currentGroups.filter(group => group !== groupToDelete);
+         await this.actor.update({ "system.actorGroups": newGroups });
       }
    }
 }
