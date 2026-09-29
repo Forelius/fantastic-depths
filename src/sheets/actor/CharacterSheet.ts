@@ -3,7 +3,7 @@ import { SheetTab } from "../SheetTab.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 
 /**
- * Extend the basic FDActorSheetV2 with some very simple modifications
+ * Extend the CharacterSheetBase with some modifications
  * @extends {CharacterSheetBase}
  */
 export class CharacterSheet extends CharacterSheetBase {

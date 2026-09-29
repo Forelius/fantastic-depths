@@ -1,13 +1,13 @@
-import { FDActorBase } from "./FDActorBase.js";
+import { FDPhysicalActor } from "./FDPhysicalActor.js";
 import { fadeFinder } from '../utils/finder.js';
 import { TagManager } from '../sys/TagManager.js';
 import { AttackRollService } from '../sys/services/AttackRollService.js';
 
 /**
- * Extends the basic actor class with modifications for all system actors.
- * @extends {FDActorBase}
+ * Extends the physical actor class with combat modifications for all system actors.
+ * @extends {FDPhysicalActor}
  */
-export class FDCombatActor extends FDActorBase {
+export class FDCombatActor extends FDPhysicalActor {
    tagManager: TagManager;
    attackRollService: AttackRollService;
 

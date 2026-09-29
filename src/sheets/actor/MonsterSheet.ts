@@ -1,11 +1,11 @@
-import { FDActorSheetV2 } from "./FDActorSheetV2.js";
+import { FDCombatActorSheet } from "./FDCombatActorSheet.js";
 import { SheetTab } from "../SheetTab.js";
 
 /**
- * Extend the basic ActorSheet with some very simple modifications
- * @extends {FDActorSheetV2}
+ * Extend the basic FDCombatActorSheet with some modifications
+ * @extends {FDCombatActorSheet}
  */
-export class MonsterSheet extends FDActorSheetV2 {
+export class MonsterSheet extends FDCombatActorSheet {
    constructor(options = {}) {
       super(options);
       this.editScores = false;
@@ -107,15 +107,14 @@ export class MonsterSheet extends FDActorSheetV2 {
       // Default tab for first time it's rendered this session
       if (!this.tabGroups[group]) this.tabGroups[group] = "abilities";
 
-      const tabs: Record<string, SheetTab> = {
-         abilities: new SheetTab("abilities", group, "FADE.tabs.abilities"),
-         description: new SheetTab("description", group, "FADE.tabs.description"),
-         effects: new SheetTab("effects", group, "FADE.tabs.effects"),
-      }
+      const tabs: Record<string, SheetTab> = { }
 
       if (this.actor.testUserPermission(game.user, "OWNER")) {
+         tabs.abilities = new SheetTab("abilities", group, "FADE.tabs.abilities");
+         tabs.description = new SheetTab("description", group, "FADE.tabs.description");
          tabs.items = new SheetTab("items", group, "FADE.items");
          tabs.skills = new SheetTab("skills", group, "FADE.tabs.skills");
+         tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects");
       }
 
       if (this.actor.system.config.maxSpellLevel > 0) {

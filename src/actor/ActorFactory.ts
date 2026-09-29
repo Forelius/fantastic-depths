@@ -1,7 +1,7 @@
-import { FDCombatActor } from '../actor/FDCombatActor.js';
 import { CharacterActor } from '../actor/CharacterActor.js';
 import { MonsterActor } from '../actor/MonsterActor.js';
 import { FDVehicleActor } from './FDVehicleActor.js';
+import { FDActorBase } from './FDActorBase.js';
 
 const handler = {
    /**
@@ -16,9 +16,11 @@ const handler = {
          result = Reflect.construct(CharacterActor, a);
       } else if (a[0]?.type === "vehicle") {
          result = Reflect.construct(FDVehicleActor, a);
+      } else if (a[0]?.type === "prop") {
+         result = Reflect.construct(FDActorBase, a);
       }
       return result;
    }
 };
 
-export const ActorFactory = new Proxy(FDCombatActor, handler);
+export const ActorFactory = new Proxy(FDActorBase, handler);

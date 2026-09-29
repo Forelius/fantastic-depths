@@ -1,11 +1,11 @@
-import { FDActorSheetV2 } from "./FDActorSheetV2.js";
+import { FDCombatActorSheet } from "./FDCombatActorSheet.js";
 import { SheetTab } from "../SheetTab.js";
 
 /**
- * Extend the basic ActorSheet with some very simple modifications
- * @extends {FDActorSheetV2}
+ * Extend the basic FDCombatActorSheet with some modifications
+ * @extends {FDCombatActorSheet}
  */
-export class FDVehicleSheet extends FDActorSheetV2 {
+export class FDVehicleSheet extends FDCombatActorSheet {
    constructor(options = {}) {
       super(options);
       this.combatVehicleTypes = ["mount", "siege", "vessel"];

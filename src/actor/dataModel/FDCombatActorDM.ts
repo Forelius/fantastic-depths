@@ -1,7 +1,7 @@
-import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
+import { FDPhysicalActorDM } from "../dataModel/FDPhysicalActorDM.js";
 import { FDCombatActorData } from '../fields/FDCombatActorField.js';
 
-export class FDCombatActorDM extends FDActorBaseDM {
+export class FDCombatActorDM extends FDPhysicalActorDM {
    static defineSchema() {
       const baseSchema = super.defineSchema();
       const combatSchema = FDCombatActorData.defineSchema();
@@ -20,15 +20,6 @@ export class FDCombatActorDM extends FDActorBaseDM {
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
       abilityScoreSys.prepareDerivedData(this);
       super.prepareDerivedData();
-   }
-
-   /**
-    * Migrate source data from some prior format into a new specification.
-    * The source parameter is either original data retrieved from disk or provided by an update operation.
-    * @inheritDoc
-    */
-   static migrateData(source) {
-      return super.migrateData(source);
    }
 
    /**

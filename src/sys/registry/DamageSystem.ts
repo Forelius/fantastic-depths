@@ -21,6 +21,12 @@ export class DamageSystem {
     */
    async ApplyDamage(actor, delta, damageType, attackType, damageSource = null) {
       const systemData = actor.system;
+      if (systemData.hp?.value == null || systemData.hp?.max == null) {
+         ui.notifications.warn(game.i18n.format("FADE.notification.noHitPoints", {
+            actorName: actor.parent?.name ?? actor.name
+         }));
+         return;
+      }
       const tokenName = actor.parent?.name ?? actor.name;
       let finalDelta = delta;
       const prevHP = systemData.hp.value;
