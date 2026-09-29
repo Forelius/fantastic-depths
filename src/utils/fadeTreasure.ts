@@ -39,7 +39,7 @@ export class fadeTreasure {
          chatContentArray.push(`<div class="text-size16b">${game.i18n.format('FADE.treasure.coins', { total: total.toLocaleString() })}</div>`);
          chatContentArray.push(...this.group.coins.map(item => item.content));
       }
-if (this.group.gems.length > 0) {
+      if (this.group.gems.length > 0) {
           const total = this.group.gems.reduce((acc, item) => item.value + acc, 0);
           chatContentArray.push(`<div class="text-size16b">${game.i18n.format('FADE.treasure.gems', { total: total.toLocaleString() })}</div>`);
          const normalized = this.group.gems.map(item => {
@@ -88,9 +88,9 @@ if (this.group.gems.length > 0) {
          await drawRoll.evaluate();
          const numberOfDraws = drawRoll.total;
 
-// Draw from the table multiple times
-          const results: (string | string[])[] = [];
-for (let i = 0; i < numberOfDraws; i++) {
+         // Draw from the table multiple times
+         const results: (string | string[])[] = [];
+         for (let i = 0; i < numberOfDraws; i++) {
              // Draw once. Set displayChat to false to avoid spammy chat messages for each draw
              const draw = await table.draw({ displayChat: false });
              // Grab text from each result
@@ -185,7 +185,7 @@ for (let i = 0; i < numberOfDraws; i++) {
             const rollTableConfig = CONFIG.FADE.TreasureTypes.jewelry.rollTables.find(item => jewelryValue.value >= item.min && jewelryValue.value <= item.max);
             // Find the roll table by name
             const table = await fadeFinder.getRollTable(rollTableConfig.table);
-if (table) {
+            if (table) {
                 // Draw once. Set displayChat to false to avoid too numerous chat messages for each draw
                 const draw = await table.draw({ displayChat: false });
                 const resultText = await CodeMigrate.getTableResultText(draw.results[0]);
@@ -210,7 +210,7 @@ if (table) {
       }
    }
 
-   #formatOutput(textResults): string {
+   #formatOutput(textResults: (string | string[])[]): string {
       let output: string = "<div>";
       for (const resultText of textResults) {
          if (Array.isArray(resultText)) {

@@ -203,7 +203,7 @@ export class WeaponItem extends GearItem {
    }
 
    async _prepareDamageLabel() {
-      if (this.parent) {
+      if (this.parent && this.parent.type !== 'prop') {
          const attackType = this.system.canMelee ? "melee" : "missile";
          this.system.damageLabel = this.getDamageRoll(attackType, null, "primary", null, null)?.damageFormula ?? this.system.damageRoll;
       } else {

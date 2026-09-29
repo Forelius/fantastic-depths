@@ -287,7 +287,7 @@
          "CharacterSheetBase": "Character Sheet",
          "Monster": "Monster Sheet",
          "Vehicle": "Vehicle/Mount",
-         "Prop": "Prop",
+         "Prop": "Prop (Scene Object)",
          "ActorClassItem": "Actor Class Item Sheet",
          "ActorMasteryItem": "Actor Mastery Item Sheet",
          "ArmorItem": "Armor Item Sheet",
@@ -1258,7 +1258,7 @@
          "character": "Character",
          "monster": "Monster",
          "vehicle": "Vehicle/Mount",
-         "prop": "Prop"
+         "prop": "Prop (Scene Object)"
       },
       "Item": {
          "item": "Item",
