@@ -530,11 +530,6 @@ export class FDActorSheetV2 extends DragDropMixin(HandlebarsApplicationMixin(Act
       // Grab any data associated with this control.
       const data = foundry.utils.duplicate(target.dataset);
 
-      // If tags are specified
-      if (target.dataset.tags?.length > 0) {
-         data.tags = target.dataset.tags.split(",");
-      }
-
       // Localize the type
       const localizedType = game.i18n.localize(`TYPES.Item.${type}`);
 
