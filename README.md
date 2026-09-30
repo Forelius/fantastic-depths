@@ -29,56 +29,6 @@ Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantast
 
 ---
 
-## Character Sheet
-The character sheets are designed to be flexible and will provide class and level automation for any world-defined classes. Monsters and retainers are also supported. Core classes are recognized when entered into the class field or dragged and dropped from a class item. Setting the class will result in the auto-population of various class-related inputs. Most auto-populated class-related values can be overwritten if desired.
-
-![character](./assets/img/docs/charsheet1.jpg)
-
-### Character Inventory
-![inventory](./assets/img/docs/charsheet2.jpg)
-
-### Character Skills
-![skills](./assets/img/docs/charsheet3.jpg)
-
-## Monster Sheet
-The monster sheet allows for custom equippment, spells, special abilities and possession and use of most items.
-
-![monster](./assets/img/docs/monstersheet1.jpg)
-
-## Item Sheet
-There are item sheets for character classes, exploration abilities, saving throws, adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
-
-### Light Item Sheet
-![light](./assets/img/docs/lightitemsheet1.jpg)
-
-### Weapon Sheet
-![weapon](./assets/img/docs/weaponsheet.jpg)
-
-### Armor Sheet
-![armor](./assets/img/docs/armorsheet1.jpg)
-
-### Class Sheet
-![class](./assets/img/docs/classsheet.jpg)
-
-### Skill Sheet
-![skill](./assets/img/docs/skillsheet1.jpg)
-
-### Weapon Mastery Definition Sheet
-![weaponmastery](./assets/img/docs/masterydef1.jpg)
-
-### Actor Weapon Mastery Sheet
-![mastery](./assets/img/docs/mastery1.jpg)
-
-### Spell Sheet
-![spell](./assets/img/docs/spellsheet1.jpg)
-
-### Effects
-Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
-
-![effects](./assets/img/docs/itemeffects1.jpg)
-
----
-
 # Compatible Modules
 These are modules that were made as companion modules for Fantastic Depths or are integrations with other developer's modules.
 
@@ -91,3 +41,27 @@ There might be other modules out there that are missing. If you want your module
 * [Item Piles](https://github.com/fantasycalendar/FoundryVTT-ItemPiles)
 * [Token Action HUD](https://github.com/Larkinabout/fvtt-token-action-hud-core) via [Token Action HUD Fantastic Depths](https://github.com/Forelius/token-hud-fade)
 * [White Box: FMAG for Fantastic Depths](https://github.com/Forelius/fade-white-box-fmag)
+
+
+---
+
+## Character Sheet
+The character sheets are designed to be flexible and will provide class and level automation for any world-defined classes. Monsters and retainers are also supported. Core classes are recognized when entered into the class field or dragged and dropped from a class item. Setting the class will result in the auto-population of various class-related inputs. Most auto-populated class-related values can be overwritten if desired.
+
+![character](./assets/img/docs/charsheet1.jpg)
+
+### Character Inventory
+![inventory](./assets/img/docs/charsheet2.jpg)
+
+## Monster Sheet
+The monster sheet allows for custom equippment, spells, special abilities and possession and use of most items.
+
+![monster](./assets/img/docs/monstersheet1.jpg)
+
+## Item Sheet
+There are item sheets for character classes, exploration abilities, saving throws, adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
+
+### Effects
+Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
+
+![effects](./assets/img/docs/itemeffects1.jpg)
