@@ -25,8 +25,7 @@ Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-de
 
 Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
 
-**Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
-FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, and silentcatfart.
+**Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, FR4NC35C0, Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, silentcatfart, Halindir, and many others.
 
 ---
 
@@ -77,3 +76,18 @@ There are item sheets for character classes, exploration abilities, saving throw
 Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.
 
 ![effects](./assets/img/docs/itemeffects1.jpg)
+
+---
+
+# Compatible Modules
+These are modules that were made as companion modules for Fantastic Depths or are integrations with other developer's modules.
+
+There might be other modules out there that are missing. If you want your module listed then submit a PR with the module added to the list or contact me via the Discord server.
+
+* [Combat Carousel for Fantastic Depths](https://github.com/FR4NC35CO/fantastic-depths-combat-carousel)
+* [Damage Log](https://codeberg.org/cs96and/FoundryVTT-damage-log)
+* [Fantastic Depths Compendiums Tokens](https://github.com/Forelius/fade-compendiums-tokens)
+* [Fantastic Depths DM Screen](https://github.com/FR4NC35CO/fantastic-depths-dm-screen)
+* [Item Piles](https://github.com/fantasycalendar/FoundryVTT-ItemPiles)
+* [Token Action HUD](https://github.com/Larkinabout/fvtt-token-action-hud-core) via [Token Action HUD Fantastic Depths](https://github.com/Forelius/token-hud-fade)
+* [White Box: FMAG for Fantastic Depths](https://github.com/Forelius/fade-white-box-fmag)
