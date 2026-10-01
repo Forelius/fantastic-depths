@@ -25,8 +25,23 @@ Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-de
 
 Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
 
-**Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, 
-FR4NC35C0 Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, and silentcatfart.
+**Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, FR4NC35C0, Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, silentcatfart, Halindir, and many others.
+
+---
+
+# Compatible Modules
+These are modules that were made as companion modules for Fantastic Depths or are integrations with other developer's modules.
+
+There might be other modules out there that are missing. If you want your module listed then submit a PR with the module added to the list or contact me via the Discord server.
+
+* [Combat Carousel for Fantastic Depths](https://github.com/FR4NC35CO/fantastic-depths-combat-carousel)
+* [Damage Log](https://codeberg.org/cs96and/FoundryVTT-damage-log)
+* [Fantastic Depths Compendiums Tokens](https://github.com/Forelius/fade-compendiums-tokens)
+* [Fantastic Depths DM Screen](https://github.com/FR4NC35CO/fantastic-depths-dm-screen)
+* [Item Piles](https://github.com/fantasycalendar/FoundryVTT-ItemPiles)
+* [Token Action HUD](https://github.com/Larkinabout/fvtt-token-action-hud-core) via [Token Action HUD Fantastic Depths](https://github.com/Forelius/token-hud-fade)
+* [White Box: FMAG for Fantastic Depths](https://github.com/Forelius/fade-white-box-fmag)
+
 
 ---
 
@@ -38,9 +53,6 @@ The character sheets are designed to be flexible and will provide class and leve
 ### Character Inventory
 ![inventory](./assets/img/docs/charsheet2.jpg)
 
-### Character Skills
-![skills](./assets/img/docs/charsheet3.jpg)
-
 ## Monster Sheet
 The monster sheet allows for custom equippment, spells, special abilities and possession and use of most items.
 
@@ -48,30 +60,6 @@ The monster sheet allows for custom equippment, spells, special abilities and po
 
 ## Item Sheet
 There are item sheets for character classes, exploration abilities, saving throws, adventuring gear, armor, weapons, general skills, weapon masteries, spells and special class abilities.
-
-### Light Item Sheet
-![light](./assets/img/docs/lightitemsheet1.jpg)
-
-### Weapon Sheet
-![weapon](./assets/img/docs/weaponsheet.jpg)
-
-### Armor Sheet
-![armor](./assets/img/docs/armorsheet1.jpg)
-
-### Class Sheet
-![class](./assets/img/docs/classsheet.jpg)
-
-### Skill Sheet
-![skill](./assets/img/docs/skillsheet1.jpg)
-
-### Weapon Mastery Definition Sheet
-![weaponmastery](./assets/img/docs/masterydef1.jpg)
-
-### Actor Weapon Mastery Sheet
-![mastery](./assets/img/docs/mastery1.jpg)
-
-### Spell Sheet
-![spell](./assets/img/docs/spellsheet1.jpg)
 
 ### Effects
 Effects can be added to all weapons, armor and adventuring gear. The effect can modify a value on the item or on the owning character.

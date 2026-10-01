@@ -106,7 +106,7 @@ export class WeaponItem extends GearItem {
 
       return hasDamage ? createDamageRollResult({
          damageFormula: formula,
-         damageType: this.#resolveDamageType(weaponData.damageType, ammoItem),
+         damageType: this.resolveDamageType(weaponData.damageType, ammoItem),
          digest,
          hasDamage,
          attackType,
@@ -119,7 +119,7 @@ export class WeaponItem extends GearItem {
    /**
     * When the weapon damage type is "ammo", use the ammo item's damage type instead.
     */
-   #resolveDamageType(weaponDamageType, ammoItem): string {
+   resolveDamageType(weaponDamageType, ammoItem): string {
       if (weaponDamageType !== "ammo") return weaponDamageType;
       const ammoDamageType = ammoItem?.system?.damageType;
       return ammoDamageType?.length > 0 ? ammoDamageType : "physical";
