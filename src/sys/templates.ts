@@ -10,8 +10,8 @@ export const preloadHandlebarsTemplates = async function () {
       // Actor partials
       abilityScores: 'systems/fantastic-depths/templates/actor/parts/ability-scores.hbs',
       actorHpAc:'systems/fantastic-depths/templates/actor/parts/hp-ac.hbs',
-      actorMovement: 'systems/fantastic-depths/templates/actor/parts/movement.hbs',
-      actorMovement2: 'systems/fantastic-depths/templates/actor/parts/movement2.hbs',
+      actorMovementModes: 'systems/fantastic-depths/templates/actor/parts/movementModes.hbs',
+      actorMovementBaseFields: 'systems/fantastic-depths/templates/actor/parts/movementBaseFields.hbs',
       actorEquippedWeapons: "systems/fantastic-depths/templates/actor/shared/equipped-weapons.hbs",
       siegeWeapons: "systems/fantastic-depths/templates/actor/shared/siege-weapons.hbs",
       attackGroups: "systems/fantastic-depths/templates/actor/parts/attack-groups.hbs",

@@ -15,24 +15,38 @@ export class BasicEncumbrance {
     * @param {any} actor The actor who's encumbrance is being prepared
     */
    prepareDerivedData(actor) {
-      const encumbrance = { value: 0, max: 0 };
+      const encumbrance: {
+         value: number;
+         max: number;
+         label?: string;
+         desc?: string;
+         mv?: number | null;
+         mv2?: number | null;
+      } = { value: 0, max: 0 };
 
       Object.assign(encumbrance, actor.system.encumbrance);
-      Object.assign(encumbrance, {
-         mv: actor.system.movement.max,
-         mv2: actor.system.movement2.max
-      });
 
       // Recalc total encumbrance
       encumbrance.value = this._getTotalEnc(actor);
 
-      //-- Calculate movement and label --//
-      // If max encumbrace is greater than zero...
+      const movement = actor.system.movement ?? { modifiers: {}, modes: [] };
+      if (!movement.modifiers) movement.modifiers = {};
+
+      // Default: no encumbrance scaling / no fixed primary override
+      movement.modifiers.encumbrance = 1;
+      movement.modifiers.fixedPrimary = null;
+
+      //-- Calculate movement modifiers and label --//
       if (encumbrance.max > 0) {
          const encTier = this._getEncTier(actor, encumbrance.value);
-         Object.assign(encumbrance, this._calculateEncMovement(actor, encTier));
+         const encMove = this._calculateEncMovement(actor, encTier);
+         encumbrance.label = encMove.label;
+         encumbrance.desc = encMove.desc;
+         if (encMove.factor != null) movement.modifiers.encumbrance = encMove.factor;
+         if (encMove.fixedPrimary != null) movement.modifiers.fixedPrimary = encMove.fixedPrimary;
       }
 
+      actor.system.movement = movement;
       actor.system.encumbrance = encumbrance;
    }
 
@@ -80,17 +94,18 @@ export class BasicEncumbrance {
    }
 
    /**
-    * Calculate movement rate based on encumbrance tier.
+    * Calculate movement modifiers based on encumbrance tier.
     * @protected
     * @param {any} actor The actor
     * @param {any} encTier
+    * @returns {{ label: string, desc: string, factor?: number, fixedPrimary?: number|null }}
     */
    _calculateEncMovement(actor, encTier) {
       return {
          label: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`),
          desc: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`),
-         mv: actor.system.movement.max > 0 ? Math.floor(actor.system.movement.max * encTier.mvFactor) : actor.system.movement.max,
-         mv2: actor.system.movement2.max > 0 ? Math.floor(actor.system.movement2.max * encTier.mvFactor) : actor.system.movement2.max
+         factor: encTier.mvFactor ?? 1,
+         fixedPrimary: null,
       };
    }
 }

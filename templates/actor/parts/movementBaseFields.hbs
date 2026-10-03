@@ -1,0 +1,17 @@
+{{!-- GM-editable base speed for each movement mode (up to 2). --}}
+{{#each system.movement.modes}}
+{{#if (lt @index 2)}}
+<div class="flex2">
+   <input type="text" name="system.movement.modes.{{@index}}.base" value="{{base}}" data-dtype="Number"
+      data-tooltip="{{#if (eq action "secondary")}}{{localize "SETTINGS.move.maxMove2.hint"}}{{else}}{{localize "SETTINGS.move.max.hint"}}{{/if}}" />
+   <label for="system.movement.modes.{{@index}}.base"
+      data-tooltip="{{#if (eq action "secondary")}}{{localize "SETTINGS.move.maxMove2.hint"}}{{else}}{{localize "SETTINGS.move.max.hint"}}{{/if}}">
+      {{#if (eq action "secondary")}}
+      {{localize "SETTINGS.move.maxMove2.name"}}
+      {{else}}
+      {{localize "SETTINGS.move.max.name"}}
+      {{/if}}
+   </label>
+</div>
+{{/if}}
+{{/each}}

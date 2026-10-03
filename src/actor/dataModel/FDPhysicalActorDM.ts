@@ -1,5 +1,5 @@
 import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
-import { FDPhysicalActorData } from '../fields/FDPhysicalActorField.js';
+import { FDPhysicalActorData, migratePhysicalMovementSource } from '../fields/FDPhysicalActorField.js';
 
 export class FDPhysicalActorDM extends FDActorBaseDM {
    static defineSchema() {
@@ -7,5 +7,13 @@ export class FDPhysicalActorDM extends FDActorBaseDM {
       const physicalSchema = FDPhysicalActorData.defineSchema();
       foundry.utils.mergeObject(baseSchema, physicalSchema);
       return baseSchema;
+   }
+
+   /** @inheritDoc */
+   static migrateData(source) {
+      if (source && typeof source === "object") {
+         migratePhysicalMovementSource(source);
+      }
+      return super.migrateData(source);
    }
 }

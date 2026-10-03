@@ -199,7 +199,7 @@ export class DataMigrator {
 }
 
 /**
- * A polyfill helper for Foundry version incompatibilities.
+ * Thin helpers for Foundry API access used across the system.
  */
 export class CodeMigrate {
    static FormDataExtended = foundry.applications.ux.FormDataExtended;
@@ -209,13 +209,9 @@ export class CodeMigrate {
       return (cls as any).getEffectStart?.() ?? { time: game.time.worldTime };
    }
 
-   // In v13, duration.remaining and duration.expired are read-only computed getters.
-   // In v14+ they are writable properties on the prepared duration object.
    static setEffectDurationProps(duration: any, remaining: number, expired: boolean): void {
-      if (Number(game.version) >= 14) {
-         duration.remaining = remaining;
-         duration.expired = expired;
-      }
+      duration.remaining = remaining;
+      duration.expired = expired;
    }
 
    static rollEvaluateSync(roll) {
@@ -227,26 +223,19 @@ export class CodeMigrate {
    }
 
    static applyChatRollMode(chatMessageData: Record<string, unknown>, rollMode: string): void {
-      if (Number(game.version) >= 14) {
-         const modeMap: Record<string, string> = {
-            roll: "public",
-            publicroll: "public",
-            gmroll: "gm",
-            blindroll: "blind",
-            selfroll: "self"
-         };
-         const mode = modeMap[rollMode] ?? rollMode;
-         ChatMessage.applyMode(chatMessageData, mode);
-      } else {
-         ChatMessage.applyRollMode(chatMessageData, rollMode);
-      }
+      const modeMap: Record<string, string> = {
+         roll: "public",
+         publicroll: "public",
+         gmroll: "gm",
+         blindroll: "blind",
+         selfroll: "self"
+      };
+      const mode = modeMap[rollMode] ?? rollMode;
+      ChatMessage.applyMode(chatMessageData, mode);
    }
 
    static getDefaultChatMode(): string {
-      if (Number(game.version) >= 14) {
-         return game.settings.get("core", "messageMode") as string ?? "public";
-      }
-      return game.settings.get("core", "rollMode") as string ?? "roll";
+      return game.settings.get("core", "messageMode") as string ?? "public";
    }
 
    static getRollModeSetting(): string {

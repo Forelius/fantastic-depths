@@ -250,7 +250,6 @@ export abstract class FDItem extends Item implements IFDItem {
       const data = this.system;
 
       const getChanges = (effect) => {
-         // In V14, changes are in system. In V13, they are on the root.
          return effect.system?.changes ?? effect.changes ?? [];
       };
 

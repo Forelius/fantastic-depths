@@ -69,6 +69,7 @@ import { fadeChatMessage } from "./sys/fadeChatMessage.js"
 import { SocketManager } from "./sys/SocketManager.js"
 import { fadeEffect } from "./sys/fadeEffect.js"
 import { fadeTreasure } from "./utils/fadeTreasure.js"
+import { registerTokenMovementActions } from "./sys/TokenMovementActions.js"
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -129,6 +130,8 @@ Hooks.once("init", async function () {
    // but will still apply to the Actor from within the Item
    // if the transfer property on the Active Effect is true.
    CONFIG.ActiveEffect.legacyTransferral = false;
+
+   registerTokenMovementActions();
 
    registerSheets();
 

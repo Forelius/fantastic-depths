@@ -1,3 +1,10 @@
+import {
+   createDefaultMovementMode,
+   isMeaningfulLegacySecondary,
+   legacyRatesToMode,
+   MovementModeData,
+} from "../dataModel/movement/MovementModeData.js";
+
 const { ArrayField, EmbeddedDataField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
 /**
@@ -18,18 +25,13 @@ export class FDPhysicalActorData extends foundry.abstract.DataModel {
             max: new NumberField({ initial: 5 }),
          }),
          movement: new SchemaField({
-            turn: new NumberField({ nullable: true, initial: 120 }),
-            max: new NumberField({ nullable: true, initial: 120 }),
-            round: new NumberField({ nullable: true, initial: null }),
-            day: new NumberField({ nullable: true, initial: null }),
-            run: new NumberField({ nullable: true, initial: null }),
-         }),
-         movement2: new SchemaField({
-            turn: new NumberField({ initial: 0 }),
-            max: new NumberField({ initial: 0 }),
-            round: new NumberField({ nullable: true, initial: null }),
-            day: new NumberField({ nullable: true, initial: null }),
-            run: new NumberField({ nullable: true, initial: null }),
+            modifiers: new SchemaField({
+               encumbrance: new NumberField({ nullable: true, initial: 1 }),
+               fixedPrimary: new NumberField({ nullable: true, initial: null }),
+            }),
+            modes: new ArrayField(new EmbeddedDataField(MovementModeData), {
+               initial: () => [createDefaultMovementMode("primary")],
+            }),
          }),
          encumbrance: new SchemaField({
             value: new NumberField({ initial: 0 }),
@@ -63,4 +65,46 @@ export class FDPhysicalActorData extends foundry.abstract.DataModel {
          }),
       };
    }
+
+   /**
+    * Migrate legacy movement / movement2 into movement.modes.
+    * @inheritDoc
+    */
+   static migrateData(source) {
+      if (source && typeof source === "object") {
+         migratePhysicalMovementSource(source);
+      }
+      return super.migrateData(source);
+   }
+}
+
+/**
+ * Convert legacy dual movement objects on a physical actor system source.
+ * Safe to call from actor DataModel migrateData (system root) or nested physical data.
+ */
+export function migratePhysicalMovementSource(source: Record<string, any>) {
+   const movement = source.movement;
+   if (!movement || typeof movement !== "object") return;
+
+   // Already migrated
+   if (Array.isArray(movement.modes)) return;
+
+   // Legacy shape: flat max/turn on movement (and optional movement2)
+   const hasLegacyPrimary = Object.prototype.hasOwnProperty.call(movement, "max")
+      || Object.prototype.hasOwnProperty.call(movement, "turn");
+   if (!hasLegacyPrimary) return;
+
+   const modes = [legacyRatesToMode(movement, "primary")];
+   if (isMeaningfulLegacySecondary(source.movement2)) {
+      modes.push(legacyRatesToMode(source.movement2, "secondary"));
+   }
+
+   source.movement = {
+      modifiers: {
+         encumbrance: 1,
+         fixedPrimary: null,
+      },
+      modes,
+   };
+   delete source.movement2;
 }

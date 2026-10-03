@@ -1,0 +1,36 @@
+{{!-- Movement modes (show up to 2 parents). Rates are derived; GM edits base on gmOnly tab. --}}
+{{#each system.movement.modes}}
+{{#if (lt @index 2)}}
+<div class="bordered text-center flex1{{#if @index}} mt-1{{/if}}">
+   <h4 data-tooltip="{{#if (eq action "secondary")}}FADE.Actor.movement2.hint{{else}}FADE.Actor.Movement.turnHint{{/if}}">
+      {{#if label}}
+      {{label}}
+      {{else if (eq action "secondary")}}
+      {{localize "FADE.Actor.movement2.long"}}
+      {{else if (eq action "primary")}}
+      {{localize "FADE.Actor.Movement.long"}}
+      {{else}}
+      {{action}}
+      {{/if}}
+   </h4>
+   <div class="grid grid-4col label-12px">
+      <div>
+         <input type="text" data-dtype="Number" value="{{turn}}" disabled data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}" />
+         <label data-tooltip-direction="UP" data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">{{localize 'FADE.Actor.Movement.turn'}}</label>
+      </div>
+      <div>
+         <input type="text" data-dtype="Number" value="{{round}}" disabled data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}" />
+         <label data-tooltip="{{localize 'FADE.Actor.Movement.roundHint'}}">{{localize 'FADE.Actor.Movement.round'}}</label>
+      </div>
+      <div>
+         <input type="text" data-dtype="Number" value="{{day}}" disabled data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}" />
+         <label data-tooltip="{{localize 'FADE.Actor.Movement.dayHint'}}">{{localize 'FADE.Actor.Movement.day'}}</label>
+      </div>
+      <div>
+         <input type="text" data-dtype="Number" value="{{run}}" disabled data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}" />
+         <label data-tooltip="{{localize 'FADE.Actor.Movement.runHint'}}">{{localize 'FADE.Actor.Movement.run'}}</label>
+      </div>
+   </div>
+</div>
+{{/if}}
+{{/each}}
