@@ -134,7 +134,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
     * Handle the drop event for actors 
     */
    async _onDrop(event) {
-      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
 
       if (data.type !== "Actor" || !data.uuid) {
@@ -251,9 +251,7 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
             dragover: this._onDragOver.bind(this),
             drop: this._onDrop.bind(this),
          };
-         // TODO: Remove after v12 support.
-         const dragDropImp = foundry?.applications?.ux?.DragDrop?.implementation ? foundry.applications.ux.DragDrop.implementation : DragDrop;
-         return new dragDropImp(d);
+         return new foundry.applications.ux.DragDrop.implementation(d);
       });
    }
 

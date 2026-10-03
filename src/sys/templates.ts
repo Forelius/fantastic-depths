@@ -4,9 +4,7 @@
  * @return {Promise}
  */
 export const preloadHandlebarsTemplates = async function () {
-   // TODO: Remove after v12 support.
-   const fn = foundry?.applications?.handlebars?.loadTemplates ? foundry.applications.handlebars.loadTemplates : loadTemplates;
-   await fn({
+   await foundry.applications.handlebars.loadTemplates({
       // Chat
       rollSaveBtn: 'systems/fantastic-depths/templates/chat/roll-save-btn.hbs',
       // Actor partials

@@ -100,8 +100,8 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
       // Prepare roll modes select options
-      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, Record<string, number>]) => {
-         acc[key] = game.i18n.localize(value?.label ?? value); // cause v12 and v13 different
+      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, { label: string }]) => {
+         acc[key] = game.i18n.localize(value.label);
          return acc;
       }, {});
       // Prepare operators
@@ -146,7 +146,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
-      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a weapon mastery definition item...

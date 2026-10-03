@@ -131,7 +131,7 @@ export class WeaponItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
-      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
       // If the dropped item is a spell item...

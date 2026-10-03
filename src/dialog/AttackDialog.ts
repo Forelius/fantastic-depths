@@ -108,7 +108,7 @@ export class AttackDialog {
          close: () => { },
          classes: ["fantastic-depths"],
          render: (event, dialog) => {
-            dialog = dialog.element ?? dialog; // For V12/V13 compatibility.
+            dialog = dialog.element;
             dialog.querySelector(`[name="attackType"]`).addEventListener("change", changeEvent => {
                AttackDialog._updateRange(changeEvent.target.value, dialog);
                const rangedSelectorDiv = dialog.querySelector("#rangeSelect");

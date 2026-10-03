@@ -23,8 +23,8 @@ export class rollTableDialog {
          .reduce((acc, item) => { acc[`${item.uuid}`] = item.name; return acc; }, {});
 
       // Get roll modes from the Foundry system
-      const rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string,Record<string,unknown>]) => {
-         acc[key] = game.i18n.localize(value.label ?? value);
+      const rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, { label: string }]) => {
+         acc[key] = game.i18n.localize(value.label);
          return acc;
       }, {});
 
@@ -54,7 +54,7 @@ export class rollTableDialog {
          close: () => { },
          classes: ["fantastic-depths"],
          render: (event, dialog) => {
-            dialog = dialog.element ?? dialog; // For V12/V13 compatibility.
+            dialog = dialog.element;
             // When the folder dropdown changes, update the roll table dropdown.
             dialog.querySelector(`[name="folder"]`).addEventListener("change", async changeEvent => {
                const folderId = changeEvent.currentTarget.value;

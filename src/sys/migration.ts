@@ -202,8 +202,8 @@ export class DataMigrator {
  * A polyfill helper for Foundry version incompatibilities.
  */
 export class CodeMigrate {
-   static FormDataExtended = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
-   static RenderTemplate = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+   static FormDataExtended = foundry.applications.ux.FormDataExtended;
+   static RenderTemplate = foundry.applications.handlebars.renderTemplate;
 
    static getEffectStart(cls: typeof ActiveEffect): object {
       return (cls as any).getEffectStart?.() ?? { time: game.time.worldTime };
@@ -219,19 +219,11 @@ export class CodeMigrate {
    }
 
    static rollEvaluateSync(roll) {
-      if (Number(game.version) >= 12) {
-         roll.evaluateSync();
-      } else {
-         roll.evaluate({ async: false });
-      }
+      roll.evaluateSync();
    }
 
    static async rollEvaluate(roll) {
-      if (Number(game.version) >= 12) {
-         await roll.evaluate();
-      } else {
-         await roll.evaluate({ async: true });
-      }
+      await roll.evaluate();
    }
 
    static applyChatRollMode(chatMessageData: Record<string, unknown>, rollMode: string): void {
@@ -261,15 +253,11 @@ export class CodeMigrate {
       return this.getDefaultChatMode();
    }
 
-static async getTableResultText(result): Promise<string> {
-       // getChatText is deprecated in v13, removed in v15; use getChatText until then to preserve i18n
-       if (Number(game.version) >= 13) {
-          const html = await result.getHTML();
-          const div = document.createElement("div");
-          div.innerHTML = html;
-          return div.textContent ?? "";
-       }
-       return result.getChatText();
-    }
+   static async getTableResultText(result): Promise<string> {
+      const html = await result.getHTML();
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.textContent ?? "";
+   }
 }
 
