@@ -830,6 +830,9 @@ table.compact-table input {
 }
 
 /* Styles limited to fantastic-depths sheets */
+.system-fantastic-depths {
+  /* GM movement mode base: value field with in-input clear control */
+}
 .system-fantastic-depths .fantastic-depths .grid,
 .system-fantastic-depths .fantastic-depths .grid-2col {
   display: grid;
@@ -1314,6 +1317,44 @@ table.compact-table input {
   to {
     opacity: 1;
   }
+}
+.system-fantastic-depths .movement-base-field {
+  position: relative;
+}
+.system-fantastic-depths .movement-base-field input[type=text],
+.system-fantastic-depths .movement-base-field input[type=number] {
+  width: 100%;
+  padding-right: 1.1rem;
+}
+.system-fantastic-depths .movement-base-field .movement-base-clear {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.45;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+.system-fantastic-depths .movement-base-field .movement-base-clear:hover {
+  opacity: 0.9;
+}
+.system-fantastic-depths .movement-base-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+.system-fantastic-depths .movement-base-add:hover {
+  opacity: 1;
 }
 .system-fantastic-depths input[name=search] {
   width: 100%;

@@ -104,7 +104,10 @@
             "run": "Run",
             "runHint": "<b>Feet or yards per round.</b><p>Used when moving at maximum speed during combat encounters.</p>",
             "total": "Total",
-            "moveTurn": "Base Movement"
+            "moveTurn": "Base Movement",
+            "addMode": "Add movement mode",
+            "deleteMode": "Remove movement mode",
+            "addModeMax": "This sheet currently supports at most two movement modes."
          },
          "explore": {
             "long": "Exploration"

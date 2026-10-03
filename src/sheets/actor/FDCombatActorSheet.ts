@@ -10,6 +10,7 @@ import { CodeMigrate } from "../../sys/migration.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
 import { SpellScrollService } from "../../sys/services/SpellScrollService.js";
+import { createDefaultMovementMode } from "../../actor/dataModel/movement/MovementModeData.js";
 
 export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
@@ -64,6 +65,8 @@ export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin
          addCharge: FDCombatActorSheet.#clickAddCharge,
          editAbilityScores: FDCombatActorSheet.#clickEditAbilityScores,
          expandDesc: FDCombatActorSheet.#clickExpandDesc,
+         addMovementMode: FDCombatActorSheet.#clickAddMovementMode,
+         deleteMovementMode: FDCombatActorSheet.#clickDeleteMovementMode,
       }
    }
 
@@ -1067,5 +1070,40 @@ export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin
          const newGroups = currentGroups.filter(group => group !== groupToDelete);
          await this.actor.update({ "system.actorGroups": newGroups });
       }
+   }
+
+   /**
+    * Add a movement mode (iteration 1 UI supports up to two: primary then secondary).
+    * @this {FDCombatActorSheet}
+    */
+   static async #clickAddMovementMode(this: FDCombatActorSheet, event) {
+      event.preventDefault();
+      const modes = foundry.utils.deepClone(this.actor.system.movement?.modes ?? []);
+      if (modes.length >= 2) {
+         ui.notifications.warn(game.i18n.localize("FADE.Actor.Movement.addModeMax"));
+         return;
+      }
+      const action = modes.length === 0 ? "primary" : "secondary";
+      const seedBase = action === "primary"
+         ? 120
+         : (typeof modes[0]?.base === "number" && modes[0].base > 0 ? modes[0].base : 120);
+      modes.push(createDefaultMovementMode(action, { base: seedBase, turn: seedBase }));
+      await this.actor.update({ "system.movement.modes": modes });
+   }
+
+   /**
+    * Remove a movement mode by index.
+    * @this {FDCombatActorSheet}
+    * @param {any} event
+    */
+   static async #clickDeleteMovementMode(this: FDCombatActorSheet, event) {
+      event.preventDefault();
+      const target = event.target.closest("[data-mode-index]");
+      const index = Number(target?.dataset?.modeIndex);
+      if (!Number.isInteger(index) || index < 0) return;
+      const modes = foundry.utils.deepClone(this.actor.system.movement?.modes ?? []);
+      if (index >= modes.length) return;
+      modes.splice(index, 1);
+      await this.actor.update({ "system.movement.modes": modes });
    }
 }

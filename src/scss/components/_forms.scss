@@ -176,3 +176,48 @@ textarea{
       opacity: 1;
    }
 }
+
+/* GM movement mode base: value field with in-input clear control */
+.movement-base-field {
+   position: relative;
+
+   input[type="text"],
+   input[type="number"] {
+      width: 100%;
+      padding-right: 1.1rem;
+   }
+
+   .movement-base-clear {
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      line-height: 14px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.45;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+
+      &:hover {
+         opacity: 0.9;
+      }
+   }
+}
+
+.movement-base-add {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   margin-top: 4px;
+   opacity: 0.7;
+
+   &:hover {
+      opacity: 1;
+   }
+}
