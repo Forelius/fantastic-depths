@@ -211,6 +211,26 @@ export class fadeSettings {
          restricted: true, // Only the GM can change this setting
       });
 
+      game.settings.register(game.system.id, "characterDeathHp", {
+         name: "SETTINGS.characterDeathHp.name",
+         hint: "SETTINGS.characterDeathHp.hint",
+         scope: "world",
+         config: true,
+         default: 0,
+         type: Number,
+         restricted: true, // Only the GM can change this setting
+      });
+
+      game.settings.register(game.system.id, "monsterDeathHp", {
+         name: "SETTINGS.monsterDeathHp.name",
+         hint: "SETTINGS.monsterDeathHp.hint",
+         scope: "world",
+         config: true,
+         default: 0,
+         type: Number,
+         restricted: true, // Only the GM can change this setting
+      });
+
       // Register duration of a round in seconds.
       game.settings.register(game.system.id, "roundDurationSec", {
          name: "SETTINGS.roundDurationSec.name",

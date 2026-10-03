@@ -1407,6 +1407,14 @@
             "withmod": "With Modifier"
          }
       },
+      "characterDeathHp": {
+         "name": "Character Death HP",
+         "hint": "Characters are marked dead when their current HP is less than or equal to this value. Use a negative number for negative-HP house rules (for example, -10)."
+      },
+      "monsterDeathHp": {
+         "name": "Monster Death HP",
+         "hint": "Monsters and vehicles are marked dead when their current HP is less than or equal to this value. Use a negative number for negative-HP house rules (for example, -10)."
+      },
       "roundDurationSec": {
          "name": "Round Duration",
          "hint": "The number of seconds a round represent in game time."

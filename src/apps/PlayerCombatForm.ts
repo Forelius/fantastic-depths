@@ -1,3 +1,5 @@
+import { FDPhysicalActor } from "../actor/FDPhysicalActor.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -68,7 +70,7 @@ export class PlayerCombatForm extends HandlebarsApplicationMixin(ApplicationV2) 
          const combat = updateData.system?.combat;
          if (rowElement) {
             if (updateData.system?.hp?.value !== undefined) {
-               const isDead = updateData.system.hp.value <= 0;
+               const isDead = FDPhysicalActor.isHpDead(actor.type, updateData.system.hp.value);
                rowElement.classList.toggle('is-dead', isDead);
                rowElement.classList.toggle('alive', !isDead);
             }
