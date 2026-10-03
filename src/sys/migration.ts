@@ -1,3 +1,4 @@
+import { createDefaultMovementMode } from "../actor/dataModel/movement/MovementModeData.js";
 import { SYSTEM_ID } from './config.js';
 
 /**
@@ -199,11 +200,80 @@ export class DataMigrator {
 }
 
 /**
- * Thin helpers for Foundry API access used across the system.
+ * Foundry API shims and data-source migrations used across the system.
  */
 export class CodeMigrate {
    static FormDataExtended = foundry.applications.ux.FormDataExtended;
    static RenderTemplate = foundry.applications.handlebars.renderTemplate;
+
+   /**
+    * Convert legacy dual movement / encumbrance mirrors on a physical actor system source.
+    * Safe to call from actor DataModel migrateData (system root) or nested physical data.
+    */
+   static migratePhysicalActorSource(source: Record<string, any>) {
+      if (!source || typeof source !== "object") return;
+
+      // Drop legacy encumbrance movement mirrors (rates live on movement.modes)
+      const enc = source.encumbrance;
+      if (enc && typeof enc === "object") {
+         delete enc.mv;
+         delete enc.mv2;
+      }
+
+      const movement = source.movement;
+      if (!movement || typeof movement !== "object") return;
+
+      // Drop short-lived core escape hatch; absolute primary rates belong in modules (e.g. WB)
+      if (movement.modifiers && typeof movement.modifiers === "object") {
+         delete movement.modifiers.fixedPrimary;
+      }
+
+      // Already migrated
+      if (Array.isArray(movement.modes)) return;
+
+      // Legacy shape: flat max/turn on movement (and optional movement2)
+      const hasLegacyPrimary = Object.prototype.hasOwnProperty.call(movement, "max")
+         || Object.prototype.hasOwnProperty.call(movement, "turn");
+      if (!hasLegacyPrimary) return;
+
+      const modes = [CodeMigrate.#legacyRatesToMode(movement, "primary")];
+      if (CodeMigrate.#isMeaningfulLegacySecondary(source.movement2)) {
+         modes.push(CodeMigrate.#legacyRatesToMode(source.movement2, "secondary"));
+      }
+
+      source.movement = {
+         modifiers: {
+            encumbrance: 1,
+         },
+         modes,
+      };
+      delete source.movement2;
+   }
+
+   static #legacyRatesToMode(legacy: Record<string, unknown> | null | undefined, action: string) {
+      if (!legacy || typeof legacy !== "object") {
+         return createDefaultMovementMode(action, { base: 0, turn: 0 });
+      }
+      return {
+         action,
+         base: legacy.max !== undefined ? legacy.max : (action === "primary" ? 120 : 0),
+         turn: legacy.turn ?? null,
+         round: legacy.round ?? null,
+         day: legacy.day ?? null,
+         run: legacy.run ?? null,
+      };
+   }
+
+   static #isMeaningfulLegacySecondary(legacy: Record<string, unknown> | null | undefined): boolean {
+      if (!legacy || typeof legacy !== "object") return false;
+      const max = legacy.max as number | null | undefined;
+      const turn = Number(legacy.turn) || 0;
+      if (typeof max === "number" && max > 0) return true;
+      if (max === null) {
+         return [legacy.turn, legacy.round, legacy.day, legacy.run].some((v) => v != null && v !== 0);
+      }
+      return turn > 0;
+   }
 
    static getEffectStart(cls: typeof ActiveEffect): object {
       return (cls as any).getEffectStart?.() ?? { time: game.time.worldTime };

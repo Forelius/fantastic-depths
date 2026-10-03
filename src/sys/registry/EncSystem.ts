@@ -20,8 +20,6 @@ export class BasicEncumbrance {
          max: number;
          label?: string;
          desc?: string;
-         mv?: number | null;
-         mv2?: number | null;
       } = { value: 0, max: 0 };
 
       Object.assign(encumbrance, actor.system.encumbrance);
@@ -32,9 +30,8 @@ export class BasicEncumbrance {
       const movement = actor.system.movement ?? { modifiers: {}, modes: [] };
       if (!movement.modifiers) movement.modifiers = {};
 
-      // Default: no encumbrance scaling / no fixed primary override
+      // Default: no encumbrance scaling
       movement.modifiers.encumbrance = 1;
-      movement.modifiers.fixedPrimary = null;
 
       //-- Calculate movement modifiers and label --//
       if (encumbrance.max > 0) {
@@ -43,7 +40,6 @@ export class BasicEncumbrance {
          encumbrance.label = encMove.label;
          encumbrance.desc = encMove.desc;
          if (encMove.factor != null) movement.modifiers.encumbrance = encMove.factor;
-         if (encMove.fixedPrimary != null) movement.modifiers.fixedPrimary = encMove.fixedPrimary;
       }
 
       actor.system.movement = movement;
@@ -98,14 +94,13 @@ export class BasicEncumbrance {
     * @protected
     * @param {any} actor The actor
     * @param {any} encTier
-    * @returns {{ label: string, desc: string, factor?: number, fixedPrimary?: number|null }}
+    * @returns {{ label: string, desc: string, factor?: number }}
     */
    _calculateEncMovement(actor, encTier) {
       return {
          label: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.label`),
          desc: game.i18n.localize(`FADE.Actor.encumbrance.${encTier.name}.desc`),
          factor: encTier.mvFactor ?? 1,
-         fixedPrimary: null,
       };
    }
 }

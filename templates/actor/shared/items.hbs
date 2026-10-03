@@ -14,9 +14,9 @@
       <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
       {{/if}}
    </span>
-   {{#if system.encumbrance.mv}}
+   {{#if system.movement.modes.0.turn}}
    <span class="flex2">
-      {{localize 'FADE.Actor.Movement.moveTurn'}}: {{system.encumbrance.mv}}
+      {{localize 'FADE.Actor.Movement.moveTurn'}}: {{system.movement.modes.0.turn}}{{#if system.movement.modes.1.turn}} / {{system.movement.modes.1.turn}}{{/if}}
    </span>
    {{/if}}
 </div>

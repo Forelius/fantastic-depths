@@ -37,14 +37,14 @@
             {{/if}}
          </div>
          {{/if}}
-         {{#if (or system.encumbrance.max system.encumbrance.mv)}}
+         {{#if system.encumbrance.max}}
          <div class="flexrow flex-group-center bordered">
             <span class="flex3">
                Total: ({{system.encumbrance.value}} / {{system.encumbrance.max}}) <span data-tooltip="{{system.encumbrance.desc}}">{{system.encumbrance.label}}</span>
             </span>
-            {{#if system.encumbrance.mv}}
+            {{#if system.movement.modes.0.turn}}
             <span class="flex2">
-               Base movement: {{system.encumbrance.mv}}
+               {{localize 'FADE.Actor.Movement.moveTurn'}}: {{system.movement.modes.0.turn}}{{#if system.movement.modes.1.turn}} / {{system.movement.modes.1.turn}}{{/if}}
             </span>
             {{/if}}
          </div>

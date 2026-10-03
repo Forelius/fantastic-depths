@@ -1,5 +1,6 @@
 import { FDActorBaseDM } from "../dataModel/FDActorBaseDM.js";
-import { FDPhysicalActorData, migratePhysicalMovementSource } from '../fields/FDPhysicalActorField.js';
+import { FDPhysicalActorData } from '../fields/FDPhysicalActorField.js';
+import { CodeMigrate } from "../../sys/migration.js";
 
 export class FDPhysicalActorDM extends FDActorBaseDM {
    static defineSchema() {
@@ -11,9 +12,7 @@ export class FDPhysicalActorDM extends FDActorBaseDM {
 
    /** @inheritDoc */
    static migrateData(source) {
-      if (source && typeof source === "object") {
-         migratePhysicalMovementSource(source);
-      }
+      CodeMigrate.migratePhysicalActorSource(source);
       return super.migrateData(source);
    }
 }
