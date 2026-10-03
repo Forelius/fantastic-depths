@@ -1,3 +1,6 @@
+/** Localization key prefix for movement mode action ids. */
+const MOVEMENT_MODE_LABEL_PREFIX = "FADE.Actor.Movement.mode";
+
 export class ActorMovement {
    /**
     * Derive turn/round/day/run for each movement mode from base + encumbrance modifiers.
@@ -48,5 +51,51 @@ export class ActorMovement {
       mode.round = Math.floor(mode.turn / roundDivisor);
       mode.day = Math.floor(mode.turn / dayDivisor);
       mode.run = Math.floor(mode.turn / runDivisor);
+   }
+
+   /** Default action id from CONFIG.FADE.Movement.defaultAction. */
+   getDefaultAction(): string {
+      return CONFIG.FADE?.Movement?.defaultAction ?? "walk";
+   }
+
+   /** Action ids from CONFIG.FADE.Movement.actions. */
+   getConfiguredActions(): string[] {
+      const list = CONFIG.FADE?.Movement?.["actions"];
+      return Array.isArray(list) ? list as string[] : [];
+   }
+
+   /** i18n key for a movement action id. */
+   getActionLabelKey(action: string): string {
+      return `${MOVEMENT_MODE_LABEL_PREFIX}.${action}`;
+   }
+
+   /** Localized label for a movement action id. */
+   getActionLabel(action: string): string {
+      if (!action) return "";
+      return game.i18n.localize(this.getActionLabelKey(action));
+   }
+
+   /**
+    * Movement actions from CONFIG.FADE.Movement.actions.
+    * @returns {{ id: string, label: string }[]}
+    */
+   listActions(options: { exclude?: Iterable<string> } = {}) {
+      const excluded = new Set(options.exclude ?? []);
+      return this.getConfiguredActions()
+         .filter((id) => typeof id === "string" && id.length > 0 && !excluded.has(id))
+         .map((id) => ({ id, label: this.getActionLabel(id) }));
+   }
+
+   /** Create a new mode entry with FADE defaults. */
+   createDefaultMode(action?: string, overrides: Record<string, unknown> = {}) {
+      const resolved = action || this.getDefaultAction();
+      return foundry.utils.mergeObject({
+         action: resolved,
+         base: 120,
+         turn: 120,
+         round: null,
+         day: null,
+         run: null,
+      }, overrides);
    }
 }

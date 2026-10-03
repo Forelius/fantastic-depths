@@ -2,7 +2,7 @@
 {{#each system.movement.modes}}
 {{#if (lt @index 2)}}
 <div class="bordered text-center flex1{{#if @index}} mt-1{{/if}}">
-   <h4 data-tooltip="{{#if (eq action "secondary")}}FADE.Actor.movement2.hint{{else}}FADE.Actor.Movement.turnHint{{/if}}">
+   <h4 data-tooltip="{{localize 'FADE.Actor.Movement.turnHint'}}">
       {{movementActionLabel action}}
    </h4>
    <div class="grid grid-4col label-12px">

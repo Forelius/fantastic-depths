@@ -268,6 +268,15 @@ export const FADE = {
       acNaked: 9,
       acNakedAAC: 10
    },
+   /**
+    * Actor movement mode actions. Labels: FADE.Actor.Movement.mode.<action>
+    * Token canSelect is filtered to actions present on the actor's modes[].
+    */
+   Movement: {
+      defaultAction: "walk",
+      actions: ["walk", "fly", "swim", "burrow", "climb", "primary", "secondary"],
+   },
+
    ToHit: {
       /** Represents THAC0 for Normal Man */
       baseTHAC0: 19

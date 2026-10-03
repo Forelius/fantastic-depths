@@ -1,7 +1,4 @@
-import {
-   createDefaultMovementMode,
-   MovementModeData,
-} from "../dataModel/movement/MovementModeData.js";
+import { MovementModeData } from "../dataModel/movement/MovementModeData.js";
 import { CodeMigrate } from "../../sys/migration.js";
 
 const { ArrayField, EmbeddedDataField, NumberField, SchemaField, StringField } = foundry.data.fields;
@@ -28,7 +25,7 @@ export class FDPhysicalActorData extends foundry.abstract.DataModel {
                encumbrance: new NumberField({ nullable: true, initial: 1 }),
             }),
             modes: new ArrayField(new EmbeddedDataField(MovementModeData), {
-               initial: () => [createDefaultMovementMode("primary")],
+               initial: () => [game.fade.registry.getSystem("actorMovement").createDefaultMode()],
             }),
          }),
          encumbrance: new SchemaField({

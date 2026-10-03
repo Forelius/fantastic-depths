@@ -131,8 +131,6 @@ Hooks.once("init", async function () {
    // if the transfer property on the Active Effect is true.
    CONFIG.ActiveEffect.legacyTransferral = false;
 
-   registerTokenMovementActions();
-
    registerSheets();
 
    // Register System Settings
@@ -143,6 +141,7 @@ Hooks.once("init", async function () {
    Hooks.call("beforeFadeRegisterDefaultSystems", game.fade.registry);
 
    game.fade.registry.registerDefaultSystems();
+   registerTokenMovementActions();
 
    await handleAsyncInit();
 

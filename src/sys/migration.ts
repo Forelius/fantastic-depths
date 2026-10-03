@@ -1,4 +1,3 @@
-import { createDefaultMovementMode } from "../actor/dataModel/movement/MovementModeData.js";
 import { SYSTEM_ID } from './config.js';
 
 /**
@@ -251,12 +250,13 @@ export class CodeMigrate {
    }
 
    static #legacyRatesToMode(legacy: Record<string, unknown> | null | undefined, action: string) {
+      const actorMovement = game.fade.registry.getSystem("actorMovement");
       if (!legacy || typeof legacy !== "object") {
-         return createDefaultMovementMode(action, { base: 0, turn: 0 });
+         return actorMovement.createDefaultMode(action, { base: 0, turn: 0 });
       }
       return {
          action,
-         base: legacy.max !== undefined ? legacy.max : (action === "primary" ? 120 : 0),
+         base: legacy.max !== undefined ? legacy.max : (action === "walk" || action === "primary" ? 120 : 0),
          turn: legacy.turn ?? null,
          round: legacy.round ?? null,
          day: legacy.day ?? null,

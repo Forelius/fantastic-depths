@@ -108,7 +108,13 @@
             "addMode": "Add movement mode",
             "deleteMode": "Remove movement mode",
             "addModeMax": "This sheet currently supports at most two movement modes.",
+            "noActionsLeft": "No unused movement actions are available.",
             "mode": {
+               "walk": "Walk",
+               "fly": "Fly",
+               "swim": "Swim",
+               "burrow": "Burrow",
+               "climb": "Climb",
                "primary": "Movement",
                "secondary": "Secondary"
             }
@@ -930,8 +936,10 @@
          },
          "close": "Close",
          "cancel": "Cancel",
+         "select": "Select",
          "selectAttack": "Select What to Attack With",
          "selectSpell": "Select spell to cast",
+         "selectMovementAction": "Select Movement Action",
          "confirm": "Are you sure?",
          "yes": "Yes, go ahead",
          "no": "No, cancel",

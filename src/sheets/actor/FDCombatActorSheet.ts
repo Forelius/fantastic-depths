@@ -10,7 +10,7 @@ import { CodeMigrate } from "../../sys/migration.js";
 import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
 import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
 import { SpellScrollService } from "../../sys/services/SpellScrollService.js";
-import { createDefaultMovementMode } from "../../actor/dataModel/movement/MovementModeData.js";
+import { fadeDialog } from "../../dialog/fadeDialog.js";
 
 export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin(ActorSheetV2)) {
 
@@ -1073,7 +1073,8 @@ export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin
    }
 
    /**
-    * Add a movement mode (iteration 1 UI supports up to two: primary then secondary).
+    * Add a movement mode. Action chosen from CONFIG.FADE.Movement.actions.
+    * Sheet UI currently allows at most two modes; data/systems support more.
     * @this {FDCombatActorSheet}
     */
    static async #clickAddMovementMode(this: FDCombatActorSheet, event) {
@@ -1083,11 +1084,16 @@ export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin
          ui.notifications.warn(game.i18n.localize("FADE.Actor.Movement.addModeMax"));
          return;
       }
-      const action = modes.length === 0 ? "primary" : "secondary";
-      const seedBase = action === "primary"
-         ? 120
-         : (typeof modes[0]?.base === "number" && modes[0].base > 0 ? modes[0].base : 120);
-      modes.push(createDefaultMovementMode(action, { base: seedBase, turn: seedBase }));
+
+      const result = await fadeDialog.getSelectMovementActionDialog({
+         exclude: modes.map((m) => m.action).filter(Boolean),
+      });
+      const action = result?.action;
+      if (!action || typeof action !== "string") return;
+
+      const seedBase = typeof modes[0]?.base === "number" && modes[0].base > 0 ? modes[0].base : 120;
+      const actorMovement = game.fade.registry.getSystem("actorMovement");
+      modes.push(actorMovement.createDefaultMode(action, { base: seedBase, turn: seedBase }));
       await this.actor.update({ "system.movement.modes": modes });
    }
 
