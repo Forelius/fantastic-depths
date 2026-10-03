@@ -107,7 +107,11 @@
             "moveTurn": "Base Movement",
             "addMode": "Add movement mode",
             "deleteMode": "Remove movement mode",
-            "addModeMax": "This sheet currently supports at most two movement modes."
+            "addModeMax": "This sheet currently supports at most two movement modes.",
+            "mode": {
+               "primary": "Movement",
+               "secondary": "Secondary"
+            }
          },
          "explore": {
             "long": "Exploration"

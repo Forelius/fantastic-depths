@@ -1,11 +1,15 @@
+import { getMovementActionLabelKey } from "../actor/dataModel/movement/MovementModeData.js";
+
 /**
  * Register FADE movement actions and filter token action selection by actor modes.
  */
 export function registerTokenMovementActions() {
    if (!CONFIG.Token?.movement) return;
-   if (!CONFIG.Token.movement.actions) {
-      CONFIG.Token.movement.actions = {};
+   if (!CONFIG.Token.movement["actions"]) {
+      CONFIG.Token.movement["actions"] = {};
    }
+
+   const catalog = CONFIG.Token.movement["actions"] as Record<string, Record<string, unknown>>;
 
    const hasMode = (tokenDoc, actionId) => {
       const modes = tokenDoc?.actor?.system?.movement?.modes;
@@ -22,22 +26,22 @@ export function registerTokenMovementActions() {
       };
    };
 
-   CONFIG.Token.movement.actions.primary = foundry.utils.mergeObject({
-      label: "FADE.Actor.Movement.long",
+   // label is the same i18n key derived from the action id (not a separate mapping)
+   catalog.primary = foundry.utils.mergeObject({
+      label: getMovementActionLabelKey("primary"),
       icon: "fa-solid fa-person-walking",
       order: -20,
-   }, CONFIG.Token.movement.actions.primary ?? {});
+   }, catalog.primary ?? {});
 
-   CONFIG.Token.movement.actions.secondary = foundry.utils.mergeObject({
-      label: "FADE.Actor.movement2.long",
+   catalog.secondary = foundry.utils.mergeObject({
+      label: getMovementActionLabelKey("secondary"),
       icon: "fa-solid fa-person-running",
       order: -19,
-   }, CONFIG.Token.movement.actions.secondary ?? {});
+   }, catalog.secondary ?? {});
 
-   for (const [actionId, config] of Object.entries(CONFIG.Token.movement.actions)) {
+   for (const [actionId, config] of Object.entries(catalog)) {
       if (!config || typeof config !== "object") continue;
-      const actionConfig = config as { canSelect?: unknown };
-      actionConfig.canSelect = wrapCanSelect(actionId, actionConfig.canSelect);
+      config.canSelect = wrapCanSelect(actionId, config.canSelect);
    }
 
    // Prefer FADE primary when core default is walk and actor modes use primary/secondary.

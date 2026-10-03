@@ -3,15 +3,7 @@
 {{#if (lt @index 2)}}
 <div class="bordered text-center flex1{{#if @index}} mt-1{{/if}}">
    <h4 data-tooltip="{{#if (eq action "secondary")}}FADE.Actor.movement2.hint{{else}}FADE.Actor.Movement.turnHint{{/if}}">
-      {{#if label}}
-      {{label}}
-      {{else if (eq action "secondary")}}
-      {{localize "FADE.Actor.movement2.long"}}
-      {{else if (eq action "primary")}}
-      {{localize "FADE.Actor.Movement.long"}}
-      {{else}}
-      {{action}}
-      {{/if}}
+      {{movementActionLabel action}}
    </h4>
    <div class="grid grid-4col label-12px">
       <div>
