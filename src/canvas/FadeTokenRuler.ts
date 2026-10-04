@@ -1,39 +1,34 @@
 /**
- * Soft band coloring for token movement measurement.
- * Visual only — no path restrictions. Tip label: value + localized band.
- * Class is created at register time so Foundry's TokenRuler is available.
+ * Soft band coloring for token movement measurement (PF2e-style).
+ * Path solid/dash (obstacle) styling stays with Foundry — we only tint grid
+ * highlights and adjust the tip label. Visual only; no path restrictions.
  */
 export function registerFadeTokenRuler() {
    const Base = CONFIG.Token?.rulerClass;
    if (!Base || !CONFIG.Token) return;
 
    class FadeTokenRuler extends Base {
-      /** @override */
-      _getSegmentStyle(waypoint) {
-         const style = super._getSegmentStyle(waypoint);
-         return this.#withBandColor(style, waypoint);
-      }
-
-      /** @override */
-      _getWaypointStyle(waypoint) {
-         const style = super._getWaypointStyle(waypoint);
-         return this.#withBandColor(style, waypoint);
-      }
-
-      /** @override */
+      /**
+       * Band colors on reachable grid cells only.
+       * Unreachable cells keep Foundry defaults (obstacle path).
+       * @override
+       */
       _getGridHighlightStyle(waypoint, offset) {
          const style = super._getGridHighlightStyle(waypoint, offset);
-         return this.#withBandColor(style, waypoint);
+         if (!style || waypoint?.unreachable) return style;
+
+         const color = this.#bandColor(waypoint);
+         return color == null ? style : { ...style, color };
       }
 
       /**
-       * Keep Foundry's label context (position, scale, etc.) and replace the
-       * distance text with a unitless value + localized band name.
+       * Keep Foundry's label context (position, scale, cost, etc.) and replace
+       * the distance text with a unitless value + localized band name.
        * @override
        */
       _getWaypointLabelContext(waypoint, state) {
          const context = super._getWaypointLabelContext(waypoint, state);
-         if (!context) return context;
+         if (!context || waypoint?.unreachable) return context;
 
          const tokenDoc = this.token?.document;
          const actorMovement = game.fade?.registry?.getSystem?.("actorMovement");
@@ -47,20 +42,17 @@ export function registerFadeTokenRuler() {
          const bandLabel = band ? actorMovement.getBandLabel(band) : "";
 
          context.units = "";
-         context.distance = {
-            ...(typeof context.distance === "object" && context.distance ? context.distance : {}),
-            total: bandLabel ? `${value} ${bandLabel}` : value,
-         };
+         if (typeof context.distance === "object" && context.distance) {
+            context.distance.total = bandLabel ? `${value} ${bandLabel}` : value;
+            // Hide per-leg delta so the tip stays "value + band" only.
+            delete context.distance.delta;
+         } else {
+            context.distance = { total: bandLabel ? `${value} ${bandLabel}` : value };
+         }
          return context;
       }
 
-      #withBandColor(style, waypoint) {
-         if (!style || typeof style !== "object") return style;
-         const color = this.#colorForWaypoint(waypoint);
-         return color == null ? style : { ...style, color };
-      }
-
-      #colorForWaypoint(waypoint) {
+      #bandColor(waypoint) {
          const tokenDoc = this.token?.document;
          const actorMovement = game.fade?.registry?.getSystem?.("actorMovement");
          if (!tokenDoc || !actorMovement || actorMovement.shouldSkipBandMeasurement(tokenDoc)) {
