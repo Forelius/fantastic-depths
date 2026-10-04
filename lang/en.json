@@ -110,8 +110,8 @@
             "addModeMax": "This sheet currently supports at most two movement modes.",
             "noActionsLeft": "No unused movement actions are available.",
             "mode": {
-               "walk": "Walk",
-               "fly": "Fly",
+               "walk": "Ground",
+               "fly": "Flight",
                "swim": "Swim",
                "burrow": "Burrow",
                "climb": "Climb",
@@ -1318,7 +1318,7 @@
       },
       "EncMax": {
          "Hint": "The maximum weight that can be carried while still able to move.",
-         "Name": "Encumbrance Max"
+         "Name": "Enc. Max."
       },
       "Theme": {
          "Hint": "Dark mode features a dark backround with light text and light mode features a light background with dark text.",
