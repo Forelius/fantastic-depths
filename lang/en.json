@@ -117,6 +117,19 @@
                "climb": "Climb",
                "primary": "Primary",
                "secondary": "Secondary"
+            },
+            "timescale": {
+               "turn": "Turn",
+               "round": "Round",
+               "day": "Day",
+               "hint": "Movement timescale for measurement. Click to cycle; clears back to inferred.",
+               "inferred": "Inferred ({scale})"
+            },
+            "band": {
+               "slow": "Slow",
+               "normal": "Normal",
+               "sprint": "Sprint",
+               "over": "Over"
             }
          },
          "explore": {

@@ -1,8 +1,12 @@
+import { registerFadeTokenRuler } from "../canvas/FadeTokenRuler.js";
+
 /**
  * Register CONFIG.FADE.Movement.actions on Foundry's token movement catalog
  * and filter canSelect by the actor's modes[]. Labels use FADE.Actor.Movement.mode.<action>.
+ * Also installs the band-aware token ruler.
  */
 export function registerTokenMovementActions() {
+   registerFadeTokenRuler();
    if (!CONFIG.Token?.movement) return;
    if (!CONFIG.Token.movement["actions"]) {
       CONFIG.Token.movement["actions"] = {};

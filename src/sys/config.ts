@@ -271,10 +271,21 @@ export const FADE = {
    /**
     * Actor movement mode actions. Labels: FADE.Actor.Movement.mode.<action>
     * Token canSelect is filtered to actions present on the actor's modes[].
+    * Timescale/band keys drive ruler measurement visuals (Phase 2).
     */
    Movement: {
       defaultAction: "walk",
       actions: ["walk", "fly", "swim", "burrow", "climb", "primary", "secondary"],
+      timescales: ["turn", "round", "day"],
+      bands: ["slow", "normal", "sprint", "over"],
+      bandColors: {
+         slow: 0xF1C40F,
+         normal: 0x2ECC71,
+         sprint: 0x3498DB,
+         over: 0xE74C3C,
+      },
+      /** Cautious / withdrawal band ceiling as a fraction of normal. */
+      slowFactor: 0.5,
    },
 
    ToHit: {

@@ -70,6 +70,7 @@ import { SocketManager } from "./sys/SocketManager.js"
 import { fadeEffect } from "./sys/fadeEffect.js"
 import { fadeTreasure } from "./utils/fadeTreasure.js"
 import { registerTokenMovementActions } from "./sys/TokenMovementActions.js"
+import { registerTokenMovementHud } from "./ui/tokenMovementHud.js"
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -142,6 +143,7 @@ Hooks.once("init", async function () {
 
    game.fade.registry.registerDefaultSystems();
    registerTokenMovementActions();
+   registerTokenMovementHud();
 
    await handleAsyncInit();
 
