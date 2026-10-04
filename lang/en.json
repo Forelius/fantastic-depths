@@ -115,7 +115,7 @@
                "swim": "Swim",
                "burrow": "Burrow",
                "climb": "Climb",
-               "primary": "Movement",
+               "primary": "Primary",
                "secondary": "Secondary"
             }
          },
