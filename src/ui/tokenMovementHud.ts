@@ -28,13 +28,22 @@ export function registerTokenMovementHud() {
          ?? root.querySelector(".left")
          ?? root.querySelector("[class*='left']")
          ?? root;
+
+      // Wrapper keeps the Foundry square hitbox on the icon; label sits outside it.
+      const wrap = document.createElement("div");
+      wrap.classList.add("fade-movement-timescale");
+
       const button = document.createElement("button");
       button.type = "button";
-      button.classList.add("control-icon", "fade-movement-timescale");
+      button.classList.add("control-icon");
       if (override) button.classList.add("active");
       button.dataset.tooltip = tooltip;
       button.setAttribute("aria-label", tooltip);
-      button.innerHTML = `<i class="fa-solid fa-gauge-high"></i><span class="fade-movement-timescale-label">${label}</span>`;
+      button.innerHTML = `<i class="fa-solid fa-gauge-high"></i>`;
+
+      const caption = document.createElement("span");
+      caption.classList.add("fade-movement-timescale-label");
+      caption.textContent = label;
 
       button.addEventListener("click", async (event) => {
          event.preventDefault();
@@ -49,6 +58,8 @@ export function registerTokenMovementHud() {
          app.render();
       });
 
-      col.appendChild(button);
+      wrap.appendChild(button);
+      wrap.appendChild(caption);
+      col.appendChild(wrap);
    });
 }

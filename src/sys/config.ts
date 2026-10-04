@@ -279,9 +279,9 @@ export const FADE = {
       timescales: ["turn", "round", "day"],
       bands: ["slow", "normal", "sprint", "over"],
       bandColors: {
-         slow: 0xF1C40F,
+         slow: 0x3498DB,
          normal: 0x2ECC71,
-         sprint: 0x3498DB,
+         sprint: 0xF1C40F,
          over: 0xE74C3C,
       },
       /** Cautious / withdrawal band ceiling as a fraction of normal. */
