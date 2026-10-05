@@ -105,7 +105,7 @@ const DragDropMixin = (superclass) => class extends superclass {
     * @protected
     */
    async _onDrop(event): Promise<boolean | Item[] | Actor> {
-      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation ?? TextEditor;
+      const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
       const actor = this.actor;
       const allowed = Hooks.call("dropActorSheetData", actor, this, data);
@@ -147,8 +147,7 @@ const DragDropMixin = (superclass) => class extends superclass {
             dragover: this._onDragOver.bind(this),
             drop: this._onDrop.bind(this),
          };
-         const dragDropImp = foundry?.applications?.ux?.DragDrop?.implementation;
-         return new dragDropImp(d);
+         return new foundry.applications.ux.DragDrop.implementation(d);
       });
    }
 

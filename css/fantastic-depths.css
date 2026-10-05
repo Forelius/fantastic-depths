@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*@import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&display=swap");
@@ -830,6 +831,9 @@ table.compact-table input {
 }
 
 /* Styles limited to fantastic-depths sheets */
+.system-fantastic-depths {
+  /* GM movement mode base: value field with in-input clear control */
+}
 .system-fantastic-depths .fantastic-depths .grid,
 .system-fantastic-depths .fantastic-depths .grid-2col {
   display: grid;
@@ -1315,6 +1319,44 @@ table.compact-table input {
     opacity: 1;
   }
 }
+.system-fantastic-depths .movement-base-field {
+  position: relative;
+}
+.system-fantastic-depths .movement-base-field input[type=text],
+.system-fantastic-depths .movement-base-field input[type=number] {
+  width: 100%;
+  padding-right: 1.1rem;
+}
+.system-fantastic-depths .movement-base-field .movement-base-clear {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.45;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+.system-fantastic-depths .movement-base-field .movement-base-clear:hover {
+  opacity: 0.9;
+}
+.system-fantastic-depths .movement-base-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+.system-fantastic-depths .movement-base-add:hover {
+  opacity: 1;
+}
 .system-fantastic-depths input[name=search] {
   width: 100%;
   margin-bottom: 8px;
@@ -1578,4 +1620,32 @@ table.compact-table input {
 }
 .system-fantastic-depths .effects .item .effect-controls {
   border: none;
+}
+
+/* Token movement timescale HUD — icon keeps Foundry square; label outside */
+#token-hud .fade-movement-timescale {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 6px;
+  margin-bottom: 2px;
+}
+#token-hud .fade-movement-timescale .control-icon {
+  flex: 0 0 auto;
+}
+#token-hud .fade-movement-timescale .control-icon i {
+  font-size: 0.85em;
+}
+
+#token-hud .fade-movement-timescale-label {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 0 2px #000, 0 0 2px #000;
 }

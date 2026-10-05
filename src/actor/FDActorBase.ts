@@ -5,18 +5,6 @@ import { ClassSystemBase } from "../sys/registry/ClassSystem.js";
  * @extends {Actor}
  */
 export class FDActorBase extends Actor {
-   constructor(data, context) {
-      /** Default behavior, just call super() and do all the default Item inits */
-      super(data, context);
-      if (!this.toggleStatusEffect) {
-         // If v11 add toggleStatusEffect method.
-         this.toggleStatusEffect = async (status, options) => {
-            const token = this.getActiveTokens()[0];
-            await token?.toggleEffect(CONFIG.statusEffects.find(e => e.id === status), options);
-         };
-      }
-   }
-
    get currentActiveToken(): Token {
       let result = null;
       const activeTokens = this.getActiveTokens();

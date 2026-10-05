@@ -36,8 +36,7 @@ export class fadeEffect extends ActiveEffect {
    // Seconds-based durations are managed by our onUpdateWorldTime; exclude them from
    // Foundry v14's ActiveEffectRegistry to prevent double-expiry conflicts.
    get isExpiryTrackable() {
-      const units = this.duration?.units ?? (this.duration as any)?.type;
-      if (units === "seconds") return false;
+      if (this.duration?.units === "seconds") return false;
       const base = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(fadeEffect.prototype), "isExpiryTrackable");
       return base?.get?.call(this) ?? false;
    }
@@ -55,8 +54,7 @@ export class fadeEffect extends ActiveEffect {
    updateDuration() {
       const duration = super.updateDuration();
       // Custom logic for second-based durations
-      const durationUnits = this.duration.units ?? this.duration.type;
-      if (durationUnits === "seconds") {
+      if (this.duration.units === "seconds") {
          const roundDuration = game.settings.get(game.system.id, "roundDurationSec") ?? 60;
          const turnDuration = game.settings.get(game.system.id, "turnDurationSec") ?? 10 * 60;
          const wt = game.time.worldTime;

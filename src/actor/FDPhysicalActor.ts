@@ -6,6 +6,50 @@ import { FDActorBase } from "./FDActorBase.js";
  * @extends {FDActorBase}
  */
 export class FDPhysicalActor extends FDActorBase {
+   /**
+    * World setting key for the HP death threshold based on actor type.
+    * Characters use characterDeathHp; monsters and vehicles use monsterDeathHp.
+    * @param {string} actorType
+    * @returns {string}
+    */
+   static getDeathHpSettingKey(actorType: string): string {
+      return actorType === "character" ? "characterDeathHp" : "monsterDeathHp";
+   }
+
+   /**
+    * HP threshold at or below which an actor of the given type is considered dead.
+    * @param {string} actorType
+    * @returns {number}
+    */
+   static getDeathHpThreshold(actorType: string): number {
+      const value = game.settings.get(game.system.id, FDPhysicalActor.getDeathHpSettingKey(actorType));
+      return typeof value === "number" ? value : 0;
+   }
+
+   /**
+    * Whether the given HP value is at or below the death threshold for the actor type.
+    * @param {string} actorType
+    * @param {number} hpValue
+    * @returns {boolean}
+    */
+   static isHpDead(actorType: string, hpValue: number): boolean {
+      return hpValue <= FDPhysicalActor.getDeathHpThreshold(actorType);
+   }
+
+   /** HP threshold at or below which this actor is considered dead. */
+   getDeathHpThreshold(): number {
+      return FDPhysicalActor.getDeathHpThreshold(this.type);
+   }
+
+   /**
+    * Whether the given HP value is at or below this actor's death threshold.
+    * @param {number} hpValue
+    * @returns {boolean}
+    */
+   isHpDead(hpValue: number): boolean {
+      return FDPhysicalActor.isHpDead(this.type, hpValue);
+   }
+
    /** override */
    prepareDerivedData() {
       super.prepareDerivedData();
@@ -25,12 +69,15 @@ export class FDPhysicalActor extends FDActorBase {
    async onUpdateActor(updateData, _options, _userId) {
       await super.onUpdateActor(updateData, _options, _userId);
       // Hit points updated.
-      if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value <= 0 && updateData.system?.combat?.isDead === undefined) {
-         await this.update({ "system.combat.isDead": true });
-         this.toggleStatusEffect("dead", { active: true });
-      } else if (updateData.system?.hp?.value !== undefined && updateData.system?.hp?.value > 0 && updateData.system?.combat?.isDead === undefined) {
-         await this.update({ "system.combat.isDead": false });
-         this.toggleStatusEffect("dead", { active: false });
+      if (updateData.system?.hp?.value !== undefined && updateData.system?.combat?.isDead === undefined) {
+         const hpValue = updateData.system.hp.value;
+         if (this.isHpDead(hpValue)) {
+            await this.update({ "system.combat.isDead": true });
+            this.toggleStatusEffect("dead", { active: true });
+         } else {
+            await this.update({ "system.combat.isDead": false });
+            this.toggleStatusEffect("dead", { active: false });
+         }
       }
    }
 

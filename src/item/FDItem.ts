@@ -145,14 +145,11 @@ export abstract class FDItem extends Item implements IFDItem {
    }
 
    async getInlineDescription() {
-      // TODO: Remove after v12 support.
-      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+      const textEditorImp = foundry.applications.ux.TextEditor.implementation;
 
       let description = await textEditorImp.enrichHTML(this.knownDescriptionGM, {
          // Whether to show secret blocks in the finished html
          secrets: false,
-         // Necessary in v11, can be removed in v12
-         async: true,
          // Data to fill in for inline rolls
          rollData: this.getRollData(),
          // Relative UUID resolution
@@ -253,7 +250,6 @@ export abstract class FDItem extends Item implements IFDItem {
       const data = this.system;
 
       const getChanges = (effect) => {
-         // In V14, changes are in system. In V13, they are on the root.
          return effect.system?.changes ?? effect.changes ?? [];
       };
 

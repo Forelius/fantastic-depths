@@ -36,10 +36,12 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
       // Render the content using the template, now with messageId
       const content = await CodeMigrate.RenderTemplate(this.template, renderData);
+      // Foundry ObjectField._cast replaces non-plain objects (e.g. DOMStringMap from
+      // element.dataset) with {}. Copy into a plain object so damagetype/type survive.
       const chatMessageData = this.getChatMessageData({
          content, rolls, rollMode,
          [`flags.${game.system.id}.attackdata`]: {
-            mdata,
+            mdata: { ...mdata },
             damage: options.damage
          }
       });
@@ -121,7 +123,8 @@ export class DamageRollChatBuilder extends ChatBuilder {
 
             const chatData = {
                context: damager,
-               mdata: dataset,
+               // Plain object copy — see createChatMessage note on DOMStringMap / ObjectField.
+               mdata: { ...dataset },
                roll,
                digest: damageRoll.digest
             };
@@ -199,7 +202,6 @@ export class DamageRollChatBuilder extends ChatBuilder {
                } else {
                   delta = Math.abs(delta);
                }
-               // Apply damage to the token"s actor
                const dmgSys = game.fade.registry.getSystem("damageSystem");
                dmgSys.ApplyDamage(target.actor, delta, dataset.damagetype, dataset.attacktype, weapon);
             }

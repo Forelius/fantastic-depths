@@ -199,77 +199,135 @@ export class DataMigrator {
 }
 
 /**
- * A polyfill helper for Foundry version incompatibilities.
+ * Foundry API shims and data-source migrations used across the system.
  */
 export class CodeMigrate {
-   static FormDataExtended = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
-   static RenderTemplate = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+   static FormDataExtended = foundry.applications.ux.FormDataExtended;
+   static RenderTemplate = foundry.applications.handlebars.renderTemplate;
+
+   /**
+    * Convert legacy dual movement / encumbrance mirrors on a physical actor system source.
+    * Safe to call from actor DataModel migrateData (system root) or nested physical data.
+    */
+   static migratePhysicalActorSource(source: Record<string, any>) {
+      if (!source || typeof source !== "object") return;
+
+      // Drop legacy encumbrance movement mirrors (rates live on movement.modes)
+      const enc = source.encumbrance;
+      if (enc && typeof enc === "object") {
+         delete enc.mv;
+         delete enc.mv2;
+      }
+
+      const movement = source.movement;
+      if (!movement || typeof movement !== "object") return;
+
+      // Drop short-lived core escape hatch; absolute primary rates belong in modules (e.g. WB)
+      if (movement.modifiers && typeof movement.modifiers === "object") {
+         delete movement.modifiers.fixedPrimary;
+      }
+
+      // Already on modes[] shape — remap retired action ids
+      if (Array.isArray(movement.modes)) {
+         CodeMigrate.#remapMovementModeActions(movement.modes);
+         return;
+      }
+
+      // Legacy shape: flat max/turn on movement (and optional movement2)
+      const hasLegacyPrimary = Object.prototype.hasOwnProperty.call(movement, "max")
+         || Object.prototype.hasOwnProperty.call(movement, "turn");
+      if (!hasLegacyPrimary) return;
+
+      const modes = [CodeMigrate.#legacyRatesToMode(movement, "primary")];
+      if (CodeMigrate.#isMeaningfulLegacySecondary(source.movement2)) {
+         modes.push(CodeMigrate.#legacyRatesToMode(source.movement2, "secondary"));
+      }
+
+      source.movement = {
+         modifiers: {
+            encumbrance: 1,
+         },
+         modes,
+      };
+      delete source.movement2;
+   }
+
+   /** Remap stored movement mode action ids (e.g. walk → ground). */
+   static #remapMovementModeActions(modes: Record<string, unknown>[]) {
+      for (const mode of modes) {
+         if (!mode || typeof mode !== "object") continue;
+         if (mode.action === "walk") mode.action = "ground";
+      }
+   }
+
+   static #legacyRatesToMode(legacy: Record<string, unknown> | null | undefined, action: string) {
+      const actorMovement = game.fade.registry.getSystem("actorMovement");
+      if (!legacy || typeof legacy !== "object") {
+         return actorMovement.createDefaultMode(action, { base: 0, turn: 0 });
+      }
+      return {
+         action,
+         base: legacy.max !== undefined ? legacy.max : (action === "ground" || action === "primary" ? 120 : 0),
+         turn: legacy.turn ?? null,
+         round: legacy.round ?? null,
+         day: legacy.day ?? null,
+         run: legacy.run ?? null,
+      };
+   }
+
+   static #isMeaningfulLegacySecondary(legacy: Record<string, unknown> | null | undefined): boolean {
+      if (!legacy || typeof legacy !== "object") return false;
+      const max = legacy.max as number | null | undefined;
+      const turn = Number(legacy.turn) || 0;
+      if (typeof max === "number" && max > 0) return true;
+      if (max === null) {
+         return [legacy.turn, legacy.round, legacy.day, legacy.run].some((v) => v != null && v !== 0);
+      }
+      return turn > 0;
+   }
 
    static getEffectStart(cls: typeof ActiveEffect): object {
       return (cls as any).getEffectStart?.() ?? { time: game.time.worldTime };
    }
 
-   // In v13, duration.remaining and duration.expired are read-only computed getters.
-   // In v14+ they are writable properties on the prepared duration object.
    static setEffectDurationProps(duration: any, remaining: number, expired: boolean): void {
-      if (Number(game.version) >= 14) {
-         duration.remaining = remaining;
-         duration.expired = expired;
-      }
+      duration.remaining = remaining;
+      duration.expired = expired;
    }
 
    static rollEvaluateSync(roll) {
-      if (Number(game.version) >= 12) {
-         roll.evaluateSync();
-      } else {
-         roll.evaluate({ async: false });
-      }
+      roll.evaluateSync();
    }
 
    static async rollEvaluate(roll) {
-      if (Number(game.version) >= 12) {
-         await roll.evaluate();
-      } else {
-         await roll.evaluate({ async: true });
-      }
+      await roll.evaluate();
    }
 
    static applyChatRollMode(chatMessageData: Record<string, unknown>, rollMode: string): void {
-      if (Number(game.version) >= 14) {
-         const modeMap: Record<string, string> = {
-            roll: "public",
-            publicroll: "public",
-            gmroll: "gm",
-            blindroll: "blind",
-            selfroll: "self"
-         };
-         const mode = modeMap[rollMode] ?? rollMode;
-         ChatMessage.applyMode(chatMessageData, mode);
-      } else {
-         ChatMessage.applyRollMode(chatMessageData, rollMode);
-      }
+      const modeMap: Record<string, string> = {
+         roll: "public",
+         publicroll: "public",
+         gmroll: "gm",
+         blindroll: "blind",
+         selfroll: "self"
+      };
+      const mode = modeMap[rollMode] ?? rollMode;
+      ChatMessage.applyMode(chatMessageData, mode);
    }
 
    static getDefaultChatMode(): string {
-      if (Number(game.version) >= 14) {
-         return game.settings.get("core", "messageMode") as string ?? "public";
-      }
-      return game.settings.get("core", "rollMode") as string ?? "roll";
+      return game.settings.get("core", "messageMode") as string ?? "public";
    }
 
    static getRollModeSetting(): string {
       return this.getDefaultChatMode();
    }
 
-static async getTableResultText(result): Promise<string> {
-       // getChatText is deprecated in v13, removed in v15; use getChatText until then to preserve i18n
-       if (Number(game.version) >= 13) {
-          const html = await result.getHTML();
-          const div = document.createElement("div");
-          div.innerHTML = html;
-          return div.textContent ?? "";
-       }
-       return result.getChatText();
-    }
+   static async getTableResultText(result): Promise<string> {
+      const html = await result.getHTML();
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.textContent ?? "";
+   }
 }
 

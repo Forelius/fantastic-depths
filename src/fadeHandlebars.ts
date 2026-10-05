@@ -43,6 +43,8 @@ export class fadeHandlebars {
       });
       // Register a Handlebars helper to check if an array includes a value
       Handlebars.registerHelper("includes", (array, value) => array && array.includes(value));
+      Handlebars.registerHelper("movementActionLabel", (action) =>
+         game.fade.registry.getSystem("actorMovement").getActionLabel(action));
       Handlebars.registerHelper("add", (a, b) => Number(a) + Number(b));
       Handlebars.registerHelper("subtract", (lh, rh) => Number(lh) - Number(rh));
       Handlebars.registerHelper("multiply", (a, b) => Number(a) * Number(b));

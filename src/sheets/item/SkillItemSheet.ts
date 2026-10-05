@@ -67,8 +67,8 @@ export class SkillItemSheet extends FDItemSheetV2 {
       const context = await super._prepareContext(options);
 
       // Prepare roll modes select options
-      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, PropertyBag]) => {
-         acc[key] = game.i18n.localize(value.label ?? value);
+      context.rollModes = Object.entries(CONFIG.Dice.rollModes).reduce((acc, [key, value]: [string, { label: string }]) => {
+         acc[key] = game.i18n.localize(value.label);
          return acc;
       }, {});
       // Abilities

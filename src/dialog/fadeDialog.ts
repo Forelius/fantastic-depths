@@ -170,6 +170,56 @@ export class fadeDialog {
       }
    }
 
+   /**
+    * Select a movement action from CONFIG.FADE.Movement.actions.
+    * @param {{ exclude?: Iterable<string>, selected?: string }} [options]
+    * @returns {Promise<{ action: string }|null>}
+    */
+   static async getSelectMovementActionDialog(options: { exclude?: Iterable<string>, selected?: string } = {}) {
+      const actorMovement = game.fade.registry.getSystem("actorMovement");
+      const actions = actorMovement.listActions({ exclude: options.exclude });
+      if (actions.length === 0) {
+         ui.notifications.warn(game.i18n.localize("FADE.Actor.Movement.noActionsLeft"));
+         return null;
+      }
+
+      const defaultAction = actorMovement.getDefaultAction();
+      const selected = options.selected
+         || (actions.some((a) => a.id === defaultAction) ? defaultAction : actions[0].id);
+      const dialogData = {
+         actions: actions.reduce((acc, a) => {
+            acc[a.id] = a.label;
+            return acc;
+         }, {}),
+         selected,
+      };
+
+      return DialogV2.wait({
+         window: { title: game.i18n.localize("FADE.dialog.selectMovementAction") },
+         rejectClose: false,
+         modal: true,
+         content: await CodeMigrate.RenderTemplate(
+            "systems/fantastic-depths/templates/dialog/select-movement-action.hbs",
+            dialogData
+         ),
+         buttons: [
+            {
+               action: "select",
+               label: game.i18n.localize("FADE.dialog.select"),
+               default: true,
+               callback: (_event, button) => new CodeMigrate.FormDataExtended(button.form).object,
+            },
+            {
+               action: "close",
+               label: game.i18n.localize("FADE.dialog.close"),
+               callback: () => null,
+            },
+         ],
+         close: () => null,
+         classes: ["fantastic-depths"],
+      });
+   }
+
    static async getYesNoDialog(dataset) {
       const {
          title = game.i18n.localize('FADE.dialog.confirm'),

@@ -649,8 +649,7 @@ export class SingleClassSystem extends ClassSystemBase {
       const spellAbility = actor.items.find(i => i.type === "specialAbility" && i.system.category === "spellcasting");
       // Enrich biography info for display
       // Enrichment turns text like `[[/r 1d20]]` into buttons
-      // TODO: Remove after v12 support.
-      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+      const textEditorImp = foundry.applications.ux.TextEditor.implementation;
       const spellAbilityDesc = spellAbility ? await textEditorImp.enrichHTML(spellAbility.system.description, {
          rollData: actor.getRollData(),
          relativeTo: actor,
@@ -925,8 +924,7 @@ export class MultiClassSystem extends ClassSystemBase {
     */
    async prepareSpellsContext(actor) {
       const spellClasses = [];
-      // TODO: Remove after v12 support.
-      const textEditorImp = foundry?.applications?.ux?.TextEditor?.implementation ? foundry.applications.ux.TextEditor.implementation : TextEditor;
+      const textEditorImp = foundry.applications.ux.TextEditor.implementation;
 
       if (actor.type === "monster") {
          const firstSpellLevel = actor.system.config.firstSpellLevel;

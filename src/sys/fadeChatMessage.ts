@@ -3,30 +3,9 @@ import { MeasuredTemplateService } from "./services/MeasuredTemplateService.js";
 
 export class fadeChatMessage extends ChatMessage {
    /** @inheritDoc */
-   async getHTML(options) {
-      let html = await super.getHTML(options);
-      // Foundry v12...
-      if ((Number(game.version) < 13)) {
-         if (html instanceof Element === false) {
-            // In case jquery, due to v12/v13 inconsistency
-            html = html[0];
-         }
-         html = await this.#getForRender(html);
-      }
-      return html;
-   }
-
-   /** @inheritDoc */
    async renderHTML(options) {
-      // Remove after v12/v13 compatibility
-      //if (super.getHTML === undefined) {
-         let html = await super.renderHTML(options);
-         if (html instanceof Element === false) {
-            // In case jquery, due to v12/v13 inconsistency
-            html = html[0];
-         }
-         return await this.#getForRender(html);
-      //}
+      const html = await super.renderHTML(options);
+      return await this.#getForRender(html);
    }
 
    async #getForRender(html) {

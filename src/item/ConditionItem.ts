@@ -27,12 +27,10 @@ export class ConditionItem extends FDItem {
 
    async setEffectsDuration(durationSec) {
       for (const effect of this.effects) {
-         // Set both 'type' (legacy) and 'units' (V14+) for backwards compatibility
          await effect.update({
             "duration.seconds": durationSec,
             "duration.value": durationSec,
-            "duration.units": "seconds", // V14 property
-            "duration.type": "seconds"   // Legacy fallback
+            "duration.units": "seconds"
          });
       }
    }

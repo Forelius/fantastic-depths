@@ -69,6 +69,8 @@ import { fadeChatMessage } from "./sys/fadeChatMessage.js"
 import { SocketManager } from "./sys/SocketManager.js"
 import { fadeEffect } from "./sys/fadeEffect.js"
 import { fadeTreasure } from "./utils/fadeTreasure.js"
+import { registerTokenMovementActions } from "./sys/TokenMovementActions.js"
+import { registerTokenMovementHud } from "./ui/tokenMovementHud.js"
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -140,6 +142,8 @@ Hooks.once("init", async function () {
    Hooks.call("beforeFadeRegisterDefaultSystems", game.fade.registry);
 
    game.fade.registry.registerDefaultSystems();
+   registerTokenMovementActions();
+   registerTokenMovementHud();
 
    await handleAsyncInit();
 
@@ -147,15 +151,11 @@ Hooks.once("init", async function () {
 });
 
 function registerSheets() {
-   // TODO: Remove after v12 support.
-   const gActors = foundry?.documents?.collections?.Actors ? foundry.documents.collections.Actors : Actors;
-   const gItems = foundry?.documents?.collections?.Items ? foundry.documents.collections.Items : Items;
+   const gActors = foundry.documents.collections.Actors;
+   const gItems = foundry.documents.collections.Items;
 
    // Register sheet application classes
-
-   // TODO: Remove after v12 support.
-   const gActorSheet = foundry?.appv1?.sheets?.ActorSheet ? foundry.appv1.sheets.ActorSheet : ActorSheet;
-   gActors.unregisterSheet("core", gActorSheet);
+   gActors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
    gActors.registerSheet("fantastic-depths", CharacterSheet, {
       label: "FADE.SheetLabel.Character",
       types: ["character"],
@@ -181,9 +181,7 @@ function registerSheets() {
       types: ["prop"],
       makeDefault: true
    });
-   // TODO: Remove after v12 support.
-   const gItemSheet = foundry?.appv1?.sheets?.ItemSheet ? foundry.appv1.sheets.ItemSheet : ItemSheet;
-   gItems.unregisterSheet("core", gItemSheet);
+   gItems.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
    gItems.registerSheet("fantastic-depths", GearItemSheet, {
       label: "FADE.SheetLabel.Item",
       makeDefault: true,

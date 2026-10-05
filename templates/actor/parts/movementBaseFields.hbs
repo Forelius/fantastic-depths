@@ -1,0 +1,24 @@
+{{!-- GM-editable base speed for each movement mode (up to 2). Clear (×) removes the mode. --}}
+{{#each system.movement.modes}}
+{{#if (lt @index 2)}}
+<div class="flex2 movement-base-field">
+   {{!-- Persist action across submitOnChange; form only edits base otherwise. --}}
+   <input type="hidden" name="system.movement.modes.{{@index}}.action" value="{{action}}" />
+   <input type="text" name="system.movement.modes.{{@index}}.base" value="{{base}}" data-dtype="Number"
+      data-tooltip="{{localize 'SETTINGS.move.max.hint'}}" />
+   <a class="movement-base-clear" data-action="deleteMovementMode" data-mode-index="{{@index}}"
+      data-tooltip="{{localize 'FADE.Actor.Movement.deleteMode'}}" aria-label="{{localize 'FADE.Actor.Movement.deleteMode'}}">×</a>
+   <label for="system.movement.modes.{{@index}}.base" data-tooltip="{{localize 'SETTINGS.move.max.hint'}}">
+      {{movementActionLabel action}}
+   </label>
+</div>
+{{/if}}
+{{/each}}
+{{#if (lt system.movement.modes.length 2)}}
+<div class="flex1" style="max-width:28px;">
+   <a class="item-control movement-base-add" data-action="addMovementMode"
+      data-tooltip="{{localize 'FADE.Actor.Movement.addMode'}}" aria-label="{{localize 'FADE.Actor.Movement.addMode'}}">
+      <i class="fas fa-plus"></i>
+   </a>
+</div>
+{{/if}}

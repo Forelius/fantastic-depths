@@ -15,26 +15,17 @@ const Hooks = undefined;
 const Journal = undefined;
 const Macro = undefined;
 const ChatMessage = undefined;
-const TextEditor = undefined;
 const Roll = undefined;
 const $ = undefined;
 const ui = undefined;
 const Settings = undefined;
-const ActorSheet = undefined;
-const ItemSheet = undefined;
-const Actors = undefined;
-const Items = undefined;
 const FormApplication = undefined;
 const ActiveEffectConfig = undefined;
-const DragDrop = undefined;
 const Tabs = undefined;
 const saveDataToFile = undefined;
-const FormDataExtended = undefined;
-const renderTemplate = undefined;
 const FilePicker = undefined;
 const Combat = undefined;
 const Dialog = undefined;
 const Compendium = undefined;
-const loadTemplates = undefined;
 async function fromUuid(id) { return undefined; }
 function fromUuidSync(id) { return undefined; }
