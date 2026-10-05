@@ -1,6 +1,6 @@
 ![image](./assets/img/banner.jpg)
 
-## Fantastic Depths - Foundry VTT System v14
+## Fantastic Depths - Foundry VTT v14 System
 
 ![GitHub Downloads (specific asset, all releases)](https://img.shields.io/github/downloads/forelius/fantastic-depths/fantastic-depths.zip)
 
