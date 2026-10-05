@@ -274,8 +274,8 @@ export const FADE = {
     * Timescale/band keys drive ruler measurement visuals (Phase 2).
     */
    Movement: {
-      defaultAction: "walk",
-      actions: ["walk", "fly", "swim", "burrow", "climb", "primary", "secondary"],
+      defaultAction: "ground",
+      actions: ["ground", "fly", "swim", "burrow", "climb", "primary", "secondary"],
       timescales: ["turn", "round", "day"],
       bands: ["slow", "normal", "sprint", "over"],
       bandColors: {

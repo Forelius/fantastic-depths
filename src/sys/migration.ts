@@ -227,8 +227,11 @@ export class CodeMigrate {
          delete movement.modifiers.fixedPrimary;
       }
 
-      // Already migrated
-      if (Array.isArray(movement.modes)) return;
+      // Already on modes[] shape — remap retired action ids
+      if (Array.isArray(movement.modes)) {
+         CodeMigrate.#remapMovementModeActions(movement.modes);
+         return;
+      }
 
       // Legacy shape: flat max/turn on movement (and optional movement2)
       const hasLegacyPrimary = Object.prototype.hasOwnProperty.call(movement, "max")
@@ -249,6 +252,14 @@ export class CodeMigrate {
       delete source.movement2;
    }
 
+   /** Remap stored movement mode action ids (e.g. walk → ground). */
+   static #remapMovementModeActions(modes: Record<string, unknown>[]) {
+      for (const mode of modes) {
+         if (!mode || typeof mode !== "object") continue;
+         if (mode.action === "walk") mode.action = "ground";
+      }
+   }
+
    static #legacyRatesToMode(legacy: Record<string, unknown> | null | undefined, action: string) {
       const actorMovement = game.fade.registry.getSystem("actorMovement");
       if (!legacy || typeof legacy !== "object") {
@@ -256,7 +267,7 @@ export class CodeMigrate {
       }
       return {
          action,
-         base: legacy.max !== undefined ? legacy.max : (action === "walk" || action === "primary" ? 120 : 0),
+         base: legacy.max !== undefined ? legacy.max : (action === "ground" || action === "primary" ? 120 : 0),
          turn: legacy.turn ?? null,
          round: legacy.round ?? null,
          day: legacy.day ?? null,

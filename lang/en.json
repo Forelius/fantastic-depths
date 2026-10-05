@@ -110,9 +110,9 @@
             "addModeMax": "This sheet currently supports at most two movement modes.",
             "noActionsLeft": "No unused movement actions are available.",
             "mode": {
-               "walk": "Ground",
+               "ground": "Ground",
                "fly": "Flight",
-               "swim": "Swim",
+               "water": "Water",
                "burrow": "Burrow",
                "climb": "Climb",
                "primary": "Primary",

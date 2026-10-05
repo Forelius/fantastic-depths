@@ -58,7 +58,7 @@ export class ActorMovement {
 
    /** Default action id from CONFIG.FADE.Movement.defaultAction. */
    getDefaultAction(): string {
-      return CONFIG.FADE?.Movement?.defaultAction ?? "walk";
+      return CONFIG.FADE?.Movement?.defaultAction ?? "ground";
    }
 
    /** Action ids from CONFIG.FADE.Movement.actions. */
@@ -178,17 +178,23 @@ export class ActorMovement {
       return this.getTimescaleOverride(tokenDoc) ?? this.inferTimescale(tokenDoc) ?? "turn";
    }
 
+   /** Normalize retired core/FADE action ids (walk → ground). */
+   normalizeAction(action: string | null | undefined): string | null {
+      if (!action) return null;
+      return action === "walk" ? "ground" : action;
+   }
+
    /** Mode matching the token's movementAction, else first mode. */
    getModeForToken(tokenDoc) {
       const modes = tokenDoc?.actor?.system?.movement?.modes;
       if (!Array.isArray(modes) || modes.length === 0) return null;
-      const action = tokenDoc.movementAction;
+      const action = this.normalizeAction(tokenDoc.movementAction);
       return modes.find((m) => m?.action === action) ?? modes[0] ?? null;
    }
 
    /** True when the token's movement action should skip band styling. */
    shouldSkipBandMeasurement(tokenDoc): boolean {
-      const action = tokenDoc?.movementAction;
+      const action = this.normalizeAction(tokenDoc?.movementAction);
       if (!action) return true;
       const config = CONFIG.Token?.movement?.["actions"]?.[action];
       if (config?.measure === false) return true;

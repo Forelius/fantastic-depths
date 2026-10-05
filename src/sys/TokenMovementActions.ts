@@ -15,9 +15,13 @@ export function registerTokenMovementActions() {
    const catalog = CONFIG.Token.movement["actions"] as Record<string, Record<string, unknown>>;
    const actorMovement = game.fade.registry.getSystem("actorMovement");
    const fadeActions: string[] = actorMovement.getConfiguredActions();
+   const defaultAction = actorMovement.getDefaultAction();
+
+   // Prefer FADE's default (ground) over core's walk.
+   CONFIG.Token.movement["defaultAction"] = defaultAction;
 
    const defaultIcons: Record<string, string> = {
-      walk: "fa-solid fa-person-walking",
+      ground: "fa-solid fa-person-walking",
       fly: "fa-solid fa-person-fairy",
       swim: "fa-solid fa-person-swimming",
       burrow: "fa-solid fa-person-digging",
@@ -26,12 +30,22 @@ export function registerTokenMovementActions() {
       secondary: "fa-solid fa-person-running",
    };
 
+   // Seed ground from core walk visuals when ground is not yet registered.
+   if (fadeActions.includes("ground") && !catalog.ground && catalog.walk) {
+      catalog.ground = foundry.utils.deepClone(catalog.walk);
+   }
+
    for (const actionId of fadeActions) {
       const existing = catalog[actionId] ?? {};
       catalog[actionId] = foundry.utils.mergeObject(existing, {
          label: actorMovement.getActionLabelKey(actionId),
          icon: existing.icon ?? defaultIcons[actionId] ?? "fa-solid fa-person-walking",
       });
+   }
+
+   // Keep core walk for terrain difficulty keys, but do not offer it in the UI.
+   if (catalog.walk && typeof catalog.walk === "object" && !fadeActions.includes("walk")) {
+      catalog.walk.canSelect = () => false;
    }
 
    const hasMode = (tokenDoc, actionId) => {

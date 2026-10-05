@@ -6,7 +6,7 @@ export class MovementModeData extends foundry.abstract.DataModel {
       return {
          action: new StringField({
             required: true,
-            initial: () => CONFIG.FADE?.Movement?.defaultAction ?? "walk",
+            initial: () => CONFIG.FADE?.Movement?.defaultAction ?? "ground",
          }),
          base: new NumberField({ nullable: true, initial: 120 }),
          turn: new NumberField({ nullable: true, initial: 120 }),
