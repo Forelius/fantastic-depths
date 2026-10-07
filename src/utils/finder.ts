@@ -240,6 +240,21 @@ export class fadeFinder {
    }
 
    /**
+    * Get all class definition documents from the world and/or compendiums.
+    * @param {boolean} [compendiumOnly=false] If true, only search compendiums.
+    * @returns {Promise<Array>} An array of class definition documents.
+    */
+   static async getClassDefinitions(compendiumOnly = false) {
+      const type = 'class';
+      let result = [];
+      if (compendiumOnly !== true) {
+         result = [...(fadeFinder._getWorldSource(type) || [])];
+      }
+      result = [...result, ...((await fadeFinder._getPackSource(type)) || [])];
+      return result;
+   }
+
+   /**
     * Retrieve class special abilities from the specified class and for the specified level.
     * @param {any} className The class name.
     * @param {any} classLevel The level to retrieve abilities for.
