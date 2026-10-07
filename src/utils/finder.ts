@@ -295,7 +295,13 @@ export class fadeFinder {
       return { classAbilityData: result, classKey: parsed?.classKey, classLevel: parsed?.classLevel };
    }
 
-   static async getAllClassDefinitions() {
+   /**
+    * Retrieves class items from the class. This is not an array of items, just the data from the class.
+    * @param {any} className The class name.
+    * @param {any} classLevel The level to retrieve items for.
+    * @returns An array or undefined.
+    */
+   static async getClassItems(className, classLevel) {
       const classItem = await fadeFinder.getClass(className);
       let result;
       if (classItem) {
