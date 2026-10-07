@@ -2,7 +2,7 @@
 
 ## Fantastic Depths - Foundry VTT v14 System
 
-![GitHub Downloads (specific asset, all releases)](https://img.shields.io/github/downloads/forelius/fantastic-depths/fantastic-depths.zip)
+![Foundry Version](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FForelius%2Ffantastic-depths%2Frefs%2Fheads%2Fstable%2Fsystem.json)
 
 This [Foundry Virtual Tabletop](https://foundryvtt.com/packages/fantastic-depths) system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
 
