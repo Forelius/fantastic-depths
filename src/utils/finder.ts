@@ -240,6 +240,21 @@ export class fadeFinder {
    }
 
    /**
+    * Get all class definition documents from the world and/or compendiums.
+    * @param {boolean} [compendiumOnly=false] If true, only search compendiums.
+    * @returns {Promise<Array>} An array of actor documents.
+    */
+   static async getClassDefintions(compendiumOnly = false) {
+      const type = 'class';
+      let result;
+      if (compendiumOnly !== true) {
+         result = fadeFinder._getWorldSource(type);
+      }
+      result = [...result, ...(await fadeFinder._getPackSource(type))];
+      return result;
+   }
+
+   /**
     * Retrieve class special abilities from the specified class and for the specified level.
     * @param {any} className The class name.
     * @param {any} classLevel The level to retrieve abilities for.
@@ -280,13 +295,7 @@ export class fadeFinder {
       return { classAbilityData: result, classKey: parsed?.classKey, classLevel: parsed?.classLevel };
    }
 
-   /**
-    * Retrieves class items from the class. This is not an array of items, just the data from the class.
-    * @param {any} className The class name.
-    * @param {any} classLevel The level to retrieve items for.
-    * @returns An array or undefined.
-    */
-   static async getClassItems(className, classLevel) {
+   static async getAllClassDefinitions() {
       const classItem = await fadeFinder.getClass(className);
       let result;
       if (classItem) {
