@@ -25,7 +25,7 @@ export class ClassDefinitionItem extends FDItem {
       const newSaveData = new SavingThrowsData();
       // Create the saving throw member variables dynamically from the world's save items.
       const finderSaves = await fadeFinder.getSavingThrows();
-      const saveCodes = finderSaves.map(item => item.system.customSaveCode);
+      const saveCodes = finderSaves.map(item => item.system.customCode);
       for (const saveCode of saveCodes) {
          newSaveData[saveCode] = 15;
       }

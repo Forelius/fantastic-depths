@@ -625,8 +625,8 @@
          "autoSuccessHint": "Automatically succeeds on a natural/unmodified roll of this value.",
          "autoFail": "Auto-Fail",
          "autoFailHint": "Automatically fails on a natural/unmodified roll of this value.",
-         "saveType": "Save Type",
-         "saveTypeHint": "Set this if this special ability is a saving throw.",
+         "customCode": "Custom Code",
+         "customCodeHint": "Stable identifier for this ability. Required for saving throws; optional for other abilities and macros.",
          "categories": {
             "explore": "Exploration",
             "class": "Class Ability",

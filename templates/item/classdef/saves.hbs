@@ -19,7 +19,7 @@
          <div class="align-left"><input type="number" name="system.saves.{{index}}.level" value="{{saveData.level}}" data-dtype="Number" /></div>
          {{#contextMergeEach @root.saves outerIndex=index outerSaveData=saveData}}
          <div class="align-left">
-            <input type="number" name="system.saves.{{outerIndex}}.{{item.system.customSaveCode}}" value="{{lookup outerSaveData item.system.customSaveCode}}" data-dtype="Number" />
+            <input type="number" name="system.saves.{{outerIndex}}.{{item.system.customCode}}" value="{{lookup outerSaveData item.system.customCode}}" data-dtype="Number" />
          </div>
          {{/contextMergeEach}}
          <div class='item-controls'>

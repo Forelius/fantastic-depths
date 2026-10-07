@@ -43,7 +43,7 @@ export class AttackRollChatBuilder extends ChatBuilder {
                itemuuid: save.uuid,
                actionuuid: ammoItem.uuid,
                shortName: save?.system.shortName,
-               customSaveCode: save?.system.customSaveCode,
+               customCode: save?.system.customCode,
             });
          }
       }

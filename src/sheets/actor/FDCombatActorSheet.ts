@@ -903,7 +903,7 @@ export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin
     static async #clickRollSave(this: FDCombatActorSheet, event) {
        const item = this._getItemFromActor(event);
        const savingThrowSys = game.fade.registry.getSystem("savingThrowSystem");
-       savingThrowSys.execute({ actor: this.actor, type: item.system.customSaveCode, event });
+       savingThrowSys.execute({ actor: this.actor, type: item.system.customCode, event });
     }
 
    /**

@@ -276,7 +276,7 @@ export abstract class ChatBuilder {
                itemuuid: save.uuid,
                actionuuid: actionItem.uuid, // this is the owning item's uuid
                shortName: save?.system.shortName,
-               customSaveCode: save?.system.customSaveCode,
+               customCode: save?.system.customCode,
             });
          }
          if (options.attacks === true) {
