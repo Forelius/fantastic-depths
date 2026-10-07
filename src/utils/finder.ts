@@ -242,15 +242,15 @@ export class fadeFinder {
    /**
     * Get all class definition documents from the world and/or compendiums.
     * @param {boolean} [compendiumOnly=false] If true, only search compendiums.
-    * @returns {Promise<Array>} An array of actor documents.
+    * @returns {Promise<Array>} An array of class definition documents.
     */
-   static async getClassDefintions(compendiumOnly = false) {
+   static async getClassDefinitions(compendiumOnly = false) {
       const type = 'class';
-      let result;
+      let result = [];
       if (compendiumOnly !== true) {
-         result = fadeFinder._getWorldSource(type);
+         result = [...(fadeFinder._getWorldSource(type) || [])];
       }
-      result = [...result, ...(await fadeFinder._getPackSource(type))];
+      result = [...result, ...((await fadeFinder._getPackSource(type)) || [])];
       return result;
    }
 
