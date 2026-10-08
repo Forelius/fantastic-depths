@@ -80,16 +80,76 @@ export class DataMigrator {
    }
 
    async migrate() {
-      const isMigrated = true;
       if (game.user.isGM) {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
-         if (isMigrated === true) {
-            // Set the new version after migration is complete
-            game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+         if (this.oldVersion.lt(new MySystemVersion("1.4.2"))) {
+            await this.migrateCustomSaveCodeToCustomCode();
+            ui.notifications.info("Fantastic Depths 1.4.2 data migration complete.");
+         }
+
+         // Set the new version after migration is complete
+         await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+      }
+   }
+
+   /**
+    * Persist specialAbility rename customSaveCode → customCode on world and embedded items.
+    * Soft migrateData already maps the value in memory; this writes it and removes the legacy key.
+    */
+   async migrateCustomSaveCodeToCustomCode() {
+      console.log("-----------------------------------------------");
+      console.log("Migrating customSaveCode → customCode");
+      console.log("-----------------------------------------------");
+
+      const worldUpdates = [];
+      for (const item of game.items) {
+         const update = this.#buildCustomCodeMigrationUpdate(item);
+         if (update) worldUpdates.push(update);
+      }
+      if (worldUpdates.length > 0) {
+         console.log(`Updating ${worldUpdates.length} world specialAbility item(s).`);
+         await Item.updateDocuments(worldUpdates);
+      }
+
+      for (const actor of game.actors) {
+         const updates = [];
+         for (const item of actor.items) {
+            const update = this.#buildCustomCodeMigrationUpdate(item);
+            if (update) updates.push(update);
+         }
+         if (updates.length > 0) {
+            console.log(`Updating ${updates.length} specialAbility item(s) on actor "${actor.name}".`);
+            await actor.updateEmbeddedDocuments("Item", updates);
          }
       }
+   }
+
+   /**
+    * @param {Item} item
+    * @returns {object|null} Document update payload including `_id`, or null if no change needed.
+    */
+   #buildCustomCodeMigrationUpdate(item) {
+      if (item.type !== "specialAbility") return null;
+
+      const src = item._source?.system ?? {};
+      const legacy = src.customSaveCode;
+      const hasLegacy = Object.prototype.hasOwnProperty.call(src, "customSaveCode");
+      const code = (item.system?.customCode != null && item.system.customCode !== "")
+         ? item.system.customCode
+         : legacy;
+
+      // Soft migrateData fills customCode in memory; force-persist whenever a code exists so disk
+      // gets the new key even if Foundry already stripped customSaveCode from _source.
+      if ((code == null || code === "") && !hasLegacy) return null;
+
+      const update: Record<string, unknown> = { _id: item.id };
+      if (code != null && code !== "") {
+         update["system.customCode"] = code;
+      }
+      update["system.-=customSaveCode"] = null;
+      return update;
    }
 
    static async importCompendiums() {
