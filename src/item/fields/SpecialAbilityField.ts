@@ -37,8 +37,8 @@ export class SpecialAbilityData extends foundry.abstract.DataModel {
          shortName: new StringField({ required: false, initial: "" }),
          // The type of combat maneuver this represents
          combatManeuver: new StringField({ required: false, nullable: true, initial: null }),
-         // The type of saving throw this represents. Only use if this is a saving throw item
-         customSaveCode: new StringField({ required: false, nullable: true, initial: null }),
+         // Stable machine key for this ability (required for saves; optional for macros/modules)
+         customCode: new StringField({ required: false, nullable: true, initial: null }),
          classKey: new StringField({ required: false, nullable: true, initial: null }),
          showResult: new BooleanField({ required: false, initial: true }),
          quantity: new NumberField({ required: false, initial: 1, nullable: true }),

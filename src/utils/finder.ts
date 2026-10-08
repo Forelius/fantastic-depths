@@ -372,7 +372,7 @@ export class fadeFinder {
     * Retrieves a special ability.
     * @private
     * @param {any} name The special ability's name.
-    * @param {any} options Additional options for matching fields (category, customSaveCode).
+    * @param {any} options Additional options for matching fields (category, customCode).
     * @returns The requested special ability, otherwise undefined.
     */
    static _getSpecialAbility(source, name, options) {
@@ -386,7 +386,7 @@ export class fadeFinder {
          } else if (options?.category === 'save') {
             result = source.filter(item => item.type == type && item.system.category == options.category
                && (!name || item.name.toLowerCase() == name.toLowerCase())
-               && item.system.customSaveCode == options.customSaveCode)?.[0];
+               && item.system.customCode == options.customCode)?.[0];
          } else if (options?.categoryNEQ === 'save') {
             result = source.filter(item => item.type == type && item.system.category !== options.categoryNEQ
                && (!name || item.name.toLowerCase() == name.toLowerCase())
@@ -432,17 +432,17 @@ export class fadeFinder {
    }
 
    /**
-    * Retrieve a saving throw special ability by its custom save code from either the world or compendiums.
-    * @param {string} customSaveCode The custom save code of the saving throw.
+    * Retrieve a saving throw special ability by its custom code from either the world or compendiums.
+    * @param {string} customCode The custom code of the saving throw.
     * @returns {Promise<Document|undefined>} The requested saving throw if found, otherwise undefined.
     */
-   static async getSavingThrow(customSaveCode) {
+   static async getSavingThrow(customCode) {
       const type = 'specialAbility';
       let source = fadeFinder._getWorldSource(type);
-      let result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customSaveCode });
+      let result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customCode });
       if (!result) {
          source = await fadeFinder._getPackSource(type);
-         result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customSaveCode });
+         result = fadeFinder._getSpecialAbility(source, null, { category: 'save', customCode });
       }
       return result;
    }

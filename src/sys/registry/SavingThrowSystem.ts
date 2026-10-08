@@ -106,7 +106,7 @@ export class SavingThrowSystem {
    #getSavingThrow(actor, saveType): SpecialAbilityItem {
       const result = actor.items.find(item => item.type === "specialAbility"
          && item.system.category === "save"
-         && item.system.customSaveCode === saveType) as SpecialAbilityItem;
+         && item.system.customCode === saveType) as SpecialAbilityItem;
       if (!result) {
          ui.notifications.error(game.i18n.format("FADE.notification.missingSave", { saveType }));
       }

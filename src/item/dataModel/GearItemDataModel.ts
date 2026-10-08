@@ -84,7 +84,7 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
     * @inheritDoc
     */
    static migrateData(source) {
-      // TODO: Remove someday.    
+      // TODO: Remove after worlds are past DataMigrator 1.4.2 (migrateWeightEquippedFromWeight).
       if ((source.weightEquipped === null || source.weightEquipped === undefined) && source.weight) {
          //console.debug(`Setting equipped weight. Was ${source, source.weightEquipped} will be ${source.weight}`);
          source.weightEquipped = source.weight;

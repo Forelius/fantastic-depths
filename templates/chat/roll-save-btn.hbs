@@ -1,7 +1,7 @@
 {{#each actions as |action|}}
 {{#if (eq action.type "save")}}
 <button class="saving-roll"
-        data-type="{{action.customSaveCode}}"
+        data-type="{{action.customCode}}"
         data-owneruuid="{{action.owneruuid}}"
         data-weaponuuid="{{action.itemuuid}}">
    <i class="fa-solid fa-life-ring"></i>

@@ -80,16 +80,128 @@ export class DataMigrator {
    }
 
    async migrate() {
-      const isMigrated = true;
       if (game.user.isGM) {
          //console.debug("FADE Migrate", this.oldVersion, this.newVersion);
          //this.#testMigrate();
 
-         if (isMigrated === true) {
-            // Set the new version after migration is complete
-            game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+         if (this.oldVersion.lt(new MySystemVersion("1.4.2"))) {
+            await this.migrateCustomSaveCodeToCustomCode();
+            await this.migrateWeightEquippedFromWeight();
+            ui.notifications.info("Fantastic Depths 1.4.2 data migration complete.");
+         }
+
+         // Set the new version after migration is complete
+         await game.settings.set(SYSTEM_ID, 'gameVer', game.system.version);
+      }
+   }
+
+   /**
+    * Persist specialAbility rename customSaveCode → customCode on world and embedded items.
+    * Soft migrateData already maps the value in memory; this writes it and removes the legacy key.
+    */
+   async migrateCustomSaveCodeToCustomCode() {
+      console.log("-----------------------------------------------");
+      console.log("Migrating customSaveCode → customCode");
+      console.log("-----------------------------------------------");
+
+      await this.#migrateWorldAndEmbeddedItems(
+         (item) => this.#buildCustomCodeMigrationUpdate(item),
+         "specialAbility"
+      );
+   }
+
+   /**
+    * Persist GearItemDataModel soft default: null weightEquipped ← weight.
+    * Enables removing that migrateData after worlds have passed this gate.
+    */
+   async migrateWeightEquippedFromWeight() {
+      console.log("-----------------------------------------------");
+      console.log("Migrating weightEquipped from weight");
+      console.log("-----------------------------------------------");
+
+      await this.#migrateWorldAndEmbeddedItems(
+         (item) => this.#buildWeightEquippedMigrationUpdate(item),
+         "gear weightEquipped"
+      );
+   }
+
+   /**
+    * Apply an update builder across world items and each actor's embedded items.
+    * @param {(item: Item) => object|null} buildUpdate
+    * @param {string} label For log messages
+    */
+   async #migrateWorldAndEmbeddedItems(buildUpdate, label) {
+      const worldUpdates = [];
+      for (const item of game.items) {
+         const update = buildUpdate(item);
+         if (update) worldUpdates.push(update);
+      }
+      if (worldUpdates.length > 0) {
+         console.log(`Updating ${worldUpdates.length} world ${label} item(s).`);
+         await Item.updateDocuments(worldUpdates);
+      }
+
+      for (const actor of game.actors) {
+         const updates = [];
+         for (const item of actor.items) {
+            const update = buildUpdate(item);
+            if (update) updates.push(update);
+         }
+         if (updates.length > 0) {
+            console.log(`Updating ${updates.length} ${label} item(s) on actor "${actor.name}".`);
+            await actor.updateEmbeddedDocuments("Item", updates);
          }
       }
+   }
+
+   /**
+    * @param {Item} item
+    * @returns {object|null} Document update payload including `_id`, or null if no change needed.
+    */
+   #buildCustomCodeMigrationUpdate(item) {
+      if (item.type !== "specialAbility") return null;
+
+      const src = item._source?.system ?? {};
+      const legacy = src.customSaveCode;
+      const hasLegacy = Object.prototype.hasOwnProperty.call(src, "customSaveCode");
+      const code = (item.system?.customCode != null && item.system.customCode !== "")
+         ? item.system.customCode
+         : legacy;
+
+      // Soft migrateData fills customCode in memory; force-persist whenever a code exists so disk
+      // gets the new key even if Foundry already stripped customSaveCode from _source.
+      if ((code == null || code === "") && !hasLegacy) return null;
+
+      const update: Record<string, unknown> = { _id: item.id };
+      if (code != null && code !== "") {
+         update["system.customCode"] = code;
+      }
+      update["system.-=customSaveCode"] = null;
+      return update;
+   }
+
+   static #gearWeightTypes = new Set(["item", "treasure", "armor", "light", "weapon"]);
+
+   /**
+    * @param {Item} item
+    * @returns {object|null} Document update payload including `_id`, or null if no change needed.
+    */
+   #buildWeightEquippedMigrationUpdate(item) {
+      if (!DataMigrator.#gearWeightTypes.has(item.type)) return null;
+
+      const weight = item.system?.weight;
+      const weightEquipped = item.system?.weightEquipped;
+
+      // Same rule as GearItemDataModel.migrateData. Soft migrate may already have filled
+      // weightEquipped in memory; persist when it matches weight so disk catches up.
+      if (!weight) return null;
+      if (weightEquipped === null || weightEquipped === undefined) {
+         return { _id: item.id, "system.weightEquipped": weight };
+      }
+      if (weightEquipped === weight) {
+         return { _id: item.id, "system.weightEquipped": weightEquipped };
+      }
+      return null;
    }
 
    static async importCompendiums() {

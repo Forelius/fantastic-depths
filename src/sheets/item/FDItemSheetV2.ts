@@ -91,7 +91,7 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
       saves.push({ value: "", text: game.i18n.localize("None") });
       const saveItems = (await fadeFinder.getSavingThrows())?.sort((a, b) => a.system.shortName.localeCompare(b.system.shortName)) ?? [];
       saves.push(...saveItems.map((save) => {
-         return { value: save.system.customSaveCode, text: save.system.shortName }
+         return { value: save.system.customCode, text: save.system.shortName }
       }));
       return saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
    }

@@ -179,7 +179,7 @@ export abstract class ClassSystemBase {
      * @param {any} savesData The values to use for the saving throws. This data normally
      *   comes from the class definition item and is not the saving throw special ability
      *   item itself. The structure is a json object with a key/value pair for each saving
-     *   throw type. The key represents a customSaveCode.
+     *   throw type. The key represents a customCode.
      */
    async setupSavingThrows(actor, savesData) {
       if (game.user.isGM === false) return;
@@ -195,21 +195,21 @@ export abstract class ClassSystemBase {
       const saveEntries = Object.entries(savesData);
       const addItems = [];
       for (const saveData of saveEntries) {
-         // Get the saving throw property name. This will either be "level" or the customSaveCode of a saving throw.
+         // Get the saving throw property name. This will either be "level" or the customCode of a saving throw.
          const stName = saveData[0];
          // If this is not the level property, it can't be found in this actor's saving throws collection 
          // and has not already been added in this method call...
-         if (stName !== "level" && actorSavingThrows.find(item => item.system.customSaveCode === stName) === undefined
-            && addItems.find(item => item.system.customSaveCode === stName) === undefined) {
+         if (stName !== "level" && actorSavingThrows.find(item => item.system.customCode === stName) === undefined
+            && addItems.find(item => item.system.customCode === stName) === undefined) {
             // Get the saving throw item from the pack/world collection.
-            const saveItem = savingThrowItems.find(item => item.system.customSaveCode === stName);
+            const saveItem = savingThrowItems.find(item => item.system.customCode === stName);
 
-            if (saveItem && savesData[saveItem.system.customSaveCode] > 0) {
+            if (saveItem && savesData[saveItem.system.customCode] > 0) {
                const newSave = saveItem.toObject();
-               const saveTarget = savesData[newSave.system.customSaveCode];
+               const saveTarget = savesData[newSave.system.customCode];
                newSave.system.target = saveTarget ?? 15;
                addItems.push(newSave);
-            } else if (savesData[saveItem.system.customSaveCode] > 0) {
+            } else if (savesData[saveItem.system.customCode] > 0) {
                console.warn(`The specified saving throw (${stName}) does not exist as a pack/world item.`);
             }
          }
@@ -223,7 +223,7 @@ export abstract class ClassSystemBase {
       // UPDATE SAVING THROW TARGETS
       // Iterate over actor's saving throw items and set their target if specified in savesData.
       for (const savingThrow of actorSavingThrows) {
-         const saveTarget = savesData[savingThrow.system.customSaveCode];
+         const saveTarget = savesData[savingThrow.system.customCode];
          if (saveTarget) {
             promises.push(savingThrow.update({ "system.target": saveTarget }));
          }

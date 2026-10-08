@@ -8,6 +8,17 @@ export class SpecialAbilityDataModel extends foundry.abstract.TypeDataModel {
       return SpecialAbilityData.defineSchema();
    }
 
+   /**
+    * Migrate source data from some prior format into a new specification.
+    * @inheritDoc
+    */
+   static migrateData(source) {
+      if ((source.customCode == null || source.customCode === "") && source.customSaveCode != null) {
+         source.customCode = source.customSaveCode;
+      }
+      return super.migrateData(source);
+   }
+
    /** @override */
    prepareBaseData() {
       super.prepareBaseData();
