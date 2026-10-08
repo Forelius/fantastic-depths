@@ -87,6 +87,7 @@ export class DataMigrator {
          if (this.oldVersion.lt(new MySystemVersion("1.4.2"))) {
             await this.migrateCustomSaveCodeToCustomCode();
             await this.migrateWeightEquippedFromWeight();
+            await this.migrateClassAbilitiesToSpecialAbilities();
             ui.notifications.info("Fantastic Depths 1.4.2 data migration complete.");
          }
 
@@ -122,6 +123,21 @@ export class DataMigrator {
       await this.#migrateWorldAndEmbeddedItems(
          (item) => this.#buildWeightEquippedMigrationUpdate(item),
          "gear weightEquipped"
+      );
+   }
+
+   /**
+    * Persist class rename classAbilities → specialAbilities on world and embedded items.
+    * Soft migrateData already maps the array in memory; this writes it and removes the legacy key.
+    */
+   async migrateClassAbilitiesToSpecialAbilities() {
+      console.log("-----------------------------------------------");
+      console.log("Migrating classAbilities → specialAbilities");
+      console.log("-----------------------------------------------");
+
+      await this.#migrateWorldAndEmbeddedItems(
+         (item) => this.#buildClassAbilitiesMigrationUpdate(item),
+         "class specialAbilities"
       );
    }
 
@@ -202,6 +218,33 @@ export class DataMigrator {
          return { _id: item.id, "system.weightEquipped": weightEquipped };
       }
       return null;
+   }
+
+   /**
+    * @param {Item} item
+    * @returns {object|null} Document update payload including `_id`, or null if no change needed.
+    */
+   #buildClassAbilitiesMigrationUpdate(item) {
+      if (item.type !== "class") return null;
+
+      const src = item._source?.system ?? {};
+      const legacy = src.classAbilities;
+      const hasLegacy = Object.prototype.hasOwnProperty.call(src, "classAbilities");
+      const specials = item.system?.specialAbilities;
+      const value = (Array.isArray(specials) && specials.length > 0)
+         ? specials
+         : legacy;
+
+      // Soft migrateData fills specialAbilities in memory; force-persist whenever an array
+      // exists so disk gets the new key even if Foundry already stripped classAbilities.
+      if (!(Array.isArray(value) && value.length > 0) && !hasLegacy) return null;
+
+      const update: Record<string, unknown> = { _id: item.id };
+      if (Array.isArray(value) && value.length > 0) {
+         update["system.specialAbilities"] = value;
+      }
+      update["system.-=classAbilities"] = null;
+      return update;
    }
 
    static async importCompendiums() {

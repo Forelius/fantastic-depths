@@ -150,7 +150,7 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
     * @inheritDoc
     */
    static migrateData(source) {
-      //const currentVersion = new MySystemVersion(source.version ?? "0.10.0-rc.5");
+      // TODO: Remove after worlds are past DataMigrator 1.4.2 (migrateClassAbilitiesToSpecialAbilities).
       if ((!source.specialAbilities || source.specialAbilities.length == 0) && source.classAbilities?.length > 0) {
          source.specialAbilities = source.classAbilities;
       }
