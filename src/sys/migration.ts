@@ -154,7 +154,7 @@ export class DataMigrator {
       }
       if (worldUpdates.length > 0) {
          console.log(`Updating ${worldUpdates.length} world ${label} item(s).`);
-         await Item.updateDocuments(worldUpdates);
+         await CONFIG.Item.documentClass.updateDocuments(worldUpdates);
       }
 
       for (const actor of game.actors) {
