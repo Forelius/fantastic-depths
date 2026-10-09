@@ -1,5 +1,6 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 import { fadeFinder } from '../utils/finder.js';
+import { ExplorationMode } from '../sys/ExplorationMode.js';
 
 type DungeonStats = {
    session: number;
@@ -125,6 +126,8 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
          rest: TurnTrackerForm.#clickRest,
          resetSession: TurnTrackerForm.#clickResetSession,
          resetTotal: TurnTrackerForm.#clickResetTotal,
+         startExploration: TurnTrackerForm.#clickStartExploration,
+         stopExploration: TurnTrackerForm.#clickStopExploration,
       },
       classes: ['fantastic-depths']
    }
@@ -139,9 +142,15 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
     * Fetch data for the form, such as turn count and game time 
     */
    async _prepareContext(_options) {
+      const exploration = ExplorationMode.getViewedStatus();
       const context = {
          turnData: foundry.utils.deepClone(this.turnData),
-         conditions: {}
+         conditions: {},
+         exploration: {
+            ...exploration,
+            isActiveStatus: exploration.status === "active",
+            isSuspendedStatus: exploration.status === "suspended",
+         },
       };
       // Conditions
       const conditions = [];
@@ -180,7 +189,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       if (game.user.isGM == false) return;
 
       // Initialize tab system
-      this.tabsController = new Tabs({
+      this.tabsController = new foundry.applications.ux.Tabs({
          navSelector: ".tabs",
          contentSelector: ".tab-content",
          initial: "tracker",
@@ -189,7 +198,23 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
       Hooks.off('updateWorldTime', this._updateWorldTime);
       Hooks.on('updateWorldTime', this._updateWorldTime);
+      Hooks.off('canvasReady', this._onCanvasReady);
+      Hooks.on('canvasReady', this._onCanvasReady);
+      Hooks.off('updateCombat', this._onCombatChanged);
+      Hooks.on('updateCombat', this._onCombatChanged);
+      Hooks.off('deleteCombat', this._onCombatChanged);
+      Hooks.on('deleteCombat', this._onCombatChanged);
    }
+
+   /** Refresh exploration status when the viewed scene changes. */
+   _onCanvasReady = () => {
+      this.render();
+   };
+
+   /** Refresh when encounter start/end changes suspended status. */
+   _onCombatChanged = () => {
+      this.render();
+   };
 
    /**
     * Handle the updateWorldTime event.
@@ -221,6 +246,9 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
    close(options) {
       Hooks.off('updateWorldTime', this._updateWorldTime);
+      Hooks.off('canvasReady', this._onCanvasReady);
+      Hooks.off('updateCombat', this._onCombatChanged);
+      Hooks.off('deleteCombat', this._onCombatChanged);
       return super.close(options);
    }
 
@@ -245,12 +273,14 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       event.preventDefault();
       const timeSteps = this.turnData.timeSteps;
       await this.advanceTime(timeSteps.turn);
+      await ExplorationMode.clearActiveSceneHistories();
    }
 
    static async #clickRevertTurn(event) {
       event.preventDefault();
       const timeSteps = this.turnData.timeSteps;
       await this.advanceTime(-timeSteps.turn);
+      await ExplorationMode.clearActiveSceneHistories();
    }
 
    static async #clickResetSession(event) {
@@ -279,6 +309,7 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
       event.preventDefault();
       this.isResting = true;
       await this.advanceTime(this.turnData.timeSteps.turn);
+      await ExplorationMode.clearActiveSceneHistories();
       this.turnData.rest();
       const speaker = { alias: game.user.name };  // Use the player's name as the speaker
 
@@ -297,6 +328,18 @@ export class TurnTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) {
          content: game.i18n.localize("FADE.notification.partyRests")
       });
       this.render(true);  // Re-render the form to update the UI
+   }
+
+   static async #clickStartExploration(event) {
+      event.preventDefault();
+      await ExplorationMode.start(game.scenes.viewed);
+      this.render(true);
+   }
+
+   static async #clickStopExploration(event) {
+      event.preventDefault();
+      await ExplorationMode.stop(game.scenes.viewed);
+      this.render(true);
    }
 
    async #handleNeedRest() {

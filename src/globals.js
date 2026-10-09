@@ -25,6 +25,7 @@ const Tabs = undefined;
 const saveDataToFile = undefined;
 const FilePicker = undefined;
 const Combat = undefined;
+const TokenDocument = undefined;
 const Dialog = undefined;
 const Compendium = undefined;
 async function fromUuid(id) { return undefined; }

@@ -868,7 +868,18 @@
             "conditionHint": "When the party needs rest, they will be given the specified condition. The condition will be removed upon resting. This requires that all party members be added to the party tracker, otherwise the system can't determine which characters to apply the condition to.",
             "turnsName": "Rest Turns",
             "turnsHint": "Configure how often a party must rest while exploring. A value of 6 would mean the party must rest once every six turns. Set to 0 for no resting required.",
-            "saveConfig": "Save Configuration"
+            "saveConfig": "Save Configuration",
+            "exploration": {
+               "label": "Exploration",
+               "hint": "When active on the viewed scene, token moves accumulate on the ruler for the current exploration turn. Movement history resets when you advance, revert, or rest. An active encounter on the scene temporarily uses combat movement tracking instead.",
+               "start": "Start Exploration",
+               "stop": "Stop Exploration",
+               "scene": "Scene",
+               "statusOff": "Off",
+               "statusActive": "Active",
+               "statusSuspended": "Suspended (encounter)",
+               "noScene": "No scene viewed"
+            }
          }
       },
       "dialog": {

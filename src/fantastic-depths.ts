@@ -71,6 +71,7 @@ import { fadeEffect } from "./sys/fadeEffect.js"
 import { fadeTreasure } from "./utils/fadeTreasure.js"
 import { registerTokenMovementActions } from "./sys/TokenMovementActions.js"
 import { registerTokenMovementHud } from "./ui/tokenMovementHud.js"
+import { fadeTokenDocument } from "./sys/fadeTokenDocument.js"
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -101,6 +102,7 @@ Hooks.once("init", async function () {
    CONFIG.Combat.documentClass = fadeCombat;
    CONFIG.Combatant.documentClass = fadeCombatant;
    CONFIG.ChatMessage.documentClass = fadeChatMessage;
+   CONFIG.Token.documentClass = fadeTokenDocument;
    CONFIG.Actor.documentClass = ActorFactory;
    CONFIG.Actor.dataModels = {
       character: CharacterDataModel,
