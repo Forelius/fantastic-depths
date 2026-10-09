@@ -8,6 +8,33 @@
       <!-- Tracker Tab -->
       <div class="tab active" data-tab="tracker">
          <div style="display: flex; flex-direction: column;">
+            <section style="margin-bottom: 8px;" data-tooltip="{{localize 'FADE.apps.turnTracker.exploration.hint'}}">
+               <div class="flexrow" style="align-items: center; gap: 8px;">
+                  <label style="flex: 1;">
+                     {{localize 'FADE.apps.turnTracker.exploration.label'}}:
+                     {{#if exploration.sceneId}}
+                     <strong>{{exploration.sceneName}}</strong>
+                     —
+                     {{#if exploration.isActiveStatus}}{{localize 'FADE.apps.turnTracker.exploration.statusActive'}}
+                     {{else if exploration.isSuspendedStatus}}{{localize 'FADE.apps.turnTracker.exploration.statusSuspended'}}
+                     {{else}}{{localize 'FADE.apps.turnTracker.exploration.statusOff'}}{{/if}}
+                     {{else}}
+                     <em>{{localize 'FADE.apps.turnTracker.exploration.noScene'}}</em>
+                     {{/if}}
+                  </label>
+                  {{#if exploration.sceneId}}
+                  {{#if exploration.active}}
+                  <button type="button" style="flex: 0 0 auto;" data-action="stopExploration">
+                     <i class="fa-solid fa-pause"></i> {{localize 'FADE.apps.turnTracker.exploration.stop'}}
+                  </button>
+                  {{else}}
+                  <button type="button" style="flex: 0 0 auto;" data-action="startExploration">
+                     <i class="fa-solid fa-play"></i> {{localize 'FADE.apps.turnTracker.exploration.start'}}
+                  </button>
+                  {{/if}}
+                  {{/if}}
+               </div>
+            </section>
             <section style="flex-grow: 1;">
                <table style="text-align:center;">
                   <thead>
