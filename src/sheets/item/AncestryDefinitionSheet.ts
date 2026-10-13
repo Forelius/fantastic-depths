@@ -162,11 +162,12 @@ export class AncestryDefinitionSheet extends DragDropMixin(VsGroupModMixin(FDIte
       const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
       const droppedItem = await Item.implementation.fromDropData(data);
-      // If the dropped item is a weapon mastery definition item...
       if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
          this.item.createItem(droppedItem.name, droppedItem.type);
       } else if (droppedItem?.type === "specialAbility") {
          await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
+      } else if (droppedItem?.type === "class") {
+         await this.item.createClass(droppedItem.name, droppedItem.system.maxLevel ?? 1);
       }
    }
 

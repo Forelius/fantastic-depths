@@ -10,17 +10,11 @@ export class AncestryDefinitionItem extends FDItem {
       this.languageManager = new TagManager(this, "languages"); // Initialize TagManager
    }
 
-   async createClass() {
-      // Retrieve the array
-      const item = this.system.classes || [];
-      // Define the new data
-      const newItem = {
-         name: "",
-         maxLevel: 1
-      };
-      // Add the new item to the array
-      item.push(newItem);
-      await this.update({ "system.classes": item });
+   async createClass(name = "", maxLevel = 1) {
+      const classes = this.system.classes || [];
+      if (name && classes.some((c) => c.name === name)) return;
+      classes.push({ name, maxLevel });
+      await this.update({ "system.classes": classes });
    }
 
    /**
