@@ -124,6 +124,18 @@ export abstract class ClassSystemBase {
    }
 
    /**
+    * Normalize a species/ancestry claim. Empty, null, or undefined means no claim.
+    * @public
+    * @param {unknown} value
+    * @returns {string|null}
+    */
+   normalizeSpeciesClaim(value) {
+      if (typeof value !== "string") return null;
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : null;
+   }
+
+   /**
     * Pass in a value like C2 and get back an object with classItem and classLevel properties.
     * @public
     * @param {String} classAs The class-as key/level value. Example "F1" for Fighter of level 1.
@@ -733,8 +745,8 @@ export class SingleClassSystem extends ClassSystemBase {
                },
             },
             combat: {
-               // If false then take from class data, otherwise whatever character's value was set to.
-               basicProficiency: classData.basicProficiency,
+               // Class or ancestry may grant basic proficiency; keep true if either has it.
+               basicProficiency: classData.basicProficiency || actor.system.combat.basicProficiency,
                unskilledToHitMod: classData.unskilledToHitMod,
             },
          };
@@ -755,14 +767,19 @@ export class SingleClassSystem extends ClassSystemBase {
                const ordinalized = Formatter.formatOrdinal(currentLevel);
                setBag(update.details, ["title"], levelData.title === undefined ? `${ordinalized} Level ${nameLevel.title}` : levelData.title);
             }
-            update.abilities = await actor.setupMinAbilityScores(classItem.system.abilities);
+            update.abilities = await game.fade.registry.getSystem("ancestrySystem").resolveMergedAbilityMins(actor, classItem.system.abilities);
          }
 
          if (nextLevelData) {
             setBag(update.details, ["xp", "next"], nextLevelData.xp);
          }
 
-         setBag(update.details, ["species"], actor.system.details.species == "" || actor.system.details.species == null ? classData.species : actor.system.details.species);
+         // Replace species when class specifies one that differs from current.
+         const classSpecies = this.normalizeSpeciesClaim(classData.species);
+         const currentSpecies = this.normalizeSpeciesClaim(actor.system.details.species);
+         if (classSpecies && (!currentSpecies || currentSpecies.toLowerCase() !== classSpecies.toLowerCase())) {
+            setBag(update.details, ["species"], classSpecies);
+         }
 
          await actor.update({ system: update });
       } else {
@@ -817,6 +834,74 @@ export class MultiClassSystem extends ClassSystemBase {
 
    get isMultiClassSystem(): boolean {
       return true;
+   }
+
+   /**
+    * Resolve the species claim for an actorClass from its class definition.
+    * @public
+    * @param {any} actorClass
+    * @returns {Promise<string|null>}
+    */
+   async getActorClassSpeciesClaim(actorClass) {
+      let classItem = null;
+      if (actorClass?.system?.classUuid) {
+         classItem = await fromUuid(actorClass.system.classUuid);
+      }
+      if (!classItem && actorClass?.name) {
+         classItem = await fadeFinder.getClass(actorClass.name);
+      }
+      if (!classItem && actorClass?.system?.key) {
+         classItem = await fadeFinder.getClass(null, actorClass.system.key);
+      }
+      return this.normalizeSpeciesClaim(classItem?.system?.species);
+   }
+
+   /**
+    * Delete actorClass items (and matching class specials/gear) whose class def
+    * asserts a species different from keepSpecies.
+    * @public
+    * @param {Actor} actor
+    * @param {string} keepSpecies
+    * @returns {Promise<string[]>} Names of removed actorClass items.
+    */
+   async removeConflictingActorClasses(actor, keepSpecies) {
+      const keep = this.normalizeSpeciesClaim(keepSpecies);
+      if (!keep) return [];
+
+      const removedNames = [];
+      const actorClasses = actor.items.filter(item => item.type === "actorClass");
+      for (const actorClass of actorClasses) {
+         const claim = await this.getActorClassSpeciesClaim(actorClass);
+         if (!claim || claim.toLowerCase() === keep.toLowerCase()) continue;
+
+         const classItem = await fadeFinder.getClass(actorClass.name)
+            ?? (actorClass.system?.key ? await fadeFinder.getClass(null, actorClass.system.key) : null);
+         if (classItem) {
+            const abilityNames = classItem.system.specialAbilities.map(item => item.name);
+            const actorAbilities = actor.items.filter(item =>
+               item.type === "specialAbility"
+               && item.system.category !== "save"
+               && abilityNames.includes(item.name));
+            for (const classAbility of actorAbilities) {
+               await classAbility.delete();
+            }
+            const itemNames = classItem.system.classItems.map(item => item.name);
+            const gearItems = actor.items.filter(item =>
+               (item.type === "weapon" || item.type === "armor") && itemNames.includes(item.name));
+            for (const gearItem of gearItems) {
+               await gearItem.delete();
+            }
+         }
+         await actorClass.delete();
+         removedNames.push(actorClass.name);
+      }
+
+      if (removedNames.length > 0) {
+         ui.notifications.info(
+            `${actor.name}: Removed conflicting class(es) for ancestry ${keep}: ${removedNames.join(", ")}.`);
+         await this.#updateActorData(actor, true);
+      }
+      return removedNames;
    }
 
    /**
@@ -884,6 +969,15 @@ export class MultiClassSystem extends ClassSystemBase {
             unskilledToHitMod: item.system.unskilledToHitMod,
          },
       }, { parent: actor });
+
+      const claim = this.normalizeSpeciesClaim(item.system.species);
+      if (claim) {
+         const currentSpecies = this.normalizeSpeciesClaim(actor.system.details.species);
+         if (!currentSpecies || currentSpecies.toLowerCase() !== claim.toLowerCase()) {
+            await this.removeConflictingActorClasses(actor, claim);
+            await actor.update({ "system.details.species": claim });
+         }
+      }
 
       await this.#updateActorData(actor);
 

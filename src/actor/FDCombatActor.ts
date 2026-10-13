@@ -308,9 +308,12 @@ export class FDCombatActor extends FDPhysicalActor {
 
    setupMinAbilityScores(abilities) {
       const updated = {};
-      for (const [key] of Object.entries(abilities)) {
-         if (this.system.abilities[key]?.min < abilities[key].min) {
-            updated[key] = { min: abilities[key].min };
+      if (!abilities) return updated;
+      for (const [key] of Object.entries(abilities) as [string, { min?: number }][]) {
+         const min = abilities[key]?.min;
+         if (typeof min !== "number") continue;
+         if (this.system.abilities[key]?.min < min) {
+            updated[key] = { min };
          }
       }
       return updated;

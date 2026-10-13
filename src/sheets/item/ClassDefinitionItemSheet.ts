@@ -166,13 +166,14 @@ export class ClassDefinitionItemSheet extends DragDropMixin(FDItemSheetV2) {
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
-      super._onDrop(event);
       const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
+      if (data?.type !== "Item") return false;
       const droppedItem = await Item.implementation.fromDropData(data);
+      if (!droppedItem) return false;
       if (ClassDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
-         this.item.createItem(droppedItem.name, droppedItem.type);
-      } else if (droppedItem?.type === "specialAbility") {
+         await this.item.createItem(droppedItem.name, droppedItem.type);
+      } else if (droppedItem.type === "specialAbility") {
          await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
       }
    }

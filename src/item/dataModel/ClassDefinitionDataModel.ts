@@ -49,7 +49,8 @@ export class ClassDefinitionDataModel extends foundry.abstract.TypeDataModel {
          // Required Fields
          // The class key
          key: new StringField({ required: true }),
-         species: new StringField({ required: true, initial: "Human" }),
+         // Null/empty = no ancestry claim (race-as-class sets a real species).
+         species: new StringField({ required: false, nullable: true, initial: null }),
          firstLevel: new NumberField({ required: true, initial: 1 }),
          maxLevel: new NumberField({ required: true, initial: 0 }),
          firstSpellLevel: new NumberField({ required: true, initial: 1 }),

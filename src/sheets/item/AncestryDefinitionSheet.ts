@@ -158,15 +158,16 @@ export class AncestryDefinitionSheet extends DragDropMixin(VsGroupModMixin(FDIte
 
    async _onDrop(event) {
       if (!this.item.isOwner) return false;
-      super._onDrop(event);
       const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
       const data = TextEditorImpl.getDragEventData(event);
+      if (data?.type !== "Item") return false;
       const droppedItem = await Item.implementation.fromDropData(data);
+      if (!droppedItem) return false;
       if (AncestryDefinitionItem.ValidItemTypes.includes(droppedItem.type)) {
-         this.item.createItem(droppedItem.name, droppedItem.type);
-      } else if (droppedItem?.type === "specialAbility") {
+         await this.item.createItem(droppedItem.name, droppedItem.type);
+      } else if (droppedItem.type === "specialAbility") {
          await this.specialAbilityService.onDropSpecialAbilityItem(this.item, droppedItem);
-      } else if (droppedItem?.type === "class") {
+      } else if (droppedItem.type === "class") {
          await this.item.createClass(droppedItem.name, droppedItem.system.maxLevel ?? 1);
       }
    }

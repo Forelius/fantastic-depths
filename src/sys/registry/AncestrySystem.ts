@@ -17,57 +17,108 @@ export class AncestrySystem {
    }
 
    /**
+    * Merge class and ancestry ability-score mins: class min wins when set,
+    * otherwise ancestry min. Returns an update fragment for actor abilities.
+    * @param {any} actor
+    * @param {object|null} classAbilities Optional class abilities schema; looked up if omitted.
+    * @param {object|null} ancestryAbilities Optional ancestry abilities schema; looked up if omitted.
+    * @returns {Promise<object>} Partial abilities update (may be empty).
+    */
+   async resolveMergedAbilityMins(actor, classAbilities = null, ancestryAbilities = null) {
+      let resolvedClass = classAbilities;
+      let resolvedAncestry = ancestryAbilities;
+
+      if (resolvedClass == null) {
+         const classItem = await fadeFinder.getClass(actor.system.details?.class);
+         resolvedClass = classItem?.system?.abilities ?? {};
+      }
+      if (resolvedAncestry == null) {
+         const speciesName = actor.system.details?.species?.toLowerCase?.();
+         const ancestryItem = speciesName ? await fadeFinder.getAncestry(speciesName) : null;
+         resolvedAncestry = ancestryItem?.system?.abilities ?? {};
+      }
+
+      const merged = {};
+      for (const key of CONFIG.FADE.Abilities) {
+         const effectiveMin = resolvedClass?.[key]?.min ?? resolvedAncestry?.[key]?.min;
+         if (typeof effectiveMin === "number") {
+            merged[key] = { min: effectiveMin };
+         }
+      }
+      return actor.setupMinAbilityScores(merged);
+   }
+
+   /**
     * Updates the actor's ancestry-related data.
     * @param {any} actor The actor to update.
     */
    async updateAncestry(actor) {
       const nameInput = actor.system.details.species?.toLowerCase();
       const ancestryDefItem = await fadeFinder.getAncestry(nameInput);
-      const actorItems = actor.items.filter(item => item.type === 'species');
+      const actorItems = actor.items.filter(item => item.type === "species");
 
-      // Manage the ancestry embedded item
+      // Manage the ancestry embedded item (carries mod.vsGroup for combat)
       if (actorItems?.length > 0) {
-         for (const actorItem of actorItems) actorItem.delete();
+         await Promise.all(actorItems.map(actorItem => actorItem.delete()));
       }
 
       if (ancestryDefItem) {
          const itemData = [ancestryDefItem.toObject()];
          await actor.createEmbeddedDocuments("Item", itemData);
 
-         // Ancestry special abilities
-         const abilityIds = actor.items.filter(item => item.type === 'specialAbility' && item.system.category === 'class').map(item => item.id);
-         const abilitiesData = (await AncestrySystem.getSpecialAbilities(nameInput))?.filter(item => abilityIds.includes(item.id) === false);
-         const itemsData = await fadeFinder.getAncestryItems(nameInput, actor.highestLevel);
-         const languages = ancestryDefItem.system.languages;
-         let _hasMinAbilityScore = false;
-         for (const [key] of Object.entries(ancestryDefItem.system.abilities)) {
-            if (ancestryDefItem.system.abilities[key].min > 3) _hasMinAbilityScore = true;
+         // Always-on copies: languages, movement, basic proficiency, merged ability mins
+         const systemUpdate: Record<string, unknown> = {};
+         const languages = ancestryDefItem.system.languages ?? [];
+
+         const modes = foundry.utils.deepClone(actor.system.movement?.modes ?? []);
+         if (modes.length > 0 && ancestryDefItem.system.baseMovement != null) {
+            modes[0].base = ancestryDefItem.system.baseMovement;
+            systemUpdate.movement = { modes };
          }
 
-         if (abilitiesData || itemsData || languages) {
+         if (ancestryDefItem.system.basicProficiency === true) {
+            systemUpdate.combat = { basicProficiency: true };
+         }
+
+         const abilityMins = await this.resolveMergedAbilityMins(
+            actor,
+            null,
+            ancestryDefItem.system.abilities
+         );
+         if (abilityMins && Object.keys(abilityMins).length > 0) {
+            systemUpdate.abilities = abilityMins;
+         }
+
+         if (Object.keys(systemUpdate).length > 0) {
+            await actor.update({ system: systemUpdate });
+         }
+         await actor.setupLanguages(languages);
+
+         // Optional grants: special abilities and ancestry gear items
+         const abilityIds = actor.items
+            .filter(item => item.type === "specialAbility" && item.system.category === "class")
+            .map(item => item.id);
+         const abilitiesData = (await this.getSpecialAbilities(nameInput))
+            ?.filter(item => abilityIds.includes(item.id) === false);
+         const itemsData = await fadeFinder.getAncestryItems(nameInput, actor.highestLevel);
+
+         if ((abilitiesData?.length > 0) || (itemsData?.length > 0)) {
             const dialogResp = await DialogFactory({
                dialog: "yesno",
-               title: game.i18n.format('FADE.dialog.specialAbilities.title', { name: actor.system.details.species }),
-               content: game.i18n.format('FADE.dialog.specialAbilities.content', {
+               title: game.i18n.format("FADE.dialog.specialAbilities.title", { name: actor.system.details.species }),
+               content: game.i18n.format("FADE.dialog.specialAbilities.content", {
                   name: actor.system.details.species,
-                  type: game.i18n.localize('FADE.Actor.Ancestry')
+                  type: game.i18n.localize("FADE.Actor.Ancestry")
                }),
-               yesLabel: game.i18n.localize('FADE.dialog.yes'),
-               noLabel: game.i18n.localize('FADE.dialog.no'),
+               yesLabel: game.i18n.localize("FADE.dialog.yes"),
+               noLabel: game.i18n.localize("FADE.dialog.no"),
                defaultChoice: "yes"
             }, actor);
 
             if (dialogResp?.resp?.result === true) {
                await actor.setupSpecialAbilities(abilitiesData);
                await actor.setupItems(itemsData, AncestryDefinitionItem.ValidItemTypes);
-               await actor.setupLanguages(languages);
             }
-
-            // TODO: This isn't doing anything right now. Uncomment and fix.
-            /*
-            if (_hasMinAbilityScore) {
-               const abiltyUpdates = actor.setupMinAbilityScores(ancestryDefItem.system.abilities);
-            }*/
          }
       }
    }
@@ -76,7 +127,7 @@ export class AncestrySystem {
     * Ancestry special abilities are granted by the ancestry definition item.
     * @param {any} name The ancestry name.
     */
-   static async getSpecialAbilities(name) {
+   async getSpecialAbilities(name) {
       const theItem = await fadeFinder.getAncestry(name);
       let result;
       if (theItem) {

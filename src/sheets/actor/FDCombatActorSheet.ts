@@ -7,7 +7,7 @@ import { CHAT_TYPE } from "../../chat/ChatTypeEnum.js"
 import { FDItem } from "../../item/FDItem.js";
 import { fadeFinder } from "../../utils/finder.js";
 import { CodeMigrate } from "../../sys/migration.js";
-import { ClassSystemBase } from "../../sys/registry/ClassSystem.js";
+import { ClassSystemBase, MultiClassSystem } from "../../sys/registry/ClassSystem.js";
 import { MasteryDefinitionItem } from "../../item/MasteryDefinitionItem.js";
 import { SpellScrollService } from "../../sys/services/SpellScrollService.js";
 import { fadeDialog } from "../../dialog/fadeDialog.js";
@@ -330,6 +330,9 @@ export class FDCombatActorSheet extends DragDropMixin(HandlebarsApplicationMixin
                 }
             } else if (droppedItem.type === "species") {
                if (this.actor.type === "character") {
+                  if (classSystem.isMultiClassSystem) {
+                     await (classSystem as MultiClassSystem).removeConflictingActorClasses(this.actor, droppedItem.name);
+                  }
                   await this.actor.update({ "system.details.species": droppedItem.name });
                }
             } else if (droppedItem.type === "effect") {
