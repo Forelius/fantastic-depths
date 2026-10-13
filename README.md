@@ -1,18 +1,18 @@
 ![image](./assets/img/banner.jpg)
 
-## Fantastic Depths - Foundry VTT v14 System
+## Fantastic Depths - Foundry VTT System
 
 ![Foundry Version](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FForelius%2Ffantastic-depths%2Frefs%2Fheads%2Fstable%2Fsystem.json)
 
-This [Foundry Virtual Tabletop](https://foundryvtt.com/packages/fantastic-depths) system is inspired by Dark Dungeons, an OGL retro-clone of the Rules Cyclopedia edition of Dungeons & Dragons. Dark Dungeons was written by Blacky the Blackball, capturing the essence of classic D&D while modernizing and streamlining the rules for contemporary gameplay.
+This Foundry VTT system was inspired by Dark Dungeons, an OGL retroclone of the BECMI/Rules Cyclopedia edition of Dungeons & Dragons. It can be used to play many first-edition retroclones, such as White Box: FMAG, OSE, B/X, OD&D, Holmes D&D, Dragonslayer, and Basic Fantasy Roleplay. However, it is not an official system for any of these games; their respective owners hold the copyrights and trademarks.
 
 The system comes with two themes, which are a light mode and a dark mode.
 
 ---
 
-Fantastic Depths is on [Discord](https://discord.gg/6nCTfKun9d).
+### Compendiums are available as a [separate module](https://github.com/Forelius/fade-compendiums).
 
-Compendiums are available as a [separate module](https://github.com/Forelius/fade-compendiums).
+Fantastic Depths is on [Discord](https://discord.gg/6nCTfKun9d).
 
 WIKI: https://github.com/Forelius/fantastic-depths/wiki
 
