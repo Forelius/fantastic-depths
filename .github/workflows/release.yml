@@ -1,0 +1,177 @@
+name: Build and Release Fantastic Depths
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: ${{ github.event.release.target_commitish == 'main' }}
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.event.release.tag_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Detect GitHub "Set as the latest release" checkbox state
+      - name: Check if release is latest
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OWNER="${GITHUB_REPOSITORY%/*}"
+          REPO="${GITHUB_REPOSITORY#*/}"
+          IS_LATEST=$(gh api graphql \
+            -f query='query($owner:String!,$name:String!,$tag:String!) {
+              repository(owner:$owner,name:$name) {
+                release(tagName:$tag) { isLatest }
+              }
+            }' \
+            -F owner="$OWNER" \
+            -F name="$REPO" \
+            -F tag="${{ github.event.release.tag_name }}" \
+            --jq '.data.repository.release.isLatest')
+          echo "is_latest=${IS_LATEST}" >> "$GITHUB_OUTPUT"
+          if [ "$IS_LATEST" = "true" ]; then
+            echo "manifest_url=https://github.com/${{ github.repository }}/releases/latest/download/system.json" >> "$GITHUB_OUTPUT"
+          else
+            echo "manifest_url=https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/system.json" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Substitute Manifest and Download URLs in the system.json
+      - name: Substitute Manifest and Download Links For Versioned Ones
+        id: sub_manifest_link_version
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: 'system.json'
+        env:
+          VERSION: ${{ env.VERSION }}
+          URL: https://github.com/${{ github.repository }}
+          MANIFEST: ${{ steps.latest.outputs.manifest_url }}
+          DOWNLOAD: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.zip
+          CHANGELOG: https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }}
+
+      - name: Fetch all branches and tags
+        run: git fetch --all --tags
+
+      - name: Check if the tag commit is in the main branch
+        id: check_main
+        run: |
+          TAG_COMMIT=$(git rev-parse ${{ env.VERSION }})
+          if git merge-base --is-ancestor $TAG_COMMIT origin/main; then
+            echo "The tag is in the main branch history."
+            echo "is_valid=true" >> $GITHUB_ENV
+          else
+            echo "The tag (${{ env.VERSION }}) is NOT in the main branch history. Skipping release."
+            echo "is_valid=false" >> $GITHUB_ENV
+          fi
+
+      - name: Setup Node.js
+        if: env.is_valid == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: env.is_valid == 'true'
+        run: npm ci
+
+      - name: Build package
+        if: env.is_valid == 'true'
+        run: npm run build
+
+      - name: Prepare release zip
+        if: env.is_valid == 'true'
+        run: |
+          zip -r system.zip ./* \
+          -x ".git*" \
+          -x ".github/*" \
+          -x "node_modules/*" \
+          -x ".vs/*" \
+          -x "src/*" \
+          -x "module/fantastic-depths.js*" \
+          -x "package.json" \
+          -x "package-lock.json"
+
+      - name: Prepare release notes
+        if: env.is_valid == 'true'
+        id: prepare_notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BODY: ${{ github.event.release.body }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+          TARGET_COMMITISH: ${{ github.event.release.target_commitish }}
+          MANIFEST_URL: ${{ steps.latest.outputs.manifest_url }}
+        run: |
+          set -euo pipefail
+
+          {
+            echo "## Fantastic Depths ${{ env.VERSION }}"
+            echo
+          } > release_notes.txt
+
+          if [ -n "${RELEASE_BODY}" ]; then
+            printf '%s\n\n' "${RELEASE_BODY}" >> release_notes.txt
+          fi
+
+          # Prefer previous versioned release; exclude this tag and the synthetic "latest" tag
+          PREVIOUS_TAG=$(gh api "repos/${GITHUB_REPOSITORY}/releases" \
+            --jq "[.[] | select(.draft == false and .tag_name != \"${TAG_NAME}\" and .tag_name != \"latest\")] | if length > 0 then .[0].tag_name else \"\" end")
+
+          GEN_ARGS=(
+            --method POST
+            "repos/${GITHUB_REPOSITORY}/releases/generate-notes"
+            -f "tag_name=${TAG_NAME}"
+            -f "target_commitish=${TARGET_COMMITISH}"
+          )
+          if [ -n "${PREVIOUS_TAG}" ]; then
+            GEN_ARGS+=(-f "previous_tag_name=${PREVIOUS_TAG}")
+          fi
+
+          gh api "${GEN_ARGS[@]}" --jq .body >> release_notes.txt
+
+          printf '\nTo install manually, use this URL:\n%s\n' "${MANIFEST_URL}" >> release_notes.txt
+
+      - name: Create GitHub release
+        if: env.is_valid == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.VERSION }}
+          name: "Release ${{ env.VERSION }}"
+          prerelease: ${{ github.event.release.prerelease }}
+          artifacts: './system.json, ./system.zip'
+          bodyfile: release_notes.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          replacesArtifacts: true
+          updateOnlyUnreleased: false
+          makeLatest: ${{ steps.latest.outputs.is_latest }}
+
+      # Update the 'latest' release only when this release is marked latest
+      - name: Create Latest Release
+        id: create_latest_release
+        if: env.is_valid == 'true' && steps.latest.outputs.is_latest == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          name: Latest
+          draft: false
+          prerelease: false
+          makeLatest: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: './system.json,./system.zip'
+          tag: latest
+          bodyfile: release_notes.txt
+
+      - name: Publish System to FoundryVTT Website
+        if: env.is_valid == 'true' && !github.event.release.unpublished && !github.event.release.prerelease && steps.latest.outputs.is_latest == 'true'
+        uses: cs96and/FoundryVTT-release-package@v1
+        with:
+          package-token: ${{ secrets.FOUNDRY_PACKAGE_TOKEN }}
+          manifest-url: https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/system.json

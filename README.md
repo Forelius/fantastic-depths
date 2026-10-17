@@ -2,7 +2,7 @@
 
 ## Fantastic Depths - Foundry VTT System
 
-![Foundry Version](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FForelius%2Ffantastic-depths%2Frefs%2Fheads%2Fstable%2Fsystem.json)
+![Foundry Version](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fgithub.com%2FForelius%2Ffantastic-depths%2Freleases%2Flatest%2Fdownload%2Fsystem.json)
 
 This Foundry VTT system was inspired by Dark Dungeons, an OGL retroclone of the BECMI/Rules Cyclopedia edition of Dungeons & Dragons. It can be used to play many first-edition retroclones, such as White Box: FMAG, OSE, B/X, OD&D, Holmes D&D, Dragonslayer, and Basic Fantasy Roleplay. However, it is not an official system for any of these games; their respective owners hold the copyrights and trademarks.
 
@@ -20,9 +20,10 @@ WIKI: https://github.com/Forelius/fantastic-depths/wiki
 
 If you wish to send me a financial gift, you can do so on Ko-Fi: https://ko-fi.com/forelius
 
-Manual install (Stable): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/stable/system.json
+Manual install URL (latest release):
+https://github.com/Forelius/fantastic-depths/releases/download/latest/system.json
 
-Manual install (Pre-Release): https://raw.githubusercontent.com/Forelius/fantastic-depths/refs/heads/main/system.json
+For a specific version or pre-release, use `https://github.com/Forelius/fantastic-depths/releases/download/<tag>/system.json`.
 
 **Thanks to the playtesters:** Hal²O, Darvus Maximus, borealforestbase, Francis Marcus Au Yeung, Jordan, FR4NC35C0, Wingfireblade(Paolo), Sobran, Dice-Goblin, Herrenlosigkeit, silentcatfart, Halindir, and many others.
 
