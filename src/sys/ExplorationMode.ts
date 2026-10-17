@@ -18,6 +18,7 @@ export class ExplorationMode {
 
    static async stop(scene): Promise<void> {
       if (!scene || !game.user.isGM) return;
+      await this.clearSceneHistories(scene);
       await scene.unsetFlag(game.system.id, EXPLORATION_FLAG);
    }
 
@@ -39,7 +40,7 @@ export class ExplorationMode {
 
    /**
     * Clear Foundry movement history for all tokens on the scene.
-    * Used when the turn tracker crosses an exploration turn boundary.
+    * Used when exploration stops or the turn tracker crosses an exploration turn boundary.
     */
    static async clearSceneHistories(scene): Promise<void> {
       if (!scene?.tokens) return;

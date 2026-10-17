@@ -136,4 +136,34 @@ export class AncestrySystem {
       }
       return result?.length > 0 ? result : undefined;
    }
+
+   /**
+    * Whether the actor is larger than man-size (Medium), using CONFIG.FADE.ActorSizes maxFeet.
+    * @param {any} actor
+    * @returns {boolean}
+    */
+   isLargerThanManSize(actor) {
+      const sizeId = actor?.system?.details?.size ?? "M";
+      const sizes = CONFIG.FADE.ActorSizes ?? [];
+      const manSize = sizes.find(s => s.id === "M");
+      const actorSize = sizes.find(s => s.id === sizeId);
+      const manMax = manSize?.maxFeet ?? 7;
+      const actorMax = actorSize?.maxFeet ?? manMax;
+      return actorMax > manMax;
+   }
+
+   /**
+    * Defender AC bonus vs larger-than-man-size attackers (e.g. Halfling +2 AC).
+    * Positive acDelta improves descending AC by subtraction (classic D&D "+N AC").
+    * @param {any} defender The defending actor
+    * @param {any} attacker The attacking actor
+    * @returns {{ acDelta: number } | null}
+    */
+   getAcVsLargeAdjustment(defender, attacker) {
+      const acDelta = Number(defender?.system?.mod?.acVsLarge) || 0;
+      if (acDelta === 0 || !this.isLargerThanManSize(attacker)) {
+         return null;
+      }
+      return { acDelta };
+   }
 }

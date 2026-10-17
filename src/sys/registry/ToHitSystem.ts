@@ -153,7 +153,7 @@ abstract class ToHitSystemBase implements ToHitInterface {
             };
 
             let ac = targetActor.system.ac?.total;
-            const aac = targetActor.system.ac?.totalAAC;
+            let aac = targetActor.system.ac?.totalAAC;
 
             // If weapon mastery system is enabled...
             if (this.masterySystem) {
@@ -162,6 +162,16 @@ abstract class ToHitSystemBase implements ToHitInterface {
                   ac = wmResult.ac != null ? wmResult.ac : ac;
                   targetResult.targetac = wmResult.targetac != null ? wmResult.targetac : targetResult.targetac;
                }
+            }
+
+            // Ancestry / effect: +N AC vs larger-than-man-size attackers (attack-time only)
+            const ancestrySystem = game.fade.registry.getSystem("ancestrySystem");
+            const vsLarge = ancestrySystem?.getAcVsLargeAdjustment?.(targetActor, attackingActor);
+            if (vsLarge) {
+               ac -= vsLarge.acDelta;
+               aac = CONFIG.FADE.ToHit.baseTHAC0 - ac;
+               // targetac is only the final AC value(s) used for this attack — not a digest
+               targetResult.targetac = this.#getFinalTargetAC(targetToken, attackType, ac, aac, vsLarge.acDelta);
             }
 
             if (hitAC !== null) { // null if rolled a natural 1
@@ -410,6 +420,33 @@ abstract class ToHitSystemBase implements ToHitInterface {
          targetRangedAc: targetToken.actor.system.ac?.totalRanged !== targetToken.actor.system.ac?.total
             ? game.i18n.format("FADE.Chat.targetRangedAC", {
                acTotal: this.isAAC ? targetToken.actor.system.ac?.totalRangedAAC : targetToken.actor.system.ac?.totalRanged,
+               cssClass: attackType === "missile" ? `style="color:green"` : ""
+            })
+            : ""
+      });
+   }
+
+   /**
+    * Formats target AC after attack-time adjustments (e.g. acVsLarge).
+    * Shows the same compact AC slot as the sheet view, using the final values for the hit check.
+    * @param {any} targetToken
+    * @param {any} attackType
+    * @param {number} descendingAc Final descending AC used for the hit check
+    * @param {number} ascendingAc Final AAC used for the hit check
+    * @param {number} acBonus Positive D&D-style bonus also applied to displayed ranged AC
+    */
+   #getFinalTargetAC(targetToken, attackType, descendingAc, ascendingAc, acBonus) {
+      const actorAc = targetToken.actor.system.ac;
+      const descendingRanged = (actorAc?.totalRanged ?? descendingAc) - acBonus;
+      const rangedAcTotal = this.isAAC
+         ? (CONFIG.FADE.ToHit.baseTHAC0 - descendingRanged)
+         : descendingRanged;
+      return game.i18n.format("FADE.Chat.targetAC", {
+         cssClass: attackType === "melee" ? `style="color:green"` : "",
+         acTotal: this.isAAC ? ascendingAc : descendingAc,
+         targetRangedAc: actorAc?.totalRanged !== actorAc?.total
+            ? game.i18n.format("FADE.Chat.targetRangedAC", {
+               acTotal: rangedAcTotal,
                cssClass: attackType === "missile" ? `style="color:green"` : ""
             })
             : ""

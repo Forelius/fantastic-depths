@@ -58,6 +58,8 @@ export class FDCombatActorData extends foundry.abstract.DataModel {
             upgradeAc: new NumberField({ nullable: true, initial: null }),
             // Upgrades the ranged AC if better, otherwise does nothing.
             upgradeRangedAc: new NumberField({ nullable: true, initial: null }),
+            // +N AC vs larger-than-man-size attackers (descending AC improves by N). Applied at attack time.
+            acVsLarge: new NumberField({ initial: 0 }),
             // Wrestling Rating modifier
             wrestling: new NumberField({ nullable: true, initial: null }),
             initiative: new NumberField({ initial: 0 }),
