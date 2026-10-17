@@ -158,40 +158,31 @@ export class IndivInit extends BaseInitiative {
     * The custom rollInitiative function
     */
    async #doInitiativeRoll(combat, combatants): Promise<void> {
-      // Array to accumulate roll results for the digest message
-      const rollResults = [];
+      const updates = [];
       const abilityScoreSys = game.fade.registry.getSystem("abilityScore");
 
       for (const combatant of combatants) {
-         const updates = [];
          const rollData = combatant.actor.getRollData();
-         const mod = abilityScoreSys.getInitiativeMod(combatant.actor); // Get the initiative modifier
+         const mod = abilityScoreSys.getInitiativeMod(combatant.actor);
          rollData.mod = mod;
 
-         // Perform the roll using the initiative formula
          const roll = new Roll(this.initiativeFormula, rollData);
          const rolled = await roll.evaluate();
-
-         // Update the combatant's initiative with the roll result
          updates.push({ _id: combatant.id, initiative: rolled.total });
 
-         // Accumulate the roll result for the digest message, showing mod only if it's not 0
          const modText = mod !== 0 ? `(mod ${mod > 0 ? "+" : ""}${mod})` : "";
-         rollResults.push({
-            message: game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: combatant.name, roll: rolled.total, mod: modText }),
-            updates
+         await rolled.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: combatant.actor, token: combatant.token }),
+            flavor: game.i18n.format("FADE.Chat.combatTracker.initRoll", {
+               name: combatant.name,
+               roll: rolled.total,
+               mod: modText
+            })
          });
       }
 
-      // Create a single chat message for all rolls
-      if (rollResults.length > 0) {
-         const updates = rollResults.reduce((a, b) => [...a, ...b.updates], []);
-         if (updates.length > 0) {
-            // Update multiple combatants
-            await combat.updateEmbeddedDocuments("Combatant", updates);
-         }
-
-         console.log("Initiative roll details:", rollResults);
+      if (updates.length > 0) {
+         await combat.updateEmbeddedDocuments("Combatant", updates);
          combat._activateCombatant(0);
       }
    }
@@ -306,39 +297,31 @@ export class GroupInit extends BaseInitiative {
     * @param {any} combat
     */
    async doInitiativeRoll(combat, combatants, group = null) {
-      // Array to accumulate roll results for the digest message
       const rollResults = [];
 
       // Get all combatants and group them by disposition         
       this.groups = this.#groupCombatants(combatants);
 
-      // Friendly group (uses modifiers)
       if ((group === null || group === "friendly") && this.groups.friendly.length > 0) {
          const rollResult = await this.rollForGroup(this.groups.friendly, "Friendlies");
          if (rollResult) rollResults.push(rollResult);
       }
 
-      // Neutral group (uses modifiers)
       if ((group === null || group === "neutral") && this.groups.neutral.length > 0) {
          const rollResult = await this.rollForGroup(this.groups.neutral, "Neutrals");
          if (rollResult) rollResults.push(rollResult);
       }
 
-      // Hostile group (monsters may not use modifiers)
       if ((group === null || group === "hostile") && this.groups.hostile.length > 0) {
          const rollResult = await this.rollForGroup(this.groups.hostile, "Hostiles");
          if (rollResult) rollResults.push(rollResult);
       }
 
-      // Create a single chat message for all rolls
       if (rollResults.length > 0) {
          const updates = rollResults.reduce((a, b) => [...a, ...b.updates], []);
          if (updates.length > 0) {
-            // Update multiple combatants
             await combat.updateEmbeddedDocuments("Combatant", updates);
          }
-
-         console.log("Initiative roll details:", rollResults);
          combat._activateCombatant(0);
       }
    }
@@ -355,30 +338,29 @@ export class GroupInit extends BaseInitiative {
 
    // method to handle group-based initiative
    async rollForGroup(group, groupName) {
-      let rollData = {};
       let result = null;
-      let usedMod = 0; // Track the modifier used for this group
+      const usedMod = 0;
       const updates = [];
+      const rollData = { mod: 0 };
 
-      rollData = { mod: 0 };
-      usedMod = 0;
-
-      // Perform the roll using the initiative formula
       const roll = new Roll(this.initiativeFormula, rollData);
       const rolled = await roll.evaluate();
 
-      // Apply the same initiative result to all combatants in the group
       for (const combatant of group) {
          updates.push({ _id: combatant.id, initiative: rolled.total });
       }
 
-      // Return the roll result for the digest message, including the used modifier
       if (group.length > 0) {
          const modText = usedMod !== 0 ? `(${usedMod > 0 ? "+" : ""}${usedMod})` : "";
-         result = {
-            message: game.i18n.format(`FADE.Chat.combatTracker.initRoll`, { name: groupName, roll: rolled.total, mod: modText }),
-            updates
-         }
+         await rolled.toMessage({
+            speaker: { alias: groupName },
+            flavor: game.i18n.format("FADE.Chat.combatTracker.initRoll", {
+               name: groupName,
+               roll: rolled.total,
+               mod: modText
+            })
+         });
+         result = { updates };
       }
 
       return result;
