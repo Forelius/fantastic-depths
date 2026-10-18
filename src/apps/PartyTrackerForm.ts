@@ -30,8 +30,8 @@ export class PartyTrackerForm extends HandlebarsApplicationMixin(ApplicationV2) 
          contentClasses: ["scroll-body"]
       },
       position: {
-         width: 280,
-         height: 450,
+         width: 500,
+         height: 380,
       },
       form: {
          handler: PartyTrackerForm.#onSubmit,
