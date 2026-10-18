@@ -802,32 +802,42 @@ table.compact-table input {
   background: rgb(170, 86, 10);
 }
 
-.combatant.disposition-friendly::before {
-  content: "";
-  width: 4px;
-  background-color: green;
+.combat-sidebar .combat-tracker .combatant {
+  padding: 2px;
   border: none;
-  height: 48px;
+  border-bottom: 1px solid #2b2a24;
+}
+
+.combatant.disposition-friendly,
+.combatant.disposition-neutral,
+.combatant.disposition-hostile {
+  position: relative;
+}
+
+.combatant.disposition-friendly::before,
+.combatant.disposition-neutral::before,
+.combatant.disposition-hostile::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 4px;
+  height: auto;
+  border: none;
+  pointer-events: none;
+}
+
+.combatant.disposition-friendly::before {
+  background-color: green;
 }
 
 .combatant.disposition-neutral::before {
-  content: "";
-  width: 4px;
   background-color: white;
-  border: none;
-  height: 48px;
 }
 
 .combatant.disposition-hostile::before {
-  content: "";
-  width: 4px;
   background-color: red;
-  border: none;
-  height: 48px;
-}
-
-.combatant.active::before {
-  height: initial;
 }
 
 /* Styles limited to fantastic-depths sheets */
