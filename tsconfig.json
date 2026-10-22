@@ -2,7 +2,7 @@
    "compilerOptions": {
       "target": "ES2022",
       "module": "ES2022",
-      "moduleResolution": "node",
+      "moduleResolution": "bundler",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "resolveJsonModule": true,
@@ -10,7 +10,6 @@
       "sourceMap": true,
       "removeComments": false,
       "noEmitOnError": true,
-
       "outDir": "./module",
       "lib": [ "ES2022", "DOM" ],
       "allowJs": true,

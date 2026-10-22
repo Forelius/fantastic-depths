@@ -1,6 +1,6 @@
 import { ClassDefinitionItem } from "../../item/ClassDefinitionItem.js";
 import { FDItem } from "../../item/FDItem.js";
-import { fadeFinder } from "../..//utils/finder.js";
+import { fadeFinder } from "../../utils/finder.js";
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { DragDropMixin } from "../mixins/DragDropMixin.js";
