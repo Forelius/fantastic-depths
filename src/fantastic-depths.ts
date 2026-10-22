@@ -91,6 +91,9 @@ Hooks.once("init", async function () {
       fadeTreasure,
       fadeFinder,
       registry: new fadeRegistry(),
+      sheets: {
+         WeaponItemSheet,
+      },
    };
 
    Hooks.call("beforeFadeInit", game.fade.registry);
