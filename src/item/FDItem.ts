@@ -266,8 +266,8 @@ export abstract class FDItem extends Item implements IFDItem {
             // Use the current value from the data object
             const currentValue = foundry.utils.getProperty(data, path);
 
-            // Apply the change logic
-            const newValue = this._applyEffectChange(change.mode, currentValue, change.value);
+            // Apply the change logic. v14 changes use a string type, not the legacy numeric mode.
+            const newValue = this._applyEffectChange(change.type, currentValue, change.value);
 
             // Update the data object in-memory
             foundry.utils.setProperty(data, path, newValue);
@@ -278,26 +278,28 @@ export abstract class FDItem extends Item implements IFDItem {
    /**
     * Helper method to process Active Effect changes.
     * @protected
-    * @param {any} mode A valid CONST.ACTIVE_EFFECT_MODES value.
+    * @param {string} type A CONST.ACTIVE_EFFECT_CHANGE_TYPES key, such as "add".
     * @param {any} currentValue The property's current value/
     * @param {any} changeValue The value specified in the effect change data.
     * @returns
     */
-   _applyEffectChange(mode, currentValue, changeValue) {
+   _applyEffectChange(type, currentValue, changeValue) {
       const value = Number(changeValue) || 0;
-      switch (mode) {
-         case CONST.ACTIVE_EFFECT_MODES.ADD:
+      switch (type) {
+         case "add":
             return (currentValue || 0) + value;
-         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+         case "subtract":
+            return (currentValue || 0) - value;
+         case "multiply":
             return (currentValue || 1) * value;
-         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+         case "override":
             return value;
-         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+         case "downgrade":
             return Math.min(currentValue || Infinity, value); // Set to the lower value
-         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+         case "upgrade":
             return Math.max(currentValue || -Infinity, value); // Set to the higher value
          default:
-            console.warn(`Unsupported Active Effect mode: ${mode}`);
+            console.warn(`Unsupported Active Effect type: ${type}`);
             return currentValue;
       }
    }

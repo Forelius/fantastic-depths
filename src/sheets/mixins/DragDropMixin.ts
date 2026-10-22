@@ -112,6 +112,22 @@ const DragDropMixin = (superclass) => class extends superclass {
       let result: Actor | Item[] | boolean = false;
 
       if (allowed === true) {
+         // Modules may replace the default drop (for example, composing magic armor).
+         // Listeners set context.handled and context.result; a handled drop skips the switch below.
+         const context = {
+            sheet: this,
+            event,
+            data,
+            document: data.type === "Item" ? await Item.implementation.fromDropData(data) : null,
+            handled: false,
+            result: false as Actor | Item[] | boolean
+         };
+         // Item sheets share this mixin but replace _onDrop. Only actor sheets use this path.
+         if (this.document?.documentName === "Actor") {
+            await callFadeDropActorSheet(context);
+            if (context.handled) return context.result;
+         }
+
          // Handle different data types
          switch (data.type) {
             case "ActiveEffect":
@@ -310,6 +326,32 @@ const DragDropMixin = (superclass) => class extends superclass {
       }
       return newItem;
    }
+}
+
+/**
+ * Await fadeDropActorSheet listeners in registration order.
+ * Foundry 14 Hooks.call does not await async listeners, and Hooks.callAsync is not on the v14 API.
+ * A listener that returns false stops later listeners, matching Hooks.call.
+ * @param {object} context Mutable drop context. Listeners may set handled and result.
+ * @returns {Promise<boolean>} False if a listener returned false.
+ */
+/** One entry from Foundry's Hooks.events table. The v14 types expose those entries as unknown. */
+interface FadeHookListener {
+   id: number;
+   once: boolean;
+   fn: (context: object) => boolean | void | Promise<boolean | void>;
+}
+
+async function callFadeDropActorSheet(context): Promise<boolean> {
+   const hook = "fadeDropActorSheet";
+   const registered = Hooks.events?.[hook] as FadeHookListener[] | undefined;
+   const listeners = Array.from(registered ?? []);
+   for (const listener of listeners) {
+      if (listener.once) Hooks.off(hook, listener.id);
+      const result = await listener.fn(context);
+      if (result === false) return false;
+   }
+   return true;
 }
 
 export { DragDropMixin }
