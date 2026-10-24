@@ -101,7 +101,12 @@ export class AttackRollService {
          const targetTokens = Array.from(game.user.targets);
          const targetToken: Token = targetTokens.length > 0 ? targetTokens[0] : null;
 
-         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, { dataset, weapon: item, targetToken }));
+         result.dialogResp = (await DialogFactory({ dialog: 'attack' }, attackerActor, {
+            dataset,
+            weapon: item,
+            targetToken,
+            ammoItem: result.ammoItem
+         }));
          attackType = result.dialogResp?.attackType;
          result.canAttack = result.dialogResp != null;
          if (result.canAttack) {
@@ -182,12 +187,32 @@ export class AttackRollService {
          ui.notifications.warn(message);
          ChatMessage.create({ content: message, speaker: { alias: owningActor?.name ?? item.actor?.name, } });
       } else { // if (getOnly !== true) {
+         const update = {};
          // Deduct 1 ammo if not infinite
          if (ammoItem.system.quantity !== null) {
-            const newQuantity = Math.max(0, ammoItem.system.quantity - 1);
-            await ammoItem.update({ "system.quantity": newQuantity });
+            update["system.quantity"] = Math.max(0, ammoItem.system.quantity - 1);
+         }
+         // RC: identify by testing — firing a magic missile reveals the stack.
+         if (ammoItem.type === "ammo" && ammoItem.system.isIdentified === false && this.#isMagicalAmmo(ammoItem)) {
+            update["system.isIdentified"] = true;
+         }
+         if (Object.keys(update).length > 0) {
+            await ammoItem.update(update);
          }
       }
       return ammoItem;
+   }
+
+   /**
+    * Magical ammo: cursed, to-hit/dmg bonus, or linked spells/abilities (missile talents).
+    */
+   #isMagicalAmmo(ammoItem: FDItem): boolean {
+      if (ammoItem.system?.isCursed === true) return true;
+      const toHit = Number(ammoItem.system?.mod?.toHitRanged) || 0;
+      const dmg = Number(ammoItem.system?.mod?.dmgRanged) || 0;
+      if (toHit !== 0 || dmg !== 0) return true;
+      if ((ammoItem.system?.spells?.length ?? 0) > 0) return true;
+      if ((ammoItem.system?.specialAbilities?.length ?? 0) > 0) return true;
+      return false;
    }
 }

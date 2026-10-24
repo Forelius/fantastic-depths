@@ -227,8 +227,9 @@ export class WeaponMasteryHeroic extends WeaponMasteryBase {
                const primsec = bIsPrimary ? game.i18n.localize("FADE.Mastery.primary") : game.i18n.localize("FADE.Mastery.secondary");
                result.digest.push(game.i18n.format("FADE.Chat.rollMods.masteryMod", { primsec, mod: toHitMod }));
             }
-         } else if (attackType === "missile" && actor.system.combat.basicProficiency === false) {
-            // Apply penalty for unskilled use if correct conditions.
+         } else if (attackType === "missile" && actor.system.combat.basicProficiency !== true) {
+            // RC Ch5: unskilled half damage for all weapons; -1 to hit for missile weapons only.
+            // Half damage is applied in getDamageMods. basicProficiency = Basic with all weapons.
             result = this.#applyUnskilledToHitMod(result);
          }
       }

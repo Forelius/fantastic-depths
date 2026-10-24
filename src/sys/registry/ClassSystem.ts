@@ -745,8 +745,9 @@ export class SingleClassSystem extends ClassSystemBase {
                },
             },
             combat: {
-               // Class or ancestry may grant basic proficiency; keep true if either has it.
-               basicProficiency: classData.basicProficiency || actor.system.combat.basicProficiency,
+               // Class or ancestry may grant basic proficiency (do not OR sticky actor state).
+               basicProficiency: !!(classData.basicProficiency
+                  || (await fadeFinder.getAncestry(actor.system.details.species))?.system?.basicProficiency),
                unskilledToHitMod: classData.unskilledToHitMod,
             },
          };

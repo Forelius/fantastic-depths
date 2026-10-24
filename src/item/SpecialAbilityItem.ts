@@ -65,7 +65,8 @@ export class SpecialAbilityItem extends FDItem {
    async roll(dataset, dialogResp = null, event = null): Promise<void> {
       const { instigator, instigatorActor } = await this.getInstigator(dataset);
       const itemSystem = this.system;
-      const actionItem = dataset.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
+      // Live document — deepClone breaks getters/update and can mis-resolve spend hosts.
+      const actionItem = dataset.actionuuid ? await fromUuid(dataset.actionuuid) : null;
       let canProceed = true;
       const hasRoll = itemSystem.rollFormula != null && itemSystem.rollFormula != "" && itemSystem.target != null && itemSystem.target != "";
       const rollData = this.getRollData();

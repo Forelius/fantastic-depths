@@ -19,7 +19,8 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
          editEffect: FDItemSheetV2.#clickEffect,
          deleteEffect: FDItemSheetV2.#clickEffect,
          toggleEffect: FDItemSheetV2.#clickEffect,
-         editImage: FDItemSheetV2.#onEditImage
+         editImage: FDItemSheetV2.#onEditImage,
+         openLinkedItem: FDItemSheetV2.#clickOpenLinkedItem
       }
    };
 
@@ -112,6 +113,21 @@ export class FDItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
    static #clickDeleteTag(event) {
       const tag = event.target.closest('.tag-delete').dataset.tag;
       this.item.tagManager.popTag(tag);
+   }
+
+   /**
+    * Open the sheet for a linked spell / special ability (uuid on the control).
+    */
+   static async #clickOpenLinkedItem(event) {
+      event.preventDefault();
+      const uuid = event.target.closest("[data-uuid]")?.dataset?.uuid;
+      if (!uuid) return;
+      const doc = await fromUuid(uuid);
+      if (!doc?.sheet) {
+         ui.notifications.warn(game.i18n.format("FADE.notification.missingItem", { type: "linked" }));
+         return;
+      }
+      doc.sheet.render(true);
    }
 
    /**

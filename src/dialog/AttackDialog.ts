@@ -67,6 +67,13 @@ export class AttackDialog {
          ranges.medium *= (weapon.system.mod.rangeMultiplier ?? 1);
          ranges.long *= (weapon.system.mod.rangeMultiplier ?? 1);
       }
+      const ammoItem = options?.ammoItem;
+      if (ranges && ammoItem?.system?.mod) {
+         const ammoMult = ammoItem.system.mod.rangeMultiplier ?? 1;
+         ranges.short *= ammoMult;
+         ranges.medium *= ammoMult;
+         ranges.long *= ammoMult;
+      }
 
       const distance = toHitSystem.getDistance(attackerToken, targetToken);
       dialogData.attackDistance = distance;

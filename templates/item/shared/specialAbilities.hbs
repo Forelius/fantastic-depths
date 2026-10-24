@@ -24,7 +24,8 @@
                </div>
                {{/unless}}
                <div>
-                  <input type="text" style="text-align:left;" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+                  <input type="hidden" name="system.specialAbilities.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+                  <a class="item-control" data-action="openLinkedItem" data-uuid="{{item.uuid}}">{{item.name}}</a>
                </div>
                <div style="max-width:50px">
                   <input type="number" name="system.specialAbilities.{{index}}.target" value="{{item.target}}" data-dtype="Number" />

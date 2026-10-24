@@ -74,10 +74,15 @@ export class DamageRollChatBuilder extends ChatBuilder {
       const { weaponuuid, ammouuid, attacktype, damagetype, targetweapontype, targetuuid, owneruuid } = dataset;
       const ammoItem = ammouuid ? await fromUuid(ammouuid) : undefined;
       const targetToken = targetuuid ? await fromUuid(targetuuid) : undefined;
-      const damagerItem = await fromUuid(weaponuuid);
+      const damagerItem = weaponuuid ? await fromUuid(weaponuuid) : null;
+      if (!damagerItem) {
+         ui.notifications.warn(game.i18n.format("FADE.notification.missingItem", { type: weaponuuid || "weaponuuid" }));
+         console.warn("DamageRollChatBuilder: fromUuid failed for weaponuuid", weaponuuid);
+         return;
+      }
       const damager = owneruuid ? await fromUuid(owneruuid) : undefined;
       const damagerName = damager?.name;
-      const damagerToken = damager.actor ? damager : damagerItem.actor?.currentActiveToken;
+      const damagerToken = damager?.actor ? damager : damagerItem.actor?.currentActiveToken;
       let rolling = true;
       let dialogResp = null;
       const isHeal = damagetype === "heal";

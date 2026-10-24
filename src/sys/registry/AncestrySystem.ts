@@ -76,9 +76,8 @@ export class AncestrySystem {
             systemUpdate.movement = { modes };
          }
 
-         if (ancestryDefItem.system.basicProficiency === true) {
-            systemUpdate.combat = { basicProficiency: true };
-         }
+         // Always write the flag so switching ancestry can clear a prior grant.
+         systemUpdate.combat = { basicProficiency: ancestryDefItem.system.basicProficiency === true };
 
          const abilityMins = await this.resolveMergedAbilityMins(
             actor,

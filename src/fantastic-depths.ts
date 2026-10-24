@@ -93,6 +93,8 @@ Hooks.once("init", async function () {
       registry: new fadeRegistry(),
       sheets: {
          WeaponItemSheet,
+         SpellItemSheet,
+         SpecialAbilitySheet,
       },
    };
 

@@ -3,7 +3,7 @@
          <ol name="spells" class="items-list">
             <!-- Header Row -->
             <li class="item flexrow items-header">
-               <div style="max-width:150px">{{localize 'FADE.Chat.actions.singular'}}</div>
+               <div style="max-width:130px">{{localize 'FADE.Chat.actions.singular'}}</div>
                <div style="max-width:60px">{{localize 'FADE.class.castAsKey.name'}}</div>
                <div>{{localize "FADE.name"}}</div>
                <div style="max-width:50px">{{localize "FADE.Item.chargeCost"}}</div>
@@ -19,10 +19,11 @@
                   </select>
                </div>
                <div style="max-width:60px">
-                  <input type="text" name="system.spells.{{index}}.castAs" value="{{item.castAs}}" data-dtype="String" />
+                  <input type="text" name="system.spells.{{index}}.castAs" value="{{item.castAs}}" data-dtype="String" data-tooltip="{{localize "FADE.class.castAsKey.hint"}}/>
                </div>
                <div>
-                  <input type="text" style="text-align:left;" name="system.spells.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+                  <input type="hidden" name="system.spells.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+                  <a class="item-control" data-action="openLinkedItem" data-uuid="{{item.uuid}}">{{item.name}}</a>
                </div>
                <div style="max-width:50px">
                   <input type="number" name="system.spells.{{index}}.cost" value="{{item.cost}}" data-dtype="Number" min="1" />

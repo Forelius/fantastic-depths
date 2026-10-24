@@ -270,14 +270,20 @@ export abstract class ChatBuilder {
 
          if (options.saves === true && actionItem.system.savingThrow?.length > 0) {
             const save = await fadeFinder.getSavingThrow(actionItem.system.savingThrow);
-            actions.push({
-               type: "save",
-               owneruuid: owner.uuid,
-               itemuuid: save.uuid,
-               actionuuid: actionItem.uuid, // this is the owning item's uuid
-               shortName: save?.system.shortName,
-               customCode: save?.system.customCode,
-            });
+            if (!save) {
+               ui.notifications.warn(game.i18n.format("FADE.notification.missingSave", {
+                  type: actionItem.system.savingThrow
+               }));
+            } else {
+               actions.push({
+                  type: "save",
+                  owneruuid: owner.uuid,
+                  itemuuid: save.uuid,
+                  actionuuid: actionItem.uuid, // this is the owning item's uuid
+                  shortName: save.system.shortName,
+                  customCode: save.system.customCode,
+               });
+            }
          }
          if (options.attacks === true) {
             if (actionItem.canAttack === true) {

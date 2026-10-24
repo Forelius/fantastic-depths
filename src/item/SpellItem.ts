@@ -102,7 +102,8 @@ export class SpellItem extends FDItem {
 
 async doSpellcast(dataset: PropertyBag = null): Promise<void> {
       const { instigator, instigatorActor } = await this.getInstigator(dataset);
-      const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
+      // Live document — deepClone breaks getters/update and can mis-resolve spend hosts.
+      const actionItem = dataset?.actionuuid ? await fromUuid(dataset.actionuuid) : null;
 
       const spendAmount = FDItem.sanitizeSpendAmount(dataset?.cost);
       // If the item is not owned by an actor then assume it is owned by another item.
