@@ -1,5 +1,5 @@
 import { IdentifiableData } from '../fields/IdentifiableField.js';
-const { BooleanField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
+const { ArrayField, BooleanField, NumberField, SchemaField, ObjectField, StringField } = foundry.data.fields;
 
 /**
  * Data model for an ammo item.
@@ -43,7 +43,19 @@ export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
             toHitRanged: new NumberField({ initial: 0 }),
             rangeMultiplier: new NumberField({ initial: 1 }),
             vsGroup: new ObjectField({}),
-         })
+         }),
+         // Linked spell effects (missile talents, etc.) — same shape as GearItemDataModel.spells
+         spells: new ArrayField(
+            new SchemaField({
+               action: new StringField({ required: false, nullable: true }),
+               castAs: new StringField({ required: true, initial: "" }),
+               uuid: new StringField({ required: true, initial: "" }),
+               name: new StringField({ required: true, initial: "" }),
+            }),
+            {
+               required: false,
+               initial: []
+            })
       };
    }
 

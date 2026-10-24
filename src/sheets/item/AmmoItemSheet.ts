@@ -1,16 +1,18 @@
 import { FDItemSheetV2 } from "./FDItemSheetV2.js";
 import { SheetTab } from "../SheetTab.js";
 import { VsGroupModMixin } from "../mixins/VsGroupModMixin.js";
+import { DragDropMixin } from "../mixins/DragDropMixin.js";
+import { SpellSheetService } from "../../sys/services/SpellSheetService.js";
 import { fadeFinder } from "../../utils/finder.js";
 
 /**
  * Sheet class for AmmoItem.
  */
-export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
-   /**
-   * Get the default options for the sheet.
-   */
-   static DEFAULT_OPTIONS = {
+export class AmmoItemSheet extends DragDropMixin(VsGroupModMixin(FDItemSheetV2)) {
+   spellService: SpellSheetService;
+
+   /** Base configuration: the part that never comes from a service */
+   private static readonly BASE = {
       position: {
          width: 570,
          height: 400,
@@ -26,6 +28,17 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       }
    };
 
+   /** All services */
+   private static readonly SERVICES = [
+      SpellSheetService.DEFAULT_OPTIONS
+   ];
+
+   /** Merge everything: one line for the final value */
+   static DEFAULT_OPTIONS = AmmoItemSheet.SERVICES.reduce((acc, opts) =>
+      foundry.utils.mergeObject(acc, opts, { recursive: true, insertKeys: true, insertValues: true, overwrite: true, inplace: false }),
+      { ...AmmoItemSheet.BASE }
+   );
+
    static PARTS = {
       header: {
          template: "systems/fantastic-depths/templates/item/ammo/header.hbs",
@@ -39,6 +52,9 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       attributes: {
          template: "systems/fantastic-depths/templates/item/ammo/attributes.hbs",
       },
+      spells: {
+         template: "systems/fantastic-depths/templates/item/ammo/spells.hbs",
+      },
       gmOnly: {
          template: "systems/fantastic-depths/templates/item/ammo/gmOnly.hbs",
       }
@@ -48,6 +64,11 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
    tabGroups = {
       primary: "description"
    };
+
+   constructor(options = {}) {
+      super(options);
+      this.spellService = new SpellSheetService();
+   }
 
    /** @override */
    _configureRenderOptions(options) {
@@ -59,7 +80,7 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
 
       if (game.user.isGM) {
          options.parts.push("attributes");
-         //options.parts.push("effects");
+         options.parts.push("spells");
          options.parts.push("gmOnly");
       }
    }
@@ -86,10 +107,23 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       }));
       context.savingThrows = saves.reduce((acc, item) => { acc[item.value] = item.text; return acc; }, {});
 
+      // Ability actions (spell action select)
+      context.actions = this._getActionOptions();
+
       // Prepare the tabs.
       context.tabs = this.#getTabs();
 
       return context;
+   }
+
+   async _onDrop(event) {
+      if (!this.item.isOwner) return false;
+      const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
+      const data = TextEditorImpl.getDragEventData(event);
+      const droppedItem = await Item.implementation.fromDropData(data);
+      if (droppedItem?.type === "spell") {
+         await this.spellService.onDropSpellItem(this.item, droppedItem);
+      }
    }
 
    /**
@@ -105,6 +139,7 @@ export class AmmoItemSheet extends VsGroupModMixin(FDItemSheetV2) {
       };
       if (game.user.isGM) {
          tabs.attributes = new SheetTab("attributes", group, "FADE.tabs.attributes", "item");
+         tabs.spells = new SheetTab("spells", group, "FADE.tabs.spells", "item");
          tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly", "item");
       }
       for (const v of Object.values(tabs) as SheetTab[]) {
