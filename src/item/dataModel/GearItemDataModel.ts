@@ -48,6 +48,8 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
                name: new StringField({ required: true, initial: "" }),
                // Roll mod
                mod: new NumberField({ required: true, nullable: true }),
+               // Charges/uses spent from the owning item when this link is activated
+               cost: new NumberField({ required: true, initial: 1, min: 1, integer: true }),
             }),
             {
                required: false,
@@ -60,6 +62,8 @@ export class GearItemDataModel extends foundry.abstract.TypeDataModel {
                castAs: new StringField({ required: true, initial: "" }),
                uuid: new StringField({ required: true, initial: "" }),
                name: new StringField({ required: true, initial: "" }),
+               // Charges/uses spent from the owning item when this link is activated
+               cost: new NumberField({ required: true, initial: 1, min: 1, integer: true }),
             }),
             {
                required: false,

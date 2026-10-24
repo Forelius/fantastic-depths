@@ -104,9 +104,10 @@ async doSpellcast(dataset: PropertyBag = null): Promise<void> {
       const { instigator, instigatorActor } = await this.getInstigator(dataset);
       const actionItem = dataset?.actionuuid ? foundry.utils.deepClone(await fromUuid(dataset.actionuuid)) : null;
 
+      const spendAmount = FDItem.sanitizeSpendAmount(dataset?.cost);
       // If the item is not owned by an actor then assume it is owned by another item.
       // If owned by another item then this step would not be reached if there were zero charges remaining.
-      if (await this._tryCastThenChargeThenUse(true, actionItem, dataset?.action)) {
+      if (await this._tryCastThenChargeThenUse(true, actionItem, dataset?.action, spendAmount)) {
          // Determine if spell requires an attack roll, such as touch spells.
          let rollAttackResult = null;
 
@@ -127,7 +128,7 @@ async doSpellcast(dataset: PropertyBag = null): Promise<void> {
          // If there was no attack roll or the attack roll was not canceled...
          if (rollAttackResult === null || rollAttackResult?.canAttack === true) {
             // Use spell resource (charge, cast or use)
-            await this._tryCastThenChargeThenUse(false, actionItem, dataset?.action);
+            await this._tryCastThenChargeThenUse(false, actionItem, dataset?.action, spendAmount);
 
             const chatData = {
                caller: this, // the spell
@@ -187,29 +188,38 @@ async doSpellcast(dataset: PropertyBag = null): Promise<void> {
 
    /**
     * Some items may have uses, casts and charges. If the item has the cast property then cast is used.
-    * If there are charges then a charge is used. If the result of both of those are false then use/qty is used.
+    * Else if a charge pool is in play (finite or infinite), spend amount from charges (full cost or fail).
+    * Else if no charge pool and action allows use, spend amount from quantity.
     * @param {any} getOnly If true, does not use, just gets.
     * @param {any} actionItem The item that owns this item, or null.
     * @param {*} action The action property of the dataset (consume)
+    * @param {number} amount Linked-entry cost (ignored for memorized cast).
     */
-   async _tryCastThenChargeThenUse(getOnly = false, actionItem, action) {
+   async _tryCastThenChargeThenUse(getOnly = false, actionItem, action, amount = 1) {
       let result = false;
       const item = actionItem || this;
+      const cost = FDItem.sanitizeSpendAmount(amount);
 
       if (item.system.cast !== undefined) {
          result = await this._tryCastMemorized(getOnly, actionItem);
       } else {
-         // If this item has charges property and the item does have a charge remaining...
-         if (item.system.charges !== undefined && item.hasCharge) {
-            result = await this._tryUseCharge(getOnly, actionItem);
-         }
-         if (action?.length > 0 && action !== "none" && result === false) {
-            result = await this._tryUseUsage(getOnly, actionItem);
+         const chargesMax = item.system.chargesMax;
+         const hasChargePool = item.system.charges !== undefined && (chargesMax > 0 || chargesMax === null);
+
+         if (hasChargePool) {
+            // Finite or infinite charges: spend cost here. Insufficient finite charges fail — no quantity fallthrough.
+            result = await this._tryUseCharge(getOnly, actionItem, cost);
+         } else if (action?.length > 0 && action !== "none") {
+            // No charge pool: allow quantity when action permits.
+            result = await this._tryUseUsage(getOnly, actionItem, cost);
          }
          if (result === false) {
-            const message = game.i18n.format("FADE.notification.noCharges", { itemName: item.knownName });
-            ui.notifications.warn(message);
-            ChatMessage.create({ content: message, speaker: { alias: item.actor?.name, } });
+            // Charge/usage helpers already notify on their own failures; cover the no-pool/no-action case.
+            if (!hasChargePool && !(action?.length > 0 && action !== "none")) {
+               const message = game.i18n.format("FADE.notification.noCharges", { itemName: item.knownName });
+               ui.notifications.warn(message);
+               ChatMessage.create({ content: message, speaker: { alias: item.actor?.name, } });
+            }
          }
       }
 

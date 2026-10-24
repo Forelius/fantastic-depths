@@ -400,6 +400,7 @@
             "long": "Charges",
             "maxLong": "Max. Charges"
          },
+         "chargeCost": "Cost",
          "weight": {
             "short": "Enc",
             "long": "Encumbrance",

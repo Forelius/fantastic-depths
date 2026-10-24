@@ -320,39 +320,66 @@ export abstract class FDItem extends Item implements IFDItem {
    }
 
    /**
+    * Sanitize a linked-entry charge/usage cost to a positive integer (minimum 1).
+    * @param {any} value
+    * @returns {number}
+    */
+   static sanitizeSpendAmount(value): number {
+      return Math.max(1, Math.floor(Number(value) || 1));
+   }
+
+   /**
     * Some items may have charges and quantity uses both. if the item has the charges property then
     * charge is used, otherwise quantity is used.
     * @param {boolean} getOnly If true, does not use, just gets.
     * @param {FDItem} actionItem The item that owns this item, or null.
+    * @param {number} amount How many charges/uses to spend (default 1).
     */
-   async _tryUseChargeThenUsage(getOnly = false, actionItem: FDItem): Promise<boolean> {
+   async _tryUseChargeThenUsage(getOnly = false, actionItem: FDItem, amount = 1): Promise<boolean> {
       let result = false;
       const item = actionItem || this;
+      const cost = FDItem.sanitizeSpendAmount(amount);
 
       if (item.system.charges !== undefined) {
-         result = await this._tryUseCharge(getOnly, actionItem);
+         result = await this._tryUseCharge(getOnly, actionItem, cost);
       } else if (item.system.quantity !== undefined) {
-         result = await this._tryUseUsage(getOnly, actionItem);
+         result = await this._tryUseUsage(getOnly, actionItem, cost);
       }
 
       return result;
    }
 
    /**
-    * Determines if any charges are available and if so decrements charges by one
+    * Determines if enough charges are available and if so decrements by amount.
+    * Infinite charges (chargesMax === null) always succeed and never deduct.
     * @private
     * @param {boolean} getOnly If true, does not use, just gets.
     * @param {FDItem} actionItem The item that owns this item, or null.
-    * @returns True if quantity is above zero.
+    * @param {number} amount How many charges to spend (default 1).
+    * @returns True if the full cost can be satisfied.
     */
-   async _tryUseCharge(getOnly = false, actionItem: FDItem): Promise<boolean> {
+   async _tryUseCharge(getOnly = false, actionItem: FDItem, amount = 1): Promise<boolean> {
       const item = actionItem || this; // The item could be this or a parent item.
-      const result = item.hasCharge;
+      const cost = FDItem.sanitizeSpendAmount(amount);
+      let result = false;
+
+      if (item.system.charges !== undefined) {
+         if (item.system.chargesMax === null) {
+            // Infinite charges: always succeed, never deduct.
+            result = true;
+         } else if (item.system.chargesMax > 0) {
+            // Finite charge pool: full cost or fail.
+            result = item.system.charges >= cost;
+         } else {
+            // Not a charge spend pool (chargesMax === 0): preserve prior hasCharge check; never deduct.
+            result = item.hasCharge;
+         }
+      }
 
       if (getOnly !== true) {
-         // Deduct 1 if not infinite and not zero
-         if (item.hasCharge === true && item.system.chargesMax > 0) {
-            const newCharges = Math.max(0, item.system.charges - 1);
+         // Deduct amount if finite tracked pool
+         if (result === true && item.system.chargesMax > 0) {
+            const newCharges = Math.max(0, item.system.charges - cost);
             await item.update({ "system.charges": newCharges });
          }
       }
@@ -367,20 +394,36 @@ export abstract class FDItem extends Item implements IFDItem {
    }
 
    /**
-    * Determines if any uses are available and if so decrements quantity by one
+    * Determines if enough uses are available and if so decrements quantity by amount.
+    * Infinite uses (quantityMax === null) always succeed and never deduct.
     * @private
     * @param {boolean} getOnly If true, does not use, just gets.
     * @param {FDItem} actionItem The item that owns this item, or null.
-    * @returns True if quantity is above zero.
+    * @param {number} amount How many uses to spend (default 1).
+    * @returns True if the full cost can be satisfied.
     */
-   async _tryUseUsage(getOnly = false, actionItem: FDItem): Promise<boolean> {
+   async _tryUseUsage(getOnly = false, actionItem: FDItem, amount = 1): Promise<boolean> {
       const item = actionItem || this; // The item could be this or a parent item.
-      const result = item.hasUse;
+      const cost = FDItem.sanitizeSpendAmount(amount);
+      let result = false;
+
+      if (item.system.quantity !== undefined) {
+         if (item.system.quantityMax === null) {
+            // Infinite uses: always succeed, never deduct.
+            result = true;
+         } else if (item.system.quantityMax > 0) {
+            // Finite use pool: full cost or fail.
+            result = item.system.quantity >= cost;
+         } else {
+            // Not a quantity spend pool (quantityMax === 0): preserve prior hasUse check; never deduct.
+            result = item.hasUse;
+         }
+      }
 
       if (getOnly === false) {
-         // Deduct 1 if not infinite and not zero
-         if (item.hasUse === true && item.system.quantityMax > 0) {
-            const newQuantity = Math.max(0, item.system.quantity - 1);
+         // Deduct amount if finite tracked pool
+         if (result === true && item.system.quantityMax > 0) {
+            const newQuantity = Math.max(0, item.system.quantity - cost);
             await item.update({ "system.quantity": newQuantity });
          }
       }

@@ -78,6 +78,7 @@ export class SpellScrollService {
          castAs: await this.#getCastAs(spellItem),
          uuid: spellItem.uuid,
          name: spellName,
+         cost: 1,
       }];
       return await sheet._onDropItemCreate(scrollData);
    }

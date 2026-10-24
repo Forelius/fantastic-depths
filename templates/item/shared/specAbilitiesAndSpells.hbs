@@ -8,6 +8,7 @@
                <div style="max-width:150px">{{localize 'FADE.Chat.actions.singular'}}</div>
                <div>{{localize "FADE.name"}}</div>
                <div style="max-width:50px">{{localize "FADE.Actor.Mod"}}</div>
+               <div style="max-width:50px">{{localize "FADE.Item.chargeCost"}}</div>
                <div class="item-controls" style="max-width:30px;"></div>
             </li>
             <!-- Special Ability Entries -->
@@ -24,6 +25,9 @@
                </div>
                <div style="max-width:50px">
                   <input type="number" name="system.specialAbilities.{{index}}.mod" value="{{item.mod}}" data-dtype="Number" />
+               </div>
+               <div style="max-width:50px">
+                  <input type="number" name="system.specialAbilities.{{index}}.cost" value="{{item.cost}}" data-dtype="Number" min="1" />
                </div>
                <div class="item-controls" style="max-width:30px;">
                   <a class="item-control" data-action="deleteSpecialAbility" data-tooltip="{{localize "DOCUMENT.Delete" type=(localize "FADE.SpecialAbility.long")}}" data-type="specialAbility" data-index="{{index}}">
@@ -44,6 +48,7 @@
                <div style="max-width:150px">{{localize 'FADE.Chat.actions.singular'}}</div>
                <div style="max-width:60px">{{localize 'FADE.class.castAsKey.name'}}</div>
                <div>{{localize "FADE.name"}}</div>
+               <div style="max-width:50px">{{localize "FADE.Item.chargeCost"}}</div>
                <div class="item-controls" style="max-width:30px;"></div>
             </li>
             <!-- Spell Entries -->
@@ -60,6 +65,9 @@
                </div>
                <div>
                   <input type="text" style="text-align:left;" name="system.spells.{{index}}.name" value="{{item.name}}" data-dtype="String" />
+               </div>
+               <div style="max-width:50px">
+                  <input type="number" name="system.spells.{{index}}.cost" value="{{item.cost}}" data-dtype="Number" min="1" />
                </div>
                <div class="item-controls" style="max-width:30px;">
                   <a class="item-control" data-action="deleteSpell" data-tooltip="{{localize "DOCUMENT.Delete" type=(localize "TYPES.Item.spell")}}" data-type="spell" data-index="{{index}}">

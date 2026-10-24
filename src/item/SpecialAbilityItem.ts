@@ -75,7 +75,8 @@ export class SpecialAbilityItem extends FDItem {
       let roll = null;
       const digest = [];
 
-      if (await this._tryUseChargeThenUsage(true, actionItem) === false) {
+      const spendAmount = FDItem.sanitizeSpendAmount(dataset?.cost);
+      if (await this._tryUseChargeThenUsage(true, actionItem, spendAmount) === false) {
          canProceed = false;
       } else if (hasRoll === true) {
          // Retrieve roll data.
@@ -128,7 +129,7 @@ export class SpecialAbilityItem extends FDItem {
       }
 
       if (canProceed === true) {
-         canProceed = await this._tryUseChargeThenUsage(false, actionItem);
+         canProceed = await this._tryUseChargeThenUsage(false, actionItem, spendAmount);
       }
 
       if (canProceed === true) {

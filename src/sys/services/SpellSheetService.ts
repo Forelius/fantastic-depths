@@ -47,6 +47,7 @@ export class SpellSheetService {
          castAs: "",
          name: droppedItem?.name ?? "",
          uuid: droppedItem?.uuid ?? "",
+         cost: 1,
       };
 
       // Add the new item to the array

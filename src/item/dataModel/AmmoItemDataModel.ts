@@ -51,6 +51,8 @@ export class AmmoItemDataModel extends foundry.abstract.TypeDataModel {
                castAs: new StringField({ required: true, initial: "" }),
                uuid: new StringField({ required: true, initial: "" }),
                name: new StringField({ required: true, initial: "" }),
+               // Charges/uses spent from the owning item when this link is activated
+               cost: new NumberField({ required: true, initial: 1, min: 1, integer: true }),
             }),
             {
                required: false,

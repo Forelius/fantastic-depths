@@ -332,7 +332,8 @@ export abstract class ChatBuilder {
                      // This is the modifier entered for this special ability entry.
                      // Remember: This is a contained special ability, not the special ability item itself.
                      mod: ability.mod,
-                     action: ability.action
+                     action: ability.action,
+                     cost: ability.cost ?? 1
                   });
                }
             }
@@ -347,7 +348,8 @@ export abstract class ChatBuilder {
                      actionuuid: actionItem.uuid, // this is the owning item's uuid
                      itemName: isIdentified === false ? "???" : spell.name,
                      castAs: spell.castAs,
-                     action: spell.action
+                     action: spell.action,
+                     cost: spell.cost ?? 1
                   });
                }
             }
