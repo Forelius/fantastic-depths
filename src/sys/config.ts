@@ -18,7 +18,7 @@ export const FADE = {
       "breath",
       "save"
    ],
-   /** Foundry MeasuredTemplate shapes usable as item area effects. */
+   /** Area template shapes usable as item area effects (placed as Scene Regions). */
    TemplateTypes: [
       "circle",
       "cone",

@@ -1,6 +1,6 @@
 const { SchemaField, StringField } = foundry.data.fields;
 
-/** Foundry MeasuredTemplate shape types supported by the system. */
+/** Area template shape types (mapped to Scene Region shapes at place time). */
 export const AREA_TEMPLATE_TYPES = ["circle", "cone", "ray", "rect"] as const;
 
 export type AreaTemplateType = typeof AREA_TEMPLATE_TYPES[number];
@@ -17,7 +17,7 @@ export type AreaTemplateData = {
 };
 
 /**
- * Nested schema for optional area-effect Measured Template geometry on items.
+ * Nested schema for optional area-effect geometry on items (placed as Scene Regions).
  * Distance/direction/angle/width/maxRange are strings so they can hold roll formulas.
  */
 export function defineAreaTemplateSchema() {

@@ -117,7 +117,7 @@ export * from './sys/fadeTokenDocument';
 export * from './sys/migration';
 export * from './sys/services/AttackRollService';
 export * from './sys/services/ConditionSheetService';
-export * from './sys/services/MeasuredTemplateService';
+export * from './sys/services/AreaTemplateService';
 export * from './sys/services/SpecialAbilitySheetService';
 export * from './sys/services/SpellScrollService';
 export * from './sys/services/SpellSheetService';

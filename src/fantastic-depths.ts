@@ -60,7 +60,7 @@ import { fadeHandlebars } from "./fadeHandlebars.js";
 import { fadeDialog } from "./dialog/fadeDialog.js";
 import { DamageRollChatBuilder } from "./chat/DamageRollChatBuilder.js";
 import { AttackRollChatBuilder } from "./chat/AttackRollChatBuilder.js";
-import { MeasuredTemplateService } from "./sys/services/MeasuredTemplateService.js";
+import { AreaTemplateService } from "./sys/services/AreaTemplateService.js";
 import { ConditionItem } from "./item/ConditionItem.js";
 import { DataMigrator } from "./sys/migration.js";
 import { EffectManager } from "./sys/EffectManager.js";
@@ -297,13 +297,13 @@ Hooks.once("ready", async () => {
    $(document).on("click", ".apply-damage, .apply-heal", DamageRollChatBuilder.clickApplyDamage);
    $(document).on("click", ".apply-condition", async (event) => await ConditionItem.clickApplyCondition(event));
    $(document).on("click", ".remove-condition", async (event) => await ConditionItem.clickRemoveCondition(event));
-   $(document).on("click", ".place-template", MeasuredTemplateService.clickPlaceTemplate);
-   $(document).on("click", ".clear-template", MeasuredTemplateService.clickClearTemplate);
-   Hooks.on("createMeasuredTemplate", (doc) => {
-      MeasuredTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
+   $(document).on("click", ".place-template", AreaTemplateService.clickPlaceTemplate);
+   $(document).on("click", ".clear-template", AreaTemplateService.clickClearTemplate);
+   Hooks.on("createRegion", (doc) => {
+      AreaTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
    });
-   Hooks.on("deleteMeasuredTemplate", (doc) => {
-      MeasuredTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
+   Hooks.on("deleteRegion", (doc) => {
+      AreaTemplateService.toggleClearTemplateButton(doc.getFlag(game.system.id, "messageId"));
    });
    $(document).on("click", ".collapser", Collapser.toggleCollapsibleContent);
    $(document).on("click", ".saving-roll", SavingThrowSystem.handleSavingThrowRequest);
