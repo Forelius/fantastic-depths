@@ -12,11 +12,13 @@ export type AreaTemplateData = {
    direction: string;
    angle: string;
    width: string;
+   /** Max distance from caster to template origin (feet/scene units). Blank = no limit. */
+   maxRange: string;
 };
 
 /**
  * Nested schema for optional area-effect Measured Template geometry on items.
- * Distance/direction/angle/width are strings so they can hold roll formulas.
+ * Distance/direction/angle/width/maxRange are strings so they can hold roll formulas.
  */
 export function defineAreaTemplateSchema() {
    return new SchemaField({
@@ -25,6 +27,7 @@ export function defineAreaTemplateSchema() {
       direction: new StringField({ required: false, initial: "" }),
       angle: new StringField({ required: false, initial: "" }),
       width: new StringField({ required: false, initial: "" }),
+      maxRange: new StringField({ required: false, initial: "" }),
    });
 }
 

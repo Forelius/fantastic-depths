@@ -771,7 +771,8 @@
             "clear": "Clear placed templates",
             "invalid": "This item does not have a valid area template.",
             "invalidDistance": "Could not evaluate the area template distance formula.",
-            "noScene": "Open a scene before placing a template."
+            "noScene": "Open a scene before placing a template.",
+            "outOfRange": "Template origin is beyond maximum range."
          },
          "combatTracker": {
             "begin": "Combat has begun!",

@@ -79,6 +79,9 @@ export class MeasuredTemplateService {
       );
    }
 
+   /** Preview fill when the template origin is beyond maxRange. */
+   static readonly #OUT_OF_RANGE_COLOR = "#ff0000";
+
    /**
     * Start a cursor-follow template preview and create it on the scene when confirmed.
     */
@@ -88,8 +91,9 @@ export class MeasuredTemplateService {
          return;
       }
 
+      const actor = options.actor ?? item.actor ?? null;
       const evalOptions = {
-         actor: options.actor ?? item.actor ?? null,
+         actor,
          castAs: options.castAs || null,
       };
       const tpl = item.system.template;
@@ -101,7 +105,13 @@ export class MeasuredTemplateService {
       const directionRaw = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.direction, evalOptions);
       const direction = Number.isFinite(directionRaw) ? ((directionRaw % 360) + 360) % 360 : 0;
 
-      const token = canvas.tokens.controlled?.[0];
+      // Blank maxRange = no placement limit. Explicit "0" (or formula → 0) = origin on/near caster.
+      const maxRangeRaw = String(tpl.maxRange ?? "").trim();
+      const maxRange = maxRangeRaw
+         ? await MeasuredTemplateService.#evaluateTemplateNumber(item, maxRangeRaw, evalOptions)
+         : null;
+
+      const casterToken = MeasuredTemplateService.#resolveCasterToken(actor);
       const fillColor = typeof game.user.color === "string"
          ? game.user.color
          : (game.user.color?.css ?? "#000000");
@@ -111,8 +121,8 @@ export class MeasuredTemplateService {
          user: game.user.id,
          distance: length,
          direction,
-         x: token?.center?.x ?? canvas.stage.pivot.x,
-         y: token?.center?.y ?? canvas.stage.pivot.y,
+         x: casterToken?.center?.x ?? canvas.stage.pivot.x,
+         y: casterToken?.center?.y ?? canvas.stage.pivot.y,
          fillColor,
          hidden: false,
       };
@@ -155,10 +165,33 @@ export class MeasuredTemplateService {
       const object = new ObjectClass(document);
 
       try {
-         await MeasuredTemplateService.#drawPreview(object);
+         await MeasuredTemplateService.#drawPreview(object, { casterToken, maxRange, fillColor });
       } catch {
          // Placement cancelled (right-click / Escape).
       }
+   }
+
+   /**
+    * Controlled token if it belongs to the placing actor; otherwise first owned token on the scene.
+    */
+   static #resolveCasterToken(actor: Actor | null | undefined) {
+      if (!canvas?.tokens) return null;
+      const controlled = canvas.tokens.controlled?.[0] ?? null;
+      if (controlled && (!actor || controlled.actor?.id === actor.id || controlled.document?.actorId === actor.id)) {
+         return controlled;
+      }
+      if (!actor) return controlled;
+      return canvas.tokens.placeables.find((t) => t.actor?.id === actor.id || t.document?.actorId === actor.id) ?? null;
+   }
+
+   /**
+    * Grid distance from caster token center to template origin (scene distance units).
+    */
+   static #distanceToOrigin(casterToken, origin: { x: number; y: number }): number {
+      if (!casterToken?.center || !canvas?.grid) return 0;
+      const waypoints = [casterToken.center, origin];
+      const distance = canvas.grid.measurePath(waypoints)?.distance;
+      return Math.floor(Number(distance) || 0);
    }
 
    /**
@@ -200,14 +233,23 @@ export class MeasuredTemplateService {
 
    /**
     * Preview the template until left-click places it or the user cancels.
+    * When maxRange is set, tints red and blocks confirm if the origin is too far from the caster.
     */
-   static async #drawPreview(object): Promise<void> {
+   static async #drawPreview(
+      object,
+      options: { casterToken?; maxRange: number | null; fillColor: string } = { maxRange: null, fillColor: "#000000" }
+   ): Promise<void> {
       const initialLayer = canvas.activeLayer;
+      const { casterToken, maxRange, fillColor } = options;
+      const rangeLimited = maxRange !== null && casterToken;
+
       await object.draw();
       object.layer.activate();
       object.layer.preview.addChild(object);
 
       return new Promise((resolve, reject) => {
+         let outOfRange = false;
+
          const snapPosition = (pos: { x: number; y: number }) => {
             if (typeof canvas.grid.getSnappedPoint === "function") {
                const mode = CONST.GRID_SNAPPING_MODES?.CENTER;
@@ -222,11 +264,24 @@ export class MeasuredTemplateService {
             return pos;
          };
 
+         const applyRangeVisual = (origin: { x: number; y: number }) => {
+            if (!rangeLimited) {
+               outOfRange = false;
+               return;
+            }
+            const distance = MeasuredTemplateService.#distanceToOrigin(casterToken, origin);
+            outOfRange = distance > maxRange;
+            object.document.updateSource({
+               fillColor: outOfRange ? MeasuredTemplateService.#OUT_OF_RANGE_COLOR : fillColor,
+            });
+         };
+
          const move = (event) => {
             event.stopPropagation();
             const pos = event.getLocalPosition(object.layer);
             const snapped = snapPosition(pos);
             object.document.updateSource({ x: snapped.x, y: snapped.y });
+            applyRangeVisual(snapped);
             object.refresh();
          };
 
@@ -259,6 +314,10 @@ export class MeasuredTemplateService {
          const confirm = async (event) => {
             event.stopPropagation();
             if (event.button !== 0) return;
+            if (outOfRange) {
+               ui.notifications.warn(game.i18n.localize("FADE.Chat.placeTemplate.outOfRange"));
+               return;
+            }
             cleanup();
             const data = object.document.toObject();
             delete data._id;
@@ -287,11 +346,12 @@ export class MeasuredTemplateService {
          window.addEventListener("keydown", onKeyDown);
 
          const cursor = canvas.mousePosition;
-         if (cursor) {
-            const snapped = snapPosition(cursor);
-            object.document.updateSource({ x: snapped.x, y: snapped.y });
-            object.refresh();
-         }
+         const origin = cursor
+            ? snapPosition(cursor)
+            : { x: Number(object.document.x), y: Number(object.document.y) };
+         object.document.updateSource({ x: origin.x, y: origin.y });
+         applyRangeVisual(origin);
+         object.refresh();
       });
    }
 }
