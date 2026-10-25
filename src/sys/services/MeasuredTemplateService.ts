@@ -146,17 +146,10 @@ export class MeasuredTemplateService {
       } else if (tpl.type === "rect") {
          // Sheet distance/width are side lengths. Foundry stores the diagonal and its
          // angle (e.g. a 10'×10' square → distance ≈ 14.142, direction 45).
-         // If width is set, derive that angle from the sides. Otherwise keep the sheet
-         // direction (blank → 0 would be a degenerate line; default to a square).
          const widthRaw = await MeasuredTemplateService.#evaluateTemplateNumber(item, tpl.width, evalOptions);
-         if (widthRaw > 0) {
-            templateData.distance = Math.hypot(length, widthRaw);
-            templateData.direction = Math.atan2(widthRaw, length) * (180 / Math.PI);
-         } else if (!String(tpl.direction ?? "").trim()) {
-            templateData.distance = Math.hypot(length, length);
-            templateData.direction = 45;
-         }
-         // else: distance stays as the Foundry diagonal; direction from the sheet.
+         const sideB = widthRaw > 0 ? widthRaw : length;
+         templateData.distance = Math.hypot(length, sideB);
+         templateData.direction = Math.atan2(sideB, length) * (180 / Math.PI);
       }
 
       const DocumentClass = CONFIG.MeasuredTemplate.documentClass;
@@ -165,7 +158,12 @@ export class MeasuredTemplateService {
       const object = new ObjectClass(document);
 
       try {
-         await MeasuredTemplateService.#drawPreview(object, { casterToken, maxRange, fillColor });
+         await MeasuredTemplateService.#drawPreview(object, {
+            casterToken,
+            maxRange,
+            fillColor,
+            centerOnCursor: tpl.type === "rect",
+         });
       } catch {
          // Placement cancelled (right-click / Escape).
       }
@@ -185,13 +183,35 @@ export class MeasuredTemplateService {
    }
 
    /**
-    * Grid distance from caster token center to template origin (scene distance units).
+    * Grid distance from caster token center to a point (scene distance units).
     */
-   static #distanceToOrigin(casterToken, origin: { x: number; y: number }): number {
+   static #distanceToPoint(casterToken, point: { x: number; y: number }): number {
       if (!casterToken?.center || !canvas?.grid) return 0;
-      const waypoints = [casterToken.center, origin];
-      const distance = canvas.grid.measurePath(waypoints)?.distance;
+      const distance = canvas.grid.measurePath([casterToken.center, point])?.distance;
       return Math.floor(Number(distance) || 0);
+   }
+
+   /**
+    * Pixel offset from rect corner-origin to the opposite corner (Foundry diagonal encoding).
+    */
+   static #rectExtentPixels(distance: number, directionDeg: number): { dx: number; dy: number } {
+      const units = canvas.dimensions?.distance ?? canvas.grid?.distance ?? 5;
+      const size = canvas.dimensions?.size ?? canvas.grid?.size ?? 100;
+      const diagPx = (Number(distance) / units) * size;
+      const rad = (Number(directionDeg) * Math.PI) / 180;
+      return { dx: diagPx * Math.cos(rad), dy: diagPx * Math.sin(rad) };
+   }
+
+   /**
+    * Point used for max-range checks: rectangle center, otherwise template origin.
+    */
+   static #rangePoint(object, corner: { x: number; y: number }): { x: number; y: number } {
+      if (object.document.t !== "rect") return corner;
+      const { dx, dy } = MeasuredTemplateService.#rectExtentPixels(
+         object.document.distance,
+         object.document.direction
+      );
+      return { x: corner.x + dx / 2, y: corner.y + dy / 2 };
    }
 
    /**
@@ -233,14 +253,20 @@ export class MeasuredTemplateService {
 
    /**
     * Preview the template until left-click places it or the user cancels.
-    * When maxRange is set, tints red and blocks confirm if the origin is too far from the caster.
+    * When maxRange is set, tints red and blocks confirm if the range point is too far.
+    * Rectangles are centered on the cursor; range is measured to that center.
     */
    static async #drawPreview(
       object,
-      options: { casterToken?; maxRange: number | null; fillColor: string } = { maxRange: null, fillColor: "#000000" }
+      options: {
+         casterToken?;
+         maxRange: number | null;
+         fillColor: string;
+         centerOnCursor?: boolean;
+      } = { maxRange: null, fillColor: "#000000" }
    ): Promise<void> {
       const initialLayer = canvas.activeLayer;
-      const { casterToken, maxRange, fillColor } = options;
+      const { casterToken, maxRange, fillColor, centerOnCursor = false } = options;
       const rangeLimited = maxRange !== null && casterToken;
 
       await object.draw();
@@ -251,26 +277,30 @@ export class MeasuredTemplateService {
          let outOfRange = false;
 
          const snapPosition = (pos: { x: number; y: number }) => {
-            if (typeof canvas.grid.getSnappedPoint === "function") {
-               const mode = CONST.GRID_SNAPPING_MODES?.CENTER;
-               return mode !== undefined
-                  ? canvas.grid.getSnappedPoint(pos, { mode })
-                  : canvas.grid.getSnappedPoint(pos, { mode: 1 });
-            }
-            if (typeof canvas.grid.getSnappedPosition === "function") {
-               const snapped = canvas.grid.getSnappedPosition(pos.x, pos.y, 2);
-               return { x: snapped.x, y: snapped.y };
-            }
-            return pos;
+            if (game.keyboard?.isModifierActive?.("Shift")) return pos;
+            const M = CONST.GRID_SNAPPING_MODES;
+            const snapped = canvas.grid.getSnappedPoint(pos, {
+               mode: M.CENTER | M.EDGE_MIDPOINT | M.VERTEX,
+            });
+            return snapped ?? pos;
          };
 
-         const applyRangeVisual = (origin: { x: number; y: number }) => {
+         const cornerFromCursor = (cursor: { x: number; y: number }) => {
+            if (!centerOnCursor || object.document.t !== "rect") return cursor;
+            const { dx, dy } = MeasuredTemplateService.#rectExtentPixels(
+               object.document.distance,
+               object.document.direction
+            );
+            return { x: cursor.x - dx / 2, y: cursor.y - dy / 2 };
+         };
+
+         const applyRangeVisual = (cursor: { x: number; y: number }) => {
             if (!rangeLimited) {
                outOfRange = false;
                return;
             }
-            const distance = MeasuredTemplateService.#distanceToOrigin(casterToken, origin);
-            outOfRange = distance > maxRange;
+            const rangePoint = MeasuredTemplateService.#rangePoint(object, cornerFromCursor(cursor));
+            outOfRange = MeasuredTemplateService.#distanceToPoint(casterToken, rangePoint) > maxRange;
             object.document.updateSource({
                fillColor: outOfRange ? MeasuredTemplateService.#OUT_OF_RANGE_COLOR : fillColor,
             });
@@ -280,7 +310,8 @@ export class MeasuredTemplateService {
             event.stopPropagation();
             const pos = event.getLocalPosition(object.layer);
             const snapped = snapPosition(pos);
-            object.document.updateSource({ x: snapped.x, y: snapped.y });
+            const corner = cornerFromCursor(snapped);
+            object.document.updateSource({ x: corner.x, y: corner.y });
             applyRangeVisual(snapped);
             object.refresh();
          };
@@ -288,6 +319,8 @@ export class MeasuredTemplateService {
          const rotate = (event: WheelEvent) => {
             if (event.ctrlKey) event.preventDefault();
             event.stopPropagation();
+            // Foundry rect diagonal encoding: changing direction deforms the box.
+            if (object.document.t === "rect") return;
             const step = event.shiftKey ? 15 : 5;
             const delta = Math.sign(event.deltaY) * -step;
             const direction = (Number(object.document.direction) + delta + 360) % 360;
@@ -346,11 +379,12 @@ export class MeasuredTemplateService {
          window.addEventListener("keydown", onKeyDown);
 
          const cursor = canvas.mousePosition;
-         const origin = cursor
+         const snapped = cursor
             ? snapPosition(cursor)
             : { x: Number(object.document.x), y: Number(object.document.y) };
-         object.document.updateSource({ x: origin.x, y: origin.y });
-         applyRangeVisual(origin);
+         const corner = cornerFromCursor(snapped);
+         object.document.updateSource({ x: corner.x, y: corner.y });
+         applyRangeVisual(snapped);
          object.refresh();
       });
    }
