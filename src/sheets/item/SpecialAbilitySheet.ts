@@ -54,6 +54,9 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       },
       effects: {
          template: "systems/fantastic-depths/templates/item/shared/conditionswd.hbs",
+      },
+      gmOnly: {
+         template: "systems/fantastic-depths/templates/item/specialAbility/gmOnly.hbs",
       }
    }
 
@@ -75,6 +78,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
 
       if (game.user.isGM) {
          options.parts.push("effects");
+         options.parts.push("gmOnly");
       }
    }
 
@@ -170,6 +174,7 @@ export class SpecialAbilitySheet extends DragDropMixin(FDItemSheetV2) {
       }
       if (game.user.isGM) {
          tabs.effects = new SheetTab("effects", group, "FADE.tabs.effects", "item");
+         tabs.gmOnly = new SheetTab("gmOnly", group, "FADE.tabs.gmOnly", "item");
       }
       for (const v of Object.values(tabs) as SheetTab[]) {
          v.active = this.tabGroups[v.group] === v.id;

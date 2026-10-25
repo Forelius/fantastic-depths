@@ -46,7 +46,7 @@ export class SpellItemSheet extends DragDropMixin(FDItemSheetV2) {
          template: "systems/fantastic-depths/templates/item/shared/conditions.hbs",
       },
       gmOnly: {
-         template: "systems/fantastic-depths/templates/item/shared/gmOnlyCharge.hbs",
+         template: "systems/fantastic-depths/templates/item/spell/gmOnly.hbs",
       }
 
    }
